@@ -26,7 +26,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
                 R.id.cameraFragment, null, NavOptions.Builder()
                     .setPopUpTo(R.id.nav_main_graph, true)
                     .build())
-            true
+            binding.bottomNavigation.selectedItemId = R.id.menuCamera
         }
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
