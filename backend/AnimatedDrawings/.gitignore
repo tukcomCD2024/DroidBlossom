@@ -29,6 +29,3 @@ examples/garlic_out
 ./flask
 ./gunicorn
 ./nginx
-./celery
-./flask
-./gunicorn
