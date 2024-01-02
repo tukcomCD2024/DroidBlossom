@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Docker ###
+./data
+./target
+.env

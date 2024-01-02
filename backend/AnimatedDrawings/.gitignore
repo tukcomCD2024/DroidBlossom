@@ -13,6 +13,7 @@ node_modules
 
 # ignore any vscode specific setting files
 .vscode
+.idea
 
 # ignore any files created by following examples
 **/log.txt
@@ -23,8 +24,8 @@ examples/garlic_out
 # DO include .gifs used by the Readme
 !media/*.gif
 
+### log ###
 ./celery
 ./flask
 ./gunicorn
-
-.idea
+./nginx
