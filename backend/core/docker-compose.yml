@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+    volumes:
+      - ./data:/var/lib/mysql
+    
+networks:
+  backend:
