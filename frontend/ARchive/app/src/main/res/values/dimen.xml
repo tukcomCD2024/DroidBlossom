@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="padding">16dp</dimen>
     <dimen name="padding_small">8dp</dimen>
 
@@ -18,4 +18,5 @@
     <dimen name="text_caption1">14sp</dimen>
     <dimen name="text_caption2">14sp</dimen>
     <dimen name="text_caption3">12sp</dimen>
+
 </resources>
