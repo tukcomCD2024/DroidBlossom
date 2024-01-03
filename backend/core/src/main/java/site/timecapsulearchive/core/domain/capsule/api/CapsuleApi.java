@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePag
 
 @Validated
 public interface CapsuleApi {
+
     @Operation(
         summary = "내 캡슐 목록 조회",
         description = "사용자가 생성한 캡슐 목록을 조회한다.",
