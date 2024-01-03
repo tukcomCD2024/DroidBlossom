@@ -15,6 +15,7 @@ import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 
 @Validated
 public interface AuthApi {
+
     @Operation(
         summary = "카카오 로그인 페이지",
         description = "oauth2 kakao 인증 페이지 url을 가져온다. 로그인에 성공하면 임시 인증 토큰 토큰을 발급받는다.",
