@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.domain.publiccapsule.dto.response.PublicCaps
 
 @Validated
 public interface PublicCapsuleApi {
+
     @Operation(
         summary = "공개 캡슐 생성",
         description = "사용자의 친구들만 볼 수 있는 공개 캡슐을 생성한다.",

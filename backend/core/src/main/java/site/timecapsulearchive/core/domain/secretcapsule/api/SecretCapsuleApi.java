@@ -25,6 +25,7 @@ import site.timecapsulearchive.core.domain.secretcapsule.dto.response.SecretCaps
 
 @Validated
 public interface SecretCapsuleApi {
+
     @Operation(
         summary = "비밀 캡슐 생성",
         description = "사용자만 볼 수 있는 비밀 캡슐을 생성한다.",
