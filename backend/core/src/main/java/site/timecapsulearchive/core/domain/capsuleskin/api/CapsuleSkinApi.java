@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkins
 
 @Validated
 public interface CapsuleSkinApi {
+
     @Operation(
         summary = "캡슐 스킨 생성",
         description = "정해진 포맷으로 캡슐 스킨을 생성한다.",
@@ -142,7 +143,6 @@ public interface CapsuleSkinApi {
     @PatchMapping(
         value = "/capsule-skins/{capsule_skin_id}",
         consumes = {"application/json"})
-
     ResponseEntity<Void> updateCapsuleSkin(
         @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true, schema = @Schema())
         @PathVariable("capsule_skin_id") Long capsuleSkinId
