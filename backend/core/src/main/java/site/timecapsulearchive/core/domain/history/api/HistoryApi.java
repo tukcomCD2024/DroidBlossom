@@ -24,6 +24,7 @@ import site.timecapsulearchive.core.domain.history.dto.response.HistorySummaryRe
 
 @Validated
 public interface HistoryApi {
+
     @Operation(
         summary = "회원 히스토리 생성",
         description = "캡슐 이미지를 기반으로 회원의 히스토리를 생성한다.",
@@ -44,7 +45,8 @@ public interface HistoryApi {
         value = "/histories",
         consumes = {"multipart/form-data"}
     )
-    ResponseEntity<HistorySummaryResponse> createHistory(@ModelAttribute HistoryCreateRequest request);
+    ResponseEntity<HistorySummaryResponse> createHistory(
+        @ModelAttribute HistoryCreateRequest request);
 
     @Operation(
         summary = "회원 히스토리 목록 조회",
