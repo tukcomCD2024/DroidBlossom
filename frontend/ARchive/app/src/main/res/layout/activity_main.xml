@@ -11,7 +11,8 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.MainActivity">
+        tools:context=".presentation.ui.MainActivity"
+        android:background="@color/red">
 
         <fragment
             android:id="@+id/mainNavHost"
@@ -29,8 +30,8 @@
             app:contentInsetEnd="0dp"
             app:contentInsetStart="0dp"
             app:fabAlignmentMode="center"
-            app:fabCradleMargin="15dp"
-            app:fabCradleRoundedCornerRadius="8dp"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="24dp"
             app:fabCradleVerticalOffset="0dp">
 
 
@@ -60,7 +61,7 @@
             app:elevation="0dp"
             app:layout_anchor="@+id/bottom_app_bar"
             app:rippleColor="@android:color/transparent"
-            android:layout_marginBottom="27dp"/>
+            android:layout_marginBottom="36dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
