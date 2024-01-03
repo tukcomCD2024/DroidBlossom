@@ -27,6 +27,7 @@ import site.timecapsulearchive.core.domain.groupcapsule.dto.response.GroupCapsul
 
 @Validated
 public interface GroupCapsuleApi {
+
     @Operation(
         summary = "그룹 캡슐 생성",
         description = "그룹원들이 볼 수 있는 그룹 캡슐을 생성한다.",
