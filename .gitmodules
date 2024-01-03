@@ -1,3 +1,3 @@
 [submodule "backend/core/src/main/resources/config"]
 	path = backend/core/src/main/resources/config
-	url = git@github.com:seokho-1116/DroidBlossom-config.git
+	url = https://github.com/seokho-1116/DroidBlossom-config.git
