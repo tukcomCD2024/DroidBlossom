@@ -24,6 +24,7 @@ import site.timecapsulearchive.core.domain.friend.dto.response.SearchFriendsResp
 
 @Validated
 public interface FriendApi {
+
     @Operation(
         summary = "친구 요청 수락",
         description = "상대방으로부터 온 친구 요청을 수락한다.",
@@ -150,5 +151,6 @@ public interface FriendApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    ResponseEntity<SearchFriendsResponse> searchMembersByPhones(@RequestBody SearchFriendsRequest request);
+    ResponseEntity<SearchFriendsResponse> searchMembersByPhones(
+        @RequestBody SearchFriendsRequest request);
 }
