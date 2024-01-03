@@ -27,6 +27,7 @@ import site.timecapsulearchive.core.domain.group.dto.response.GroupsPageResponse
 
 @Validated
 public interface GroupApi {
+
     @Operation(
         summary = "그룹 요청 수락",
         description = "특정 그룹으로부터 그룹 요청을 수락한다.",
