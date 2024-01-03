@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailRespo
 
 @Validated
 public interface MemberApi {
+
     @Operation(
         summary = "회원 상세 정보 조회",
         description = "회원의 상세 정보를 조회한다.",
