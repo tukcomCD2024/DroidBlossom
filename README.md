@@ -24,11 +24,6 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 ## 🎨 Figma
 ### ⛏️ 작업 중...
 
-
-## 🛠 개발 시스템 구성도
-
-![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/c3116c5f-cc50-461b-8b3a-24a0566ed7e4)
-
 ## 시스템 디자인
 ![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7570e1d-c258-4f4e-adab-5b45d3acc901)
 
