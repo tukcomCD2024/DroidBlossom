@@ -14,7 +14,7 @@
     <dimen name="text_body1">18sp</dimen>
     <dimen name="text_body2">16sp</dimen>
     <dimen name="text_body3">16sp</dimen>
-    <dimen name="text_button">16sp</dimen>
+    <dimen name="text_button">18sp</dimen>
     <dimen name="text_caption1">14sp</dimen>
     <dimen name="text_caption2">14sp</dimen>
     <dimen name="text_caption3">12sp</dimen>
