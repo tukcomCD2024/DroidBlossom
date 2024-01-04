@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.entity;
+package site.timecapsulearchive.notification.global.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
