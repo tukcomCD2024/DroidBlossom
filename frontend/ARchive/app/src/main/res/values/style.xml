@@ -38,16 +38,11 @@
 
     <style name="TextAppearance.App.body1" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_body1</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/notosans_bold</item>
     </style>
 
     <style name="TextAppearance.App.body2" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_body2</item>
-        <item name="fontFamily">@font/notosans_bold</item>
-    </style>
-
-    <style name="TextAppearance.App.body3" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">@dimen/text_body3</item>
         <item name="fontFamily">@font/notosans_medium</item>
     </style>
 
@@ -68,6 +63,11 @@
 
     <style name="TextAppearance.App.caption3" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_caption3</item>
+        <item name="fontFamily">@font/notosans_bold</item>
+    </style>
+
+    <style name="TextAppearance.App.caption4" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_caption4</item>
         <item name="fontFamily">@font/notosans_medium</item>
     </style>
 </resources>
