@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,7 +39,7 @@ public class Capsule extends BaseEntity {
     private Long id;
 
     @Column(nullable = true)
-    private LocalDate dueDate;
+    private ZonedDateTime dueDate;
 
     @Column(nullable = false, precision = 19, scale = 8)
     private BigDecimal longitude;
