@@ -14,7 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
-import site.timecapsulearchive.core.domain.friend.entity.FriendReq;
+import site.timecapsulearchive.core.domain.friend.entity.FriendRequest;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.group.entity.GroupReq;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
@@ -75,10 +75,10 @@ public class Member extends BaseEntity {
     private List<MemberFriend> friends;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FriendReq> friendsRequests;
+    private List<FriendRequest> friendsRequests;
 
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FriendReq> notifications;
+    private List<FriendRequest> notifications;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories;
