@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.timecapsulearchive.core.domain.BaseEntity;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @Entity

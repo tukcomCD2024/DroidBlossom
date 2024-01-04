@@ -16,7 +16,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.global.entity.BaseEntity;
+import site.timecapsulearchive.core.domain.BaseEntity;
 
 @Entity
 @Getter
