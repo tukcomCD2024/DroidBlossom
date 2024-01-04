@@ -19,9 +19,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "GROUP_CAPSULE_OPENS")
+@Table(name = "GROUP_CAPSULE_OPEN")
 public class GroupCapsuleOpen extends BaseEntity {
-
     @Id
     @Column(name = "group_capsule_open_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +33,4 @@ public class GroupCapsuleOpen extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
 }
