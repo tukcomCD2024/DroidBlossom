@@ -12,14 +12,12 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "VIDEOS")
+@Table(name = "VIDEO")
 public class Video {
-
     @Id
     @Column(name = "video_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +35,4 @@ public class Video {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)
     private Capsule capsule;
-
 }

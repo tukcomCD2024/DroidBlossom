@@ -14,9 +14,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "ADDRESSES")
+@Table(name = "ADDRESSE")
 public class Address extends BaseEntity {
-
     @Id
     @Column(name = "adress_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,5 +35,4 @@ public class Address extends BaseEntity {
 
     @Column
     private String zipCode;
-
 }
