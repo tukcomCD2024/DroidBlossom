@@ -18,9 +18,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_GROUPS")
+@Table(name = "MEMBER_GROUP")
 public class MemberGroup extends BaseEntity {
-
     @Id
     @Column(name = "member_group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,5 +35,4 @@ public class MemberGroup extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
-
 }
