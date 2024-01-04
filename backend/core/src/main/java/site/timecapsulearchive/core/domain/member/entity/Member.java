@@ -19,7 +19,7 @@ import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.history.entity.History;
-import site.timecapsulearchive.core.domain.BaseEntity;
+import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
 @Getter

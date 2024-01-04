@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain;
+package site.timecapsulearchive.core.global.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
