@@ -24,9 +24,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBERS")
+@Table(name = "MEMBER")
 public class Member extends BaseEntity {
-
     @Id
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,6 +81,5 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories;
-
 }
 
