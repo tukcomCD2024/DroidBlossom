@@ -18,7 +18,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_FRIENDS")
+@Table(name = "MEMBER_FRIEND")
 public class MemberFriend extends BaseEntity {
 
     @Id
