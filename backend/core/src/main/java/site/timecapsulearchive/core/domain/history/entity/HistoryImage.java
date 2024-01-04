@@ -18,9 +18,8 @@ import site.timecapsulearchive.core.global.entity.Image;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "HISTORY_IMAGES")
+@Table(name = "HISTORY_IMAGE")
 public class HistoryImage extends BaseEntity {
-
     @Id
     @Column(name = "history_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,5 +32,4 @@ public class HistoryImage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "history_id", nullable = false)
     private History history;
-
 }

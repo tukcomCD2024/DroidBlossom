@@ -21,7 +21,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "HISTORIES")
+@Table(name = "HISTORY")
 public class History extends BaseEntity {
 
     @Id
