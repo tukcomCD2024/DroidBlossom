@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.entity;
+package site.timecapsulearchive.notification.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,16 +8,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.domain.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "NOTIFICATION_CATEGORY")
 public class NotificationCategory extends BaseEntity {
-
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,5 @@ public class NotificationCategory extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nofitication_id", nullable = false)
     private Notification notification;
-
 }
 
