@@ -18,11 +18,11 @@ import site.timecapsulearchive.core.domain.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "GROUP_REQUEST")
-public class GroupRequest extends BaseEntity {
+@Table(name = "GROUP_INVITE")
+public class GroupInvite extends BaseEntity {
 
     @Id
-    @Column(name = "group_request_id")
+    @Column(name = "group_invite_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
