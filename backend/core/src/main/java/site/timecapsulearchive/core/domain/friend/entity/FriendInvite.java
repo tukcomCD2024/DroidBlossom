@@ -18,10 +18,10 @@ import site.timecapsulearchive.core.domain.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "FRIEND_REQUEST")
-public class FriendRequest extends BaseEntity {
+@Table(name = "FRIEND_INVITE")
+public class FriendInvite extends BaseEntity {
     @Id
-    @Column(name = "friend_request_id")
+    @Column(name = "friend_invite_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
