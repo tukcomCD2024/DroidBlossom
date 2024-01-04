@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.entity;
+package site.timecapsulearchive.core.domain.capsule.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,22 +17,22 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "IMAGES")
-public class Image extends BaseEntity {
+@Table(name = "VIDEOS")
+public class Video {
 
     @Id
-    @Column(name = "image_id")
+    @Column(name = "video_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl;
+    private String videoUrl;
 
     @Column(nullable = false)
-    private Long size;
+    private Integer size;
 
     @Column(nullable = false)
-    private String imageName;
+    private String videoName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)

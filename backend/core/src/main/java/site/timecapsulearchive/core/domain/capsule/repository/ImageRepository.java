@@ -1,7 +1,7 @@
-package site.timecapsulearchive.core.global.repository;
+package site.timecapsulearchive.core.domain.capsule.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import site.timecapsulearchive.core.global.entity.Image;
+import site.timecapsulearchive.core.domain.capsule.entity.Image;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 

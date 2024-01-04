@@ -21,10 +21,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.groupcapsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.global.entity.Address;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
-import site.timecapsulearchive.core.global.entity.Image;
-import site.timecapsulearchive.core.global.entity.Video;
 
 
 @Entity
