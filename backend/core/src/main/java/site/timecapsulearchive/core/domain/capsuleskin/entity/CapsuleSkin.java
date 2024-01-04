@@ -18,9 +18,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "CAPSULE_SKINS")
+@Table(name = "CAPSULE_SKIN")
 public class CapsuleSkin extends BaseEntity {
-
     @Id
     @Column(name = "capsule_skin_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +40,4 @@ public class CapsuleSkin extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
 }
