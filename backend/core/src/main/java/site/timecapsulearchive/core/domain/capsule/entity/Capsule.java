@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -35,11 +34,11 @@ public class Capsule extends BaseEntity {
     @Column(nullable = true)
     private ZonedDateTime dueDate;
 
-    @Column(nullable = false, precision = 19, scale = 8)
-    private BigDecimal longitude;
+    @Column(nullable = false)
+    private Float longitude;
 
-    @Column(nullable = false, precision = 19, scale = 8)
-    private BigDecimal latitude;
+    @Column(nullable = false)
+    private Float latitude;
 
     @Column(nullable = false)
     private String title;
