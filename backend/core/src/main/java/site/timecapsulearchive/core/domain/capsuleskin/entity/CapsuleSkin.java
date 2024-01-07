@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "CAPSULE_SKIN")
 public class CapsuleSkin extends BaseEntity {
+
     @Id
     @Column(name = "capsule_skin_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

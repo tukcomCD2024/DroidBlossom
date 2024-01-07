@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "VIDEO")
 public class Video {
+
     @Id
     @Column(name = "video_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

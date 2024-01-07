@@ -19,6 +19,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "IMAGE")
 public class Image extends BaseEntity {
+
     @Id
     @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
