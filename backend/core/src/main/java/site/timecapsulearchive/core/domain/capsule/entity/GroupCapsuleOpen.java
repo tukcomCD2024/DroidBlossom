@@ -12,7 +12,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
@@ -21,6 +20,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "GROUP_CAPSULE_OPEN")
 public class GroupCapsuleOpen extends BaseEntity {
+
     @Id
     @Column(name = "group_capsule_open_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

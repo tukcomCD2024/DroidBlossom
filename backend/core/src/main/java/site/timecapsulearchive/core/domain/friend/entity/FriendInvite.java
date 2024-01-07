@@ -20,17 +20,18 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "FRIEND_INVITE")
 public class FriendInvite extends BaseEntity {
+
     @Id
     @Column(name = "friend_invite_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "member_id", nullable = false, insertable = false, updatable = false)
     private Member owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "member_id", nullable = false, insertable = false, updatable = false)
     private Member friend;
 
 }

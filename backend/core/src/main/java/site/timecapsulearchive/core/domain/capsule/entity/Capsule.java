@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "CAPSULE")
 public class Capsule extends BaseEntity {
+
     @Id
     @Column(name = "capsule_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

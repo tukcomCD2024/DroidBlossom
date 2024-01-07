@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MEMBER_GROUP")
 public class MemberGroup extends BaseEntity {
+
     @Id
     @Column(name = "member_group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

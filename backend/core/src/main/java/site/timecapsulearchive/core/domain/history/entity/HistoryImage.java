@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Image;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "HISTORY_IMAGE")
 public class HistoryImage extends BaseEntity {
+
     @Id
     @Column(name = "history_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
