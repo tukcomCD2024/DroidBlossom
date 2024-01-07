@@ -53,12 +53,6 @@ public class Member extends BaseEntity {
     private String fcmToken;
 
     @Column(nullable = false)
-    private OffsetDateTime createdDate;
-
-    @Column(nullable = false)
-    private OffsetDateTime modifiedDate;
-
-    @Column(nullable = false)
     private Boolean isVerified;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
