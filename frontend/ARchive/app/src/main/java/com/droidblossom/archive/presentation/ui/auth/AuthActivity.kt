@@ -2,7 +2,6 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.droidblossom.archive.R
@@ -11,10 +10,9 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AuthActivity : BaseActivity<AuthViewModel, ActivityAuthBinding>(R.layout.activity_auth) {
+class AuthActivity : BaseActivity<AuthViewModelImpl, ActivityAuthBinding>(R.layout.activity_auth) {
 
-    override val viewModel: AuthViewModel by viewModels()
-
+    override val viewModel: AuthViewModelImpl by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

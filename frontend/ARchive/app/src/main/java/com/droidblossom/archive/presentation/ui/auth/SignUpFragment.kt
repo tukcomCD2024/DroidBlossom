@@ -2,10 +2,7 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -21,11 +18,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SignUpFragment : BaseFragment<AuthViewModel, FragmentSignUpBinding>(R.layout.fragment_sign_up) {
+class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.layout.fragment_sign_up) {
 
 
     private lateinit var navController: NavController
-    override val viewModel : AuthViewModel by activityViewModels()
+    override val viewModel : AuthViewModelImpl by activityViewModels()
 
     override fun onResume() {
         super.onResume()

@@ -4,10 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.fragment.app.activityViewModels
@@ -24,11 +21,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CertificationFragment : BaseFragment<AuthViewModel, FragmentCertificationBinding>(R.layout.fragment_certification) {
+class CertificationFragment : BaseFragment<AuthViewModelImpl, FragmentCertificationBinding>(R.layout.fragment_certification) {
 
 
     lateinit var navController: NavController
-    override val viewModel : AuthViewModel by activityViewModels()
+    override val viewModel : AuthViewModelImpl by activityViewModels()
 
     override fun onResume() {
         super.onResume()

@@ -1,10 +1,7 @@
 package com.droidblossom.archive.presentation.ui.auth
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,12 +16,12 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SignInFragment : BaseFragment<AuthViewModel,FragmentSignInBinding>(R.layout.fragment_sign_in) {
+class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.layout.fragment_sign_in) {
 
 
     lateinit var navController: NavController
 
-    override val viewModel : AuthViewModel by activityViewModels()
+    override val viewModel : AuthViewModelImpl by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
