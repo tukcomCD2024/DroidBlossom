@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -9,13 +10,73 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.auth.SignInFragment">
+        tools:context=".SignInFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            android:layout_height="match_parent">
+
+            <!-- 왼쪽 가이드라인 (전체 너비의 105/360) -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2917" /> <!-- 105 / (105 + 150 + 105) -->
+
+            <!-- 오른쪽 가이드라인 (전체 너비의 255/360) -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.7083" /> <!-- (105 + 150) / (105 + 150 + 105) -->
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/logoImg"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="150:187"
+                app:layout_constraintBottom_toTopOf="@id/kakaoLoginBtn"
+                app:layout_constraintEnd_toStartOf="@id/guide_right"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/guide_left"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.4888"
+                app:srcCompat="@drawable/app_logo_text" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/kakaoLoginBtn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/googleLoginBtn"
+                android:text="@string/kakaoLogin"
+                android:textAppearance="@style/TextAppearance.App.button"
+                android:textColor="@color/white"
+                android:background="@drawable/rectangle_solid_corner_8dp"
+                android:backgroundTint="@color/main_1"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginHorizontal="@dimen/margin"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/googleLoginBtn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:textAppearance="@style/TextAppearance.App.button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@string/googleLogin"
+                android:textColor="@color/main_2"
+                android:background="@drawable/rectangle_solid_corner_8dp"
+                android:backgroundTint="@color/main_bg_1"
+                android:layout_marginBottom="14dp"
+                android:layout_marginHorizontal="@dimen/margin"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 </layout>
