@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,29 +33,28 @@ public class Capsule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true)
+    @Column(name = "due_date", nullable = true)
     private ZonedDateTime dueDate;
 
-    @Column(nullable = false)
+    @Column(name = "longitude", nullable = false)
     private Float longitude;
 
-    @Column(nullable = false)
+    @Column(name = "latitude", nullable = false)
     private Float latitude;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "type", nullable = false)
     private String type;
 
-    @Column(nullable = false)
+    @Column(name = "is_opened", nullable = false)
     private Boolean isOpened;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @Embedded
     private Address address;
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
