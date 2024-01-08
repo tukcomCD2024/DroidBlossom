@@ -64,7 +64,7 @@ public class TokenService {
      */
     public TokenResponse reIssueToken(String refreshToken) throws AlreadyReIssuedTokenException {
         String oldKey = jwtFactory.getClaimValue(refreshToken, MEMBER_INFO_KEY);
-        MemberInfo memberInfo = memberInfoCacheRepository.getMemberProfile(oldKey)
+        MemberInfo memberInfo = memberInfoCacheRepository.getMemberInfo(oldKey)
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
         String newKey = String.valueOf(UUID.randomUUID());
