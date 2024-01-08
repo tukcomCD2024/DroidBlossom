@@ -26,13 +26,13 @@ public class Group extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "group_name", nullable = false)
     private String groupName;
 
-    @Column(nullable = false)
+    @Column(name = "group_description", nullable = false)
     private String groupDescription;
 
-    @Column(nullable = false)
+    @Column(name = "group_profile_url", nullable = false)
     private String groupProfileUrl;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -41,4 +41,3 @@ public class Group extends BaseEntity {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGroup> members;
 }
-
