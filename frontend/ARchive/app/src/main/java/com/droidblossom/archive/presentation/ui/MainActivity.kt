@@ -1,5 +1,7 @@
 package com.droidblossom.archive.presentation.ui
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -67,6 +69,14 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
             }
         }
 
+    }
+
+    companion object{
+        fun goMain(context: Context) {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
+        }
     }
 
 }
