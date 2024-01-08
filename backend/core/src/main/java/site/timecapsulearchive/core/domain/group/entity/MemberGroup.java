@@ -26,7 +26,7 @@ public class MemberGroup extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "is_owner", nullable = false)
     private Boolean isOwner;
 
     @ManyToOne(fetch = FetchType.LAZY)
