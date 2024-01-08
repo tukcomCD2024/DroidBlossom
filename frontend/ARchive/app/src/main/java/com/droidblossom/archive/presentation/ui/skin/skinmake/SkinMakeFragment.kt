@@ -18,10 +18,10 @@ import com.droidblossom.archive.presentation.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SkinMakeFragment : BaseFragment<SkinMakeViewModel, FragmentSkinMakeBinding>(R.layout.fragment_skin_make) {
+class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBinding>(R.layout.fragment_skin_make) {
 
     lateinit var navController: NavController
-    override val viewModel : SkinMakeViewModel by activityViewModels()
+    override val viewModel : SkinMakeViewModelImpl by activityViewModels()
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
         if (uri != null){

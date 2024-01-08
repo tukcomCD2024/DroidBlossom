@@ -11,9 +11,9 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SkinMakeActivity : BaseActivity<SkinMakeViewModel, ActivitySkinMakeBinding>(R.layout.activity_skin_make) {
+class SkinMakeActivity : BaseActivity<SkinMakeViewModelImpl, ActivitySkinMakeBinding>(R.layout.activity_skin_make) {
 
-    override val viewModel: SkinMakeViewModel by viewModels()
+    override val viewModel: SkinMakeViewModelImpl by viewModels()
 
     override fun observeData() {}
 
