@@ -102,6 +102,7 @@
                         app:layout_constraintStart_toEndOf="@id/guide_left"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/skin_upload_img"
+                        bind:imageUrl="@{vm.imgUri}"
                         bind:placeholder="@{@drawable/skin_upload_img}"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

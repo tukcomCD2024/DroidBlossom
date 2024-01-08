@@ -23,17 +23,36 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModel, FragmentSkinMakeBinding
     lateinit var navController: NavController
     override val viewModel : SkinMakeViewModel by activityViewModels()
 
+    private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
+        if (uri != null){
+            viewModel.imgUri.value = uri
+        }else{
+            Log.d("포토", "No Media selected")
+        }
+    }
 
     override fun observeData() {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        navController = Navigation.findNavController(view)
+        binding.vm = viewModel
         initView()
     }
 
     private fun initView(){
 
+        with(binding){
+            skinImageLayout.setOnClickListener {
+                picMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
+
+            closeBtn.setOnClickListener {
+                MainActivity.goMain(requireContext())
+            }
+
+        }
 
     }
 
