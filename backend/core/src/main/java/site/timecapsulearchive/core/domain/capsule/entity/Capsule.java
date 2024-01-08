@@ -33,7 +33,7 @@ public class Capsule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "due_date", nullable = true)
+    @Column(name = "due_date")
     private ZonedDateTime dueDate;
 
     @Column(name = "longitude", nullable = false)

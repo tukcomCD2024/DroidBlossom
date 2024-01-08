@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.domain.capsule.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
-public class Address extends BaseEntity {
 
     @Column(name = "province", nullable = false)
     private String province;

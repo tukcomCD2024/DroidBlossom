@@ -16,8 +16,8 @@ CREATE TABLE core.member
     member_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     updated_at           timestamp NULL,
     phone                VARCHAR(255) NULL,
-    nickname             VARCHAR(255)  NOT NULL,
-    oauth2_provider      VARCHAR(255)  NOT NULL,
+    nickname             VARCHAR(255) NOT NULL,
+    oauth2_provider      VARCHAR(255) NOT NULL,
     email                VARCHAR(255) NULL,
     fcm_token            VARCHAR(255) NULL,
     profile_url          VARCHAR(255) NOT NULL
@@ -30,7 +30,7 @@ CREATE TABLE core.capsule_skin
     member_id       BIGINT       NOT NULL,
     size            BIGINT       NOT NULL,
     updated_at      timestamp NULL,
-    skin_name       VARCHAR(255)  NOT NULL,
+    skin_name       VARCHAR(255) NOT NULL,
     image_url       VARCHAR(255) NOT NULL,
     motion_name     VARCHAR(255) NOT NULL,
     CONSTRAINT fk_capsule_skin_member_id
@@ -49,7 +49,7 @@ CREATE TABLE core.capsule
     group_id        BIGINT       NOT NULL,
     member_id       BIGINT       NOT NULL,
     updated_at      timestamp NULL,
-    village         VARCHAR(255)  NOT NULL,
+    village         VARCHAR(255) NOT NULL,
     city            VARCHAR(255) NOT NULL,
     province        VARCHAR(255) NOT NULL,
     sub_district    VARCHAR(255) NOT NULL,
