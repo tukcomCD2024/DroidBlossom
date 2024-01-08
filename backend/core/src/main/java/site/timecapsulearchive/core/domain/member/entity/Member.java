@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,33 +25,34 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MEMBER")
 public class Member extends BaseEntity {
+
     @Id
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20)
+    @Column(name = "phone")
     private String phone;
 
-    @Column(nullable = false)
+    @Column(name = "profile_url", nullable = false)
     private String profileUrl;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "oauth2_provider", nullable = false)
     private String oauth2Provider;
 
-    @Column(nullable = false)
+    @Column(name = "notification_enabled", nullable = false)
     private Boolean notificationEnabled;
 
-    @Column
+    @Column(name = "email")
     private String email;
 
-    @Column
+    @Column(name = "fcm_token")
     private String fcmToken;
 
-    @Column(nullable = false)
+    @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -76,4 +76,3 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories;
 }
-
