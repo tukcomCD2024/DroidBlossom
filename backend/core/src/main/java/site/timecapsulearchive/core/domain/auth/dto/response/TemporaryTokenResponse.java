@@ -7,9 +7,22 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "임시 인증 토큰")
 @Validated
 public record TemporaryTokenResponse(
-    @JsonProperty("accessToken")
-    @Schema(description = "액세스 토큰")
-    String accessToken
+    @JsonProperty("temporaryAccessToken")
+    @Schema(description = "임시 액세스 토큰")
+    String temporaryAccessToken,
+
+    @JsonProperty("expiresIn")
+    @Schema(description = "임시 액세스 토큰 만료 시간")
+    String expiresIn
 ) {
 
+    public static TemporaryTokenResponse create(
+        String temporaryAccessToken,
+        String expiresIn
+    ) {
+        return new TemporaryTokenResponse(
+            temporaryAccessToken,
+            expiresIn
+        );
+    }
 }

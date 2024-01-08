@@ -7,13 +7,34 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "완전한 인증 토큰")
 @Validated
 public record TokenResponse(
-    @JsonProperty("accessToken")
+    @JsonProperty("temporaryAccessToken")
     @Schema(description = "액세스 토큰")
     String accessToken,
 
     @JsonProperty("refreshToken")
     @Schema(description = "리프레시 토큰")
-    String refreshToken
+    String refreshToken,
+
+    @JsonProperty("expiresIn")
+    @Schema(description = "액세스 토큰 만료 시간")
+    String expiresIn,
+
+    @JsonProperty("refreshTokenExpiresIn")
+    @Schema(description = "리프레시 토큰 만료 시간")
+    String refreshTokenExpiresIn
 ) {
 
+    public static TokenResponse create(
+        String accessToken,
+        String refreshToken,
+        String expiresIn,
+        String refreshTokenExpiresIn
+    ) {
+        return new TokenResponse(
+            accessToken,
+            refreshToken,
+            expiresIn,
+            refreshTokenExpiresIn
+        );
+    }
 }
