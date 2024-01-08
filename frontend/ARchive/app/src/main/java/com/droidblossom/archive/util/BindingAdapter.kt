@@ -22,3 +22,11 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
         }
         .into(this)
 }
+
+@BindingAdapter("bind:applyPhoneNumberFormatting")
+fun EditText.applyPhoneNumberFormatting(apply: Boolean) {
+    // 나중에는 그냥 지역번호를 받아서 각각의 포맷이 되도록 하는게 맞음
+    if (apply) {
+        addTextChangedListener(PhoneNumberFormattingTextWatcher())
+    }
+}
