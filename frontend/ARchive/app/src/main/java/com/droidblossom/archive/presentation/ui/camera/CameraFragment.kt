@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui
+package com.droidblossom.archive.presentation.ui.camera
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

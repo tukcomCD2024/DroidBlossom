@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.skinmake
+package com.droidblossom.archive.presentation.ui.skin.skinmake
 
 import android.net.Uri
 import com.droidblossom.archive.presentation.base.BaseViewModel

@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.skinmake
+package com.droidblossom.archive.presentation.ui.skin.skinmake
 
 import android.content.Context
 import android.content.Intent

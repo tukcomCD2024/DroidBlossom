@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui
+package com.droidblossom.archive.presentation.ui.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

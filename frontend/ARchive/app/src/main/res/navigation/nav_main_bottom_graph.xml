@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.droidblossom.archive.presentation.ui.HomeFragment"
+        android:name="com.droidblossom.archive.presentation.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
@@ -17,17 +17,17 @@
         tools:layout="@layout/fragment_my_page" />
     <fragment
         android:id="@+id/skinFragment"
-        android:name="com.droidblossom.archive.presentation.ui.SkinFragment"
+        android:name="com.droidblossom.archive.presentation.ui.skin.SkinFragment"
         android:label="fragment_skin"
         tools:layout="@layout/fragment_skin" />
     <fragment
         android:id="@+id/socialFragment"
-        android:name="com.droidblossom.archive.presentation.ui.SocialFragment"
+        android:name="com.droidblossom.archive.presentation.ui.social.SocialFragment"
         android:label="fragment_social"
         tools:layout="@layout/fragment_social" />
     <fragment
         android:id="@+id/cameraFragment"
-        android:name="com.droidblossom.archive.presentation.ui.CameraFragment"
+        android:name="com.droidblossom.archive.presentation.ui.camera.CameraFragment"
         android:label="fragment_camera"
         tools:layout="@layout/fragment_camera" />
 </navigation>

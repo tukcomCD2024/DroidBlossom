@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.skinmake
+package com.droidblossom.archive.presentation.ui.skin.skinmake
 
 import android.os.Bundle
 import android.util.Log

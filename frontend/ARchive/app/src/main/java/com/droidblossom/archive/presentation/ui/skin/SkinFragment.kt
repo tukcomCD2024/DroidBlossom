@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui
+package com.droidblossom.archive.presentation.ui.skin
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinBinding
-import com.droidblossom.archive.presentation.ui.skinmake.SkinMakeActivity
+import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity
 
 class SkinFragment : Fragment() {
 
