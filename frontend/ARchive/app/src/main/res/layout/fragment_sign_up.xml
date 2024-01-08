@@ -40,10 +40,10 @@
                 android:inputType="phone"
                 android:maxLines="1"
                 android:maxLength="13"
+                android:text="@={vm.phoneNumber}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.198"
+                app:layout_constraintVertical_bias="0.1178"
                 bind:applyPhoneNumberFormatting="@{true}">
 
                 <requestFocus />
