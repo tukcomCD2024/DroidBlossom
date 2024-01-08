@@ -1,39 +1,30 @@
 package site.timecapsulearchive.core.domain.capsule.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.global.entity.BaseEntity;
 
-@Entity
+@Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "ADDRESSE")
-public class Address extends BaseEntity {
+@Table(name = "ADDRESS")
+public class Address {
 
-    @Id
-    @Column(name = "adress_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 100)
+    @Column(name = "province", nullable = false)
     private String province;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "sub_district", nullable = false)
     private String subDistinct;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "village", nullable = false)
     private String village;
 
-    @Column
+    @Column(name = "zip_code")
     private String zipCode;
 }
