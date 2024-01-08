@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.skinmake.SkinMakeViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.ui.skinmake.SkinMakeFragment">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/padding">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/viewHeaderTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:text="@string/skinMakeFragmentTitle"
+                    android:textAppearance="@style/TextAppearance.App.h2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/closeBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:gravity="center"
+                    android:text="@string/close"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/skinNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ellipsize="end"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/skinMakeHint"
+                    android:maxLines="1"
+                    android:paddingVertical="0dp"
+                    android:textAppearance="@style/TextAppearance.App.h2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/skinImageLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/rectangle_stroke_corner_8dp"
+                    android:scaleType="centerInside"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_max="450dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/skinNameEditText"
+                    app:layout_constraintWidth_max="450dp"
+                    app:srcCompat="@drawable/skin_upload_img">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guide_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.20" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guide_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.80" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/skinImageView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="centerInside"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1.2"
+                        app:layout_constraintEnd_toStartOf="@id/guide_right"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@id/guide_left"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/skin_upload_img"
+                        bind:imageUrl="@{vm.imgUri}"
+                        bind:placeholder="@{@drawable/skin_upload_img}"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/skinMotionAddTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:drawableEnd="@drawable/ic_plus_24"
+                    android:drawableTint="@color/main_1"
+                    android:text="@string/addMotion"
+                    android:textAppearance="@style/TextAppearance.App.body1"
+                    app:layout_constraintEnd_toEndOf="@id/skinImageLayout"
+                    app:layout_constraintStart_toStartOf="@id/skinImageLayout"
+                    app:layout_constraintTop_toBottomOf="@id/skinImageLayout" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/skinRV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/skinMotionAddTextView" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/completeBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/rectangle_solid_corner_8dp"
+                    android:backgroundTint="@color/main_1"
+                    android:text="@string/complete"
+                    android:textAppearance="@style/TextAppearance.App.button"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/skinRV" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+</layout>
