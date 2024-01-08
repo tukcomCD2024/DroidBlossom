@@ -30,3 +30,10 @@ fun EditText.applyPhoneNumberFormatting(apply: Boolean) {
         addTextChangedListener(PhoneNumberFormattingTextWatcher())
     }
 }
+
+@BindingAdapter("bind:displayRemainingTime")
+fun TextView.displayRemainingTime(totalSeconds: Int) {
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    this.text = String.format("%02d분 %02d초", minutes, seconds)
+}
