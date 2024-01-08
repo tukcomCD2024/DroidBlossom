@@ -37,10 +37,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.App.body2"
+                android:text="05분 00"
                 android:textColor="@color/gray_600"
                 app:layout_constraintStart_toStartOf="@id/viewHeaderTitle"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                android:layout_marginTop="12dp" />
+                android:layout_marginTop="12dp"
+                bind:displayRemainingTime="@{vm.remainTime}"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/certificationNumberEditText_1"
@@ -53,6 +55,7 @@
                 android:gravity="center"
                 android:inputType="phone"
                 android:maxLength="1"
+                android:text="@={vm.certificationNumber1}"
                 android:textColor="@color/black"
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
@@ -81,6 +84,7 @@
                 android:background="@drawable/certification_edittext_background"
                 android:gravity="center"
                 android:inputType="phone"
+                android:text="@={vm.certificationNumber2}"
                 android:maxLength="1"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_1"
@@ -104,6 +108,7 @@
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
                 android:maxLength="1"
+                android:text="@={vm.certificationNumber3}"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_2"
                 app:layout_constraintDimensionRatio="1:1"
@@ -124,6 +129,7 @@
                 android:gravity="center"
                 android:inputType="phone"
                 android:maxLength="1"
+                android:text="@={vm.certificationNumber4}"
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
                 android:textColor="@color/black"
