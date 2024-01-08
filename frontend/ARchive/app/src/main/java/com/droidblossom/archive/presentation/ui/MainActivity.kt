@@ -9,7 +9,9 @@ import androidx.navigation.ui.NavigationUI
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activity_main) {
 
     override val viewModel: Nothing? = null
