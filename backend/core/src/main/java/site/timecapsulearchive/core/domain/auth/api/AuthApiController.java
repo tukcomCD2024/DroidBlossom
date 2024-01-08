@@ -29,7 +29,7 @@ public class AuthApiController implements AuthApi {
 
     @Override
     public ResponseEntity<TokenResponse> reIssueAccessToken(
-        @RequestBody TokenReIssueRequest request) {
+        @RequestBody final TokenReIssueRequest request) {
         return ResponseEntity.ok(tokenService.reIssueToken(request.refreshToken()));
     }
 

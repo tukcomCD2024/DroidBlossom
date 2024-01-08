@@ -27,14 +27,14 @@ public class TokenService {
      * @param memberId 액세스 토큰 클레임 값에 넣을 사용자 아이디
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
-    public TokenResponse createNewToken(Long memberId) {
+    public TokenResponse createNewToken(final Long memberId) {
         String key = String.valueOf(UUID.randomUUID());
         memberInfoCacheRepository.save(key, new MemberInfo(memberId));
 
         return createTokenResponse(memberId, key);
     }
 
-    private TokenResponse createTokenResponse(Long memberId, String key) {
+    private TokenResponse createTokenResponse(final Long memberId, final String key) {
         return TokenResponse.create(
             jwtFactory.createAccessToken(memberId),
             jwtFactory.createRefreshToken(key),
@@ -49,7 +49,7 @@ public class TokenService {
      * @param memberId 임시 인증 토큰 클레임 값에 사용할 사용자 아이디
      * @return 임시 인증 토큰 응답(임시 인증 토큰, 임시 인증 토큰 만료일)
      */
-    public TemporaryTokenResponse createTemporaryToken(Long memberId) {
+    public TemporaryTokenResponse createTemporaryToken(final Long memberId) {
         return TemporaryTokenResponse.create(
             jwtFactory.createTemporaryAccessToken(memberId),
             jwtFactory.getTemporaryTokenExpiresIn()
@@ -62,7 +62,8 @@ public class TokenService {
      * @param refreshToken 리프레시 토큰
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
-    public TokenResponse reIssueToken(String refreshToken) throws AlreadyReIssuedTokenException {
+    public TokenResponse reIssueToken(final String refreshToken)
+        throws AlreadyReIssuedTokenException {
         String oldKey = jwtFactory.getClaimValue(refreshToken, MEMBER_INFO_KEY);
         MemberInfo memberInfo = memberInfoCacheRepository.getMemberInfo(oldKey)
             .orElseThrow(AlreadyReIssuedTokenException::new);

@@ -18,10 +18,14 @@ public class MemberInfoCacheRepository {
 
     /**
      * 키와 {@code memberInfo}를 받아서 캐시에 저장
-     * @param key 캐시에 저장할 키, UUID string
+     *
+     * @param key        캐시에 저장할 키, UUID string
      * @param memberInfo 저장할 사용자 정보
      */
-    public void save(String key, MemberInfo memberInfo) {
+    public void save(
+        final String key,
+        final MemberInfo memberInfo
+    ) {
         redisTemplate.opsForValue().set(
             PREFIX + key,
             memberInfo,
@@ -32,19 +36,24 @@ public class MemberInfoCacheRepository {
 
     /**
      * 사용자 정보 조회
+     *
      * @param infoKey 캐시에 저장된 키, UUID string
      * @return {@code Optional<MemberInfo>} 사용자 정보
      */
-    public Optional<MemberInfo> getMemberInfo(String infoKey) {
+    public Optional<MemberInfo> getMemberInfo(final String infoKey) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + infoKey));
     }
 
     /**
      * 삭제 로직 대신 키의 이름을 변경, O(1) 소요
+     *
      * @param oldKey 이전 키
      * @param newKey 새로운 키
      */
-    public void rename(String oldKey, String newKey) {
+    public void rename(
+        final String oldKey,
+        final String newKey
+    ) {
         redisTemplate.rename(PREFIX + oldKey, PREFIX + newKey);
     }
 }
