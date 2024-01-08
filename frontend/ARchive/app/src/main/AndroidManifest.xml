@@ -17,6 +17,11 @@
         android:theme="@style/Theme.ARchive"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".presentation.ui.home.createcapsule.CreateCapsuleActivity"
+            android:exported="false" />
+
         <activity
             android:name=".presentation.ui.MainActivity"
             android:exported="true">
