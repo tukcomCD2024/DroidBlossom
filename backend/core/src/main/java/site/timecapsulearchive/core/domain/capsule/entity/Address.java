@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "ADDRESS")
 public class Address {
+public class Address extends BaseEntity {
 
     @Column(name = "province", nullable = false)
     private String province;
