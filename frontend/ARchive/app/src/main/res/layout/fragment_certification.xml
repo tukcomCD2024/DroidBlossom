@@ -36,12 +36,11 @@
                 android:id="@+id/remainTimeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.App.subtitle1"
+                android:textAppearance="@style/TextAppearance.App.body2"
                 android:textColor="@color/gray_600"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/viewHeaderTitle"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintVertical_bias="0.0252" />
+                android:layout_marginTop="12dp" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/certificationNumberEditText_1"
