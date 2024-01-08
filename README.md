@@ -11,7 +11,7 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 ## <u>AR</u>chive
 ### _추억의 조각들을 디지털 별빛으로 저장하는 AR 타임캡슐 앱 ARchive입니다._
 
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0111eb1d-49a0-4582-9f1d-c67270f88e48" width="600px" height="auto">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0111eb1d-49a0-4582-9f1d-c67270f88e48" width="600px" height="auto" alt="">
 
 ## 💊프로젝트 소개
 추억을 소중하게 여기는 분들을 위한 AR 타임캡슐 앱 **ARchive**를 소개합니다.
@@ -24,10 +24,14 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 ## 🎨 Figma
 ### ⛏️ 작업 중...
 
-
 ## 🛠 개발 시스템 구성도
-
 ![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/c3116c5f-cc50-461b-8b3a-24a0566ed7e4)
+
+## 시스템 디자인
+![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7570e1d-c258-4f4e-adab-5b45d3acc901)
+
+## ⚙️ 운용 환경
+![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0d43ae45-c953-46f0-aa44-1323713a1bb7)
 
 ## 시스템 디자인
 ![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7570e1d-c258-4f4e-adab-5b45d3acc901)
