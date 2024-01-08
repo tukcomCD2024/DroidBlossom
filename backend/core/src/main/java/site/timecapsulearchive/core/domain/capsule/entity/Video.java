@@ -24,13 +24,13 @@ public class Video {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "video_url", nullable = false)
     private String videoUrl;
 
-    @Column(nullable = false)
+    @Column(name = "size", nullable = false)
     private Integer size;
 
-    @Column(nullable = false)
+    @Column(name = "video_name", nullable = false)
     private String videoName;
 
     @ManyToOne(fetch = FetchType.LAZY)
