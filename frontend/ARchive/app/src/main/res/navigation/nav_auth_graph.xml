@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_auth_graph"
+    app:startDestination="@id/signInFragment">
+
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.droidblossom.archive.presentation.ui.auth.SignInFragment"
+        android:label="SignInFragment" >
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.droidblossom.archive.presentation.ui.auth.SignUpFragment"
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_certificationFragment"
+            app:destination="@id/certificationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/certificationFragment"
+        android:name="com.droidblossom.archive.presentation.ui.auth.CertificationFragment"
+        android:label="CertificationFragment" >
+        <action
+            android:id="@+id/action_certificationFragment_to_signUpSuccessFragment"
+            app:destination="@id/signUpSuccessFragment"
+            app:popUpTo="@id/nav_auth_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpSuccessFragment"
+        android:name="com.droidblossom.archive.presentation.ui.auth.SignUpSuccessFragment"
+        android:label="fragment_sign_up_success"
+        tools:layout="@layout/fragment_sign_up_success" />
+
+</navigation>
