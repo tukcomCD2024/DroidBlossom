@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule2ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule3ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -202,7 +204,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/recycleView"
                     android:layout_width="0dp"
-                    android:layout_height="240dp"
+                    android:layout_height="280dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

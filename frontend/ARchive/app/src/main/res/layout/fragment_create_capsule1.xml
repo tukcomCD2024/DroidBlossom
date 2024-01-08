@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule1ViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
