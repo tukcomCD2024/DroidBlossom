@@ -17,5 +17,3 @@ jobs:
         with:
           args: "--replace"
           skip-commit: true
-      - name: Print diffs
-        run: git --no-pager diff --exit-code
