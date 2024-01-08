@@ -1,159 +1,171 @@
-create table address (
-    address_id   bigint auto_increment primary key,
-    created_at   timestamp  null,
-    updated_at   timestamp  null,
-    village      varchar(255)  not null,
-    city         varchar(255) not null,
-    province     varchar(255) not null,
-    sub_distinct varchar(255) not null,
-    zip_code     varchar(255) null
+CREATE TABLE core.`group`
+(
+    created_at        timestamp NULL,
+    group_id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    updated_at        timestamp NULL,
+    group_name        VARCHAR(255) NOT NULL,
+    group_description VARCHAR(255) NOT NULL,
+    group_profile_url VARCHAR(255) NOT NULL
 );
 
-create table `group` (
-    created_at        timestamp  null,
-    group_id          bigint auto_increment primary key,
-    updated_at        timestamp  null,
-    group_name        varchar(255) not null,
-    group_description varchar(255) not null,
-    group_profile_url varchar(255) not null
+CREATE TABLE core.member
+(
+    is_verified          BIT          NOT NULL,
+    notification_enabled BIT          NOT NULL,
+    created_at           timestamp NULL,
+    member_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    updated_at           timestamp NULL,
+    phone                VARCHAR(255) NULL,
+    nickname             VARCHAR(255)  NOT NULL,
+    oauth2_provider      VARCHAR(255)  NOT NULL,
+    email                VARCHAR(255) NULL,
+    fcm_token            VARCHAR(255) NULL,
+    profile_url          VARCHAR(255) NOT NULL
 );
 
-create table member (
-    is_verified          bit          not null,
-    notification_enabled bit          not null,
-    created_at           timestamp  null,
-    member_id            bigint auto_increment primary key,
-    updated_at           timestamp  null,
-    phone                varchar(20)  null,
-    nickname             varchar(50)  not null,
-    oauth2provider       varchar(50)  not null,
-    email                varchar(255) null,
-    fcm_token            varchar(255) null,
-    profile_url          varchar(255) not null
+CREATE TABLE core.capsule_skin
+(
+    capsule_skin_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at      timestamp NULL,
+    member_id       BIGINT       NOT NULL,
+    size            BIGINT       NOT NULL,
+    updated_at      timestamp NULL,
+    skin_name       VARCHAR(255)  NOT NULL,
+    image_url       VARCHAR(255) NOT NULL,
+    motion_name     VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_capsule_skin_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
 );
 
-create table capsule_skin (
-    capsule_skin_id bigint auto_increment primary key,
-    created_at      timestamp  null,
-    member_id       bigint       not null,
-    size            bigint       not null,
-    updated_at      timestamp  null,
-    skin_name       varchar(50)  not null,
-    image_url       varchar(255) not null,
-    motion_name     varchar(255) not null,
-    constraint FK_capsule_skin_member foreign key (member_id) references member (member_id)
+CREATE TABLE core.capsule
+(
+    is_opened       BIT          NOT NULL,
+    latitude        FLOAT        NOT NULL,
+    longitude       FLOAT        NOT NULL,
+    capsule_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    capsule_skin_id BIGINT       NOT NULL,
+    created_at      timestamp NULL,
+    due_date        timestamp NULL,
+    group_id        BIGINT       NOT NULL,
+    member_id       BIGINT       NOT NULL,
+    updated_at      timestamp NULL,
+    village         VARCHAR(255)  NOT NULL,
+    city            VARCHAR(255) NOT NULL,
+    province        VARCHAR(255) NOT NULL,
+    sub_district    VARCHAR(255) NOT NULL,
+    content         VARCHAR(255) NOT NULL,
+    title           VARCHAR(255) NOT NULL,
+    type            VARCHAR(255) NOT NULL,
+    zip_code        VARCHAR(255) NULL,
+    CONSTRAINT fk_capsule_group_id
+        FOREIGN KEY (group_id) REFERENCES core.`group` (group_id),
+    CONSTRAINT fk_capsule_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id),
+    CONSTRAINT fk_capsule_capsule_skin_id
+        FOREIGN KEY (capsule_skin_id) REFERENCES core.capsule_skin (capsule_skin_id)
 );
 
-create table capsule (
-    is_opened       bit          not null,
-    latitude        float        not null,
-    longitude       float        not null,
-    address_id      bigint       not null,
-    capsule_id      bigint auto_increment primary key,
-    capsule_skin_id bigint       not null,
-    created_at      timestamp  null,
-    due_date        timestamp  null,
-    group_id        bigint       not null,
-    member_id       bigint       not null,
-    updated_at      timestamp  null,
-    content         varchar(255) not null,
-    title           varchar(255) not null,
-    type            varchar(255) not null,
-    constraint FK_capsule_group foreign key (group_id) references `group` (group_id),
-    constraint FK_capsule_member foreign key (member_id) references member (member_id),
-    constraint FK_capsule_capsule_skin foreign key (capsule_skin_id) references capsule_skin (capsule_skin_id),
-    constraint FK_capsule_address foreign key (address_id) references address (address_id)
+CREATE TABLE core.friend_invite
+(
+    created_at       timestamp NULL,
+    friend_invite_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id        BIGINT NOT NULL,
+    updated_at       timestamp NULL,
+    CONSTRAINT fk_friend_invite_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
 );
 
-create table friend_invite (
-    created_at       timestamp null,
-    friend_invite_id bigint auto_increment
-        primary key,
-    member_id        bigint      not null,
-    updated_at       timestamp null,
-    constraint FK_friend_invite_member foreign key (member_id) references member (member_id)
+CREATE TABLE core.group_capsule_open
+(
+    capsule_id            BIGINT NOT NULL,
+    created_at            timestamp NULL,
+    group_capsule_open_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id             BIGINT NOT NULL,
+    updated_at            timestamp NULL,
+    CONSTRAINT fk_group_capsule_open_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id),
+    CONSTRAINT fk_group_capsule_open_capsule_id
+        FOREIGN KEY (capsule_id) REFERENCES core.capsule (capsule_id)
 );
 
-create table group_capsule_open (
-    capsule_id            bigint      not null,
-    created_at            timestamp null,
-    group_capsule_open_id bigint auto_increment
-        primary key,
-    member_id             bigint      not null,
-    updated_at            timestamp null,
-    constraint FK_group_capsule_open_member foreign key (member_id) references member (member_id),
-    constraint FK_group_capsule_open_capsule foreign key (capsule_id) references capsule (capsule_id)
+CREATE TABLE core.group_invite
+(
+    created_at      timestamp NULL,
+    group_invite_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id       BIGINT NOT NULL,
+    updated_at      timestamp NULL,
+    CONSTRAINT fk_group_invite_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
 );
 
-create table group_invite (
-    created_at      timestamp null,
-    group_invite_id bigint auto_increment
-        primary key,
-    member_id       bigint      not null,
-    updated_at      timestamp null,
-    constraint FK_group_invite_member foreign key (member_id) references member (member_id)
+CREATE TABLE core.history
+(
+    created_at timestamp NULL,
+    history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id  BIGINT       NOT NULL,
+    updated_at timestamp NULL,
+    title      VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_history_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
 );
 
-create table history (
-    created_at timestamp  null,
-    history_id bigint auto_increment
-        primary key,
-    member_id  bigint       not null,
-    updated_at timestamp  null,
-    title      varchar(255) not null,
-    constraint FK_history_member foreign key (member_id) references member (member_id)
+CREATE TABLE core.image
+(
+    capsule_id BIGINT       NOT NULL,
+    created_at timestamp NULL,
+    image_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    size       BIGINT       NOT NULL,
+    updated_at timestamp NULL,
+    image_name VARCHAR(255) NOT NULL,
+    image_url  VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_image_capsule_id
+        FOREIGN KEY (capsule_id) REFERENCES core.capsule (capsule_id)
 );
 
-create table image (
-    capsule_id bigint       not null,
-    created_at timestamp  null,
-    image_id   bigint auto_increment
-        primary key,
-    size       bigint       not null,
-    updated_at timestamp  null,
-    image_name varchar(255) not null,
-    image_url  varchar(255) not null,
-    constraint FK_image_capsule foreign key (capsule_id) references capsule (capsule_id)
+CREATE TABLE core.history_image
+(
+    created_at       timestamp NULL,
+    history_id       BIGINT NOT NULL,
+    history_image_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    image_id         BIGINT NOT NULL,
+    updated_at       timestamp NULL,
+    CONSTRAINT fk_history_image_image_id
+        FOREIGN KEY (image_id) REFERENCES core.image (image_id),
+    CONSTRAINT fk_history_image_history_id
+        FOREIGN KEY (history_id) REFERENCES core.history (history_id)
 );
 
-create table history_image (
-    created_at       timestamp null,
-    history_id       bigint      not null,
-    history_image_id bigint auto_increment
-        primary key,
-    image_id         bigint      not null,
-    updated_at       timestamp null,
-    constraint FK_history_image_image foreign key (image_id) references image (image_id),
-    constraint FK_history_image_history foreign key (history_id) references history (history_id)
+CREATE TABLE core.member_friend
+(
+    created_at       timestamp NULL,
+    member_friend_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id        BIGINT NOT NULL,
+    updated_at       timestamp NULL,
+    CONSTRAINT fk_member_friend_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
 );
 
-create table member_friend (
-    created_at       timestamp null,
-    member_friend_id bigint auto_increment
-        primary key,
-    member_id        bigint      not null,
-    updated_at       timestamp null,
-    constraint FK_member_friend_member foreign key (member_id) references member (member_id)
+CREATE TABLE core.member_group
+(
+    is_owner        BIT    NOT NULL,
+    created_at      timestamp NULL,
+    group_id        BIGINT NOT NULL,
+    member_group_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id       BIGINT NOT NULL,
+    updated_at      timestamp NULL,
+    CONSTRAINT fk_member_group_group_id
+        FOREIGN KEY (group_id) REFERENCES core.`group` (group_id),
+    CONSTRAINT fk_member_group_member_id
+        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
 );
 
-create table member_group (
-    is_owner        bit         not null,
-    created_at      timestamp null,
-    group_id        bigint      not null,
-    member_group_id bigint auto_increment
-        primary key,
-    member_id       bigint      not null,
-    updated_at      timestamp null,
-    constraint FK_member_group_group foreign key (group_id) references `group` (group_id),
-    constraint FK_member_group_member foreign key (member_id) references member (member_id)
-);
-
-create table video (
-    size       int          not null,
-    capsule_id bigint       not null,
-    video_id   bigint auto_increment
-        primary key,
-    video_name varchar(255) not null,
-    video_url  varchar(255) not null,
-    constraint FK_video_capsule foreign key (capsule_id) references capsule (capsule_id)
+CREATE TABLE core.video
+(
+    size       INT          NOT NULL,
+    capsule_id BIGINT       NOT NULL,
+    video_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    video_name VARCHAR(255) NOT NULL,
+    video_url  VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_video_capsule_id
+        FOREIGN KEY (capsule_id) REFERENCES core.capsule (capsule_id)
 );
