@@ -25,13 +25,13 @@ public class Image extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column(name = "size", nullable = false)
     private Long size;
 
-    @Column(nullable = false)
+    @Column(name = "image_name", nullable = false)
     private String imageName;
 
     @ManyToOne(fetch = FetchType.LAZY)
