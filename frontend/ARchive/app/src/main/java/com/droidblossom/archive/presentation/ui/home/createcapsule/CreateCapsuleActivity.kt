@@ -3,17 +3,21 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCreateCapsuleBinding
+import com.droidblossom.archive.presentation.base.BaseActivity
 
-class CreateCapsuleActivity : AppCompatActivity() {
+class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityCreateCapsuleBinding>(R.layout.activity_create_capsule) {
 
-    lateinit var binding: ActivityCreateCapsuleBinding
+    override val viewModel: CreateCapsuleViewModelImpl?  by viewModels()
+
+    override fun observeData() {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCreateCapsuleBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_create_capsule)
+
 
     }
     companion object {
