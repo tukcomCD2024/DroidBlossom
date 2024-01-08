@@ -26,16 +26,16 @@ public class CapsuleSkin extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "skin_name", nullable = false)
     private String skinName;
 
-    @Column(nullable = false)
+    @Column(name = "size", nullable = false)
     private Long size;
 
-    @Column(nullable = false)
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column(name = "motion_name", nullable = false)
     private String motionName;
 
     @ManyToOne(fetch = FetchType.LAZY)
