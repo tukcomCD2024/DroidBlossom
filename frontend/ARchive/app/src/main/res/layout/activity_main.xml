@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_y="200dp">
+
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.ui.MainActivity"
+        android:background="@color/red">
+
+        <fragment
+            android:id="@+id/mainNavHost"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:navGraph="@navigation/nav_main_bottom_graph" />
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="bottom"
+            android:backgroundTint="#80FFFFFF"
+            app:contentInsetEnd="0dp"
+            app:contentInsetStart="0dp"
+            app:fabAlignmentMode="center"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="24dp"
+            app:fabCradleVerticalOffset="0dp">
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                style="@style/Widget.MyApp.BottomNavigationView.Material2"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/main_background"
+                app:itemBackground="@android:color/transparent"
+                app:itemPaddingBottom="12dp"
+                app:itemTextColor="@color/bottom_navigation_text_selector"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/menu_main" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            style="@style/Widget.MyApp.FloatingActionButton.Material2"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center|bottom"
+            android:backgroundTint="@android:color/transparent"
+            android:foreground="@drawable/ic_camera_64"
+            app:elevation="0dp"
+            app:layout_anchor="@+id/bottom_app_bar"
+            app:rippleColor="@android:color/transparent"
+            android:layout_marginBottom="36dp"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
