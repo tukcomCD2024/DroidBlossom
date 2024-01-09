@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.auth.AuthViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".CertificationFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/padding">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/viewHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/certificationFragmentTitle"
+                android:textAppearance="@style/TextAppearance.App.h2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.068" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/remainTimeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                android:text="05분 00"
+                android:textColor="@color/gray_600"
+                app:layout_constraintStart_toStartOf="@id/viewHeaderTitle"
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
+                android:layout_marginTop="12dp"
+                bind:displayRemainingTime="@{vm.remainTime}"/>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/certificationNumberEditText_1"
+                style="@style/TextAppearance.App.h3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="5dp"
+                android:nextFocusDown="@id/certificationNumberEditText_2"
+                android:background="@drawable/certification_edittext_background"
+                android:gravity="center"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:text="@={vm.certificationNumber1}"
+                android:textColor="@color/black"
+                app:layout_constraintWidth_max="100dp"
+                app:layout_constraintHeight_max="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/certificationNumberEditText_2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/remainTimeTextView"
+                app:layout_constraintVertical_bias="0.1433"
+                tools:text="1">
+
+                <requestFocus />
+            </com.google.android.material.textfield.TextInputEditText>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/certificationNumberEditText_2"
+                style="@style/TextAppearance.App.h3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="5dp"
+                app:layout_constraintWidth_max="100dp"
+                app:layout_constraintHeight_max="100dp"
+                android:nextFocusDown="@id/certificationNumberEditText_3"
+                android:background="@drawable/certification_edittext_background"
+                android:gravity="center"
+                android:inputType="phone"
+                android:text="@={vm.certificationNumber2}"
+                android:maxLength="1"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_1"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/certificationNumberEditText_3"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/certificationNumberEditText_1"
+                app:layout_constraintTop_toTopOf="@id/certificationNumberEditText_1"
+                tools:text="2" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/certificationNumberEditText_3"
+                style="@style/TextAppearance.App.h3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="5dp"
+                android:nextFocusDown="@id/certificationNumberEditText_4"
+                android:background="@drawable/certification_edittext_background"
+                android:gravity="center"
+                android:inputType="phone"
+                app:layout_constraintWidth_max="100dp"
+                app:layout_constraintHeight_max="100dp"
+                android:maxLength="1"
+                android:text="@={vm.certificationNumber3}"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_2"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/certificationNumberEditText_4"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/certificationNumberEditText_2"
+                app:layout_constraintTop_toTopOf="@id/certificationNumberEditText_2"
+                tools:text="3" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/certificationNumberEditText_4"
+                style="@style/TextAppearance.App.h3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="5dp"
+                android:imeOptions="actionDone"
+                android:background="@drawable/certification_edittext_background"
+                android:gravity="center"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:text="@={vm.certificationNumber4}"
+                app:layout_constraintWidth_max="100dp"
+                app:layout_constraintHeight_max="100dp"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_3"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/certificationNumberEditText_3"
+                app:layout_constraintTop_toTopOf="@id/certificationNumberEditText_3"
+                tools:text="4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/resendBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rectangle_solid_corner_20dp"
+                android:backgroundTint="@color/main_bg_1"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="10dp"
+                android:text="@string/reSend"
+                android:textAppearance="@style/TextAppearance.App.caption3"
+                android:textColor="@color/main_1"
+                app:layout_constraintBottom_toTopOf="@id/certificationNumberEditText_4"
+                app:layout_constraintEnd_toEndOf="@id/certificationNumberEditText_4"
+                app:layout_constraintTop_toBottomOf="@+id/remainTimeTextView"
+                app:layout_constraintVertical_bias="0.7826" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </FrameLayout>
+</layout>

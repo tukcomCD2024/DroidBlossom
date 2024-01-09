@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_create_capsule_graph"
+    app:startDestination="@id/createCapsule1Fragment">
+    <fragment
+        android:id="@+id/createCapsule1Fragment"
+        android:name="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule1Fragment"
+        android:label="CreateCapsule1Fragment"
+        tools:layout="@layout/fragment_create_capsule1">
+        <action
+            android:id="@+id/action_createCapsule1Fragment_to_createCapsule2Fragment"
+            app:destination="@id/createCapsule2Fragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_create_capsule2"
+        android:id="@+id/createCapsule2Fragment"
+        android:name="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule2Fragment"
+        android:label="CreateCapsule2Fragment">
+        <action
+            android:id="@+id/action_createCapsule2Fragment_to_createCapsule3Fragment"
+            app:destination="@id/createCapsule3Fragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_create_capsule3"
+        android:id="@+id/createCapsule3Fragment"
+        android:name="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule3Fragment"
+        android:label="CreateCapsule3Fragment" />
+</navigation>
