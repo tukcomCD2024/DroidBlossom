@@ -25,19 +25,13 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 ### ⛏️ 작업 중...
 
 ## 🛠 개발 시스템 구성도
-![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/c3116c5f-cc50-461b-8b3a-24a0566ed7e4)
+### ⛏️ 작업 중...
 
 ## 시스템 디자인
-![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7570e1d-c258-4f4e-adab-5b45d3acc901)
+### ⛏️ 작업 중...
 
 ## ⚙️ 운용 환경
-![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0d43ae45-c953-46f0-aa44-1323713a1bb7)
-
-## 시스템 디자인
-![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7570e1d-c258-4f4e-adab-5b45d3acc901)
-
-## ⚙️ 운용 환경
-![image](https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0d43ae45-c953-46f0-aa44-1323713a1bb7)
+### ⛏️ 작업 중...
 
 ## 🦾 기술 스택
 ### ⛏️ 작업 중...
