@@ -102,6 +102,10 @@ dependencies {
 
     //circleIndicator : https://github.com/ongakuer/CircleIndicator
     implementation 'me.relex:circleindicator:2.1.6'
+
+    // SMS Retriever API
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
 }
 kapt {
     correctErrorTypes true
