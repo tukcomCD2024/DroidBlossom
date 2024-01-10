@@ -8,8 +8,8 @@ import site.timecapsulearchive.core.domain.auth.entity.Role;
 
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private String email;
-    private Role role;
+    private final String email;
+    private final Role role;
 
     public CustomOAuth2User(
         Collection<? extends GrantedAuthority> authorities,
