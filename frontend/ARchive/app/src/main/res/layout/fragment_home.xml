@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.HomeViewModel" />
+
+        <variable
+            name="filter"
+            type="com.droidblossom.archive.presentation.ui.home.HomeViewModel.CapsuleFilter" />
 
 
     </data>
@@ -23,12 +31,13 @@
             android:layout_height="36dp"
             android:layout_marginStart="16dp"
             android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@color/white_alpha60"
+            android:backgroundTint="@{vm.filterCapsuleSelect==filter.SECRET ? @color/main_alpha85 : @color/white_alpha60}"
             android:gravity="center"
+            android:onClick="@{()->vm.selectSecret()}"
             android:paddingHorizontal="14dp"
             android:text="비밀"
-            android:textAppearance="@style/TextAppearance.App.caption2"
-            android:textColor="@color/gray_700"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.filterCapsuleSelect==filter.SECRET ? @color/white : @color/gray_700 }"
             app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/notificationBtn" />
@@ -39,28 +48,30 @@
             android:layout_height="36dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@color/white_alpha60"
+            android:backgroundTint="@{vm.filterCapsuleSelect==filter.GROUP ? @color/main_alpha85 : @color/white_alpha60}"
             android:gravity="center"
+            android:onClick="@{()->vm.selectGroup()}"
             android:paddingHorizontal="14dp"
             android:text="그룹"
-            android:textAppearance="@style/TextAppearance.App.caption2"
-            android:textColor="@color/gray_700"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.filterCapsuleSelect==filter.GROUP ? @color/white : @color/gray_700 }"
             app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
             app:layout_constraintStart_toEndOf="@id/secretBtn"
             app:layout_constraintTop_toTopOf="@id/notificationBtn" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/openBtn"
+            android:id="@+id/publicBtn"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@color/white_alpha60"
+            android:backgroundTint="@{vm.filterCapsuleSelect==filter.PUBLIC ? @color/main_alpha85 : @color/white_alpha60}"
             android:gravity="center"
+            android:onClick="@{()->vm.selectPublic()}"
             android:paddingHorizontal="14dp"
             android:text="공개"
-            android:textAppearance="@style/TextAppearance.App.caption2"
-            android:textColor="@color/gray_700"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.filterCapsuleSelect==filter.PUBLIC ? @color/white : @color/gray_700 }"
             app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
             app:layout_constraintStart_toEndOf="@id/groupBtn"
             app:layout_constraintTop_toTopOf="@id/notificationBtn" />
@@ -71,14 +82,15 @@
             android:layout_height="36dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@color/white_alpha60"
+            android:backgroundTint="@{vm.filterCapsuleSelect==filter.HOT ? @color/main_alpha85 : @color/white_alpha60}"
             android:gravity="center"
+            android:onClick="@{()->vm.selectHotPlace()}"
             android:paddingHorizontal="14dp"
             android:text="핫플레이스"
-            android:textAppearance="@style/TextAppearance.App.caption2"
-            android:textColor="@color/gray_700"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.filterCapsuleSelect==filter.HOT ? @color/white : @color/gray_700 }"
             app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
-            app:layout_constraintStart_toEndOf="@id/openBtn"
+            app:layout_constraintStart_toEndOf="@id/publicBtn"
             app:layout_constraintTop_toTopOf="@id/notificationBtn" />
 
 
@@ -93,7 +105,8 @@
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@color/white_alpha60"
             android:scaleType="center"
-            android:src="@drawable/ic_alarm_main_24"
+            android:onClick="@{()->vm.clickNotificationBtn()}"
+            android:src="@{vm.existsNotification ? @drawable/ic_alarm_on_main_24 : @drawable/ic_alarm_main_24}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,13 +115,14 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:backgroundTint="@color/white_alpha70"
+            android:visibility="@{vm.isClickedFAB ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="33dp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="@id/fab"
             app:layout_constraintEnd_toEndOf="@id/fab"
             app:layout_constraintStart_toStartOf="@id/fab"
             app:layout_constraintTop_toTopOf="@id/fab"
-            tools:visibility="invisible">
+            bind:animateFAB="@{vm.isClickedFAB ? -630 : 0}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -144,13 +158,14 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:backgroundTint="@color/white_alpha70"
+            android:visibility="@{vm.isClickedFAB ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="33dp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="@id/fab"
             app:layout_constraintEnd_toEndOf="@id/fab"
             app:layout_constraintStart_toStartOf="@id/fab"
             app:layout_constraintTop_toTopOf="@id/fab"
-            tools:visibility="gone">
+            bind:animateFAB="@{vm.isClickedFAB ? -420 : 0}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -186,13 +201,14 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:backgroundTint="@color/white_alpha70"
+            android:visibility="@{vm.isClickedFAB ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="33dp"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="@id/fab"
             app:layout_constraintEnd_toEndOf="@id/fab"
             app:layout_constraintStart_toStartOf="@id/fab"
             app:layout_constraintTop_toTopOf="@id/fab"
-            tools:visibility="gone">
+            bind:animateFAB="@{vm.isClickedFAB ? -210 : 0}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -230,10 +246,11 @@
             android:layout_height="66dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="22dp"
-            android:alpha="100"
-            android:foreground="@drawable/ic_plus_main_40"
+            android:background="@color/white"
+            android:backgroundTint="@{vm.isClickedFAB? @color/main_bg_alpha70 : @color/white_alpha70}"
+            android:foreground="@{vm.isClickedFAB ? @drawable/ic_close_main_40 : @drawable/ic_plus_main_40}"
             android:foregroundGravity="center"
-            app:backgroundTint="@color/white_alpha70"
+            android:onClick="@{()->vm.clickFAB()}"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@id/place"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -247,7 +264,8 @@
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@color/white_alpha70"
             android:scaleType="center"
-            android:src="@drawable/ic_location_off_24"
+            android:onClick="@{()->vm.clickFollowBtn()}"
+            android:src="@{vm.followLocation ? @drawable/ic_location_on_24 : @drawable/ic_location_off_24}"
             app:layout_constraintBottom_toTopOf="@id/place"
             app:layout_constraintStart_toStartOf="parent" />
 
