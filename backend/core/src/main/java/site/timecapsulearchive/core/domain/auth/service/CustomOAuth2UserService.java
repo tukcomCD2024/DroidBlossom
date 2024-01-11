@@ -5,7 +5,6 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -46,27 +45,27 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Member createMember = getMember(socialType, extractAttributes);
 
         return new CustomOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority(createMember.getRole().getKey())),
+            Collections.emptyList(),
             attributes,
             extractAttributes.getNameAttributeKey(),
-            createMember.getEmail(),
-            createMember.getRole());
+            createMember.getEmail()
+        );
     }
 
 
     private Member getMember(SocialType socialType, OAuthAttributes attributes) {
-        Member findMember = memberRepository.findBySocialTypeAndEmail(socialType,
-            attributes.getOauth2UserInfo().getEmail()).orElse(null);
-        if (findMember == null) {
-            return saveMember(socialType, attributes);
-        }
-
-        return findMember;
+        return memberRepository.findBySocialTypeAndEmail(
+                socialType,
+                attributes.getOauth2UserInfo().getEmail()
+            )
+            .orElseGet(() -> saveMember(socialType, attributes));
     }
 
     private Member saveMember(SocialType socialType, OAuthAttributes attributes) {
-        Member createMember = memberMapper.OAuthToEntity(socialType,
-            attributes.getOauth2UserInfo());
+        Member createMember = memberMapper.OAuthToEntity(
+            socialType,
+            attributes.getOauth2UserInfo()
+        );
         return memberRepository.save(createMember);
     }
 }
