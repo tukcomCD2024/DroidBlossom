@@ -36,7 +36,7 @@ public class JwtFactory {
      * @param memberId 사용자 아이디
      * @return 액세스 토큰
      */
-    public String createAccessToken(Long memberId) {
+    public String createAccessToken(final Long memberId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessTokenValidityMs);
 
@@ -53,7 +53,7 @@ public class JwtFactory {
      * @param memberProfileKey 사용자 식별자
      * @return 리프레시 토큰
      */
-    public String createRefreshToken(String memberProfileKey) {
+    public String createRefreshToken(final String memberProfileKey) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenValidityMs);
 
@@ -70,7 +70,7 @@ public class JwtFactory {
      * @param memberId 사용자 아이디
      * @return 리프레시 토큰
      */
-    public String createTemporaryAccessToken(Long memberId) {
+    public String createTemporaryAccessToken(final Long memberId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + temporaryValidityMs);
 

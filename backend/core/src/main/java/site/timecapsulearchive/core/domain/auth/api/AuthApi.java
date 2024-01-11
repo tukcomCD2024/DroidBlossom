@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 
@@ -80,7 +81,7 @@ public interface AuthApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    ResponseEntity<TokenResponse> reIssueAccessToken();
+    ResponseEntity<TokenResponse> reIssueAccessToken(TokenReIssueRequest request);
 
 
     @Operation(
