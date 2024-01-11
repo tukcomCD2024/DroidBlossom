@@ -1,11 +1,12 @@
 package com.droidblossom.archive.presentation.ui.splash
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import com.droidblossom.archive.R
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
+
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,4 +18,5 @@ class SplashActivity : AppCompatActivity() {
             finish()
         }, 1000)
     }
+
 }
