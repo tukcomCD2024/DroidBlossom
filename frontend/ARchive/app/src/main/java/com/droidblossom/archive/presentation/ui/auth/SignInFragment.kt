@@ -12,11 +12,13 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignInBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.MainActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -42,8 +44,7 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         navController = Navigation.findNavController(view)
         binding.kakaoLoginBtn.setOnClickListener {
-            //viewModel.signInToSignUp()
-            //kakaoLogin()
+            kakaoLogin()
         }
 
         binding.googleLoginBtn.setOnClickListener {
@@ -61,6 +62,18 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                             navController.navigate(R.id.action_signInFragment_to_signUpFragment)
                         }
                     }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.singInEvent.collect() { event ->
+                    if (event == AuthViewModel.SignInResult.SUCCESS){
+                        // 회원이 아닐 때의 로직이 추가되어야함
+                        //viewModel.signInToSignUp()
+                        MainActivity.goMain(requireContext())
+                    }
+                }
             }
         }
     }
@@ -81,9 +94,11 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                     else {
                         UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = mCallback) // 카카오 이메일 로그인
                     }
+                    viewModel.SignInSuccess()
                 }
                 // 로그인 성공 부분
                 else if (token != null) {
+                    viewModel.SignInSuccess()
                     Log.e("카카오", "로그인 성공 ${token.accessToken}")
                 }
             }
