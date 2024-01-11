@@ -51,7 +51,7 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         if (result.resultCode == -1) {
             val data = result.data
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            getGoogleInfo(task)
+            googleSignInSuccess(task)
         }
     }
 
@@ -96,11 +96,18 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.singInEvent.collect() { event ->
+                viewModel.signInEvent.collect() { event ->
                     if (event == AuthViewModel.SignInResult.SUCCESS){
-                        // 회원이 아닐 때의 로직이 추가되어야함
-                        //viewModel.signInToSignUp()
-                        MainActivity.goMain(requireContext())
+                        // 서버와 통신 할 때 변경할 것
+
+                        if (viewModel.signInSocial.value == AuthViewModel.Social.KAKAO){
+                            // 카카오일 때 회원가입 로직
+                            viewModel.signInToSignUp()
+                        }
+                        if (viewModel.signInSocial.value == AuthViewModel.Social.GOOGLE){
+                            // 구글일 때 메인
+                            MainActivity.goMain(requireContext())
+                        }
                     }
                 }
             }
@@ -121,11 +128,10 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                     else {
                         UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = mCallback) // 카카오 이메일 로그인
                     }
-                    viewModel.SignInSuccess()
                 }
                 // 로그인 성공 부분
                 else if (token != null) {
-                    viewModel.SignInSuccess()
+                    viewModel.SignInSuccess(AuthViewModel.Social.KAKAO)
                     Log.e("카카오1", "로그인 성공 ${token.accessToken}")
                 }
             }
@@ -138,14 +144,12 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         val signInIntent = googleSignInClient.signInIntent
         googleLoginLauncher.launch(signInIntent)
     }
-    private fun getGoogleInfo(completedTask: Task<GoogleSignInAccount>) {
+    private fun googleSignInSuccess(completedTask: Task<GoogleSignInAccount>) {
+        viewModel.SignInSuccess(AuthViewModel.Social.GOOGLE)
+        // 회원이 아닐 때의 로직이 추가되어야함
+
         try {
-            val TAG = "구글 로그인 결과"
             val account = completedTask.getResult(ApiException::class.java)
-            Log.d(TAG, account.id!!)
-            Log.d(TAG, account.familyName!!)
-            Log.d(TAG, account.givenName!!)
-            Log.d(TAG, account.email!!)
         }
         catch (e: ApiException) {
             Log.w("구글", "signInResult:failed code=" + e.statusCode)

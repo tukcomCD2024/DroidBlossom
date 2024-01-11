@@ -23,12 +23,14 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
     override val doneEvent: SharedFlow<AuthViewModel.AuthFlowEvent> = _doneEvent.asSharedFlow()
 
     // SignInFragment
-    private val _singInState = MutableStateFlow(AuthViewModel.SingInState.SIGNOUT)
-    override val singInState: StateFlow<AuthViewModel.SingInState> = _singInState
+    private val _signInState = MutableStateFlow(AuthViewModel.SignInState.SIGNOUT)
+    override val signInState: StateFlow<AuthViewModel.SignInState> = _signInState
 
-    private val _singInEvent = MutableSharedFlow<AuthViewModel.SignInResult>()
-    override val singInEvent: SharedFlow<AuthViewModel.SignInResult> get() = _singInEvent.asSharedFlow()
+    private val _signInEvent = MutableSharedFlow<AuthViewModel.SignInResult>()
+    override val signInEvent: SharedFlow<AuthViewModel.SignInResult> = _signInEvent.asSharedFlow()
 
+    private val _signInSocial = MutableStateFlow<AuthViewModel.Social?>(null)
+    override val signInSocial: StateFlow<AuthViewModel.Social?> = _signInSocial
 
     // SignUpFragment
     private val _phoneNumber = MutableStateFlow("")
@@ -93,17 +95,18 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
         }
     }
 
-    override fun SignInSuccess() {
-        _singInState.value = AuthViewModel.SingInState.SIGININ
+    override fun SignInSuccess(social : AuthViewModel.Social) {
+        _signInState.value = AuthViewModel.SignInState.SIGNNIN
+        _signInSocial.value = social
         viewModelScope.launch {
-            _singInEvent.emit(AuthViewModel.SignInResult.SUCCESS)
+            _signInEvent.emit(AuthViewModel.SignInResult.SUCCESS)
         }
     }
 
     override fun SignInFail() {
-        _singInState.value = AuthViewModel.SingInState.SIGNOUT
+        _signInState.value = AuthViewModel.SignInState.SIGNOUT
         viewModelScope.launch {
-            _singInEvent.emit(AuthViewModel.SignInResult.FAIL)
+            _signInEvent.emit(AuthViewModel.SignInResult.FAIL)
         }
     }
 }

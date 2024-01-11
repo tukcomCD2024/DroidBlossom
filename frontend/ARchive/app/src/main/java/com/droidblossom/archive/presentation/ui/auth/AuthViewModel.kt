@@ -8,8 +8,9 @@ interface AuthViewModel {
     val doneEvent: SharedFlow<AuthFlowEvent>
     val phoneNumber: MutableStateFlow<String>
 
-    val singInState : StateFlow<SingInState>
-    val singInEvent : SharedFlow<SignInResult>
+    val signInState : StateFlow<SignInState>
+    val signInEvent : SharedFlow<SignInResult>
+    val signInSocial : StateFlow<Social?>
 
     val rawPhoneNumber: StateFlow<String>
     val remainTime: StateFlow<Int>
@@ -26,7 +27,7 @@ interface AuthViewModel {
     fun signUpToCertification()
     fun certificationToSignUpSuccess()
 
-    fun SignInSuccess()
+    fun SignInSuccess(social : Social)
     fun SignInFail()
 
     enum class AuthFlowEvent {
@@ -35,13 +36,18 @@ interface AuthViewModel {
         CERTIFICATION_TO_SIGNUPSUCCESS,
     }
 
-    enum class SingInState {
-        SIGININ,
+    enum class SignInState {
+        SIGNNIN,
         SIGNOUT
     }
 
     enum class SignInResult{
         SUCCESS,
         FAIL
+    }
+
+    enum class Social{
+        GOOGLE,
+        KAKAO
     }
 }
