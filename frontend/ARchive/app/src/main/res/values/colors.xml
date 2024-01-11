@@ -21,4 +21,7 @@
     <color name="gray_800">#FF2E2E2E</color>
     <color name="gray_900">#FF1C1C1C</color>
 
+
+    <color name="white_alpha70">#B3FFFFFF</color>
+    <color name="white_alpha60">#99FFFFFF</color>
 </resources>

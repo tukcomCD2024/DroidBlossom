@@ -1,15 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.ui.home.HomeFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.HomeViewModel" />
+
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="지도, 홈페이지"
-        android:gravity="center"
-        android:textSize="25sp" />
+        android:background="@android:color/holo_green_dark"
+        tools:context=".presentation.ui.home.HomeFragment">
 
-</FrameLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/secretBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@color/white_alpha60"
+            android:gravity="center"
+            android:paddingHorizontal="14dp"
+            android:text="비밀"
+            android:textAppearance="@style/TextAppearance.App.caption2"
+            android:textColor="@color/gray_700"
+            app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/notificationBtn" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/groupBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@color/white_alpha60"
+            android:gravity="center"
+            android:paddingHorizontal="14dp"
+            android:text="그룹"
+            android:textAppearance="@style/TextAppearance.App.caption2"
+            android:textColor="@color/gray_700"
+            app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
+            app:layout_constraintStart_toEndOf="@id/secretBtn"
+            app:layout_constraintTop_toTopOf="@id/notificationBtn" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/openBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@color/white_alpha60"
+            android:gravity="center"
+            android:paddingHorizontal="14dp"
+            android:text="공개"
+            android:textAppearance="@style/TextAppearance.App.caption2"
+            android:textColor="@color/gray_700"
+            app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
+            app:layout_constraintStart_toEndOf="@id/groupBtn"
+            app:layout_constraintTop_toTopOf="@id/notificationBtn" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/hotPlaceBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@color/white_alpha60"
+            android:gravity="center"
+            android:paddingHorizontal="14dp"
+            android:text="핫플레이스"
+            android:textAppearance="@style/TextAppearance.App.caption2"
+            android:textColor="@color/gray_700"
+            app:layout_constraintBottom_toBottomOf="@id/notificationBtn"
+            app:layout_constraintStart_toEndOf="@id/openBtn"
+            app:layout_constraintTop_toTopOf="@id/notificationBtn" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/notificationBtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/corner_radius_22"
+            android:backgroundTint="@color/white_alpha60"
+            android:scaleType="center"
+            android:src="@drawable/ic_alarm_main_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/makeSecretCapsuleBtn"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:backgroundTint="@color/white_alpha70"
+            app:cardCornerRadius="33dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/fab"
+            app:layout_constraintEnd_toEndOf="@id/fab"
+            app:layout_constraintStart_toStartOf="@id/fab"
+            app:layout_constraintTop_toTopOf="@id/fab"
+            tools:visibility="invisible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/secretImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_secret_marker_28"
+                    app:layout_constraintBottom_toTopOf="@id/secretT"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/secretT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="비밀"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/secretImg" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/makeGroupCapsuleBtn"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:backgroundTint="@color/white_alpha70"
+            app:cardCornerRadius="33dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/fab"
+            app:layout_constraintEnd_toEndOf="@id/fab"
+            app:layout_constraintStart_toStartOf="@id/fab"
+            app:layout_constraintTop_toTopOf="@id/fab"
+            tools:visibility="gone">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/groupImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_group_marker_28"
+                    app:layout_constraintBottom_toTopOf="@id/groupT"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/groupT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="그룹"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/groupImg" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/makeOpenCapsuleBtn"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:backgroundTint="@color/white_alpha70"
+            app:cardCornerRadius="33dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/fab"
+            app:layout_constraintEnd_toEndOf="@id/fab"
+            app:layout_constraintStart_toStartOf="@id/fab"
+            app:layout_constraintTop_toTopOf="@id/fab"
+            tools:visibility="gone">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/publicImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_public_marker_28"
+                    app:layout_constraintBottom_toTopOf="@id/publicT"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/publicT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="공개"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/publicImg" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            style="@style/Widget.MyApp.FloatingActionButton.Material2"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="22dp"
+            android:alpha="100"
+            android:foreground="@drawable/ic_plus_main_40"
+            android:foregroundGravity="center"
+            app:backgroundTint="@color/white_alpha70"
+            app:elevation="0dp"
+            app:layout_constraintBottom_toTopOf="@id/place"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/corner_radius_22"
+            android:backgroundTint="@color/white_alpha70"
+            android:scaleType="center"
+            android:src="@drawable/ic_location_off_24"
+            app:layout_constraintBottom_toTopOf="@id/place"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/place"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
