@@ -3,8 +3,6 @@ package site.timecapsulearchive.core.domain.member.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +14,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.domain.auth.entity.Role;
 import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
@@ -56,10 +53,6 @@ public class Member extends BaseEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private Role role;
-
     @Column(name = "fcm_token")
     private String fcmToken;
 
@@ -81,12 +74,12 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    public Member(String profileUrl, SocialType socialType, String email) {
+    private Member(String profileUrl, SocialType socialType, String email) {
         this.profileUrl = profileUrl;
         this.nickname = "";
         this.socialType = socialType;
         this.email = email;
-        this.isVerified = true;
+        this.isVerified = false;
         this.notificationEnabled = false;
     }
 }
