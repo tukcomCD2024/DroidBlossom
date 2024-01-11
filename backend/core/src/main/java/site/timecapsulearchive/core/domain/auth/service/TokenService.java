@@ -29,7 +29,7 @@ public class TokenService {
      */
     public TokenResponse createNewToken(final Long memberId) {
         String key = String.valueOf(UUID.randomUUID());
-        memberInfoCacheRepository.save(key, new MemberInfo(memberId));
+        memberInfoCacheRepository.save(key, MemberInfo.from(memberId));
 
         return createTokenResponse(memberId, key);
     }
