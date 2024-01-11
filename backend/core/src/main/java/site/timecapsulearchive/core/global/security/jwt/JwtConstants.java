@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum JwtConstants {
     MEMBER_ID("memberId"),
-    AUTHORIZATION_HEADER("Authorization"),
     TOKEN_TYPE("Bearer "),
     MEMBER_INFO_KEY("memberInfoKey");
 

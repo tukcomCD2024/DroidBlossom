@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,7 +20,6 @@ import site.timecapsulearchive.core.global.error.exception.InvalidTokenException
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final int PREFIX_LENGTH = 7;
-    private static final String AUTHORIZATION_HEADER = JwtConstants.TOKEN_TYPE.getValue();
     private static final String TOKEN_TYPE = JwtConstants.TOKEN_TYPE.getValue();
 
     private final AuthenticationManager authenticationManager;
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String extractAccessToken(HttpServletRequest request) {
-        String token = request.getHeader(AUTHORIZATION_HEADER);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (isNotValidFormat(token)) {
             return "";
