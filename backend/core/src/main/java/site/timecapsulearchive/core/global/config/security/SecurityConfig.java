@@ -39,7 +39,7 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .headers(header -> header.frameOptions(FrameOptionsConfig::disable))
-            .securityMatcher("/api/**")
+            .securityMatcher("/**")
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
