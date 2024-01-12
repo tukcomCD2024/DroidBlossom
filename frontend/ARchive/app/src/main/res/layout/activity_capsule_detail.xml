@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/capsule_detail_background"
+        tools:context=".presentation.ui.capsule.CapsuleDetailActivity">
+
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/closeBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="12dp"
+                    android:text="닫기"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/capsuleTypeT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="그룹캡슐"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/titleT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:maxWidth="250dp"
+                    android:text="캡술 타이틀\n 2줄이라면~~~dddd~"
+                    android:textAppearance="@style/TextAppearance.App.h1"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="@id/capsuleTypeT"
+                    app:layout_constraintStart_toStartOf="@id/capsuleTypeT"
+                    app:layout_constraintTop_toBottomOf="@id/capsuleTypeT" />
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/main_bg_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/titleT" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImg"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/line"
+                    tools:src="@color/main_4" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/nameT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="user"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/profileImg"
+                    app:layout_constraintTop_toTopOf="@id/profileImg" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/locationT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="강남역 1번 출구"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/nameT"
+                    app:layout_constraintTop_toBottomOf="@id/nameT" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/skinImg"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="16dp"
+                    android:scaleType="center"
+                    android:src="@drawable/sample_skin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/locationT" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/postImgVP"
+                    android:layout_width="0dp"
+                    android:layout_height="280dp"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/skinImg" />
+
+                <me.relex.circleindicator.CircleIndicator
+                    android:id="@+id/indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@id/postImgVP"
+                    app:layout_constraintStart_toStartOf="@id/postImgVP"
+                    app:layout_constraintTop_toBottomOf="@id/postImgVP" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/contentT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/indicator"
+                    tools:text="국군의 조직과 편성은 법률로 정한다.대통령은 법률안의 일부에 대하여 또는법률안을 수정하여 재의를 요구할 수 없다. \n\n재의의 요구가 있을 때에는 국회는 재의에
+                        붙이고, 재적의원과반수의 출석과 출석의원3분의 2 이상의 찬성으로 전과 같은 의결을하면 그 법률안은 법률로서 확정된다. " />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/createDateSettingT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:text="생성 날짜"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/contentT" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/openDateSettingT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:text="오픈 날짜"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/createDateSettingT" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/createDateT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="xxxx.xx.xx"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/createDateSettingT"
+                    app:layout_constraintStart_toEndOf="@id/createDateSettingT"
+                    app:layout_constraintTop_toTopOf="@id/createDateSettingT" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/openDateT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="xxxx.xx.xx"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/openDateSettingT"
+                    app:layout_constraintStart_toEndOf="@id/openDateSettingT"
+                    app:layout_constraintTop_toTopOf="@id/openDateSettingT" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/groupNumberT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="그룹원"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/openDateSettingT" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/groupNumberRecycleView"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/groupNumberT"
+                    tools:listitem="@layout/item_group_number" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
