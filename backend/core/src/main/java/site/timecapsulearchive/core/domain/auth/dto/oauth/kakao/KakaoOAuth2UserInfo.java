@@ -1,6 +1,7 @@
-package site.timecapsulearchive.core.domain.auth.dto.oauth;
+package site.timecapsulearchive.core.domain.auth.dto.oauth.kakao;
 
 import java.util.Map;
+import site.timecapsulearchive.core.domain.auth.dto.oauth.OAuth2UserInfo;
 
 public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
