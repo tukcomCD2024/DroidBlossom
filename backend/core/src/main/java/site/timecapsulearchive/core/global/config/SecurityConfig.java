@@ -21,13 +21,13 @@ import site.timecapsulearchive.core.domain.auth.service.CustomOAuth2UserService;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOauth2UserService;
-
+//    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+//    private final OAuth2LoginFailureHandler auth2LoginFailureHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,9 +44,14 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .oauth2Login(oauth2login ->
-                oauth2login.userInfoEndpoint(
-                    userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                        customOauth2UserService)));
+                    oauth2login
+                        .userInfoEndpoint(
+                            userInfoEndpointConfig -> userInfoEndpointConfig.userService(
+                                customOauth2UserService)
+                        )
+//                    .successHandler(oAuth2LoginSuccessHandler)
+//                    .failureHandler(auth2LoginFailureHandler)
+            );
 
         return http.build();
     }
