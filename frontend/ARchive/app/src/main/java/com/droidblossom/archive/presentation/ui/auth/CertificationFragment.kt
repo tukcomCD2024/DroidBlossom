@@ -7,6 +7,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
+import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,19 +18,23 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCertificationBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.util.AuthOtpReceiver
+import com.google.android.gms.auth.api.phone.SmsRetriever
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CertificationFragment : BaseFragment<AuthViewModelImpl, FragmentCertificationBinding>(R.layout.fragment_certification) {
+class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<AuthViewModelImpl, FragmentCertificationBinding>(R.layout.fragment_certification) {
 
 
     lateinit var navController: NavController
     override val viewModel : AuthViewModelImpl by activityViewModels()
+    private var smsReceiver : AuthOtpReceiver? = null
 
     override fun onResume() {
         super.onResume()
+        startSmsRetriever()
         viewModel.initTimer()
         if (binding.certificationNumberEditText1.requestFocus()) {
             val imm =
@@ -103,6 +109,38 @@ class CertificationFragment : BaseFragment<AuthViewModelImpl, FragmentCertificat
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+    }
+
+    override fun onOtpReceived(otp: String) {
+        Toast.makeText(requireContext(), otp, Toast.LENGTH_SHORT).show()
+    }
+    private fun startSmsRetriever() {
+        SmsRetriever.getClient(requireContext()).startSmsRetriever().also { task ->
+            task.addOnSuccessListener {
+                if (smsReceiver == null) {
+                    smsReceiver = AuthOtpReceiver().apply {
+                        setOtpListener(this@CertificationFragment)
+                    }
+                }
+                requireContext().registerReceiver(smsReceiver, smsReceiver!!.doFilter())
+            }
+
+            task.addOnFailureListener {
+                stopSmsRetriever()
+            }
+        }
+    }
+
+    private fun stopSmsRetriever() {
+        if (smsReceiver != null) {
+            requireContext().unregisterReceiver(smsReceiver)
+            smsReceiver = null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopSmsRetriever()
     }
 
 }

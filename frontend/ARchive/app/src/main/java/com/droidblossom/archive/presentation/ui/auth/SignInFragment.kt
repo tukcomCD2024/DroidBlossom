@@ -102,11 +102,11 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
                         if (viewModel.signInSocial.value == AuthViewModel.Social.KAKAO){
                             // 카카오일 때 회원가입 로직
-                            viewModel.signInToSignUp()
+                            MainActivity.goMain(requireContext())
                         }
                         if (viewModel.signInSocial.value == AuthViewModel.Social.GOOGLE){
                             // 구글일 때 메인
-                            MainActivity.goMain(requireContext())
+                            viewModel.signInToSignUp()
                         }
                     }
                 }
