@@ -15,6 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activity_main) {
 
     override val viewModel: Nothing? = null
+    lateinit var viewBinding: ActivityMainBinding
+
 
     override fun observeData() {}
 
@@ -24,6 +26,8 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
         val navController = findNavController(R.id.mainNavHost)
         NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.mainNavHost))
+
+        viewBinding = binding
 
         binding.fab.setOnClickListener {
             navController.navigate(

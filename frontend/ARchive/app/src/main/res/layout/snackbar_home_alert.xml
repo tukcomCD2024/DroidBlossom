@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="328dp"
+        android:layout_height="44dp"
+        android:background="@drawable/corner_radius_22"
+        android:backgroundTint="@color/main_alpha70">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/toastTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginVertical="12dp"
+            android:text="내 주변에 곧 열리는 캡슐이 있어요!"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/openBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/corner_radius_16"
+            android:backgroundTint="@color/main_bg_1"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:text="캡슐 열기"
+            android:textAppearance="@style/TextAppearance.App.caption3"
+            android:textColor="@color/main_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

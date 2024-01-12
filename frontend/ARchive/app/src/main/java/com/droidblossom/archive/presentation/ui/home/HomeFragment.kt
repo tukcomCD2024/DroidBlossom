@@ -1,9 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,8 +9,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentHomeBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
+import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.NonCancellable.start
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -24,6 +23,16 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        binding.makeOpenCapsuleBtn.setOnClickListener {
+            //스낵바 스몰 테스트용
+            HomeSnackBarSmall(requireView()).show()
+        }
+
+        binding.makeGroupCapsuleBtn.setOnClickListener {
+            //스낵바 빅 테스트용
+            HomeSnackBarBig(requireView(),"","").show()
+        }
 
     }
     override fun observeData() {

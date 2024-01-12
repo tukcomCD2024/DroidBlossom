@@ -78,4 +78,22 @@ class HomeViewModelImpl @Inject constructor(
         viewModelScope.launch { _isClickedFAB.emit(!isClickedFAB.value) }
     }
 
+    override fun clickCreateGroupCapsule() {
+        viewModelScope.launch {
+
+        }
+    }
+
+    override fun clickCreateSecretCapsule() {
+        viewModelScope.launch {
+
+        }
+    }
+
+    override fun clickCreatePublicCapsule() {
+        viewModelScope.launch {
+
+        }
+    }
+
 }
