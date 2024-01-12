@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.security.jwt;
+package site.timecapsulearchive.core.domain.auth.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.global.common.response.ErrorCode;
@@ -17,9 +16,9 @@ import site.timecapsulearchive.core.global.common.response.ErrorResponse;
 
 @Slf4j
 @Component
-@Qualifier("jwtAuthenticationFailureHandler")
+@Qualifier("oauth2LoginFailureHandler")
 @RequiredArgsConstructor
-public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper;
 
@@ -29,11 +28,10 @@ public class JwtAuthenticationFailureHandler implements AuthenticationFailureHan
         HttpServletResponse response,
         AuthenticationException exception
     ) throws IOException {
-        log.info("jwt 토큰 인증 실패", exception);
-        SecurityContextHolder.clearContext();
+        log.info("oauth2 인증 실패", exception);
 
         ErrorResponse errorResponse = ErrorResponse.create(
-            ErrorCode.INVALID_TOKEN_EXCEPTION.getCode(),
+            ErrorCode.OAUTH2_NOT_AUTHENTICATED_EXCEPTION.getCode(),
             exception.getMessage()
         );
 

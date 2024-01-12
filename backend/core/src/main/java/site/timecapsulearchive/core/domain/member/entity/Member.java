@@ -8,10 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -40,13 +43,14 @@ public class Member extends BaseEntity {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "oauth2_provider", nullable = false)
-    private String oauth2Provider;
+    @Column(name = "social_type", nullable = false)
+    private SocialType socialType;
 
     @Column(name = "notification_enabled", nullable = false)
     private Boolean notificationEnabled;
 
-    @Column(name = "email")
+    @Email
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "fcm_token")
@@ -54,25 +58,28 @@ public class Member extends BaseEntity {
 
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Capsule> capsules;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupInvite> groupInvites;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGroup> groups;
-
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberFriend> friends;
-
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendInvite> friendsRequests;
-
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendInvite> notifications;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories;
+
+    @Builder
+    private Member(String profileUrl, SocialType socialType, String email) {
+        this.profileUrl = profileUrl;
+        this.nickname = "";
+        this.socialType = socialType;
+        this.email = email;
+        this.isVerified = false;
+        this.notificationEnabled = false;
+    }
 }
