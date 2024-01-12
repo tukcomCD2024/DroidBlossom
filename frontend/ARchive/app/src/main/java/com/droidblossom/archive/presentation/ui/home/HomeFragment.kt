@@ -24,12 +24,12 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
 
-        binding.makeOpenCapsuleBtn.setOnClickListener {
+        binding.snackbarTestBtn.setOnClickListener {
             //스낵바 스몰 테스트용
             HomeSnackBarSmall(requireView()).show()
         }
 
-        binding.makeGroupCapsuleBtn.setOnClickListener {
+        binding.snackbarBigText.setOnClickListener {
             //스낵바 빅 테스트용
             HomeSnackBarBig(requireView(),"","").show()
         }
