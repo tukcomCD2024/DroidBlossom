@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 
@@ -19,7 +20,7 @@ public interface AuthApi {
 
     @Operation(
         summary = "카카오 로그인 페이지",
-        description = "oauth2 kakao 인증 페이지 url을 가져온다. 로그인에 성공하면 임시 인증 토큰 토큰을 발급받는다.",
+        description = "oauth2 kakao 인증 페이지 url을 가져온다.",
         tags = {"auth"}
     )
     @ApiResponses(value = {
@@ -28,20 +29,41 @@ public interface AuthApi {
             description = "ok",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = TemporaryTokenResponse.class)
+                schema = @Schema(implementation = OAuthUrlResponse.class)
             )
         )
     })
     @GetMapping(
-        value = "/auth/login/kakao",
+        value = "/login/kakao",
         produces = {"application/json"}
     )
-    ResponseEntity<TemporaryTokenResponse> getOAuth2KakaoPage();
+    ResponseEntity<OAuthUrlResponse> getOAuth2KakaoUrl();
 
 
     @Operation(
         summary = "구글 로그인 페이지",
-        description = "oauth2 google 인증 페이지 url을 가져온다. 로그인에 성공하면 임시 인증 토큰 토큰을 발급받는다.",
+        description = "oauth2 google 인증 페이지 url을 가져온다.",
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = OAuthUrlResponse.class)
+            )
+        )
+    })
+    @GetMapping(
+        value = "/login/google",
+        produces = {"application/json"}
+    )
+    ResponseEntity<OAuthUrlResponse> getOAuth2GoogleUrl();
+
+    @Operation(
+        summary = "카카오 인증 성공시 임시 인증 토큰 발급",
+        description = "oauth2 kakao 인증 성공시 임시 인증 토큰을 발급한다. (oauth2 로그인 성공시 리다이렉트 엔드포인트로 문서화 목적) ",
         tags = {"auth"}
     )
     @ApiResponses(value = {
@@ -55,10 +77,32 @@ public interface AuthApi {
         )
     })
     @GetMapping(
-        value = "/auth/login/google",
+        value = "/login/oauth2/code/kakao",
         produces = {"application/json"}
     )
-    ResponseEntity<TemporaryTokenResponse> getOAuth2GooglePage();
+    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao();
+
+
+    @Operation(
+        summary = "구글 인증 성공시 임시 인증 토큰 발급",
+        description = "oauth2 google 인증 성공시 임시 인증 토큰을 발급한다. (oauth2 로그인 성공시 리다이렉트 엔드포인트로 문서화 목적) ",
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = TemporaryTokenResponse.class)
+            )
+        )
+    })
+    @GetMapping(
+        value = "/login/oauth2/code/google",
+        produces = {"application/json"}
+    )
+    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle();
 
 
     @Operation(
@@ -77,7 +121,7 @@ public interface AuthApi {
         )
     })
     @PostMapping(
-        value = "/auth/token/re-issue",
+        value = "/token/re-issue",
         produces = {"application/json"},
         consumes = {"application/json"}
     )
@@ -97,7 +141,7 @@ public interface AuthApi {
         )
     })
     @PostMapping(
-        value = "/auth/verification/send-message",
+        value = "/verification/send-message",
         consumes = {"application/json"}
     )
     ResponseEntity<Void> sendVerificationMessage();
@@ -116,7 +160,7 @@ public interface AuthApi {
         )
     })
     @PostMapping(
-        value = "/auth/verification/valid-message/",
+        value = "/verification/valid-message/",
         produces = {"application/json"},
         consumes = {"application/json"}
     )
