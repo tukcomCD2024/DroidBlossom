@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.global.common.response.ErrorCode;
 import site.timecapsulearchive.core.global.common.response.ErrorResponse;
 
+@Slf4j
 @Component
+@Qualifier("jwtAuthenticationFailureHandler")
 @RequiredArgsConstructor
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
@@ -25,6 +29,7 @@ public class JwtAuthenticationFailureHandler implements AuthenticationFailureHan
         HttpServletResponse response,
         AuthenticationException exception
     ) throws IOException {
+        log.info("jwt 토큰 인증 실패", exception);
         SecurityContextHolder.clearContext();
 
         ErrorResponse errorResponse = ErrorResponse.create(
