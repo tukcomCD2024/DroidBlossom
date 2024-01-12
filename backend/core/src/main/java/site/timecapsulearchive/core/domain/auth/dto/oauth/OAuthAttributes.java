@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.domain.auth.dto.oauth;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
+import site.timecapsulearchive.core.domain.auth.dto.oauth.google.GoogleOAuth2UserInfo;
+import site.timecapsulearchive.core.domain.auth.dto.oauth.kakao.KakaoOAuth2UserInfo;
 import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 
 @Getter
