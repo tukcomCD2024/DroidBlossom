@@ -1,32 +1,38 @@
 package site.timecapsulearchive.core.global.config.security;
 
-import lombok.AccessLevel;
+import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import site.timecapsulearchive.core.domain.auth.service.CustomOAuth2UserService;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 @Configuration
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService customOauth2UserService;
-//    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-//    private final OAuth2LoginFailureHandler auth2LoginFailureHandler;
+    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOauth2UserService;
+    private final AuthenticationSuccessHandler oAuth2LoginSuccessHandler;
 
-    private final AuthenticationFailureHandler authenticationFailureHandler;
+    @Qualifier("oauth2LoginFailureHandler")
+    private final AuthenticationFailureHandler oauth2LoginFailureHandler;
+
+    @Qualifier("jwtAuthenticationFailureHandler")
+    private final AuthenticationFailureHandler jwtAuthenticationFailureHandler;
     private final AuthenticationProvider jwtAuthenticationProvider;
 
     @Bean
@@ -35,41 +41,54 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain filterChainWithOAuth(HttpSecurity http) throws Exception {
+        http.apply(
+            CommonSecurityDsl.commonSecurityDsl()
+        );
+
+        http
+            .securityMatcher("/auth/login/**")
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll()
+            );
+
+        http.apply(
+            OAuthDsl.oauthDsl(
+                customOauth2UserService,
+                oAuth2LoginSuccessHandler,
+                oauth2LoginFailureHandler
+            )
+        );
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain filterChainWithJwt(
         HttpSecurity http,
         AuthenticationConfiguration authenticationConfiguration
     ) throws Exception {
+        http.apply(
+            CommonSecurityDsl.commonSecurityDsl()
+        );
+
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .headers(header -> header.frameOptions(FrameOptionsConfig::disable))
-            .securityMatcher("/**")
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+            .securityMatcher(regexMatcher("^\\/(?!auth\\/login).*"))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**")
                 .permitAll()
                 .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth2login ->
-                    oauth2login
-                        .userInfoEndpoint(
-                            userInfoEndpointConfig -> userInfoEndpointConfig.userService(
-                                customOauth2UserService)
-                        )
-//                    .successHandler(oAuth2LoginSuccessHandler)
-//                    .failureHandler(auth2LoginFailureHandler)
-
-            )
-            .apply(
-                JwtDsl.jwtDsl(
-                    authenticationConfiguration,
-                    jwtAuthenticationProvider,
-                    authenticationFailureHandler
-                )
             );
+
+        http.apply(
+            JwtDsl.jwtDsl(
+                authenticationConfiguration,
+                jwtAuthenticationProvider,
+                jwtAuthenticationFailureHandler
+            )
+        );
 
         return http.build();
     }
