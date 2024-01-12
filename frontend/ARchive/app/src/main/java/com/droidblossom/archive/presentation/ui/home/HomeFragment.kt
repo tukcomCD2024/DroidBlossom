@@ -11,6 +11,7 @@ import com.droidblossom.archive.databinding.FragmentHomeBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
+import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -24,6 +25,19 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
 
+        binding.makeGroupCapsuleBtn.setOnClickListener {
+            //그룹 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),true))
+        }
+        binding.makeOpenCapsuleBtn.setOnClickListener {
+            //공개 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),false))
+        }
+        binding.makeSecretCapsuleBtn.setOnClickListener {
+            //그룹 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),false))
+        }
+
         binding.snackbarTestBtn.setOnClickListener {
             //스낵바 스몰 테스트용
             HomeSnackBarSmall(requireView()).show()
@@ -31,14 +45,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
         binding.snackbarBigText.setOnClickListener {
             //스낵바 빅 테스트용
-            HomeSnackBarBig(requireView(),"","").show()
+            HomeSnackBarBig(requireView(), "", "").show()
         }
 
     }
+
     override fun observeData() {
         //FAB 상태
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.filterCapsuleSelect.collect(
 
                 )

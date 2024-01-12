@@ -27,27 +27,27 @@
 
         <TextView
             android:id="@+id/snackbarTestBtn"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/snackbarBigText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="snackbarsmallTest"
             android:textSize="32dp"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintBottom_toTopOf="@id/snackbarBigText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/snackbarBigText"
-            android:textSize="32dp"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintTop_toBottomOf="@id/snackbarTestBtn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="snackbarBigTest"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="snackbarBigTest"
+            android:textSize="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/snackbarTestBtn"
+            app:layout_constraintVertical_chainStyle="packed" />
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -140,7 +140,6 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:backgroundTint="@color/white_alpha70"
-            android:onClick="@{()->vm.clickCreateSecretCapsule()}"
             android:visibility="@{vm.isClickedFAB ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="33dp"
             app:cardElevation="0dp"
@@ -184,7 +183,6 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:backgroundTint="@color/white_alpha70"
-            android:onClick="@{()->vm.clickCreateGroupCapsule()}"
             android:visibility="@{vm.isClickedFAB ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="33dp"
             app:cardElevation="0dp"
@@ -228,7 +226,6 @@
             android:layout_width="66dp"
             android:layout_height="66dp"
             android:backgroundTint="@color/white_alpha70"
-            android:onClick="@{()->vm.clickCreatePublicCapsule()}"
             android:visibility="@{vm.isClickedFAB ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="33dp"
             app:cardElevation="0dp"

@@ -17,10 +17,6 @@ interface HomeViewModel {
     fun clickFollowBtn()
     fun clickNotificationBtn()
     fun clickFAB()
-    fun clickCreateGroupCapsule()
-    fun clickCreateSecretCapsule()
-    fun clickCreatePublicCapsule()
-
     enum class CapsuleFilter{
         ALL,
         SECRET,
