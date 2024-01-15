@@ -1,4 +1,4 @@
-package com.droidblossom.di
+package com.droidblossom.archive.util
 
 import android.content.Context
 import android.content.Intent
