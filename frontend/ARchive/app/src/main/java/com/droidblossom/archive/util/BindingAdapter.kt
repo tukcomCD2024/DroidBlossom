@@ -1,11 +1,13 @@
 package com.droidblossom.archive.util
 
+import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -36,4 +38,9 @@ fun TextView.displayRemainingTime(totalSeconds: Int) {
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
     this.text = String.format("%02d분 %02d초", minutes, seconds)
+}
+
+@BindingAdapter("bind:animateFAB")
+fun CardView.animateFAB(y : Float){
+    ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
 }

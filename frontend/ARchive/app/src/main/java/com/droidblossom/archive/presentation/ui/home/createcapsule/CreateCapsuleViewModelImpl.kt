@@ -5,5 +5,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateCapsuleViewModelImpl @Inject constructor() : BaseViewModel(), CreateCapsuleViewModel{
+class CreateCapsuleViewModelImpl @Inject constructor(
+
+) : BaseViewModel(), CreateCapsuleViewModel {
+    override var isGroupCapsuleCreate: Boolean = true
+
 }

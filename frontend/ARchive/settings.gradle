@@ -12,6 +12,9 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' } // 카카오 로그인
+        maven {
+            url 'https://naver.jfrog.io/artifactory/maven/'
+        }
     }
 }
 rootProject.name = "ARchive"
