@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,6 +16,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignInBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
+import com.droidblossom.di.SocialLoginUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -39,30 +41,13 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
     override val viewModel : AuthViewModelImpl by activityViewModels()
 
-    private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            Log.e("카카오", "로그인 실패 $error")
-        } else if (token != null) {
-            Log.e("카카오2", "로그인 성공 ${token.accessToken}")
-        }
-    }
+    private lateinit var socialLoginUtil: SocialLoginUtil
 
     private var googleLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == -1) {
-            val data = result.data
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            googleSignInSuccess(task)
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            socialLoginUtil.handleGoogleSignInResult(task)
         }
-    }
-
-    private val googleSignInClient: GoogleSignInClient by lazy {
-        GoogleSignIn.getClient(requireContext(), googleSignInOptions)
-    }
-
-    private val googleSignInOptions: GoogleSignInOptions by lazy {
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,14 +55,23 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         navController = Navigation.findNavController(view)
 
+        socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
+            override fun onLoginSuccess(social: AuthViewModel.Social) {
+                viewModel.SignInSuccess(social)
+            }
+
+            override fun onLoginFailure(error: Throwable) {
+                // 에러 처리 로직
+            }
+        })
+
         binding.kakaoLoginBtn.setOnClickListener {
-            //viewModel.signInToSignUp()
-            kakaoSignIn()
+            socialLoginUtil.kakaoSignIn()
         }
 
         binding.googleLoginBtn.setOnClickListener {
-            //viewModel.signInToSignUp()
-            googleSignIn()
+            val signInIntent = socialLoginUtil.googleSignIn()
+            googleLoginLauncher.launch(signInIntent)
         }
     }
 
@@ -111,48 +105,6 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                     }
                 }
             }
-        }
-    }
-
-    private fun kakaoSignIn(){
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
-            UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
-                // 로그인 실패 부분
-                if (error != null) {
-                    Log.e("카카오", "로그인 실패 $error")
-                    // 사용자가 취소
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled ) {
-                        return@loginWithKakaoTalk
-                    }
-                    // 다른 오류
-                    else {
-                        UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = mCallback) // 카카오 이메일 로그인
-                    }
-                }
-                // 로그인 성공 부분
-                else if (token != null) {
-                    viewModel.SignInSuccess(AuthViewModel.Social.KAKAO)
-                    Log.e("카카오1", "로그인 성공 ${token.accessToken}")
-                }
-            }
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(requireContext(), callback = mCallback) // 카카오 이메일 로그인
-        }
-    }
-
-    private fun googleSignIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        googleLoginLauncher.launch(signInIntent)
-    }
-    private fun googleSignInSuccess(completedTask: Task<GoogleSignInAccount>) {
-        viewModel.SignInSuccess(AuthViewModel.Social.GOOGLE)
-        // 회원이 아닐 때의 로직이 추가되어야함
-
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-        }
-        catch (e: ApiException) {
-            Log.w("구글", "signInResult:failed code=" + e.statusCode)
         }
     }
 
