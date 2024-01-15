@@ -22,7 +22,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders = [NAVER_CLIENT_ID: properties['naver_client_id']]
+        buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties['kakao_native_app_key']
+        buildConfigField "String", "GOOGLE_LOGIN_CLIENT_ID", properties['google_login_client_id']
+
+        manifestPlaceholders = [NAVER_CLIENT_ID: properties['naver_client_id'], KAKAO_NATIVE_APP_KEY: properties['kakao_native_app_key_no_quotes']]
+
     }
 
     buildTypes {
@@ -109,7 +113,17 @@ dependencies {
     //circleIndicator : https://github.com/ongakuer/CircleIndicator
     implementation 'me.relex:circleindicator:2.1.6'
 
+    // SMS Retriever API
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+
+    // KaKao Login
+    implementation "com.kakao.sdk:v2-user:2.12.1"
+
+    // Goole Login
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
     //네이버 지도 : https://navermaps.github.io/android-map-sdk/guide-ko/1.html
+
     implementation 'com.naver.maps:map-sdk:3.17.0'
 }
 kapt {
