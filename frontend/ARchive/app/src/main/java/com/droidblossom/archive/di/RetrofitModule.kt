@@ -1,5 +1,6 @@
 package com.droidblossom.archive.di
 
+import com.droidblossom.archive.BuildConfig
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -38,8 +39,6 @@ object RetrofitModule {
         }
     }
 
-    //TODO baseurl ignore 시켜야함
-    /*
     @Provides
     @Singleton
     fun providesRetrofit(
@@ -47,10 +46,9 @@ object RetrofitModule {
         gsonConverterFactory: GsonConverterFactory
     ) : Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(gsonConverterFactory)
             .client(client.build())
             .build()
     }
-    */
 }
