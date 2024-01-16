@@ -1,4 +1,4 @@
-package com.droidblossom.archive.data.model.sms_message
+package com.droidblossom.archive.data.model.auth
 
 data class SMSRequestData(
     val phoneNumber: String,
