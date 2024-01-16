@@ -1,4 +1,4 @@
-package com.droidblossom.di
+package com.droidblossom.archive.di
 
 import com.droidblossom.archive.data.repository.SMSMessageRepositoryImpl
 import com.droidblossom.archive.data.source.remote.api.SMSMessageService

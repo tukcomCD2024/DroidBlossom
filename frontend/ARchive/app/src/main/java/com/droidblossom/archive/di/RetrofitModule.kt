@@ -1,4 +1,4 @@
-package com.droidblossom.di
+package com.droidblossom.archive.di
 
 import com.google.gson.GsonBuilder
 import dagger.Module
