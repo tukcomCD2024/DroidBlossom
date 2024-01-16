@@ -12,8 +12,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.global.common.response.ErrorCode;
-import site.timecapsulearchive.core.global.common.response.ErrorResponse;
+import site.timecapsulearchive.core.global.error.ErrorCode;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 @Slf4j
 @Component

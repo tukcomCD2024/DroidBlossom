@@ -14,8 +14,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.dto.oauth.CustomOAuth2User;
 import site.timecapsulearchive.core.domain.auth.service.TokenService;
-import site.timecapsulearchive.core.global.common.response.ErrorCode;
-import site.timecapsulearchive.core.global.common.response.ErrorResponse;
+import site.timecapsulearchive.core.global.error.ErrorCode;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 @Slf4j
 @Component
@@ -25,13 +25,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
 
-    /**
-     * @param request        the request which caused the successful authentication
-     * @param response       the response
-     * @param authentication the <tt>Authentication</tt> object which was created during the
-     *                       authentication process.
-     * @throws IOException
-     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
