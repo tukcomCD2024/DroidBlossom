@@ -11,8 +11,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import site.timecapsulearchive.core.domain.auth.dto.request.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdateRequest;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
+import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 
 @Validated
 public interface MemberApi {
@@ -56,4 +58,26 @@ public interface MemberApi {
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<Void> updateMemberById(@ModelAttribute MemberDetailUpdateRequest request);
+
+    @Operation(
+        summary = "다른 OAuth2 프로바이더의 아이디로 앱 내의 유저의 인증 상태를 반환",
+        description = "Google, Kakao 프로바이더가 제공하는 유저 아이디로 앱 내의 인증 상태를 반환한다.",
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MemberStatusResponse.class)
+            )
+        )
+    })
+    @GetMapping(
+        value = "/status",
+        produces = {"application/json"}
+    )
+    ResponseEntity<MemberStatusResponse> checkStatus(
+        CheckStatusRequest request);
 }
