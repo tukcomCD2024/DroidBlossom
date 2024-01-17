@@ -69,8 +69,11 @@ public class SecurityConfig {
     }
 
     private RequestMatcher notRequireAuthenticationMatcher() {
-        return RequestMatchers.anyOf(antMatcher("/v3/api-docs/**"), antMatcher("/swagger-ui/**"),
-            antMatcher(HttpMethod.POST, "/auth/token/re-issue"));
+        return RequestMatchers.anyOf(
+            antMatcher("/v3/api-docs/**"),
+            antMatcher("/swagger-ui/**"),
+            antMatcher(HttpMethod.POST, "/auth/token/re-issue"),
+            antMatcher(HttpMethod.POST, "/me/status"));
     }
 
     @Bean
