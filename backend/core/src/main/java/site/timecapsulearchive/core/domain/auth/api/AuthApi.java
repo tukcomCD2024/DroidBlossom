@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
@@ -119,10 +119,10 @@ public interface AuthApi {
         )
     })
     @GetMapping(
-        value = "/sign-in",
+        value = "/sign-up",
         produces = {"application/json"}
     )
-    ResponseEntity<TemporaryTokenResponse> signInWithSocialProvider(SignInRequest request);
+    ResponseEntity<TemporaryTokenResponse> signUpWithSocialProvider(SignUpRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",

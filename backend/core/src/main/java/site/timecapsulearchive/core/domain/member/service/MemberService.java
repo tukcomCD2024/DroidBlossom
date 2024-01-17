@@ -18,7 +18,7 @@ public class MemberService {
     private final MemberQueryRepository memberQueryRepository;
 
     @Transactional
-    public Long createUser(Member member) {
+    public Long createMember(Member member) {
         Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();

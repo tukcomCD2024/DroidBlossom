@@ -5,10 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import site.timecapsulearchive.core.domain.auth.entity.SocialType;
-import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @Schema(description = "소셜 프로바이더의 인증 아이디로 로그인 요청")
-public record SignInRequest(
+public record SignUpRequest(
 
     @Schema(description = "소셜 프로바이더 인증 아이디")
     @NotBlank
@@ -28,12 +27,4 @@ public record SignInRequest(
     SocialType socialType
 ) {
 
-    public Member toEntity() {
-        return Member.builder()
-            .authId(authId)
-            .email(email)
-            .profileUrl(profileUrl)
-            .socialType(socialType)
-            .build();
-    }
 }
