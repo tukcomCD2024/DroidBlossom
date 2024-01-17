@@ -7,15 +7,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 
-@Validated
 public interface AuthApi {
 
     @Operation(
@@ -104,6 +103,26 @@ public interface AuthApi {
     )
     ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle();
 
+    @Operation(
+        summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 저장 후 토큰 반환",
+        description = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트의 정보를 저장하고 임시 인증 토큰(1시간)을 반환한다.",
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = TemporaryTokenResponse.class)
+            )
+        )
+    })
+    @GetMapping(
+        value = "/sign-up",
+        produces = {"application/json"}
+    )
+    ResponseEntity<TemporaryTokenResponse> signUpWithSocialProvider(SignUpRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",
