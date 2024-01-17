@@ -36,7 +36,6 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                     callback.onLoginFailure(error)
                 } else if (token != null) {
                     //Log.e("카카오", "로그인 성공 ${token.accessToken}")
-                    //callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
                     kakaoGetUserInfo()
                 }
             }
@@ -47,7 +46,6 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                     callback.onLoginFailure(error)
                 } else if (token != null) {
                     //Log.e("카카오", "로그인 성공 ${token.accessToken}")
-                    //callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
                     kakaoGetUserInfo()
                 }
             }
@@ -59,11 +57,10 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
             if (error != null) {
                 Log.e("카카오", "사용자 정보 요청 실패", error)
             } else if (user != null) {
-                Log.i("카카오", "사용자 정보 요청 성공" +
-                        "\n회원번호: ${user.id}" +
-                        "\n이메일: ${user.kakaoAccount?.email}" +
-                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
-                //callback.onLoginSuccess(user.id.toString(),AuthViewModel.Social.KAKAO)
+                val authId = user.id.toString()
+                val email = user.kakaoAccount?.email ?: ""
+                val profileUrl = user.kakaoAccount?.profile?.thumbnailImageUrl ?: ""
+                callback.onLoginSuccess(authId, email, profileUrl, AuthViewModel.Social.KAKAO)
             }
         }
     }
