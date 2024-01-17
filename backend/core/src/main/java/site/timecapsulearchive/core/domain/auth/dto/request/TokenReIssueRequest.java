@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 public record TokenReIssueRequest(
 
     @Schema(description = "리프레시 토큰")
-    @NotBlank
+    @NotBlank(message = "리프레시 토큰은 필수입니다.")
     String refreshToken
 ) {
 

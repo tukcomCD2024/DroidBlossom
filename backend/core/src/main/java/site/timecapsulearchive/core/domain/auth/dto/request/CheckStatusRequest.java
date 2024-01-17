@@ -9,11 +9,11 @@ import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 public record CheckStatusRequest(
 
     @Schema(description = "소셜 프로바이더 인증 아이디")
-    @NotBlank
+    @NotBlank(message = "인증 아이디는 필수 입니다.")
     String authId,
 
     @Schema(description = "소셜 프로바이더 타입")
-    @NotNull
+    @NotNull(message = "소셜 프로바이더 타입은 필수입니다.")
     SocialType socialType
 ) {
 

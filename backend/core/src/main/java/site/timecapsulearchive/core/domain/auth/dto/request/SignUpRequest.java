@@ -10,20 +10,20 @@ import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 public record SignUpRequest(
 
     @Schema(description = "소셜 프로바이더 인증 아이디")
-    @NotBlank
+    @NotBlank(message = "인증 아이디는 필수입니다.")
     String authId,
 
     @Schema(description = "사용자 이메일")
-    @NotBlank
+    @NotBlank(message = "사용자 이메일은 필수입니다.")
     @Email
     String email,
 
     @Schema(description = "사용자 프로필 url")
-    @NotBlank
+    @NotBlank(message = "사용자 프로필 url은 필수입니다.")
     String profileUrl,
 
     @Schema(description = "소셜 프로바이더 타입")
-    @NotNull
+    @NotNull(message = "소셜 프로바이더 타입은 필수입니다.")
     SocialType socialType
 ) {
 
