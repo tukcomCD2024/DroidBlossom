@@ -14,6 +14,7 @@ import site.timecapsulearchive.core.domain.auth.dto.request.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdateRequest;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface MemberApi {
 
@@ -65,17 +66,13 @@ public interface MemberApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = MemberStatusResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
         value = "/me/status",
         produces = {"application/json"}
     )
-    ResponseEntity<MemberStatusResponse> checkStatus(
+    ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(
         CheckStatusRequest request);
 }

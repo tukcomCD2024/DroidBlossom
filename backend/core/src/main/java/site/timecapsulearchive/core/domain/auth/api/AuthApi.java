@@ -14,6 +14,7 @@ import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface AuthApi {
 
@@ -111,18 +112,14 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = TemporaryTokenResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
         value = "/sign-up",
         produces = {"application/json"}
     )
-    ResponseEntity<TemporaryTokenResponse> signUpWithSocialProvider(SignUpRequest request);
+    ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(SignUpRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",
@@ -132,11 +129,7 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = TokenResponse.class)
-            )
+            description = "ok"
         )
     })
     @PostMapping(
@@ -144,7 +137,7 @@ public interface AuthApi {
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    ResponseEntity<TokenResponse> reIssueAccessToken(TokenReIssueRequest request);
+    ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(TokenReIssueRequest request);
 
 
     @Operation(
