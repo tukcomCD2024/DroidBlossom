@@ -31,8 +31,8 @@ public class SwaggerConfig {
 
     private Info getInfo() {
         return new Info().title("Archive API")
-                .description("AR을 이용해 추억을 저장하고 공유하는 서비스")
-                .version("v1");
+            .description("AR을 이용해 추억을 저장하고 공유하는 서비스")
+            .version("v1");
     }
 }
 

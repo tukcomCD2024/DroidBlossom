@@ -58,28 +58,39 @@ public class Member extends BaseEntity {
 
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
+
+    @Column(name = "auth_id", nullable = false)
+    private String authId;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Capsule> capsules;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupInvite> groupInvites;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGroup> groups;
+
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberFriend> friends;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendInvite> friendsRequests;
+
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendInvite> notifications;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, SocialType socialType, String email) {
+    private Member(String profileUrl, SocialType socialType, String email, String authId) {
         this.profileUrl = profileUrl;
         this.nickname = "";
         this.socialType = socialType;
         this.email = email;
         this.isVerified = false;
         this.notificationEnabled = false;
+        this.authId = authId;
     }
 }
