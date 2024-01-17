@@ -73,13 +73,14 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         try {
             val account = completedTask.getResult(ApiException::class.java)
             //Log.d("구글", "로그인 성공: ${account.idToken}")
-            Log.d("구글 id", "로그인 성공: ${account.id}")
-            Log.d("구글 email", "로그인 성공: ${account.email}")
-            Log.d("구글 프로필", "로그인 성공: ${account.photoUrl}")
-            //callback.onLoginSuccess(AuthViewModel.Social.GOOGLE)
+            val authId = account.id.toString()
+            val email = account.email ?: ""
+            val profileUrl = account.photoUrl.toString() ?: ""
+
+            callback.onLoginSuccess(authId, email, profileUrl,AuthViewModel.Social.GOOGLE)
         } catch (e: ApiException) {
             //Log.w("구글", "signInResult:failed code=" + e.statusCode)
-            //callback.onLoginFailure(e)
+            callback.onLoginFailure(e)
         }
     }
 }
