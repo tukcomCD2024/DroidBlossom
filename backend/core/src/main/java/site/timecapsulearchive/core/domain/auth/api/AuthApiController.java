@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,13 +44,13 @@ public class AuthApiController implements AuthApi {
 
     @Override
     public ResponseEntity<TokenResponse> reIssueAccessToken(
-        @RequestBody final TokenReIssueRequest request) {
+        @Valid @RequestBody final TokenReIssueRequest request) {
         return ResponseEntity.ok(tokenService.reIssueToken(request.refreshToken()));
     }
 
     @Override
     public ResponseEntity<TemporaryTokenResponse> signInWithSocialProvider(
-        @RequestBody final SignInRequest request) {
+        @Valid @RequestBody final SignInRequest request) {
         Long id = memberService.createUser(request.toEntity());
 
         return ResponseEntity.ok(tokenService.createTemporaryToken(id));

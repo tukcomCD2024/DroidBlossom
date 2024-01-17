@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,7 @@ public class MemberApiController implements MemberApi {
 
     @Override
     public ResponseEntity<MemberStatusResponse> checkStatus(
-        @RequestBody CheckStatusRequest request
+        @Valid @RequestBody CheckStatusRequest request
     ) {
         return ResponseEntity.ok(memberService.checkStatus(
             request.authId(),
