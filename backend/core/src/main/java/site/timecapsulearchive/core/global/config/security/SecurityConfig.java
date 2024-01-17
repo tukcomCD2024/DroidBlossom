@@ -32,7 +32,6 @@ public class SecurityConfig {
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOauth2UserService;
     private final AuthenticationSuccessHandler oAuth2LoginSuccessHandler;
 
-    @Qualifier("oauth2LoginFailureHandler")
     private final AuthenticationFailureHandler oauth2LoginFailureHandler;
     private final AuthenticationProvider jwtAuthenticationProvider;
     private final ObjectMapper objectMapper;

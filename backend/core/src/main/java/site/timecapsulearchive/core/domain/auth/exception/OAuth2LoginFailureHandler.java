@@ -16,7 +16,6 @@ import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 @Slf4j
 @Component
-@Qualifier("oauth2LoginFailureHandler")
 @RequiredArgsConstructor
 public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
