@@ -15,7 +15,7 @@ import com.kakao.sdk.user.UserApiClient
 class SocialLoginUtil(private val context: Context, private val callback: LoginCallback) {
 
     interface LoginCallback {
-        fun onLoginSuccess(social: AuthViewModel.Social)
+        fun onLoginSuccess(userId : String, social: AuthViewModel.Social)
         fun onLoginFailure(error: Throwable)
     }
 
@@ -34,7 +34,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                     callback.onLoginFailure(error)
                 } else if (token != null) {
                     //Log.e("카카오", "로그인 성공 ${token.accessToken}")
-                    callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
+                    //callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
                 }
             }
         } else {
@@ -44,7 +44,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                     callback.onLoginFailure(error)
                 } else if (token != null) {
                     //Log.e("카카오", "로그인 성공 ${token.accessToken}")
-                    callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
+                    //callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
                 }
             }
         }
@@ -58,10 +58,10 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         try {
             val account = completedTask.getResult(ApiException::class.java)
             //Log.d("구글", "로그인 성공: ${account.idToken}")
-            callback.onLoginSuccess(AuthViewModel.Social.GOOGLE)
+            //callback.onLoginSuccess(AuthViewModel.Social.GOOGLE)
         } catch (e: ApiException) {
             //Log.w("구글", "signInResult:failed code=" + e.statusCode)
-            callback.onLoginFailure(e)
+            //callback.onLoginFailure(e)
         }
     }
 }
