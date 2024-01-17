@@ -15,13 +15,15 @@ import com.kakao.sdk.user.UserApiClient
 class SocialLoginUtil(private val context: Context, private val callback: LoginCallback) {
 
     interface LoginCallback {
-        fun onLoginSuccess(userId : String, social: AuthViewModel.Social)
+        fun onLoginSuccess(authId : String, email : String, profileUrl : String,  social: AuthViewModel.Social)
         fun onLoginFailure(error: Throwable)
     }
 
     private val googleSignInClient: GoogleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
+            .requestId()
+            .requestProfile()
             .build()
         GoogleSignIn.getClient(context, gso)
     }
@@ -35,6 +37,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                 } else if (token != null) {
                     //Log.e("카카오", "로그인 성공 ${token.accessToken}")
                     //callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
+                    kakaoGetUserInfo()
                 }
             }
         } else {
@@ -45,7 +48,22 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                 } else if (token != null) {
                     //Log.e("카카오", "로그인 성공 ${token.accessToken}")
                     //callback.onLoginSuccess(AuthViewModel.Social.KAKAO)
+                    kakaoGetUserInfo()
                 }
+            }
+        }
+    }
+
+    private fun kakaoGetUserInfo() {
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e("카카오", "사용자 정보 요청 실패", error)
+            } else if (user != null) {
+                Log.i("카카오", "사용자 정보 요청 성공" +
+                        "\n회원번호: ${user.id}" +
+                        "\n이메일: ${user.kakaoAccount?.email}" +
+                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+                //callback.onLoginSuccess(user.id.toString(),AuthViewModel.Social.KAKAO)
             }
         }
     }
@@ -58,6 +76,9 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         try {
             val account = completedTask.getResult(ApiException::class.java)
             //Log.d("구글", "로그인 성공: ${account.idToken}")
+            Log.d("구글 id", "로그인 성공: ${account.id}")
+            Log.d("구글 email", "로그인 성공: ${account.email}")
+            Log.d("구글 프로필", "로그인 성공: ${account.photoUrl}")
             //callback.onLoginSuccess(AuthViewModel.Social.GOOGLE)
         } catch (e: ApiException) {
             //Log.w("구글", "signInResult:failed code=" + e.statusCode)

@@ -43,7 +43,7 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         navController = Navigation.findNavController(view)
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
-            override fun onLoginSuccess(userid : String, social: AuthViewModel.Social) {
+            override fun onLoginSuccess(authId : String, email : String, profileUrl : String,  social: AuthViewModel.Social) {
                 viewModel.SignInSuccess(social)
             }
 
