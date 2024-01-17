@@ -14,6 +14,8 @@ import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.service.TokenService;
 import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,17 +47,29 @@ public class AuthApiController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<TokenResponse> reIssueAccessToken(
-        @Valid @RequestBody final TokenReIssueRequest request) {
-        return ResponseEntity.ok(tokenService.reIssueToken(request.refreshToken()));
+    public ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(
+        @Valid @RequestBody final TokenReIssueRequest request
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.reIssueToken(request.refreshToken())
+            )
+        );
     }
 
     @Override
-    public ResponseEntity<TemporaryTokenResponse> signUpWithSocialProvider(
-        @RequestBody final SignUpRequest request) {
+    public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
+        @RequestBody final SignUpRequest request
+    ) {
         Long id = memberService.createMember(memberMapper.signUpRequestToEntity(request));
 
-        return ResponseEntity.ok(tokenService.createTemporaryToken(id));
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createTemporaryToken(id)
+            )
+        );
     }
 
     @Override

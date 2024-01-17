@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
 
 @Schema(description = "임시 인증 토큰")
-@Validated
 public record TemporaryTokenResponse(
 
     @Schema(description = "임시 액세스 토큰")

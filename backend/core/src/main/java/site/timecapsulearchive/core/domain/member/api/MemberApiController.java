@@ -11,6 +11,8 @@ import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdate
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,12 +32,17 @@ public class MemberApiController implements MemberApi {
     }
 
     @Override
-    public ResponseEntity<MemberStatusResponse> checkStatus(
+    public ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(
         @Valid @RequestBody CheckStatusRequest request
     ) {
-        return ResponseEntity.ok(memberService.checkStatus(
-            request.authId(),
-            request.socialType())
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.checkStatus(
+                    request.authId(),
+                    request.socialType()
+                )
+            )
         );
     }
 }
