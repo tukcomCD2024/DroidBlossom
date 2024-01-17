@@ -25,6 +25,7 @@ class CreateCapsule1Fragment :
 
         if (!viewModel.isGroupCapsuleCreate){
             navController.navigate(R.id.action_createCapsule1Fragment_to_createCapsule2Fragment)
+            navController.popBackStack()
         }
     }
     override fun observeData() {}
