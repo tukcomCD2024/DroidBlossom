@@ -1,8 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,11 +24,7 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = OAuthUrlResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
@@ -48,11 +42,7 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = OAuthUrlResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
@@ -69,11 +59,7 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = TemporaryTokenResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
@@ -91,11 +77,7 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = TemporaryTokenResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(

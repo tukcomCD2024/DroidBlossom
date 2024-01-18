@@ -1,11 +1,9 @@
 package site.timecapsulearchive.core.domain.member.dto.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "회원 업데이트 포맷")
-@Validated
 public record MemberDetailUpdateRequest(
 
     @Schema(description = "닉네임")

@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.api.public_c;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,7 +22,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.public_c.response.PublicC
 import site.timecapsulearchive.core.domain.capsule.dto.public_c.response.PublicCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.public_c.response.PublicCapsuleSummaryResponse;
 
-@Validated
 public interface PublicCapsuleApi {
 
     @Operation(
@@ -36,11 +33,7 @@ public interface PublicCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "202",
-            description = "처리 시작",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = PublicCapsuleSummaryResponse.class)
-            )
+            description = "처리 시작"
         )
     })
     @PostMapping(
@@ -60,11 +53,7 @@ public interface PublicCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = PublicCapsuleDetailResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
@@ -85,11 +74,7 @@ public interface PublicCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = PublicCapsulePageResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
@@ -113,11 +98,7 @@ public interface PublicCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = PublicCapsuleSummaryResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @PatchMapping(

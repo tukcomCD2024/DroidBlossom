@@ -1,8 +1,6 @@
 package site.timecapsulearchive.core.domain.member.api;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,11 +25,7 @@ public interface MemberApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = MemberDetailResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(
