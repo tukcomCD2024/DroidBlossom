@@ -9,6 +9,7 @@ public enum ErrorCode {
 
     //global
     INTERNAL_SERVER_ERROR(500, "G001", "서버에 오류가 발생하였습니다."),
+    INPUT_INVALID_VALUE(400, "G002", "잘못된 입력입니다."),
 
     //jwt
     INVALID_TOKEN_EXCEPTION(400, "J001", "jwt 토큰이 유효하지 않습니다."),
