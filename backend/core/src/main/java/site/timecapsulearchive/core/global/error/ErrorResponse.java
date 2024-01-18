@@ -3,8 +3,8 @@ package site.timecapsulearchive.core.global.error;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 @Schema(description = "에러 발생 시 응답")
 public record ErrorResponse(
@@ -43,11 +43,16 @@ public record ErrorResponse(
 
         public static List<Error> from(final BindingResult bindingResult) {
             return bindingResult.getFieldErrors().stream()
-                .map(error -> new Error(
-                    error.getField(),
-                    String.valueOf(error.getRejectedValue()),
-                    Objects.requireNonNullElse(error.getDefaultMessage(), "")
-                )).toList();
+                .map(Error::from)
+                .toList();
+        }
+
+        private static Error from(final FieldError fieldError) {
+            return new Error(
+                fieldError.getField(),
+                String.valueOf(fieldError.getRejectedValue()),
+                fieldError.getDefaultMessage()
+            );
         }
 
     }
