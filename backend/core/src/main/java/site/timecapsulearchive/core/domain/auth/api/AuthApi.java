@@ -115,7 +115,7 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    @GetMapping(
+    @PostMapping(
         value = "/sign-up",
         produces = {"application/json"}
     )
