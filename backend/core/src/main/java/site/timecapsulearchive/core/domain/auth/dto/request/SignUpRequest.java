@@ -14,16 +14,16 @@ public record SignUpRequest(
     String authId,
 
     @Schema(description = "사용자 이메일")
-    @NotBlank(message = "사용자 이메일은 필수입니다.")
+    @NotNull(message = "사용자 이메일은 필수입니다.")
     @Email
     String email,
 
     @Schema(description = "사용자 프로필 url")
-    @NotBlank(message = "사용자 프로필 url은 필수입니다.")
+    @NotNull(message = "사용자 프로필 url은 필수입니다.")
     String profileUrl,
 
     @Schema(description = "소셜 프로바이더 타입")
-    @NotNull(message = "소셜 프로바이더 타입은 필수입니다.")
+    @NotBlank(message = "소셜 프로바이더 타입은 필수입니다.")
     SocialType socialType
 ) {
 

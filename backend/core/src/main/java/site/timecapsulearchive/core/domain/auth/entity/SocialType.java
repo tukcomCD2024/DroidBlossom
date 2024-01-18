@@ -1,7 +1,14 @@
 package site.timecapsulearchive.core.domain.auth.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum SocialType {
     KAKAO, GOOGLE;
+
+    @JsonCreator
+    public static SocialType from(String s) {
+        return SocialType.valueOf(s.toUpperCase());
+    }
 
     public static SocialType getSocialType(String registrationId) {
         if (isKakaoLogin(registrationId)) {

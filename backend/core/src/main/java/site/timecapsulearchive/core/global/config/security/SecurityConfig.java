@@ -4,7 +4,6 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -73,7 +72,7 @@ public class SecurityConfig {
             antMatcher("/v3/api-docs/**"),
             antMatcher("/swagger-ui/**"),
             antMatcher(HttpMethod.POST, "/auth/token/re-issue"),
-            antMatcher(HttpMethod.POST, "/me/status"));
+            antMatcher(HttpMethod.GET, "/me/status"));
     }
 
     @Bean
