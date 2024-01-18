@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -30,8 +29,7 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
         log.info("oauth2 인증 실패", exception);
 
         ErrorResponse errorResponse = ErrorResponse.create(
-            ErrorCode.OAUTH2_NOT_AUTHENTICATED_EXCEPTION.getCode(),
-            exception.getMessage()
+            ErrorCode.OAUTH2_NOT_AUTHENTICATED_EXCEPTION
         );
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

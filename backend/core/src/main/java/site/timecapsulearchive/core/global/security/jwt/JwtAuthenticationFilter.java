@@ -99,8 +99,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.clearContext();
 
         ErrorResponse errorResponse = ErrorResponse.create(
-            ErrorCode.AUTHENTICATION_EXCEPTION.getCode(),
-            exception.getMessage()
+            ErrorCode.AUTHENTICATION_EXCEPTION
         );
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
