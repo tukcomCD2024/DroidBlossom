@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.auth.dto.request.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdateRequest;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
@@ -35,7 +36,7 @@ public interface MemberApi {
         )
     })
     @GetMapping(
-        value = "/me",
+        value = "/",
         produces = {"application/json"}
     )
     ResponseEntity<MemberDetailResponse> findMemberById();
@@ -53,7 +54,7 @@ public interface MemberApi {
         )
     })
     @PatchMapping(
-        value = "/me",
+        value = "/",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<Void> updateMemberById(@ModelAttribute MemberDetailUpdateRequest request);
@@ -69,8 +70,8 @@ public interface MemberApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        value = "/me/status",
+    @PostMapping(
+        value = "/status",
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(

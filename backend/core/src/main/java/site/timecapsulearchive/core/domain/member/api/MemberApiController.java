@@ -16,7 +16,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/me")
 public class MemberApiController implements MemberApi {
 
     private final MemberService memberService;
