@@ -70,7 +70,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun observeData() {
 
-        lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.CERTIFICATION_TO_SIGNUPSUCCESS }
                     .collect { event ->
@@ -81,7 +81,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.certificationNumber
                     .filter { it.length == 4 }

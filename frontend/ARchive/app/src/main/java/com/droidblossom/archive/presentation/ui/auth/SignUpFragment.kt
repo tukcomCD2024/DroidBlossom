@@ -51,7 +51,7 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
     }
 
     override fun observeData() {
-        lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.SIGNUP_TO_CERTIFICATION }
                     .collect { event ->
