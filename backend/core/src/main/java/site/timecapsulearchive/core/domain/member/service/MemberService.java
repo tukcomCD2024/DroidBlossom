@@ -35,6 +35,7 @@ public class MemberService {
         String authId,
         SocialType socialType
     ) {
+
         Boolean isVerified = memberQueryRepository.findIsVerifiedByAuthIdAndSocialType(
             authId,
             socialType
