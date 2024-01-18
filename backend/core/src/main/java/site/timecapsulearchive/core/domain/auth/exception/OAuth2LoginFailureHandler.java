@@ -29,7 +29,7 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
         log.info("oauth2 인증 실패", exception);
 
         ErrorResponse errorResponse = ErrorResponse.create(
-            ErrorCode.OAUTH2_NOT_AUTHENTICATED_EXCEPTION
+            ErrorCode.OAUTH2_NOT_AUTHENTICATED_ERROR
         );
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

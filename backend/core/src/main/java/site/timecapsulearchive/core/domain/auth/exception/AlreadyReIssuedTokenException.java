@@ -9,6 +9,6 @@ import site.timecapsulearchive.core.global.error.exception.BusinessException;
 public class AlreadyReIssuedTokenException extends BusinessException {
 
     public AlreadyReIssuedTokenException() {
-        super(ErrorCode.ALREADY_RE_ISSUED_TOKEN_EXCEPTION);
+        super(ErrorCode.ALREADY_RE_ISSUED_TOKEN_ERROR);
     }
 }

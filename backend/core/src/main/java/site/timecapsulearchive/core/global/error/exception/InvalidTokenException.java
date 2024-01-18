@@ -8,10 +8,10 @@ import site.timecapsulearchive.core.global.error.ErrorCode;
 public class InvalidTokenException extends BusinessException {
 
     public InvalidTokenException() {
-        super(ErrorCode.INVALID_TOKEN_EXCEPTION);
+        super(ErrorCode.INVALID_TOKEN_ERROR);
     }
 
     public InvalidTokenException(Throwable throwable) {
-        super(ErrorCode.INVALID_TOKEN_EXCEPTION, throwable);
+        super(ErrorCode.INVALID_TOKEN_ERROR, throwable);
     }
 }

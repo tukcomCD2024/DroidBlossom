@@ -1,10 +1,12 @@
 package site.timecapsulearchive.core.global.error;
 
-import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_VALUE;
+import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_TYPE_ERROR;
+import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_VALUE_ERROR;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,8 +37,17 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleRequestArgumentNotValidException(
         MethodArgumentNotValidException e) {
         log.warn(e.getMessage());
-        ErrorResponse response = ErrorResponse.create(INPUT_INVALID_VALUE, e.getBindingResult());
-        return ResponseEntity.status(INPUT_INVALID_VALUE.getStatus())
+        ErrorResponse response = ErrorResponse.create(INPUT_INVALID_VALUE_ERROR, e.getBindingResult());
+        return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
+            .body(response);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<ErrorResponse> handleRequestTypeNotValidException(
+        HttpMessageNotReadableException e) {
+        log.warn(e.getMessage());
+        ErrorResponse response = ErrorResponse.create(INPUT_INVALID_TYPE_ERROR);
+        return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
             .body(response);
     }
 }
