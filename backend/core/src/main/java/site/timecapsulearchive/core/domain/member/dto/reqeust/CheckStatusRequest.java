@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.auth.dto.request;
+package site.timecapsulearchive.core.domain.member.dto.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

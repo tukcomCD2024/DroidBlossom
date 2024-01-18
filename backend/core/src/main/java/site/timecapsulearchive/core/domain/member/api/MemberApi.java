@@ -10,8 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import site.timecapsulearchive.core.domain.auth.dto.request.CheckStatusRequest;
+import site.timecapsulearchive.core.domain.member.dto.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdateRequest;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
@@ -70,7 +69,7 @@ public interface MemberApi {
             description = "ok"
         )
     })
-    @PostMapping(
+    @GetMapping(
         value = "/status",
         produces = {"application/json"}
     )

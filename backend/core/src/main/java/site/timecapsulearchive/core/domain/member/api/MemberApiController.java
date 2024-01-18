@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.auth.dto.request.CheckStatusRequest;
+import site.timecapsulearchive.core.domain.member.dto.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdateRequest;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
