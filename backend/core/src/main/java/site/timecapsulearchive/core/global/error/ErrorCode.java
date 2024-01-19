@@ -19,8 +19,14 @@ public enum ErrorCode {
     //auth
     AUTHENTICATION_ERROR(401, "A001", "인증에 실패했습니다. 인증 수단이 유효한지 확인하세요."),
 
+    //message
+    TOO_MANY_REQUEST_ERROR(429, "M001", "너무 많은 인증 메시지를 요청했습니다. 24시간 후 요청해주세요."),
+
     //ouath
-    OAUTH2_NOT_AUTHENTICATED_ERROR(401, "O001", "OAuth2 인증에 실패하였습니다.");
+    OAUTH2_NOT_AUTHENTICATED_ERROR(401, "O001", "OAuth2 인증에 실패하였습니다."),
+
+    //외부 API
+    EXTERNAL_API_ERROR(500, "A001", "외부 api 호출에 실패했습니다. 잠시 후 요청해주세요.");
 
     private final int status;
     private final String code;

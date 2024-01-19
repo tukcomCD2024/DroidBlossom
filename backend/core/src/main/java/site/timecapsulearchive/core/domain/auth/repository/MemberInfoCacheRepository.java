@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.auth.service.MemberInfo;
+import site.timecapsulearchive.core.domain.auth.dto.MemberInfo;
 
 @Repository
 @RequiredArgsConstructor

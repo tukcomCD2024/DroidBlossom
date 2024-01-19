@@ -11,7 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import site.timecapsulearchive.core.domain.auth.service.MemberInfo;
+import site.timecapsulearchive.core.domain.auth.dto.MemberInfo;
 
 @Configuration
 @EnableTransactionManagement
