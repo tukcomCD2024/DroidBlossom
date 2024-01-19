@@ -4,6 +4,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.auth.dto.MemberInfo;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;

@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.auth.service;
+package site.timecapsulearchive.core.domain.auth.dto;
 
 public record MemberInfo(Long memberId) {
 
