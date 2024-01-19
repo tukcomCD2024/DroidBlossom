@@ -43,10 +43,10 @@ public class MessageVerificationService {
     }
 
     private String generateMessage(final String code, final String appHashKey) {
-        return "<*>[ARchive]"
-            + "[ARchive 인증번호: "
+        return "<#>[ARchive]"
+            + "본인확인 인증번호는 ["
             + code
-            + "]"
+            + "]입니다."
             + appHashKey;
     }
 
