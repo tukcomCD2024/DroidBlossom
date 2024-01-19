@@ -32,11 +32,11 @@ public class MessageVerificationService {
     ) {
         final String code = generateRandomCode();
 
-        messageAuthenticationCacheRepository.save(memberId, code);
-
         final String message = generateMessage(code, appHashKey);
 
         final SmsApiResponse apiResponse = smsApiService.sendMessage(receiver, message);
+
+        messageAuthenticationCacheRepository.save(memberId, code);
 
         return VerificationMessageSendResponse.success(apiResponse.resultCode(),
             apiResponse.message());
