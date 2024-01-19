@@ -2,10 +2,8 @@ package site.timecapsulearchive.core.domain.capsule.dto.public_c.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
-import org.springframework.validation.annotation.Validated;
 
 @Schema(description = "공개 캡슐 요약 정보")
-@Validated
 public record PublicCapsuleSummaryResponse(
 
     @Schema(description = "캡슐 아이디")

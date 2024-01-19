@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsuleskin.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,7 +22,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinS
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinsPageResponse;
 
-@Validated
 public interface CapsuleSkinApi {
 
     @Operation(
@@ -36,11 +33,7 @@ public interface CapsuleSkinApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "202",
-            description = "처리 시작",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = CapsuleSkinSummaryResponse.class)
-            )
+            description = "처리 시작"
         )
     })
     @PostMapping(
@@ -78,11 +71,7 @@ public interface CapsuleSkinApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = CapsuleSkinSearchPageResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(
@@ -109,11 +98,7 @@ public interface CapsuleSkinApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = CapsuleSkinsPageResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(

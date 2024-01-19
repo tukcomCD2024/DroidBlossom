@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,14 +10,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePageResponse;
 
-@Validated
 public interface CapsuleApi {
 
     @Operation(
@@ -30,11 +27,7 @@ public interface CapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = MyCapsulePageResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(
@@ -59,11 +52,7 @@ public interface CapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = ImagesPageResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(
@@ -88,11 +77,7 @@ public interface CapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = NearbyCapsulePageResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(

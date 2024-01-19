@@ -1,18 +1,14 @@
 package site.timecapsulearchive.core.domain.capsule.dto.group_c.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "그룹 캡슐 생성 포맷")
-@Validated
 public record GroupCapsuleCreateRequest(
 
     @Schema(description = "미디어들(이미지, 비디오)")
-    @Valid
     List<MultipartFile> media,
 
     @Schema(description = "캡슐 스킨 아이디")

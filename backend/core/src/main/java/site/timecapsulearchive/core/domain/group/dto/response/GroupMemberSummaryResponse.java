@@ -1,10 +1,8 @@
 package site.timecapsulearchive.core.domain.group.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
 
 @Schema(description = "그룹원 요약 정보")
-@Validated
 public record GroupMemberSummaryResponse(
 
     @Schema(description = "닉네임")

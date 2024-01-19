@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.api.group_c;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,7 +23,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.group_c.response.GroupCap
 import site.timecapsulearchive.core.domain.capsule.dto.group_c.response.GroupCapsuleSummaryResponse;
 
 
-@Validated
 public interface GroupCapsuleApi {
 
     @Operation(
@@ -37,11 +34,7 @@ public interface GroupCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "202",
-            description = "처리 시작",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupCapsuleSummaryResponse.class)
-            )
+            description = "처리 시작"
         )
     })
     @PostMapping(
@@ -64,11 +57,7 @@ public interface GroupCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupCapsuleDetailResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(
@@ -92,11 +81,7 @@ public interface GroupCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupCapsulePageResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @GetMapping(
@@ -123,11 +108,7 @@ public interface GroupCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupCapsuleSummaryResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @PatchMapping(

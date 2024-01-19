@@ -1,13 +1,10 @@
 package site.timecapsulearchive.core.domain.capsule.dto.secret_c.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
 
 @Schema(description = "비밀 캡슐 상세 정보")
-@Validated
 public record SecretCapsuleDetailResponse(
 
     @Schema(description = "캡슐 스킨 url")
@@ -32,7 +29,6 @@ public record SecretCapsuleDetailResponse(
     String content,
 
     @Schema(description = "미디어 url들")
-    @Valid
     List<String> mediaUrls,
 
     @Schema(description = "개봉 여부")
