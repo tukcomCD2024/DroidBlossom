@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
+import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface AuthApi {
@@ -138,7 +140,10 @@ public interface AuthApi {
         value = "/verification/send-message",
         consumes = {"application/json"}
     )
-    ResponseEntity<Void> sendVerificationMessage();
+    ResponseEntity<ApiSpec<VerificationMessageSendResponse>> sendVerificationMessage(
+        Long memberId,
+        VerificationMessageSendRequest request
+    );
 
 
     @Operation(

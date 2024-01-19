@@ -3,14 +3,18 @@ package site.timecapsulearchive.core.domain.auth.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
+import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
+import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
 import site.timecapsulearchive.core.domain.auth.service.TokenService;
 import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
@@ -23,6 +27,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class AuthApiController implements AuthApi {
 
     private final TokenService tokenService;
+    private final MessageVerificationService messageVerificationService;
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
@@ -73,8 +78,23 @@ public class AuthApiController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<Void> sendVerificationMessage() {
-        return null;
+    public ResponseEntity<ApiSpec<VerificationMessageSendResponse>> sendVerificationMessage(
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final VerificationMessageSendRequest request
+    ) {
+        final VerificationMessageSendResponse response = messageVerificationService.sendVerificationMessage(
+            memberId,
+            request.receiver(),
+            request.appHashKey()
+        );
+
+        return ResponseEntity.accepted()
+            .body(
+                ApiSpec.success(
+                    SuccessCode.ACCEPTED,
+                    response
+                )
+            );
     }
 
     @Override
