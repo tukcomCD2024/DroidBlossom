@@ -25,6 +25,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    //rest template
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3'
+
     //flyway
     implementation 'org.flywaydb:flyway-core:9.5.1'
     implementation 'org.flywaydb:flyway-mysql:9.5.1'
