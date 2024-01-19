@@ -23,6 +23,11 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class AligoRestTemplateConfig {
 
+    private static final int MAX_CONNECTION_TOTAL = 10;
+    private static final int MAX_CONNECTION_PER_ROUTE = 10;
+    private static final int CONNECTION_TIMEOUT = 5000;
+    private static final int CONNECTION_REQUEST_TIMEOUT = 5000;
+    private static final int KEEP_ALIVE_SECONDS = 30;
     private static final String ALIGO_API_URL = "https://apis.aligo.in";
 
     @Bean
@@ -53,8 +58,8 @@ public class AligoRestTemplateConfig {
 
     private ClientHttpRequestFactory clientHttpRequestFactory() {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectTimeout(5000);
-        factory.setConnectionRequestTimeout(5000);
+        factory.setConnectTimeout(CONNECTION_TIMEOUT);
+        factory.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT);
         factory.setHttpClient(httpClient());
 
         return factory;
@@ -63,15 +68,15 @@ public class AligoRestTemplateConfig {
     private HttpClient httpClient() {
         return HttpClientBuilder.create()
             .setConnectionManager(connectionManager())
-            .evictIdleConnections(TimeValue.ofMinutes(3))
+            .evictIdleConnections(TimeValue.ofSeconds(KEEP_ALIVE_SECONDS))
             .evictExpiredConnections()
             .build();
     }
 
     private HttpClientConnectionManager connectionManager() {
         return PoolingHttpClientConnectionManagerBuilder.create()
-            .setMaxConnTotal(100)
-            .setMaxConnPerRoute(10)
+            .setMaxConnTotal(MAX_CONNECTION_TOTAL)
+            .setMaxConnPerRoute(MAX_CONNECTION_PER_ROUTE)
             .build();
     }
 }

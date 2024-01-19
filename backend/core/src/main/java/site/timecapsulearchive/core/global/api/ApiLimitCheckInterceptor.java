@@ -13,7 +13,7 @@ import site.timecapsulearchive.core.domain.auth.exception.TooManyRequestExceptio
 public class ApiLimitCheckInterceptor implements HandlerInterceptor {
 
     private static final int MAX_API_CALL_LIMIT = 5;
-    private static final int FIRST_REQUEST = 0;
+    private static final int NO_USAGE = 0;
 
     private final ApiUsageCacheRepository apiUsageCacheRepository;
 
@@ -38,7 +38,7 @@ public class ApiLimitCheckInterceptor implements HandlerInterceptor {
             .getPrincipal();
 
         Integer apiUsageCount = apiUsageCacheRepository.getSmsApiUsage(memberId)
-            .orElse(FIRST_REQUEST);
+            .orElse(NO_USAGE);
 
         if (apiUsageCount > MAX_API_CALL_LIMIT) {
             throw new TooManyRequestException();
@@ -55,6 +55,6 @@ public class ApiLimitCheckInterceptor implements HandlerInterceptor {
     }
 
     private boolean isFirstRequest(Integer apiUsageCount) {
-        return apiUsageCount.equals(FIRST_REQUEST);
+        return apiUsageCount.equals(NO_USAGE);
     }
 }
