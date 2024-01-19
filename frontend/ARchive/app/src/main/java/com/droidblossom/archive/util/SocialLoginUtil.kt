@@ -3,6 +3,7 @@ package com.droidblossom.archive.util
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -15,7 +16,7 @@ import com.kakao.sdk.user.UserApiClient
 class SocialLoginUtil(private val context: Context, private val callback: LoginCallback) {
 
     interface LoginCallback {
-        fun onLoginSuccess(authId : String, email : String, profileUrl : String,  social: AuthViewModel.Social)
+        fun onLoginSuccess(signUpData : SignUp)
         fun onLoginFailure(error: Throwable)
     }
 
@@ -60,7 +61,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                 val authId = user.id.toString()
                 val email = user.kakaoAccount?.email ?: ""
                 val profileUrl = user.kakaoAccount?.profile?.thumbnailImageUrl ?: ""
-                callback.onLoginSuccess(authId, email, profileUrl, AuthViewModel.Social.KAKAO)
+                callback.onLoginSuccess(SignUp(authId, email, profileUrl, AuthViewModel.Social.KAKAO))
             }
         }
     }
@@ -76,8 +77,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
             val authId = account.id.toString()
             val email = account.email ?: ""
             val profileUrl = account.photoUrl.toString() ?: ""
-
-            callback.onLoginSuccess(authId, email, profileUrl,AuthViewModel.Social.GOOGLE)
+            callback.onLoginSuccess(SignUp(authId, email, profileUrl, AuthViewModel.Social.GOOGLE))
         } catch (e: ApiException) {
             //Log.w("구글", "signInResult:failed code=" + e.statusCode)
             callback.onLoginFailure(e)

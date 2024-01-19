@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignInBinding
+import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
@@ -44,8 +45,8 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         navController = Navigation.findNavController(view)
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
-            override fun onLoginSuccess(authId : String, email : String, profileUrl : String,  social: AuthViewModel.Social) {
-                viewModel.SignInSuccess(social)
+            override fun onLoginSuccess(signUpData : SignUp) {
+                viewModel.SignInSuccess(signUpData.socialType)
             }
 
             override fun onLoginFailure(error: Throwable) {
