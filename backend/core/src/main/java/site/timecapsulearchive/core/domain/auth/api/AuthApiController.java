@@ -11,7 +11,6 @@ import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.dto.response.MemberRandomNicknameResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
@@ -100,13 +99,14 @@ public class AuthApiController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<ApiSpec<MemberRandomNicknameResponse>> validVerificationMessage(
+    public ResponseEntity<ApiSpec<TokenResponse>> validVerificationMessage(
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationNumberValidRequest request
     ) {
-        MemberRandomNicknameResponse response = messageVerificationService.getRandomNickname(
+        TokenResponse response = messageVerificationService.getRandomNickname(
             memberId,
-            request.certificationNumber()
+            request.certificationNumber(),
+            request.receiver()
         );
 
         return ResponseEntity.ok(
