@@ -23,6 +23,14 @@ services:
       - backend
     volumes:
       - ./data:/var/lib/mysql
-    
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+
 networks:
   backend:
