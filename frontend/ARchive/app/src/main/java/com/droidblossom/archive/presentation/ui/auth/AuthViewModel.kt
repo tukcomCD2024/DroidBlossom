@@ -6,10 +6,40 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface AuthViewModel {
-    val doneEvent: SharedFlow<AuthFlowEvent>
-    val phoneNumber: MutableStateFlow<String>
 
+    // SignIn
     val signInEvents: SharedFlow<SignInEvent>
+
+    // SignUp
+    val signUpEvents: SharedFlow<SigUpnEvent>
+
+    // Certification
+    val certificationEvents: SharedFlow<CertificationEvent>
+
+    val phoneNumber: MutableStateFlow<String>
+    val rawPhoneNumber: StateFlow<String>
+
+    val remainTime: StateFlow<Int>
+
+    val certificationNumber: StateFlow<String>
+    val certificationNumber1: MutableStateFlow<String>
+    val certificationNumber2: MutableStateFlow<String>
+    val certificationNumber3: MutableStateFlow<String>
+    val certificationNumber4: MutableStateFlow<String>
+
+
+
+
+    // SignIn
+    fun signInEvent(event: SignInEvent)
+
+    // SignUp
+    fun initTimer()
+    fun startTimer()
+    fun signUpEvent(event: SigUpnEvent)
+
+    // Certification
+    fun certificationEvent(event: CertificationEvent)
 
     sealed class SignInEvent {
         data class SocialSignSuccess(val signUpData : SignUp) : SignInEvent()
@@ -18,59 +48,18 @@ interface AuthViewModel {
         object NavigateToMain : SignInEvent()
     }
 
-    fun signInEvent(event: SignInEvent)
-
-    val rawPhoneNumber: StateFlow<String>
-    val remainTime: StateFlow<Int>
-    val certificationNumber: StateFlow<String>
-
-    val certificationNumber1: MutableStateFlow<String>
-    val certificationNumber2: MutableStateFlow<String>
-    val certificationNumber3: MutableStateFlow<String>
-    val certificationNumber4: MutableStateFlow<String>
-
-
-    val certificationEvents: SharedFlow<CertificationEvent>
-
-    sealed class CertificationEvent {
-        // data class로 바꾸어야 함
-        object submitCertificationCode : CertificationEvent()
-        object reSend : CertificationEvent()
-        object NavigateToSignUpSuccess : CertificationEvent()
-    }
-
-    fun certificationEvent(event: CertificationEvent)
-
-
-    fun initTimer()
-    fun startTimer()
-    fun signInToSignUp()
-    fun signUpToCertification()
-    fun certificationToSignUpSuccess()
-
-    val signUpEvents: SharedFlow<SigUpnEvent>
     sealed class SigUpnEvent {
 
         // data class로 바꿔야함
         object SendPhoneNumber : SigUpnEvent()
         object NavigateToCertification : SigUpnEvent()
     }
-    fun signUpEvent(event: SigUpnEvent)
 
-    enum class AuthFlowEvent {
-        SIGNIN_TO_SIGNUP,
-        SIGNUP_TO_CERTIFICATION,
-        CERTIFICATION_TO_SIGNUPSUCCESS,
-    }
-
-    enum class SignInState {
-        SIGNNIN,
-        SIGNOUT
-    }
-
-    enum class SignInResult{
-        SUCCESS,
-        FAIL
+    sealed class CertificationEvent {
+        // data class로 바꿔야함
+        object SubmitCertificationCode : CertificationEvent()
+        object ReSend : CertificationEvent()
+        object NavigateToSignUpSuccess : CertificationEvent()
     }
 
     enum class Social{

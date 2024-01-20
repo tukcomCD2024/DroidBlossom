@@ -57,7 +57,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
         with(binding){
             resendBtn.setOnClickListener {
-                viewModel.certificationEvent(AuthViewModel.CertificationEvent.reSend)
+                viewModel.certificationEvent(AuthViewModel.CertificationEvent.ReSend)
             }
 
             setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
@@ -74,7 +74,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                     .filter { it.length == 4 }
                     .collect { certificationNum ->
                         // 길이가 4일 때의 처리 로직
-                        viewModel.certificationEvent(AuthViewModel.CertificationEvent.submitCertificationCode)
+                        viewModel.certificationEvent(AuthViewModel.CertificationEvent.SubmitCertificationCode)
                     }
             }
         }
@@ -84,12 +84,12 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 viewModel.certificationEvents.collect { event ->
                     when (event) {
 
-                        is AuthViewModel.CertificationEvent.reSend -> {
+                        is AuthViewModel.CertificationEvent.ReSend -> {
                             // 서버에게 재전송 요청
                             viewModel.initTimer()
                         }
 
-                        is AuthViewModel.CertificationEvent.submitCertificationCode -> {
+                        is AuthViewModel.CertificationEvent.SubmitCertificationCode -> {
                             // api 통신
                             viewModel.certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
                         }
