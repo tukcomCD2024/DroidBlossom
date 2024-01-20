@@ -93,7 +93,7 @@ public class MessageVerificationService {
         return findCertificationNumber == null;
     }
 
-    private static boolean isNotMatch(String certificationNumber, String findCertificationNumber) {
+    private boolean isNotMatch(String certificationNumber, String findCertificationNumber) {
         return !certificationNumber.equals(findCertificationNumber);
     }
 }
