@@ -85,6 +85,7 @@ public class MessageVerificationService {
         Member findMember = memberService.findMemberByMemberId(memberId);
         findMember.updateVerification();
         findMember.updatePhoneNumber(receiver);
+        findMember.updateNickName();
 
         return tokenService.createNewToken(memberId);
     }
