@@ -72,11 +72,8 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
-        String findCertificationNumber = messageAuthenticationCacheRepository.get(memberId);
-
-        if (isNull(findCertificationNumber)) {
-            throw new NotFoundCertificationNumberException();
-        }
+        String findCertificationNumber = messageAuthenticationCacheRepository.get(memberId)
+            .orElseThrow(NotFoundCertificationNumberException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
             throw new NotMatchCertificationNumberException();
@@ -88,10 +85,6 @@ public class MessageVerificationService {
         findMember.updateNickName();
 
         return tokenService.createNewToken(memberId);
-    }
-
-    private boolean isNull(String findCertificationNumber) {
-        return findCertificationNumber == null;
     }
 
     private boolean isNotMatch(String certificationNumber, String findCertificationNumber) {
