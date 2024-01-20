@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
+import site.timecapsulearchive.core.domain.auth.dto.response.MemberRandomNicknameResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
@@ -98,7 +100,20 @@ public class AuthApiController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<Void> validVerificationMessage() {
-        return null;
+    public ResponseEntity<ApiSpec<MemberRandomNicknameResponse>> validVerificationMessage(
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final VerificationNumberValidRequest request
+    ) {
+        MemberRandomNicknameResponse response = messageVerificationService.getRandomNickname(
+            memberId,
+            request.certificationNumber()
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                response
+            )
+        );
     }
 }
