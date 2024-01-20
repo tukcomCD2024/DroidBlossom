@@ -36,13 +36,13 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone")
+    @Column(name = "phone", unique = true)
     private String phone;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
 
-    @Column(name = "nickname", nullable = false)
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
     @Column(name = "social_type", nullable = false)
@@ -53,7 +53,7 @@ public class Member extends BaseEntity {
     private Boolean notificationEnabled;
 
     @Email
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "fcm_token")
@@ -62,7 +62,7 @@ public class Member extends BaseEntity {
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
 
-    @Column(name = "auth_id", nullable = false)
+    @Column(name = "auth_id", nullable = false, unique = true)
     private String authId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
