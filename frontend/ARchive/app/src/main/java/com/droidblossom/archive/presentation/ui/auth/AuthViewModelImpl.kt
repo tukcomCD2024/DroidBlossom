@@ -42,6 +42,15 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val rawPhoneNumber: StateFlow<String> = _rawPhoneNumber
 
+    private val _signUpEvents = MutableSharedFlow<AuthViewModel.SigUpnEvent>()
+    override val signUpEvents: SharedFlow<AuthViewModel.SigUpnEvent> = _signUpEvents.asSharedFlow()
+
+    override fun signUpEvent(event: AuthViewModel.SigUpnEvent) {
+        viewModelScope.launch {
+            _signUpEvents.emit(event)
+        }
+    }
+
     // CertificationFragment
     private val _remainTime = MutableStateFlow(300)
     override val remainTime: StateFlow<Int> = _remainTime

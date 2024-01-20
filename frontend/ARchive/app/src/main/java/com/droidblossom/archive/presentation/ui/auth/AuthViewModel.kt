@@ -35,6 +35,15 @@ interface AuthViewModel {
     fun signUpToCertification()
     fun certificationToSignUpSuccess()
 
+    val signUpEvents: SharedFlow<SigUpnEvent>
+    sealed class SigUpnEvent {
+
+        // data class로 바꿔야함
+        object SendPhoneNumber : SigUpnEvent()
+        object NavigateToCertification : SigUpnEvent()
+    }
+    fun signUpEvent(event: SigUpnEvent)
+
     enum class AuthFlowEvent {
         SIGNIN_TO_SIGNUP,
         SIGNUP_TO_CERTIFICATION,
