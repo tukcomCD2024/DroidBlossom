@@ -100,4 +100,9 @@ public class Member extends BaseEntity {
     public void updateVerification() {
         this.isVerified = true;
     }
+
+    public void updatePhoneNumber(String phone) {
+        this.phone = phone;
+    }
+
 }

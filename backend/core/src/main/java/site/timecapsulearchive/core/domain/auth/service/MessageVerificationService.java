@@ -14,6 +14,7 @@ import site.timecapsulearchive.core.infra.sms.SmsApiService;
 import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MessageVerificationService {
 
@@ -42,6 +43,8 @@ public class MessageVerificationService {
 
         final SmsApiResponse apiResponse = smsApiService.sendMessage(receiver, message);
 
+        Member findMember = memberService.findMemberByMemberId(memberId);
+        findMember.updatePhoneNumber(receiver);
         messageAuthenticationCacheRepository.save(memberId, code);
 
         return VerificationMessageSendResponse.success(apiResponse.resultCode(),
@@ -63,7 +66,6 @@ public class MessageVerificationService {
             + appHashKey;
     }
 
-    @Transactional
     public MemberRandomNicknameResponse getRandomNickname(
         final Long memberId,
         final Integer certificationNumber
