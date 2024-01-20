@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.domain.member.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,23 +36,24 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone")
+    @Column(name = "phone", unique = true)
     private String phone;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
 
-    @Column(name = "nickname", nullable = false)
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
     @Column(name = "social_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
     @Column(name = "notification_enabled", nullable = false)
     private Boolean notificationEnabled;
 
     @Email
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "fcm_token")
@@ -59,7 +62,7 @@ public class Member extends BaseEntity {
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
 
-    @Column(name = "auth_id", nullable = false)
+    @Column(name = "auth_id", nullable = false, unique = true)
     private String authId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -93,4 +96,13 @@ public class Member extends BaseEntity {
         this.notificationEnabled = false;
         this.authId = authId;
     }
+
+    public void updateVerification() {
+        this.isVerified = true;
+    }
+
+    public void updatePhoneNumber(String phone) {
+        this.phone = phone;
+    }
+
 }

@@ -21,12 +21,17 @@ public enum ErrorCode {
 
     //message
     TOO_MANY_REQUEST_ERROR(429, "M001", "너무 많은 인증 메시지를 요청했습니다. 24시간 후 요청해주세요."),
+    NOT_FOUND_CERTIFICATION_NUMBER_ERROR(404, "M002", "인증 번호를 찾지 못하였습니다."),
+    NOT_MATCH_CERTIFICATION_NUMBER_ERROR(400, "M003", "인증 번호가 일치하지 않습니다."),
 
     //ouath
     OAUTH2_NOT_AUTHENTICATED_ERROR(401, "O001", "OAuth2 인증에 실패하였습니다."),
 
     //외부 API
-    EXTERNAL_API_ERROR(500, "A001", "외부 api 호출에 실패했습니다. 잠시 후 요청해주세요.");
+    EXTERNAL_API_ERROR(500, "A001", "외부 api 호출에 실패했습니다. 잠시 후 요청해주세요."),
+
+    //member
+    NOT_FOUND_MEMBER_ERROR(404, "U002", "사용자 데이터를 찾지 못하였습니다.");
 
     private final int status;
     private final String code;

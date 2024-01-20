@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
 import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
@@ -148,7 +149,7 @@ public interface AuthApi {
 
     @Operation(
         summary = "문자 인증",
-        description = "전송 받은 문자 번호가 유효한지 인증한다.",
+        description = "전송 받은 문자 번호가 유효한지 인증 후 토큰을 발급한다.",
         security = {@SecurityRequirement(name = "temporary_user_token")},
         tags = {"auth"}
     )
@@ -159,10 +160,13 @@ public interface AuthApi {
         )
     })
     @PostMapping(
-        value = "/verification/valid-message/",
+        value = "/verification/valid-message",
         produces = {"application/json"},
         consumes = {"application/json"}
     )
-    ResponseEntity<Void> validVerificationMessage();
+    ResponseEntity<ApiSpec<TokenResponse>> validVerificationMessage(
+        Long memberId,
+        VerificationNumberValidRequest request
+    );
 }
 

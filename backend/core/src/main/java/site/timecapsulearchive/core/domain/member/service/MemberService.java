@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.exception.NotFoundMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 
@@ -46,5 +47,9 @@ public class MemberService {
         }
 
         return MemberStatusResponse.from(isVerified);
+    }
+
+    public Member findMemberByMemberId(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
     }
 }

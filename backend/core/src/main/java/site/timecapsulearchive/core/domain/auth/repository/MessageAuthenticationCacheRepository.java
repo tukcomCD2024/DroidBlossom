@@ -17,4 +17,8 @@ public class MessageAuthenticationCacheRepository {
     public void save(final Long memberId, final String code) {
         redisTemplate.opsForValue().set(PREFIX + memberId, code, MINUTE, TimeUnit.MINUTES);
     }
+
+    public String get(final Long memberId) {
+        return redisTemplate.opsForValue().get(PREFIX + memberId);
+    }
 }
