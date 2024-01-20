@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.domain.member.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,6 +46,7 @@ public class Member extends BaseEntity {
     private String nickname;
 
     @Column(name = "social_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
     @Column(name = "notification_enabled", nullable = false)
@@ -92,5 +95,9 @@ public class Member extends BaseEntity {
         this.isVerified = false;
         this.notificationEnabled = false;
         this.authId = authId;
+    }
+
+    public void updateVerification() {
+        this.isVerified = true;
     }
 }
