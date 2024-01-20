@@ -57,8 +57,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
         with(binding){
             resendBtn.setOnClickListener {
-                // 인증번호 재전송
-                viewModel.initTimer()
+                viewModel.certificationEvent(AuthViewModel.CertificationEvent.reSend)
             }
 
             setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
@@ -67,19 +66,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
             setupAutoFocusOnLength(certificationNumberEditText3, certificationNumberEditText4, null)
         }
     }
-
     override fun observeData() {
-
-        viewLifecycleOwner.lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.CERTIFICATION_TO_SIGNUPSUCCESS }
-                    .collect { event ->
-                        if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
-                            navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)
-                        }
-                    }
-            }
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -87,11 +74,37 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                     .filter { it.length == 4 }
                     .collect { certificationNum ->
                         // 길이가 4일 때의 처리 로직
-                        viewModel.certificationToSignUpSuccess()
+                        viewModel.certificationEvent(AuthViewModel.CertificationEvent.submitCertificationCode)
                     }
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.certificationEvents.collect { event ->
+                    when (event) {
+
+                        is AuthViewModel.CertificationEvent.reSend -> {
+                            // 서버에게 재전송 요청
+                            viewModel.initTimer()
+                        }
+
+                        is AuthViewModel.CertificationEvent.submitCertificationCode -> {
+                            // api 통신
+                            viewModel.certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
+                        }
+
+                        is AuthViewModel.CertificationEvent.NavigateToSignUpSuccess -> {
+                            if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
+                                navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
     }
 
     private fun setupAutoFocusOnLength(previousEditText: EditText?, currentEditText: EditText, nextEditText: EditText?) {

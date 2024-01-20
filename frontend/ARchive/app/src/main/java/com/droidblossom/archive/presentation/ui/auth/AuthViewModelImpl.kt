@@ -33,6 +33,7 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
         }
     }
 
+
     // SignUpFragment
     private val _phoneNumber = MutableStateFlow("")
     override val phoneNumber: MutableStateFlow<String> = _phoneNumber
@@ -52,6 +53,16 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
     }
 
     // CertificationFragment
+
+    private val _certificationEvents =  MutableSharedFlow<AuthViewModel.CertificationEvent>()
+    override val certificationEvents: SharedFlow<AuthViewModel.CertificationEvent> = _certificationEvents.asSharedFlow()
+
+    override fun certificationEvent(event: AuthViewModel.CertificationEvent) {
+        viewModelScope.launch {
+            _certificationEvents.emit(event)
+        }
+    }
+
     private val _remainTime = MutableStateFlow(300)
     override val remainTime: StateFlow<Int> = _remainTime
     private var isTimerStarted = false

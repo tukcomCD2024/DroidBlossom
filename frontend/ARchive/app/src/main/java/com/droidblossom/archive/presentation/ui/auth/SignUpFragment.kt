@@ -71,7 +71,7 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
                 }
             }
         }
-        
+
     }
 
 }

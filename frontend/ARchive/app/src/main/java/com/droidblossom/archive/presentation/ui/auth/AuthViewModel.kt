@@ -29,6 +29,19 @@ interface AuthViewModel {
     val certificationNumber3: MutableStateFlow<String>
     val certificationNumber4: MutableStateFlow<String>
 
+
+    val certificationEvents: SharedFlow<CertificationEvent>
+
+    sealed class CertificationEvent {
+        // data class로 바꾸어야 함
+        object submitCertificationCode : CertificationEvent()
+        object reSend : CertificationEvent()
+        object NavigateToSignUpSuccess : CertificationEvent()
+    }
+
+    fun certificationEvent(event: CertificationEvent)
+
+
     fun initTimer()
     fun startTimer()
     fun signInToSignUp()
