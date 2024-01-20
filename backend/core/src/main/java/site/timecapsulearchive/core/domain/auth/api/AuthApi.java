@@ -1,6 +1,8 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,6 +18,7 @@ import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenRespo
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface AuthApi {
 
@@ -115,6 +118,18 @@ public interface AuthApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+            요청이 잘못되어 발생하는 오류이다.
+            <ul>
+            <li>올바르지 않은 요청인 경우 예외가 발생한다.</li>
+            <li>유효하지 않은 리프레시 토큰인 경우 오류가 발생한다.</li>
+            <li>이미 재발급에 사용된 리프레시 토큰인 경우 오류가 발생한다.</li>
+            </ul>
+            """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping(
@@ -134,12 +149,30 @@ public interface AuthApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "202",
-            description = "처리 시작"
+            description = "문자 전송 처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "인증 수단이 올바르지 않으면 오류가 발생한다."
+        ),
+        @ApiResponse(
+            responseCode = "429",
+            description = "24시간 이내 5회 초과 요청시 API 요청 제한 오류가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = """
+                외부 문자 발송 API 오류 시 발생한다. 오류 응답은 링크 참조 \n
+                <a href="https://smartsms.aligo.in/admin/api/spec.html">알리고 api</href>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping(
         value = "/verification/send-message",
-        consumes = {"application/json"}
+        consumes = {"application/json"},
+        produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<VerificationMessageSendResponse>> sendVerificationMessage(
         Long memberId,

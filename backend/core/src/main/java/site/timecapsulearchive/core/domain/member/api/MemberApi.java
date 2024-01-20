@@ -65,6 +65,7 @@ public interface MemberApi {
     })
     @GetMapping(
         value = "/status",
+        consumes = {"application/json"},
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(
