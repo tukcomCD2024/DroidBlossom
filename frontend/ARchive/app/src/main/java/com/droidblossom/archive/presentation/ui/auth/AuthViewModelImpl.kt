@@ -23,14 +23,15 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
     override val doneEvent: SharedFlow<AuthViewModel.AuthFlowEvent> = _doneEvent.asSharedFlow()
 
     // SignInFragment
-    private val _signInState = MutableStateFlow(AuthViewModel.SignInState.SIGNOUT)
-    override val signInState: StateFlow<AuthViewModel.SignInState> = _signInState
 
-    private val _signInEvent = MutableSharedFlow<AuthViewModel.SignInResult>()
-    override val signInEvent: SharedFlow<AuthViewModel.SignInResult> = _signInEvent.asSharedFlow()
+    private val _signInEvents = MutableSharedFlow<AuthViewModel.SignInEvent>()
+    override val signInEvents: SharedFlow<AuthViewModel.SignInEvent> = _signInEvents.asSharedFlow()
 
-    private val _signInSocial = MutableStateFlow<AuthViewModel.Social?>(null)
-    override val signInSocial: StateFlow<AuthViewModel.Social?> = _signInSocial
+    override fun signInEvent(event: AuthViewModel.SignInEvent) {
+        viewModelScope.launch {
+            _signInEvents.emit(event)
+        }
+    }
 
     // SignUpFragment
     private val _phoneNumber = MutableStateFlow("")
@@ -95,18 +96,4 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
         }
     }
 
-    override fun SignInSuccess(social : AuthViewModel.Social) {
-        _signInState.value = AuthViewModel.SignInState.SIGNNIN
-        _signInSocial.value = social
-        viewModelScope.launch {
-            _signInEvent.emit(AuthViewModel.SignInResult.SUCCESS)
-        }
-    }
-
-    override fun SignInFail() {
-        _signInState.value = AuthViewModel.SignInState.SIGNOUT
-        viewModelScope.launch {
-            _signInEvent.emit(AuthViewModel.SignInResult.FAIL)
-        }
-    }
 }

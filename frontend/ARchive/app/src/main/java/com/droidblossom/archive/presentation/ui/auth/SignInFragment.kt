@@ -19,6 +19,7 @@ import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -46,11 +47,12 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
             override fun onLoginSuccess(signUpData : SignUp) {
-                viewModel.SignInSuccess(signUpData.socialType)
+                viewModel.signInEvent(AuthViewModel.SignInEvent.SocialSignSuccess(signUpData))
             }
 
             override fun onLoginFailure(error: Throwable) {
                 // 에러 처리 로직
+                viewModel.signInEvent(AuthViewModel.SignInEvent.SignInFailure(error))
             }
         })
 
@@ -68,29 +70,35 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.SIGNIN_TO_SIGNUP }
-                    .collect { event ->
-                        if(navController.currentDestination?.id != R.id.signUpFragment) {
-                            navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+                viewModel.signInEvents.collect { event ->
+                    when (event) {
+
+                        is AuthViewModel.SignInEvent.SocialSignSuccess -> {
+                            // 소셜 로그인 성공 - api 통신
+                            // 휴대폰 번호까지 인증된 회원 or 처음 또는 인증 안 된 회원
+                            if (event.signUpData.socialType == AuthViewModel.Social.GOOGLE){
+                                viewModel.signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                            }
+                            if (event.signUpData.socialType == AuthViewModel.Social.KAKAO){
+                                viewModel.signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
+                            }
                         }
-                    }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.signInEvent.collect() { event ->
-                    if (event == AuthViewModel.SignInResult.SUCCESS){
-                        // 서버와 통신 할 때 변경할 것
-
-                        if (viewModel.signInSocial.value == AuthViewModel.Social.KAKAO){
-                            // 카카오일 때 회원가입 로직
+                        is AuthViewModel.SignInEvent.NavigateToMain -> {
                             MainActivity.goMain(requireContext())
                         }
-                        if (viewModel.signInSocial.value == AuthViewModel.Social.GOOGLE){
-                            // 구글일 때 메인
-                            viewModel.signInToSignUp()
+
+                        is AuthViewModel.SignInEvent.SignInFailure -> {
+                            // 로그인 실패 처리
                         }
+
+                        is AuthViewModel.SignInEvent.NavigateToSignUp -> {
+                            // 회원가입 화면으로 이동
+                            if(navController.currentDestination?.id != R.id.signUpFragment) {
+                                navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+                            }
+                        }
+
                     }
                 }
             }
