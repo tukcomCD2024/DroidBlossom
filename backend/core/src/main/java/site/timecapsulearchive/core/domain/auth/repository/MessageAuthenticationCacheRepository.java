@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.repository;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,7 +19,7 @@ public class MessageAuthenticationCacheRepository {
         redisTemplate.opsForValue().set(PREFIX + memberId, code, MINUTE, TimeUnit.MINUTES);
     }
 
-    public String get(final Long memberId) {
-        return redisTemplate.opsForValue().get(PREFIX + memberId);
+    public Optional<String> get(final Long memberId) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + memberId));
     }
 }
