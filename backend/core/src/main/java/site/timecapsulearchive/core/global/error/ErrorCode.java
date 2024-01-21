@@ -31,7 +31,8 @@ public enum ErrorCode {
     EXTERNAL_API_ERROR(500, "A001", "외부 api 호출에 실패했습니다. 잠시 후 요청해주세요."),
 
     //member
-    NOT_FOUND_MEMBER_ERROR(404, "U002", "사용자 데이터를 찾지 못하였습니다.");
+    NOT_FOUND_MEMBER_ERROR(404, "U002", "사용자 데이터를 찾지 못하였습니다."),
+    LOGIN_ON_NOT_VERIFIED_ERROR(400, "U003", "인증되지 않은 사용자로 로그인을 시도했습니다.");
 
     private final int status;
     private final String code;
