@@ -81,7 +81,8 @@ public class AuthApiController implements AuthApi {
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
         @Valid @RequestBody final SignInRequest request) {
-        Long memberId = memberService.findVerifiedMemberIdByAuthIdAndSocialType(request.authId(), request.socialType());
+        Long memberId = memberService.findVerifiedMemberIdByAuthIdAndSocialType(request.authId(),
+            request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
