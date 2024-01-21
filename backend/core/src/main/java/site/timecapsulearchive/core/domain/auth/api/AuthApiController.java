@@ -7,11 +7,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
@@ -33,18 +33,18 @@ public class AuthApiController implements AuthApi {
     private final MemberMapper memberMapper;
 
     @Override
-    public ResponseEntity<OAuthUrlResponse> getOAuth2KakaoUrl() {
+    public ResponseEntity<Void> getOAuth2KakaoUrl() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ResponseEntity<OAuthUrlResponse> getOAuth2GoogleUrl() {
+    public ResponseEntity<Void> getOAuth2GoogleUrl() {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -74,6 +74,19 @@ public class AuthApiController implements AuthApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 tokenService.createTemporaryToken(id)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
+        @Valid @RequestBody final SignInRequest request) {
+        Long memberId = memberService.loginMember(request.authId(), request.socialType());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createNewToken(memberId)
             )
         );
     }
