@@ -16,6 +16,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
+    const val NETWORK_EXCEPTION_OFFLINE = "network_exception_offline"
+    const val NETWORK_EXCEPTION_RESULT_IS_NULL = "network_exception_result_is_null"
 
     @Provides
     @Singleton
