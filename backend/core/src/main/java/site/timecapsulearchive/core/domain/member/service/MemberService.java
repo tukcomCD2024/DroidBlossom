@@ -3,9 +3,11 @@ package site.timecapsulearchive.core.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.auth.entity.SocialType;
+import site.timecapsulearchive.core.domain.member.dto.MemberLoginDto;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.domain.member.exception.LoginOnNotVerifiedException;
 import site.timecapsulearchive.core.domain.member.exception.NotFoundMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
@@ -51,5 +53,21 @@ public class MemberService {
 
     public Member findMemberByMemberId(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+    }
+
+    public Long loginMember(final String authId, final SocialType socialType) {
+        final MemberLoginDto dto = memberQueryRepository.findMemberLoginDtoByAuthIdAndSocialType(
+                authId, socialType)
+            .orElseThrow(NotFoundMemberException::new);
+
+        if (isNotVerified(dto)) {
+            throw new LoginOnNotVerifiedException();
+        }
+
+        return dto.memberId();
+    }
+
+    private boolean isNotVerified(MemberLoginDto dto) {
+        return !dto.isVerified();
     }
 }

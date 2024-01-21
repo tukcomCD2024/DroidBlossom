@@ -2,10 +2,13 @@ package site.timecapsulearchive.core.domain.member.repository;
 
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.auth.entity.SocialType;
+import site.timecapsulearchive.core.domain.member.dto.MemberLoginDto;
+import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,5 +24,17 @@ public class MemberQueryRepository {
             .from(member)
             .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
             .fetchOne();
+    }
+
+    public Optional<MemberLoginDto> findMemberLoginDtoByAuthIdAndSocialType(
+        String authId,
+        SocialType socialType
+    ) {
+        return Optional.ofNullable(query.select(
+                Projections.constructor(MemberLoginDto.class, member.id, member.isVerified))
+            .from(member)
+            .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
+            .fetchOne()
+        );
     }
 }
