@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.global.config.security;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @Configuration
@@ -50,7 +55,7 @@ public class SecurityConfig {
         http
             .securityMatchers(
                 c -> c.requestMatchers(new NegatedRequestMatcher(antMatcher("/auth/login/**")))
-                    .anyRequest())
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(notRequireAuthenticationMatcher()).permitAll()
                 .anyRequest().authenticated()
@@ -73,7 +78,9 @@ public class SecurityConfig {
             antMatcher("/swagger-ui/**"),
             antMatcher(HttpMethod.POST, "/auth/token/re-issue"),
             antMatcher(HttpMethod.GET, "/me/status"),
-            antMatcher(HttpMethod.POST, "/auth/sign-up")
+            antMatcher(HttpMethod.POST, "/auth/sign-up"),
+            antMatcher(HttpMethod.POST, "/auth/sign-in"),
+            antMatcher(HttpMethod.GET, "/auth/login/**")
         );
     }
 
