@@ -7,7 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.member.dto.MemberLoginDto;
+import site.timecapsulearchive.core.domain.member.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Repository
@@ -26,12 +26,12 @@ public class MemberQueryRepository {
             .fetchOne();
     }
 
-    public Optional<MemberLoginDto> findMemberLoginDtoByAuthIdAndSocialType(
+    public Optional<VerifiedCheckDto> findVerifiedCheckDtoByAuthIdAndSocialType(
         String authId,
         SocialType socialType
     ) {
         return Optional.ofNullable(query.select(
-                Projections.constructor(MemberLoginDto.class, member.id, member.isVerified))
+                Projections.constructor(VerifiedCheckDto.class, member.id, member.isVerified))
             .from(member)
             .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
             .fetchOne()
