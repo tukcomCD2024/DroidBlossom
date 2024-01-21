@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.member.dto.reqeust;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import site.timecapsulearchive.core.domain.auth.entity.SocialType;
+import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Schema(description = "소셜 프로바이더의 인증 아이디로 회원 인증 상태 체크")
 public record CheckStatusRequest(

@@ -3,8 +3,8 @@ package site.timecapsulearchive.core.domain.member.dto.mapper;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.dto.oauth.OAuth2UserInfo;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
-import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Component
 public class MemberMapper {
