@@ -13,9 +13,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.auth.dto.oauth.CustomOAuth2User;
 import site.timecapsulearchive.core.domain.auth.dto.oauth.OAuthAttributes;
-import site.timecapsulearchive.core.domain.auth.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 
 @Slf4j
@@ -34,20 +34,26 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
+
         SocialType socialType = SocialType.getSocialType(registrationId);
         String userNameAttributeName = userRequest.getClientRegistration()
-            .getProviderDetails().getUserInfoEndpoint()
+            .getProviderDetails()
+            .getUserInfoEndpoint()
             .getUserNameAttributeName();
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName,
-            attributes);
-        Member createMember = getMember(socialType, extractAttributes);
+        OAuthAttributes extractAttributes = OAuthAttributes.of(
+            socialType,
+            userNameAttributeName,
+            attributes
+        );
+
+        Member createMember = getMember(extractAttributes, socialType);
 
         return new CustomOAuth2User(
             Collections.emptyList(),
             attributes,
-            extractAttributes.getNameAttributeKey(),
+            userNameAttributeName,
             createMember.getEmail(),
             createMember.getIsVerified(),
             createMember.getId()
@@ -55,16 +61,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
 
-    private Member getMember(SocialType socialType, OAuthAttributes attributes) {
-        return memberRepository.findBySocialTypeAndEmail(
-                socialType,
-                attributes.getOauth2UserInfo().getEmail()
+    private Member getMember(OAuthAttributes attributes, SocialType socialType) {
+        return memberRepository.findByAuthIdAndSocialType(
+                attributes.getAuthId(),
+                socialType
             )
             .orElseGet(() -> saveMember(socialType, attributes));
     }
 
     private Member saveMember(SocialType socialType, OAuthAttributes attributes) {
         Member createMember = memberMapper.OAuthToEntity(
+            attributes.getAuthId(),
             socialType,
             attributes.getOauth2UserInfo()
         );
