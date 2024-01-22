@@ -6,14 +6,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
+import site.timecapsulearchive.core.domain.auth.dto.response.OAuth2UriResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
@@ -24,7 +26,9 @@ public interface AuthApi {
 
     @Operation(
         summary = "카카오 로그인 페이지",
-        description = "oauth2 kakao 인증 페이지 url을 가져온다.",
+        description = """
+            oauth2 kakao 인증 페이지 url을 반환한다.
+            """,
         tags = {"auth"}
     )
     @ApiResponses(value = {
@@ -34,15 +38,17 @@ public interface AuthApi {
         )
     })
     @GetMapping(
-        value = "/login/kakao",
+        value = "/login/url/kakao",
         produces = {"application/json"}
     )
-    ResponseEntity<OAuthUrlResponse> getOAuth2KakaoUrl();
+    ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request);
 
 
     @Operation(
         summary = "구글 로그인 페이지",
-        description = "oauth2 google 인증 페이지 url을 가져온다.",
+        description = """
+            oauth2 google 인증 페이지 url을 반환한다.
+            """,
         tags = {"auth"}
     )
     @ApiResponses(value = {
@@ -52,10 +58,10 @@ public interface AuthApi {
         )
     })
     @GetMapping(
-        value = "/login/google",
+        value = "/login/url/google",
         produces = {"application/json"}
     )
-    ResponseEntity<OAuthUrlResponse> getOAuth2GoogleUrl();
+    ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request);
 
     @Operation(
         summary = "카카오 인증 성공시 임시 인증 토큰 발급",
@@ -93,8 +99,12 @@ public interface AuthApi {
     ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle();
 
     @Operation(
-        summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 저장 후 토큰 반환",
-        description = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트의 정보를 저장하고 임시 인증 토큰(1시간)을 반환한다.",
+        summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 아이디로 회원가입",
+        description = """
+            다른 소셜 프로바이더의 앱으로 인증한 클라이언트의 아이디로 회원가입 한다.
+                        
+            인증되지 않은 상태이므로 전화 번호 인증을 해야한다.
+            """,
         tags = {"auth"}
     )
     @ApiResponses(value = {
@@ -105,9 +115,32 @@ public interface AuthApi {
     })
     @PostMapping(
         value = "/sign-up",
+        consumes = {"application/json"},
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(SignUpRequest request);
+
+    @Operation(
+        summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 아이디로 로그인",
+        description = """
+            다른 소셜 프로바이더의 앱으로 인증한 클라이언트의 아이디로 로그인 한다.
+                        
+            완전히 인증된 상태의 유저만 가능하다.
+            """,
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    @PostMapping(
+        value = "/sign-in",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
+    ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(SignInRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",
@@ -122,13 +155,13 @@ public interface AuthApi {
         @ApiResponse(
             responseCode = "400",
             description = """
-            요청이 잘못되어 발생하는 오류이다.
-            <ul>
-            <li>올바르지 않은 요청인 경우 예외가 발생한다.</li>
-            <li>유효하지 않은 리프레시 토큰인 경우 오류가 발생한다.</li>
-            <li>이미 재발급에 사용된 리프레시 토큰인 경우 오류가 발생한다.</li>
-            </ul>
-            """,
+                요청이 잘못되어 발생하는 오류이다.
+                <ul>
+                <li>올바르지 않은 요청인 경우 예외가 발생한다.</li>
+                <li>유효하지 않은 리프레시 토큰인 경우 오류가 발생한다.</li>
+                <li>이미 재발급에 사용된 리프레시 토큰인 경우 오류가 발생한다.</li>
+                </ul>
+                """,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })

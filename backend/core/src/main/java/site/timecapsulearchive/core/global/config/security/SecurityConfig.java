@@ -50,7 +50,7 @@ public class SecurityConfig {
         http
             .securityMatchers(
                 c -> c.requestMatchers(new NegatedRequestMatcher(antMatcher("/auth/login/**")))
-                    .anyRequest())
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(notRequireAuthenticationMatcher()).permitAll()
                 .anyRequest().authenticated()
@@ -73,7 +73,9 @@ public class SecurityConfig {
             antMatcher("/swagger-ui/**"),
             antMatcher(HttpMethod.POST, "/auth/token/re-issue"),
             antMatcher(HttpMethod.GET, "/me/status"),
-            antMatcher(HttpMethod.POST, "/auth/sign-up")
+            antMatcher(HttpMethod.POST, "/auth/sign-up"),
+            antMatcher(HttpMethod.POST, "/auth/sign-in"),
+            antMatcher(HttpMethod.GET, "/auth/login/**")
         );
     }
 
