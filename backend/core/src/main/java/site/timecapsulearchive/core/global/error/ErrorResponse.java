@@ -15,7 +15,7 @@ public record ErrorResponse(
     String message,
 
     @Schema(description = "에러 리스트 ex) 필드 에러들")
-    List<Error> errors
+    List<Error> result
 ) {
 
     public static ErrorResponse create(final ErrorCode errorCode) {
