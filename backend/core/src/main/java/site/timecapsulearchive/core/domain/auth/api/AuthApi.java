@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
+import site.timecapsulearchive.core.domain.auth.dto.response.OAuth2UriResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
@@ -25,9 +27,7 @@ public interface AuthApi {
     @Operation(
         summary = "카카오 로그인 페이지",
         description = """
-            oauth2 kakao 인증 페이지 url로 리다이렉트 된다.
-                        
-            \\<a href="url\\>로 직접 이 링크를 적어야한다.(문서화 목적)
+            oauth2 kakao 인증 페이지 url을 반환한다.
             """,
         tags = {"auth"}
     )
@@ -38,18 +38,16 @@ public interface AuthApi {
         )
     })
     @GetMapping(
-        value = "/login/kakao",
+        value = "/login/url/kakao",
         produces = {"application/json"}
     )
-    ResponseEntity<Void> getOAuth2KakaoUrl();
+    ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request);
 
 
     @Operation(
         summary = "구글 로그인 페이지",
         description = """
-            oauth2 google 인증 페이지 url로 리다이렉트 된다.
-                        
-            \\<a href="url\\>로 직접 이 링크를 호출해야 한다.(문서화 목적)
+            oauth2 google 인증 페이지 url을 반환한다.
             """,
         tags = {"auth"}
     )
@@ -60,10 +58,10 @@ public interface AuthApi {
         )
     })
     @GetMapping(
-        value = "/login/google",
+        value = "/login/url/google",
         produces = {"application/json"}
     )
-    ResponseEntity<Void> getOAuth2GoogleUrl();
+    ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request);
 
     @Operation(
         summary = "카카오 인증 성공시 임시 인증 토큰 발급",
