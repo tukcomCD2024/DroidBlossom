@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.auth.entity;
+package site.timecapsulearchive.core.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

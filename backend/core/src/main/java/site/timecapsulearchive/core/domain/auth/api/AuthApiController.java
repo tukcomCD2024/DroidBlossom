@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -7,11 +8,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.dto.response.OAuthUrlResponse;
+import site.timecapsulearchive.core.domain.auth.dto.response.OAuth2UriResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
@@ -27,24 +29,39 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 @RequestMapping("/auth")
 public class AuthApiController implements AuthApi {
 
+    private static final String KAKAO_AUTHORIZATION_ENDPOINT = "/auth/login/kakao";
+    private static final String GOOGLE_AUTHORIZATION_ENDPOINT = "/auth/login/google";
+
     private final TokenService tokenService;
     private final MessageVerificationService messageVerificationService;
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
     @Override
-    public ResponseEntity<OAuthUrlResponse> getOAuth2KakaoUrl() {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request) {
+        String baseUrl = request.getRequestURL().toString();
+        String kakaoLoginUrl = baseUrl.replace(
+            request.getRequestURI(),
+            request.getContextPath() + KAKAO_AUTHORIZATION_ENDPOINT
+        );
+
+        return ResponseEntity.ok(OAuth2UriResponse.from(kakaoLoginUrl));
     }
 
     @Override
-    public ResponseEntity<OAuthUrlResponse> getOAuth2GoogleUrl() {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request) {
+        String baseUrl = request.getRequestURL().toString();
+        String googleLoginUrl = baseUrl.replace(
+            request.getRequestURI(),
+            request.getContextPath() + GOOGLE_AUTHORIZATION_ENDPOINT
+        );
+
+        return ResponseEntity.ok(OAuth2UriResponse.from(googleLoginUrl));
     }
 
     @Override
     public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -74,6 +91,20 @@ public class AuthApiController implements AuthApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 tokenService.createTemporaryToken(id)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
+        @Valid @RequestBody final SignInRequest request) {
+        Long memberId = memberService.findVerifiedMemberIdByAuthIdAndSocialType(request.authId(),
+            request.socialType());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createNewToken(memberId)
             )
         );
     }
