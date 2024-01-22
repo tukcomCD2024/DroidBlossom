@@ -1,0 +1,123 @@
+name: ci/cd
+
+on:
+  push:
+    branches:
+      - develop_back
+  pull_request:
+    branches:
+      - develop_back
+
+jobs:
+  formatting:
+    name: formatting
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+      - uses: actions/checkout@v3
+      - uses: axel-op/googlejavaformat-action@v3
+        with:
+          args: "--replace"
+          skip-commit: true
+
+  deploy-core:
+    name: core application deploy
+    needs: formatting
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/core
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+          cache: gradle
+
+      - name: grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: build gradle
+        run: ./gradlew clean build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_ECR_REPOSITORY_NAME }}
+          tags: |
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/core
+          platforms: linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          provenance: false
+
+      - name: Get Github action IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - name: Connect ec2 and Run Docker Container
+        uses: appleboy/ssh-action@v0.1.6
+        env:
+          AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        with:
+          host: ${{ secrets.SSH_CORE_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_CORE_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker ps -q --filter "name=core" | xargs -r docker stop
+            docker ps -aq --filter "name=core" | xargs -r docker rm
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            docker pull ${{ steps.meta.outputs.tags }}
+            docker run -d -p 8080:8080 --name core --network test_backend ${{ steps.meta.outputs.tags }}
+
+      - name: Remove Github Actions IP from security group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32

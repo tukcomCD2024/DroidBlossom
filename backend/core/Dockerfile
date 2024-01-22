@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre as build
+FROM bellsoft/liberica-openjdk-alpine:17 as build
 WORKDIR /workspace/app
 
 # Copy Gradle wrapper and other necessary files
@@ -8,7 +8,7 @@ COPY build/libs/ .
 RUN mkdir -p target/extracted
 RUN java -Djarmode=layertools -jar *.jar extract --destination target/extracted
 
-FROM eclipse-temurin:17-jre
+FROM bellsoft/liberica-openjdk-alpine:17
 VOLUME /tmp
 ARG EXTRACTED=/workspace/app/target/extracted
 
