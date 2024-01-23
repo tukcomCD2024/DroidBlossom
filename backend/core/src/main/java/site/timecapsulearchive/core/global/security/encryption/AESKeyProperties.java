@@ -2,7 +2,8 @@ package site.timecapsulearchive.core.global.security.encryption;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "phone")
-public record PhoneNumberKeyProperties(String key) {
+@ConfigurationProperties(prefix = "aes")
+public record AESKeyProperties(String secretKey) {
 
 }
+

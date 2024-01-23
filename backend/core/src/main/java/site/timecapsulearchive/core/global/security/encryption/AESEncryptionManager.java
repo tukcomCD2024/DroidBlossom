@@ -18,11 +18,12 @@ public final class AESEncryptionManager {
     private static final int TAG_LENGTH_BIT = 128;
     private static final int IV_LENGTH_BYTE = 12;
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
+    private static final SecureRandom secureRandom = new SecureRandom();
 
     private final SecretKey key;
 
-    public AESEncryptionManager(PhoneNumberKeyProperties properties) {
-        byte[] decodedKey = Decoders.BASE64.decode(properties.key());
+    public AESEncryptionManager(AESKeyProperties properties) {
+        byte[] decodedKey = Decoders.BASE64.decode(properties.secretKey());
         this.key = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 
@@ -41,7 +42,10 @@ public final class AESEncryptionManager {
             Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
 
-        return cipher.doFinal(pText);
+            return cipher.doFinal(pText);
+        } catch (Exception e) {
+            throw new AESEncryptionException(e);
+        }
     }
 
     private byte[] getRandomNonce() {
