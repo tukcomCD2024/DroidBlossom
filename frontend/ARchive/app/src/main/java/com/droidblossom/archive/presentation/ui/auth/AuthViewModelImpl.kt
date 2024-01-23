@@ -106,6 +106,7 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             signInUseCase(signInData.toDto()).collect{ result ->
                 result.onSuccess {
+                    // 토큰 저장 로직 추가
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
                 }
             }
@@ -116,6 +117,7 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
+                    // 토큰 저장 로직 추가
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }
             }

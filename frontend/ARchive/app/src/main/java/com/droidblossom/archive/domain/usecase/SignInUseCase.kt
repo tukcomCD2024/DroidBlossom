@@ -15,23 +15,20 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(
-    private val repository : AuthRepository
+    private val repository: AuthRepository
 ) {
 
-    suspend operator fun invoke(request : SignInRequestDto) = flow<RetrofitResult<Token>>{
-        repository.authSignIn(request)
-            .onSuccess {
-                Log.d("후후후", "성공 - 로그인")
+    suspend operator fun invoke(request: SignInRequestDto) =
+        flow<RetrofitResult<Token>> {
+            emit(repository.authSignIn(request).onSuccess {
 
             }.onFail {
-                Log.d("후후후", "실패 - 로그인")
 
             }.onError {
-                Log.d("후후후", "에러 - 로그인")
 
             }.onException {
-                Log.d("후후후", "예외 - 로그인")
 
-            }
-    }
+            })
+
+        }
 }

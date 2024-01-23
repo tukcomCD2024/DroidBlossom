@@ -37,6 +37,7 @@ interface AuthViewModel {
 
     fun submitSignInData(signInData : SignIn)
     fun submitSignUpData(signUpData : SignUp)
+
     // SignUp
     fun signUpEvent(event: SigUpnEvent)
 
