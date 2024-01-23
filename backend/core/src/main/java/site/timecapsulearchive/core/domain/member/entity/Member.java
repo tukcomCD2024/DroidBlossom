@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -89,7 +90,7 @@ public class Member extends BaseEntity {
     @Builder
     private Member(String profileUrl, SocialType socialType, String email, String authId) {
         this.profileUrl = profileUrl;
-        this.nickname = "";
+        this.nickname = String.valueOf(UUID.randomUUID());
         this.socialType = socialType;
         this.email = email;
         this.isVerified = false;

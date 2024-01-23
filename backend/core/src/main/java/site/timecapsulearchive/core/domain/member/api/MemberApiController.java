@@ -33,7 +33,7 @@ public class MemberApiController implements MemberApi {
 
     @Override
     public ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(
-        @Valid @RequestBody CheckStatusRequest request
+        @Valid @RequestBody final CheckStatusRequest request
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
