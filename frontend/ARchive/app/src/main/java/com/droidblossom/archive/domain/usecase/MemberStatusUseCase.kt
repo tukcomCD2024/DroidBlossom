@@ -29,7 +29,6 @@ class MemberStatusUseCase @Inject constructor(
 
                 }.onException {
 
-                }
-            )
+                })
         }
 }

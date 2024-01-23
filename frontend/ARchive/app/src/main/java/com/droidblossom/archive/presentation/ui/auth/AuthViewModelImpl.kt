@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.auth.SignIn
+import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
 import com.droidblossom.archive.domain.usecase.ReIssueUseCase
@@ -86,15 +88,35 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
-    override fun memberStatusCheck(memberStatusCheckData : CheckStatus){
+    override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
                 result.onSuccess {it ->
                     if (it.isVerified){
-                        signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
+                        submitSignInData(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
                     }else{
-                        signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                        submitSignUpData(signUpData)
                     }
+                }
+            }
+        }
+    }
+
+    override fun submitSignInData(signInData : SignIn){
+        viewModelScope.launch {
+            signInUseCase(signInData.toDto()).collect{ result ->
+                result.onSuccess {
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
+                }
+            }
+        }
+    }
+
+    override fun submitSignUpData(signUpData : SignUp){
+        viewModelScope.launch {
+            signUpUseCase(signUpData.toDto()).collect{result ->
+                result.onSuccess {
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }
             }
         }
@@ -104,6 +126,12 @@ class AuthViewModelImpl @Inject constructor(
     override fun signUpEvent(event: AuthViewModel.SigUpnEvent) {
         viewModelScope.launch {
             _signUpEvents.emit(event)
+        }
+    }
+
+    override fun submitPhoneNumber(){
+        viewModelScope.launch {
+
         }
     }
 

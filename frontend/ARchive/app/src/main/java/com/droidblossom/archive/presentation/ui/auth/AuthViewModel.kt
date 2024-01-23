@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import com.droidblossom.archive.domain.model.auth.SignIn
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,14 +33,18 @@ interface AuthViewModel {
     // SignIn
     fun signInEvent(event: SignInEvent)
 
-    fun memberStatusCheck(memberStatusCheckData : CheckStatus)
+    fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp)
 
+    fun submitSignInData(signInData : SignIn)
+    fun submitSignUpData(signUpData : SignUp)
     // SignUp
-    fun initTimer()
-    fun startTimer()
     fun signUpEvent(event: SigUpnEvent)
 
+    fun submitPhoneNumber()
+
     // Certification
+    fun initTimer()
+    fun startTimer()
     fun certificationEvent(event: CertificationEvent)
 
     sealed class SignInEvent {

@@ -1,7 +1,6 @@
 package com.droidblossom.archive.domain.model.auth
 
 import com.droidblossom.archive.data.dto.auth.request.SignInRequestDto
-import com.droidblossom.archive.data.dto.auth.request.SignUpRequestDto
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.util.SocialUtils
 

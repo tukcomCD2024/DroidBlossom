@@ -15,20 +15,18 @@ import javax.inject.Inject
 class SignUpUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(request: SignUpRequestDto) = flow<RetrofitResult<TemporaryToken>> {
-        repository.authSignUp(request)
+    suspend operator fun invoke(request: SignUpRequestDto) =
+        flow<RetrofitResult<TemporaryToken>> {
+        emit(repository.authSignUp(request)
             .onSuccess {
-                Log.d("후후후", "성공 - 회원가입")
 
             }.onFail {
-                Log.d("후후후", "실패 - 회원가입")
 
             }.onError {
-                Log.d("후후후", "에러 - 회원가입")
 
             }.onException {
-                Log.d("후후후", "예외 - 회원가입")
 
-            }
-    }
+            })
+
+        }
 }
