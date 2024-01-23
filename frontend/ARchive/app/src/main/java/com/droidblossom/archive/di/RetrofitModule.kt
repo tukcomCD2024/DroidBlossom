@@ -1,5 +1,7 @@
 package com.droidblossom.archive.di
 
+import android.content.SharedPreferences
+import com.droidblossom.archive.BuildConfig
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -79,7 +81,7 @@ object RetrofitModule {
         gsonConverterFactory: GsonConverterFactory
     ) : Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://archive-timecapsule.kro.kr/api/")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(gsonConverterFactory)
             .client(client)
             .build()
