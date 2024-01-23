@@ -72,7 +72,7 @@ public class SecurityConfig {
             antMatcher("/v3/api-docs/**"),
             antMatcher("/swagger-ui/**"),
             antMatcher(HttpMethod.POST, "/auth/token/re-issue"),
-            antMatcher(HttpMethod.GET, "/me/status"),
+            antMatcher(HttpMethod.POST, "/me/status"),
             antMatcher(HttpMethod.POST, "/auth/sign-up"),
             antMatcher(HttpMethod.POST, "/auth/sign-in"),
             antMatcher(HttpMethod.GET, "/auth/login/**")
