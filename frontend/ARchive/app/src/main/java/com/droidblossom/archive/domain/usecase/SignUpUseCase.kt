@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(
-    private val retrofit: AuthRepository
+    private val repository: AuthRepository
 ) {
     suspend operator fun invoke(request: SignUpRequestDto) = flow<RetrofitResult<TemporaryToken>> {
-        retrofit.authSignUp(request)
+        repository.authSignUp(request)
             .onSuccess {
 
             }.onFail {

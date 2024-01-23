@@ -15,10 +15,6 @@ object ServiceModule {
 
     @Singleton
     @Provides
-    fun providesSMSMessageService(retrofit: Retrofit) : SMSMessageService = retrofit.create(SMSMessageService::class.java)
-
-    @Singleton
-    @Provides
     fun providesAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
 
     @Singleton

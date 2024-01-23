@@ -19,13 +19,6 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun providesSMSMessageRepository(
-        smsMessageService: SMSMessageService
-    ) : SMSMessageRepository = SMSMessageRepositoryImpl(smsMessageService)
-
-
-    @Provides
-    @ViewModelScoped
     fun providesAuthRepository(api: AuthService): AuthRepository =
         AuthRepositoryImpl(api)
 
