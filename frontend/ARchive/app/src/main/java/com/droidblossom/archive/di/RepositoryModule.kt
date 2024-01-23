@@ -1,10 +1,13 @@
 package com.droidblossom.archive.di
 
 import com.droidblossom.archive.data.repository.AuthRepositoryImpl
+import com.droidblossom.archive.data.repository.MemberRepositoryImpl
 import com.droidblossom.archive.data.repository.SMSMessageRepositoryImpl
 import com.droidblossom.archive.data.source.remote.api.AuthService
+import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.SMSMessageService
 import com.droidblossom.archive.domain.repository.AuthRepository
+import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.domain.repository.SMSMessageRepository
 import dagger.Module
 import dagger.Provides
@@ -25,7 +28,12 @@ object RepositoryModule {
 
 
     @Provides
-    @Singleton
-    fun providerAuthRepository(api: AuthService): AuthRepository =
+    @ViewModelScoped
+    fun providesAuthRepository(api: AuthService): AuthRepository =
         AuthRepositoryImpl(api)
+
+    @Provides
+    @ViewModelScoped
+    fun providesMemberRepository(api: MemberService): MemberRepository =
+        MemberRepositoryImpl(api)
 }

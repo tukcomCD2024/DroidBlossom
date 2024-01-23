@@ -1,11 +1,13 @@
 package com.droidblossom.archive.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.usecase.MemberUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,7 +35,9 @@ class HomeViewModelImpl @Inject constructor(
     override fun selectPublic() {
         viewModelScope.launch {
             //test
-            memberUsecase.invoke()
+            memberUsecase().collect{
+                Log.d("qwer","${it.toString()}")
+            }
 
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)

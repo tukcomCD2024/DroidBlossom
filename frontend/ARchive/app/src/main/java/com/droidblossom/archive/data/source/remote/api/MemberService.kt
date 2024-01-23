@@ -7,6 +7,6 @@ import retrofit2.http.GET
 
 interface MemberService {
 
-    @GET("/me/")
+    @GET("me/")
     suspend fun getMeApi(): Response<ResponseBody<MemberDetailResponseDto>>
 }

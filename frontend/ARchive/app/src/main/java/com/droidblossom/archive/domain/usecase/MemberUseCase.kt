@@ -14,15 +14,15 @@ import javax.inject.Inject
 class MemberUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke() = flow<RetrofitResult<MemberDetail>> {
-        repository.getMe().onSuccess {
-            Log .d("qwer","성공")
+    operator fun invoke() = flow<RetrofitResult<MemberDetail>> {
+        emit(repository.getMe().onSuccess {
+            Log.d("qwer", "성공")
         }.onFail {
-            Log .d("qwer","${it}")
+            Log.d("qwer", "${it}")
         }.onError {
-            Log .d("qwer","성공")
+
         }.onException {
-            Log .d("qwer","성공")
-        }
+
+        })
     }
 }
