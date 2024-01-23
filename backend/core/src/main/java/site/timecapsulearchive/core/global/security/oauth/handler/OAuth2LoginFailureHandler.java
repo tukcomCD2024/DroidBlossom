@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.auth.exception;
+package site.timecapsulearchive.core.global.security.oauth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
