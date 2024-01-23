@@ -1,7 +1,18 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.member.CheckStatus
+import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
+import com.droidblossom.archive.domain.usecase.ReIssueUseCase
+import com.droidblossom.archive.domain.usecase.SendMessageUseCase
+import com.droidblossom.archive.domain.usecase.SignInUseCase
+import com.droidblossom.archive.domain.usecase.SignUpUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.onError
+import com.droidblossom.archive.util.onException
+import com.droidblossom.archive.util.onFail
+import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -10,6 +21,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -18,7 +30,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
+class AuthViewModelImpl @Inject constructor(
+    private val reIssueUseCase: ReIssueUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val signInUseCase: SignInUseCase,
+    private val signUpUseCase : SignUpUseCase,
+    private val validMessageUseCase: SendMessageUseCase,
+    private val memberStatusUseCase: MemberStatusUseCase
+) : BaseViewModel(), AuthViewModel {
 
     // SignInFragment
     private val _signInEvents = MutableSharedFlow<AuthViewModel.SignInEvent>()
@@ -64,6 +83,14 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
     override fun signInEvent(event: AuthViewModel.SignInEvent) {
         viewModelScope.launch {
             _signInEvents.emit(event)
+        }
+    }
+
+    override fun memberStatusCheck(memberStatusCheckData : CheckStatus){
+        viewModelScope.launch {
+            memberStatusUseCase(memberStatusCheckData.toDto()).collect{
+
+            }
         }
     }
 

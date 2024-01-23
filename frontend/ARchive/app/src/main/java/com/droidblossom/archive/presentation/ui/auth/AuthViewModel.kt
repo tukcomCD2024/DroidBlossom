@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.auth
 
 import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.member.CheckStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,10 +29,10 @@ interface AuthViewModel {
     val certificationNumber4: MutableStateFlow<String>
 
 
-
-
     // SignIn
     fun signInEvent(event: SignInEvent)
+
+    fun memberStatusCheck(memberStatusCheckData : CheckStatus)
 
     // SignUp
     fun initTimer()

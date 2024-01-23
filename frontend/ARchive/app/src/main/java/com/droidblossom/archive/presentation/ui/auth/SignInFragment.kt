@@ -14,6 +14,7 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignInBinding
 import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
@@ -46,8 +47,9 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         navController = Navigation.findNavController(view)
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
-            override fun onLoginSuccess(signUpData : SignUp) {
-                viewModel.signInEvent(AuthViewModel.SignInEvent.SocialSignSuccess(signUpData))
+            override fun onLoginSuccess(memberStatusCheckData : CheckStatus,signUpData : SignUp) {
+                //viewModel.signInEvent(AuthViewModel.SignInEvent.SocialSignSuccess(signUpData))
+                viewModel.memberStatusCheck(memberStatusCheckData)
             }
 
             override fun onLoginFailure(error: Throwable) {
@@ -72,7 +74,6 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.signInEvents.collect { event ->
                     when (event) {
-
                         is AuthViewModel.SignInEvent.SocialSignSuccess -> {
                             // 소셜 로그인 성공 - api 통신
                             // 휴대폰 번호까지 인증된 회원 or 처음 또는 인증 안 된 회원
