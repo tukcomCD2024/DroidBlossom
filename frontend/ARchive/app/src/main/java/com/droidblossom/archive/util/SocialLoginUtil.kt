@@ -55,6 +55,12 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         }
     }
 
+    fun kakaoSignOut(){
+        fun kakaoSignOut() {
+            UserApiClient.instance.logout{}
+        }
+    }
+
     private fun kakaoGetUserInfo() {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
@@ -65,11 +71,16 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
                 val profileUrl = user.kakaoAccount?.profile?.thumbnailImageUrl ?: ""
                 callback.onLoginSuccess(CheckStatus(authId,AuthViewModel.Social.KAKAO),SignUp(authId, email, profileUrl, AuthViewModel.Social.KAKAO))
             }
+            kakaoSignOut()
         }
     }
 
     fun googleSignIn(): Intent {
         return googleSignInClient.signInIntent
+    }
+
+    fun googleSignOut() {
+        googleSignInClient.signOut().addOnCompleteListener {}
     }
 
     fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
@@ -80,6 +91,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
             val email = account.email ?: ""
             val profileUrl = account.photoUrl.toString() ?: ""
             callback.onLoginSuccess(CheckStatus(authId,AuthViewModel.Social.GOOGLE),SignUp(authId, email, profileUrl, AuthViewModel.Social.GOOGLE))
+            googleSignOut()
         } catch (e: ApiException) {
             //Log.w("구글", "signInResult:failed code=" + e.statusCode)
             callback.onLoginFailure(e)
