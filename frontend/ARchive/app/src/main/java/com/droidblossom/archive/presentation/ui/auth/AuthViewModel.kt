@@ -47,6 +47,7 @@ interface AuthViewModel {
         data class SignInFailure(val error: Throwable) : SignInEvent()
         object NavigateToSignUp : SignInEvent()
         object NavigateToMain : SignInEvent()
+
     }
 
     sealed class SigUpnEvent {
