@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.auth.service;
+package site.timecapsulearchive.core.global.security.oauth.service;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,8 +11,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import site.timecapsulearchive.core.domain.auth.dto.oauth.CustomOAuth2User;
-import site.timecapsulearchive.core.domain.auth.dto.oauth.OAuthAttributes;
+import site.timecapsulearchive.core.global.security.oauth.dto.CustomOAuth2User;
+import site.timecapsulearchive.core.global.security.oauth.dto.OAuthAttributes;
 import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;

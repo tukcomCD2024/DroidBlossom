@@ -1,11 +1,12 @@
-package site.timecapsulearchive.core.domain.auth.dto.oauth;
+package site.timecapsulearchive.core.global.security.oauth.dto;
 
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
-import site.timecapsulearchive.core.domain.auth.dto.oauth.google.GoogleOAuth2UserInfo;
-import site.timecapsulearchive.core.domain.auth.dto.oauth.kakao.KakaoOAuth2UserInfo;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.global.security.oauth.dto.google.GoogleOAuth2UserInfo;
+import site.timecapsulearchive.core.global.security.oauth.dto.kakao.KakaoOAuth2UserInfo;
+
 
 @Getter
 public class OAuthAttributes {

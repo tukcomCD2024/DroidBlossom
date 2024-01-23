@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.auth.dto.oauth;
+package site.timecapsulearchive.core.global.security.oauth.dto;
 
 import java.util.Map;
 
