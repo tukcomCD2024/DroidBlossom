@@ -89,7 +89,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun memberStatusCheck(memberStatusCheckData : CheckStatus){
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{
-
+                Log.d("후후후", "${it}")
             }
         }
     }
