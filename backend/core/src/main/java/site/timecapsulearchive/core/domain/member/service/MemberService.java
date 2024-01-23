@@ -35,11 +35,11 @@ public class MemberService {
      * @return 사용자의 인증 상태 {@code isExist, isVerified}
      */
     public MemberStatusResponse checkStatus(
-        String authId,
-        SocialType socialType
+        final String authId,
+        final SocialType socialType
     ) {
 
-        Boolean isVerified = memberQueryRepository.findIsVerifiedByAuthIdAndSocialType(
+        final Boolean isVerified = memberQueryRepository.findIsVerifiedByAuthIdAndSocialType(
             authId,
             socialType
         );
