@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member.util;
+package site.timecapsulearchive.core.global.util.nickname;
 
 import java.util.ArrayList;
 import java.util.List;
