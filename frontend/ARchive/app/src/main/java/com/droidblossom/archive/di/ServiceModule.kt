@@ -2,7 +2,6 @@ package com.droidblossom.archive.di
 
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.MemberService
-import com.droidblossom.archive.data.source.remote.api.SMSMessageService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

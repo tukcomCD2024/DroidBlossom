@@ -38,6 +38,6 @@ interface AuthService {
     @POST("auth/sign-ip")
     suspend fun postSignIpApi(
         @Body request: SignInRequestDto
-    ) : Response<ResponseBody<TemporaryTokenResponseDto>>
+    ) : Response<ResponseBody<TokenResponseDto>>
 
 }
