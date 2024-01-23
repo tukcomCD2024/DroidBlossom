@@ -14,13 +14,6 @@ public final class AESUtil {
 
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
 
-    public static byte[] encrypt(byte[] pText, SecretKey secret, byte[] iv) throws Exception {
-        Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
-        cipher.init(Cipher.ENCRYPT_MODE, secret, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
-
-        return cipher.doFinal(pText);
-    }
-
     public static byte[] encryptWithPrefixIV(byte[] pText, SecretKey secret, byte[] iv) throws Exception {
         byte[] cipherText = encrypt(pText, secret, iv);
 
@@ -30,13 +23,11 @@ public final class AESUtil {
             .array();
     }
 
-    public static String decrypt(byte[] cText, SecretKey secret, byte[] iv) throws Exception {
+    private static byte[] encrypt(byte[] pText, SecretKey secret, byte[] iv) throws Exception {
         Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
-        cipher.init(Cipher.DECRYPT_MODE, secret, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
+        cipher.init(Cipher.ENCRYPT_MODE, secret, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
 
-        byte[] plainText = cipher.doFinal(cText);
-
-        return new String(plainText, UTF_8);
+        return cipher.doFinal(pText);
     }
 
     public static String decryptWithPrefixIV(byte[] cText, SecretKey secret) throws Exception {
@@ -50,5 +41,16 @@ public final class AESUtil {
 
         return decrypt(cipherText, secret, iv);
     }
+
+    private static String decrypt(byte[] cText, SecretKey secret, byte[] iv) throws Exception {
+        Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
+        cipher.init(Cipher.DECRYPT_MODE, secret, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
+
+        byte[] plainText = cipher.doFinal(cText);
+
+        return new String(plainText, UTF_8);
+    }
+
+
 }
 
