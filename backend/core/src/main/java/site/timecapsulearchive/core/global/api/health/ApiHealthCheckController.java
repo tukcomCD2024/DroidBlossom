@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
 @RequestMapping
@@ -24,7 +26,12 @@ public class ApiHealthCheckController {
         )
     })
     @GetMapping("/health")
-    public ResponseEntity<HealthResponse> health() {
-        return ResponseEntity.ok(HealthResponse.ok());
+    public ResponseEntity<ApiSpec<HealthResponse>> health() {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                HealthResponse.ok()
+            )
+        );
     }
 }
