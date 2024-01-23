@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.util.encryption;
+package site.timecapsulearchive.core.global.security.encryption;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
