@@ -21,16 +21,16 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthService
 ) : AuthRepository {
-    override suspend fun validMessageSend(request: VerificationMessageSendRequestDto): RetrofitResult<VerificationMessageResult>{
+    override suspend fun authValidMessageSend(request: VerificationMessageSendRequestDto): RetrofitResult<VerificationMessageResult>{
         return apiHandler({ api.postValidSendMessageApi(request) }) { response : ResponseBody<VerificationMessageResponseDto> -> response.result.toModel()}
 
     }
 
-    override suspend fun validMessage(request: VerificationNumberValidRequestDto): RetrofitResult<Token> {
+    override suspend fun authValidMessage(request: VerificationNumberValidRequestDto): RetrofitResult<Token> {
         return apiHandler({ api.postValidMessageApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
     }
 
-    override suspend fun reIssue(request: TokenReIssueRequestDto): RetrofitResult<Token> {
+    override suspend fun authReIssue(request: TokenReIssueRequestDto): RetrofitResult<Token> {
         return apiHandler({ api.postReIssueApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
     }
 

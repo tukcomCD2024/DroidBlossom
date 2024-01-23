@@ -12,9 +12,9 @@ import com.droidblossom.archive.util.RetrofitResult
 
 interface AuthRepository {
 
-    suspend fun validMessageSend(request : VerificationMessageSendRequestDto) : RetrofitResult<VerificationMessageResult>
-    suspend fun validMessage(request : VerificationNumberValidRequestDto) : RetrofitResult<Token>
-    suspend fun reIssue(request : TokenReIssueRequestDto) : RetrofitResult<Token>
+    suspend fun authValidMessageSend(request : VerificationMessageSendRequestDto) : RetrofitResult<VerificationMessageResult>
+    suspend fun authValidMessage(request : VerificationNumberValidRequestDto) : RetrofitResult<Token>
+    suspend fun authReIssue(request : TokenReIssueRequestDto) : RetrofitResult<Token>
 
     suspend fun authSignIn(request : SignInRequestDto) : RetrofitResult<Token>
     suspend fun authSignUp(request: SignUpRequestDto) : RetrofitResult<TemporaryToken>
