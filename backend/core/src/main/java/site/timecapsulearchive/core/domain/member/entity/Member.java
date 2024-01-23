@@ -38,7 +38,7 @@ public class Member extends BaseEntity {
     private Long id;
 
     @Column(name = "phone", unique = true)
-    private String phone;
+    private byte[] phone;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
@@ -102,8 +102,7 @@ public class Member extends BaseEntity {
         this.isVerified = true;
     }
 
-    public void updatePhoneNumber(String phone) {
-
+    public void updatePhoneNumber(byte[] phone) {
         this.phone = phone;
     }
 

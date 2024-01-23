@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import site.timecapsulearchive.core.domain.auth.exception.NotMatchCertificationN
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.SmsApiService;
 import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
 
@@ -26,6 +28,7 @@ public class MessageVerificationService {
     private final SmsApiService smsApiService;
     private final MemberService memberService;
     private final TokenService tokenService;
+    private final AESEncryptionManager aesEncryptionManager;
 
 
     /**
@@ -78,16 +81,24 @@ public class MessageVerificationService {
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
             throw new NotMatchCertificationNumberException();
         }
-
-        Member findMember = memberService.findMemberByMemberId(memberId);
-        findMember.updateVerification();
-        findMember.updatePhoneNumber(receiver);
-        findMember.updateNickName();
+        updateMemberData(memberId, receiver);
 
         return tokenService.createNewToken(memberId);
     }
 
     private boolean isNotMatch(String certificationNumber, String findCertificationNumber) {
         return !certificationNumber.equals(findCertificationNumber);
+    }
+
+    private void updateMemberData(Long memberId, String receiver) {
+        Member findMember = memberService.findMemberByMemberId(memberId);
+
+        byte[] encryptReceiver = aesEncryptionManager.encryptWithPrefixIV(
+            receiver.getBytes(StandardCharsets.UTF_8)
+        );
+
+        findMember.updatePhoneNumber(encryptReceiver);
+        findMember.updateNickName();
+        findMember.updateVerification();
     }
 }
