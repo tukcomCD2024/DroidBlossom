@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.api;
+package site.timecapsulearchive.core.global.api.limit;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
