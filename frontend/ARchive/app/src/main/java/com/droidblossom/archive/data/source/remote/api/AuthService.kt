@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.auth.request.VerificationMessageSendReq
 import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
 import com.droidblossom.archive.data.dto.auth.response.TemporaryTokenResponseDto
 import com.droidblossom.archive.data.dto.auth.response.TokenResponseDto
+import com.droidblossom.archive.data.dto.auth.response.VerificationMessageResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -15,7 +16,7 @@ interface AuthService {
     @POST("auth/verification/send-message")
     suspend fun postValidSendMessageApi(
         @Body request : VerificationMessageSendRequestDto
-    ) : Response<ResponseBody<>>
+    ) : Response<ResponseBody<VerificationMessageResponseDto>>
 
     @POST("auth/verification/valid-message")
     suspend fun postValidMessageApi(
