@@ -1,5 +1,7 @@
 package com.droidblossom.archive.di
 
+import com.droidblossom.archive.data.source.remote.api.AuthService
+import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.SMSMessageService
 import dagger.Module
 import dagger.Provides
@@ -15,4 +17,14 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providesSMSMessageService(retrofit: Retrofit) : SMSMessageService = retrofit.create(SMSMessageService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesMemberService(retrofit: Retrofit) : MemberService = retrofit.create(MemberService::class.java)
+
+
 }

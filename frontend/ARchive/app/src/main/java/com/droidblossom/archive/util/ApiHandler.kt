@@ -2,6 +2,7 @@ package com.droidblossom.archive.util
 
 import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.di.RetrofitModule
+import com.droidblossom.archive.domain.model.auth.TemporaryToken
 import retrofit2.Response
 
 suspend fun <T : Any, R : Any> apiHandler(

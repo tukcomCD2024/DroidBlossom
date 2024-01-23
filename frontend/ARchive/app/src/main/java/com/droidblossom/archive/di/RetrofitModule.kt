@@ -88,18 +88,18 @@ object RetrofitModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    @ResourceRetrofitWithToken
-    fun providesRetrofitWithToken(
-        client : OkHttpClient,
-        gsonConverterFactory: GsonConverterFactory
-    ) : Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(gsonConverterFactory)
-            .client(client)
-            .build()
-    }
+//    @Provides
+//    @Singleton
+//    @ResourceRetrofitWithToken
+//    fun providesRetrofitWithToken(
+//        client : OkHttpClient,
+//        gsonConverterFactory: GsonConverterFactory
+//    ) : Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl(BuildConfig.BASE_URL)
+//            .addConverterFactory(gsonConverterFactory)
+//            .client(client)
+//            .build()
+//    }
 
 }
