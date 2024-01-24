@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.TemporaryTokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
@@ -141,6 +142,25 @@ public interface AuthApi {
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(SignInRequest request);
+
+     @Operation(
+        summary = "임시 인증 토큰 재발급",
+        description = "인증되지 않은 사용자가 인증할 수 있는 임시 인증 토큰을 재발급한다.",
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    @PostMapping(
+        value = "/token/re-issue",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
+    ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
+         TemporaryTokenReIssueRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",
