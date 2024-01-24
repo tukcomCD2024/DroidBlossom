@@ -70,7 +70,7 @@ public class MessageVerificationService {
             + appHashKey;
     }
 
-    public TokenResponse getRandomNickname(
+    public TokenResponse validVerificationMessage(
         final Long memberId,
         final String certificationNumber,
         final String receiver

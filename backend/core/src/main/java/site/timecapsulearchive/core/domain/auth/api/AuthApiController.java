@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.TemporaryTokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
@@ -67,6 +68,20 @@ public class AuthApiController implements AuthApi {
     @Override
     public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
+        @Valid @RequestBody final TemporaryTokenReIssueRequest request) {
+        Long id = memberService.findNotVerifiedMemberIdByAuthIdAndSocialType(
+            request.authId(), request.socialType());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createTemporaryToken(id)
+            )
+        );
     }
 
     @Override
@@ -134,7 +149,7 @@ public class AuthApiController implements AuthApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationNumberValidRequest request
     ) {
-        TokenResponse response = messageVerificationService.getRandomNickname(
+        TokenResponse response = messageVerificationService.validVerificationMessage(
             memberId,
             request.certificationNumber(),
             request.receiver()
