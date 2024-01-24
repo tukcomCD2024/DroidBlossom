@@ -1,14 +1,15 @@
 package com.droidblossom.archive.di
 
-import android.content.SharedPreferences
 import com.droidblossom.archive.BuildConfig
+import com.droidblossom.archive.util.AccessTokenInterceptor
+import com.droidblossom.archive.util.TokenAuthenticator
+import com.droidblossom.archive.util.TokenUtils
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -31,7 +32,7 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun providesConverterFactory() : GsonConverterFactory{
+    fun providesConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create(
             GsonBuilder()
                 .create()
@@ -40,14 +41,15 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun providesOkHttpClient() : OkHttpClient {
+    fun providesOkHttpClient(
+        pf: TokenUtils
+    ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             connectTimeout(5, TimeUnit.SECONDS)
             readTimeout(5, TimeUnit.SECONDS)
             writeTimeout(5, TimeUnit.SECONDS)
-            addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
+            authenticator(TokenAuthenticator(pf))
+            addNetworkInterceptor(AccessTokenInterceptor(pf))
         }.build()
     }
 //
@@ -77,9 +79,9 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun providesRetrofit(
-        client : OkHttpClient,
+        client: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
-    ) : Retrofit {
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(gsonConverterFactory)

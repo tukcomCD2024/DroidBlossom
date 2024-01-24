@@ -3,6 +3,7 @@ package com.droidblossom.archive
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -44,12 +45,16 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         @SuppressLint("StaticFieldLeak")
         private lateinit var context: Context
 
+        lateinit var sSharedPreference: SharedPreferences
+
         fun getString(@StringRes stringResId: Int): String {
             return context.getString(stringResId)
         }
 
         private lateinit var networkConnectionChecker: NetworkStatusChecker
         fun isOnline() = networkConnectionChecker.isOnline()
+
+
     }
 
 //    private fun getHashKey() {
