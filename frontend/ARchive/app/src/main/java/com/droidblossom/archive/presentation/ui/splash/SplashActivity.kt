@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.R
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
@@ -16,12 +17,11 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if (SharedPreferencesUtils(this).fetchAccessToken()
-                    .isNotEmpty() && SharedPreferencesUtils(this).fetchRefreshToken()
-                    .isNotEmpty()
+            if (ARchiveApplication.sp.fetchAccessToken().isNotEmpty()
+                && ARchiveApplication.sp.fetchRefreshToken().isNotEmpty()
             ) {
                 MainActivity.goMain(this@SplashActivity)
-            }else{
+            } else {
                 AuthActivity.goAuth(this@SplashActivity)
                 finish()
             }
