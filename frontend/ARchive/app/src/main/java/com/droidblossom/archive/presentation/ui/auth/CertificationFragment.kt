@@ -102,6 +102,10 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             }
                         }
 
+                        is AuthViewModel.CertificationEvent.failCertificationCode -> {
+                            binding.certificationNumberEditText1.requestFocus()
+                        }
+
                     }
 
                 }

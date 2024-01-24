@@ -74,6 +74,8 @@ interface AuthViewModel {
         object SubmitCertificationCode : CertificationEvent()
         object ReSend : CertificationEvent()
         object NavigateToSignUpSuccess : CertificationEvent()
+
+        object failCertificationCode : CertificationEvent()
     }
 
     enum class Social{

@@ -234,15 +234,12 @@ class AuthViewModelImpl @Inject constructor(
                     sharedPreferencesUtils.saveAccessToken(it.accessToken)
                     sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
                     certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
-                }.onFail {
-                    // Taost 메시지
-                    resetCertificationNumber()
-                }.onError {
-                    resetCertificationNumber()
-                }.onException {
-                    resetCertificationNumber()
-                }
 
+                }.onFail {
+                    // Toast 메시지 있으면 좋을듯
+                    resetCertificationNumber()
+                    certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
+                }
             }
         }
     }
