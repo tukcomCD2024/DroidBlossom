@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
-import site.timecapsulearchive.core.domain.auth.exception.NotFoundCertificationNumberException;
-import site.timecapsulearchive.core.domain.auth.exception.NotMatchCertificationNumberException;
+import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
+import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
@@ -76,10 +76,10 @@ public class MessageVerificationService {
         final String receiver
     ) {
         String findCertificationNumber = messageAuthenticationCacheRepository.get(memberId)
-            .orElseThrow(NotFoundCertificationNumberException::new);
+            .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
-            throw new NotMatchCertificationNumberException();
+            throw new CertificationNumberNotMatchException();
         }
         updateMemberData(memberId, receiver);
 

@@ -45,8 +45,6 @@ public class SecreteCapsuleService {
 
         Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
 
-        point.setSRID(3857);
-
         Capsule newCapsule = capsuleRepository.save(
             capsuleMapper.requestDtoToEntity(dto, point, address, findMember, capsuleSkin));
 
