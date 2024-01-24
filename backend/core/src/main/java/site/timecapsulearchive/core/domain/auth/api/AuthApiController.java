@@ -149,7 +149,7 @@ public class AuthApiController implements AuthApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationNumberValidRequest request
     ) {
-        TokenResponse response = messageVerificationService.getRandomNickname(
+        TokenResponse response = messageVerificationService.validVerificationMessage(
             memberId,
             request.certificationNumber(),
             request.receiver()
