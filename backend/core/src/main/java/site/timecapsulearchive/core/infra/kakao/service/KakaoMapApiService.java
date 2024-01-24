@@ -58,13 +58,6 @@ public class KakaoMapApiService {
         return addressMapper.roadAddressToAddress(document.roadAddressDto());
     }
 
-    private HttpEntity<Void> getHttpEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, kakaoMapProperties.apiKey());
-
-        return new HttpEntity<>(null, headers);
-    }
-
     private URI getKakaoMapApiUrl(Double longitude, Double latitude) {
         return UriComponentsBuilder.fromHttpUrl(URL)
             .path(PATH)
@@ -72,5 +65,12 @@ public class KakaoMapApiService {
             .queryParam(LATITUDE, latitude)
             .build()
             .toUri();
+    }
+
+    private HttpEntity<Void> getHttpEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, kakaoMapProperties.apiKey());
+
+        return new HttpEntity<>(null, headers);
     }
 }
