@@ -143,7 +143,7 @@ public interface AuthApi {
     )
     ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(SignInRequest request);
 
-     @Operation(
+    @Operation(
         summary = "임시 인증 토큰 재발급",
         description = "인증되지 않은 사용자가 인증할 수 있는 임시 인증 토큰을 재발급한다.",
         tags = {"auth"}
@@ -160,7 +160,7 @@ public interface AuthApi {
         consumes = {"application/json"}
     )
     ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
-         TemporaryTokenReIssueRequest request);
+        TemporaryTokenReIssueRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",

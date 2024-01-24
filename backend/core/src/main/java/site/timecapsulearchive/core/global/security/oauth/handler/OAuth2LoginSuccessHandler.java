@@ -12,10 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.global.security.oauth.dto.CustomOAuth2User;
 import site.timecapsulearchive.core.domain.auth.service.TokenService;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
+import site.timecapsulearchive.core.global.security.oauth.dto.CustomOAuth2User;
 
 @Slf4j
 @Component
