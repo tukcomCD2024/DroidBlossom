@@ -17,15 +17,18 @@ class ValidMessageUseCase @Inject constructor(
     private val repository : AuthRepository
 ) {
     suspend operator fun invoke(request : VerificationNumberValidRequestDto) = flow<RetrofitResult<Token>>{
-        emit(repository.authValidMessage(request).onSuccess {
+        try {
+            emit(repository.authValidMessage(request).onSuccess {
 
-        }.onFail {
+            }.onFail {
 
-        }.onError {
-
-        }.onException {
-
-        })
-
+            }.onError {
+                throw Exception(it)
+            }.onException {
+                throw Exception(it)
+            })
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 }

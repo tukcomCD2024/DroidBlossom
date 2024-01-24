@@ -15,19 +15,22 @@ class TestUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
     operator fun invoke() = flow<RetrofitResult<Health>> {
+        try {
+            emit(repository.getText().onSuccess {
+                Log.d("qwer", "${it.message}")
 
-        emit(repository.getText().onSuccess {
-            Log.d("qwer", "${it.message}")
+            }.onFail {
+                Log.d("qwer", "실패")
 
-        }.onFail {
-            Log.d("qwer", "실패")
-
-        }.onError {
-            Log.d("qwer", "에러")
-
-        }.onException {
-            Log.d("qwer", "예외")
-
-        })
+            }.onError {
+                Log.d("qwer", "에러")
+                throw Exception(it)
+            }.onException {
+                Log.d("qwer", "예외")
+                throw Exception(it)
+            })
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 }

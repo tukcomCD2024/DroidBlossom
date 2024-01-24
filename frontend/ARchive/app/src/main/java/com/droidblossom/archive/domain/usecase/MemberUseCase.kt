@@ -15,14 +15,18 @@ class MemberUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
     operator fun invoke() = flow<RetrofitResult<MemberDetail>> {
-        emit(repository.getMe().onSuccess {
-            Log.d("qwer", "성공")
-        }.onFail {
-            Log.d("qwer", "${it}")
-        }.onError {
-
-        }.onException {
-
-        })
+        try {
+            emit(repository.getMe().onSuccess {
+                Log.d("qwer", "성공")
+            }.onFail {
+                Log.d("qwer", "${it}")
+            }.onError {
+                throw Exception(it)
+            }.onException {
+                throw Exception(it)
+            })
+        } catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 }

@@ -16,18 +16,22 @@ class ReIssueUseCase @Inject constructor(
     private val repository : AuthRepository
 ){
     suspend operator fun invoke(request : TokenReIssueRequestDto) = flow<RetrofitResult<Token>>{
-        repository.authReIssue(request)
-            .onSuccess {
-                Log.d("후후후", "성공 - 재발급")
-            }.onFail {
-                Log.d("후후후", "실패 - 재발급")
+        try {
+            repository.authReIssue(request)
+                .onSuccess {
+                    Log.d("후후후", "성공 - 재발급")
+                }.onFail {
+                    Log.d("후후후", "실패 - 재발급")
 
-            }.onError {
-                Log.d("후후후", "에러 - 재발급")
-
-            }.onException {
-                Log.d("후후후", "예외 - 재발급")
-
-            }
+                }.onError {
+                    Log.d("후후후", "에러 - 재발급")
+                    throw Exception(it)
+                }.onException {
+                    Log.d("후후후", "예외 - 재발급")
+                    throw Exception(it)
+                }
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 }

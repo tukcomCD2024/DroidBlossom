@@ -1,10 +1,6 @@
 package com.droidblossom.archive.domain.usecase
 
-import android.util.Log
-import com.droidblossom.archive.data.dto.auth.request.VerificationMessageSendRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
-import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
-import com.droidblossom.archive.domain.model.auth.VerificationMessageResult
 import com.droidblossom.archive.domain.model.member.MemberStatus
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.util.RetrofitResult
@@ -20,15 +16,20 @@ class MemberStatusUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(request: MemberStatusRequestDto) =
         flow<RetrofitResult<MemberStatus>> {
-            emit(repository.postMemberStatus(request)
-                .onSuccess {
+            try {
+                emit(repository.postMemberStatus(request)
+                    .onSuccess {
 
-                }.onFail {
+                    }.onFail {
 
-                }.onError {
+                    }.onError {
+                        throw Exception(it)
+                    }.onException {
+                        throw Exception(it)
+                    })
 
-                }.onException {
-
-                })
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 }
