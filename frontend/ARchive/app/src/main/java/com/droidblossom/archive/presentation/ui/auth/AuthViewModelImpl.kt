@@ -143,7 +143,7 @@ class AuthViewModelImpl @Inject constructor(
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onError {
                     // ToastMessage 있으면 좋을듯
-                    
+                    Log.d("티티","submitSignUpData 에러")
                 }
             }
         }

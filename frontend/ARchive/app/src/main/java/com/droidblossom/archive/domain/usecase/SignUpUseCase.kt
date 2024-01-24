@@ -17,17 +17,19 @@ class SignUpUseCase @Inject constructor(
     suspend operator fun invoke(request: SignUpRequestDto) =
         flow<RetrofitResult<TemporaryToken>> {
             try {
-                emit(repository.authSignUp(request)
-                    .onSuccess {
+                emit(repository.authSignUp(request).onSuccess {
 
-                    }.onFail {
+                })
+                emit(repository.authSignUp(request).onFail {
 
-                    }.onError {
-                        throw Exception(it)
-                    }.onException {
-                        throw Exception(it)
-                    })
-            } catch (e: Exception){
+                })
+                repository.authSignUp(request).onError {
+                    throw Exception(it)
+                }
+                repository.authSignUp(request).onException {
+                    throw Exception(it)
+                }
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
