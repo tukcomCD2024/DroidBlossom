@@ -41,8 +41,12 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
         navController = Navigation.findNavController(view)
 
         binding.confirmBtn.setOnClickListener {
-            // 휴대폰 번호 유효성 검사 필요
-            viewModel.signUpEvent(AuthViewModel.SigUpnEvent.SendPhoneNumber)
+            //viewModel.signUpEvent(AuthViewModel.SigUpnEvent.SendPhoneNumber)
+
+            if (viewModel.checkPhoneNumber()) viewModel.signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
+            else{
+                // ToastMessage
+            }
         }
 
     }
@@ -54,12 +58,12 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
                 viewModel.signUpEvents.collect { event ->
                     when (event) {
 
-                        is AuthViewModel.SigUpnEvent.SendPhoneNumber -> {
+                        is AuthViewModel.SignUpEvent.SendPhoneNumber -> {
                             // 서버에게 폰 번호, 해시 보내기
-                            viewModel.signUpEvent(AuthViewModel.SigUpnEvent.NavigateToCertification)
+                            //viewModel.signUpEvent(AuthViewModel.SigUpnEvent.NavigateToCertification)
                         }
 
-                        is AuthViewModel.SigUpnEvent.NavigateToCertification -> {
+                        is AuthViewModel.SignUpEvent.NavigateToCertification -> {
 
                             if(navController.currentDestination?.id != R.id.certificationFragment) {
                                 navController.navigate(R.id.action_signUpFragment_to_certificationFragment)

@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.auth.SignIn
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
+import com.droidblossom.archive.domain.model.auth.VerificationNumberValid
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
 import com.droidblossom.archive.domain.usecase.ReIssueUseCase
 import com.droidblossom.archive.domain.usecase.SendMessageUseCase
 import com.droidblossom.archive.domain.usecase.SignInUseCase
 import com.droidblossom.archive.domain.usecase.SignUpUseCase
+import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
@@ -39,7 +41,7 @@ class AuthViewModelImpl @Inject constructor(
     private val sendMessageUseCase: SendMessageUseCase,
     private val signInUseCase: SignInUseCase,
     private val signUpUseCase : SignUpUseCase,
-    private val validMessageUseCase: SendMessageUseCase,
+    private val validMessageUseCase: ValidMessageUseCase,
     private val memberStatusUseCase: MemberStatusUseCase
 ) : BaseViewModel(), AuthViewModel {
 
@@ -48,8 +50,8 @@ class AuthViewModelImpl @Inject constructor(
     override val signInEvents: SharedFlow<AuthViewModel.SignInEvent> = _signInEvents.asSharedFlow()
 
     // SignUpFragment
-    private val _signUpEvents = MutableSharedFlow<AuthViewModel.SigUpnEvent>()
-    override val signUpEvents: SharedFlow<AuthViewModel.SigUpnEvent> = _signUpEvents.asSharedFlow()
+    private val _signUpEvents = MutableSharedFlow<AuthViewModel.SignUpEvent>()
+    override val signUpEvents: SharedFlow<AuthViewModel.SignUpEvent> = _signUpEvents.asSharedFlow()
 
     private val _phoneNumber = MutableStateFlow("")
     override val phoneNumber: MutableStateFlow<String> = _phoneNumber
@@ -142,7 +144,7 @@ class AuthViewModelImpl @Inject constructor(
     }
 
     // SignUpFragment
-    override fun signUpEvent(event: AuthViewModel.SigUpnEvent) {
+    override fun signUpEvent(event: AuthViewModel.SignUpEvent) {
         viewModelScope.launch {
             _signUpEvents.emit(event)
         }
@@ -151,38 +153,33 @@ class AuthViewModelImpl @Inject constructor(
     override fun setHash(hash : String) {
         appHash = hash
     }
-    private fun checkPhoneNumber(): Boolean {
+    override fun checkPhoneNumber(): Boolean {
         val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
         if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
             return false
         }
-
         return true
     }
 
     override fun submitPhoneNumber(){
-        if (checkPhoneNumber()){
-            viewModelScope.launch {
-                sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{ result ->
-                    result.onSuccess {
-                        Log.d("테스트", "폰 인증")
-                        signUpEvent(AuthViewModel.SigUpnEvent.NavigateToCertification)
-                    }.onError {
-                        Log.d("테스트", "폰 인증 에러")
-                    }.onFail {
-                        Log.d("테스트", "폰 인증 실패")
-                    }.onException {
-                        Log.d("테스트", "폰 인증 예외")
-                    }
+        // 임시토큰 헤더에 넣고 해야함.
+        viewModelScope.launch {
+            sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{ result ->
+                result.onSuccess {
+                    Log.d("테스트", "폰 인증")
 
+                }.onError {
+                    Log.d("테스트", "폰 인증 에러")
+                }.onFail {
+                    Log.d("테스트", "폰 인증 실패")
+                }.onException {
+                    Log.d("테스트", "폰 인증 예외")
                 }
+
             }
-        }else{
-            // Toast 보여줘야할듯?
         }
 
     }
-
 
     // CertificationFragment
     override fun certificationEvent(event: AuthViewModel.CertificationEvent) {
@@ -205,6 +202,40 @@ class AuthViewModelImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun automaticInput(number : String){
+
+    }
+    override fun submitCertificationNumber(){
+        viewModelScope.launch {
+            validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
+                result.onSuccess {
+                    certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
+                }.onFail {
+                    // Taost 메시지
+                    resetCertificationNumber()
+                }.onError {
+                    resetCertificationNumber()
+                }.onException {
+                    resetCertificationNumber()
+                }
+
+            }
+        }
+    }
+
+    override fun reSend(){
+        initTimer()
+        resetCertificationNumber()
+        submitPhoneNumber()
+    }
+
+    private fun resetCertificationNumber(){
+        certificationNumber1.value = ""
+        certificationNumber2.value = ""
+        certificationNumber3.value = ""
+        certificationNumber4.value = ""
     }
 
 }

@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SendMessageUseCase @Inject constructor(
-    private val repository : AuthRepository
+    private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(request : VerificationMessageSendRequestDto) = flow<RetrofitResult<VerificationMessageResult>>{
-        repository.authValidMessageSend(request)
-            .onSuccess {
+    suspend operator fun invoke(request: VerificationMessageSendRequestDto) =
+        flow<RetrofitResult<VerificationMessageResult>> {
+            emit(repository.authValidMessageSend(request).onSuccess {
                 Log.d("후후후", "성공 - 인증문자 전송")
 
             }.onFail {
@@ -31,6 +31,7 @@ class SendMessageUseCase @Inject constructor(
             }.onException {
                 Log.d("후후후", "예외 - 인증문자 전송")
 
-            }
-    }
+            })
+
+        }
 }

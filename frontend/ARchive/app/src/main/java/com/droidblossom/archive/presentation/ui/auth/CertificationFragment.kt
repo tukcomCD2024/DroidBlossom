@@ -41,6 +41,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(binding.certificationNumberEditText1, InputMethodManager.SHOW_IMPLICIT)
         }
+        viewModel.submitPhoneNumber()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,6 +59,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
         with(binding){
             resendBtn.setOnClickListener {
                 viewModel.certificationEvent(AuthViewModel.CertificationEvent.ReSend)
+                viewModel.reSend()
             }
 
             setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
@@ -74,7 +76,8 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                     .filter { it.length == 4 }
                     .collect { certificationNum ->
                         // 길이가 4일 때의 처리 로직
-                        viewModel.certificationEvent(AuthViewModel.CertificationEvent.SubmitCertificationCode)
+                        //viewModel.certificationEvent(AuthViewModel.CertificationEvent.SubmitCertificationCode)
+                        viewModel.submitCertificationNumber()
                     }
             }
         }
@@ -87,6 +90,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                         is AuthViewModel.CertificationEvent.ReSend -> {
                             // 서버에게 재전송 요청
                             viewModel.initTimer()
+                            viewModel.submitPhoneNumber()
                         }
 
                         is AuthViewModel.CertificationEvent.SubmitCertificationCode -> {
@@ -125,7 +129,8 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
     }
 
     override fun onOtpReceived(otp: String) {
-        Toast.makeText(requireContext(), otp, Toast.LENGTH_SHORT).show()
+        viewModel.automaticInput(otp)
+        //Toast.makeText(requireContext(), otp, Toast.LENGTH_SHORT).show()
     }
     private fun startSmsRetriever() {
         SmsRetriever.getClient(requireContext()).startSmsRetriever().also { task ->

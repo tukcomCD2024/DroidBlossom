@@ -13,7 +13,7 @@ interface AuthViewModel {
     val signInEvents: SharedFlow<SignInEvent>
 
     // SignUp
-    val signUpEvents: SharedFlow<SigUpnEvent>
+    val signUpEvents: SharedFlow<SignUpEvent>
 
     // Certification
     val certificationEvents: SharedFlow<CertificationEvent>
@@ -39,8 +39,9 @@ interface AuthViewModel {
     fun submitSignUpData(signUpData : SignUp)
 
     // SignUp
-    fun signUpEvent(event: SigUpnEvent)
+    fun signUpEvent(event: SignUpEvent)
 
+    fun checkPhoneNumber(): Boolean
     fun setHash(hash : String)
     fun submitPhoneNumber()
 
@@ -48,6 +49,10 @@ interface AuthViewModel {
     fun initTimer()
     fun startTimer()
     fun certificationEvent(event: CertificationEvent)
+    fun reSend()
+    fun automaticInput(number : String)
+
+    fun submitCertificationNumber()
 
     sealed class SignInEvent {
         data class SocialSignSuccess(val signUpData : SignUp) : SignInEvent()
@@ -57,11 +62,11 @@ interface AuthViewModel {
 
     }
 
-    sealed class SigUpnEvent {
+    sealed class SignUpEvent {
 
         // data class로 바꿔야함
-        object SendPhoneNumber : SigUpnEvent()
-        object NavigateToCertification : SigUpnEvent()
+        object SendPhoneNumber : SignUpEvent()
+        object NavigateToCertification : SignUpEvent()
     }
 
     sealed class CertificationEvent {
