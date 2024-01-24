@@ -15,17 +15,17 @@ public interface S3Api {
     @Operation(
         summary = "s3 업로드 미리 서명된 주소 요청",
         description = "캡술 이미지/비디오 업로드할 수 있는 미리 서명된 주소를 응답한다.",
-        security = {@SecurityRequirement(name= "temporary_user_token")},
+        security = {@SecurityRequirement(name = "temporary_user_token")},
         tags = {"s3"}
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "s3업로드 미리 서명된 주소 반환"
+            description = "s3업로드에 필요한 주소 반환"
         )
     })
     @PostMapping(
-        value = "/presigned_url",
+        value = "/upload-url",
         consumes = {"application/json"},
         produces = {"application/json"}
     )
@@ -33,6 +33,4 @@ public interface S3Api {
         Long memberId,
         S3PreSignedUrlRequest request
     );
-
-
 }
