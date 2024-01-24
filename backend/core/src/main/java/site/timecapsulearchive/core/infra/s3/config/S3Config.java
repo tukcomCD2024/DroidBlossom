@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
@@ -14,15 +13,6 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 public class S3Config {
 
     private final S3Properties s3Properties;
-
-    @Bean
-    public S3Client s3Client() {
-        return S3Client
-            .builder()
-            .credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials()))
-            .region(Region.of(s3Properties.region()))
-            .build();
-    }
 
     @Bean
     public S3Presigner s3Presigner() {
@@ -39,5 +29,9 @@ public class S3Config {
 
     public String getBucketName() {
         return s3Properties.bucket();
+    }
+
+    public String getS3Location() {
+        return s3Properties.region();
     }
 }
