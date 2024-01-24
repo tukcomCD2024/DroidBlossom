@@ -9,6 +9,6 @@ data class MemberStatusResponseDto(
 ) : Serializable {
     fun toModel() = MemberStatus(
         isExist = this.isExist,
-        isVerified = this.isExist
+        isVerified = this.isVerified
     )
 }
