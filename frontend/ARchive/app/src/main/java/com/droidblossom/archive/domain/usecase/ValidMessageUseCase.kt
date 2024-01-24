@@ -14,25 +14,26 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ValidMessageUseCase @Inject constructor(
-    private val repository : AuthRepository
+    private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(request : VerificationNumberValidRequestDto) = flow<RetrofitResult<Token>>{
-        try {
-            emit(repository.authValidMessage(request).onSuccess{
+    suspend operator fun invoke(request: VerificationNumberValidRequestDto) =
+        flow<RetrofitResult<Token>> {
+            try {
+                emit(repository.authValidMessage(request).onSuccess {
 
-            })
-            emit(repository.authValidMessage(request).onFail {
+                })
+                emit(repository.authValidMessage(request).onFail {
 
-            })
-            repository.authValidMessage(request).onError {
-                throw Exception(it)
+                })
+                repository.authValidMessage(request).onError {
+                    throw Exception(it)
+                }
+                repository.authValidMessage(request).onException {
+                    throw Exception(it)
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            repository.authValidMessage(request).onException {
-                throw Exception(it)
-            }
-
-        } catch (e: Exception){
-            e.printStackTrace()
         }
-    }
 }

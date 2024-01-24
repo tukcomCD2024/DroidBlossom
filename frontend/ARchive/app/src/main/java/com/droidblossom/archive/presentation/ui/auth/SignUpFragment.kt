@@ -41,9 +41,11 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
         navController = Navigation.findNavController(view)
 
         binding.confirmBtn.setOnClickListener {
-            if (viewModel.checkPhoneNumber()) viewModel.signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
+            if (viewModel.checkPhoneNumber()){
+                viewModel.submitPhoneNumber()
+            }
             else{
-                // ToastMessage
+                // ToastMessage 있으면 좋을듯
             }
         }
 

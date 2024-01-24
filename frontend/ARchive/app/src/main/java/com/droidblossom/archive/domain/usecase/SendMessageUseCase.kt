@@ -22,20 +22,18 @@ class SendMessageUseCase @Inject constructor(
         flow<RetrofitResult<VerificationMessageResult>> {
             try {
                 emit(repository.authValidMessageSend(request).onSuccess {
-                    Log.d("후후후", "성공 - 인증문자 전송")
 
-                }.onFail {
-                    Log.d("후후후", "실패 - 인증문자 전송")
-
-                }.onError {
-                    Log.d("후후후", "에러 - 인증문자 전송")
-                    throw Exception(it)
-                }.onException {
-                    Log.d("후후후", "예외 - 인증문자 전송")
-                    throw Exception(it)
                 })
+                emit(repository.authValidMessageSend(request).onFail {
+
+                })
+                repository.authValidMessageSend(request).onError {
+                    throw Exception(it)
+                }
+                repository.authValidMessageSend(request).onException {
+                    throw Exception(it)
+                }
             } catch (e: Exception){
-                Log.d("제발", "${e}")
                 e.printStackTrace()
 
             }

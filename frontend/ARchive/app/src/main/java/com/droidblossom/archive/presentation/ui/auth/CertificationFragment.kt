@@ -40,7 +40,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(binding.certificationNumberEditText1, InputMethodManager.SHOW_IMPLICIT)
         }
-        viewModel.submitPhoneNumber()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,8 +56,8 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
         with(binding){
             resendBtn.setOnClickListener {
-                viewModel.certificationEvent(AuthViewModel.CertificationEvent.ReSend)
                 viewModel.reSend()
+                binding.certificationNumberEditText1.requestFocus()
             }
 
             setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
