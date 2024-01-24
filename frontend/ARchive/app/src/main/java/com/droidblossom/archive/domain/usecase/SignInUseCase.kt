@@ -20,13 +20,16 @@ class SignInUseCase @Inject constructor(
             try {
                 emit(repository.authSignIn(request).onSuccess {
 
-                }.onFail {
-
-                }.onError {
-                    throw Exception(it)
-                }.onException {
-                    throw Exception(it)
                 })
+                emit(repository.authSignIn(request).onFail {
+
+                })
+                repository.authSignIn(request).onError {
+                    throw Exception(it)
+                }
+                repository.authSignIn(request).onException {
+                    throw Exception(it)
+                }
             } catch (e: Exception){
                 e.printStackTrace()
             }

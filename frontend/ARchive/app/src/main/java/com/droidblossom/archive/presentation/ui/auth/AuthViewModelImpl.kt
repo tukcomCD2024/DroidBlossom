@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.domain.model.auth.SignIn
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
@@ -120,15 +121,13 @@ class AuthViewModelImpl @Inject constructor(
             signInUseCase(signInData.toDto()).collect{ result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
+                    ARchiveApplication.sp.resetTokenData()
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
-                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
-                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
-
+                    ARchiveApplication.sp.saveAccessToken(it.accessToken)
+                    ARchiveApplication.sp.saveRefreshToken(it.refreshToken)
                 }.onError {
-
-                }.onFail {
-                }.onException {
-
+                    // ToastMessage 있으면 좋을듯
+                    Log.d("티티","submitSignInData 에러")
                 }
             }
         }
@@ -139,8 +138,12 @@ class AuthViewModelImpl @Inject constructor(
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
+                    ARchiveApplication.sp.resetTokenData()
                     sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                }.onError {
+                    // ToastMessage 있으면 좋을듯
+                    
                 }
             }
         }
@@ -148,8 +151,6 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun getTemporaryToken(temporaryTokenReIssue : SignIn){
         viewModelScope.launch {
-            Log.d("으아","오나")
-            Log.d("으아",temporaryTokenReIssue.authId + " "+ temporaryTokenReIssue.socialType)
             temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
                 result.onSuccess {
                     sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
@@ -192,6 +193,8 @@ class AuthViewModelImpl @Inject constructor(
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
                     // 아마 5번 하루 5번 이상 이면 안 실패(?)
+                    Log.d("티티","submitPhoneNumber 에러")
+
                 }
 
             }
@@ -234,6 +237,8 @@ class AuthViewModelImpl @Inject constructor(
                     // Toast 메시지 있으면 좋을듯
                     resetCertificationNumber()
                     certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
+                    Log.d("티티","submitCertificationNumber 에러")
+
                 }
             }
         }
