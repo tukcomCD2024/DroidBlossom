@@ -36,6 +36,14 @@ class SharedPreferencesUtils(context: Context) {
         return pref.getString("RefreshToken", "") ?: ""
     }
 
+    fun resetTokenData(){
+        pref.edit().apply {
+            remove("AccessToken")
+            remove("RefreshToken")
+            apply()
+        }
+    }
+
     companion object {
         private const val FILE_NAME = "ARchive_encrypted_pref_file"
     }
