@@ -95,6 +95,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         } catch (e: ApiException) {
             //Log.w("구글", "signInResult:failed code=" + e.statusCode)
             callback.onLoginFailure(e)
+            Log.d("후후후", "구글 에러 : ${e}")
         }
     }
 }

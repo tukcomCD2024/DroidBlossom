@@ -19,7 +19,7 @@ class AccessTokenInterceptor @Inject constructor(
         Log.d("accessToken",jwt.toString())
 
         jwt?.let {
-            builder.addHeader("Authorization", "bearer $jwt")
+            builder.addHeader("Authorization", "Bearer $jwt")
             Log.d("제발",jwt)
         } ?: run {
 

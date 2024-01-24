@@ -71,7 +71,7 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
 //                val md = MessageDigest.getInstance("SHA")
 //                md.update(signature.toByteArray())
 //                Log.d("key2", Base64.encodeToString(md.digest(), Base64.DEFAULT))
-//            } catch (e: NoSuchAlgorithmException) {
+//            } catch (e후: NoSuchAlgorithmException) {
 //                Log.e("key3", "Unable to get MessageDigest. signature=$signature", e)
 //            }
 //        }

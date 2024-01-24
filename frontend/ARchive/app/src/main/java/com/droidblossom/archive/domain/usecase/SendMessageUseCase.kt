@@ -35,7 +35,9 @@ class SendMessageUseCase @Inject constructor(
                     throw Exception(it)
                 })
             } catch (e: Exception){
+                Log.d("제발", "${e}")
                 e.printStackTrace()
+
             }
         }
 }

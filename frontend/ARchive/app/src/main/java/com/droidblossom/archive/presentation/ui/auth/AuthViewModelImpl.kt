@@ -185,6 +185,8 @@ class AuthViewModelImpl @Inject constructor(
     }
 
     override fun submitPhoneNumber(){
+        Log.d("제발",appHash)
+        Log.d("제발",rawPhoneNumber.value)
         // 임시토큰 헤더에 넣고 해야함.
         viewModelScope.launch {
             sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{ result ->
