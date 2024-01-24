@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.auth.dto.request.TemporaryTokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
@@ -133,6 +134,22 @@ public interface AuthApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                요청이 잘못되어 발생하는 오류이다.
+                <ul>
+                <li>올바르지 않은 요청인 경우 예외가 발생한다.</li>
+                <li>인증되지 않은 사용자인 경우 예외가 발생한다.</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "로그인을 요청한 멤버를 찾을 수 없는 경우 예외가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping(
@@ -141,6 +158,41 @@ public interface AuthApi {
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(SignInRequest request);
+
+    @Operation(
+        summary = "임시 인증 토큰 재발급",
+        description = "인증되지 않은 사용자가 인증할 수 있는 임시 인증 토큰을 재발급한다.",
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                요청이 잘못되어 발생하는 오류이다.
+                <ul>
+                <li>올바르지 않은 요청인 경우 예외가 발생한다.</li>
+                <li>인증된 사용자인 경우 예외가 발생한다.</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "로그인을 요청한 멤버를 찾을 수 없는 경우 예외가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    @PostMapping(
+        value = "/temporary-token/re-issue",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
+    ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
+        TemporaryTokenReIssueRequest request);
 
     @Operation(
         summary = "액세스 토큰 재발급",
@@ -223,6 +275,21 @@ public interface AuthApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                요청이 잘못되어 발생하는 오류이다.
+                <ul>
+                <li>인증 번호 4자리가 일치하지 않으면 발생하는 오류이다.</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버로 인증 문자를 발송한 기록이 없으면 발생하는 예외이다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping(

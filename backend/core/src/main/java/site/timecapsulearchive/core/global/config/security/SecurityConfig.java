@@ -76,7 +76,8 @@ public class SecurityConfig {
             antMatcher(HttpMethod.POST, "/auth/sign-up"),
             antMatcher(HttpMethod.POST, "/auth/sign-in"),
             antMatcher(HttpMethod.GET, "/auth/login/**"),
-            antMatcher(HttpMethod.GET, "/health")
+            antMatcher(HttpMethod.GET, "/health"),
+            antMatcher(HttpMethod.POST, "/auth/temporary-token/re-issue")
         );
     }
 
