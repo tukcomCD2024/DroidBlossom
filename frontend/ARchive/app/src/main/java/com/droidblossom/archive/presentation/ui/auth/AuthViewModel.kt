@@ -38,6 +38,8 @@ interface AuthViewModel {
     fun submitSignInData(signInData : SignIn)
     fun submitSignUpData(signUpData : SignUp)
 
+    fun getTemporaryToken(temporaryTokenReIssue : SignIn)
+
     // SignUp
     fun signUpEvent(event: SignUpEvent)
 

@@ -16,6 +16,8 @@ interface AuthRepository {
     suspend fun authValidMessage(request : VerificationNumberValidRequestDto) : RetrofitResult<Token>
     suspend fun authReIssue(request : TokenReIssueRequestDto) : RetrofitResult<Token>
 
+    suspend fun authTemporaryTokenReIssue(request : SignInRequestDto) : RetrofitResult<TemporaryToken>
+
     suspend fun authSignIn(request : SignInRequestDto) : RetrofitResult<Token>
     suspend fun authSignUp(request: SignUpRequestDto) : RetrofitResult<TemporaryToken>
 }

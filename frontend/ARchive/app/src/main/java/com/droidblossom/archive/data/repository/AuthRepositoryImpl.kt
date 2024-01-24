@@ -34,6 +34,10 @@ class AuthRepositoryImpl @Inject constructor(
         return apiHandler({ api.postReIssueApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
     }
 
+    override suspend fun authTemporaryTokenReIssue(request: SignInRequestDto): RetrofitResult<TemporaryToken> {
+        return apiHandler({ api.postTemporaryTokenReIssueApi(request) }) { response : ResponseBody<TemporaryTokenResponseDto> -> response.result.toModel() }
+    }
+
 
     override suspend fun authSignIn(request: SignInRequestDto) : RetrofitResult<Token> {
         return apiHandler({ api.postSignIpApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}

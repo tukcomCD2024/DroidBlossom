@@ -12,8 +12,10 @@ import com.droidblossom.archive.domain.usecase.ReIssueUseCase
 import com.droidblossom.archive.domain.usecase.SendMessageUseCase
 import com.droidblossom.archive.domain.usecase.SignInUseCase
 import com.droidblossom.archive.domain.usecase.SignUpUseCase
+import com.droidblossom.archive.domain.usecase.TemporaryTokenReIssueUseCase
 import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.TokenUtils
 import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
@@ -42,7 +44,9 @@ class AuthViewModelImpl @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signUpUseCase : SignUpUseCase,
     private val validMessageUseCase: ValidMessageUseCase,
-    private val memberStatusUseCase: MemberStatusUseCase
+    private val memberStatusUseCase: MemberStatusUseCase,
+    private val temporaryTokenReIssueUseCase: TemporaryTokenReIssueUseCase,
+    private val tokenUtils : TokenUtils
 ) : BaseViewModel(), AuthViewModel {
 
     // SignInFragment
@@ -100,9 +104,10 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
                 result.onSuccess {it ->
-                    Log.d("테스트", "$it")
                     if (it.isVerified){
                         submitSignInData(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
+                    }else if(it.isExist){
+                        getTemporaryToken(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
                     }else{
                         submitSignUpData(signUpData)
                     }
@@ -117,14 +122,13 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess {
                     // 토큰 저장 로직 추가
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
+                    tokenUtils.saveAccessToken(it.accessToken)
+                    tokenUtils.saveRefreshToken(it.refreshTokenExpiresIn)
+
                 }.onError {
-                    Log.d("테스트", "로그인 에러")
 
                 }.onFail {
-                    Log.d("테스트", "로그인 실패")
-
                 }.onException {
-                    Log.d("테스트", "로그인 예외")
 
                 }
             }
@@ -132,12 +136,31 @@ class AuthViewModelImpl @Inject constructor(
     }
 
     override fun submitSignUpData(signUpData : SignUp){
-        Log.d("테스트", "회원가입")
         viewModelScope.launch {
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
+                    tokenUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                }
+            }
+        }
+    }
+
+    override fun getTemporaryToken(temporaryTokenReIssue : SignIn){
+        viewModelScope.launch {
+            Log.d("으아","오나")
+            Log.d("으아",temporaryTokenReIssue.authId + " "+ temporaryTokenReIssue.socialType)
+            temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
+                result.onSuccess {
+                    tokenUtils.saveAccessToken(it.temporaryAccessToken)
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                }.onFail {
+
+                }.onError {
+
+                }.onException {
+
                 }
             }
         }
@@ -167,7 +190,6 @@ class AuthViewModelImpl @Inject constructor(
             sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{ result ->
                 result.onSuccess {
                     Log.d("테스트", "폰 인증")
-
                 }.onError {
                     Log.d("테스트", "폰 인증 에러")
                 }.onFail {

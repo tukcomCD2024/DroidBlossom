@@ -30,6 +30,11 @@ interface AuthService {
         @Body request : TokenReIssueRequestDto
     ) : Response<ResponseBody<TokenResponseDto>>
 
+    @POST("auth/temporary-token/re-issue")
+    suspend fun postTemporaryTokenReIssueApi(
+        @Body request : SignInRequestDto
+    ) : Response<ResponseBody<TemporaryTokenResponseDto>>
+
     @POST("auth/sign-up")
     suspend fun postSignUpApi(
         @Body request: SignUpRequestDto
