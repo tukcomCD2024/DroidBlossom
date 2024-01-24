@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,13 +28,13 @@ public class Video {
     @Column(name = "video_url", nullable = false)
     private String videoUrl;
 
-    @Column(name = "size", nullable = false)
-    private Integer size;
-
-    @Column(name = "video_name", nullable = false)
-    private String videoName;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)
     private Capsule capsule;
+
+    @Builder
+    private Video(String videoUrl, Capsule capsule) {
+        this.videoUrl = videoUrl;
+        this.capsule = capsule;
+    }
 }
