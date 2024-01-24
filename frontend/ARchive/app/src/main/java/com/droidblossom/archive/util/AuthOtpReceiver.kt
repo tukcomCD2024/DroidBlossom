@@ -12,7 +12,7 @@ class AuthOtpReceiver : BroadcastReceiver() {
 
     companion object {
         // 패턴 수정 후 숨기기
-        private const val PATTERN = "^<#>.*\\[Sample\\].+\\[(\\d{6})\\].+\$"
+        private const val PATTERN = "^<#>.*\\[ARchive\\].+\\[(\\d{4})\\].+\$"
     }
 
     private var otpReceiver: OtpReceiveListener? = null
