@@ -31,7 +31,7 @@ public class S3ApiController implements S3Api {
                 s3Service.getS3PreSignedUrls(
                     memberId,
                     request.directory(),
-                    request.fileNames()
+                    request.fileMetaDataList()
                 )
             )
         );
