@@ -34,7 +34,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onResume() {
         super.onResume()
-        startSmsRetriever()
         viewModel.initTimer()
         if (binding.certificationNumberEditText1.requestFocus()) {
             val imm =
@@ -76,7 +75,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                     .filter { it.length == 4 }
                     .collect { certificationNum ->
                         // 길이가 4일 때의 처리 로직
-                        //viewModel.certificationEvent(AuthViewModel.CertificationEvent.SubmitCertificationCode)
                         viewModel.submitCertificationNumber()
                     }
             }
@@ -129,8 +127,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
     }
 
     override fun onOtpReceived(otp: String) {
-        viewModel.automaticInput(otp)
-        //Toast.makeText(requireContext(), otp, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), otp, Toast.LENGTH_SHORT).show()
     }
     private fun startSmsRetriever() {
         SmsRetriever.getClient(requireContext()).startSmsRetriever().also { task ->
@@ -158,7 +155,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onDestroy() {
         super.onDestroy()
-        stopSmsRetriever()
     }
 
 }

@@ -52,8 +52,6 @@ interface AuthViewModel {
     fun startTimer()
     fun certificationEvent(event: CertificationEvent)
     fun reSend()
-    fun automaticInput(number : String)
-
     fun submitCertificationNumber()
 
     sealed class SignInEvent {

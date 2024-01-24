@@ -48,7 +48,6 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
             override fun onLoginSuccess(memberStatusCheckData : CheckStatus,signUpData : SignUp) {
-                //viewModel.signInEvent(AuthViewModel.SignInEvent.SocialSignSuccess(signUpData))
                 viewModel.memberStatusCheck(memberStatusCheckData, signUpData)
             }
 

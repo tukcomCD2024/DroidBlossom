@@ -227,9 +227,6 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
-    override fun automaticInput(number : String){
-
-    }
     override fun submitCertificationNumber(){
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
