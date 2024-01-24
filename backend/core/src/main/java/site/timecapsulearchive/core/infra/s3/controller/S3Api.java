@@ -15,7 +15,7 @@ public interface S3Api {
     @Operation(
         summary = "s3 업로드 미리 서명된 주소 요청",
         description = "캡술 이미지/비디오 업로드할 수 있는 미리 서명된 주소를 응답한다.",
-        security = {@SecurityRequirement(name = "temporary_user_token")},
+        security = {@SecurityRequirement(name = "user_token")},
         tags = {"s3"}
     )
     @ApiResponses(value = {

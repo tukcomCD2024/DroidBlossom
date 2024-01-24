@@ -20,7 +20,9 @@ public class SwaggerConfig {
             .servers(getServers())
             .info(getInfo())
             .components(new Components()
-                .addSecuritySchemes("temporary_user_token", apiKeySecuritySchema()));
+                .addSecuritySchemes("temporary_user_token", temporaryTokenSecuritySchema())
+                .addSecuritySchemes("user_token", tokenSecuritySchema())
+            );
     }
 
     private List<Server> getServers() {
@@ -37,7 +39,16 @@ public class SwaggerConfig {
             .version("v1");
     }
 
-    public SecurityScheme apiKeySecuritySchema() {
+    public SecurityScheme temporaryTokenSecuritySchema() {
+        return new SecurityScheme()
+            .name("Authorization")
+            .scheme("bearer")
+            .bearerFormat("JWT")
+            .in(SecurityScheme.In.HEADER)
+            .type(SecurityScheme.Type.HTTP);
+    }
+
+    public SecurityScheme tokenSecuritySchema() {
         return new SecurityScheme()
             .name("Authorization")
             .scheme("bearer")
