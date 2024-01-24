@@ -12,20 +12,27 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class TemporaryTokenReIssueUseCase @Inject constructor(
-    private val repository : AuthRepository
+    private val repository: AuthRepository
 ) {
     suspend operator fun invoke(request: SignInRequestDto) =
         flow<RetrofitResult<TemporaryToken>> {
-            emit(repository.authTemporaryTokenReIssue(request)
-                .onSuccess {
-
-                }.onFail {
-
-                }.onError {
-
-                }.onException {
+            try {
+                emit(repository.authTemporaryTokenReIssue(request).onSuccess {
 
                 })
+                emit(repository.authTemporaryTokenReIssue(request).onFail {
+
+                })
+                repository.authTemporaryTokenReIssue(request).onError {
+
+                }
+                repository.authTemporaryTokenReIssue(request).onException {
+
+                }
+            }catch (e: Exception) {
+                e.printStackTrace()
+            }
+
 
         }
 }

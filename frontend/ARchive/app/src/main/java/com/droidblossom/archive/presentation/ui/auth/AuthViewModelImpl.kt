@@ -139,7 +139,7 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess {
                     // 토큰 저장 로직 추가
                     ARchiveApplication.sp.resetTokenData()
-                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    ARchiveApplication.sp.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onError {
                     // ToastMessage 있으면 좋을듯
@@ -153,14 +153,11 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
                 result.onSuccess {
-                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    ARchiveApplication.sp.resetTokenData()
+                    ARchiveApplication.sp.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-
-                }.onError {
-
-                }.onException {
-
+                    Log.d("티티","temporaryTokenReIssue 에러")
                 }
             }
         }
