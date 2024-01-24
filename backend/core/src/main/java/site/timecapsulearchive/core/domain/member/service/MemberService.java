@@ -62,6 +62,7 @@ public class MemberService {
      * @param authId     사용자의 소셜 프로바이더 인증 id
      * @param socialType 사용자의 소셜 프로바이더 타입
      * @return 인증된 사용자의 아이디
+     * @throws NotVerifiedMemberException 인증되지 않은 사용자인 경우에 발생하는 예외
      */
     public Long findVerifiedMemberIdByAuthIdAndSocialType(
         final String authId,
