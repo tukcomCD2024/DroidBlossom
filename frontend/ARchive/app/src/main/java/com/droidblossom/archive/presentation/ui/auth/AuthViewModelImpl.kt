@@ -15,7 +15,7 @@ import com.droidblossom.archive.domain.usecase.SignUpUseCase
 import com.droidblossom.archive.domain.usecase.TemporaryTokenReIssueUseCase
 import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.util.TokenUtils
+import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -46,7 +45,7 @@ class AuthViewModelImpl @Inject constructor(
     private val validMessageUseCase: ValidMessageUseCase,
     private val memberStatusUseCase: MemberStatusUseCase,
     private val temporaryTokenReIssueUseCase: TemporaryTokenReIssueUseCase,
-    private val tokenUtils : TokenUtils
+    private val sharedPreferencesUtils : SharedPreferencesUtils
 ) : BaseViewModel(), AuthViewModel {
 
     // SignInFragment
@@ -122,8 +121,8 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess {
                     // 토큰 저장 로직 추가
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
-                    tokenUtils.saveAccessToken(it.accessToken)
-                    tokenUtils.saveRefreshToken(it.refreshTokenExpiresIn)
+                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
+                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
 
                 }.onError {
 
@@ -140,7 +139,7 @@ class AuthViewModelImpl @Inject constructor(
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    tokenUtils.saveAccessToken(it.temporaryAccessToken)
+                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }
             }
@@ -153,7 +152,7 @@ class AuthViewModelImpl @Inject constructor(
             Log.d("으아",temporaryTokenReIssue.authId + " "+ temporaryTokenReIssue.socialType)
             temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
                 result.onSuccess {
-                    tokenUtils.saveAccessToken(it.temporaryAccessToken)
+                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
 
@@ -235,6 +234,8 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
                 result.onSuccess {
+                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
+                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
                     certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
                 }.onFail {
                     // Taost 메시지

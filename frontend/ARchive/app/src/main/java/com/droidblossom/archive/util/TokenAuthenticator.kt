@@ -9,7 +9,7 @@ import okhttp3.Route
 import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(
-    private val sp: TokenUtils
+    private val sp: SharedPreferencesUtils
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val isPathRefresh =

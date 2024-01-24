@@ -5,7 +5,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 
-class TokenUtils(context: Context) {
+class SharedPreferencesUtils(context: Context) {
 
     val masterKeyAlias = MasterKey
         .Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)

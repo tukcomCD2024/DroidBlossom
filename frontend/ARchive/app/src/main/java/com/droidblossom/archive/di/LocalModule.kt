@@ -1,7 +1,7 @@
 package com.droidblossom.archive.di
 
 import android.content.Context
-import com.droidblossom.archive.util.TokenUtils
+import com.droidblossom.archive.util.SharedPreferencesUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun providesTokenUtils(@ApplicationContext context: Context) : TokenUtils{
-        return TokenUtils(context)
+    fun providesTokenUtils(@ApplicationContext context: Context) : SharedPreferencesUtils{
+        return SharedPreferencesUtils(context)
     }
 }

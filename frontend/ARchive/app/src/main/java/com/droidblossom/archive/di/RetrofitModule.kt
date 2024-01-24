@@ -3,7 +3,7 @@ package com.droidblossom.archive.di
 import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.util.AccessTokenInterceptor
 import com.droidblossom.archive.util.TokenAuthenticator
-import com.droidblossom.archive.util.TokenUtils
+import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -42,7 +42,7 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun providesOkHttpClient(
-        pf: TokenUtils
+        pf: SharedPreferencesUtils
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             connectTimeout(5, TimeUnit.SECONDS)

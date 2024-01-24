@@ -8,7 +8,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class AccessTokenInterceptor @Inject constructor(
-    private val pr : TokenUtils
+    private val pr : SharedPreferencesUtils
 ) : Interceptor {
 
     @Throws(IOException::class)
