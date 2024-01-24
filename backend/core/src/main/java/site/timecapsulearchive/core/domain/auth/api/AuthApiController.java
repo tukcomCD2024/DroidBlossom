@@ -73,7 +73,15 @@ public class AuthApiController implements AuthApi {
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
         @Valid @RequestBody final TemporaryTokenReIssueRequest request) {
-        return null;
+        Long id = memberService.findNotVerifiedMemberIdByAuthIdAndSocialType(
+            request.authId(), request.socialType());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createTemporaryToken(id)
+            )
+        );
     }
 
     @Override
