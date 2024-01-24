@@ -24,23 +24,43 @@ public class S3Service {
         this.bucketName = s3config.getBucketName();
     }
 
-    public S3PreSignedUrlResponse getS3PreSignedUrls(List<String> fileNames) {
-        return S3PreSignedUrlResponse.from(fileNames.stream()
-            .map(this::createS3PreSignedUrl)
-            .toList()
+    /**
+     * 업로드할 파일 이름들을 받아서 서명된 S3 링크를 반환한다.
+     * @param memberId 업로드할 유저 아이디
+     * @param directory 업로드할 디렉토리
+     * @param fileNames 업로드할 파일 이름
+     * @return 서명된 S3 링크
+     */
+    public S3PreSignedUrlResponse getS3PreSignedUrls(
+        Long memberId,
+        String directory,
+        List<String> fileNames
+    ) {
+        return S3PreSignedUrlResponse.from(
+            fileNames.stream()
+                .map(fileName -> createS3PreSignedUrl(memberId, directory, fileName))
+                .toList()
         );
     }
 
-    private String createS3PreSignedUrl(String fileName) {
-        PutObjectRequest objectRequest = getObjectRequest(fileName);
+    private String createS3PreSignedUrl(Long memberId, String directory, String fileName) {
+        String newFileName = createNewFileName(memberId, directory, fileName);
 
-        PutObjectPresignRequest preSignRequest = getPreSignRequest(objectRequest);
+        PutObjectRequest putObjectRequest = getPutObjectRequest(newFileName);
 
-        PresignedPutObjectRequest preSignedRequest = s3Presigner.presignPutObject(preSignRequest);
-        return preSignedRequest.url().toString();
+        PutObjectPresignRequest putObjectPresignRequest = getPutObjectPreSignRequest(
+            putObjectRequest);
+
+        PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(
+            putObjectPresignRequest);
+        return String.valueOf(presignedPutObjectRequest.url());
     }
 
-    private PutObjectRequest getObjectRequest(String fileName) {
+    private String createNewFileName(Long memberId, String directory, String filename) {
+        return directory + "/" + memberId + "-" + filename;
+    }
+
+    private PutObjectRequest getPutObjectRequest(String fileName) {
         return PutObjectRequest.builder()
             .bucket(bucketName)
             .key(fileName)
@@ -57,7 +77,7 @@ public class S3Service {
         throw new InvalidFileTypeException();
     }
 
-    private PutObjectPresignRequest getPreSignRequest(PutObjectRequest objectRequest) {
+    private PutObjectPresignRequest getPutObjectPreSignRequest(PutObjectRequest objectRequest) {
         return PutObjectPresignRequest.builder()
             .signatureDuration(Duration.ofMinutes(PRE_SIGNED_URL_EXPIRATION_TIME))
             .putObjectRequest(objectRequest)

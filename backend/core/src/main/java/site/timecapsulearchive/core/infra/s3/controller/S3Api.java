@@ -30,6 +30,7 @@ public interface S3Api {
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<S3PreSignedUrlResponse>> getS3PreSignedUrl(
+        Long memberId,
         S3PreSignedUrlRequest request
     );
 
