@@ -41,6 +41,7 @@ interface AuthViewModel {
     // SignUp
     fun signUpEvent(event: SigUpnEvent)
 
+    fun setHash(hash : String)
     fun submitPhoneNumber()
 
     // Certification

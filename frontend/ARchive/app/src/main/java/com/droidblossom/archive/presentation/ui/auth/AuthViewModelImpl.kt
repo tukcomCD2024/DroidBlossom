@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.auth.SignIn
 import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
 import com.droidblossom.archive.domain.usecase.ReIssueUseCase
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +58,10 @@ class AuthViewModelImpl @Inject constructor(
         .map { it.replace("-", "") }
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val rawPhoneNumber: StateFlow<String> = _rawPhoneNumber
+
+    private var appHash : String = ""
+
+
 
     // CertificationFragment
     private val _certificationEvents =  MutableSharedFlow<AuthViewModel.CertificationEvent>()
@@ -92,6 +98,7 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
                 result.onSuccess {it ->
+                    Log.d("테스트", "$it")
                     if (it.isVerified){
                         submitSignInData(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
                     }else{
@@ -108,12 +115,22 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess {
                     // 토큰 저장 로직 추가
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
+                }.onError {
+                    Log.d("테스트", "로그인 에러")
+
+                }.onFail {
+                    Log.d("테스트", "로그인 실패")
+
+                }.onException {
+                    Log.d("테스트", "로그인 예외")
+
                 }
             }
         }
     }
 
     override fun submitSignUpData(signUpData : SignUp){
+        Log.d("테스트", "회원가입")
         viewModelScope.launch {
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
@@ -131,10 +148,39 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
-    override fun submitPhoneNumber(){
-        viewModelScope.launch {
-
+    override fun setHash(hash : String) {
+        appHash = hash
+    }
+    private fun checkPhoneNumber(): Boolean {
+        val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
+        if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
+            return false
         }
+
+        return true
+    }
+
+    override fun submitPhoneNumber(){
+        if (checkPhoneNumber()){
+            viewModelScope.launch {
+                sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{ result ->
+                    result.onSuccess {
+                        Log.d("테스트", "폰 인증")
+                        signUpEvent(AuthViewModel.SigUpnEvent.NavigateToCertification)
+                    }.onError {
+                        Log.d("테스트", "폰 인증 에러")
+                    }.onFail {
+                        Log.d("테스트", "폰 인증 실패")
+                    }.onException {
+                        Log.d("테스트", "폰 인증 예외")
+                    }
+
+                }
+            }
+        }else{
+            // Toast 보여줘야할듯?
+        }
+
     }
 
 
