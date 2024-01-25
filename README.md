@@ -41,11 +41,11 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 ## 🖥️ 시스템 디자인 & 하위 모듈
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0b274bed-1754-44b7-8860-5be834449734">
 
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/a0fc6a69-fb37-4365-94b8-4f30303cfee0" width="280px" height="300px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/88c73b34-daf1-475a-ba90-655370c1d296" width="280px" height="300px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/533ba11d-3ce9-4d78-8aa0-d430e163ef54" width="280px" height="300px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7e3625c-389b-4a7b-95b7-b56117309e79" width="280px" height="300px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/68e6f0f5-5281-469e-b637-d343ac7fcfc7" width="280px" height="300px">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/a0fc6a69-fb37-4365-94b8-4f30303cfee0" width="260px" height="350px">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/88c73b34-daf1-475a-ba90-655370c1d296" width="260px" height="350px">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/533ba11d-3ce9-4d78-8aa0-d430e163ef54" width="260px" height="350px">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7e3625c-389b-4a7b-95b7-b56117309e79" width="260px" height="350px">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/68e6f0f5-5281-469e-b637-d343ac7fcfc7" width="260px" height="350px">
 
 ## ⚙️ 운용 환경
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/aedac9b1-a185-426f-b1a6-d3169d738c8c">
