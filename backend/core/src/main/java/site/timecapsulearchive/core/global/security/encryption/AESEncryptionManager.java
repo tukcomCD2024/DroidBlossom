@@ -10,7 +10,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.global.error.exception.AESEncryptionException;
+import site.timecapsulearchive.core.global.error.exception.EncryptionException;
 
 @Component
 public final class AESEncryptionManager {
@@ -28,7 +28,7 @@ public final class AESEncryptionManager {
         this.key = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 
-    public byte[] encryptWithPrefixIV(byte[] pText) throws AESEncryptionException {
+    public byte[] encryptWithPrefixIV(byte[] pText) throws EncryptionException {
         byte[] iv = getRandomNonce();
         byte[] cipherText = encrypt(pText, iv);
 
@@ -45,7 +45,7 @@ public final class AESEncryptionManager {
 
             return cipher.doFinal(pText);
         } catch (Exception e) {
-            throw new AESEncryptionException(e);
+            throw new EncryptionException(e);
         }
     }
 
@@ -55,7 +55,7 @@ public final class AESEncryptionManager {
         return nonce;
     }
 
-    public String decryptWithPrefixIV(byte[] cText) throws AESEncryptionException {
+    public String decryptWithPrefixIV(byte[] cText) throws EncryptionException {
         ByteBuffer bb = ByteBuffer.wrap(cText);
 
         byte[] iv = new byte[IV_LENGTH_BYTE];
@@ -76,7 +76,7 @@ public final class AESEncryptionManager {
 
             return new String(plainText, UTF_8);
         } catch (Exception e) {
-            throw new AESEncryptionException(e);
+            throw new EncryptionException(e);
         }
     }
 }
