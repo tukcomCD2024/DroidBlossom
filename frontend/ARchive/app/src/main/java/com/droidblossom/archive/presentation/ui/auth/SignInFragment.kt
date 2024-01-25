@@ -1,7 +1,9 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -10,9 +12,13 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignInBinding
+import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.MainActivity
+import com.droidblossom.archive.util.SocialLoginUtil
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -23,31 +29,62 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
     override val viewModel : AuthViewModelImpl by activityViewModels()
 
+    private lateinit var socialLoginUtil: SocialLoginUtil
+
+    private var googleLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            socialLoginUtil.handleGoogleSignInResult(task)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
+
+        socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
+            override fun onLoginSuccess(memberStatusCheckData : CheckStatus,signUpData : SignUp) {
+                viewModel.memberStatusCheck(memberStatusCheckData, signUpData)
+            }
+
+            override fun onLoginFailure(error: Throwable) {
+                // 에러 처리 로직
+            }
+        })
+
         binding.kakaoLoginBtn.setOnClickListener {
-            viewModel.signInToSignUp()
+            socialLoginUtil.kakaoSignIn()
         }
 
         binding.googleLoginBtn.setOnClickListener {
-            viewModel.signInToSignUp()
+            val signInIntent = socialLoginUtil.googleSignIn()
+            googleLoginLauncher.launch(signInIntent)
         }
     }
 
     override fun observeData() {
 
-        lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.SIGNIN_TO_SIGNUP }
-                    .collect { event ->
-                        if(navController.currentDestination?.id != R.id.signUpFragment) {
-                            navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+                viewModel.signInEvents.collect { event ->
+                    when (event) {
+
+                        is AuthViewModel.SignInEvent.NavigateToMain -> {
+                            MainActivity.goMain(requireContext())
                         }
+
+                        is AuthViewModel.SignInEvent.NavigateToSignUp -> {
+                            // 회원가입 화면으로 이동
+                            if(navController.currentDestination?.id != R.id.signUpFragment) {
+                                navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+                            }
+                        }
+
                     }
+                }
             }
         }
-
     }
+
 }

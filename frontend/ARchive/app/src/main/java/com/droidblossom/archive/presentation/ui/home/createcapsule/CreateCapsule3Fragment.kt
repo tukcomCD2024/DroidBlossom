@@ -1,5 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.droidblossom.archive.R
@@ -13,6 +15,10 @@ class CreateCapsule3Fragment :
 
     override val viewModel: CreateCapsuleViewModelImpl by activityViewModels()
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.vm = viewModel
+    }
     override fun observeData() {
     }
 

@@ -1,14 +1,13 @@
 package site.timecapsulearchive.core.domain.auth.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.NotBlank;
 
-@Schema(description = "임시 인증 토큰")
-@Validated
+@Schema(description = "토큰 재발급 요청")
 public record TokenReIssueRequest(
-    @JsonProperty("refreshToken")
+
     @Schema(description = "리프레시 토큰")
+    @NotBlank(message = "리프레시 토큰은 필수입니다.")
     String refreshToken
 ) {
 

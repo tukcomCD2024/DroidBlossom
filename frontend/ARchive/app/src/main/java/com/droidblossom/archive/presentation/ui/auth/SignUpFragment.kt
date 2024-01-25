@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
@@ -13,6 +14,7 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignUpBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -40,27 +42,35 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
         navController = Navigation.findNavController(view)
 
         binding.confirmBtn.setOnClickListener {
-            // 휴대폰 번호 유효성 검사 필요
-
-//            val rawNumber = viewModel.rawPhoneNumber.value
-//            Toast.makeText(requireContext(), rawNumber, Toast.LENGTH_SHORT).show()
-            //Toast.makeText(requireContext(), viewModel.phoneNumber.value, Toast.LENGTH_SHORT).show()
-            viewModel.signUpToCertification()
+            if (viewModel.checkPhoneNumber()){
+                viewModel.submitPhoneNumber()
+            }
+            else{
+                // ToastMessage 있으면 좋을듯
+            }
         }
 
     }
 
     override fun observeData() {
-        lifecycleScope.launch{
+
+        viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.SIGNUP_TO_CERTIFICATION }
-                    .collect { event ->
-                        if(navController.currentDestination?.id != R.id.certificationFragment) {
-                            navController.navigate(R.id.action_signUpFragment_to_certificationFragment)
+                viewModel.signUpEvents.collect { event ->
+                    when (event) {
+
+                        is AuthViewModel.SignUpEvent.NavigateToCertification -> {
+                            if(navController.currentDestination?.id != R.id.certificationFragment) {
+                                navController.navigate(R.id.action_signUpFragment_to_certificationFragment)
+                            }
+
                         }
+
                     }
+                }
             }
         }
+
     }
 
 }
