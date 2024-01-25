@@ -14,7 +14,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
-import site.timecapsulearchive.core.infra.kakao.service.KakaoMapApiService;
+import site.timecapsulearchive.core.infra.map.MapApiService;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class SecreteCapsuleService {
 
     private final MemberService memberService;
     private final MediaService mediaService;
-    private final KakaoMapApiService kakaoMapApiService;
+    private final MapApiService mapApiService;
 
     private final GeoTransformer geoTransformer;
 
@@ -34,7 +34,7 @@ public class SecreteCapsuleService {
     public void createCapsule(Long memberId, CapsuleCreateRequestDto dto) {
         Member findMember = memberService.findMemberByMemberId(memberId);
 
-        Address address = kakaoMapApiService.reverseGeoCoding(
+        Address address = mapApiService.reverseGeoCoding(
             dto.longitude(),
             dto.latitude()
         );

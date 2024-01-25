@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.infra.kakao.service;
+package site.timecapsulearchive.core.infra.map.service;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +11,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.AddressMapper;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.global.error.ErrorCode;
-import site.timecapsulearchive.core.infra.kakao.config.KakaoMapProperties;
-import site.timecapsulearchive.core.infra.kakao.dto.Document;
-import site.timecapsulearchive.core.infra.kakao.dto.KakaoMapApiResponse;
+import site.timecapsulearchive.core.infra.map.MapApiService;
+import site.timecapsulearchive.core.infra.map.config.KakaoMapProperties;
+import site.timecapsulearchive.core.infra.map.dto.Document;
+import site.timecapsulearchive.core.infra.map.dto.KakaoMapApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 @Service
 @RequiredArgsConstructor
-public class KakaoMapApiService {
+public class KakaoMapApiService implements MapApiService {
 
     private static final String URL = "https://dapi.kakao.com";
     private static final String PATH = "/v2/local/geo/coord2address.json";
