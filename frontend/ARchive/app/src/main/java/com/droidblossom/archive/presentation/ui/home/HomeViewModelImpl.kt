@@ -1,16 +1,21 @@
 package com.droidblossom.archive.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.usecase.MemberUseCase
+import com.droidblossom.archive.domain.usecase.TestUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModelImpl @Inject constructor(
-
+    private val memberUsecase : MemberUseCase,
+    private val testUseCase : TestUseCase
 ) : BaseViewModel(), HomeViewModel {
 
     private val _filterCapsuleSelect: MutableStateFlow<HomeViewModel.CapsuleFilter> =
@@ -31,6 +36,11 @@ class HomeViewModelImpl @Inject constructor(
 
     override fun selectPublic() {
         viewModelScope.launch {
+            //test
+            memberUsecase().collect{
+                Log.d("qwer","${it.toString()}")
+            }
+
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
             else
@@ -48,6 +58,12 @@ class HomeViewModelImpl @Inject constructor(
 
     override fun selectSecret() {
         viewModelScope.launch {
+
+            //test
+            testUseCase().collect{
+                Log.d("qwer", "${it}")
+            }
+
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.SECRET)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
             else

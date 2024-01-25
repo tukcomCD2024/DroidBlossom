@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +33,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onResume() {
         super.onResume()
-        startSmsRetriever()
         viewModel.initTimer()
         if (binding.certificationNumberEditText1.requestFocus()) {
             val imm =
@@ -57,8 +55,8 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
         with(binding){
             resendBtn.setOnClickListener {
-                // 인증번호 재전송
-                viewModel.initTimer()
+                viewModel.reSend()
+                binding.certificationNumberEditText1.requestFocus()
             }
 
             setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
@@ -67,31 +65,45 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
             setupAutoFocusOnLength(certificationNumberEditText3, certificationNumberEditText4, null)
         }
     }
-
     override fun observeData() {
 
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.CERTIFICATION_TO_SIGNUPSUCCESS }
-                    .collect { event ->
-                        if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
-                            navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)
-                        }
-                    }
-            }
-        }
-
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.certificationNumber
                     .filter { it.length == 4 }
                     .collect { certificationNum ->
                         // 길이가 4일 때의 처리 로직
-                        viewModel.certificationToSignUpSuccess()
+                        viewModel.submitCertificationNumber()
                     }
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.certificationEvents.collect { event ->
+                    when (event) {
+
+                        is AuthViewModel.CertificationEvent.ReSend -> {
+                            // 서버에게 재전송 요청
+                            viewModel.initTimer()
+                            viewModel.submitPhoneNumber()
+                        }
+
+                        is AuthViewModel.CertificationEvent.NavigateToSignUpSuccess -> {
+                            if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
+                                navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)
+                            }
+                        }
+
+                        is AuthViewModel.CertificationEvent.failCertificationCode -> {
+                            binding.certificationNumberEditText1.requestFocus()
+                        }
+
+                    }
+
+                }
+            }
+        }
     }
 
     private fun setupAutoFocusOnLength(previousEditText: EditText?, currentEditText: EditText, nextEditText: EditText?) {
@@ -140,7 +152,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onDestroy() {
         super.onDestroy()
-        stopSmsRetriever()
     }
 
 }

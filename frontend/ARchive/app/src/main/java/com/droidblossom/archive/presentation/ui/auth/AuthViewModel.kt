@@ -1,49 +1,74 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import com.droidblossom.archive.domain.model.auth.SignIn
+import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.member.CheckStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface AuthViewModel {
-    val doneEvent: SharedFlow<AuthFlowEvent>
+
+    // SignIn
+    val signInEvents: SharedFlow<SignInEvent>
+
+    // SignUp
+    val signUpEvents: SharedFlow<SignUpEvent>
+
+    // Certification
+    val certificationEvents: SharedFlow<CertificationEvent>
+
     val phoneNumber: MutableStateFlow<String>
-
-    val signInState : StateFlow<SignInState>
-    val signInEvent : SharedFlow<SignInResult>
-    val signInSocial : StateFlow<Social?>
-
     val rawPhoneNumber: StateFlow<String>
-    val remainTime: StateFlow<Int>
-    val certificationNumber: StateFlow<String>
 
+    val remainTime: StateFlow<Int>
+
+    val certificationNumber: StateFlow<String>
     val certificationNumber1: MutableStateFlow<String>
     val certificationNumber2: MutableStateFlow<String>
     val certificationNumber3: MutableStateFlow<String>
     val certificationNumber4: MutableStateFlow<String>
 
+
+    // SignIn
+    fun signInEvent(event: SignInEvent)
+
+    fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp)
+
+    fun submitSignInData(signInData : SignIn)
+    fun submitSignUpData(signUpData : SignUp)
+
+    fun getTemporaryToken(temporaryTokenReIssue : SignIn)
+
+    // SignUp
+    fun signUpEvent(event: SignUpEvent)
+
+    fun checkPhoneNumber(): Boolean
+    fun setHash(hash : String)
+    fun submitPhoneNumber()
+
+    // Certification
     fun initTimer()
     fun startTimer()
-    fun signInToSignUp()
-    fun signUpToCertification()
-    fun certificationToSignUpSuccess()
+    fun certificationEvent(event: CertificationEvent)
+    fun reSend()
+    fun submitCertificationNumber()
 
-    fun SignInSuccess(social : Social)
-    fun SignInFail()
+    sealed class SignInEvent {
+        object NavigateToSignUp : SignInEvent()
+        object NavigateToMain : SignInEvent()
 
-    enum class AuthFlowEvent {
-        SIGNIN_TO_SIGNUP,
-        SIGNUP_TO_CERTIFICATION,
-        CERTIFICATION_TO_SIGNUPSUCCESS,
     }
 
-    enum class SignInState {
-        SIGNNIN,
-        SIGNOUT
+    sealed class SignUpEvent {
+        object NavigateToCertification : SignUpEvent()
     }
 
-    enum class SignInResult{
-        SUCCESS,
-        FAIL
+    sealed class CertificationEvent {
+        object ReSend : CertificationEvent()
+        object NavigateToSignUpSuccess : CertificationEvent()
+
+        object failCertificationCode : CertificationEvent()
     }
 
     enum class Social{

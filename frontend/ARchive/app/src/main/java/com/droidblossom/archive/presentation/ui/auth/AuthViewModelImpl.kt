@@ -1,7 +1,24 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.auth.SignIn
+import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
+import com.droidblossom.archive.domain.model.auth.VerificationNumberValid
+import com.droidblossom.archive.domain.model.member.CheckStatus
+import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
+import com.droidblossom.archive.domain.usecase.ReIssueUseCase
+import com.droidblossom.archive.domain.usecase.SendMessageUseCase
+import com.droidblossom.archive.domain.usecase.SignInUseCase
+import com.droidblossom.archive.domain.usecase.SignUpUseCase
+import com.droidblossom.archive.domain.usecase.TemporaryTokenReIssueUseCase
+import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.SharedPreferencesUtils
+import com.droidblossom.archive.util.onError
+import com.droidblossom.archive.util.onFail
+import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,24 +32,29 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
-    private val _doneEvent = MutableSharedFlow<AuthViewModel.AuthFlowEvent>()
-    override val doneEvent: SharedFlow<AuthViewModel.AuthFlowEvent> = _doneEvent.asSharedFlow()
+class AuthViewModelImpl @Inject constructor(
+    private val reIssueUseCase: ReIssueUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val signInUseCase: SignInUseCase,
+    private val signUpUseCase : SignUpUseCase,
+    private val validMessageUseCase: ValidMessageUseCase,
+    private val memberStatusUseCase: MemberStatusUseCase,
+    private val temporaryTokenReIssueUseCase: TemporaryTokenReIssueUseCase,
+    private val sharedPreferencesUtils : SharedPreferencesUtils
+) : BaseViewModel(), AuthViewModel {
 
     // SignInFragment
-    private val _signInState = MutableStateFlow(AuthViewModel.SignInState.SIGNOUT)
-    override val signInState: StateFlow<AuthViewModel.SignInState> = _signInState
-
-    private val _signInEvent = MutableSharedFlow<AuthViewModel.SignInResult>()
-    override val signInEvent: SharedFlow<AuthViewModel.SignInResult> = _signInEvent.asSharedFlow()
-
-    private val _signInSocial = MutableStateFlow<AuthViewModel.Social?>(null)
-    override val signInSocial: StateFlow<AuthViewModel.Social?> = _signInSocial
+    private val _signInEvents = MutableSharedFlow<AuthViewModel.SignInEvent>()
+    override val signInEvents: SharedFlow<AuthViewModel.SignInEvent> = _signInEvents.asSharedFlow()
 
     // SignUpFragment
+    private val _signUpEvents = MutableSharedFlow<AuthViewModel.SignUpEvent>()
+    override val signUpEvents: SharedFlow<AuthViewModel.SignUpEvent> = _signUpEvents.asSharedFlow()
+
     private val _phoneNumber = MutableStateFlow("")
     override val phoneNumber: MutableStateFlow<String> = _phoneNumber
 
@@ -41,9 +63,17 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val rawPhoneNumber: StateFlow<String> = _rawPhoneNumber
 
+    private var appHash : String = ""
+
+
+
     // CertificationFragment
+    private val _certificationEvents =  MutableSharedFlow<AuthViewModel.CertificationEvent>()
+    override val certificationEvents: SharedFlow<AuthViewModel.CertificationEvent> = _certificationEvents.asSharedFlow()
+
     private val _remainTime = MutableStateFlow(300)
     override val remainTime: StateFlow<Int> = _remainTime
+
     private var isTimerStarted = false
 
     override val certificationNumber1 = MutableStateFlow("")
@@ -61,6 +91,119 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val certificationNumber: StateFlow<String> = _certificationNumber
 
+    // SignInFragment
+    override fun signInEvent(event: AuthViewModel.SignInEvent) {
+        viewModelScope.launch {
+            _signInEvents.emit(event)
+        }
+    }
+
+    override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
+        viewModelScope.launch {
+            memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
+                result.onSuccess { it ->
+                    if (it.isVerified){
+                        submitSignInData(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
+                    }else if(it.isExist){
+                        getTemporaryToken(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
+                    }else{
+                        submitSignUpData(signUpData)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun submitSignInData(signInData : SignIn){
+        viewModelScope.launch {
+            signInUseCase(signInData.toDto()).collect{ result ->
+                result.onSuccess {
+                    // 토큰 저장 로직 추가
+                    sharedPreferencesUtils.resetTokenData()
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
+                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
+                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
+                }.onError {
+                    // ToastMessage 있으면 좋을듯
+                    Log.d("티티","submitSignInData 에러")
+                }
+            }
+        }
+    }
+
+    override fun submitSignUpData(signUpData : SignUp){
+        viewModelScope.launch {
+            signUpUseCase(signUpData.toDto()).collect{result ->
+                result.onSuccess {
+                    // 토큰 저장 로직 추가
+                    sharedPreferencesUtils.resetTokenData()
+                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                }.onError {
+                    // ToastMessage 있으면 좋을듯
+                    Log.d("티티","submitSignUpData 에러")
+                }
+            }
+        }
+    }
+
+    override fun getTemporaryToken(temporaryTokenReIssue : SignIn){
+        viewModelScope.launch {
+            temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
+                result.onSuccess {
+                    sharedPreferencesUtils.resetTokenData()
+                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                }.onFail {
+                    Log.d("티티","temporaryTokenReIssue 에러")
+                }
+            }
+        }
+    }
+
+    // SignUpFragment
+    override fun signUpEvent(event: AuthViewModel.SignUpEvent) {
+        viewModelScope.launch {
+            _signUpEvents.emit(event)
+        }
+    }
+
+    override fun setHash(hash : String) {
+        appHash = hash
+    }
+    override fun checkPhoneNumber(): Boolean {
+        val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
+        if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
+            return false
+        }
+        return true
+    }
+
+    override fun submitPhoneNumber(){
+        // 임시토큰 헤더에 넣고 해야함.
+        viewModelScope.launch {
+            sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{result ->
+                result.onSuccess{
+                    Log.d("티티","submitPhoneNumber 성공")
+                    signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
+                }.onFail {
+                    // Toast 메시지 있으면 좋을듯
+                    // 아마 5번 하루 5번 이상 이면 안 실패(?)
+                    Log.d("티티","submitPhoneNumber 에러")
+                }
+
+            }
+        }
+
+    }
+
+    // CertificationFragment
+    override fun certificationEvent(event: AuthViewModel.CertificationEvent) {
+        viewModelScope.launch {
+            _certificationEvents.emit(event)
+        }
+    }
+
     override fun initTimer() {
         _remainTime.value = 300
     }
@@ -77,36 +220,36 @@ class AuthViewModelImpl @Inject constructor() : BaseViewModel(), AuthViewModel {
         }
     }
 
-    override fun signInToSignUp() {
+    override fun submitCertificationNumber(){
         viewModelScope.launch {
-            _doneEvent.emit(AuthViewModel.AuthFlowEvent.SIGNIN_TO_SIGNUP)
+            validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
+                result.onSuccess {
+                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
+                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
+                    certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
+
+                }.onFail {
+                    // Toast 메시지 있으면 좋을듯
+                    resetCertificationNumber()
+                    certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
+                    Log.d("티티","submitCertificationNumber 에러")
+
+                }
+            }
         }
     }
 
-    override fun signUpToCertification() {
-        viewModelScope.launch {
-            _doneEvent.emit(AuthViewModel.AuthFlowEvent.SIGNUP_TO_CERTIFICATION)
-        }
+    override fun reSend(){
+        initTimer()
+        resetCertificationNumber()
+        submitPhoneNumber()
     }
 
-    override fun certificationToSignUpSuccess() {
-        viewModelScope.launch {
-            _doneEvent.emit(AuthViewModel.AuthFlowEvent.CERTIFICATION_TO_SIGNUPSUCCESS)
-        }
+    private fun resetCertificationNumber(){
+        certificationNumber1.value = ""
+        certificationNumber2.value = ""
+        certificationNumber3.value = ""
+        certificationNumber4.value = ""
     }
 
-    override fun SignInSuccess(social : AuthViewModel.Social) {
-        _signInState.value = AuthViewModel.SignInState.SIGNNIN
-        _signInSocial.value = social
-        viewModelScope.launch {
-            _signInEvent.emit(AuthViewModel.SignInResult.SUCCESS)
-        }
-    }
-
-    override fun SignInFail() {
-        _signInState.value = AuthViewModel.SignInState.SIGNOUT
-        viewModelScope.launch {
-            _signInEvent.emit(AuthViewModel.SignInResult.FAIL)
-        }
-    }
 }

@@ -12,12 +12,13 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignInBinding
+import com.droidblossom.archive.domain.model.auth.SignUp
+import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -43,8 +44,8 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         navController = Navigation.findNavController(view)
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
-            override fun onLoginSuccess(social: AuthViewModel.Social) {
-                viewModel.SignInSuccess(social)
+            override fun onLoginSuccess(memberStatusCheckData : CheckStatus,signUpData : SignUp) {
+                viewModel.memberStatusCheck(memberStatusCheckData, signUpData)
             }
 
             override fun onLoginFailure(error: Throwable) {
@@ -64,31 +65,22 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
     override fun observeData() {
 
-        lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.doneEvent.filter { it == AuthViewModel.AuthFlowEvent.SIGNIN_TO_SIGNUP }
-                    .collect { event ->
-                        if(navController.currentDestination?.id != R.id.signUpFragment) {
-                            navController.navigate(R.id.action_signInFragment_to_signUpFragment)
-                        }
-                    }
-            }
-        }
+                viewModel.signInEvents.collect { event ->
+                    when (event) {
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.signInEvent.collect() { event ->
-                    if (event == AuthViewModel.SignInResult.SUCCESS){
-                        // 서버와 통신 할 때 변경할 것
-
-                        if (viewModel.signInSocial.value == AuthViewModel.Social.KAKAO){
-                            // 카카오일 때 회원가입 로직
+                        is AuthViewModel.SignInEvent.NavigateToMain -> {
                             MainActivity.goMain(requireContext())
                         }
-                        if (viewModel.signInSocial.value == AuthViewModel.Social.GOOGLE){
-                            // 구글일 때 메인
-                            viewModel.signInToSignUp()
+
+                        is AuthViewModel.SignInEvent.NavigateToSignUp -> {
+                            // 회원가입 화면으로 이동
+                            if(navController.currentDestination?.id != R.id.signUpFragment) {
+                                navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+                            }
                         }
+
                     }
                 }
             }

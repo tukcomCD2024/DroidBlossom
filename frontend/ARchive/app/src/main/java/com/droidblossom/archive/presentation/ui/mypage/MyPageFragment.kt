@@ -1,6 +1,5 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
