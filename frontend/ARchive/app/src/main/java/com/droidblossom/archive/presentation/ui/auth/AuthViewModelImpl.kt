@@ -2,7 +2,6 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.domain.model.auth.SignIn
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
@@ -18,7 +17,6 @@ import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.droidblossom.archive.util.onError
-import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -103,7 +101,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
-                result.onSuccess {it ->
+                result.onSuccess { it ->
                     if (it.isVerified){
                         submitSignInData(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
                     }else if(it.isExist){
@@ -121,10 +119,10 @@ class AuthViewModelImpl @Inject constructor(
             signInUseCase(signInData.toDto()).collect{ result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    ARchiveApplication.sp.resetTokenData()
+                    sharedPreferencesUtils.resetTokenData()
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
-                    ARchiveApplication.sp.saveAccessToken(it.accessToken)
-                    ARchiveApplication.sp.saveRefreshToken(it.refreshToken)
+                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
+                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
                 }.onError {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignInData 에러")
@@ -138,8 +136,8 @@ class AuthViewModelImpl @Inject constructor(
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    ARchiveApplication.sp.resetTokenData()
-                    ARchiveApplication.sp.saveAccessToken(it.temporaryAccessToken)
+                    sharedPreferencesUtils.resetTokenData()
+                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onError {
                     // ToastMessage 있으면 좋을듯
@@ -153,8 +151,8 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
                 result.onSuccess {
-                    ARchiveApplication.sp.resetTokenData()
-                    ARchiveApplication.sp.saveAccessToken(it.temporaryAccessToken)
+                    sharedPreferencesUtils.resetTokenData()
+                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
                     Log.d("티티","temporaryTokenReIssue 에러")
