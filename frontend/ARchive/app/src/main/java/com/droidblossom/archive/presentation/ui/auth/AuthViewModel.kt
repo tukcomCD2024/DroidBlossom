@@ -55,23 +55,16 @@ interface AuthViewModel {
     fun submitCertificationNumber()
 
     sealed class SignInEvent {
-        data class SocialSignSuccess(val signUpData : SignUp) : SignInEvent()
-        data class SignInFailure(val error: Throwable) : SignInEvent()
         object NavigateToSignUp : SignInEvent()
         object NavigateToMain : SignInEvent()
 
     }
 
     sealed class SignUpEvent {
-
-        // data class로 바꿔야함
-        object SendPhoneNumber : SignUpEvent()
         object NavigateToCertification : SignUpEvent()
     }
 
     sealed class CertificationEvent {
-        // data class로 바꿔야함
-        object SubmitCertificationCode : CertificationEvent()
         object ReSend : CertificationEvent()
         object NavigateToSignUpSuccess : CertificationEvent()
 

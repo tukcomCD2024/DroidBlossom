@@ -50,7 +50,6 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
             override fun onLoginFailure(error: Throwable) {
                 // 에러 처리 로직
-                viewModel.signInEvent(AuthViewModel.SignInEvent.SignInFailure(error))
             }
         })
 
@@ -70,23 +69,9 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.signInEvents.collect { event ->
                     when (event) {
-                        is AuthViewModel.SignInEvent.SocialSignSuccess -> {
-                            // 소셜 로그인 성공 - api 통신
-                            // 휴대폰 번호까지 인증된 회원 or 처음 또는 인증 안 된 회원
-                            if (event.signUpData.socialType == AuthViewModel.Social.GOOGLE){
-                                viewModel.signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
-                            }
-                            if (event.signUpData.socialType == AuthViewModel.Social.KAKAO){
-                                viewModel.signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
-                            }
-                        }
 
                         is AuthViewModel.SignInEvent.NavigateToMain -> {
                             MainActivity.goMain(requireContext())
-                        }
-
-                        is AuthViewModel.SignInEvent.SignInFailure -> {
-                            // 로그인 실패 처리
                         }
 
                         is AuthViewModel.SignInEvent.NavigateToSignUp -> {

@@ -89,11 +89,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             viewModel.submitPhoneNumber()
                         }
 
-                        is AuthViewModel.CertificationEvent.SubmitCertificationCode -> {
-                            // api 통신
-                            viewModel.certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
-                        }
-
                         is AuthViewModel.CertificationEvent.NavigateToSignUpSuccess -> {
                             if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
                                 navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)
@@ -104,7 +99,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             binding.certificationNumberEditText1.requestFocus()
                         }
 
-                        else -> {}
                     }
 
                 }

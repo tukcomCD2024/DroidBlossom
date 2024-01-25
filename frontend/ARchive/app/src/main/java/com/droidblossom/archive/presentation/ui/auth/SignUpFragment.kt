@@ -59,11 +59,6 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
                 viewModel.signUpEvents.collect { event ->
                     when (event) {
 
-                        is AuthViewModel.SignUpEvent.SendPhoneNumber -> {
-                            // 서버에게 폰 번호, 해시 보내기
-                            //viewModel.signUpEvent(AuthViewModel.SigUpnEvent.NavigateToCertification)
-                        }
-
                         is AuthViewModel.SignUpEvent.NavigateToCertification -> {
                             if(navController.currentDestination?.id != R.id.certificationFragment) {
                                 navController.navigate(R.id.action_signUpFragment_to_certificationFragment)
