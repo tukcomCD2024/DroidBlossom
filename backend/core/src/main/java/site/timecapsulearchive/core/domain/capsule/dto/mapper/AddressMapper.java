@@ -2,8 +2,8 @@ package site.timecapsulearchive.core.domain.capsule.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
-import site.timecapsulearchive.core.infra.kakao.dto.AddressDto;
-import site.timecapsulearchive.core.infra.kakao.dto.RoadAddressDto;
+import site.timecapsulearchive.core.infra.map.dto.AddressDto;
+import site.timecapsulearchive.core.infra.map.dto.RoadAddressDto;
 
 @Component
 public class AddressMapper {
