@@ -121,3 +121,17 @@ jobs:
         if: always()
         run: |
           aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - uses: sarisia/actions-status-discord@v1
+        if: success()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          content: "여러분 <@384742716933668867> <@1084774841460215839> <@545902166842408960> <@1081452554149449748>\n 배포 완료했습니다!!"
+          title: "배포 완료 알림"
+          description: "백엔드 개발 브랜치에 깃허브 액션으로 배포 완료"
+          image: ${{ secrets.EMBED_IMAGE }}
+          color: 0x0000ff
+          url: "https://github.com/tukcomCD2024/DroidBlossom/actions"
+          username: GitHub Actions Bot
+          avatar_url: ${{ secrets.AVATAR_URL }}
