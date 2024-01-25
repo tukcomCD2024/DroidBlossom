@@ -98,7 +98,7 @@ public class AuthApiController implements AuthApi {
 
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
-        @RequestBody final SignUpRequest request
+        @Valid @RequestBody final SignUpRequest request
     ) {
         Long id = memberService.createMember(memberMapper.signUpRequestToEntity(request));
 
