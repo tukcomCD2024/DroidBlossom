@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
@@ -28,13 +29,14 @@ public class Image extends BaseEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "size", nullable = false)
-    private Long size;
-
-    @Column(name = "image_name", nullable = false)
-    private String imageName;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)
     private Capsule capsule;
+
+    @Builder
+    private Image(String imageUrl, Capsule capsule) {
+        this.imageUrl = imageUrl;
+        this.capsule = capsule;
+    }
+
 }

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
-import site.timecapsulearchive.core.domain.auth.exception.NotFoundCertificationNumberException;
-import site.timecapsulearchive.core.domain.auth.exception.NotMatchCertificationNumberException;
+import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
+import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.SmsApiService;
 import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
 
@@ -28,8 +29,9 @@ public class MessageVerificationService {
     private final SmsApiService smsApiService;
     private final MemberService memberService;
     private final TokenService tokenService;
-    private final AESEncryptionManager aesEncryptionManager;
 
+    private final AESEncryptionManager aesEncryptionManager;
+    private final HashEncryptionManager hashEncryptionManager;
 
     /**
      * 사용자 아이디와 수신자 핸드폰을 받아서 인증번호를 발송한다.
@@ -63,11 +65,11 @@ public class MessageVerificationService {
     }
 
     private String generateMessage(final String code, final String appHashKey) {
-        return "<#>[ARchive]"
+        return "[ARchive]"
             + "본인확인 인증번호는 ["
             + code
             + "]입니다."
-            + appHashKey;
+            + "타인 노출 금지";
     }
 
     public TokenResponse validVerificationMessage(
@@ -76,11 +78,12 @@ public class MessageVerificationService {
         final String receiver
     ) {
         String findCertificationNumber = messageAuthenticationCacheRepository.get(memberId)
-            .orElseThrow(NotFoundCertificationNumberException::new);
+            .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
-            throw new NotMatchCertificationNumberException();
+            throw new CertificationNumberNotMatchException();
         }
+
         updateMemberData(memberId, receiver);
 
         return tokenService.createNewToken(memberId);
@@ -93,11 +96,10 @@ public class MessageVerificationService {
     private void updateMemberData(Long memberId, String receiver) {
         Member findMember = memberService.findMemberByMemberId(memberId);
 
-        byte[] encryptReceiver = aesEncryptionManager.encryptWithPrefixIV(
-            receiver.getBytes(StandardCharsets.UTF_8)
-        );
+        byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
 
-        findMember.updatePhoneNumber(encryptReceiver);
+        findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
+        findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));
         findMember.updateNickName();
         findMember.updateVerification();
     }

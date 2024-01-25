@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface SecretCapsuleApi {
 
@@ -36,11 +38,12 @@ public interface SecretCapsuleApi {
         )
     })
     @PostMapping(
-        value = "/secret/capsules",
-        consumes = {"multipart/form-data"}
+        value = "/capsules",
+        consumes = {"application/json"}
     )
-    ResponseEntity<SecretCapsuleSummaryResponse> createSecretCapsule(
-        @ModelAttribute SecretCapsuleUpdateRequest request
+    ResponseEntity<ApiSpec<Void>> createSecretCapsule(
+        Long memberId,
+        SecretCapsuleCreateRequest request
     );
 
     @Operation(
@@ -56,7 +59,7 @@ public interface SecretCapsuleApi {
         )
     })
     @GetMapping(
-        value = "/secret/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         produces = {"application/json"}
     )
     ResponseEntity<SecretCapsuleDetailResponse> findSecretCapsuleById(
@@ -77,7 +80,7 @@ public interface SecretCapsuleApi {
         )
     })
     @GetMapping(
-        value = "/secret/capsules",
+        value = "/capsules",
         produces = {"application/json"}
     )
     ResponseEntity<SecretCapsulePageResponse> getSecretCapsules(
@@ -101,7 +104,7 @@ public interface SecretCapsuleApi {
         )
     })
     @PatchMapping(
-        value = "/secret/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(

@@ -1,7 +1,8 @@
-package site.timecapsulearchive.core.global.config.resttemplate;
+package site.timecapsulearchive.core.global.config;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -21,21 +22,19 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @RequiredArgsConstructor
-public class AligoRestTemplateConfig {
+public class RestTemplateConfig {
 
     private static final int MAX_CONNECTION_TOTAL = 10;
     private static final int MAX_CONNECTION_PER_ROUTE = 10;
     private static final int CONNECTION_TIMEOUT = 5000;
     private static final int CONNECTION_REQUEST_TIMEOUT = 5000;
     private static final int KEEP_ALIVE_SECONDS = 30;
-    private static final String ALIGO_API_URL = "https://apis.aligo.in";
 
     @Bean
-    public RestTemplate aligoRestTemplate(RestTemplateBuilder builder) {
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
             .messageConverters(formHttpConverter(), mappingJackson2HttpMessageConverter())
             .requestFactory(this::clientHttpRequestFactory)
-            .rootUri(ALIGO_API_URL)
             .build();
     }
 
@@ -52,7 +51,8 @@ public class AligoRestTemplateConfig {
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
 
-        jsonConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_HTML));
+        jsonConverter.setSupportedMediaTypes(
+            List.of(MediaType.TEXT_HTML, MediaType.APPLICATION_JSON_UTF8));
         return jsonConverter;
     }
 

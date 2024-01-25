@@ -37,13 +37,16 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone", unique = true)
+    @Column(name = "phone")
     private byte[] phone;
+
+    @Column(name = "phone_hash", unique = true)
+    private byte[] phone_hash;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
     @Column(name = "social_type", nullable = false)
@@ -54,7 +57,7 @@ public class Member extends BaseEntity {
     private Boolean notificationEnabled;
 
     @Email
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "fcm_token")
@@ -104,6 +107,10 @@ public class Member extends BaseEntity {
 
     public void updatePhoneNumber(byte[] phone) {
         this.phone = phone;
+    }
+
+    public void updatePhoneHash(byte[] phone_hash){
+        this.phone_hash = phone_hash;
     }
 
     public void updateNickName() {

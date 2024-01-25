@@ -18,7 +18,7 @@ import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 @RequiredArgsConstructor
 public class AligoSmsApiService implements SmsApiService {
 
-    private static final String SEND_URL = "/send/";
+    private static final String SEND_URL = "https://apis.aligo.in/send/";
     private static final Integer SUCCESS_STATUS = 1;
     private static final String KEY = "key";
     private static final String USER_ID = "user_id";
@@ -27,7 +27,7 @@ public class AligoSmsApiService implements SmsApiService {
     private static final String MSG = "msg";
     private static final String RECEIVER = "receiver";
 
-    private final RestTemplate aligoRestTemplate;
+    private final RestTemplate restTemplate;
     private final AligoSmsProperties aligoSmsProperties;
 
     public SmsApiResponse sendMessage(
@@ -37,7 +37,7 @@ public class AligoSmsApiService implements SmsApiService {
         final HttpEntity<MultiValueMap<String, String>> request = createMessageRequest(receiver,
             message);
 
-        final SmsApiResponse response = aligoRestTemplate.postForObject(
+        final SmsApiResponse response = restTemplate.postForObject(
             SEND_URL,
             request,
             SmsApiResponse.class
