@@ -1,4 +1,4 @@
-CREATE TABLE core.`group`
+CREATE TABLE `group`
 (
     created_at        timestamp NULL,
     group_id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -8,7 +8,7 @@ CREATE TABLE core.`group`
     group_profile_url VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE core.member
+CREATE TABLE member
 (
     is_verified          BIT          NOT NULL,
     notification_enabled BIT          NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE core.member
     profile_url          VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE core.capsule_skin
+CREATE TABLE capsule_skin
 (
     capsule_skin_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     created_at      timestamp NULL,
@@ -34,10 +34,10 @@ CREATE TABLE core.capsule_skin
     image_url       VARCHAR(255) NOT NULL,
     motion_name     VARCHAR(255) NOT NULL,
     CONSTRAINT fk_capsule_skin_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
-CREATE TABLE core.capsule
+CREATE TABLE capsule
 (
     is_opened       BIT          NOT NULL,
     latitude        FLOAT        NOT NULL,
@@ -58,24 +58,24 @@ CREATE TABLE core.capsule
     type            VARCHAR(255) NOT NULL,
     zip_code        VARCHAR(255) NULL,
     CONSTRAINT fk_capsule_group_id
-        FOREIGN KEY (group_id) REFERENCES core.`group` (group_id),
+        FOREIGN KEY (group_id) REFERENCES `group` (group_id),
     CONSTRAINT fk_capsule_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id),
+        FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT fk_capsule_capsule_skin_id
-        FOREIGN KEY (capsule_skin_id) REFERENCES core.capsule_skin (capsule_skin_id)
+        FOREIGN KEY (capsule_skin_id) REFERENCES capsule_skin (capsule_skin_id)
 );
 
-CREATE TABLE core.friend_invite
+CREATE TABLE friend_invite
 (
     created_at       timestamp NULL,
     friend_invite_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id        BIGINT NOT NULL,
     updated_at       timestamp NULL,
     CONSTRAINT fk_friend_invite_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
-CREATE TABLE core.group_capsule_open
+CREATE TABLE group_capsule_open
 (
     capsule_id            BIGINT NOT NULL,
     created_at            timestamp NULL,
@@ -83,22 +83,22 @@ CREATE TABLE core.group_capsule_open
     member_id             BIGINT NOT NULL,
     updated_at            timestamp NULL,
     CONSTRAINT fk_group_capsule_open_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id),
+        FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT fk_group_capsule_open_capsule_id
-        FOREIGN KEY (capsule_id) REFERENCES core.capsule (capsule_id)
+        FOREIGN KEY (capsule_id) REFERENCES capsule (capsule_id)
 );
 
-CREATE TABLE core.group_invite
+CREATE TABLE group_invite
 (
     created_at      timestamp NULL,
     group_invite_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id       BIGINT NOT NULL,
     updated_at      timestamp NULL,
     CONSTRAINT fk_group_invite_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
-CREATE TABLE core.history
+CREATE TABLE history
 (
     created_at timestamp NULL,
     history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -106,10 +106,10 @@ CREATE TABLE core.history
     updated_at timestamp NULL,
     title      VARCHAR(255) NOT NULL,
     CONSTRAINT fk_history_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
-CREATE TABLE core.image
+CREATE TABLE image
 (
     capsule_id BIGINT       NOT NULL,
     created_at timestamp NULL,
@@ -119,10 +119,10 @@ CREATE TABLE core.image
     image_name VARCHAR(255) NOT NULL,
     image_url  VARCHAR(255) NOT NULL,
     CONSTRAINT fk_image_capsule_id
-        FOREIGN KEY (capsule_id) REFERENCES core.capsule (capsule_id)
+        FOREIGN KEY (capsule_id) REFERENCES capsule (capsule_id)
 );
 
-CREATE TABLE core.history_image
+CREATE TABLE history_image
 (
     created_at       timestamp NULL,
     history_id       BIGINT NOT NULL,
@@ -130,22 +130,22 @@ CREATE TABLE core.history_image
     image_id         BIGINT NOT NULL,
     updated_at       timestamp NULL,
     CONSTRAINT fk_history_image_image_id
-        FOREIGN KEY (image_id) REFERENCES core.image (image_id),
+        FOREIGN KEY (image_id) REFERENCES image (image_id),
     CONSTRAINT fk_history_image_history_id
-        FOREIGN KEY (history_id) REFERENCES core.history (history_id)
+        FOREIGN KEY (history_id) REFERENCES history (history_id)
 );
 
-CREATE TABLE core.member_friend
+CREATE TABLE member_friend
 (
     created_at       timestamp NULL,
     member_friend_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id        BIGINT NOT NULL,
     updated_at       timestamp NULL,
     CONSTRAINT fk_member_friend_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
-CREATE TABLE core.member_group
+CREATE TABLE member_group
 (
     is_owner        BIT    NOT NULL,
     created_at      timestamp NULL,
@@ -154,12 +154,12 @@ CREATE TABLE core.member_group
     member_id       BIGINT NOT NULL,
     updated_at      timestamp NULL,
     CONSTRAINT fk_member_group_group_id
-        FOREIGN KEY (group_id) REFERENCES core.`group` (group_id),
+        FOREIGN KEY (group_id) REFERENCES `group` (group_id),
     CONSTRAINT fk_member_group_member_id
-        FOREIGN KEY (member_id) REFERENCES core.member (member_id)
+        FOREIGN KEY (member_id) REFERENCES member (member_id)
 );
 
-CREATE TABLE core.video
+CREATE TABLE video
 (
     size       INT          NOT NULL,
     capsule_id BIGINT       NOT NULL,
@@ -167,5 +167,5 @@ CREATE TABLE core.video
     video_name VARCHAR(255) NOT NULL,
     video_url  VARCHAR(255) NOT NULL,
     CONSTRAINT fk_video_capsule_id
-        FOREIGN KEY (capsule_id) REFERENCES core.capsule (capsule_id)
+        FOREIGN KEY (capsule_id) REFERENCES capsule (capsule_id)
 );

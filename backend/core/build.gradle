@@ -12,6 +12,7 @@ java {
 }
 
 repositories {
+    maven { url "https://repo.osgeo.org/repository/release/" }
     mavenCentral()
 }
 
@@ -22,13 +23,28 @@ jar {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //geo data
+    implementation 'org.hibernate.orm:hibernate-spatial:6.2.5.Final'
+
+    implementation 'org.geotools:gt-epsg-hsql:29.1'
+    implementation 'org.geotools:gt-referencing:29.1'
+    implementation 'org.geotools:gt-metadata:29.1'
+    implementation 'org.geotools:gt-opengis:29.1'
+    implementation 'org.geotools:gt-wfs-ng:29.1'
+    implementation 'org.geotools:gt-process:29.1'
+    implementation 'org.geotools:gt-transform:29.1'
+
+    //rest template
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3'
 
     //flyway
     implementation 'org.flywaydb:flyway-core:9.5.1'
     implementation 'org.flywaydb:flyway-mysql:9.5.1'
 
-     //s3
+    //s3
     implementation 'software.amazon.awssdk:s3:2.21.46'
 
     //redis
@@ -39,6 +55,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    //OAuth
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     //querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -68,7 +87,7 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets {
-    main.java.srcDirs += [ generated ]
+    main.java.srcDirs += [generated]
 }
 
 clean {

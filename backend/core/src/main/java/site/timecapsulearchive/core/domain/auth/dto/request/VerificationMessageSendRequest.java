@@ -1,15 +1,19 @@
 package site.timecapsulearchive.core.domain.auth.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.NotBlank;
+import site.timecapsulearchive.core.global.common.valid.annotation.Phone;
 
 @Schema(description = "인증 문자 요청")
-@Validated
 public record VerificationMessageSendRequest(
-    @JsonProperty("phone")
-    @Schema(description = "핸드폰 번호")
-    String phone
+
+    @Schema(description = "수신자 핸드폰 번호 ex)01012341234")
+    @Phone
+    String receiver,
+
+    @Schema(description = "앱의 해시 키")
+    @NotBlank(message = "앱의 해시 키는 필수입니다.")
+    String appHashKey
 ) {
 
 }

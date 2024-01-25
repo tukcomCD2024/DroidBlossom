@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,19 +10,19 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
-@Validated
 public interface SecretCapsuleApi {
 
     @Operation(
@@ -35,19 +34,16 @@ public interface SecretCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "202",
-            description = "처리 시작",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = SecretCapsuleSummaryResponse.class)
-            )
+            description = "처리 시작"
         )
     })
     @PostMapping(
-        value = "/secret/capsules",
-        consumes = {"multipart/form-data"}
+        value = "/capsules",
+        consumes = {"application/json"}
     )
-    ResponseEntity<SecretCapsuleSummaryResponse> createSecretCapsule(
-        @ModelAttribute SecretCapsuleUpdateRequest request
+    ResponseEntity<ApiSpec<Void>> createSecretCapsule(
+        Long memberId,
+        SecretCapsuleCreateRequest request
     );
 
     @Operation(
@@ -59,15 +55,11 @@ public interface SecretCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = SecretCapsuleDetailResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
-        value = "/secret/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         produces = {"application/json"}
     )
     ResponseEntity<SecretCapsuleDetailResponse> findSecretCapsuleById(
@@ -84,15 +76,11 @@ public interface SecretCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = SecretCapsulePageResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
-        value = "/secret/capsules",
+        value = "/capsules",
         produces = {"application/json"}
     )
     ResponseEntity<SecretCapsulePageResponse> getSecretCapsules(
@@ -112,15 +100,11 @@ public interface SecretCapsuleApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = SecretCapsuleSummaryResponse.class)
-            )
+            description = "처리 완료"
         )
     })
     @PatchMapping(
-        value = "/secret/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(

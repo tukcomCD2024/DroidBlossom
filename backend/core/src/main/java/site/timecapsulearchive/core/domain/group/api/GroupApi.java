@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.group.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,7 +23,6 @@ import site.timecapsulearchive.core.domain.group.dto.response.GroupDetailRespons
 import site.timecapsulearchive.core.domain.group.dto.response.GroupSummaryResponse;
 import site.timecapsulearchive.core.domain.group.dto.response.GroupsPageResponse;
 
-@Validated
 public interface GroupApi {
 
     @Operation(
@@ -58,11 +55,7 @@ public interface GroupApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리완료",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupSummaryResponse.class)
-            )
+            description = "처리완료"
         )
     })
     @PostMapping(
@@ -140,11 +133,7 @@ public interface GroupApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupDetailResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(
@@ -165,11 +154,7 @@ public interface GroupApi {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "ok",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = GroupsPageResponse.class)
-            )
+            description = "ok"
         )
     })
     @GetMapping(

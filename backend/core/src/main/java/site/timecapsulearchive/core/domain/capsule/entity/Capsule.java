@@ -4,6 +4,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,10 +15,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -36,11 +41,8 @@ public class Capsule extends BaseEntity {
     @Column(name = "due_date")
     private ZonedDateTime dueDate;
 
-    @Column(name = "longitude", nullable = false)
-    private Float longitude;
-
-    @Column(name = "latitude", nullable = false)
-    private Float latitude;
+    @Column(name = "point", columnDefinition = "SRID 3857")
+    private Point point;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -49,7 +51,8 @@ public class Capsule extends BaseEntity {
     private String content;
 
     @Column(name = "type", nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private CapsuleType type;
 
     @Column(name = "is_opened", nullable = false)
     private Boolean isOpened;
@@ -67,7 +70,7 @@ public class Capsule extends BaseEntity {
     private List<GroupCapsuleOpen> groupCapsuleOpens;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -77,4 +80,28 @@ public class Capsule extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_skin_id", nullable = false)
     private CapsuleSkin capsuleSkin;
+
+    @Builder
+    private Capsule(
+        ZonedDateTime dueDate,
+        String title,
+        String content,
+        CapsuleType type,
+        Address address,
+        Point point,
+        Member member,
+        CapsuleSkin capsuleSkin
+    ) {
+        this.dueDate = dueDate;
+        this.title = title;
+        this.content = content;
+        this.point = point;
+        this.type = type;
+        this.isOpened = false;
+        this.address = address;
+        this.groupCapsuleOpens = Collections.emptyList();
+        this.group = null;
+        this.member = member;
+        this.capsuleSkin = capsuleSkin;
+    }
 }

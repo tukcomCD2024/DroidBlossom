@@ -1,29 +1,21 @@
-FROM openjdk:17-ea-slim as build
+FROM bellsoft/liberica-openjdk-alpine:17 as build
 WORKDIR /workspace/app
 
 # Copy Gradle wrapper and other necessary files
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
-
-RUN apt-get update && apt-get install -y findutils
-
-# Execute the Gradle build
-RUN ./gradlew build -x test
+COPY build/libs/ .
 
 # Unpack the built application
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../../build/libs/*.jar)
+RUN mkdir -p target/extracted
+RUN java -Djarmode=layertools -jar *.jar extract --destination target/extracted
 
-FROM openjdk:17-ea-slim
+FROM bellsoft/liberica-openjdk-alpine:17
 VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/target/dependency
+ARG EXTRACTED=/workspace/app/target/extracted
 
 # Copy over the unpacked application
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+COPY --from=build ${EXTRACTED}/dependencies/ ./
+COPY --from=build ${EXTRACTED}/spring-boot-loader/ ./
+COPY --from=build ${EXTRACTED}/snapshot-dependencies/ ./
+COPY --from=build ${EXTRACTED}/application/ ./
 
-# Run the application
-ENTRYPOINT ["java","-cp","app:app/lib/*","site.timecapsulearchive.core.CoreApplication"]
+ENTRYPOINT ["java","-Dspring.profiles.active=dev","org.springframework.boot.loader.JarLauncher"]
