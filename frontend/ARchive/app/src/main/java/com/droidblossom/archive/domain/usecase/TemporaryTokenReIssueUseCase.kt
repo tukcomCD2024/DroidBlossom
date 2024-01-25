@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.usecase
 
+import android.util.Log
 import com.droidblossom.archive.data.dto.auth.request.SignInRequestDto
 import com.droidblossom.archive.domain.model.auth.TemporaryToken
 import com.droidblossom.archive.domain.repository.AuthRepository
@@ -19,17 +20,15 @@ class TemporaryTokenReIssueUseCase @Inject constructor(
             try {
                 emit(repository.authTemporaryTokenReIssue(request).onSuccess {
 
+                }.onFail {
+
+                }.onError {
+                    throw Exception(it)
+                }.onException {
+                    throw Exception(it)
                 })
-                emit(repository.authTemporaryTokenReIssue(request).onFail {
-
-                })
-                repository.authTemporaryTokenReIssue(request).onError {
-
-                }
-                repository.authTemporaryTokenReIssue(request).onException {
-
-                }
             }catch (e: Exception) {
+                Log.d("예외확인", "$e")
                 e.printStackTrace()
             }
 

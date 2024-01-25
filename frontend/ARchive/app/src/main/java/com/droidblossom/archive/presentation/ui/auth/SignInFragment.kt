@@ -2,7 +2,6 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -20,8 +19,6 @@ import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

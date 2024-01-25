@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -105,6 +104,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             binding.certificationNumberEditText1.requestFocus()
                         }
 
+                        else -> {}
                     }
 
                 }

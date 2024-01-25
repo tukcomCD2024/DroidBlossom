@@ -13,11 +13,12 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ReIssueUseCase @Inject constructor(
-    private val repository : AuthRepository
-){
-    suspend operator fun invoke(request : TokenReIssueRequestDto) = flow<RetrofitResult<Token>>{
+    private val repository: AuthRepository
+) {
+    suspend operator fun invoke(request: TokenReIssueRequestDto) = flow<RetrofitResult<Token>> {
         try {
-            repository.authReIssue(request)
+
+            emit(repository.authReIssue(request)
                 .onSuccess {
                     Log.d("후후후", "성공 - 재발급")
                 }.onFail {
@@ -29,8 +30,9 @@ class ReIssueUseCase @Inject constructor(
                 }.onException {
                     Log.d("후후후", "예외 - 재발급")
                     throw Exception(it)
-                }
-        } catch (e: Exception){
+                })
+        } catch (e: Exception) {
+            Log.d("예외확인", "$e")
             e.printStackTrace()
         }
     }

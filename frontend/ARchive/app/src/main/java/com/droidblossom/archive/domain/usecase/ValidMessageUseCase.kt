@@ -1,7 +1,6 @@
 package com.droidblossom.archive.domain.usecase
 
 import android.util.Log
-import com.droidblossom.archive.data.dto.auth.request.TokenReIssueRequestDto
 import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
 import com.droidblossom.archive.domain.model.auth.Token
 import com.droidblossom.archive.domain.repository.AuthRepository
@@ -21,18 +20,15 @@ class ValidMessageUseCase @Inject constructor(
             try {
                 emit(repository.authValidMessage(request).onSuccess {
 
-                })
-                emit(repository.authValidMessage(request).onFail {
+                }.onFail {
 
+                }.onError {
+                    throw Exception(it)
+                }.onException {
+                    throw Exception(it)
                 })
-                repository.authValidMessage(request).onError {
-                    throw Exception(it)
-                }
-                repository.authValidMessage(request).onException {
-                    throw Exception(it)
-                }
-
             } catch (e: Exception) {
+                Log.d("예외확인", "$e")
                 e.printStackTrace()
             }
         }

@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.usecase
 
+import android.util.Log
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.domain.model.member.MemberStatus
 import com.droidblossom.archive.domain.repository.MemberRepository
@@ -29,6 +30,7 @@ class MemberStatusUseCase @Inject constructor(
                     })
 
             } catch (e: Exception) {
+                Log.d("예외확인", "$e")
                 e.printStackTrace()
             }
         }

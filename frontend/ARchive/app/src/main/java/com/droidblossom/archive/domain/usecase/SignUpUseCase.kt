@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.usecase
 
+import android.util.Log
 import com.droidblossom.archive.data.dto.auth.request.SignUpRequestDto
 import com.droidblossom.archive.domain.model.auth.TemporaryToken
 import com.droidblossom.archive.domain.repository.AuthRepository
@@ -16,20 +17,19 @@ class SignUpUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(request: SignUpRequestDto) =
         flow<RetrofitResult<TemporaryToken>> {
+            Log.d("후후후", "request ${request}")
             try {
                 emit(repository.authSignUp(request).onSuccess {
-
-                })
-                emit(repository.authSignUp(request).onFail {
-
-                })
-                repository.authSignUp(request).onError {
+                    Log.d("후후후", "성공 - 재발급")
+                }.onFail {
+                    Log.d("후후후", "실후 - 재발급${it}")
+                }.onError {
                     throw Exception(it)
-                }
-                repository.authSignUp(request).onException {
+                }.onException {
                     throw Exception(it)
-                }
+                })
             } catch (e: Exception) {
+                Log.d("예외확인", "$e")
                 e.printStackTrace()
             }
         }

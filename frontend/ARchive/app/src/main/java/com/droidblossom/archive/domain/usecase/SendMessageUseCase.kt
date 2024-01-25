@@ -22,20 +22,18 @@ class SendMessageUseCase @Inject constructor(
         flow<RetrofitResult<VerificationMessageResult>> {
             try {
                 emit(repository.authValidMessageSend(request).onSuccess {
-                    Log.d("티티","유스케이스 : submitPhoneNumber 에러")
-                })
-                emit(repository.authValidMessageSend(request).onFail {
-                    Log.d("티티","유스케이스 : submitPhoneNumber 실패 $it")
-                })
-                repository.authValidMessageSend(request).onError {
-                    Log.d("티티","유스케이스 : submitPhoneNumber 에러 : $it")
+                    Log.d("티티", "유스케이스 : submitPhoneNumber 에러")
+                }.onFail {
+                    Log.d("티티", "유스케이스 : submitPhoneNumber 실패 $it")
+                }.onError {
+                    Log.d("티티", "유스케이스 : submitPhoneNumber 에러 : $it")
                     throw Exception(it)
-                }
-                repository.authValidMessageSend(request).onException {
-                    Log.d("티티","유스케이스 : submitPhoneNumber 예외 :$it")
+                }.onException {
+                    Log.d("티티", "유스케이스 : submitPhoneNumber 예외 :$it")
                     throw Exception(it)
-                }
-            } catch (e: Exception){
+                })
+            } catch (e: Exception) {
+                Log.d("예외확인", "$e")
                 e.printStackTrace()
 
             }

@@ -25,7 +25,8 @@ class MemberUseCase @Inject constructor(
             }.onException {
                 throw Exception(it)
             })
-        } catch (e : Exception){
+        } catch (e: Exception) {
+            Log.d("예외확인", "$e")
             e.printStackTrace()
         }
     }

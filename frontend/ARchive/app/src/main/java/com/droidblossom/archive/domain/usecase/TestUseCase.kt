@@ -30,6 +30,7 @@ class TestUseCase @Inject constructor(
                 throw Exception(it)
             })
         } catch (e: Exception){
+            Log.d("예외확인", "$e")
             e.printStackTrace()
         }
     }

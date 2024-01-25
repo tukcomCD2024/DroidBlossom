@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.usecase
 
+import android.util.Log
 import com.droidblossom.archive.data.dto.auth.request.SignInRequestDto
 import com.droidblossom.archive.domain.model.auth.Token
 import com.droidblossom.archive.domain.repository.AuthRepository
@@ -20,17 +21,15 @@ class SignInUseCase @Inject constructor(
             try {
                 emit(repository.authSignIn(request).onSuccess {
 
-                })
-                emit(repository.authSignIn(request).onFail {
+                }.onFail {
 
+                }.onError {
+                    throw Exception(it)
+                }.onException {
+                    throw Exception(it)
                 })
-                repository.authSignIn(request).onError {
-                    throw Exception(it)
-                }
-                repository.authSignIn(request).onException {
-                    throw Exception(it)
-                }
             } catch (e: Exception){
+                Log.d("예외확인", "$e")
                 e.printStackTrace()
             }
         }
