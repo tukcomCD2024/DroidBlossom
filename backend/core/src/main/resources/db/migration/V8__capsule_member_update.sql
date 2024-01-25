@@ -12,3 +12,6 @@ alter table member
 alter table member
     drop constraint UK_NICKNAME;
 
+-- 캡슐 phone_hash 속성 추가
+ALTER TABLE member
+    ADD COLUMN phone_hash VARBINARY(255) UNIQUE;

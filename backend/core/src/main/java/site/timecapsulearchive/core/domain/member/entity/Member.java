@@ -40,6 +40,9 @@ public class Member extends BaseEntity {
     @Column(name = "phone")
     private byte[] phone;
 
+    @Column(name = "phone_hash", unique = true)
+    private byte[] phone_hash;
+
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
 
@@ -104,6 +107,10 @@ public class Member extends BaseEntity {
 
     public void updatePhoneNumber(byte[] phone) {
         this.phone = phone;
+    }
+
+    public void updatePhoneHash(byte[] phone_hash){
+        this.phone_hash = phone_hash;
     }
 
     public void updateNickName() {
