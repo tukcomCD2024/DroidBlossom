@@ -40,10 +40,11 @@
                 android:text="@string/search"
                 android:textAppearance="@style/TextAppearance.App.caption3"
                 android:textColor="@color/main_1"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.0647" />
+
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
@@ -51,29 +52,38 @@
                 android:layout_width="66dp"
                 android:layout_height="66dp"
                 android:layout_gravity="center|bottom"
-                android:backgroundTint="@color/white"
+                android:layout_marginBottom="22dp"
                 android:background="@color/white"
+                android:backgroundTint="@color/white"
                 android:foreground="@drawable/ic_plus_40"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/main_1"
-                app:rippleColor="@color/white"
-                app:elevation="1dp"
                 app:borderWidth="0dp"
+                app:elevation="1dp"
+                app:layout_constraintBottom_toTopOf="@id/place"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchBtn"
-                app:layout_constraintVertical_bias="0.84375" />
+                app:rippleColor="@color/white" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchBtn"
                 android:layout_marginTop="16dp"
-                android:visibility="visible"
                 android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/searchBtn" />
+
+            <View
+                android:id="@+id/place"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

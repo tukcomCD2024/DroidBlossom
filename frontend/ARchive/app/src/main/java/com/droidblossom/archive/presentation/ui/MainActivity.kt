@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activity_main) {
 
     override val viewModel: Nothing? = null
+    lateinit var viewBinding: ActivityMainBinding
 
     override fun observeData() {}
 
@@ -24,6 +26,8 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
         val navController = findNavController(R.id.mainNavHost)
         NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.mainNavHost))
+
+        viewBinding = binding
 
         binding.fab.setOnClickListener {
             navController.navigate(

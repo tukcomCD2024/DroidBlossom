@@ -1,60 +1,63 @@
 package com.droidblossom.archive.presentation.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
+import com.droidblossom.archive.databinding.FragmentHomeBinding
+import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
+import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
+import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    override val viewModel: HomeViewModelImpl by viewModels<HomeViewModelImpl>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.vm = viewModel
+
+        binding.makeGroupCapsuleBtn.setOnClickListener {
+            //그룹 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),true))
         }
+        binding.makeOpenCapsuleBtn.setOnClickListener {
+            //공개 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),false))
+        }
+        binding.makeSecretCapsuleBtn.setOnClickListener {
+            //그룹 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),false))
+        }
+
+        binding.snackbarTestBtn.setOnClickListener {
+            //스낵바 스몰 테스트용
+            HomeSnackBarSmall(requireView()).show()
+        }
+
+        binding.snackbarBigText.setOnClickListener {
+            //스낵바 빅 테스트용
+            HomeSnackBarBig(requireView(), "", "").show()
+        }
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
+    override fun observeData() {
+        //FAB 상태
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.filterCapsuleSelect.collect(
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+                )
             }
+        }
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="328dp"
+        android:background="@drawable/corner_radius_16"
+        android:backgroundTint="@color/main_alpha70"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/capsuleImg"
+            android:background="@drawable/corner_radius_8"
+            android:src="@drawable/sample_skin"
+            android:backgroundTint="@color/white"
+            android:padding="5dp"
+            android:layout_marginVertical="12dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/toastTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="12dp"
+            android:text="곧 열리는 ARchive event \n캡슐을 열어 보세요!"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@color/white"
+            android:lines="2"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toStartOf="@id/openBtn"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/capsuleImg"
+            android:layout_marginStart="12dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/openBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginVertical="20dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/corner_radius_16"
+            android:backgroundTint="@color/main_bg_1"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:text="캡슐 열기"
+            android:textAppearance="@style/TextAppearance.App.caption3"
+            android:textColor="@color/main_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
