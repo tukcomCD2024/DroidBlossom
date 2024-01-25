@@ -37,13 +37,13 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone", unique = true)
+    @Column(name = "phone")
     private byte[] phone;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
     @Column(name = "social_type", nullable = false)
@@ -54,7 +54,7 @@ public class Member extends BaseEntity {
     private Boolean notificationEnabled;
 
     @Email
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "fcm_token")

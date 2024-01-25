@@ -5,3 +5,10 @@ ALTER TABLE capsule DROP FOREIGN KEY fk_capsule_group_id;
 alter table capsule
     modify group_id bigint null;
 
+alter table member
+    drop constraint UK_EMAIL;
+alter table member
+    drop constraint UK_PHONE;
+alter table member
+    drop constraint UK_NICKNAME;
+
