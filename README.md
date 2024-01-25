@@ -11,7 +11,7 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 ## <u>AR</u>chive
 ### _추억의 조각들을 디지털 별빛으로 저장하는 AR 타임캡슐 앱 ARchive입니다._
 
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f3af2610-d730-4918-ab0d-d750086f42be" width=70% height="70%">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f3af2610-d730-4918-ab0d-d750086f42be" width=85% height="85%">
 
 ## 💊프로젝트 소개
 추억을 소중하게 여기는 분들을 위한 AR 타임캡슐 앱 **ARchive**를 소개합니다.
