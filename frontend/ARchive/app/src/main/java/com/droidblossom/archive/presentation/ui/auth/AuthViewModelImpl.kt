@@ -184,14 +184,14 @@ class AuthViewModelImpl @Inject constructor(
     override fun submitPhoneNumber(){
         // 임시토큰 헤더에 넣고 해야함.
         viewModelScope.launch {
-            sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{ result ->
+            sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{result ->
                 result.onSuccess{
+                    Log.d("티티","submitPhoneNumber 성공")
                     signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
                     // 아마 5번 하루 5번 이상 이면 안 실패(?)
                     Log.d("티티","submitPhoneNumber 에러")
-
                 }
 
             }

@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.auth
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
@@ -64,7 +65,6 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
                         }
 
                         is AuthViewModel.SignUpEvent.NavigateToCertification -> {
-
                             if(navController.currentDestination?.id != R.id.certificationFragment) {
                                 navController.navigate(R.id.action_signUpFragment_to_certificationFragment)
                             }
