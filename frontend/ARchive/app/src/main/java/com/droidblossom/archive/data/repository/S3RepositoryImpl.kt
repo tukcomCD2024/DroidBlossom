@@ -10,7 +10,7 @@ import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
-class S3ServiceImpl @Inject constructor(
+class S3RepositoryImpl @Inject constructor(
     private val api: S3Service
 ) : S3Repository {
 
