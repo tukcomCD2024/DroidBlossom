@@ -7,13 +7,13 @@ import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
 import com.droidblossom.archive.domain.model.auth.VerificationNumberValid
 import com.droidblossom.archive.domain.model.member.CheckStatus
-import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
-import com.droidblossom.archive.domain.usecase.ReIssueUseCase
-import com.droidblossom.archive.domain.usecase.SendMessageUseCase
-import com.droidblossom.archive.domain.usecase.SignInUseCase
-import com.droidblossom.archive.domain.usecase.SignUpUseCase
-import com.droidblossom.archive.domain.usecase.TemporaryTokenReIssueUseCase
-import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
+import com.droidblossom.archive.domain.usecase.member.MemberStatusUseCase
+import com.droidblossom.archive.domain.usecase.auth.ReIssueUseCase
+import com.droidblossom.archive.domain.usecase.auth.SendMessageUseCase
+import com.droidblossom.archive.domain.usecase.auth.SignInUseCase
+import com.droidblossom.archive.domain.usecase.auth.SignUpUseCase
+import com.droidblossom.archive.domain.usecase.auth.TemporaryTokenReIssueUseCase
+import com.droidblossom.archive.domain.usecase.auth.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.SharedPreferencesUtils
@@ -110,6 +110,8 @@ class AuthViewModelImpl @Inject constructor(
                     }else{
                         submitSignUpData(signUpData)
                     }
+                }.onFail {
+
                 }
             }
         }
@@ -124,7 +126,7 @@ class AuthViewModelImpl @Inject constructor(
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
-                }.onError {
+                }.onFail {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignInData 에러")
                 }
@@ -140,7 +142,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.resetTokenData()
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
-                }.onError {
+                }.onFail {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignUpData 에러")
                 }
@@ -223,6 +225,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun submitCertificationNumber(){
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
+                Log.d("실패","${result}")
                 result.onSuccess {
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
@@ -232,7 +235,7 @@ class AuthViewModelImpl @Inject constructor(
                     // Toast 메시지 있으면 좋을듯
                     resetCertificationNumber()
                     certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
-                    Log.d("티티","submitCertificationNumber 에러")
+                    Log.d("티티","에러")
 
                 }
             }

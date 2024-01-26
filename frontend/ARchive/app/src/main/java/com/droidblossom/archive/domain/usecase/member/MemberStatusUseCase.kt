@@ -1,4 +1,4 @@
-package com.droidblossom.archive.domain.usecase
+package com.droidblossom.archive.domain.usecase.member
 
 import android.util.Log
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto

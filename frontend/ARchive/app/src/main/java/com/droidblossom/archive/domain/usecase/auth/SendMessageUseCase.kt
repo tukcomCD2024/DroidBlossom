@@ -1,4 +1,4 @@
-package com.droidblossom.archive.domain.usecase
+package com.droidblossom.archive.domain.usecase.auth
 
 import android.util.Log
 import com.droidblossom.archive.data.dto.auth.request.TokenReIssueRequestDto
@@ -25,9 +25,6 @@ class SendMessageUseCase @Inject constructor(
                     Log.d("티티", "유스케이스 : submitPhoneNumber 에러")
                 }.onFail {
                     Log.d("티티", "유스케이스 : submitPhoneNumber 실패 $it")
-                }.onError {
-                    Log.d("티티", "유스케이스 : submitPhoneNumber 에러 : $it")
-                    throw Exception(it)
                 }.onException {
                     Log.d("티티", "유스케이스 : submitPhoneNumber 예외 :$it")
                     throw Exception(it)

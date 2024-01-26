@@ -2,13 +2,12 @@ package com.droidblossom.archive.presentation.ui.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.usecase.MemberUseCase
-import com.droidblossom.archive.domain.usecase.TestUseCase
+import com.droidblossom.archive.domain.usecase.member.MemberUseCase
+import com.droidblossom.archive.domain.usecase.auth.TestUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

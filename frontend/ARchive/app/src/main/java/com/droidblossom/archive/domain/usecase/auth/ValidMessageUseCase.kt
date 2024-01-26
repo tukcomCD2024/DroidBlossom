@@ -1,8 +1,8 @@
-package com.droidblossom.archive.domain.usecase
+package com.droidblossom.archive.domain.usecase.auth
 
 import android.util.Log
-import com.droidblossom.archive.data.dto.auth.request.SignInRequestDto
-import com.droidblossom.archive.domain.model.auth.TemporaryToken
+import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
+import com.droidblossom.archive.domain.model.auth.Token
 import com.droidblossom.archive.domain.repository.AuthRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onError
@@ -12,26 +12,23 @@ import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class TemporaryTokenReIssueUseCase @Inject constructor(
+class ValidMessageUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(request: SignInRequestDto) =
-        flow<RetrofitResult<TemporaryToken>> {
+    suspend operator fun invoke(request: VerificationNumberValidRequestDto) =
+        flow<RetrofitResult<Token>> {
             try {
-                emit(repository.authTemporaryTokenReIssue(request).onSuccess {
-
+                emit(repository.authValidMessage(request).onSuccess {
+                    Log.d("성패", "$it")
                 }.onFail {
-
-                }.onError {
-                    throw Exception(it)
+                    Log.d("실패", "$it")
                 }.onException {
+                    Log.d("실패", "$it")
                     throw Exception(it)
                 })
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.d("예외확인", "$e")
                 e.printStackTrace()
             }
-
-
         }
 }
