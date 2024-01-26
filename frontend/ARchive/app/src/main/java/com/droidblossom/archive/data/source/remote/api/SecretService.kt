@@ -9,6 +9,7 @@ import com.droidblossom.archive.data.dto.secret.response.SecretCapsulePageRespon
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -28,6 +29,11 @@ interface SecretService {
 
     @GET("secrete/capsules/{capsule_id}")
     suspend fun getSecretCapsuleDetailApi(
+        @Path("capsule_id") capsuleId : Int,
+    ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
+
+    @PATCH("secrete/capsules/{capsule_id}")
+    suspend fun modifySecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
 
