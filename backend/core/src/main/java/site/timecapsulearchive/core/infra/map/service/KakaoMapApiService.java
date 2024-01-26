@@ -30,11 +30,6 @@ public class KakaoMapApiService implements MapApiService {
     private final RestTemplate restTemplate;
     private final AddressMapper addressMapper;
 
-    private static boolean isError(KakaoMapApiResponse response) {
-        return response == null ||
-            response.documents() == null;
-    }
-
     public Address reverseGeoCoding(Double longitude, Double latitude) {
         URI uri = getKakaoMapApiUrl(longitude, latitude);
 
@@ -66,6 +61,11 @@ public class KakaoMapApiService implements MapApiService {
             .queryParam(LATITUDE, latitude)
             .build()
             .toUri();
+    }
+
+    private boolean isError(KakaoMapApiResponse response) {
+        return response == null ||
+            response.documents() == null;
     }
 
     private HttpEntity<Void> getHttpEntity() {
