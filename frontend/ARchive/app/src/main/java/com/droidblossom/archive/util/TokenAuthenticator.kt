@@ -9,7 +9,7 @@ import okhttp3.Route
 import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(
-    private val sp: SharedPreferencesUtils
+    private val ds: DataStoreUtils
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val isPathRefresh =
@@ -18,7 +18,7 @@ class TokenAuthenticator @Inject constructor(
         if (response.code == 401 && !isPathRefresh) {
 
             return if (fetchUpdateToken()) {
-                val newToken = runBlocking { sp.fetchAccessToken() }
+                val newToken = runBlocking { ds.fetchAccessToken() }
                 // UnAuthorized 예외가 발생한 요청을 복제하여 다시 요청합니다.
                 response.request.newBuilder().apply {
                     removeHeader("Authorization")

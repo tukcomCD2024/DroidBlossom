@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.NetworkStatusChecker
 import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.kakao.sdk.common.KakaoSdk
@@ -18,7 +19,6 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
     override fun onCreate() {
         super<Application>.onCreate()
         context = applicationContext
-        sp = SharedPreferencesUtils(applicationContext)
         networkConnectionChecker = NetworkStatusChecker(context)
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
@@ -46,15 +46,12 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         @SuppressLint("StaticFieldLeak")
         private lateinit var context: Context
 
-        lateinit var sp: SharedPreferencesUtils
-
         fun getString(@StringRes stringResId: Int): String {
             return context.getString(stringResId)
         }
 
         private lateinit var networkConnectionChecker: NetworkStatusChecker
         fun isOnline() = networkConnectionChecker.isOnline()
-
 
     }
 

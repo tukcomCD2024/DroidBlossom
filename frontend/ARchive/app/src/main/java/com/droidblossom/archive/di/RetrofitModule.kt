@@ -2,6 +2,7 @@ package com.droidblossom.archive.di
 
 import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.util.AccessTokenInterceptor
+import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.TokenAuthenticator
 import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.google.gson.GsonBuilder
@@ -15,15 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ResourceRetrofit
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ResourceRetrofitWithToken
-
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
@@ -42,38 +34,16 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun providesOkHttpClient(
-        pf: SharedPreferencesUtils
+        ds: DataStoreUtils
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             connectTimeout(5, TimeUnit.SECONDS)
             readTimeout(5, TimeUnit.SECONDS)
             writeTimeout(5, TimeUnit.SECONDS)
-            authenticator(TokenAuthenticator(pf))
-            addNetworkInterceptor(AccessTokenInterceptor(pf))
+            authenticator(TokenAuthenticator(ds))
+            addNetworkInterceptor(AccessTokenInterceptor(ds))
         }.build()
     }
-//
-//    @Provides
-//    @Singleton
-//    fun providesOkHttpClientWithToken(sharedPreferences: SharedPreferences) : OkHttpClient {
-//        val token = sharedPreferences.getString("token_key", "") ?: ""
-//        return OkHttpClient.Builder().apply {
-//            if (token.isNotEmpty()) {
-//                addInterceptor { chain ->
-//                    val newRequest = chain.request().newBuilder()
-//                        .addHeader("Authorization", "Bearer $token")
-//                        .build()
-//                    chain.proceed(newRequest)
-//                }
-//            }
-//            connectTimeout(5, TimeUnit.SECONDS)
-//            readTimeout(5, TimeUnit.SECONDS)
-//            writeTimeout(5, TimeUnit.SECONDS)
-//            addInterceptor(HttpLoggingInterceptor().apply {
-//                level = HttpLoggingInterceptor.Level.BODY
-//            })
-//        }.build()
-//    }
 
 
     @Provides
@@ -88,19 +58,5 @@ object RetrofitModule {
             .client(client)
             .build()
     }
-
-//    @Provides
-//    @Singleton
-//    @ResourceRetrofitWithToken
-//    fun providesRetrofitWithToken(
-//        client : OkHttpClient,
-//        gsonConverterFactory: GsonConverterFactory
-//    ) : Retrofit {
-//        return Retrofit.Builder()
-//            .baseUrl(BuildConfig.BASE_URL)
-//            .addConverterFactory(gsonConverterFactory)
-//            .client(client)
-//            .build()
-//    }
 
 }

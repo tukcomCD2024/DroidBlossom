@@ -15,6 +15,7 @@ import com.droidblossom.archive.domain.usecase.SignUpUseCase
 import com.droidblossom.archive.domain.usecase.TemporaryTokenReIssueUseCase
 import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onFail
@@ -44,7 +45,7 @@ class AuthViewModelImpl @Inject constructor(
     private val validMessageUseCase: ValidMessageUseCase,
     private val memberStatusUseCase: MemberStatusUseCase,
     private val temporaryTokenReIssueUseCase: TemporaryTokenReIssueUseCase,
-    private val sharedPreferencesUtils : SharedPreferencesUtils
+    private val dataStoreUtils: DataStoreUtils
 ) : BaseViewModel(), AuthViewModel {
 
     // SignInFragment
@@ -119,10 +120,10 @@ class AuthViewModelImpl @Inject constructor(
             signInUseCase(signInData.toDto()).collect{ result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    sharedPreferencesUtils.resetTokenData()
+                    dataStoreUtils.resetTokenData()
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
-                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
-                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
+                    dataStoreUtils.saveAccessToken(it.accessToken)
+                    dataStoreUtils.saveRefreshToken(it.refreshToken)
                 }.onError {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignInData 에러")
@@ -136,8 +137,8 @@ class AuthViewModelImpl @Inject constructor(
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    sharedPreferencesUtils.resetTokenData()
-                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    dataStoreUtils.resetTokenData()
+                    dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onError {
                     // ToastMessage 있으면 좋을듯
@@ -151,8 +152,8 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
                 result.onSuccess {
-                    sharedPreferencesUtils.resetTokenData()
-                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    dataStoreUtils.resetTokenData()
+                    dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
                     Log.d("티티","temporaryTokenReIssue 에러")
@@ -184,7 +185,6 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{result ->
                 result.onSuccess{
-                    Log.d("티티","submitPhoneNumber 성공")
                     signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
@@ -224,8 +224,8 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
                 result.onSuccess {
-                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
-                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
+                    dataStoreUtils.saveAccessToken(it.accessToken)
+                    dataStoreUtils.saveRefreshToken(it.refreshToken)
                     certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
 
                 }.onFail {
