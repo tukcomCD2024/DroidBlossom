@@ -9,12 +9,14 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface SecretService {
 
     @GET("secrete/capsules")
     suspend fun getSecretCapsulePageApi(
-        @Body request : SecretCapsulePageRequestDto
+        @Query("size") size : Int,
+        @Query("capsule_id") capsuleId: Int
     ) : Response<ResponseBody<SecretCapsulePageResponseDto>>
 
     @POST("secrete/capsules")
