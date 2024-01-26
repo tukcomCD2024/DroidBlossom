@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyReque
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleCreateResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleDetailResponseDto
+import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleModifyResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsulePageResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
@@ -38,6 +39,6 @@ interface SecretService {
     suspend fun modifySecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Int,
         @Body request : SecretCapsuleModifyRequestDto
-    ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
+    ) : Response<ResponseBody<SecretCapsuleModifyResponseDto>>
 
 }
