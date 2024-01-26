@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.infra.kakao.dto;
+package site.timecapsulearchive.core.infra.map.dto;
 
 import java.util.List;
 

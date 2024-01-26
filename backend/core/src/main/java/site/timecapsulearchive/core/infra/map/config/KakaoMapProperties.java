@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.infra.kakao.config;
+package site.timecapsulearchive.core.infra.map.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
