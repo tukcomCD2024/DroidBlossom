@@ -2,16 +2,21 @@ package com.droidblossom.archive.di
 
 import com.droidblossom.archive.data.repository.AuthRepositoryImpl
 import com.droidblossom.archive.data.repository.MemberRepositoryImpl
+import com.droidblossom.archive.data.repository.S3RepositoryImpl
+import com.droidblossom.archive.data.repository.SecretRepositoryImpl
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.MemberService
+import com.droidblossom.archive.data.source.remote.api.S3Service
+import com.droidblossom.archive.data.source.remote.api.SecretService
 import com.droidblossom.archive.domain.repository.AuthRepository
 import com.droidblossom.archive.domain.repository.MemberRepository
+import com.droidblossom.archive.domain.repository.S3Repository
+import com.droidblossom.archive.domain.repository.SecretRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -26,4 +31,14 @@ object RepositoryModule {
     @ViewModelScoped
     fun providesMemberRepository(api: MemberService): MemberRepository =
         MemberRepositoryImpl(api)
+
+    @Provides
+    @ViewModelScoped
+    fun providesSecretRepository(api: SecretService): SecretRepository =
+        SecretRepositoryImpl(api)
+
+    @Provides
+    @ViewModelScoped
+    fun providesS3Repository(api: S3Service): S3Repository =
+        S3RepositoryImpl(api)
 }

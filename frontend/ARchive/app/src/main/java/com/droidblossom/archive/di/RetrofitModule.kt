@@ -4,7 +4,6 @@ import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.util.AccessTokenInterceptor
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.TokenAuthenticator
-import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -14,8 +13,8 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
 import javax.inject.Singleton
+
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
