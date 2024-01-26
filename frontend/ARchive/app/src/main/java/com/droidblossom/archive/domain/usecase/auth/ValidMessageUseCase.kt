@@ -1,8 +1,8 @@
-package com.droidblossom.archive.domain.usecase
+package com.droidblossom.archive.domain.usecase.auth
 
 import android.util.Log
-import com.droidblossom.archive.data.dto.auth.request.SignUpRequestDto
-import com.droidblossom.archive.domain.model.auth.TemporaryToken
+import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
+import com.droidblossom.archive.domain.model.auth.Token
 import com.droidblossom.archive.domain.repository.AuthRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onError
@@ -12,17 +12,16 @@ import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SignUpUseCase @Inject constructor(
+class ValidMessageUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(request: SignUpRequestDto) =
-        flow<RetrofitResult<TemporaryToken>> {
-            Log.d("후후후", "request ${request}")
+    suspend operator fun invoke(request: VerificationNumberValidRequestDto) =
+        flow<RetrofitResult<Token>> {
             try {
-                emit(repository.authSignUp(request).onSuccess {
-                    Log.d("후후후", "성공 - 재발급")
+                emit(repository.authValidMessage(request).onSuccess {
+
                 }.onFail {
-                    Log.d("후후후", "실후 - 재발급${it}")
+
                 }.onError {
                     throw Exception(it)
                 }.onException {

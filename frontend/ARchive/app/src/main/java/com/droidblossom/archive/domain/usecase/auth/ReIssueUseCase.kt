@@ -1,4 +1,4 @@
-package com.droidblossom.archive.domain.usecase
+package com.droidblossom.archive.domain.usecase.auth
 
 import android.util.Log
 import com.droidblossom.archive.data.dto.auth.request.TokenReIssueRequestDto

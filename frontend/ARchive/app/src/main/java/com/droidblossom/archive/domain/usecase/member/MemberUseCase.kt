@@ -1,7 +1,7 @@
-package com.droidblossom.archive.domain.usecase
+package com.droidblossom.archive.domain.usecase.member
 
 import android.util.Log
-import com.droidblossom.archive.domain.model.auth.Health
+import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onError
@@ -11,25 +11,21 @@ import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class TestUseCase @Inject constructor(
+class MemberUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
-    operator fun invoke() = flow<RetrofitResult<Health>> {
+    operator fun invoke() = flow<RetrofitResult<MemberDetail>> {
         try {
-            emit(repository.getText().onSuccess {
-                Log.d("qwer", "${it.message}")
-
+            emit(repository.getMe().onSuccess {
+                Log.d("qwer", "성공")
             }.onFail {
-                Log.d("qwer", "실패")
-
+                Log.d("qwer", "${it}")
             }.onError {
-                Log.d("qwer", "에러")
                 throw Exception(it)
             }.onException {
-                Log.d("qwer", "예외")
                 throw Exception(it)
             })
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.d("예외확인", "$e")
             e.printStackTrace()
         }
