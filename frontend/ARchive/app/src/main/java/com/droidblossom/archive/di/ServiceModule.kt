@@ -25,5 +25,5 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providesSecretService(retrofit: Retrofit) : SecretService = retrofit.create(SecretService::class.java)
-    
+
 }
