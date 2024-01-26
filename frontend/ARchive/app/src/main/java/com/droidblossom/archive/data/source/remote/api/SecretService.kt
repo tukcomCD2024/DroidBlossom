@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleCreateRequestDto
+import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleCreateResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleDetailResponseDto
@@ -32,9 +33,11 @@ interface SecretService {
         @Path("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
 
+    //미정 (1/27 기준)
     @PATCH("secrete/capsules/{capsule_id}")
     suspend fun modifySecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Int,
+        @Body request : SecretCapsuleModifyRequestDto
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
 
 }
