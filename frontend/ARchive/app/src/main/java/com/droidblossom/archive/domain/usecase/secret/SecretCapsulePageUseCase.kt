@@ -1,8 +1,7 @@
 package com.droidblossom.archive.domain.usecase.secret
 
 import android.util.Log
-import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
-import com.droidblossom.archive.domain.model.secret.SecretCapsulePage
+import com.droidblossom.archive.domain.model.secret.SecretCapsuleDetail
 import com.droidblossom.archive.domain.repository.SecretRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onException
@@ -14,10 +13,10 @@ import javax.inject.Inject
 class SecretCapsulePageUseCase @Inject constructor(
     private val repository: SecretRepository
 ) {
-    suspend operator fun invoke(request: SecretCapsulePageRequestDto) =
-        flow<RetrofitResult<SecretCapsulePage>> {
+    suspend operator fun invoke(capsuleId: Int) =
+        flow<RetrofitResult<SecretCapsuleDetail>> {
             try {
-                emit(repository.getSecretCapsulePage(request).onSuccess {
+                emit(repository.getSecretCapsuleDetail(capsuleId).onSuccess {
 
                 }.onFail {
 
