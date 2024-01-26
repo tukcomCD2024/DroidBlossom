@@ -2,6 +2,7 @@ package com.droidblossom.archive.di
 
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.MemberService
+import com.droidblossom.archive.data.source.remote.api.SecretService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,5 +22,8 @@ object ServiceModule {
     @Provides
     fun providesMemberService(retrofit: Retrofit) : MemberService = retrofit.create(MemberService::class.java)
 
-
+    @Singleton
+    @Provides
+    fun providesSecretService(retrofit: Retrofit) : SecretService = retrofit.create(SecretService::class.java)
+    
 }
