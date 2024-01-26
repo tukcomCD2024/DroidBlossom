@@ -22,9 +22,6 @@ class TestUseCase @Inject constructor(
             }.onFail {
                 Log.d("qwer", "실패")
 
-            }.onError {
-                Log.d("qwer", "에러")
-                throw Exception(it)
             }.onException {
                 Log.d("qwer", "예외")
                 throw Exception(it)

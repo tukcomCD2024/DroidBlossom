@@ -110,6 +110,8 @@ class AuthViewModelImpl @Inject constructor(
                     }else{
                         submitSignUpData(signUpData)
                     }
+                }.onFail {
+
                 }
             }
         }
@@ -124,7 +126,7 @@ class AuthViewModelImpl @Inject constructor(
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
-                }.onError {
+                }.onFail {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignInData 에러")
                 }
@@ -140,7 +142,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.resetTokenData()
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
-                }.onError {
+                }.onFail {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignUpData 에러")
                 }
@@ -223,6 +225,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun submitCertificationNumber(){
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
+                Log.d("실패","${result}")
                 result.onSuccess {
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
@@ -232,7 +235,7 @@ class AuthViewModelImpl @Inject constructor(
                     // Toast 메시지 있으면 좋을듯
                     resetCertificationNumber()
                     certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
-                    Log.d("티티","submitCertificationNumber 에러")
+                    Log.d("티티","에러")
 
                 }
             }

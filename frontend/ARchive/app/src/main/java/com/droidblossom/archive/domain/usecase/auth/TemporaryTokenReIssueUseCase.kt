@@ -22,8 +22,6 @@ class TemporaryTokenReIssueUseCase @Inject constructor(
 
                 }.onFail {
 
-                }.onError {
-                    throw Exception(it)
                 }.onException {
                     throw Exception(it)
                 })

@@ -24,9 +24,6 @@ class ReIssueUseCase @Inject constructor(
                 }.onFail {
                     Log.d("후후후", "실패 - 재발급")
 
-                }.onError {
-                    Log.d("후후후", "에러 - 재발급")
-                    throw Exception(it)
                 }.onException {
                     Log.d("후후후", "예외 - 재발급")
                     throw Exception(it)
