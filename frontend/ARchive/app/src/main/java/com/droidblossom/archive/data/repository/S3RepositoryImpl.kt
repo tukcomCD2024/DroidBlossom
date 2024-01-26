@@ -15,7 +15,7 @@ class S3RepositoryImpl @Inject constructor(
 ) : S3Repository {
 
     override suspend fun getS3Url(request : S3UrlRequestDto): RetrofitResult<S3Urls> {
-        return apiHandler({ api.getUploadUrls(request) }) { response: ResponseBody<S3UrlResponseDto> -> response.result.toModel() }
+        return apiHandler({ api.getUploadUrlsApi(request) }) { response: ResponseBody<S3UrlResponseDto> -> response.result.toModel() }
 
     }
 }

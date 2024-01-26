@@ -10,7 +10,7 @@ import retrofit2.http.POST
 interface S3Service {
 
     @POST("file/upload-url")
-    suspend fun getUploadUrls(
+    suspend fun getUploadUrlsApi(
         @Body request : S3UrlRequestDto
     ) : Response<ResponseBody<S3UrlResponseDto>>
 

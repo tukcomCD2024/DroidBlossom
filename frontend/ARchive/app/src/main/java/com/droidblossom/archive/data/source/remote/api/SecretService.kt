@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SecretService {
@@ -23,5 +24,10 @@ interface SecretService {
     suspend fun postSecretCapsuleApi(
         @Body request : SecretCapsuleCreateRequestDto
     ) : Response<ResponseBody<SecretCapsuleCreateResponseDto>>
+
+    @GET("secrete/capsules/{capsule_id}")
+    suspend fun getSecretCapsuleDetailApi(
+        @Path("capsule_id") capsuleId : Int,
+    ) : Response<ResponseBody<SecretCapsulePageResponseDto>>
 
 }
