@@ -66,6 +66,10 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
 
                         }
 
+                        is AuthViewModel.SignUpEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
                     }
                 }
             }
