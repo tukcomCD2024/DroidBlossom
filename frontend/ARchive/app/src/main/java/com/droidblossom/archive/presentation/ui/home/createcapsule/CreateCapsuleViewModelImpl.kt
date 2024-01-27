@@ -43,13 +43,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
     override val create3Events: SharedFlow<CreateCapsuleViewModel.Create3Event>
         get() = _create3Events.asSharedFlow()
-    private val _capsuleTitle= MutableStateFlow("")
-    override val capsuleTitle: StateFlow<String>
-        get() = _capsuleTitle
+    override val capsuleTitle: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val _capsuleContent= MutableStateFlow("")
-    override val capsuleContent: StateFlow<String>
-        get() = _capsuleContent
+    override val capsuleContent: MutableStateFlow<String> = MutableStateFlow("")
 
     private val _capsuleLocationName = MutableStateFlow("")
     override val capsuleLocationName: StateFlow<String>
@@ -70,6 +66,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _capsuleImgUrls = MutableStateFlow(listOf<String>())
     override val capsuleImgUrls: StateFlow<List<String>>
         get() = _capsuleImgUrls
+    private val _isSelectTimeCapsule = MutableStateFlow(true)
+    override val isSelectTimeCapsule: StateFlow<Boolean>
+        get() = _isSelectTimeCapsule
 
     override fun move1To2() {
         viewModelScope.launch {
@@ -83,10 +82,42 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun moveSearchSkin() {
+        viewModelScope.launch {
+            _create2Events.emit(CreateCapsuleViewModel.Create2Event.SearchSkin)
+        }
+    }
+
     override fun moveFinish() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
         }
+    }
+
+    override fun moveLocation() {
+        viewModelScope.launch {
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickLocation)
+        }
+    }
+
+    override fun moveDate() {
+        viewModelScope.launch {
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickDate)
+        }
+    }
+
+    override fun moveImgUpLoad() {
+        viewModelScope.launch {
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickImgUpLoad)
+        }
+    }
+
+    override fun selectTimeCapsule() {
+        viewModelScope.launch { _isSelectTimeCapsule.emit(true) }
+    }
+
+    override fun selectCapsule() {
+        viewModelScope.launch { _isSelectTimeCapsule.emit(false) }
     }
 
 }

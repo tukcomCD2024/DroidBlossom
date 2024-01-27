@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel" />
@@ -44,14 +46,16 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="8dp"
+                    android:background="@drawable/corner_radius_8"
+                    android:backgroundTint="@{vm.isSelectTimeCapsule ? @color/main_bg_1 : @color/main_1}"
                     android:gravity="center"
+                    android:onClick="@{()->vm.selectCapsule()}"
                     android:text="캡슐"
                     android:textAppearance="@style/TextAppearance.App.button"
+                    android:textColor="@{vm.isSelectTimeCapsule? @color/main_2: @color/white}"
                     app:layout_constraintEnd_toStartOf="@id/timeCapsuleBtn"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:background="@drawable/corner_radius_8"
-                    tools:backgroundTint="@color/main_bg_1"
                     tools:textColor="@color/main_2" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -60,14 +64,16 @@
                     android:layout_height="56dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
+                    android:background="@drawable/corner_radius_8"
+                    android:backgroundTint="@{vm.isSelectTimeCapsule ? @color/main_1 : @color/main_bg_1}"
                     android:gravity="center"
+                    android:onClick="@{()->vm.selectTimeCapsule()}"
                     android:text="타임 캡슐"
                     android:textAppearance="@style/TextAppearance.App.button"
+                    android:textColor="@{vm.isSelectTimeCapsule? @color/white: @color/main_2}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/capsuleBtn"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:background="@drawable/corner_radius_8"
-                    tools:textColor="@color/white" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/placeSettingT"
@@ -111,6 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="시간추가"
+                    android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     app:layout_constraintBottom_toBottomOf="@id/timeSettingBtn"
                     app:layout_constraintStart_toStartOf="parent"
@@ -124,19 +131,24 @@
                     android:ellipsize="middle"
                     android:maxWidth="250dp"
                     android:maxLines="1"
+                    android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     android:textColor="@color/gray_600"
+                    android:onClick="@{()->vm.moveLocation()}"
                     app:layout_constraintBottom_toBottomOf="@id/timeSettingBtn"
                     app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
                     app:layout_constraintTop_toTopOf="@id/timeSettingBtn"
                     tools:text="2025.01.05" />
 
                 <ImageView
+                    app:layout_goneMarginTop="16dp"
                     android:id="@+id/timeSettingBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
+                    android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
                     android:layout_marginEnd="16dp"
+                    android:onClick="@{()->vm.moveDate()}"
                     android:src="@drawable/ic_plus_main_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/placeSettingBtn" />
@@ -159,6 +171,7 @@
                     android:layout_marginTop="24dp"
                     android:background="@android:color/transparent"
                     android:hint="캡슐 이름을 작성하세요."
+                    android:text="@={vm.capsuleTitle}"
                     android:textAppearance="@style/TextAppearance.App.h2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -172,8 +185,9 @@
                     android:layout_marginTop="24dp"
                     android:background="@android:color/transparent"
                     android:gravity="top"
-                    android:hint="캡슐 이름을 작성하세요."
+                    android:hint="캡슐 내용을 작성하세요."
                     android:minLines="2"
+                    android:text="@={vm.capsuleContent}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -230,8 +244,8 @@
             android:layout_marginBottom="@dimen/margin"
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
-            android:text="생성하기"
             android:onClick="@{()->vm.moveFinish()}"
+            android:text="생성하기"
             android:textAppearance="@style/TextAppearance.App.button"
             android:textColor="@color/white"
             app:circularflow_radiusInDP="20dp"
