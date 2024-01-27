@@ -84,15 +84,17 @@ public interface CapsuleApi {
         value = "/capsules/nearby",
         produces = {"application/json"}
     )
-    ResponseEntity<NearbyCapsulePageResponse> getNearByCapsules(
-        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "longitude") Float longitude,
+    ResponseEntity<ApiSpec<NearbyCapsulePageResponse>> getNearByCapsules(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "latitude") Float latitude,
+        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)
+        @NotNull @Valid double longitude,
 
-        @Parameter(in = ParameterIn.QUERY, description = "조회 거리", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "distance") Float distance,
+        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true)
+        @NotNull @Valid double latitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리", required = true)
+        @NotNull @Valid double distance,
 
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 필터링 타입", schema = @Schema(defaultValue = "ALL"))
         @NotNull @Valid @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") String capsuleType
