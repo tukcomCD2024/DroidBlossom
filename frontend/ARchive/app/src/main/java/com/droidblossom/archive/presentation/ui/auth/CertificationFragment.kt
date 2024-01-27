@@ -56,7 +56,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
         with(binding){
             resendBtn.setOnClickListener {
                 viewModel.reSend()
-                binding.certificationNumberEditText1.requestFocus()
+                resetCertificationNumber()
             }
 
             setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
@@ -95,8 +95,8 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             }
                         }
 
-                        is AuthViewModel.CertificationEvent.failCertificationCode -> {
-                            binding.certificationNumberEditText1.requestFocus()
+                        is AuthViewModel.CertificationEvent.VerificationCodeMismatch -> {
+                            resetCertificationNumber()
                         }
 
                         is AuthViewModel.CertificationEvent.ShowToastMessage -> {
@@ -108,6 +108,14 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 }
             }
         }
+    }
+
+    private fun resetCertificationNumber(){
+        viewModel.certificationNumber4.value = ""
+        viewModel.certificationNumber3.value = ""
+        viewModel.certificationNumber2.value = ""
+        viewModel.certificationNumber1.value = ""
+        binding.certificationNumberEditText1.requestFocus()
     }
 
     private fun setupAutoFocusOnLength(previousEditText: EditText?, currentEditText: EditText, nextEditText: EditText?) {

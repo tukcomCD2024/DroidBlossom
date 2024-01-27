@@ -191,7 +191,7 @@ class AuthViewModelImpl @Inject constructor(
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
                     // 아마 5번 하루 5번 이상 이면 안 실패(?)
-                    Log.d("티티","submitPhoneNumber 에러")
+                    Log.d("티티","$it : submitPhoneNumber 실패")
                 }
 
             }
@@ -225,7 +225,6 @@ class AuthViewModelImpl @Inject constructor(
     override fun submitCertificationNumber(){
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
-                Log.d("실패","${result}")
                 result.onSuccess {
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
@@ -233,9 +232,10 @@ class AuthViewModelImpl @Inject constructor(
 
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
-                    resetCertificationNumber()
-                    certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
-                    Log.d("티티","에러")
+                    if (it == 400){
+                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
+                        certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                    }
 
                 }
             }
@@ -244,15 +244,7 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun reSend(){
         initTimer()
-        resetCertificationNumber()
         submitPhoneNumber()
-    }
-
-    private fun resetCertificationNumber(){
-        certificationNumber1.value = ""
-        certificationNumber2.value = ""
-        certificationNumber3.value = ""
-        certificationNumber4.value = ""
     }
 
 }

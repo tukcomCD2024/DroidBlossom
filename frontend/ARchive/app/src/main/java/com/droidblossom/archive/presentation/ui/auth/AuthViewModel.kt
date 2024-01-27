@@ -71,7 +71,7 @@ interface AuthViewModel {
         object ReSend : CertificationEvent()
         object NavigateToSignUpSuccess : CertificationEvent()
 
-        object failCertificationCode : CertificationEvent()
+        object VerificationCodeMismatch : CertificationEvent()
         data class ShowToastMessage(val message : String) : CertificationEvent()
 
     }
