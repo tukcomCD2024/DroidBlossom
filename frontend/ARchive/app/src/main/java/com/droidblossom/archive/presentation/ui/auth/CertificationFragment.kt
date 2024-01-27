@@ -83,12 +83,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 viewModel.certificationEvents.collect { event ->
                     when (event) {
 
-                        is AuthViewModel.CertificationEvent.ReSend -> {
-                            // 서버에게 재전송 요청
-                            viewModel.initTimer()
-                            viewModel.submitPhoneNumber()
-                        }
-
                         is AuthViewModel.CertificationEvent.NavigateToSignUpSuccess -> {
                             if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
                                 navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)

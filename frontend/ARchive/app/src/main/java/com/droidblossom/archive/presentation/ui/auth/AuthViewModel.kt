@@ -68,7 +68,6 @@ interface AuthViewModel {
     }
 
     sealed class CertificationEvent {
-        object ReSend : CertificationEvent()
         object NavigateToSignUpSuccess : CertificationEvent()
 
         object VerificationCodeMismatch : CertificationEvent()
