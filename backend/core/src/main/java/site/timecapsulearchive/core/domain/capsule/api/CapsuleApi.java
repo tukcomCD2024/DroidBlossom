@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface CapsuleApi {
 
@@ -31,7 +33,6 @@ public interface CapsuleApi {
         )
     })
     @GetMapping(
-        value = "/capsules",
         produces = {"application/json"}
     )
     ResponseEntity<MyCapsulePageResponse> findCapsulesByMemberId(
@@ -67,7 +68,6 @@ public interface CapsuleApi {
         @NotNull @Valid @RequestParam(value = "capsule_id") Long capsuleId
     );
 
-
     @Operation(
         summary = "현재 사용자 위치 기준 캡슐 목록 조회",
         description = "현재 사용자 위치를 바탕으로 반경 distance만큼 조회한다.",
@@ -84,18 +84,20 @@ public interface CapsuleApi {
         value = "/capsules/nearby",
         produces = {"application/json"}
     )
-    ResponseEntity<NearbyCapsulePageResponse> getNearByCapsules(
-        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "longitude") Float longitude,
+    ResponseEntity<ApiSpec<NearbyCapsulePageResponse>> getNearByCapsules(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "latitude") Float latitude,
+        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)
+        @NotNull @Valid double longitude,
 
-        @Parameter(in = ParameterIn.QUERY, description = "조회 거리", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "distance") Float distance,
+        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true)
+        @NotNull @Valid double latitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리", required = true)
+        @NotNull @Valid double distance,
 
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 필터링 타입", schema = @Schema(defaultValue = "ALL"))
-        @NotNull @Valid @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") String capsuleType
+        @NotNull @Valid CapsuleType capsuleType
     );
 }
 

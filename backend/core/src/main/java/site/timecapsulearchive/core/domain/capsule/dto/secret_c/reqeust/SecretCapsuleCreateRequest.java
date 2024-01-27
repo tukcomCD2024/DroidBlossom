@@ -29,11 +29,11 @@ public record SecretCapsuleCreateRequest(
 
     @Schema(description = "현재 경도")
     @NotBlank(message = "캡슐 경도는 필수 입니다.")
-    Double longitude,
+    double longitude,
 
     @Schema(description = "현재 위도")
     @NotBlank(message = "캡슐 위도는 필수 입니다.")
-    Double latitude,
+    double latitude,
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,

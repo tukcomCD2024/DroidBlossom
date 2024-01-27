@@ -25,7 +25,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     private final CapsuleMapper mapper;
 
     @Override
-    public ResponseEntity<ApiSpec<Void>> createSecretCapsule(
+    public ResponseEntity<ApiSpec<String>> createSecretCapsule(
         @AuthenticationPrincipal Long memberId,
         @RequestBody SecretCapsuleCreateRequest request
     ) {

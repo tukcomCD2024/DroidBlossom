@@ -7,13 +7,10 @@ import java.util.List;
 public record NearbyCapsulePageResponse(
 
     @Schema(description = "캡슐 요약 정보 리스트")
-    List<CapsuleSummaryResponse> capsules,
-
-    @Schema(description = "다음 캡슐 유무")
-    Boolean hasNext,
-
-    @Schema(description = "이전 캡슐 유무")
-    Boolean hasPrevious
+    List<CapsuleSummaryResponse> capsules
 ) {
 
+    public static NearbyCapsulePageResponse from(List<CapsuleSummaryResponse> capsules) {
+        return new NearbyCapsulePageResponse(capsules);
+    }
 }

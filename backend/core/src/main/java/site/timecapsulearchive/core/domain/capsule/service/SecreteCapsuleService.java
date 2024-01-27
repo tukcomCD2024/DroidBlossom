@@ -31,6 +31,12 @@ public class SecreteCapsuleService {
 
     private final CapsuleMapper capsuleMapper;
 
+    /**
+     * 멤버 아이디와 캡슐 생성 포맷을 받아서 캡슐을 생성한다.
+     *
+     * @param memberId 캡슐을 생성할 멤버 아이디
+     * @param dto      캡슐 생성 요청 포맷
+     */
     public void createCapsule(Long memberId, CapsuleCreateRequestDto dto) {
         Member findMember = memberService.findMemberByMemberId(memberId);
 

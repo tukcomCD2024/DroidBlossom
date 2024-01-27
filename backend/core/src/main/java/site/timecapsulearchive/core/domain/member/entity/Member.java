@@ -109,7 +109,7 @@ public class Member extends BaseEntity {
         this.phone = phone;
     }
 
-    public void updatePhoneHash(byte[] phone_hash){
+    public void updatePhoneHash(byte[] phone_hash) {
         this.phone_hash = phone_hash;
     }
 
