@@ -41,7 +41,7 @@ public interface SecretCapsuleApi {
         value = "/capsules",
         consumes = {"application/json"}
     )
-    ResponseEntity<ApiSpec<Void>> createSecretCapsule(
+    ResponseEntity<ApiSpec<String>> createSecretCapsule(
         Long memberId,
         SecretCapsuleCreateRequest request
     );
