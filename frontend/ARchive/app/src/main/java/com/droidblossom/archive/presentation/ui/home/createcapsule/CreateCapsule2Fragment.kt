@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CreateCapsule2Fragment :
@@ -39,7 +43,20 @@ class CreateCapsule2Fragment :
     }
 
     override fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.create2Events.collect{
+                    when(it){
+                        CreateCapsuleViewModel.Create2Event.NavigateTo3 -> {
+                            navController.navigate(R.id.action_createCapsule2Fragment_to_createCapsule3Fragment)
+                        }
+                        CreateCapsuleViewModel.Create2Event.SearchSkin -> {
 
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
