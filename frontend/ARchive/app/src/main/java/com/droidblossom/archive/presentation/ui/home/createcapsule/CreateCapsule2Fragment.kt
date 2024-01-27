@@ -31,6 +31,8 @@ class CreateCapsule2Fragment :
             override fun handleOnBackPressed() {
                 if (!viewModel.isGroupCapsuleCreate){
                     requireActivity().finish()
+                }else{
+                    super.remove()
                 }
             }
         }
