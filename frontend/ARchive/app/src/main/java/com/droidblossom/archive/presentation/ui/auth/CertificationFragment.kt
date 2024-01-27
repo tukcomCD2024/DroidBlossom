@@ -21,8 +21,11 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.util.AuthOtpReceiver
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<AuthViewModelImpl, FragmentCertificationBinding>(R.layout.fragment_certification) {
@@ -31,11 +34,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
     lateinit var navController: NavController
     override val viewModel : AuthViewModelImpl by activityViewModels()
     private var smsReceiver : AuthOtpReceiver? = null
-
-    private var textWatcher1: TextWatcher? = null
-    private var textWatcher2: TextWatcher? = null
-    private var textWatcher3: TextWatcher? = null
-    private var textWatcher4: TextWatcher? = null
 
     override fun onResume() {
         super.onResume()
@@ -65,20 +63,22 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 viewModel.reSend()
                 resetCertificationNumber()
             }
-
-
         }
     }
     override fun observeData() {
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.certificationNumber
-                    .filter { it.length == 4 }
-                    .collect { certificationNum ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.certificationNumber.collect { certificationNum ->
+                    if (certificationNum.length == 4) {
                         // 길이가 4일 때의 처리 로직
                         viewModel.submitCertificationNumber()
+                    } else if (certificationNum.isEmpty()) {
+                        binding.certificationNumberEditText1.postDelayed({
+                            binding.certificationNumberEditText1.requestFocus()
+                        }, 50)
                     }
+                }
             }
         }
 
@@ -109,31 +109,18 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
     }
 
     private fun addTextWatcher() {
-        textWatcher1 = setupAutoFocusOnLength(null, binding.certificationNumberEditText1, binding.certificationNumberEditText2)
-        textWatcher2 = setupAutoFocusOnLength(binding.certificationNumberEditText1, binding.certificationNumberEditText2, binding.certificationNumberEditText3)
-        textWatcher3 = setupAutoFocusOnLength(binding.certificationNumberEditText2, binding.certificationNumberEditText3, binding.certificationNumberEditText4)
-        textWatcher4 = setupAutoFocusOnLength(binding.certificationNumberEditText3, binding.certificationNumberEditText4, null)
+        setupAutoFocusOnLength(null, binding.certificationNumberEditText1, binding.certificationNumberEditText2)
+        setupAutoFocusOnLength(binding.certificationNumberEditText1, binding.certificationNumberEditText2, binding.certificationNumberEditText3)
+        setupAutoFocusOnLength(binding.certificationNumberEditText2, binding.certificationNumberEditText3, binding.certificationNumberEditText4)
+        setupAutoFocusOnLength(binding.certificationNumberEditText3, binding.certificationNumberEditText4, null)
     }
 
-    private fun removeTextWatcher() {
-        textWatcher1?.let { binding.certificationNumberEditText1.removeTextChangedListener(it) }
-        textWatcher2?.let { binding.certificationNumberEditText2.removeTextChangedListener(it) }
-        textWatcher3?.let { binding.certificationNumberEditText3.removeTextChangedListener(it) }
-        textWatcher4?.let { binding.certificationNumberEditText4.removeTextChangedListener(it) }
-    }
 
     private fun resetCertificationNumber() {
-        removeTextWatcher()
-
-        viewModel.certificationNumber1.value = ""
-        viewModel.certificationNumber2.value = ""
-        viewModel.certificationNumber3.value = ""
         viewModel.certificationNumber4.value = ""
-
-        binding.certificationNumberEditText1.post {
-            binding.certificationNumberEditText1.requestFocus()
-            addTextWatcher()
-        }
+        viewModel.certificationNumber3.value = ""
+        viewModel.certificationNumber2.value = ""
+        viewModel.certificationNumber1.value = ""
     }
 
     private fun setupAutoFocusOnLength(previousEditText: EditText?, currentEditText: EditText, nextEditText: EditText?): TextWatcher {

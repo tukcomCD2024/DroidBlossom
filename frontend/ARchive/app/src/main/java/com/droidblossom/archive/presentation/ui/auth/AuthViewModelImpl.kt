@@ -199,7 +199,7 @@ class AuthViewModelImpl @Inject constructor(
                     signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                 }.onFail {
                     if (it == 429){
-                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
                         certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
                     }
                     Log.d("티티","$it : submitPhoneNumber 실패")
