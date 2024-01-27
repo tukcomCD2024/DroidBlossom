@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin"
-            android:text="캡슐 스킨을 선택해 주세요"
+            android:text="나의 추억을 기록해 보세요"
+            android:paddingBottom="16dp"
             android:textAppearance="@style/TextAppearance.App.h2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,14 +31,15 @@
             android:id="@+id/scrollView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintBottom_toBottomOf="@id/nextBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleT">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/capsuleBtn"
@@ -206,6 +208,7 @@
 
 
                 <ImageView
+                    android:onClick="@{()->vm.moveImgUpLoad()}"
                     android:id="@+id/imageAddBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -222,11 +225,11 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT" />
+                    app:layout_constraintTop_toBottomOf="@id/imageAddBtn" />
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="88dp"
+                    android:layout_height="120dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
