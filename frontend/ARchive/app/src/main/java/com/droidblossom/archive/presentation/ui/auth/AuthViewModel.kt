@@ -72,6 +72,8 @@ interface AuthViewModel {
         object NavigateToSignUpSuccess : CertificationEvent()
 
         object failCertificationCode : CertificationEvent()
+        data class ShowToastMessage(val message : String) : CertificationEvent()
+
     }
 
     enum class Social{

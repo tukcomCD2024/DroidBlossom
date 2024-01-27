@@ -99,6 +99,10 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             binding.certificationNumberEditText1.requestFocus()
                         }
 
+                        is AuthViewModel.CertificationEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
                     }
 
                 }
