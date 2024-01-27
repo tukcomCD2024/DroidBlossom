@@ -19,7 +19,7 @@ interface CreateCapsuleViewModel {
     val skinId: StateFlow<Int>
 
     //Create3
-    val create3Event: SharedFlow<Create3Event>
+    val create3Events: SharedFlow<Create3Event>
     val capsuleTitle: StateFlow<String>
     val capsuleContent: StateFlow<String>
     val capsuleLocationName: StateFlow<String>

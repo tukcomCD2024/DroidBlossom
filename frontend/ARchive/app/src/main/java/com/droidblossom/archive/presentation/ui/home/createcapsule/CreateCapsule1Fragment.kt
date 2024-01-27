@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule1Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CreateCapsule1Fragment :
@@ -27,5 +32,18 @@ class CreateCapsule1Fragment :
             navController.navigate(R.id.action_createCapsule1Fragment_to_createCapsule2Fragment )
         }
     }
-    override fun observeData() {}
+    override fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.create1Events.collect{
+                    when(it){
+                        CreateCapsuleViewModel.Create1Event.NavigateTo2 -> {
+                            navController.navigate(R.id.action_createCapsule1Fragment_to_createCapsule2Fragment)
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 }

@@ -38,9 +38,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         get() = _skinId
 
     //create3
-    private val _create3Event = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
-    override val create3Event: SharedFlow<CreateCapsuleViewModel.Create3Event>
-        get() = _create3Event.asSharedFlow()
+    private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
+    override val create3Events: SharedFlow<CreateCapsuleViewModel.Create3Event>
+        get() = _create3Events.asSharedFlow()
     private val _capsuleTitle= MutableStateFlow("")
     override val capsuleTitle: StateFlow<String>
         get() = _capsuleTitle
