@@ -13,8 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModelImpl @Inject constructor(
-    private val memberUsecase : MemberUseCase,
-    private val testUseCase : TestUseCase
 ) : BaseViewModel(), HomeViewModel {
 
     private val _filterCapsuleSelect: MutableStateFlow<HomeViewModel.CapsuleFilter> =
@@ -35,10 +33,6 @@ class HomeViewModelImpl @Inject constructor(
 
     override fun selectPublic() {
         viewModelScope.launch {
-            //test
-            memberUsecase().collect{
-                Log.d("qwer","${it.toString()}")
-            }
 
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
@@ -57,11 +51,6 @@ class HomeViewModelImpl @Inject constructor(
 
     override fun selectSecret() {
         viewModelScope.launch {
-
-            //test
-            testUseCase().collect{
-                Log.d("qwer", "${it}")
-            }
 
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.SECRET)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
