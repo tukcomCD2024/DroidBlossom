@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 
 @Schema(description = "캡슐 요약 정보")
+@Builder
 public record CapsuleSummaryResponse(
 
     @Schema(description = "캡슐 아이디")

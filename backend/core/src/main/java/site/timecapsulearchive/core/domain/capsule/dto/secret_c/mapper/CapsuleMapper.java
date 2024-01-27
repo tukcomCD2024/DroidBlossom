@@ -2,6 +2,8 @@ package site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper;
 
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
+import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -42,6 +44,20 @@ public class CapsuleMapper {
             .member(member)
             .dueDate(dto.dueDate())
             .capsuleSkin(capsuleSkin)
+            .build();
+    }
+
+    public CapsuleSummaryResponse capsuleSummaryResponseToDto(CapsuleSummaryDto dto) {
+        Point point = geoTransformer.changePoint3857To4326(dto.point());
+
+        return CapsuleSummaryResponse.builder()
+            .id(dto.id())
+            .longitude(point.getX())
+            .latitude(point.getY())
+            .nickname(dto.nickname())
+            .capsuleSkinUrl(dto.skinUrl())
+            .title(dto.title())
+            .dueDate(dto.dueDate())
             .build();
     }
 }
