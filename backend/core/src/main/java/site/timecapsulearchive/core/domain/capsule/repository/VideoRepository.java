@@ -1,8 +1,9 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;
 
-public interface VideoRepository extends JpaRepository<Video, Long> {
+public interface VideoRepository extends Repository<Video, Long> {
 
+    void save(Video video);
 }
