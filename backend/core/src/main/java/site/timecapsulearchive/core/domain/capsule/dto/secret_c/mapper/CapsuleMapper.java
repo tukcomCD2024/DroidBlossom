@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
@@ -9,9 +10,13 @@ import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.global.geography.GeoTransformer;
 
 @Component
+@RequiredArgsConstructor
 public class CapsuleMapper {
+
+    private final GeoTransformer geoTransformer;
 
     public CapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
         SecretCapsuleCreateRequest request) {

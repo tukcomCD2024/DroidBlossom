@@ -5,6 +5,7 @@ import org.geotools.geometry.jts.JTS;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,21 @@ public class GeoTransformer {
     private final GeometryFactory geometryFactoryOf3857;
 
     private final MathTransform mathTransform4326To3857;
+    private final MathTransform mathTransform3857To4326;
 
-    public Point changePoint4326To3857(Double latitude, Double longitude) throws GeoTransformException {
-        Point point = geometryFactory4326.createPoint(new Coordinate(latitude, longitude));
+    /**
+     * SRID 4326 좌표를 받아서 SRID 3857 Point 객체를 반환한다.
+     * @param latitude 위도
+     * @param longitude 경도
+     * @return Point 변환된 SRID 3857 Point 객체
+     * @throws GeoTransformException 잘못된 값의 범위로 인해 오류가 발생할 수 있다.
+     */
+    public Point changePoint4326To3857(double latitude, double longitude) throws GeoTransformException {
+        Point point = geometryFactoryOf4326.createPoint(new Coordinate(latitude, longitude));
 
         try {
             Point transPoint = (Point) JTS.transform(point, mathTransform4326To3857);
-            transPoint.setSRID(3857);
+            transPoint.setSRID(SRID_3857);
 
             return transPoint;
         } catch (TransformException e) {

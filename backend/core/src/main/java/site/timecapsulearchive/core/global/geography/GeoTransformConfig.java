@@ -34,12 +34,12 @@ public class GeoTransformConfig {
     }
 
     @Bean
-    public GeometryFactory geometryFactory4326() {
+    public GeometryFactory geometryFactoryOf4326() {
         return new GeometryFactory(new PrecisionModel(), SRID_4326);
     }
 
     @Bean
-    public GeometryFactory geometryFactory3857() {
+    public GeometryFactory geometryFactoryOf3857() {
         return new GeometryFactory(new PrecisionModel(), SRID_3857);
     }
 }
