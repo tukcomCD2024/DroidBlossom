@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
+import lombok.Builder;
 
 @Schema(description = "캡슐 요약 정보")
 @Builder
@@ -9,6 +10,12 @@ public record CapsuleSummaryResponse(
 
     @Schema(description = "캡슐 아이디")
     Long id,
+
+    @Schema(description = "캡슐 경도 좌표")
+    Double longitude,
+
+    @Schema(description = "캡슐 위도 좌표")
+    Double latitude,
 
     @Schema(description = "생성자 닉네임")
     String nickname,
@@ -20,10 +27,7 @@ public record CapsuleSummaryResponse(
     String title,
 
     @Schema(description = "개봉일")
-    ZonedDateTime dueDate,
-
-    @Schema(description = "캡슐 생성 주소")
-    String address
+    ZonedDateTime dueDate
 ) {
 
 }

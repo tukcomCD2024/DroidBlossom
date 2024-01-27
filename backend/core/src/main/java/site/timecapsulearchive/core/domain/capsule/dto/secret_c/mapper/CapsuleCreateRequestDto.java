@@ -9,13 +9,12 @@ public record CapsuleCreateRequestDto(
     Long capsuleSkinId,
     String title,
     String content,
-    Double longitude,
-    Double latitude,
+    double longitude,
+    double latitude,
     ZonedDateTime dueDate,
     List<FileMetaData> fileNames,
     String directory,
     CapsuleType capsuleType
-
 ) {
 
 }
