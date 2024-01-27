@@ -16,4 +16,7 @@ public record NearbyCapsulePageResponse(
     Boolean hasPrevious
 ) {
 
+    public static NearbyCapsulePageResponse from(List<CapsuleSummaryResponse> capsules) {
+        return new NearbyCapsulePageResponse(capsules);
+    }
 }
