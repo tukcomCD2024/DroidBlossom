@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.base
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -33,5 +34,10 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
             }
         }
         super.onDestroy()
+    }
+
+    fun showToastMessage(message: String) {
+        val toast = Toast.makeText(this, message, Toast.LENGTH_SHORT)
+        toast.show()
     }
 }
