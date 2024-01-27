@@ -25,12 +25,13 @@ public class GeoTransformer {
 
     /**
      * SRID 4326 좌표를 받아서 SRID 3857 Point 객체를 반환한다.
-     * @param latitude 위도
+     *
+     * @param latitude  위도
      * @param longitude 경도
      * @return Point 변환된 SRID 3857 Point 객체
      * @throws GeoTransformException 잘못된 값의 범위로 인해 오류가 발생할 수 있다.
      */
-    public Point changePoint4326To3857(double latitude, double longitude) throws GeoTransformException {
+    public Point changePoint4326To3857(double latitude, double longitude) {
         Point point = geometryFactoryOf4326.createPoint(new Coordinate(latitude, longitude));
 
         try {
@@ -45,7 +46,8 @@ public class GeoTransformer {
 
     /**
      * SRID 3857 좌표와 범위를 받아서 최소 범위 사각형을 만든다.
-     * @param point SRID 3857 좌표
+     *
+     * @param point    SRID 3857 좌표
      * @param distance 범위 거리
      * @return Polygon 최소 범위 사각형인 Polygon 객체
      */
@@ -72,11 +74,12 @@ public class GeoTransformer {
 
     /**
      * SRID 4326 좌표를 받아서 SRID 3857 좌표로 변환한다.
+     *
      * @param point SRID 4326 좌표인 Point 객체
      * @return Point SRID 3857 좌표인 Point 객체
      * @throws GeoTransformException 잘못된 값의 범위로 인해 오류가 발생할 수 있다.
      */
-    public Point changePoint3857To4326(Point point) throws GeoTransformException {
+    public Point changePoint3857To4326(Point point) {
         try {
             return (Point) JTS.transform(point, mathTransform3857To4326);
         } catch (TransformException e) {
