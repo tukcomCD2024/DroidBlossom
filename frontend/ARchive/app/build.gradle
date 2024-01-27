@@ -25,6 +25,7 @@ android {
         buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties['kakao_native_app_key']
         buildConfigField "String", "GOOGLE_LOGIN_CLIENT_ID", properties['google_login_client_id']
         buildConfigField "String", "BASE_URL", properties['base_url']
+        buildConfigField "String", "REISSUETOKEN", properties['re_issue_token']
 
 
         manifestPlaceholders = [NAVER_CLIENT_ID: properties['naver_client_id'], KAKAO_NATIVE_APP_KEY: properties['kakao_native_app_key_no_quotes']]
