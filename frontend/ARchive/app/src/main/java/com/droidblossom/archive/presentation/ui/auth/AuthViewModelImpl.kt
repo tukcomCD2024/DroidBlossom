@@ -189,8 +189,10 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess{
                     signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                 }.onFail {
-                    // Toast 메시지 있으면 좋을듯
-                    // 아마 5번 하루 5번 이상 이면 안 실패(?)
+                    if (it == 429){
+                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                    }
                     Log.d("티티","$it : submitPhoneNumber 실패")
                 }
 
