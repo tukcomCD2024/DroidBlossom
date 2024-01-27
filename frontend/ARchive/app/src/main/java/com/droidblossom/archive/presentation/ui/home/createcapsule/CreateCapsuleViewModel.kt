@@ -28,6 +28,10 @@ interface CreateCapsuleViewModel {
     val capsuleImg : StateFlow<List<FileName>>
     val capsuleImgUrls: StateFlow<List<String>>
 
+    fun move1To2()
+    fun move2To3()
+    fun moveFinish()
+
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()

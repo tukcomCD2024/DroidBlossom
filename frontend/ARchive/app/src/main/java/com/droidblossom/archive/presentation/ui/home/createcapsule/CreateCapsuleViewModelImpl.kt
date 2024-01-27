@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,5 +70,23 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _capsuleImgUrls = MutableStateFlow(listOf<String>())
     override val capsuleImgUrls: StateFlow<List<String>>
         get() = _capsuleImgUrls
+
+    override fun move1To2() {
+        viewModelScope.launch {
+            _create1Events.emit(CreateCapsuleViewModel.Create1Event.NavigateTo2)
+        }
+    }
+
+    override fun move2To3() {
+        viewModelScope.launch {
+            _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
+        }
+    }
+
+    override fun moveFinish() {
+        viewModelScope.launch {
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
+        }
+    }
 
 }

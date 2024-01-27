@@ -231,6 +231,7 @@
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
             android:text="생성하기"
+            android:onClick="@{()->vm.moveFinish()}"
             android:textAppearance="@style/TextAppearance.App.button"
             android:textColor="@color/white"
             app:circularflow_radiusInDP="20dp"

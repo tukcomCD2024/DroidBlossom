@@ -83,6 +83,7 @@
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
             android:text="적용하기"
+            android:onClick="@{()->vm.move2To3()}"
             android:textAppearance="@style/TextAppearance.App.button"
             android:textColor="@color/white"
             app:circularflow_radiusInDP="20dp"
