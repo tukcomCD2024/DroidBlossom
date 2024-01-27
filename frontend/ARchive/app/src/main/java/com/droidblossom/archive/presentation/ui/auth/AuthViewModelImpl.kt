@@ -99,6 +99,14 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
+    private fun authDataReset(){
+        certificationNumber4.value = ""
+        certificationNumber3.value = ""
+        certificationNumber2.value = ""
+        certificationNumber1.value = ""
+        _phoneNumber.value = ""
+    }
+
     override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
@@ -110,6 +118,7 @@ class AuthViewModelImpl @Inject constructor(
                     }else{
                         submitSignUpData(signUpData)
                     }
+                    authDataReset()
                 }.onFail {
                     Log.d("티티","memberStatusCheck 실패")
                 }
