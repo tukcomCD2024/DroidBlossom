@@ -111,7 +111,7 @@ class AuthViewModelImpl @Inject constructor(
                         submitSignUpData(signUpData)
                     }
                 }.onFail {
-
+                    Log.d("티티","memberStatusCheck 실패")
                 }
             }
         }
@@ -127,8 +127,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
                 }.onFail {
-                    // ToastMessage 있으면 좋을듯
-                    Log.d("티티","submitSignInData 에러")
+                    Log.d("티티","submitSignInData 실패")
                 }
             }
         }
@@ -158,7 +157,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-                    Log.d("티티","temporaryTokenReIssue 에러")
+                    Log.d("티티","temporaryTokenReIssue 실패")
                 }
             }
         }
@@ -177,6 +176,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun checkPhoneNumber(): Boolean {
         val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
         if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
+            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("올바른 휴대폰 번호를 입력해주세요."))
             return false
         }
         return true
