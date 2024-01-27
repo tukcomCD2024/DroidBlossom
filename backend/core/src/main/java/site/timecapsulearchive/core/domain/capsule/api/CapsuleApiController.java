@@ -1,10 +1,10 @@
 package site.timecapsulearchive.core.domain.capsule.api;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +17,7 @@ import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
+@Validated
 @RestController
 @RequestMapping("/capsules")
 @RequiredArgsConstructor
@@ -37,11 +38,10 @@ public class CapsuleApiController implements CapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<NearbyCapsulePageResponse>> getNearByCapsules(
         @AuthenticationPrincipal Long memberId,
-        @NotNull @Valid @RequestParam(value = "latitude") double latitude,
-        @NotNull @Valid @RequestParam(value = "longitude") double longitude,
-        @NotNull @Valid @RequestParam(value = "distance") double distance,
-        @NotNull @Valid @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL"
-        ) CapsuleType capsuleType
+        @NotNull @RequestParam(value = "latitude") final double latitude,
+        @NotNull @RequestParam(value = "longitude") final double longitude,
+        @NotNull @RequestParam(value = "distance") final double distance,
+        @NotNull @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") final CapsuleType capsuleType
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
