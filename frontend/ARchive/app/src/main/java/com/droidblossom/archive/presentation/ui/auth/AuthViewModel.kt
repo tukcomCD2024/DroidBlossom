@@ -57,6 +57,7 @@ interface AuthViewModel {
     sealed class SignInEvent {
         object NavigateToSignUp : SignInEvent()
         object NavigateToMain : SignInEvent()
+        data class ShowToastMessage(val message : String) : SignInEvent()
 
     }
 
