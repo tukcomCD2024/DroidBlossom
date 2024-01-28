@@ -10,10 +10,17 @@ public record SecretCapsulePageResponse(
     List<SecretCapsuleSummaryResponse> capsules,
 
     @Schema(description = "다음 페이지 유무")
-    Boolean hasNext,
-
-    @Schema(description = "이전 페이지 유무")
-    Boolean hasPrevious
+    Boolean hasNext
 ) {
 
+
+    public static SecretCapsulePageResponse of(
+        List<SecretCapsuleSummaryResponse> summaryResponses,
+        boolean hasNext
+    ) {
+        return new SecretCapsulePageResponse(
+            summaryResponses,
+            hasNext
+        );
+    }
 }

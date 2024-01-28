@@ -5,7 +5,9 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -64,5 +66,18 @@ public class CapsuleMapper {
             .title(dto.title())
             .dueDate(dto.dueDate())
             .build();
+    }
+
+    public SecretCapsuleSummaryResponse secretCapsuleSummaryResponseToDto(
+        SecretCapsuleSummaryDto dto) {
+        return new SecretCapsuleSummaryResponse(
+            dto.id(),
+            dto.nickname(),
+            dto.skinUrl(),
+            dto.title(),
+            dto.dueDate(),
+            dto.isOpened(),
+            dto.createdAt()
+        );
     }
 }

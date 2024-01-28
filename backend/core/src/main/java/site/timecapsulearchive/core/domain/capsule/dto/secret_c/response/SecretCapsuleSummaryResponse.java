@@ -21,11 +21,11 @@ public record SecretCapsuleSummaryResponse(
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
 
-    @Schema(description = "캡슐 생성 주소")
-    String address,
-
     @Schema(description = "개봉 여부")
-    Boolean isOpened
+    Boolean isOpened,
+
+    @Schema(description = "생성 시간")
+    ZonedDateTime createdAt
 ) {
 
 }

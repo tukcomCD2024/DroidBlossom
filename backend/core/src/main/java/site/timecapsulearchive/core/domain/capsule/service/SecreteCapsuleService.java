@@ -1,12 +1,18 @@
 package site.timecapsulearchive.core.domain.capsule.service;
 
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
+import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
@@ -17,9 +23,11 @@ import site.timecapsulearchive.core.global.geography.GeoTransformer;
 import site.timecapsulearchive.core.infra.map.MapApiService;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SecreteCapsuleService {
 
+    private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
 
@@ -37,6 +45,7 @@ public class SecreteCapsuleService {
      * @param memberId 캡슐을 생성할 멤버 아이디
      * @param dto      캡슐 생성 요청 포맷
      */
+    @Transactional
     public void createCapsule(Long memberId, CapsuleCreateRequestDto dto) {
         Member findMember = memberService.findMemberByMemberId(memberId);
 
@@ -56,5 +65,22 @@ public class SecreteCapsuleService {
 
         mediaService.saveMediaData(newCapsule, dto.directory(), findMember.getId(),
             dto.fileNames());
+    }
+
+    public SecretCapsulePageResponse findSecretCapsules(
+        final int size,
+        final ZonedDateTime lastCapsuleCreatedAt
+    ) {
+        Slice<SecretCapsuleSummaryDto> slices = capsuleQueryRepository.findSecretCapsuleSliceBySizeAndLastCapsuleId(
+            size,
+            lastCapsuleCreatedAt
+        );
+
+        return SecretCapsulePageResponse.of(
+            slices.stream()
+                .map(capsuleMapper::secretCapsuleSummaryResponseToDto)
+                .toList(),
+            slices.hasNext()
+        );
     }
 }
