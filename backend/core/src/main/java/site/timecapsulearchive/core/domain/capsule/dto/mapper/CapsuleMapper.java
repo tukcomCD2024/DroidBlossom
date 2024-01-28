@@ -28,17 +28,17 @@ public class CapsuleMapper {
 
     public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
         SecretCapsuleCreateRequest request) {
-        return new SecretCapsuleCreateRequestDto(
-            request.capsuleSkinId(),
-            request.title(),
-            request.content(),
-            request.longitude(),
-            request.latitude(),
-            request.dueDate(),
-            request.fileNames(),
-            request.directory(),
-            request.capsuleType()
-        );
+        return SecretCapsuleCreateRequestDto.builder()
+            .capsuleSkinId(request.capsuleSkinId())
+            .title(request.title())
+            .content(request.content())
+            .longitude(request.longitude())
+            .latitude(request.latitude())
+            .dueDate(request.dueDate())
+            .fileNames(request.fileNames())
+            .directory(request.directory())
+            .capsuleType(request.capsuleType())
+            .build();
     }
 
     public Capsule requestDtoToEntity(
@@ -78,16 +78,15 @@ public class CapsuleMapper {
 
     public SecretCapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
         SecretCapsuleSummaryDto dto) {
-        return new SecretCapsuleSummaryResponse(
-            dto.id(),
-            dto.nickname(),
-            dto.skinUrl(),
-            dto.title(),
-            dto.dueDate().withZoneSameInstant(ZONE_ID),
-            dto.address(),
-            dto.isOpened(),
-            dto.createdAt().withZoneSameInstant(ZONE_ID)
-        );
+        return SecretCapsuleSummaryResponse.builder()
+            .nickname(dto.nickname())
+            .skinUrl(dto.skinUrl())
+            .title(dto.title())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .address(dto.address())
+            .isOpened(dto.isOpened())
+            .createdAt(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .build();
     }
 
     public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
