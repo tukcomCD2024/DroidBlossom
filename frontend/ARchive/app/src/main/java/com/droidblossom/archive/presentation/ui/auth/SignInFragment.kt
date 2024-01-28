@@ -81,6 +81,10 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                             }
                         }
 
+                        is AuthViewModel.SignInEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
                     }
                 }
             }

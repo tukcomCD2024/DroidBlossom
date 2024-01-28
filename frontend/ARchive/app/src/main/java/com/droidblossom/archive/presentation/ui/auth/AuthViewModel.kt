@@ -57,18 +57,22 @@ interface AuthViewModel {
     sealed class SignInEvent {
         object NavigateToSignUp : SignInEvent()
         object NavigateToMain : SignInEvent()
+        data class ShowToastMessage(val message : String) : SignInEvent()
 
     }
 
     sealed class SignUpEvent {
         object NavigateToCertification : SignUpEvent()
+        data class ShowToastMessage(val message : String) : SignUpEvent()
+
     }
 
     sealed class CertificationEvent {
-        object ReSend : CertificationEvent()
         object NavigateToSignUpSuccess : CertificationEvent()
 
-        object failCertificationCode : CertificationEvent()
+        object VerificationCodeMismatch : CertificationEvent()
+        data class ShowToastMessage(val message : String) : CertificationEvent()
+
     }
 
     enum class Social{
