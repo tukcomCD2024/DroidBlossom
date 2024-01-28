@@ -86,7 +86,8 @@ public class CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId)))
+            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
+                .and(capsule.type.eq(CapsuleType.SECRETE)))
             .fetchOne()
         );
     }
