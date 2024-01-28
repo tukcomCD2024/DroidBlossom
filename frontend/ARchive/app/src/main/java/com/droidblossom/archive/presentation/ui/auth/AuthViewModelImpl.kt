@@ -99,6 +99,14 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
+    private fun authDataReset(){
+        certificationNumber4.value = ""
+        certificationNumber3.value = ""
+        certificationNumber2.value = ""
+        certificationNumber1.value = ""
+        _phoneNumber.value = ""
+    }
+
     override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
@@ -110,8 +118,9 @@ class AuthViewModelImpl @Inject constructor(
                     }else{
                         submitSignUpData(signUpData)
                     }
+                    authDataReset()
                 }.onFail {
-
+                    Log.d("티티","memberStatusCheck 실패")
                 }
             }
         }
@@ -127,8 +136,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
                 }.onFail {
-                    // ToastMessage 있으면 좋을듯
-                    Log.d("티티","submitSignInData 에러")
+                    Log.d("티티","submitSignInData 실패")
                 }
             }
         }
@@ -158,7 +166,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-                    Log.d("티티","temporaryTokenReIssue 에러")
+                    Log.d("티티","temporaryTokenReIssue 실패")
                 }
             }
         }
@@ -177,6 +185,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun checkPhoneNumber(): Boolean {
         val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
         if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
+            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("올바른 휴대폰 번호를 입력해주세요."))
             return false
         }
         return true
@@ -189,9 +198,11 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess{
                     signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                 }.onFail {
-                    // Toast 메시지 있으면 좋을듯
-                    // 아마 5번 하루 5번 이상 이면 안 실패(?)
-                    Log.d("티티","submitPhoneNumber 에러")
+                    if (it == 429){
+                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
+                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                    }
+                    Log.d("티티","$it : submitPhoneNumber 실패")
                 }
 
             }
@@ -225,7 +236,6 @@ class AuthViewModelImpl @Inject constructor(
     override fun submitCertificationNumber(){
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
-                Log.d("실패","${result}")
                 result.onSuccess {
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
@@ -233,9 +243,10 @@ class AuthViewModelImpl @Inject constructor(
 
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
-                    resetCertificationNumber()
-                    certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
-                    Log.d("티티","에러")
+                    if (it == 400){
+                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
+                        certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                    }
 
                 }
             }
@@ -244,15 +255,7 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun reSend(){
         initTimer()
-        resetCertificationNumber()
         submitPhoneNumber()
-    }
-
-    private fun resetCertificationNumber(){
-        certificationNumber1.value = ""
-        certificationNumber2.value = ""
-        certificationNumber3.value = ""
-        certificationNumber4.value = ""
     }
 
 }
