@@ -17,7 +17,7 @@ public class HashEncryptionManager {
     public byte[] encrypt(byte[] plaintText) {
         MessageDigest digest;
         try {
-             digest = MessageDigest.getInstance(HASH_ALGORITHM);
+            digest = MessageDigest.getInstance(HASH_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             throw new EncryptionException(e);
         }
