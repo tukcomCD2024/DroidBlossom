@@ -43,7 +43,8 @@ public class CapsuleQueryRepository {
                 cs.imageUrl,
                 c.title,
                 c.dueDate,
-                c.isOpened
+                c.isOpened,
+                c.type
             )
             from Capsule c
             join c.member m

@@ -69,6 +69,7 @@ public class CapsuleMapper {
             .capsuleSkinUrl(dto.skinUrl())
             .title(dto.title())
             .dueDate(dto.dueDate())
+            .capsuleType(dto.capsuleType())
             .build();
     }
 
