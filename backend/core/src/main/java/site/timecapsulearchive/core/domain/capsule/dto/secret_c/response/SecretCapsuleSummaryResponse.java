@@ -25,7 +25,10 @@ public record SecretCapsuleSummaryResponse(
     String address,
 
     @Schema(description = "개봉 여부")
-    Boolean isOpened
+    Boolean isOpened,
+
+    @Schema(description = "캡슐 생성 일")
+    ZonedDateTime createdAt
 ) {
 
 }
