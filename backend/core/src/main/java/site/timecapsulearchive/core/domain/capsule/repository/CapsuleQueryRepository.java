@@ -78,8 +78,6 @@ public class CapsuleQueryRepository {
             .select(
                 Projections.constructor(
                     SecretCapsuleSummaryDto.class,
-                    capsule.id,
-                    capsule.point,
                     capsule.member.nickname,
                     capsule.capsuleSkin.imageUrl,
                     capsule.title,
