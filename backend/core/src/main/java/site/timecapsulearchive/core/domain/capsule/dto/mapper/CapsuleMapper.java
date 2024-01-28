@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -86,5 +88,21 @@ public class CapsuleMapper {
             dto.isOpened(),
             dto.createdAt().withZoneSameInstant(ZONE_ID)
         );
+    }
+
+    public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
+        SecreteCapsuleDetailDto dto) {
+        return SecretCapsuleDetailResponse.builder()
+            .capsuleSkinUrl(dto.capsuleSkinUrl())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .nickname(dto.nickname())
+            .createdDate(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .address(dto.address())
+            .title(dto.title())
+            .content(dto.content())
+            .imageUrls(dto.images())
+            .videoUrls(dto.videos())
+            .isOpened(dto.isOpened())
+            .build();
     }
 }
