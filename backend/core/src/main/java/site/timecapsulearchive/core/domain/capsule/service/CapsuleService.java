@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.CapsuleMapper;
@@ -12,6 +13,7 @@ import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryReposi
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CapsuleService {
 
@@ -38,7 +40,8 @@ public class CapsuleService {
         Polygon mbr = geoTransformer.getDistanceMBROf3857(point, dto.distance());
 
         return NearbyCapsulePageResponse.from(
-            capsuleQueryRepository.findCapsuleByCurrentLocationAndCapsuleType(memberId, mbr, capsuleType)
+            capsuleQueryRepository.findCapsuleByCurrentLocationAndCapsuleType(memberId, mbr,
+                    capsuleType)
                 .stream()
                 .map(capsuleMapper::capsuleSummaryResponseToDto)
                 .toList()
