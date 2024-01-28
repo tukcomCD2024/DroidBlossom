@@ -32,7 +32,7 @@ public class ApiLimitCheckInterceptor implements HandlerInterceptor {
         HttpServletRequest request,
         HttpServletResponse response,
         Object handler
-    ) throws TooManyRequestException {
+    ) {
         Long memberId = (Long) SecurityContextHolder.getContext()
             .getAuthentication()
             .getPrincipal();
