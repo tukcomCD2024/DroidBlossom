@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.getAndUpdate
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -144,6 +142,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     override fun submitUris(list: List<Dummy>) {
-        viewModelScope.launch { _imgUris.emit(list) }
+        val submitList = if (list.none { it.last }) {
+            list + listOf(Dummy(null, true))
+        } else list
+        viewModelScope.launch { _imgUris.emit(submitList) }
     }
 }

@@ -209,10 +209,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:text="사진 업로드"
+                        android:layout_marginTop="16dp"
                         android:textAppearance="@style/TextAppearance.App.body2"
-                        app:layout_constraintBottom_toBottomOf="@id/imageAddBtn"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/imageAddBtn" />
+                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT"/>
 
 
                     <ImageView
@@ -223,8 +223,11 @@
                         android:layout_marginEnd="16dp"
                         android:onClick="@{()->vm.moveImgUpLoad()}"
                         android:src="@drawable/ic_plus_main_24"
+                        android:visibility="@{vm.imgUris.size() > 1 ? View.GONE : View.VISIBLE  }"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/capsuleContentEditT" />
+                        app:layout_constraintTop_toTopOf="@id/imageUpload"
+                        app:layout_constraintBottom_toBottomOf="@id/imageUpload"
+                        app:layout_goneMarginTop="16dp" />
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/recycleView"
@@ -232,12 +235,12 @@
                         android:layout_height="360dp"
                         android:layout_marginTop="16dp"
                         android:clipChildren="false"
+                        android:clipToPadding="false"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:clipToPadding="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/imageAddBtn" />
+                        app:layout_constraintTop_toBottomOf="@id/imageUpload" />
 
                     <View
                         android:layout_width="0dp"

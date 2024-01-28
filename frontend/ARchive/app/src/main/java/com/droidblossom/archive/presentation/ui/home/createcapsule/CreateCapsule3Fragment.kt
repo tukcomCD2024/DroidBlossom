@@ -54,15 +54,10 @@ class CreateCapsule3Fragment :
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         binding.recycleView.adapter = imgRVA
-
         binding.recycleView.offscreenPageLimit = 3
     }
 
