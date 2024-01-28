@@ -16,7 +16,6 @@ import site.timecapsulearchive.core.global.error.exception.InvalidTokenException
 public class JwtFactory {
 
     private static final String ISSUER = "https://archive-timecapsule.kro.kr";
-    private static final String TOKEN_TYPE_CLAIM_NAME = "type";
 
     private final SecretKey key;
     private final long accessTokenValidityMs;
@@ -43,7 +42,6 @@ public class JwtFactory {
         return Jwts.builder()
             .setIssuer(ISSUER)
             .setSubject(String.valueOf(memberId))
-            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.ACCESS.getValue())
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
@@ -62,7 +60,6 @@ public class JwtFactory {
         return Jwts.builder()
             .setIssuer(ISSUER)
             .setSubject(memberInfoKey)
-            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.REFRESH.getValue())
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
@@ -81,7 +78,6 @@ public class JwtFactory {
         return Jwts.builder()
             .setIssuer(ISSUER)
             .setSubject(String.valueOf(memberId))
-            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.TEMPORARY.getValue())
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
@@ -91,12 +87,11 @@ public class JwtFactory {
      * 토큰과 토큰 타입으로 토큰의 사용자 식별자 추출
      *
      * @param token 토큰
-     * @param type  토큰의 타입
      * @return 사용자 식별자
      */
-    public String getSubject(final String token, TokenType type) {
+    public String getSubject(final String token) {
         try {
-            return jwtParser(type)
+            return jwtParser()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -105,10 +100,9 @@ public class JwtFactory {
         }
     }
 
-    private JwtParser jwtParser(TokenType type) {
+    private JwtParser jwtParser() {
         return Jwts.parserBuilder()
             .setSigningKey(key)
-            .require(TOKEN_TYPE_CLAIM_NAME, type.getValue())
             .build();
     }
 
@@ -117,9 +111,9 @@ public class JwtFactory {
      *
      * @param token 검증할 토큰
      */
-    public void validate(final String token, final TokenType type) {
+    public void validate(final String token) {
         try {
-            jwtParser(type).parseClaimsJws(token);
+            jwtParser().parseClaimsJws(token);
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
         }

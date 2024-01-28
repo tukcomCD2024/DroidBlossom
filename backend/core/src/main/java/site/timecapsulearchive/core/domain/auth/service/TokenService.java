@@ -10,7 +10,6 @@ import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
 import site.timecapsulearchive.core.domain.auth.repository.MemberInfoCacheRepository;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
-import site.timecapsulearchive.core.global.security.jwt.TokenType;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +62,7 @@ public class TokenService {
      */
     public TokenResponse reIssueToken(final String refreshToken)
         throws AlreadyReIssuedTokenException {
-        String oldKey = jwtFactory.getSubject(refreshToken, TokenType.TEMPORARY);
+        String oldKey = jwtFactory.getSubject(refreshToken);
         MemberInfo memberInfo = memberInfoCacheRepository.getMemberInfo(oldKey)
             .orElseThrow(AlreadyReIssuedTokenException::new);
 

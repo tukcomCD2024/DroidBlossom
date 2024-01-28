@@ -17,11 +17,10 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         throws AuthenticationException {
         String accessToken = (String) authentication.getCredentials();
 
-        jwtFactory.validate(accessToken, TokenType.ACCESS);
+        jwtFactory.validate(accessToken);
 
         String memberId = jwtFactory.getSubject(
-            accessToken,
-            TokenType.ACCESS
+            accessToken
         );
 
         return JwtAuthenticationToken.authenticated(Long.valueOf(memberId));
