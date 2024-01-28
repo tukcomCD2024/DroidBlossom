@@ -7,15 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
@@ -83,12 +81,12 @@ public interface SecretCapsuleApi {
         value = "/capsules",
         produces = {"application/json"}
     )
-    ResponseEntity<SecretCapsulePageResponse> getSecretCapsules(
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "size") Long size,
+    ResponseEntity<ApiSpec<SecretCapsulePageResponse>> getSecretCapsules(
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", schema = @Schema(defaultValue = "20"))
+        int size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "capsule_id") Long capsuleId
+        @Parameter(in = ParameterIn.QUERY, description = "조회를 원하는 이전 캡슐 생성일")
+        ZonedDateTime lastCapsuleCreatedAt
     );
 
     @Operation(

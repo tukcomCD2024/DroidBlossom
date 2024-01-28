@@ -1,10 +1,13 @@
 package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 
+import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
@@ -47,8 +50,16 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     }
 
     @Override
-    public ResponseEntity<SecretCapsulePageResponse> getSecretCapsules(Long size, Long capsuleId) {
-        return null;
+    public ResponseEntity<ApiSpec<SecretCapsulePageResponse>> getSecretCapsules(
+        @RequestParam(value = "size") final int size,
+        @NotNull @RequestParam(value = "lastCapsuleCreatedAt") final ZonedDateTime lastCapsuleCreatedAt
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                secreteCapsuleService.findSecretCapsules(size, lastCapsuleCreatedAt)
+            )
+        );
     }
 
     @Override
