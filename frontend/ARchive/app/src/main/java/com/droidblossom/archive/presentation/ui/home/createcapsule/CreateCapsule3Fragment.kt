@@ -38,17 +38,20 @@ class CreateCapsule3Fragment :
 
     private val pickSingle =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
-        {uri ->
-            if (uri != null){
-                viewModel.addImgUris(listOf( Dummy(uri, false)))
-            }else{
+        { uri ->
+            if (uri != null) {
+                viewModel.addImgUris(listOf(Dummy(uri, false)))
+            } else {
                 Log.d("포토", "No Media selected")
             }
         }
 
 
     private val imgRVA by lazy {
-        ImageRVA { viewModel.moveSingleImgUpLoad() }
+        ImageRVA(
+            { viewModel.moveSingleImgUpLoad() },
+            { viewModel.submitUris(it) }
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

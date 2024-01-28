@@ -29,14 +29,16 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/postImg"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp"
+                    android:layout_height="360dp"
                     android:background="@drawable/corner_radius_16_stroke_2"
                     android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="w,3:4"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <ImageView
                     android:id="@+id/plusImg"

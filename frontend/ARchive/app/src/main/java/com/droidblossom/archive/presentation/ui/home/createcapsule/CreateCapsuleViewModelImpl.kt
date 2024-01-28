@@ -142,4 +142,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             viewModelScope.launch { _imgUris.emit(submitList) }
         }
     }
+
+    override fun submitUris(list: List<Dummy>) {
+        viewModelScope.launch { _imgUris.emit(list) }
+    }
 }

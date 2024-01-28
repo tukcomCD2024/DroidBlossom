@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemPostImageBinding
 import com.droidblossom.archive.domain.model.common.Dummy
 
-class ImageRVA(val onClick: () -> Unit) : ListAdapter<Dummy, ImageRVA.ItemViewHolder>(differ) {
+class ImageRVA(val onClick: () -> Unit, val flowData : (List<Dummy>)->Unit) : ListAdapter<Dummy, ImageRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemPostImageBinding
@@ -23,8 +23,18 @@ class ImageRVA(val onClick: () -> Unit) : ListAdapter<Dummy, ImageRVA.ItemViewHo
                 binding.postImg.setImageURI(data.string)
                 binding.plusImg.isGone = true
                 binding.plusT.isGone = true
+                binding.root.setOnClickListener {
+                    removeItem(position)
+                }
             }
         }
+    }
+
+    fun removeItem(position: Int){
+        val currentList =  currentList.toMutableList()
+        currentList.removeAt(position)
+        submitList(currentList)
+        flowData(currentList)
     }
 
     override fun onCreateViewHolder(
@@ -38,14 +48,6 @@ class ImageRVA(val onClick: () -> Unit) : ListAdapter<Dummy, ImageRVA.ItemViewHo
                 false
             )
         )
-    }
-
-    fun addItems(newItems: List<Dummy>) {
-        val currentList = currentList.toMutableList()
-        if (currentList.isNotEmpty())
-            currentList.removeAt(currentList.lastIndex)
-        currentList.addAll(newItems)
-        submitList(currentList)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

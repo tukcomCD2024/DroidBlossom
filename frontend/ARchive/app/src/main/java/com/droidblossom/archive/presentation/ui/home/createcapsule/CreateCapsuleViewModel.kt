@@ -43,6 +43,7 @@ interface CreateCapsuleViewModel {
     fun selectTimeCapsule()
     fun selectCapsule()
     fun addImgUris(list: List<Dummy>)
+    fun submitUris(list:List<Dummy>)
 
 
     sealed class Create1Event {
