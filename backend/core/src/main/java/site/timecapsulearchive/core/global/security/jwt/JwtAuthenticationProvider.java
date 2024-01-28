@@ -5,13 +5,10 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
-
-    private static final String MEMBER_ID_CLAIM_KEY = JwtConstants.MEMBER_ID.getValue();
 
     private final JwtFactory jwtFactory;
 
@@ -20,20 +17,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         throws AuthenticationException {
         String accessToken = (String) authentication.getCredentials();
 
-        if (isNotValid(accessToken)) {
-            throw new InvalidTokenException();
-        }
+        jwtFactory.validate(accessToken, TokenType.ACCESS);
 
-        String memberId = jwtFactory.getClaimValue(
+        String memberId = jwtFactory.getSubject(
             accessToken,
-            MEMBER_ID_CLAIM_KEY
+            TokenType.ACCESS
         );
 
         return JwtAuthenticationToken.authenticated(Long.valueOf(memberId));
-    }
-
-    private boolean isNotValid(String accessToken) {
-        return !jwtFactory.isValid(accessToken);
     }
 
     @Override

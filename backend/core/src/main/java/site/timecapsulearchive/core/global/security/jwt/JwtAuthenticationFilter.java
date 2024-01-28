@@ -25,7 +25,7 @@ import site.timecapsulearchive.core.global.error.exception.InvalidTokenException
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final int PREFIX_LENGTH = 7;
-    private static final String TOKEN_TYPE = JwtConstants.TOKEN_TYPE.getValue();
+    private static final String TOKEN_TYPE = "Bearer ";
 
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;

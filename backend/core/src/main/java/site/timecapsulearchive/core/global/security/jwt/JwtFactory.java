@@ -15,8 +15,8 @@ import site.timecapsulearchive.core.global.error.exception.InvalidTokenException
 @Component
 public class JwtFactory {
 
-    private static final String MEMBER_ID_CLAIM = JwtConstants.MEMBER_ID.getValue();
-    private static final String MEMBER_INFO_CLAIM = JwtConstants.MEMBER_INFO_KEY.getValue();
+    private static final String ISSUER = "https://archive-timecapsule.kro.kr";
+    private static final String TOKEN_TYPE_CLAIM_NAME = "type";
 
     private final SecretKey key;
     private final long accessTokenValidityMs;
@@ -41,7 +41,9 @@ public class JwtFactory {
         Date validity = new Date(now.getTime() + accessTokenValidityMs);
 
         return Jwts.builder()
-            .claim(MEMBER_ID_CLAIM, memberId.toString())
+            .setIssuer(ISSUER)
+            .setSubject(String.valueOf(memberId))
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.ACCESS.getValue())
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
@@ -50,15 +52,17 @@ public class JwtFactory {
     /**
      * 사용자 식별자를 받아서 리프레시 토큰 반환
      *
-     * @param memberProfileKey 사용자 식별자
+     * @param memberInfoKey 사용자 식별자
      * @return 리프레시 토큰
      */
-    public String createRefreshToken(final String memberProfileKey) {
+    public String createRefreshToken(final String memberInfoKey) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenValidityMs);
 
         return Jwts.builder()
-            .claim(MEMBER_INFO_CLAIM, memberProfileKey)
+            .setIssuer(ISSUER)
+            .setSubject(memberInfoKey)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.REFRESH.getValue())
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
@@ -75,33 +79,36 @@ public class JwtFactory {
         Date validity = new Date(now.getTime() + temporaryValidityMs);
 
         return Jwts.builder()
-            .claim(MEMBER_ID_CLAIM, memberId.toString())
+            .setIssuer(ISSUER)
+            .setSubject(String.valueOf(memberId))
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.TEMPORARY.getValue())
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
 
     /**
-     * 토큰과 클레임 키로 클레임 값 파싱
+     * 토큰과 토큰 타입으로 토큰의 사용자 식별자 추출
      *
-     * @param token    토큰
-     * @param claimKey 파싱할 클레임 키
-     * @return 클레임 키에 따른 값
+     * @param token 토큰
+     * @param type  토큰의 타입
+     * @return 사용자 식별자
      */
-    public String getClaimValue(final String token, final String claimKey) {
+    public String getSubject(final String token, TokenType type) {
         try {
-            return jwtParser()
+            return jwtParser(type)
                 .parseClaimsJws(token)
                 .getBody()
-                .get(claimKey, String.class);
+                .getSubject();
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
         }
     }
 
-    private JwtParser jwtParser() {
+    private JwtParser jwtParser(TokenType type) {
         return Jwts.parserBuilder()
             .setSigningKey(key)
+            .require(TOKEN_TYPE_CLAIM_NAME, type.getValue())
             .build();
     }
 
@@ -109,27 +116,24 @@ public class JwtFactory {
      * 토큰을 파싱해서 올바른 토큰인지 확인
      *
      * @param token 검증할 토큰
-     * @return 유효한 토큰이면 {@code true}
      */
-    public boolean isValid(final String token) {
+    public void validate(final String token, final TokenType type) {
         try {
-            jwtParser().parseClaimsJws(token);
-
-            return true;
+            jwtParser(type).parseClaimsJws(token);
         } catch (final JwtException | IllegalArgumentException e) {
-            return false;
+            throw new InvalidTokenException(e);
         }
     }
 
-    public String getExpiresIn() {
-        return String.valueOf(accessTokenValidityMs);
+    public long getExpiresIn() {
+        return accessTokenValidityMs;
     }
 
-    public String getRefreshTokenExpiresIn() {
-        return String.valueOf(refreshTokenValidityMs);
+    public long getRefreshTokenExpiresIn() {
+        return refreshTokenValidityMs;
     }
 
-    public String getTemporaryTokenExpiresIn() {
-        return String.valueOf(temporaryValidityMs);
+    public long getTemporaryTokenExpiresIn() {
+        return temporaryValidityMs;
     }
 }
