@@ -14,8 +14,9 @@ public record ApiSpec<T>(
     @Schema(description = "응답 데이터")
     T result
 ) {
+
     private static final String EMPTY_RESULT = "";
-    
+
     public static ApiSpec<String> empty(SuccessCode code) {
         return new ApiSpec<>(code.getMessage(), code.getCode(), EMPTY_RESULT);
     }
