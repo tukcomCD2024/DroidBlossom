@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
                     android:background="@drawable/corner_radius_16_stroke_2"
-                    android:scaleType="center"
+                    android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="w,3:4"
                     app:layout_constraintEnd_toEndOf="parent"

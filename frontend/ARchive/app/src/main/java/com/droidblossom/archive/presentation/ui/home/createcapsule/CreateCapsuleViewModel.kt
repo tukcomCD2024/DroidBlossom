@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
@@ -29,6 +30,7 @@ interface CreateCapsuleViewModel {
     val capsuleImg : StateFlow<List<FileName>>
     val capsuleImgUrls: StateFlow<List<String>>
     val isSelectTimeCapsule : StateFlow<Boolean>
+    val imgUris : StateFlow<List<Dummy>>
 
     fun move1To2()
     fun move2To3()
@@ -37,8 +39,10 @@ interface CreateCapsuleViewModel {
     fun moveLocation()
     fun moveDate()
     fun moveImgUpLoad()
+    fun moveSingleImgUpLoad()
     fun selectTimeCapsule()
     fun selectCapsule()
+    fun addImgUris(list: List<Dummy>)
 
 
     sealed class Create1Event {
@@ -56,6 +60,7 @@ interface CreateCapsuleViewModel {
         object ClickLocation : Create3Event()
         object ClickDate : Create3Event()
         object ClickImgUpLoad : Create3Event()
+        object CLickSingleImgUpLoad : Create3Event()
     }
 
     enum class CapsuleType(val title: String) {

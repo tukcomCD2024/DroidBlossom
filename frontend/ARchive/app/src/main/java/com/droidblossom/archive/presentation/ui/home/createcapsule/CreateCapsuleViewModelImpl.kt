@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -10,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,11 +54,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val capsuleLocationName: StateFlow<String>
         get() = _capsuleLocationName
 
-    private val _capsuleDueDate =  MutableStateFlow("")
+    private val _capsuleDueDate = MutableStateFlow("")
     override val capsuleDueDate: StateFlow<String>
         get() = _capsuleDueDate
 
-    private val _capsuleLocation = MutableStateFlow(Location(0.0,0.0))
+    private val _capsuleLocation = MutableStateFlow(Location(0.0, 0.0))
     override val capsuleLocation: StateFlow<Location>
         get() = _capsuleLocation
 
@@ -69,6 +72,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _isSelectTimeCapsule = MutableStateFlow(true)
     override val isSelectTimeCapsule: StateFlow<Boolean>
         get() = _isSelectTimeCapsule
+
+    private val _imgUris = MutableStateFlow(listOf<Dummy>(Dummy(null, true)))
+    override val imgUris: StateFlow<List<Dummy>>
+        get() = _imgUris
 
     override fun move1To2() {
         viewModelScope.launch {
@@ -112,6 +119,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun moveSingleImgUpLoad() {
+        viewModelScope.launch {
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.CLickSingleImgUpLoad)
+        }
+    }
+
     override fun selectTimeCapsule() {
         viewModelScope.launch { _isSelectTimeCapsule.emit(true) }
     }
@@ -120,4 +133,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch { _isSelectTimeCapsule.emit(false) }
     }
 
+    override fun addImgUris(list: List<Dummy>) {
+        val submitList = list + imgUris.value
+        if (submitList.size > 5) {
+            val listSize5 = submitList.slice(0..4)
+            viewModelScope.launch { _imgUris.emit(listSize5) }
+        } else {
+            viewModelScope.launch { _imgUris.emit(submitList) }
+        }
+    }
 }

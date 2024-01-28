@@ -9,14 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemPostImageBinding
 import com.droidblossom.archive.domain.model.common.Dummy
 
-class ImageRVA() : ListAdapter<Dummy, ImageRVA.ItemViewHolder>(differ) {
+class ImageRVA(val onClick: () -> Unit) : ListAdapter<Dummy, ImageRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemPostImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Dummy) {
             if (data.last){
-
+                binding.root.setOnClickListener{
+                    onClick()
+                }
             }else {
                 binding.postImg.setImageURI(data.string)
                 binding.plusImg.isGone = true
@@ -40,6 +42,8 @@ class ImageRVA() : ListAdapter<Dummy, ImageRVA.ItemViewHolder>(differ) {
 
     fun addItems(newItems: List<Dummy>) {
         val currentList = currentList.toMutableList()
+        if (currentList.isNotEmpty())
+            currentList.removeAt(currentList.lastIndex)
         currentList.addAll(newItems)
         submitList(currentList)
     }
@@ -51,7 +55,7 @@ class ImageRVA() : ListAdapter<Dummy, ImageRVA.ItemViewHolder>(differ) {
     companion object {
         val differ = object : DiffUtil.ItemCallback<Dummy>() {
             override fun areItemsTheSame(oldItem: Dummy, newItem: Dummy): Boolean {
-                return oldItem == newItem
+                return oldItem.string == newItem.string
             }
 
             override fun areContentsTheSame(oldItem: Dummy, newItem: Dummy): Boolean {
