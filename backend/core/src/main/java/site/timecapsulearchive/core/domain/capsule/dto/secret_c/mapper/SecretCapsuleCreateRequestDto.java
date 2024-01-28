@@ -5,7 +5,7 @@ import java.util.List;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.FileMetaData;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
-public record CapsuleCreateRequestDto(
+public record SecretCapsuleCreateRequestDto(
     Long capsuleSkinId,
     String title,
     String content,
