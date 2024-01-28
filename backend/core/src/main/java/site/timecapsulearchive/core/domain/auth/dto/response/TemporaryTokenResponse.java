@@ -9,12 +9,12 @@ public record TemporaryTokenResponse(
     String temporaryAccessToken,
 
     @Schema(description = "임시 액세스 토큰 만료 시간")
-    String expiresIn
+    long expiresIn
 ) {
 
     public static TemporaryTokenResponse create(
         String temporaryAccessToken,
-        String expiresIn
+        long expiresIn
     ) {
         return new TemporaryTokenResponse(
             temporaryAccessToken,
