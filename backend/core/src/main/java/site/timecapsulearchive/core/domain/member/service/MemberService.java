@@ -3,7 +3,9 @@ package site.timecapsulearchive.core.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.member.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.dto.VerifiedCheckDto;
+import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -21,8 +23,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
 
+    private final MemberMapper memberMapper;
+
     @Transactional
-    public Long createMember(Member member) {
+    public Long createMember(SignUpRequestDto dto) {
+        Member member = memberMapper.signUpRequestDtoToEntity(dto);
+
         Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();

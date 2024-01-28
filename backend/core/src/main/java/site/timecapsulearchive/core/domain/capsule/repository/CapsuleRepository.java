@@ -6,5 +6,4 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 public interface CapsuleRepository extends Repository<Capsule, Long> {
 
     Capsule save(Capsule capsule);
-
 }

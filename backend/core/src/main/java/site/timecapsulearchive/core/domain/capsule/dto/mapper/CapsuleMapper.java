@@ -1,11 +1,15 @@
-package site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper;
+package site.timecapsulearchive.core.domain.capsule.dto.mapper;
 
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -16,11 +20,13 @@ import site.timecapsulearchive.core.global.geography.GeoTransformer;
 @RequiredArgsConstructor
 public class CapsuleMapper {
 
+    private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
+
     private final GeoTransformer geoTransformer;
 
-    public CapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
+    public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
         SecretCapsuleCreateRequest request) {
-        return new CapsuleCreateRequestDto(
+        return new SecretCapsuleCreateRequestDto(
             request.capsuleSkinId(),
             request.title(),
             request.content(),
@@ -34,7 +40,7 @@ public class CapsuleMapper {
     }
 
     public Capsule requestDtoToEntity(
-        CapsuleCreateRequestDto dto,
+        SecretCapsuleCreateRequestDto dto,
         Point point,
         Address address,
         Member member,
@@ -64,5 +70,20 @@ public class CapsuleMapper {
             .title(dto.title())
             .dueDate(dto.dueDate())
             .build();
+    }
+
+
+    public SecretCapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
+        SecretCapsuleSummaryDto dto) {
+        return new SecretCapsuleSummaryResponse(
+            dto.id(),
+            dto.nickname(),
+            dto.skinUrl(),
+            dto.title(),
+            dto.dueDate().withZoneSameInstant(ZONE_ID),
+            dto.address(),
+            dto.isOpened(),
+            dto.createdAt().withZoneSameInstant(ZONE_ID)
+        );
     }
 }

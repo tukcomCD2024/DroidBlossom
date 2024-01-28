@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule;
+package site.timecapsulearchive.core.domain.capsule.dto;
 
 public record CoordinateRangeRequestDto(
     double latitude,
