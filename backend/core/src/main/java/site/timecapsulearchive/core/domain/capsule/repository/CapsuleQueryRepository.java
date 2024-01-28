@@ -1,12 +1,18 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
+import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
+
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Repository
@@ -14,6 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 public class CapsuleQueryRepository {
 
     private final EntityManager entityManager;
+    private final JPAQueryFactory jpaQueryFactory;
 
     /**
      * 캡슐 타입에 따라 현재 위치에서 범위 내의 캡슐을 조회한다.
@@ -57,5 +64,30 @@ public class CapsuleQueryRepository {
         }
 
         return query.getResultList();
+    }
+
+    public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryByMemberIdAndCapsuleId(
+        Long memberId,
+        Long capsuleId
+    ) {
+        return Optional.ofNullable(jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    SecretCapsuleSummaryDto.class,
+                    capsule.id,
+                    capsule.point,
+                    capsule.member.nickname,
+                    capsule.capsuleSkin.imageUrl,
+                    capsule.title,
+                    capsule.dueDate,
+                    capsule.address.fullRoadAddressName,
+                    capsule.isOpened,
+                    capsule.createdAt
+                )
+            )
+            .from(capsule)
+            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId)))
+            .fetchOne()
+        );
     }
 }
