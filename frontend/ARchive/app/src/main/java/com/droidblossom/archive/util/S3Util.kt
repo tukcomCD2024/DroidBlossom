@@ -37,6 +37,7 @@ class S3Util @Inject constructor(private val context: Context) {
             override fun onStateChanged(id: Int, state: TransferState) {
                 if (state == TransferState.COMPLETED) {
                     // 업로드가 완료되었을 때의 처리
+                    Log.d("MYTAG", "업러드 끝")
                 }
             }
 
