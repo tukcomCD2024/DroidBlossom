@@ -1,9 +1,8 @@
-package site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper;
+package site.timecapsulearchive.core.domain.capsule.dto.secret_c;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Builder;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.FileMetaData;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Builder

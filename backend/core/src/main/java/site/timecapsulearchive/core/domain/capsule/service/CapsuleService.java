@@ -41,7 +41,7 @@ public class CapsuleService {
             capsuleQueryRepository.findCapsuleByCurrentLocationAndCapsuleType(memberId, mbr,
                     capsuleType)
                 .stream()
-                .map(capsuleMapper::capsuleSummaryResponseToDto)
+                .map(capsuleMapper::capsuleSummaryDtoToResponse)
                 .toList()
         );
     }

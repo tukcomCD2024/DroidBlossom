@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.SecretCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
