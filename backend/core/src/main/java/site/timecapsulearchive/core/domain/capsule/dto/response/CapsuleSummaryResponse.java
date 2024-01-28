@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import lombok.Builder;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Schema(description = "캡슐 요약 정보")
 @Builder
@@ -27,7 +28,10 @@ public record CapsuleSummaryResponse(
     String title,
 
     @Schema(description = "개봉일")
-    ZonedDateTime dueDate
+    ZonedDateTime dueDate,
+
+    @Schema(description = "캡슐 타입")
+    CapsuleType capsuleType
 ) {
 
 }

@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.dto;
 
 import java.time.ZonedDateTime;
 import org.locationtech.jts.geom.Point;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 public record CapsuleSummaryDto(
     Long id,
@@ -10,7 +11,8 @@ public record CapsuleSummaryDto(
     String skinUrl,
     String title,
     ZonedDateTime dueDate,
-    Boolean isOpened
+    Boolean isOpened,
+    CapsuleType capsuleType
 ) {
 
 }

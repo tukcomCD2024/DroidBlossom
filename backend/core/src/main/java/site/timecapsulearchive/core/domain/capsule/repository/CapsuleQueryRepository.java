@@ -43,7 +43,8 @@ public class CapsuleQueryRepository {
                 cs.imageUrl,
                 c.title,
                 c.dueDate,
-                c.isOpened
+                c.isOpened,
+                c.type
             )
             from Capsule c
             join c.member m
@@ -86,7 +87,8 @@ public class CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId)))
+            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
+                .and(capsule.type.eq(CapsuleType.SECRETE)))
             .fetchOne()
         );
     }

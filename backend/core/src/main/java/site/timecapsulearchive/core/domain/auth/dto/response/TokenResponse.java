@@ -12,17 +12,17 @@ public record TokenResponse(
     String refreshToken,
 
     @Schema(description = "액세스 토큰 만료 시간")
-    String expiresIn,
+    long expiresIn,
 
     @Schema(description = "리프레시 토큰 만료 시간")
-    String refreshTokenExpiresIn
+    long refreshTokenExpiresIn
 ) {
 
     public static TokenResponse create(
         String accessToken,
         String refreshToken,
-        String expiresIn,
-        String refreshTokenExpiresIn
+        long expiresIn,
+        long refreshTokenExpiresIn
     ) {
         return new TokenResponse(
             accessToken,
