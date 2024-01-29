@@ -43,8 +43,15 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     }
 
     @Override
-    public ResponseEntity<SecretCapsuleDetailResponse> findSecretCapsuleById(Long capsuleId) {
-        return null;
+    public ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> findSecretCapsuleDetailById(
+        @AuthenticationPrincipal Long memberId,
+        @NotNull @PathVariable("capsule_id") Long capsuleId) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                secreteCapsuleService.findSecretCapsuleDetailById(memberId, capsuleId)
+            )
+        );
     }
 
     @Override

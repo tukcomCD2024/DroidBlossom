@@ -44,7 +44,7 @@ public interface SecretCapsuleApi {
 
     @Operation(
         summary = "비밀 캡슐 상세 조회",
-        description = "사용자만 볼 수 있는 비밀 캡슐의 내용을 조회한다.",
+        description = "사용자만 볼 수 있는 비밀 캡슐의 내용을 상세 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"secret capsule"}
     )
@@ -55,17 +55,19 @@ public interface SecretCapsuleApi {
         )
     })
     @GetMapping(
-        value = "/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}/detail",
         produces = {"application/json"}
     )
-    ResponseEntity<SecretCapsuleDetailResponse> findSecretCapsuleById(
-        @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true, schema = @Schema())
-        @PathVariable("capsule_id") Long capsuleId
+    ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> findSecretCapsuleDetailById(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
+        Long capsuleId
     );
 
     @Operation(
-        summary = "내 비밀 캡슐 요약 조회",
-        description = "사용자만 볼 수 있는 비밀 캡슐 중 하나를 요약 조회한다.",
+        summary = "비밀 캡슐 요약 조회",
+        description = "사용자만 볼 수 있는 비밀 캡슐의 내용을 요약 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"secret capsule"}
     )

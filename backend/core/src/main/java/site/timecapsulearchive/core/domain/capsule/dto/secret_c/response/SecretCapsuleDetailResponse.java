@@ -3,8 +3,10 @@ package site.timecapsulearchive.core.domain.capsule.dto.secret_c.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
+import lombok.Builder;
 
 @Schema(description = "비밀 캡슐 상세 정보")
+@Builder
 public record SecretCapsuleDetailResponse(
 
     @Schema(description = "캡슐 스킨 url")
@@ -28,8 +30,11 @@ public record SecretCapsuleDetailResponse(
     @Schema(description = "내용")
     String content,
 
-    @Schema(description = "미디어 url들")
-    List<String> mediaUrls,
+    @Schema(description = "이미지 url들")
+    List<String> imageUrls,
+
+    @Schema(description = "비디오 url들")
+    List<String> videoUrls,
 
     @Schema(description = "개봉 여부")
     Boolean isOpened

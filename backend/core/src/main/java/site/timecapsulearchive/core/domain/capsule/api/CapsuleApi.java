@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
@@ -84,7 +84,7 @@ public interface CapsuleApi {
         value = "/capsules/nearby",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<NearbyCapsulePageResponse>> getNearByCapsules(
+    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)

@@ -6,9 +6,11 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.mapper.SecretCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -26,17 +28,17 @@ public class CapsuleMapper {
 
     public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
         SecretCapsuleCreateRequest request) {
-        return new SecretCapsuleCreateRequestDto(
-            request.capsuleSkinId(),
-            request.title(),
-            request.content(),
-            request.longitude(),
-            request.latitude(),
-            request.dueDate(),
-            request.fileNames(),
-            request.directory(),
-            request.capsuleType()
-        );
+        return SecretCapsuleCreateRequestDto.builder()
+            .capsuleSkinId(request.capsuleSkinId())
+            .title(request.title())
+            .content(request.content())
+            .longitude(request.longitude())
+            .latitude(request.latitude())
+            .dueDate(request.dueDate())
+            .fileNames(request.fileNames())
+            .directory(request.directory())
+            .capsuleType(request.capsuleType())
+            .build();
     }
 
     public Capsule requestDtoToEntity(
@@ -58,7 +60,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    public CapsuleSummaryResponse capsuleSummaryResponseToDto(CapsuleSummaryDto dto) {
+    public CapsuleSummaryResponse capsuleSummaryDtoToResponse(CapsuleSummaryDto dto) {
         Point point = geoTransformer.changePoint3857To4326(dto.point());
 
         return CapsuleSummaryResponse.builder()
@@ -68,7 +70,7 @@ public class CapsuleMapper {
             .nickname(dto.nickname())
             .capsuleSkinUrl(dto.skinUrl())
             .title(dto.title())
-            .dueDate(dto.dueDate())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
             .capsuleType(dto.capsuleType())
             .build();
     }
@@ -76,15 +78,43 @@ public class CapsuleMapper {
 
     public SecretCapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
         SecretCapsuleSummaryDto dto) {
-        return new SecretCapsuleSummaryResponse(
-            dto.id(),
-            dto.nickname(),
-            dto.skinUrl(),
-            dto.title(),
-            dto.dueDate().withZoneSameInstant(ZONE_ID),
-            dto.address(),
-            dto.isOpened(),
-            dto.createdAt().withZoneSameInstant(ZONE_ID)
-        );
+        return SecretCapsuleSummaryResponse.builder()
+            .nickname(dto.nickname())
+            .skinUrl(dto.skinUrl())
+            .title(dto.title())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .address(dto.address())
+            .isOpened(dto.isOpened())
+            .createdAt(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .build();
+    }
+
+    public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
+        SecreteCapsuleDetailDto dto) {
+        return SecretCapsuleDetailResponse.builder()
+            .capsuleSkinUrl(dto.capsuleSkinUrl())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .nickname(dto.nickname())
+            .createdDate(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .address(dto.address())
+            .title(dto.title())
+            .content(dto.content())
+            .imageUrls(dto.images())
+            .videoUrls(dto.videos())
+            .isOpened(dto.isOpened())
+            .build();
+    }
+
+    public SecretCapsuleDetailResponse notOpenedSecreteCapsuleDetailDtoToResponse(
+        SecreteCapsuleDetailDto dto) {
+        return SecretCapsuleDetailResponse.builder()
+            .capsuleSkinUrl(dto.capsuleSkinUrl())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .nickname(dto.nickname())
+            .address(dto.address())
+            .isOpened(dto.isOpened())
+            .createdDate(dto.createdAt())
+            .title(dto.title())
+            .build();
     }
 }
