@@ -33,7 +33,7 @@ public interface MemberApi {
         value = "/",
         produces = {"application/json"}
     )
-    ResponseEntity<MemberDetailResponse> findMemberById();
+    ResponseEntity<MemberDetailResponse> getMemberDetail();
 
     @Operation(
         summary = "회원 수정",

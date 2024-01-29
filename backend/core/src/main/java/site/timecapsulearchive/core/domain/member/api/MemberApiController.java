@@ -22,7 +22,7 @@ public class MemberApiController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public ResponseEntity<MemberDetailResponse> findMemberById() {
+    public ResponseEntity<MemberDetailResponse> getMemberDetail() {
         return null;
     }
 
