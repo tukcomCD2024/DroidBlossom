@@ -18,6 +18,11 @@ class PermissionsUtil(private val activity: Activity) {
         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
     }
 
+    fun hasLocationPermissions(): Boolean {
+        return ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
     fun requestCameraPermission() {
         requestPermission(Manifest.permission.CAMERA, REQUEST_CAMERA_PERMISSION)
     }
