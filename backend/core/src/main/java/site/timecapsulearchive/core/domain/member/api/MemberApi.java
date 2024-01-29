@@ -30,7 +30,6 @@ public interface MemberApi {
         )
     })
     @GetMapping(
-        value = "/",
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(Long memberId);
@@ -48,7 +47,6 @@ public interface MemberApi {
         )
     })
     @PatchMapping(
-        value = "/",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<Void> updateMemberById(@ModelAttribute MemberDetailUpdateRequest request);
