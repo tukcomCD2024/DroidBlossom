@@ -125,8 +125,7 @@ public class MemberService {
         MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        byte[] encryptedPhone = dto.phone().getBytes(StandardCharsets.UTF_8);
-        String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(encryptedPhone);
+        String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
 
         return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }
