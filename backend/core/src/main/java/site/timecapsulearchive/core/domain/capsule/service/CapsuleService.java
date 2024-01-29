@@ -6,7 +6,7 @@ import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
@@ -28,7 +28,7 @@ public class CapsuleService {
      * @return NearbyCapsuleResponse 현재 위치 {@code dto.latitude()}, {@code dto.longitude()}에서 반경
      * {@code dto.distance()} 안에 캡슐 목록을 조회한다. 응답 좌표는 SRID 4326이다.
      */
-    public NearbyCapsulePageResponse findCapsuleByCurrentLocationAndCapsuleType(
+    public NearbyCapsuleResponse findCapsuleByCurrentLocationAndCapsuleType(
         Long memberId,
         CoordinateRangeRequestDto dto,
         CapsuleType capsuleType
@@ -37,7 +37,7 @@ public class CapsuleService {
 
         Polygon mbr = geoTransformer.getDistanceMBROf3857(point, dto.distance());
 
-        return NearbyCapsulePageResponse.from(
+        return NearbyCapsuleResponse.from(
             capsuleQueryRepository.findCapsuleByCurrentLocationAndCapsuleType(memberId, mbr,
                     capsuleType)
                 .stream()

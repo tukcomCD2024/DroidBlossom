@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.service;
 
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,14 @@ public class SecreteCapsuleService {
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
+        if(capsuleNotOpened(dto)) {
+            return capsuleMapper.notOpenedSecreteCapsuleDetailDtoToResponse(dto);
+        }
+
         return capsuleMapper.secretCapsuleDetailDtoToResponse(dto);
+    }
+
+    private static boolean capsuleNotOpened(SecreteCapsuleDetailDto dto) {
+        return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now());
     }
 }
