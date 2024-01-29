@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
+import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,6 +40,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _skinId = MutableStateFlow<Int>(0)
     override val skinId: StateFlow<Int>
         get() = _skinId
+    private val _skins = MutableStateFlow(
+        listOf(Skin(1, "", false), Skin(2, "", false), Skin(3, "", false))
+    )
+    override val skins: StateFlow<List<Skin>>
+        get() = _skins
 
     //create3
     private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
@@ -75,13 +81,19 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
 
+    //create1
     override fun move1To2() {
         viewModelScope.launch {
             _create1Events.emit(CreateCapsuleViewModel.Create1Event.NavigateTo2)
         }
     }
 
+
+    //create2
     override fun move2To3() {
+        viewModelScope.launch {
+            _skinId.emit( _skins.value.find { it.isClicked }?.skinId ?:0)
+        }
         viewModelScope.launch {
             _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
         }
@@ -93,6 +105,17 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun changeSkin(skin: Skin) {
+        val submitList = skins.value
+        submitList.map { it.isClicked = false }
+        submitList[submitList.indexOf(skin)].isClicked = true
+        viewModelScope.launch {
+            _skins.emit(submitList)
+        }
+    }
+
+
+    //creat3
     override fun moveFinish() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)

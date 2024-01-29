@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
+import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,6 +20,7 @@ interface CreateCapsuleViewModel {
     //Create2
     val create2Events: SharedFlow<Create2Event>
     val skinId: StateFlow<Int>
+    val skins : StateFlow<List<Skin>>
 
     //Create3
     val create3Events: SharedFlow<Create3Event>
@@ -35,6 +37,7 @@ interface CreateCapsuleViewModel {
     fun move1To2()
     fun move2To3()
     fun moveSearchSkin()
+    fun changeSkin(skin: Skin)
     fun moveFinish()
     fun moveLocation()
     fun moveDate()
