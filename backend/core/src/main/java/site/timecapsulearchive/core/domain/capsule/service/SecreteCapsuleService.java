@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
@@ -88,7 +88,7 @@ public class SecreteCapsuleService {
     /**
      * 멤버 아이디와 캡슐 아이디를 받아서 캡슐 상세 정보를 반환한다.
      *
-     * @param memberId 멤버 아이디
+     * @param memberId  멤버 아이디
      * @param capsuleId 캡슐 아이디
      * @return 캡슐 상세 정보
      */
@@ -101,14 +101,14 @@ public class SecreteCapsuleService {
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if(capsuleNotOpened(dto)) {
+        if (capsuleNotOpened(dto)) {
             return capsuleMapper.notOpenedSecreteCapsuleDetailDtoToResponse(dto);
         }
 
         return capsuleMapper.secretCapsuleDetailDtoToResponse(dto);
     }
 
-    private static boolean capsuleNotOpened(SecreteCapsuleDetailDto dto) {
+    private boolean capsuleNotOpened(SecreteCapsuleDetailDto dto) {
         return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now());
     }
 }
