@@ -31,11 +31,18 @@ public class MemberQueryRepository {
         String authId,
         SocialType socialType
     ) {
-        return Optional.ofNullable(query.select(
-                Projections.constructor(VerifiedCheckDto.class, member.id, member.isVerified))
-            .from(member)
-            .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
-            .fetchOne()
+        return Optional.ofNullable(
+            query
+                .select(
+                    Projections.constructor(
+                        VerifiedCheckDto.class,
+                        member.id,
+                        member.isVerified
+                    )
+                )
+                .from(member)
+                .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
+                .fetchOne()
         );
     }
 
