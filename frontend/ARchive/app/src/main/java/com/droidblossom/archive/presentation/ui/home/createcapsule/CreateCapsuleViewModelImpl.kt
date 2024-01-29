@@ -19,7 +19,7 @@ import javax.inject.Inject
 class CreateCapsuleViewModelImpl @Inject constructor(
 
 ) : BaseViewModel(), CreateCapsuleViewModel {
-    override var isGroupCapsuleCreate: Boolean = true
+    override var groupTypeInt: Int = 1
     private val _capsuleType = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
     override val capsuleType: StateFlow<CreateCapsuleViewModel.CapsuleType>
         get() = _capsuleType
@@ -88,11 +88,22 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun choseCapsuleType(type: Int) {
+        viewModelScope.launch {
+            when (groupTypeInt) {
+                1 -> {_capsuleType.emit(CreateCapsuleViewModel.CapsuleType.GROUP)}
+                2 -> {_capsuleType.emit(CreateCapsuleViewModel.CapsuleType.OPEN)}
+                3 -> {_capsuleType.emit(CreateCapsuleViewModel.CapsuleType.SECRET)}
+                else -> {}
+            }
+        }
+    }
+
 
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-            _skinId.emit( _skins.value.find { it.isClicked }?.skinId ?:0)
+            _skinId.emit(_skins.value.find { it.isClicked }?.skinId ?: 0)
         }
         viewModelScope.launch {
             _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)

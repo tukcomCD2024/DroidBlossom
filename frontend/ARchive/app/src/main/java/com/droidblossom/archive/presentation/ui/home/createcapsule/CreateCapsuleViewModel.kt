@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface CreateCapsuleViewModel {
-    var isGroupCapsuleCreate: Boolean
+    var groupTypeInt: Int
     val capsuleType: StateFlow<CapsuleType>
 
     //Create1
@@ -35,6 +35,7 @@ interface CreateCapsuleViewModel {
     val imgUris : StateFlow<List<Dummy>>
 
     fun move1To2()
+    fun choseCapsuleType(type: Int)
     fun move2To3()
     fun moveSearchSkin()
     fun changeSkin(skin: Skin)

@@ -28,7 +28,7 @@ class CreateCapsule1Fragment :
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
 
-        if (!viewModel.isGroupCapsuleCreate){
+        if (viewModel.groupTypeInt != 1){
             navController.navigate(R.id.action_createCapsule1Fragment_to_createCapsule2Fragment )
         }
     }

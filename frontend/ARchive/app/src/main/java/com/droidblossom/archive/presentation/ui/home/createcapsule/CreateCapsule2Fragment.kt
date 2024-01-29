@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -34,7 +35,7 @@ class CreateCapsule2Fragment :
         super.onAttach(context)
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (!viewModel.isGroupCapsuleCreate) {
+                if (viewModel.groupTypeInt != 1) {
                     requireActivity().finish()
                 } else {
                     super.remove()
@@ -50,6 +51,8 @@ class CreateCapsule2Fragment :
         navController = Navigation.findNavController(view)
         binding.recycleView.adapter = skinRVA
         binding.recycleView.itemAnimator = null
+
+        Toast.makeText(requireContext(),"${viewModel.capsuleType.value.title}",Toast.LENGTH_SHORT).show()
     }
 
     override fun observeData() {

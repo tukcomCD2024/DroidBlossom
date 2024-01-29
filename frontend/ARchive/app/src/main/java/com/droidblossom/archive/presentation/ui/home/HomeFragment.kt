@@ -12,6 +12,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
+import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -27,15 +28,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
         binding.makeGroupCapsuleBtn.setOnClickListener {
             //그룹 캡슐 생성 페이지로 이동
-            startActivity(CreateCapsuleActivity.newIntent(requireContext(),true))
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),1))
         }
         binding.makeOpenCapsuleBtn.setOnClickListener {
             //공개 캡슐 생성 페이지로 이동
-            startActivity(CreateCapsuleActivity.newIntent(requireContext(),false))
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),2))
         }
         binding.makeSecretCapsuleBtn.setOnClickListener {
-            //그룹 캡슐 생성 페이지로 이동
-            startActivity(CreateCapsuleActivity.newIntent(requireContext(),false))
+            //비밀 캡슐 생성 페이지로 이동
+            startActivity(CreateCapsuleActivity.newIntent(requireContext(),3))
         }
 
         binding.snackbarTestBtn.setOnClickListener {
