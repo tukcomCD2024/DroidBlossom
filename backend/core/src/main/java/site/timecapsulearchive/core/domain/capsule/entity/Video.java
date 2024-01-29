@@ -13,12 +13,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "VIDEO")
-public class Video {
+public class Video extends BaseEntity {
 
     @Id
     @Column(name = "video_id")
