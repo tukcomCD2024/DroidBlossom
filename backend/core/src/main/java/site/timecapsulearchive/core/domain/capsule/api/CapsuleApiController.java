@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -35,7 +35,7 @@ public class CapsuleApiController implements CapsuleApi {
     }
 
     @Override
-    public ResponseEntity<ApiSpec<NearbyCapsulePageResponse>> getNearByCapsules(
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
         @AuthenticationPrincipal Long memberId,
         @NotNull @Valid @RequestParam(value = "latitude") double latitude,
         @NotNull @Valid @RequestParam(value = "longitude") double longitude,
