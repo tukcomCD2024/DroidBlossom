@@ -70,7 +70,7 @@ public class CapsuleMapper {
             .nickname(dto.nickname())
             .capsuleSkinUrl(dto.skinUrl())
             .title(dto.title())
-            .dueDate(dto.dueDate())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
             .capsuleType(dto.capsuleType())
             .build();
     }
@@ -102,6 +102,19 @@ public class CapsuleMapper {
             .imageUrls(dto.images())
             .videoUrls(dto.videos())
             .isOpened(dto.isOpened())
+            .build();
+    }
+
+    public SecretCapsuleDetailResponse notOpenedSecreteCapsuleDetailDtoToResponse(
+        SecreteCapsuleDetailDto dto) {
+        return SecretCapsuleDetailResponse.builder()
+            .capsuleSkinUrl(dto.capsuleSkinUrl())
+            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .nickname(dto.nickname())
+            .address(dto.address())
+            .isOpened(dto.isOpened())
+            .createdDate(dto.createdAt())
+            .title(dto.title())
             .build();
     }
 }
