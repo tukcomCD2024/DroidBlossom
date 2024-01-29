@@ -22,8 +22,13 @@ public class MemberApiController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public ResponseEntity<MemberDetailResponse> getMemberDetail() {
-        return null;
+    public ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail() {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.findMemberDetailById()
+            )
+        );
     }
 
     @Override

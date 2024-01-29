@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
+import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -114,5 +115,9 @@ public class MemberService {
 
     private boolean isVerified(VerifiedCheckDto dto) {
         return dto.isVerified();
+    }
+
+    public MemberDetailResponse findMemberDetailById() {
+        return null;
     }
 }
