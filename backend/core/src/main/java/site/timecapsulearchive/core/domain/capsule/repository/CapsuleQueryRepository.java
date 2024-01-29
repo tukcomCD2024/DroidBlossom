@@ -1,9 +1,11 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
 
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -98,29 +100,33 @@ public class CapsuleQueryRepository {
         Long memberId,
         Long capsuleId
     ) {
-        return Optional.ofNullable(jpaQueryFactory
-            .select(
-                Projections.constructor(
-                    SecreteCapsuleDetailDto.class,
-                    capsule.capsuleSkin.imageUrl,
-                    capsule.dueDate,
-                    capsule.member.nickname,
-                    capsule.createdAt,
-                    capsule.address.fullRoadAddressName,
-                    capsule.title,
-                    capsule.content,
-                    Projections.list(Projections.constructor(String.class, image.imageUrl)),
-                    Projections.list(Projections.constructor(String.class, video.videoUrl)),
-                    capsule.isOpened
-                )
-            )
+        return jpaQueryFactory
             .from(capsule)
-            .innerJoin(image).on(capsule.id.eq(image.capsule.id))
-            .innerJoin(video).on(capsule.id.eq(video.capsule.id))
+            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
+            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
                 .and(capsule.type.eq(CapsuleType.SECRETE)))
-            .fetchOne()
-        );
+            .transform(
+                groupBy(capsule.id).list(
+                    Projections.constructor(
+                        SecreteCapsuleDetailDto.class,
+                        capsule.capsuleSkin.imageUrl,
+                        capsule.dueDate,
+                        capsule.member.nickname,
+                        capsule.createdAt,
+                        capsule.address.fullRoadAddressName,
+                        capsule.title,
+                        capsule.content,
+                        GroupBy.list(
+                            Projections.constructor(String.class, image.imageUrl).skipNulls()),
+                        GroupBy.list(
+                            Projections.constructor(String.class, video.videoUrl).skipNulls()),
+                        capsule.isOpened
+                    )
+                )
+            ).stream()
+            .findFirst();
     }
+
 
 }
