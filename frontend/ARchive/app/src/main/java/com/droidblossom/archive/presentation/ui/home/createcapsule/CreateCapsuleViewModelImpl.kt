@@ -92,6 +92,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
+            _skinId.emit( _skins.value.find { it.isClicked }?.skinId ?:0)
+        }
+        viewModelScope.launch {
             _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
         }
     }

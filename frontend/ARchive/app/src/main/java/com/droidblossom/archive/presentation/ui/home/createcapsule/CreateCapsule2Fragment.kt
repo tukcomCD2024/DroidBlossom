@@ -12,9 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
-import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -51,6 +49,7 @@ class CreateCapsule2Fragment :
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
         binding.recycleView.adapter = skinRVA
+        binding.recycleView.itemAnimator = null
     }
 
     override fun observeData() {
