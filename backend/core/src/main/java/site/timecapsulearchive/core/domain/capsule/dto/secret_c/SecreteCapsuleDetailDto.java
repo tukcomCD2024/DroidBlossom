@@ -5,6 +5,7 @@ import java.util.List;
 
 public record SecreteCapsuleDetailDto(
 
+    Long capsuleId,
     String capsuleSkinUrl,
     ZonedDateTime dueDate,
     String nickname,

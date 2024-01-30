@@ -3,9 +3,11 @@ package site.timecapsulearchive.core.domain.capsule.dto.mapper;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
@@ -116,5 +118,14 @@ public class CapsuleMapper {
             .createdDate(dto.createdAt())
             .title(dto.title())
             .build();
+    }
+
+    public MyCapsulePageResponse capsuleDetailSliceToResponse(
+        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice) {
+        return new MyCapsulePageResponse(
+            capsuleDetailSlice.getContent(),
+            capsuleDetailSlice.hasNext(),
+            capsuleDetailSlice.hasPrevious()
+        );
     }
 }
