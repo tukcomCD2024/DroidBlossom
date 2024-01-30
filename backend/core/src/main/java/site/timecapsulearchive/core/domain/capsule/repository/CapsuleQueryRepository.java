@@ -5,8 +5,10 @@ import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsul
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
 
+import com.querydsl.core.ResultTransformer;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -14,6 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
@@ -107,26 +112,70 @@ public class CapsuleQueryRepository {
             .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
                 .and(capsule.type.eq(CapsuleType.SECRETE)))
             .transform(
-                groupBy(capsule.id).list(
-                    Projections.constructor(
-                        SecreteCapsuleDetailDto.class,
-                        capsule.capsuleSkin.imageUrl,
-                        capsule.dueDate,
-                        capsule.member.nickname,
-                        capsule.createdAt,
-                        capsule.address.fullRoadAddressName,
-                        capsule.title,
-                        capsule.content,
-                        GroupBy.list(
-                            Projections.constructor(String.class, image.imageUrl).skipNulls()),
-                        GroupBy.list(
-                            Projections.constructor(String.class, video.videoUrl).skipNulls()),
-                        capsule.isOpened
-                    )
-                )
+                findSecreteCapsuleDetailDto()
             ).stream()
             .findFirst();
     }
 
 
+    public Slice<SecreteCapsuleDetailDto> findCapsuleSliceByMemberId(
+        Long memberId,
+        Pageable pageable,
+        Long capsuleId
+    ) {
+        List<SecreteCapsuleDetailDto> secreteCapsuleList = new java.util.ArrayList<>(
+            jpaQueryFactory.from(capsule)
+                .leftJoin(image).on(capsule.id.eq(image.capsule.id))
+                .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+                .where(
+                    capsule.member.id.eq(memberId),
+                    ltCapsuleId(capsuleId),
+                    capsule.type.eq(CapsuleType.SECRETE)
+                )
+                .orderBy(capsule.id.desc())
+                .limit(pageable.getPageSize())
+                .transform(
+                    findSecreteCapsuleDetailDto()
+                ).stream().toList());
+
+        boolean hasNext = hasNext(pageable, secreteCapsuleList);
+        if (hasNext) {
+            secreteCapsuleList.remove(secreteCapsuleList.size() - 1);
+        }
+
+        return new SliceImpl<>(secreteCapsuleList, pageable, hasNext);
+    }
+
+    private ResultTransformer<List<SecreteCapsuleDetailDto>> findSecreteCapsuleDetailDto() {
+        return groupBy(capsule.id).list(
+            Projections.constructor(
+                SecreteCapsuleDetailDto.class,
+                capsule.id,
+                capsule.capsuleSkin.imageUrl,
+                capsule.dueDate,
+                capsule.member.nickname,
+                capsule.createdAt,
+                capsule.address.fullRoadAddressName,
+                capsule.title,
+                capsule.content,
+                GroupBy.list(
+                    Projections.constructor(String.class, image.imageUrl).skipNulls()),
+                GroupBy.list(
+                    Projections.constructor(String.class, video.videoUrl).skipNulls()),
+                capsule.isOpened
+            )
+        );
+    }
+
+    private BooleanExpression ltCapsuleId(Long capsuleId) {
+        if (capsuleId == null) {
+            return null;
+        }
+        return capsule.id.lt(capsuleId);
+    }
+
+    private boolean hasNext(Pageable pageable,
+        List<SecreteCapsuleDetailDto> secreteCapsuleList) {
+        return secreteCapsuleList.size() > pageable.getPageSize();
+    }
 }
