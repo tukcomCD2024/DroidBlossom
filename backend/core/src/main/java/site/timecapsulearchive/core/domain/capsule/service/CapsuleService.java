@@ -3,10 +3,14 @@ package site.timecapsulearchive.core.domain.capsule.service;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
@@ -44,5 +48,16 @@ public class CapsuleService {
                 .map(capsuleMapper::capsuleSummaryDtoToResponse)
                 .toList()
         );
+    }
+
+    public MyCapsulePageResponse findCapsuleListByMemberId(
+        Long memberId,
+        Pageable pageable,
+        Long capsuleId
+    ) {
+        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
+            .findCapsuleSliceByMemberId(memberId, pageable, capsuleId);
+
+        return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
     }
 }
