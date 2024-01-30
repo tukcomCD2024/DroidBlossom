@@ -37,7 +37,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onResume() {
         super.onResume()
-        viewModel.initTimer()
         if (binding.certificationNumberEditText1.requestFocus()) {
             val imm =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -47,6 +46,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initTimer()
 
         binding.vm = viewModel
         navController = Navigation.findNavController(view)

@@ -13,6 +13,7 @@ import com.droidblossom.archive.databinding.FragmentSkinMakeBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.FileUtils
+import com.droidblossom.archive.util.LocationUtil
 import com.droidblossom.archive.util.S3Util
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -63,9 +64,13 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
                 val fileName = "테스트"
 
-                s3Util.uploadFile(fileName, file!!)
+                //s3Util.uploadFile(fileName, file!!)
 
-
+//                val locationUtil = LocationUtil(requireContext())
+//                locationUtil.getCurrentLocation { latitude, longitude ->
+//                    // 여기서 위도(latitude)와 경도(longitude)를 사용하여 필요한 작업 수행
+//                    Log.d("위치", "위도 : $latitude, 경도 : $longitude")
+//                }
 
             }
 
