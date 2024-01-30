@@ -47,7 +47,7 @@ class S3Util @Inject constructor(private val context: Context) {
             }
 
             override fun onError(id: Int, ex: Exception) {
-                Log.d("MYTAG", "UPLOAD ERROR - - ID: $id - - EX: ${ex.toString()}")
+                Log.d("MYTAG", "UPLOAD ERROR - - ID: $id - - EX: ${ex.toString()} ")
             }
         })
     }
