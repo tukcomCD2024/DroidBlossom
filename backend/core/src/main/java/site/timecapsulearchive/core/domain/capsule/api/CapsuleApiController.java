@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.api;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,22 @@ public class CapsuleApiController implements CapsuleApi {
     private final CapsuleService capsuleService;
 
     @Override
-    public ResponseEntity<MyCapsulePageResponse> findCapsulesByMemberId(Long size, Long capsuleId) {
-        return null;
+    public ResponseEntity<ApiSpec<MyCapsulePageResponse>> findCapsulesByMemberId(
+        @AuthenticationPrincipal Long memberId,
+        @NotNull @Valid @RequestParam(defaultValue = "0", value = "page") int page,
+        @NotNull @Valid @RequestParam(defaultValue = "20", value = "size") int size,
+        @NotNull @Valid @RequestParam(defaultValue = "0", value = "capsuleId") Long capsuleId
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                capsuleService.findCapsuleListByMemberId(
+                    memberId,
+                    PageRequest.of(page, size),
+                    capsuleId
+                )
+            )
+        );
     }
 
     @Override
