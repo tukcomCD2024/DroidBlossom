@@ -35,11 +35,16 @@ public interface CapsuleApi {
     @GetMapping(
         produces = {"application/json"}
     )
-    ResponseEntity<MyCapsulePageResponse> findCapsulesByMemberId(
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "size") Long size,
+    ResponseEntity<ApiSpec<MyCapsulePageResponse>> findCapsulesByMemberId(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 위치", required = true)
+        @NotNull @Valid @RequestParam(value = "page") int page,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        @NotNull @Valid @RequestParam(value = "size") int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
         @NotNull @Valid @RequestParam(value = "capsule_id") Long capsuleId
     );
 
