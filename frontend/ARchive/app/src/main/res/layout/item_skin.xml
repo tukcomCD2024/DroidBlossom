@@ -4,35 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="item"
             type="com.droidblossom.archive.domain.model.common.Skin" />
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:strokeColor="@{item.isClicked ? @color/main_2 : @color/white}"
+        app:strokeWidth="4dp">
 
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/skinImg"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            app:layout_constraintDimensionRatio="w,1:1"
-            android:layout_margin="4dp"
-            android:padding="12dp"
-            android:layout_height="0dp"
-            android:clipToOutline="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/sample_skin"
-            android:background="@drawable/corner_radius_8"
-            android:backgroundTint="@{item.isClicked ? @color/main_3 : @color/white}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:targetApi="s" />
+            android:background="@color/white"
+            android:layout_height="wrap_content">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/skinImg"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:alpha="@{item.isClicked ? 1.0F : 0.2F}"
+                android:background="@drawable/corner_radius_8"
+                android:clipToOutline="true"
+                android:padding="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/sample_skin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="w,4:3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:targetApi="s" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
 </layout>
