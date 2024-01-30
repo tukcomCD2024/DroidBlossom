@@ -81,7 +81,7 @@ public interface SecretCapsuleApi {
         value = "/capsules/{capsule_id}/summary",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
+    ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> findSecretCapsuleSummary(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
