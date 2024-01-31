@@ -536,4 +536,12 @@ object DateUtils {
     fun getCurrentDay(): Int {
         return getDateString("dd").toInt()
     }
+
+    fun getCurrentHour(): Int {
+        return getDateString("HH").toInt()
+    }
+
+    fun getCurrentMin(): Int {
+        return getDateString("mm").toInt()
+    }
 }

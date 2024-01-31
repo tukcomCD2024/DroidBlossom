@@ -6,7 +6,6 @@
     <data>
 
         <import type="android.view.View" />
-
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel" />
@@ -110,27 +109,28 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="@{vm.isSelectTime? View.GONE : View.VISIBLE}"
                 app:constraint_referenced_ids="yearPicker, monthPicker, dayPicker" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="@{vm.isSelectTime? View.VISIBLE : View.GONE}"
                 app:constraint_referenced_ids="minPicker, hourPicker" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/clickBtn"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_1"
             android:gravity="center"
-            android:text="시간 선택하기"
+            android:text="@{vm.isSelectTime? @string/confirmation : @string/timeSelect }"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@id/pickerLayout"

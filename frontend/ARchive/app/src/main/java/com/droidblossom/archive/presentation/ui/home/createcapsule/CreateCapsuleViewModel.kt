@@ -53,6 +53,7 @@ interface CreateCapsuleViewModel {
     fun moveFinish()
     fun moveLocation()
     fun moveDate()
+    fun goSelectTime()
     fun moveImgUpLoad()
     fun moveSingleImgUpLoad()
     fun selectTimeCapsule()

@@ -91,8 +91,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val year =  MutableStateFlow<Int>(DateUtils.getCurrentYear())
     override val month: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMonth())
     override val day: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentDay())
-    override val hour: MutableStateFlow<Int>  = MutableStateFlow<Int>(DateUtils.calendar[10])
-    override val min: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.calendar[12])
+    override val hour: MutableStateFlow<Int>  = MutableStateFlow<Int>(DateUtils.getCurrentHour())
+    override val min: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMin())
     private val _isSelectTime = MutableStateFlow<Boolean>(false)
     override val isSelectTime: StateFlow<Boolean>
         get() = _isSelectTime
@@ -173,6 +173,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun goSelectTime(){
+        viewModelScope.launch {
+            _isSelectTime.emit(true)
+        }
+    }
     override fun moveImgUpLoad() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickImgUpLoad)
