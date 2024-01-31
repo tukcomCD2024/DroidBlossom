@@ -10,6 +10,8 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinMakeBinding
+import com.droidblossom.archive.domain.model.common.FileName
+import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.FileUtils
@@ -57,18 +59,20 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
             completeBtn.setOnClickListener {
                 val file = viewModel.imgUri.value?.let { uri ->
                     FileUtils.convertUriToJpegFile(requireContext(),
-                        uri, "우하하하")
+                        uri, "yes")
                 }
 
-                val fileName = "테스트"
+                val fileExtension = file?.name?.substringAfterLast('.', "")
 
-                //s3Util.uploadFile(fileName, file!!)
+                Log.d("티티", "File Extension: $fileExtension")
 
 //                val locationUtil = LocationUtil(requireContext())
 //                locationUtil.getCurrentLocation { latitude, longitude ->
 //                    // 여기서 위도(latitude)와 경도(longitude)를 사용하여 필요한 작업 수행
 //                    Log.d("위치", "위도 : $latitude, 경도 : $longitude")
 //                }
+                val data = S3UrlRequest("skinImage", listOf(FileName("image/jpeg","yes.jpeg")))
+                viewModel.getUploadUrl(data,file!!)
 
             }
 
