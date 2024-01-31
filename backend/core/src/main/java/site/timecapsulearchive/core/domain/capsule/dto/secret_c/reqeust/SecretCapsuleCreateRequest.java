@@ -35,6 +35,10 @@ public record SecretCapsuleCreateRequest(
     @NotBlank(message = "캡슐 위도는 필수 입니다.")
     double latitude,
 
+    @Schema(description = "캡슐 생성 주소")
+    @NotBlank(message = "캡슐 생성 주소는 필수 입니다.")
+    String address,
+
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
 

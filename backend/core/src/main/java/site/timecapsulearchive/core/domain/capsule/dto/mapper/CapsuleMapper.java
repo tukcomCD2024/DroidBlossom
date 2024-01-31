@@ -39,6 +39,7 @@ public class CapsuleMapper {
             .content(request.content())
             .longitude(request.longitude())
             .latitude(request.latitude())
+            .address(request.address())
             .dueDate(request.dueDate())
             .fileNames(request.fileNames())
             .directory(request.directory())
@@ -49,7 +50,6 @@ public class CapsuleMapper {
     public Capsule requestDtoToEntity(
         SecretCapsuleCreateRequestDto dto,
         Point point,
-        Address address,
         Member member,
         CapsuleSkin capsuleSkin
     ) {
@@ -57,7 +57,7 @@ public class CapsuleMapper {
             .title(dto.title())
             .content(dto.content())
             .point(point)
-            .address(address)
+            .address(Address.from(dto.address()))
             .type(dto.capsuleType())
             .member(member)
             .dueDate(dto.dueDate())
