@@ -20,8 +20,8 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
     private val currentYear = DateUtils.getCurrentYear()
     private val currentMonth = DateUtils.getCurrentMonth()
     private val currentDay = DateUtils.getCurrentDay()
-//    private val currentHour = DateUtils.getCurrentHour()
-//    private val currentMin = DateUtils.getCurrentMin()
+    private val currentHour = DateUtils.getCurrentHour()
+    private val currentMin = DateUtils.getCurrentMin()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -137,11 +137,29 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
                 viewModel.day.collect{
                     if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth && viewModel.day.value == currentDay){
                         binding.hourPicker.apply {
-                            minValue = viewModel.hour.value
+                            minValue = currentHour
                             maxValue = 23
                         }
                         binding.minPicker.apply {
-                            minValue = viewModel.min.value
+                            minValue = currentMin
+                            maxValue = 59
+                        }
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.hour.collect{
+                    if (viewModel.day.value == currentDay && viewModel.hour.value == currentHour){
+                        binding.minPicker.apply {
+                            minValue = currentMin
+                            maxValue = 59
+                        }
+                    }else{
+                        binding.minPicker.apply {
+                            minValue = 0
                             maxValue = 59
                         }
                     }
