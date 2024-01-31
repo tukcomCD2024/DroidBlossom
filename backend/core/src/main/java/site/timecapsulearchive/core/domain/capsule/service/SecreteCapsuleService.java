@@ -3,8 +3,10 @@ package site.timecapsulearchive.core.domain.capsule.service;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
@@ -64,6 +66,25 @@ public class SecreteCapsuleService {
 
         mediaService.saveMediaData(newCapsule, dto.directory(), findMember.getId(),
             dto.fileNames());
+    }
+
+
+    /**
+     * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
+     * @param memberId  캡슐을 생성할 멤버 아이디
+     * @param size      페이지 사이즈
+     * @param createdAt 마지막 캡슐 생성 날짜
+     * @return 내 페이지에서 비밀 캡슐을 조회한다.
+     */
+    public MyCapsulePageResponse findSecreteCapsuleListByMemberId(
+        Long memberId,
+        int size,
+        ZonedDateTime createdAt
+    ) {
+        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
+            .findSecreteCapsuleSliceByMemberId(memberId, size, createdAt);
+
+        return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
     }
 
     /**

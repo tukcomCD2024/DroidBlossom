@@ -1,13 +1,18 @@
 package site.timecapsulearchive.core.domain.capsule.dto.mapper;
 
 import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetail;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
@@ -22,7 +27,7 @@ import site.timecapsulearchive.core.global.geography.GeoTransformer;
 @RequiredArgsConstructor
 public class CapsuleMapper {
 
-    private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
+    private static final ZoneId ASIA_SEOUL = ZoneId.of("Asia/Seoul");
 
     private final GeoTransformer geoTransformer;
 
@@ -70,7 +75,7 @@ public class CapsuleMapper {
             .nickname(dto.nickname())
             .capsuleSkinUrl(dto.skinUrl())
             .title(dto.title())
-            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
             .capsuleType(dto.capsuleType())
             .build();
     }
@@ -82,10 +87,10 @@ public class CapsuleMapper {
             .nickname(dto.nickname())
             .skinUrl(dto.skinUrl())
             .title(dto.title())
-            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
             .address(dto.address())
             .isOpened(dto.isOpened())
-            .createdAt(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .build();
     }
 
@@ -93,9 +98,9 @@ public class CapsuleMapper {
         SecreteCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
-            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
             .nickname(dto.nickname())
-            .createdDate(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(dto.address())
             .title(dto.title())
             .content(dto.content())
@@ -109,12 +114,42 @@ public class CapsuleMapper {
         SecreteCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
-            .dueDate(dto.dueDate().withZoneSameInstant(ZONE_ID))
+            .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
             .nickname(dto.nickname())
             .address(dto.address())
             .isOpened(dto.isOpened())
-            .createdDate(dto.createdAt().withZoneSameInstant(ZONE_ID))
+            .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .title(dto.title())
             .build();
+    }
+
+    public MyCapsulePageResponse capsuleDetailSliceToResponse(
+        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice) {
+        return new MyCapsulePageResponse(
+            capsuleDetailSlice.getContent(),
+            capsuleDetailSlice.hasNext(),
+            capsuleDetailSlice.hasPrevious()
+        );
+    }
+
+    public SecreteCapsuleDetailDto secreteCapsuleDetailToDto(
+        SecreteCapsuleDetail detail,
+        Map<Long, List<String>> imageUrls,
+        Map<Long, List<String>> videoUrls
+    ) {
+        return SecreteCapsuleDetailDto.builder()
+            .capsuleId(detail.capsuleId())
+            .capsuleSkinUrl(detail.capsuleSkinUrl())
+            .dueDate(detail.dueDate().withZoneSameInstant(ASIA_SEOUL))
+            .nickname(detail.nickname())
+            .createdAt(detail.createdAt().withZoneSameInstant(ASIA_SEOUL))
+            .address(detail.address())
+            .title(detail.title())
+            .content(detail.content())
+            .images(imageUrls.get(detail.capsuleId()))
+            .videos(videoUrls.get(detail.capsuleId()))
+            .isOpened(detail.isOpened())
+            .build();
+
     }
 }

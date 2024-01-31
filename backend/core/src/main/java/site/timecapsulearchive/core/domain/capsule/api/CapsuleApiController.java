@@ -1,7 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.api;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
@@ -25,11 +22,6 @@ public class CapsuleApiController implements CapsuleApi {
     private final CapsuleService capsuleService;
 
     @Override
-    public ResponseEntity<MyCapsulePageResponse> findCapsulesByMemberId(Long size, Long capsuleId) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<ImagesPageResponse> findImages(Long size, Long capsuleId) {
         return null;
     }
@@ -37,10 +29,10 @@ public class CapsuleApiController implements CapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
         @AuthenticationPrincipal Long memberId,
-        @NotNull @Valid @RequestParam(value = "latitude") double latitude,
-        @NotNull @Valid @RequestParam(value = "longitude") double longitude,
-        @NotNull @Valid @RequestParam(value = "distance") double distance,
-        @NotNull @Valid @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL"
+        @RequestParam(value = "latitude") double latitude,
+        @RequestParam(value = "longitude") double longitude,
+        @RequestParam(value = "distance") double distance,
+        @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL"
         ) CapsuleType capsuleType
     ) {
         return ResponseEntity.ok(
