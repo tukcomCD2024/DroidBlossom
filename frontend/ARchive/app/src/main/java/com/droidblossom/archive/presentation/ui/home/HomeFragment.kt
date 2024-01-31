@@ -16,6 +16,7 @@ import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -87,6 +88,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+        LocationUtil(requireContext()).getCurrentLocation { latitude, longitude ->
+            val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
+            naverMap.moveCamera(cameraUpdate)
+        }
         addMarker(CapsuleType.SECRET)
         addMarker(CapsuleType.GROUP)
         addMarker(CapsuleType.PUBLIC)
