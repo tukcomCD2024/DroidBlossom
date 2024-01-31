@@ -70,11 +70,11 @@ public class SecreteCapsuleService {
 
 
     /**
-     *
-     * @param memberId
-     * @param size
-     * @param createdAt
-     * @return
+     * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
+     * @param memberId  캡슐을 생성할 멤버 아이디
+     * @param size      페이지 사이즈
+     * @param createdAt 마지막 캡슐 생성 날짜
+     * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
     public MyCapsulePageResponse findSecreteCapsuleListByMemberId(
         Long memberId,
