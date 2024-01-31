@@ -12,12 +12,16 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Overlay
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home){
+class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home),
+    OnMapReadyCallback, Overlay.OnClickListener{
 
     override val viewModel: HomeViewModelImpl by viewModels<HomeViewModelImpl>()
 
@@ -58,6 +62,14 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 )
             }
         }
+    }
+
+    override fun onMapReady(p0: NaverMap) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClick(p0: Overlay): Boolean {
+        TODO("Not yet implemented")
     }
 
 }
