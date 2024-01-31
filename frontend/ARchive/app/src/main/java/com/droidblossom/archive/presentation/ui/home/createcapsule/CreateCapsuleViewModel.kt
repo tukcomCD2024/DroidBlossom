@@ -21,6 +21,7 @@ interface CreateCapsuleViewModel {
     val create2Events: SharedFlow<Create2Event>
     val skinId: StateFlow<Int>
     val skins : StateFlow<List<Skin>>
+    val isSearchOpen : StateFlow<Boolean>
 
     //Create3
     val create3Events: SharedFlow<Create3Event>
@@ -37,7 +38,9 @@ interface CreateCapsuleViewModel {
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()
-    fun moveSearchSkin()
+    fun openSearchSkin()
+    fun closeSearchSkin()
+    fun searchSkin()
     fun changeSkin(skin: Skin)
     fun moveFinish()
     fun moveLocation()
@@ -57,7 +60,6 @@ interface CreateCapsuleViewModel {
     sealed class Create2Event {
         object NavigateTo3 : Create2Event()
 
-        object SearchSkin : Create2Event()
     }
 
     sealed class Create3Event {

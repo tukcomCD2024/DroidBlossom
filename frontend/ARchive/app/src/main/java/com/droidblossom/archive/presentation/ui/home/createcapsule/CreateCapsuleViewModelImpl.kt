@@ -46,6 +46,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val skins: StateFlow<List<Skin>>
         get() = _skins
 
+    private val _isSearchOpen = MutableStateFlow(false)
+    override val isSearchOpen: StateFlow<Boolean>
+        get() = _isSearchOpen
+
+
     //create3
     private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
     override val create3Events: SharedFlow<CreateCapsuleViewModel.Create3Event>
@@ -110,9 +115,21 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun moveSearchSkin() {
+    override fun openSearchSkin() {
         viewModelScope.launch {
-            _create2Events.emit(CreateCapsuleViewModel.Create2Event.SearchSkin)
+            _isSearchOpen.emit(true)
+        }
+    }
+
+    override fun closeSearchSkin() {
+        viewModelScope.launch {
+            _isSearchOpen.emit(false)
+        }
+    }
+
+    override fun searchSkin() {
+        viewModelScope.launch {
+            //스킨 검색 API
         }
     }
 
