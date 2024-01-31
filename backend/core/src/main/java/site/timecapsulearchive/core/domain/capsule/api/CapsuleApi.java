@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import site.timecapsulearchive.core.domain.capsule.dto.response.AddressResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -32,7 +33,7 @@ public interface CapsuleApi {
         )
     })
     @GetMapping(
-        value = "/capsules/images",
+        value = "/images",
         produces = {"application/json"}
     )
     ResponseEntity<ImagesPageResponse> findImages(
@@ -56,7 +57,7 @@ public interface CapsuleApi {
         )
     })
     @GetMapping(
-        value = "/capsules/nearby",
+        value = "/nearby",
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
@@ -73,6 +74,34 @@ public interface CapsuleApi {
 
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 필터링 타입", schema = @Schema(defaultValue = "ALL"))
         @NotNull @Valid CapsuleType capsuleType
+    );
+
+    @Operation(
+        summary = "좌표에 따른 전체 주소 반환",
+        description = "위도와 경도 요청시 전체 주소를 반환해 준다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "카카오 맵 API 주소 요청에 실패 했을 경우 발생한다."
+        )
+    })
+    @GetMapping(
+        value = "/full-address",
+        produces = {"application/json"}
+    )
+    ResponseEntity<ApiSpec<AddressResponse>> getAddressByCoordinate(
+        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)
+        @RequestParam(value = "latitude") double latitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true)
+        @RequestParam(value = "longitude") double longitude
     );
 }
 
