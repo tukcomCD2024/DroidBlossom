@@ -14,9 +14,11 @@ import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule
 import com.droidblossom.archive.util.DateUtils
 import kotlinx.coroutines.launch
 
-class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialogFragment<FragmentDatePickerDialogBinding>(R.layout.fragment_date_picker_dialog) {
+class DatePickerDialogFragment(private val onClick: (String) -> Unit) :
+    BaseDialogFragment<FragmentDatePickerDialogBinding>(R.layout.fragment_date_picker_dialog) {
 
     private val viewModel: CreateCapsuleViewModel by viewModels<CreateCapsuleViewModelImpl>()
+
     private val currentYear = DateUtils.getCurrentYear()
     private val currentMonth = DateUtils.getCurrentMonth()
     private val currentDay = DateUtils.getCurrentDay()
@@ -28,25 +30,26 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
         binding.vm = viewModel
         binding.yearPicker.apply {
             minValue = viewModel.year.value
-            maxValue = viewModel.year.value+100
+            maxValue = viewModel.year.value + 100
         }
         binding.yearPicker.setOnValueChangedListener { _, oldVal, newVal ->
-            viewModel.year.value =  newVal
+            viewModel.year.value = newVal
         }
         binding.monthPicker.apply {
             minValue = 1
             maxValue = 12
+            value = currentMonth
         }
         binding.monthPicker.setOnValueChangedListener { _, oldVal, newVal ->
-            viewModel.month.value =  newVal
+            viewModel.month.value = newVal
         }
         binding.dayPicker.apply {
             minValue = 1
             maxValue = 31
-            value = viewModel.day.value
+            value = currentDay
         }
         binding.dayPicker.setOnValueChangedListener { _, oldVal, newVal ->
-            viewModel.day.value =  newVal
+            viewModel.day.value = newVal
         }
         binding.hourPicker.apply {
             minValue = 0
@@ -54,7 +57,7 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
             value = viewModel.hour.value
         }
         binding.hourPicker.setOnValueChangedListener { _, oldVal, newVal ->
-            viewModel.hour.value =  newVal
+            viewModel.hour.value = newVal
         }
         binding.minPicker.apply {
             minValue = 0
@@ -62,13 +65,13 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
             value = viewModel.min.value
         }
         binding.minPicker.setOnValueChangedListener { _, oldVal, newVal ->
-            viewModel.min.value =  newVal
+            viewModel.min.value = newVal
         }
 
         binding.clickBtn.setOnClickListener {
-            if (!viewModel.isSelectTime.value){
+            if (!viewModel.isSelectTime.value) {
                 viewModel.goSelectTime()
-            }else{
+            } else {
                 onClick("${viewModel.year.value}/${viewModel.month.value}/${viewModel.day.value}  ${viewModel.hour.value}:${viewModel.min.value}")
                 this.dismiss()
             }
@@ -80,15 +83,23 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
 
     }
 
-    private fun initObserver(){
+    private fun initObserver() {
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.year.collect{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.year.collect {
                     binding.dayPicker.apply {
-                        minValue = if(viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
-                            currentDay
-                        }else{
+                        minValue =
+                            if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
+                                currentDay
+                            } else {
+                                1
+                            }
+                    }
+                    binding.monthPicker.apply {
+                        minValue = if (viewModel.year.value==currentYear){
+                            currentMonth
+                        }else {
                             1
                         }
                     }
@@ -97,32 +108,36 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.month.collect{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.month.collect {
                     binding.dayPicker.apply {
-                        if(viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
+                        if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
                             minValue = currentDay
-                            when(viewModel.month.value){
-                                1,3,5,7,8,10,12->{
+                            when (viewModel.month.value) {
+                                1, 3, 5, 7, 8, 10, 12 -> {
                                     maxValue = 31
                                 }
-                                4,6,9,11->{
+
+                                4, 6, 9, 11 -> {
                                     maxValue = 30
                                 }
-                                2->{
+
+                                2 -> {
                                     maxValue = 28
                                 }
                             }
-                        }else{
+                        } else {
                             minValue = 1
-                            when(viewModel.month.value){
-                                1,3,5,7,8,10,12->{
+                            when (viewModel.month.value) {
+                                1, 3, 5, 7, 8, 10, 12 -> {
                                     maxValue = 31
                                 }
-                                4,6,9,11->{
+
+                                4, 6, 9, 11 -> {
                                     maxValue = 30
                                 }
-                                2->{
+
+                                2 -> {
                                     maxValue = 28
                                 }
                             }
@@ -133,9 +148,9 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.day.collect{
-                    if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth && viewModel.day.value == currentDay){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.day.collect {
+                    if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth && viewModel.day.value == currentDay) {
                         binding.hourPicker.apply {
                             minValue = currentHour
                             maxValue = 23
@@ -150,14 +165,14 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit): BaseDialo
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.hour.collect{
-                    if (viewModel.day.value == currentDay && viewModel.hour.value == currentHour){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.hour.collect {
+                    if (viewModel.day.value == currentDay && viewModel.hour.value == currentHour) {
                         binding.minPicker.apply {
                             minValue = currentMin
                             maxValue = 59
                         }
-                    }else{
+                    } else {
                         binding.minPicker.apply {
                             minValue = 0
                             maxValue = 59
