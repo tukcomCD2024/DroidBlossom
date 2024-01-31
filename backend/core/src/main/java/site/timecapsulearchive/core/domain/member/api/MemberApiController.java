@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.member.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +23,15 @@ public class MemberApiController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public ResponseEntity<MemberDetailResponse> findMemberById() {
-        return null;
+    public ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(
+        @AuthenticationPrincipal Long memberId
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.findMemberDetailById(memberId)
+            )
+        );
     }
 
     @Override

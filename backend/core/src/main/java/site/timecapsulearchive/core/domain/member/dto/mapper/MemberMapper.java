@@ -2,7 +2,9 @@ package site.timecapsulearchive.core.domain.member.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.member.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.dto.SignUpRequestDto;
+import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.oauth.dto.OAuth2UserInfo;
@@ -39,5 +41,12 @@ public class MemberMapper {
             .profileUrl(dto.profileUrl())
             .socialType(dto.socialType())
             .build();
+    }
+
+    public MemberDetailResponse memberDetailResponseDtoToResponse(
+        MemberDetailResponseDto dto,
+        String decryptedPhone
+    ) {
+        return new MemberDetailResponse(dto.nickname(), dto.profileUrl(), decryptedPhone);
     }
 }
