@@ -115,7 +115,7 @@ public class CapsuleMapper {
             .nickname(dto.nickname())
             .address(dto.address())
             .isOpened(dto.isOpened())
-            .createdDate(dto.createdAt())
+            .createdDate(dto.createdAt().withZoneSameInstant(ZONE_ID))
             .title(dto.title())
             .build();
     }
