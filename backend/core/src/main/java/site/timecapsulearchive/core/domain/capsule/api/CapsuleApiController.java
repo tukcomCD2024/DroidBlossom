@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
+import site.timecapsulearchive.core.domain.capsule.dto.response.AddressResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -43,6 +44,18 @@ public class CapsuleApiController implements CapsuleApi {
                     CoordinateRangeRequestDto.from(latitude, longitude, distance),
                     capsuleType
                 )
+            )
+        );
+    }
+
+    public ResponseEntity<ApiSpec<AddressResponse>> getAddressByCoordinate(
+        @RequestParam(value = "latitude") double latitude,
+        @RequestParam(value = "longitude") double longitude
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                capsuleService.getFullAddressByCoordinate(latitude, longitude)
             )
         );
     }
