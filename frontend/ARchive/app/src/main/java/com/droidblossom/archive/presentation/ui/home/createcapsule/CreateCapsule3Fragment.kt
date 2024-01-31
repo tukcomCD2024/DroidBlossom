@@ -15,6 +15,8 @@ import com.droidblossom.archive.databinding.FragmentCreateCapsule3Binding
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
+import com.droidblossom.archive.util.DateUtils
+import com.google.android.gms.common.util.DataUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -59,6 +61,9 @@ class CreateCapsule3Fragment :
         binding.vm = viewModel
         binding.recycleView.adapter = imgRVA
         binding.recycleView.offscreenPageLimit = 3
+
+        val a = DateUtils.dataServerString
+        binding.timeT.text = a
     }
 
     override fun observeData() {
