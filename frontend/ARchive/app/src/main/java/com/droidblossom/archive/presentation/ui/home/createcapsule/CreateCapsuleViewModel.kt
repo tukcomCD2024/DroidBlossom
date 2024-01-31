@@ -35,6 +35,14 @@ interface CreateCapsuleViewModel {
     val isSelectTimeCapsule : StateFlow<Boolean>
     val imgUris : StateFlow<List<Dummy>>
 
+    //DatePicker
+    val year : MutableStateFlow<Int>
+    val month : MutableStateFlow<Int>
+    val day : MutableStateFlow<Int>
+    val hour : MutableStateFlow<Int>
+    val min : MutableStateFlow<Int>
+    val isSelectTime : StateFlow<Boolean>
+
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()

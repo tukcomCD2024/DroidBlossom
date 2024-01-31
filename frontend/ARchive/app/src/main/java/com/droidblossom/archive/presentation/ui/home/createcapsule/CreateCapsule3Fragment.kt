@@ -15,6 +15,7 @@ import com.droidblossom.archive.databinding.FragmentCreateCapsule3Binding
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
+import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
 import com.droidblossom.archive.util.DateUtils
 import com.google.android.gms.common.util.DataUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,6 +74,9 @@ class CreateCapsule3Fragment :
                     when (it) {
                         CreateCapsuleViewModel.Create3Event.ClickDate -> {
                             //날짜 Dialog 디자인?
+                            val sheet = DatePickerDialogFragment()
+                            sheet.show((activity as CreateCapsuleActivity).supportFragmentManager ,  sheet.tag)
+
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickFinish -> {

@@ -6,6 +6,7 @@ import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -85,6 +86,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _imgUris = MutableStateFlow(listOf<Dummy>(Dummy(null, true)))
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
+
+    //dateDialog
+    override val year =  MutableStateFlow<Int>(DateUtils.getCurrentYear())
+    override val month: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMonth())
+    override val day: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentDay())
+    override val hour: MutableStateFlow<Int>  = MutableStateFlow<Int>(DateUtils.calendar[10])
+    override val min: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.calendar[12])
+    private val _isSelectTime = MutableStateFlow<Boolean>(false)
+    override val isSelectTime: StateFlow<Boolean>
+        get() = _isSelectTime
 
     //create1
     override fun move1To2() {

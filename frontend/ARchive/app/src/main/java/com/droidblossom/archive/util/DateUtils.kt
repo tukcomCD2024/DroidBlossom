@@ -526,4 +526,14 @@ object DateUtils {
         // in an external location
         return isHoliday
     }
+
+    fun getCurrentYear(): Int {
+        return getDateString("yyyy").toInt()
+    }
+    fun getCurrentMonth(): Int {
+        return getDateString("MM").toInt()
+    }
+    fun getCurrentDay(): Int {
+        return getDateString("dd").toInt()
+    }
 }

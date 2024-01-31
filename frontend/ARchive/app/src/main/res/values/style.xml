@@ -72,7 +72,9 @@
     </style>
 
     <style name="NumberPickerTextAppearance">
+        <item name="colorControlNormal">@color/Transparency</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:textColorSecondary">@color/gray_400</item>
         <item name="fontFamily">@font/notosans_medium</item>
         <item name="android:editTextColor">@color/main_1</item>
     </style>
