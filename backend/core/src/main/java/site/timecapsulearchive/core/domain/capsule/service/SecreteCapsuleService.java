@@ -3,8 +3,10 @@ package site.timecapsulearchive.core.domain.capsule.service;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
@@ -64,6 +66,25 @@ public class SecreteCapsuleService {
 
         mediaService.saveMediaData(newCapsule, dto.directory(), findMember.getId(),
             dto.fileNames());
+    }
+
+
+    /**
+     *
+     * @param memberId
+     * @param size
+     * @param createdAt
+     * @return
+     */
+    public MyCapsulePageResponse findSecreteCapsuleListByMemberId(
+        Long memberId,
+        int size,
+        ZonedDateTime createdAt
+    ) {
+        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
+            .findSecreteCapsuleSliceByMemberId(memberId, size, createdAt);
+
+        return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
     }
 
     /**

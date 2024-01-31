@@ -7,12 +7,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
@@ -40,6 +45,32 @@ public interface SecretCapsuleApi {
     ResponseEntity<ApiSpec<String>> createSecretCapsule(
         Long memberId,
         SecretCapsuleCreateRequest request
+    );
+
+    @Operation(
+        summary = "내 비밀 캡슐 목록 조회",
+        description = "사용자가 생성한 비밀 캡슐 목록을 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        )
+    })
+    @GetMapping(
+        value = "/capsules",
+        produces = {"application/json"}
+    )
+    ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecreteCapsules(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        @NotNull @Valid @RequestParam(value = "size") int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 생성 시간", required = true)
+        @NotNull @Valid @RequestParam(value = "createdAt") ZonedDateTime createdAt
     );
 
     @Operation(
