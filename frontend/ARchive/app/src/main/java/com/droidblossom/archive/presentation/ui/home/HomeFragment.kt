@@ -12,43 +12,41 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home) {
+class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home){
 
     override val viewModel: HomeViewModelImpl by viewModels<HomeViewModelImpl>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.vm = viewModel
 
-        binding.makeGroupCapsuleBtn.setOnClickListener {
-            //그룹 캡슐 생성 페이지로 이동
-            startActivity(CreateCapsuleActivity.newIntent(requireContext(),1))
-        }
-        binding.makeOpenCapsuleBtn.setOnClickListener {
-            //공개 캡슐 생성 페이지로 이동
-            startActivity(CreateCapsuleActivity.newIntent(requireContext(),2))
-        }
-        binding.makeSecretCapsuleBtn.setOnClickListener {
-            //비밀 캡슐 생성 페이지로 이동
-            startActivity(CreateCapsuleActivity.newIntent(requireContext(),3))
-        }
+        initView()
+    }
 
-        binding.snackbarTestBtn.setOnClickListener {
-            //스낵바 스몰 테스트용
-            HomeSnackBarSmall(requireView()).show()
-        }
+    private fun initView() {
+        with(binding){
+            vm = viewModel
 
-        binding.snackbarBigText.setOnClickListener {
-            //스낵바 빅 테스트용
-            HomeSnackBarBig(requireView(), "", "").show()
+            makeGroupCapsuleBtn.setOnClickListener {
+                startActivity(CreateCapsuleActivity.newIntent(requireContext(), 1))
+            }
+            makeOpenCapsuleBtn.setOnClickListener {
+                startActivity(CreateCapsuleActivity.newIntent(requireContext(), 2))
+            }
+            makeSecretCapsuleBtn.setOnClickListener {
+                startActivity(CreateCapsuleActivity.newIntent(requireContext(), 3))
+            }
+            snackbarTestBtn.setOnClickListener {
+                HomeSnackBarSmall(requireView()).show()
+            }
+            snackbarBigText.setOnClickListener {
+                HomeSnackBarBig(requireView(), "", "").show()
+            }
         }
-
     }
 
     override fun observeData() {
@@ -61,4 +59,5 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             }
         }
     }
+
 }
