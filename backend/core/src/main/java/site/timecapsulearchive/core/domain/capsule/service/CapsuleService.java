@@ -6,15 +6,19 @@ import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.dto.response.AddressResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
+import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
+import site.timecapsulearchive.core.infra.map.MapApiService;
 
 @Service
 @RequiredArgsConstructor
 public class CapsuleService {
 
+    private final MapApiService mapApiService;
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final GeoTransformer geoTransformer;
     private final CapsuleMapper capsuleMapper;
@@ -44,5 +48,28 @@ public class CapsuleService {
                 .map(capsuleMapper::capsuleSummaryDtoToResponse)
                 .toList()
         );
+    }
+
+    /**
+     * 좌표를 통해 주소를 반환한다.
+     *
+     * @param latitude  위도
+     * @param longitude 경도
+     * @return 위도와 경도 데이터로 카카오 맵 주소룰 번환하다.
+     */
+    public AddressResponse getFullAddressByCoordinate(double latitude, double longitude) {
+        Address address = mapApiService.reverseGeoCoding(longitude, latitude);
+
+        return AddressResponse.from(getFinalAddress(address));
+    }
+
+    private String getFinalAddress(Address address) {
+        String getAddress = address.getFullRoadAddressName();
+
+        if (address.getBuildingName() != null) {
+            return getAddress + " " + address.getBuildingName();
+        }
+
+        return getAddress;
     }
 }
