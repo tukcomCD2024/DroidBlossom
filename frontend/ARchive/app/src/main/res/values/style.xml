@@ -70,4 +70,10 @@
         <item name="android:textSize">@dimen/text_caption4</item>
         <item name="fontFamily">@font/notosans_medium</item>
     </style>
+
+    <style name="NumberPickerTextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="android:editTextColor">@color/main_1</item>
+    </style>
 </resources>
