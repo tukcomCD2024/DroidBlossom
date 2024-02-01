@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.capsule.dto.response.AddressResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -96,7 +96,7 @@ public interface CapsuleApi {
         value = "/full-address",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<AddressResponse>> getAddressByCoordinate(
+    ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
         @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)
         @RequestParam(value = "latitude") double latitude,
 

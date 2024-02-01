@@ -6,8 +6,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
-import site.timecapsulearchive.core.domain.capsule.dto.response.AddressResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -48,7 +48,7 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    public ResponseEntity<ApiSpec<AddressResponse>> getAddressByCoordinate(
+    public ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
         @RequestParam(value = "latitude") double latitude,
         @RequestParam(value = "longitude") double longitude
     ) {

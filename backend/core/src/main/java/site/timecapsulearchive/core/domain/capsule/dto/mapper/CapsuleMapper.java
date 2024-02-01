@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
+import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
@@ -39,7 +40,7 @@ public class CapsuleMapper {
             .content(request.content())
             .longitude(request.longitude())
             .latitude(request.latitude())
-            .address(request.address())
+            .addressData(request.addressData())
             .dueDate(request.dueDate())
             .fileNames(request.fileNames())
             .directory(request.directory())
@@ -57,7 +58,7 @@ public class CapsuleMapper {
             .title(dto.title())
             .content(dto.content())
             .point(point)
-            .address(Address.from(dto.address()))
+            .address(addressDataToEntity(dto.addressData()))
             .type(dto.capsuleType())
             .member(member)
             .dueDate(dto.dueDate())
@@ -151,5 +152,33 @@ public class CapsuleMapper {
             .isOpened(detail.isOpened())
             .build();
 
+    }
+
+    public AddressData addressEntityToData(Address address) {
+        return AddressData.builder()
+            .fullRoadAddressName(address.getFullRoadAddressName())
+            .province(address.getProvince())
+            .city(address.getCity())
+            .subDistinct(address.getSubDistinct())
+            .roadName(address.getRoadName())
+            .mainBuildingNumber(address.getMainBuildingNumber())
+            .subBuildingNumber(address.getSubBuildingNumber())
+            .buildingName(address.getBuildingName())
+            .zipCode(address.getZipCode())
+            .build();
+    }
+
+    private Address addressDataToEntity(AddressData addressData) {
+        return Address.builder()
+            .fullRoadAddressName(addressData.fullRoadAddressName())
+            .province(addressData.province())
+            .city(addressData.city())
+            .subDistinct(addressData.subDistinct())
+            .roadName(addressData.roadName())
+            .mainBuildingNumber(addressData.mainBuildingNumber())
+            .subBuildingNumber(addressData.subBuildingNumber())
+            .buildingName(addressData.buildingName())
+            .zipCode(addressData.zipCode())
+            .build();
     }
 }
