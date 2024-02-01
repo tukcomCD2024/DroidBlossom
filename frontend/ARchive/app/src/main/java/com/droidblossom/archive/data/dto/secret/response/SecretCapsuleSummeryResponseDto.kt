@@ -2,7 +2,7 @@ package com.droidblossom.archive.data.dto.secret.response
 
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleSummery
 
-data class SecretCapsuleSummeryDto(
+data class SecretCapsuleSummeryResponseDto(
     val address: String,
     val dueDate: String,
     val id: Int,
