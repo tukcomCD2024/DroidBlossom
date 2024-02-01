@@ -51,7 +51,7 @@ public interface SecretCapsuleApi {
         summary = "내 비밀 캡슐 목록 조회",
         description = "사용자가 생성한 비밀 캡슐 목록을 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"capsule"}
+        tags = {"secret capsule"}
     )
     @ApiResponses(value = {
         @ApiResponse(
