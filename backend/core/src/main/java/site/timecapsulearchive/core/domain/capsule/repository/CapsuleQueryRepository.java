@@ -41,12 +41,6 @@ public class CapsuleQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final CapsuleMapper capsuleMapper;
 
-    private static List<Long> getCapsuleIds(List<SecreteCapsuleDetail> secreteCapsuleList) {
-        return secreteCapsuleList.stream()
-            .map(SecreteCapsuleDetail::capsuleId)
-            .toList();
-    }
-
     /**
      * 캡슐 타입에 따라 현재 위치에서 범위 내의 캡슐을 조회한다.
      *
@@ -58,6 +52,36 @@ public class CapsuleQueryRepository {
     public List<CapsuleSummaryDto> findCapsuleByCurrentLocationAndCapsuleType(
         Long memberId,
         Polygon mbr,
+        CapsuleType capsuleType
+    ) {
+        TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+            capsuleType);
+
+        assignParameter(
+            memberId,
+            mbr,
+            capsuleType,
+            query
+        );
+
+        return query.getResultList();
+    }
+
+    private void assignParameter(
+        Long memberId,
+        Polygon mbr,
+        CapsuleType capsuleType,
+        TypedQuery<CapsuleSummaryDto> query
+    ) {
+        query.setParameter("mbr", mbr);
+        query.setParameter("memberId", memberId);
+
+        if (capsuleType != CapsuleType.ALL) {
+            query.setParameter("capsuleType", capsuleType);
+        }
+    }
+
+    private TypedQuery<CapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
         CapsuleType capsuleType
     ) {
         String queryString = """
@@ -76,20 +100,12 @@ public class CapsuleQueryRepository {
             join c.capsuleSkin cs
             where ST_Contains(:mbr, c.point) and m.id=:memberId
             """;
+
         if (capsuleType != CapsuleType.ALL) {
             queryString += " and c.type = :capsuleType";
         }
 
-        TypedQuery<CapsuleSummaryDto> query = entityManager.createQuery(queryString,
-            CapsuleSummaryDto.class);
-        query.setParameter("mbr", mbr);
-        query.setParameter("memberId", memberId);
-
-        if (capsuleType != CapsuleType.ALL) {
-            query.setParameter("capsuleType", capsuleType);
-        }
-
-        return query.getResultList();
+        return entityManager.createQuery(queryString, CapsuleSummaryDto.class);
     }
 
     public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryByMemberIdAndCapsuleId(
@@ -120,7 +136,7 @@ public class CapsuleQueryRepository {
         Long memberId,
         Long capsuleId
     ) {
-        return jpaQueryFactory
+        List<SecreteCapsuleDetailDto> detailDtoList = jpaQueryFactory
             .from(capsule)
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
@@ -128,8 +144,13 @@ public class CapsuleQueryRepository {
                 .and(capsule.type.eq(CapsuleType.SECRETE)))
             .transform(
                 findSecreteCapsuleDetailDto()
-            ).stream()
-            .findFirst();
+            );
+
+        if (detailDtoList.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(detailDtoList.get(0));
     }
 
     private ResultTransformer<List<SecreteCapsuleDetailDto>> findSecreteCapsuleDetailDto() {
@@ -158,7 +179,35 @@ public class CapsuleQueryRepository {
         int size,
         ZonedDateTime createdAt
     ) {
-        List<SecreteCapsuleDetail> secreteCapsuleList = jpaQueryFactory
+        List<SecreteCapsuleDetail> secreteCapsuleList = selectSecretCapsuleDetailWith(
+            memberId,
+            size,
+            createdAt
+        );
+
+        boolean hasNext = canMoreRead(size, secreteCapsuleList.size());
+        if (hasNext) {
+            secreteCapsuleList.remove(size);
+        }
+
+        List<Long> capsuleIds = getCapsuleIds(secreteCapsuleList);
+
+        Map<Long, List<String>> imageUrls = findImageUrlsByCapsuleId(capsuleIds);
+        Map<Long, List<String>> videoUrls = findVideoUrlsByCapsuleId(capsuleIds);
+
+        List<SecreteCapsuleDetailDto> result = secreteCapsuleList.stream()
+            .map(dto -> capsuleMapper.secreteCapsuleDetailToDto(dto, imageUrls, videoUrls))
+            .toList();
+
+        return new SliceImpl<>(result, Pageable.ofSize(size), hasNext);
+    }
+
+    private List<SecreteCapsuleDetail> selectSecretCapsuleDetailWith(
+        Long memberId,
+        int size,
+        ZonedDateTime createdAt
+    ) {
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
                     SecreteCapsuleDetail.class,
@@ -182,27 +231,16 @@ public class CapsuleQueryRepository {
             .orderBy(capsule.id.desc())
             .limit(size + 1)
             .fetch();
-
-        boolean hasNext = canMoreRead(size, secreteCapsuleList.size());
-        if (hasNext) {
-            secreteCapsuleList.remove(size);
-        }
-
-        List<Long> capsuleIds = getCapsuleIds(secreteCapsuleList);
-
-        Map<Long, List<String>> imageUrls = findImageUrlsByCapsuleId(capsuleIds);
-
-        Map<Long, List<String>> videoUrls = findVideoUrlsByCapsuleId(capsuleIds);
-
-        List<SecreteCapsuleDetailDto> result = secreteCapsuleList.stream()
-            .map(dto -> capsuleMapper.secreteCapsuleDetailToDto(dto, imageUrls, videoUrls))
-            .toList();
-
-        return new SliceImpl<>(result, Pageable.ofSize(size), hasNext);
     }
 
     private boolean canMoreRead(int size, int capsuleSize) {
         return capsuleSize > size;
+    }
+
+    private List<Long> getCapsuleIds(List<SecreteCapsuleDetail> secreteCapsuleList) {
+        return secreteCapsuleList.stream()
+            .map(SecreteCapsuleDetail::capsuleId)
+            .toList();
     }
 
     private Map<Long, List<String>> findVideoUrlsByCapsuleId(List<Long> capsuleIds) {
