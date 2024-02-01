@@ -47,7 +47,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> getCapsuleSkins(
         @AuthenticationPrincipal Long memberId,
-        @RequestParam(value = "size", defaultValue = "20") Long size,
+        @RequestParam(value = "size", defaultValue = "20") int size,
         @RequestParam(value = "createdAt") ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(

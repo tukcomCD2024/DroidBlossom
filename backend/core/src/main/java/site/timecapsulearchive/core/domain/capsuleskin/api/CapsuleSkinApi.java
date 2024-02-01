@@ -102,7 +102,7 @@ public interface CapsuleSkinApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
-        Long size,
+        int size,
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 생성 시간", required = true)
         ZonedDateTime createdAt
