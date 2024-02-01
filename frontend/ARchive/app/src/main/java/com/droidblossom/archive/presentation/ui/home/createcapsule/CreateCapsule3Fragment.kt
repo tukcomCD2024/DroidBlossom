@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.databinding.adapters.ViewBindingAdapter.setPadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,8 +15,7 @@ import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
 import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
-import com.droidblossom.archive.util.DateUtils
-import com.google.android.gms.common.util.DataUtils
+import com.droidblossom.archive.util.LocationUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -62,9 +60,11 @@ class CreateCapsule3Fragment :
         binding.vm = viewModel
         binding.recycleView.adapter = imgRVA
         binding.recycleView.offscreenPageLimit = 3
-
-        val a = DateUtils.dataServerString
-        binding.timeT.text = a
+        val locationUtil = LocationUtil(requireContext())
+        locationUtil.getCurrentLocation { latitude, longitude ->
+            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
+            viewModel.coordToAddress(longitude.toString(),latitude.toString())
+        }
     }
 
     override fun observeData() {
@@ -106,6 +106,14 @@ class CreateCapsule3Fragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.imgUris.collect {
                     imgRVA.submitList(it)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.capsuleLocationName.collect {
+                    binding.placeT.text = it
                 }
             }
         }
