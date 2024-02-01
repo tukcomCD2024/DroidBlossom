@@ -9,7 +9,8 @@ data class SecretCapsuleSummeryResponseDto(
     val isOpened: Boolean,
     val nickname: String,
     val skinUrl: String,
-    val title: String
+    val title: String,
+    val createdAt: String
 ){
     fun toModel() = SecretCapsuleSummery(
         address = this.address,
@@ -18,6 +19,7 @@ data class SecretCapsuleSummeryResponseDto(
         isOpened =this.isOpened,
         nickname = this.nickname,
         skinUrl = this.skinUrl,
-        title = this.title
+        title = this.title,
+        createdAt = this.createdAt
     )
 }
