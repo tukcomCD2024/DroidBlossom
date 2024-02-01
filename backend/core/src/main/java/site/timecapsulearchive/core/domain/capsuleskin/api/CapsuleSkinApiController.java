@@ -53,7 +53,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         @RequestParam(value = "size", defaultValue = "20") final int size,
         @RequestParam(value = "createdAt") final ZonedDateTime createdAt
     ) {
-        final CapsuleSkinsPageDto responseDto = capsuleSkinService.findCapsuleSkinSliceByCreatedAt(
+        final CapsuleSkinsPageDto capsuleSkins = capsuleSkinService.findCapsuleSkinSliceByCreatedAtAndMemberId(
             memberId,
             size,
             createdAt
@@ -62,7 +62,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                mapper.capsuleSkinPageDtoToResponse(responseDto)
+                mapper.capsuleSkinPageDtoToResponse(capsuleSkins)
             )
         );
     }

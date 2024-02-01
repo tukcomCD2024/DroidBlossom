@@ -14,7 +14,7 @@ public class CapsuleSkinService {
 
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
 
-    public CapsuleSkinsPageDto findCapsuleSkinSliceByCreatedAt(
+    public CapsuleSkinsPageDto findCapsuleSkinSliceByCreatedAtAndMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
