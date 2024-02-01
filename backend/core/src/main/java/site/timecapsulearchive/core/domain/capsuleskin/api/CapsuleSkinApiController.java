@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinsPageDto;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.mapper.CapsuleSkinMapper;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
@@ -22,6 +24,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     private final CapsuleSkinService capsuleSkinService;
+    private final CapsuleSkinMapper mapper;
 
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
@@ -46,14 +49,20 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> getCapsuleSkins(
-        @AuthenticationPrincipal Long memberId,
-        @RequestParam(value = "size", defaultValue = "20") int size,
-        @RequestParam(value = "createdAt") ZonedDateTime createdAt
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "size", defaultValue = "20") final int size,
+        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
     ) {
+        final CapsuleSkinsPageDto responseDto = capsuleSkinService.findCapsuleSkinSliceByCreatedAt(
+            memberId,
+            size,
+            createdAt
+        );
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleSkinService.findCapsuleSkinSliceByCreatedAt(memberId, size, createdAt)
+                mapper.capsuleSkinPageDtoToResponse(responseDto)
             )
         );
     }

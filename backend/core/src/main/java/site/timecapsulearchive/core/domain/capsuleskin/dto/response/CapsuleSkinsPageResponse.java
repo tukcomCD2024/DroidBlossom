@@ -13,10 +13,4 @@ public record CapsuleSkinsPageResponse(
     Boolean hasNext
 ) {
 
-    public static CapsuleSkinsPageResponse from(
-        List<CapsuleSkinSummaryResponse> content,
-        boolean hasNext
-    ) {
-        return new CapsuleSkinsPageResponse(content, hasNext);
-    }
 }
