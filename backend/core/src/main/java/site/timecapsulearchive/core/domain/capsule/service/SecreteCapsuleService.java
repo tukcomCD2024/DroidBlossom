@@ -22,7 +22,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
-import site.timecapsulearchive.core.infra.map.MapApiService;
 
 @Service
 @RequiredArgsConstructor
@@ -31,13 +30,9 @@ public class SecreteCapsuleService {
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
-
     private final MemberService memberService;
     private final MediaService mediaService;
-    private final MapApiService mapApiService;
-
     private final GeoTransformer geoTransformer;
-
     private final CapsuleMapper capsuleMapper;
 
     /**

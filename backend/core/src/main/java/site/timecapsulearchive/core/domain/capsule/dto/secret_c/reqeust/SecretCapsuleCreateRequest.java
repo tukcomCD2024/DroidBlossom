@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import java.time.ZonedDateTime;
 import java.util.List;
+import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.FileMetaData;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
@@ -37,7 +38,7 @@ public record SecretCapsuleCreateRequest(
 
     @Schema(description = "캡슐 생성 주소")
     @NotBlank(message = "캡슐 생성 주소는 필수 입니다.")
-    String address,
+    AddressData addressData,
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
