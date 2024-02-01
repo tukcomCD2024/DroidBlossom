@@ -6,7 +6,7 @@ import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
-import com.droidblossom.archive.domain.usecase.kakao.AddressUseCase
+import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCapsuleViewModelImpl @Inject constructor(
-    private val addressUseCase: AddressUseCase
+    private val toAddressUseCase: ToAddressUseCase
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
     private val _capsuleType = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
@@ -90,10 +90,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         get() = _imgUris
 
     //dateDialog
-    override val year =  MutableStateFlow<Int>(DateUtils.getCurrentYear())
+    override val year = MutableStateFlow<Int>(DateUtils.getCurrentYear())
     override val month: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMonth())
     override val day: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentDay())
-    override val hour: MutableStateFlow<Int>  = MutableStateFlow<Int>(DateUtils.getCurrentHour())
+    override val hour: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentHour())
     override val min: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMin())
     private val _isSelectTime = MutableStateFlow<Boolean>(false)
     override val isSelectTime: StateFlow<Boolean>
@@ -109,9 +109,18 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override fun choseCapsuleType(type: Int) {
         viewModelScope.launch {
             when (groupTypeInt) {
-                1 -> {_capsuleType.emit(CreateCapsuleViewModel.CapsuleType.GROUP)}
-                2 -> {_capsuleType.emit(CreateCapsuleViewModel.CapsuleType.OPEN)}
-                3 -> {_capsuleType.emit(CreateCapsuleViewModel.CapsuleType.SECRET)}
+                1 -> {
+                    _capsuleType.emit(CreateCapsuleViewModel.CapsuleType.GROUP)
+                }
+
+                2 -> {
+                    _capsuleType.emit(CreateCapsuleViewModel.CapsuleType.OPEN)
+                }
+
+                3 -> {
+                    _capsuleType.emit(CreateCapsuleViewModel.CapsuleType.SECRET)
+                }
+
                 else -> {}
             }
         }
@@ -175,11 +184,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun goSelectTime(){
+    override fun goSelectTime() {
         viewModelScope.launch {
             _isSelectTime.emit(true)
         }
     }
+
     override fun moveImgUpLoad() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickImgUpLoad)
@@ -217,10 +227,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch { _imgUris.emit(submitList) }
     }
 
-    override fun getAddress(){
-        Log.d("티티", "주소 내놔")
+    override fun getAddress(x: String, y: String) {
         viewModelScope.launch {
-            addressUseCase("129.07886532","35.21280938").collect{ addressDto->
+            toAddressUseCase(x, y).collect { addressDto ->
                 Log.d("티티", "getAddress : $addressDto")
 
             }

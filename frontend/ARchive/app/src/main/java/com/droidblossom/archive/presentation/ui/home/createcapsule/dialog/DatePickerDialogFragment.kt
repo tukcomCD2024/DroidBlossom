@@ -12,8 +12,10 @@ import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModelImpl
 import com.droidblossom.archive.util.DateUtils
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class DatePickerDialogFragment(private val onClick: (String) -> Unit) :
     BaseDialogFragment<FragmentDatePickerDialogBinding>(R.layout.fragment_date_picker_dialog) {
 

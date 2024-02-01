@@ -58,6 +58,22 @@ object RetrofitModule {
         }.build()
     }
 
+    @Provides
+    @Singleton
+    @Named("kakaoClient")
+    fun providesKOkHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder().apply {
+
+            addInterceptor (interceptor)
+            connectTimeout(5, TimeUnit.SECONDS)
+            readTimeout(5, TimeUnit.SECONDS)
+            writeTimeout(5, TimeUnit.SECONDS)
+        }.build()
+    }
+
 
     @Provides
     @Singleton
@@ -76,11 +92,11 @@ object RetrofitModule {
     @Singleton
     @Named("kakao")
     fun providesKakaoRetrofit(
-        client: OkHttpClient,
+        @Named("kakaoClient") client: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://dapi.kakao.com/")
+            .baseUrl(BuildConfig.KAKAO_URL)
             .addConverterFactory(gsonConverterFactory)
             .client(client)
             .build()

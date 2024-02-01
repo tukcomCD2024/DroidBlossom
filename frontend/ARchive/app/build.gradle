@@ -29,6 +29,8 @@ android {
         buildConfigField "String", "S3ACCESSKEY", properties['s3_access_key']
         buildConfigField "String", "S3SECRETKEY", properties['s3_secret_key']
         buildConfigField "String", "S3BUCKET", properties['s3_bucket']
+        buildConfigField "String", "KAKAO_REST_KEY", properties['kakao_rest_api_key']
+        buildConfigField "String", "KAKAO_URL", properties["kakao_url"]
 
 
 
