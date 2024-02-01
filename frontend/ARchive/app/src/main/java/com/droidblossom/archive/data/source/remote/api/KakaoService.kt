@@ -9,10 +9,11 @@ import retrofit2.http.Query
 
 interface KakaoService {
 
-    @Headers("")
+    @Headers("Authorization: ")
     @GET("v2/local/geo/coord2address.json")
     suspend fun getAddressApi(
         @Query("x") x: String,
         @Query("y") y: String,
+        @Query("input_coord") input_coord: String = "WGS84"
     ):Response<AddressDto>
 }

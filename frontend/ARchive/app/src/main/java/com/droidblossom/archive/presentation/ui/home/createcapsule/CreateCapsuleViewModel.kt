@@ -61,6 +61,7 @@ interface CreateCapsuleViewModel {
     fun addImgUris(list: List<Dummy>)
     fun submitUris(list:List<Dummy>)
 
+    fun getAddress()
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
