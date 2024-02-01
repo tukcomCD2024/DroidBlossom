@@ -4,8 +4,8 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinSummaryDto;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinsPageDto;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
 
 @Service
@@ -14,17 +14,17 @@ public class CapsuleSkinService {
 
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
 
-    public CapsuleSkinsPageResponse findCapsuleSkinSliceByCreatedAt(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+    public CapsuleSkinsPageDto findCapsuleSkinSliceByCreatedAt(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
-        Slice<CapsuleSkinSummaryResponse> slice = capsuleSkinQueryRepository.findCapsuleSkinSliceByCreatedAtAndMemberId(
+        Slice<CapsuleSkinSummaryDto> slice = capsuleSkinQueryRepository.findCapsuleSkinSliceByCreatedAtAndMemberId(
             memberId,
             size,
             createdAt
         );
 
-        return CapsuleSkinsPageResponse.from(slice.getContent(), slice.hasNext());
+        return CapsuleSkinsPageDto.from(slice.getContent(), slice.hasNext());
     }
 }
