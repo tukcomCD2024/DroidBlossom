@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -178,6 +179,14 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun coordToAddress(x: String, y: String) {
+        viewModelScope.launch {
+            toAddressUseCase(x, y).collect{
+                _capsuleLocationName.emit(it)
+            }
+        }
+    }
+
     override fun moveDate() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickDate)
@@ -227,12 +236,5 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch { _imgUris.emit(submitList) }
     }
 
-    override fun getAddress(x: String, y: String) {
-        viewModelScope.launch {
-            toAddressUseCase(x, y).collect { addressDto ->
-                Log.d("티티", "getAddress : $addressDto")
 
-            }
-        }
-    }
 }
