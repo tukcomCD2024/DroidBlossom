@@ -1,19 +1,24 @@
 package com.droidblossom.archive.presentation.ui.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.usecase.member.MemberUseCase
-import com.droidblossom.archive.domain.usecase.auth.TestUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModelImpl @Inject constructor(
 ) : BaseViewModel(), HomeViewModel {
+
+    private val _homeEvents = MutableSharedFlow<HomeViewModel.HomeEvent>()
+    override val homeEvents: SharedFlow<HomeViewModel.HomeEvent>
+        get() = _homeEvents.asSharedFlow()
 
     private val _filterCapsuleSelect: MutableStateFlow<HomeViewModel.CapsuleFilter> =
         MutableStateFlow(HomeViewModel.CapsuleFilter.ALL)
@@ -30,6 +35,11 @@ class HomeViewModelImpl @Inject constructor(
     override val followLocation: StateFlow<Boolean>
         get() = _followLocation
 
+    override fun homeEvent(event: HomeViewModel.HomeEvent) {
+        viewModelScope.launch {
+            _homeEvents.emit(event)
+        }
+    }
 
     override fun selectPublic() {
         viewModelScope.launch {
