@@ -10,6 +10,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.dto.reqeust.CapsuleSkinCr
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 @RestController
 @RequestMapping("/capsule-skins")
@@ -17,19 +18,19 @@ import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkins
 public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     @Override
-    public ResponseEntity<CapsuleSkinSummaryResponse> createCapsuleSkin(
+    public ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
         @ModelAttribute CapsuleSkinCreateRequest request
     ) {
         return null;
     }
 
     @Override
-    public ResponseEntity<Void> deleteCapsuleSkin(Long capsuleSkinId) {
+    public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(Long capsuleSkinId) {
         return null;
     }
 
     @Override
-    public ResponseEntity<CapsuleSkinSearchPageResponse> findCapsuleByName(
+    public ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> findCapsuleByName(
         @RequestParam(value = "capsule_skin_name") Long capsuleSkinName,
         @RequestParam(value = "size") Long size,
         @RequestParam(value = "capsule_skin_id") Long capsuleSkinId
@@ -38,7 +39,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     }
 
     @Override
-    public ResponseEntity<CapsuleSkinsPageResponse> findCapsuleSkins(
+    public ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> findCapsuleSkins(
         @RequestParam(value = "size") Long size,
         @RequestParam(value = "capsule_skin_id") Long capsuleSkinId
     ) {
@@ -46,7 +47,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateCapsuleSkin(Long capsuleSkinId) {
+    public ResponseEntity<ApiSpec<String>> updateCapsuleSkin(Long capsuleSkinId) {
         return null;
     }
 }

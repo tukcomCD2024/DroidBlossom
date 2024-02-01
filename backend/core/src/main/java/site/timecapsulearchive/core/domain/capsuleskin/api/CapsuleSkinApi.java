@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.dto.reqeust.CapsuleSkinCr
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface CapsuleSkinApi {
 
@@ -34,7 +35,7 @@ public interface CapsuleSkinApi {
     @PostMapping(
         consumes = {"multipart/form-data"}
     )
-    ResponseEntity<CapsuleSkinSummaryResponse> createCapsuleSkin(CapsuleSkinCreateRequest request);
+    ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(CapsuleSkinCreateRequest request);
 
     @Operation(
         summary = "캡슐 스킨 삭제",
@@ -49,7 +50,7 @@ public interface CapsuleSkinApi {
         )
     })
     @DeleteMapping(value = "/{capsule_skin_id}")
-    ResponseEntity<Void> deleteCapsuleSkin(
+    ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(
         @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
         @PathVariable("capsule_skin_id") Long capsuleSkinId
     );
@@ -70,7 +71,7 @@ public interface CapsuleSkinApi {
         value = "/search",
         produces = {"application/json"}
     )
-    ResponseEntity<CapsuleSkinSearchPageResponse> findCapsuleByName(
+    ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> findCapsuleByName(
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 스킨 이름", required = true)
         Long capsuleSkinName,
 
@@ -96,7 +97,7 @@ public interface CapsuleSkinApi {
     @GetMapping(
         produces = {"application/json"}
     )
-    ResponseEntity<CapsuleSkinsPageResponse> findCapsuleSkins(
+    ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> findCapsuleSkins(
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
         Long size,
 
@@ -119,7 +120,7 @@ public interface CapsuleSkinApi {
     @PatchMapping(
         value = "/{capsule_skin_id}",
         consumes = {"application/json"})
-    ResponseEntity<Void> updateCapsuleSkin(
+    ResponseEntity<ApiSpec<String>> updateCapsuleSkin(
         @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
         @PathVariable("capsule_skin_id") Long capsuleSkinId
     );
