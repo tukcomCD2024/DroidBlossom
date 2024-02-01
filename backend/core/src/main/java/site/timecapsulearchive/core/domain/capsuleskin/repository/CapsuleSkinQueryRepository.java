@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinSummaryDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,18 +19,18 @@ public class CapsuleSkinQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Slice<CapsuleSkinSummaryResponse> findCapsuleSkinSliceByCreatedAtAndMemberId(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+    public Slice<CapsuleSkinSummaryDto> findCapsuleSkinSliceByCreatedAtAndMemberId(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
-        List<CapsuleSkinSummaryResponse> capsuleSkins = selectCapsuleSkinSummaryResponse(
+        final List<CapsuleSkinSummaryDto> capsuleSkins = selectCapsuleSkinSummaryResponse(
             memberId,
             size,
             createdAt
         );
 
-        boolean hasNext = canMoreRead(size, capsuleSkins.size());
+        final boolean hasNext = canMoreRead(size, capsuleSkins.size());
         if (hasNext) {
             capsuleSkins.remove(size);
         }
@@ -38,12 +38,15 @@ public class CapsuleSkinQueryRepository {
         return new SliceImpl<>(capsuleSkins, Pageable.ofSize(size), hasNext);
     }
 
-    private List<CapsuleSkinSummaryResponse> selectCapsuleSkinSummaryResponse(Long memberId, int size,
-        ZonedDateTime createdAt) {
+    private List<CapsuleSkinSummaryDto> selectCapsuleSkinSummaryResponse(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
         return jpaQueryFactory
             .select(
                 Projections.constructor(
-                    CapsuleSkinSummaryResponse.class,
+                    CapsuleSkinSummaryDto.class,
                     capsuleSkin.id,
                     capsuleSkin.imageUrl,
                     capsuleSkin.skinName,
@@ -57,7 +60,10 @@ public class CapsuleSkinQueryRepository {
             .fetch();
     }
 
-    private boolean canMoreRead(int size, int capsuleSize) {
+    private boolean canMoreRead(
+        final int size,
+        final int capsuleSize
+    ) {
         return capsuleSize > size;
     }
 }
