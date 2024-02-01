@@ -52,6 +52,7 @@ public class CapsuleSkinQueryRepository {
             )
             .from(capsuleSkin)
             .where(capsuleSkin.member.id.eq(memberId).and(capsuleSkin.createdAt.lt(createdAt)))
+            .orderBy(capsuleSkin.id.desc())
             .limit(size + 1)
             .fetch();
     }
