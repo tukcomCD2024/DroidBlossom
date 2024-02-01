@@ -21,6 +21,8 @@ interface HomeViewModel {
     fun clickNotificationBtn()
     fun clickFAB()
 
+    fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String)
+
     fun homeEvent(event:HomeEvent)
 
     enum class CapsuleFilter{
@@ -28,7 +30,13 @@ interface HomeViewModel {
         SECRET,
         PUBLIC,
         GROUP,
-        HOT
+        HOT;
+        override fun toString(): String {
+            return when (this) {
+                SECRET, PUBLIC, GROUP -> this.name
+                else -> "ALL"
+            }
+        }
     }
 
     sealed class HomeEvent{

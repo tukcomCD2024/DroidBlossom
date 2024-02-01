@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -34,10 +35,11 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     override val viewModel: HomeViewModelImpl by viewModels<HomeViewModelImpl>()
 
     private lateinit var naverMap : NaverMap
+    private lateinit var locationUtil: LocationUtil
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        locationUtil = LocationUtil(requireContext())
         initView()
         initMap()
     }
@@ -60,6 +62,11 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             }
             snackbarBigText.setOnClickListener {
                 HomeSnackBarBig(requireView(), "", "").show()
+            }
+            locationBtn.setOnClickListener {
+                locationUtil.getCurrentLocation { latitude, longitude ->
+                    viewModel.getNearbyCapsules(latitude, longitude, 500.0, viewModel.filterCapsuleSelect.value.toString())
+                }
             }
         }
     }
