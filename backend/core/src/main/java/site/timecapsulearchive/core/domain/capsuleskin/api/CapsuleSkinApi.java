@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,7 +72,7 @@ public interface CapsuleSkinApi {
         value = "/search",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> findCapsuleByName(
+    ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkin(
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 스킨 이름", required = true)
         Long capsuleSkinName,
 
@@ -97,12 +98,14 @@ public interface CapsuleSkinApi {
     @GetMapping(
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> findCapsuleSkins(
+    ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> getCapsuleSkins(
+        Long memberId,
+
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
         Long size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 아이디", required = true)
-        Long capsuleSkinId
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 생성 시간", required = true)
+        ZonedDateTime createdAt
     );
 
     @Operation(
