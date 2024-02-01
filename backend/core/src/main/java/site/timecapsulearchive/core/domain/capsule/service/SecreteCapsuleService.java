@@ -12,7 +12,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSum
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
@@ -23,7 +22,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
-import site.timecapsulearchive.core.infra.map.MapApiService;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +30,9 @@ public class SecreteCapsuleService {
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
-
     private final MemberService memberService;
     private final MediaService mediaService;
-    private final MapApiService mapApiService;
-
     private final GeoTransformer geoTransformer;
-
     private final CapsuleMapper capsuleMapper;
 
     /**
@@ -50,11 +44,6 @@ public class SecreteCapsuleService {
     public void createCapsule(Long memberId, SecretCapsuleCreateRequestDto dto) {
         Member findMember = memberService.findMemberByMemberId(memberId);
 
-        Address address = mapApiService.reverseGeoCoding(
-            dto.longitude(),
-            dto.latitude()
-        );
-
         CapsuleSkin capsuleSkin = capsuleSkinRepository
             .findById(dto.capsuleSkinId())
             .orElseThrow(CapsuleSkinNotFoundException::new);
@@ -62,7 +51,7 @@ public class SecreteCapsuleService {
         Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
 
         Capsule newCapsule = capsuleRepository.save(
-            capsuleMapper.requestDtoToEntity(dto, point, address, findMember, capsuleSkin));
+            capsuleMapper.requestDtoToEntity(dto, point, findMember, capsuleSkin));
 
         mediaService.saveMediaData(newCapsule, dto.directory(), findMember.getId(),
             dto.fileNames());
@@ -71,6 +60,7 @@ public class SecreteCapsuleService {
 
     /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
+     *
      * @param memberId  캡슐을 생성할 멤버 아이디
      * @param size      페이지 사이즈
      * @param createdAt 마지막 캡슐 생성 날짜

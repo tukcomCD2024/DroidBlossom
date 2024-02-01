@@ -39,6 +39,10 @@ public class Address {
     @Column(name = "zip_code")
     private String zipCode;
 
+    private Address(String fullRoadAddressName) {
+        this.fullRoadAddressName = fullRoadAddressName;
+    }
+
     @Builder
     private Address(
         String fullRoadAddressName,
@@ -60,5 +64,9 @@ public class Address {
         this.subBuildingNumber = subBuildingNumber;
         this.buildingName = buildingName;
         this.zipCode = zipCode;
+    }
+
+    public static Address from(String fullRoadAddressName) {
+        return new Address(fullRoadAddressName);
     }
 }
