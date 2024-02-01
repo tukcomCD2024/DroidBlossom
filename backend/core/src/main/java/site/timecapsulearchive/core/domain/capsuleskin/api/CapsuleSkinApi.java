@@ -3,20 +3,15 @@ package site.timecapsulearchive.core.domain.capsuleskin.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinSummaryResponse;
@@ -37,12 +32,9 @@ public interface CapsuleSkinApi {
         )
     })
     @PostMapping(
-        value = "/capsule-skins",
         consumes = {"multipart/form-data"}
     )
-    ResponseEntity<CapsuleSkinSummaryResponse> createCapsuleSkin(
-        @ModelAttribute CapsuleSkinCreateRequest request
-    );
+    ResponseEntity<CapsuleSkinSummaryResponse> createCapsuleSkin(CapsuleSkinCreateRequest request);
 
     @Operation(
         summary = "캡슐 스킨 삭제",
@@ -56,9 +48,9 @@ public interface CapsuleSkinApi {
             description = "처리 완료"
         )
     })
-    @DeleteMapping(value = "/capsule-skins/{capsule_skin_id}")
+    @DeleteMapping(value = "/{capsule_skin_id}")
     ResponseEntity<Void> deleteCapsuleSkin(
-        @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
         @PathVariable("capsule_skin_id") Long capsuleSkinId
     );
 
@@ -75,18 +67,18 @@ public interface CapsuleSkinApi {
         )
     })
     @GetMapping(
-        value = "/capsule-skins/search",
+        value = "/search",
         produces = {"application/json"}
     )
     ResponseEntity<CapsuleSkinSearchPageResponse> findCapsuleByName(
-        @Parameter(in = ParameterIn.QUERY, description = "캡슐 스킨 이름", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "capsule_skin_name") Long capsuleSkinName,
+        @Parameter(in = ParameterIn.QUERY, description = "캡슐 스킨 이름", required = true)
+        Long capsuleSkinName,
 
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "size") Long size,
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        Long size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 아이디", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "capsule_skin_id") Long capsuleSkinId
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 아이디", required = true)
+        Long capsuleSkinId
     );
 
     @Operation(
@@ -102,15 +94,14 @@ public interface CapsuleSkinApi {
         )
     })
     @GetMapping(
-        value = "/capsule-skins",
         produces = {"application/json"}
     )
     ResponseEntity<CapsuleSkinsPageResponse> findCapsuleSkins(
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "size") Long size,
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        Long size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 아이디", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "capsule_skin_id") Long capsuleSkinId
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 스킨 아이디", required = true)
+        Long capsuleSkinId
     );
 
     @Operation(
@@ -126,10 +117,10 @@ public interface CapsuleSkinApi {
         )
     })
     @PatchMapping(
-        value = "/capsule-skins/{capsule_skin_id}",
+        value = "/{capsule_skin_id}",
         consumes = {"application/json"})
     ResponseEntity<Void> updateCapsuleSkin(
-        @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
         @PathVariable("capsule_skin_id") Long capsuleSkinId
     );
 }
