@@ -8,7 +8,7 @@ import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class NearbyCapsuleUseCase @Inject constructor(
+class NearbyCapsulesUseCase @Inject constructor(
     private val repository: CapsuleRepository
 ) {
 
