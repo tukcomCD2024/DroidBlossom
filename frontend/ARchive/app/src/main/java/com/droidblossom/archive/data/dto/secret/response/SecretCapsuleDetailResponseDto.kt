@@ -9,7 +9,8 @@ data class SecretCapsuleDetailResponseDto(
     val createdDate: String,
     val dueDate: String,
     val isOpened: Boolean,
-    val mediaUrls: List<String>,
+    val imageUrls: List<String>,
+    val videoUrls: List<String>,
     val nickname: String,
     val title: String
 ){
@@ -20,7 +21,8 @@ data class SecretCapsuleDetailResponseDto(
         createdDate = this.createdDate,
         dueDate = this.dueDate,
         isOpened = this.isOpened,
-        mediaUrls = this.mediaUrls,
+        imageUrls = this.imageUrls,
+        videoUrls = this.videoUrls,
         nickname = this.nickname,
         title =  this.title
     )
