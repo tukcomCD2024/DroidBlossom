@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.usecase.kakao
 
+import android.util.Log
 import com.droidblossom.archive.data.dto.kakao.response.AddressDto
 import com.droidblossom.archive.domain.repository.KakaoRepository
 import kotlinx.coroutines.flow.flow
@@ -10,6 +11,10 @@ class AddressUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(x: String, y:String) =
         flow<AddressDto?> {
-            emit(repository.getAddress(x,y))
+            try {
+                emit(repository.getAddress(x,y))
+            }catch (e : Exception){
+                Log.d("티티","AddressUseCase 예외처리 $e")
+            }
         }
 }

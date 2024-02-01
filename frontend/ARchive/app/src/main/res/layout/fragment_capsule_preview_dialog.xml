@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/capsuleOpenMessageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_solid_corner_30dp"
+            android:backgroundTint="#B21B3AC4"
+            android:paddingHorizontal="@dimen/padding"
+            android:paddingVertical="18dp"
+            android:text="@string/capsule_open_message"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/capsuleDetailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/rectangle_solid_corner_20dp"
+            android:backgroundTint="#B21B3AC4"
+            android:paddingVertical="24dp"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/capsuleOpenMessageTextView">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/capsuleTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ARchive"
+                android:textAppearance="@style/TextAppearance.App.h2"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/capsuleOpenDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_group_chip"
+                android:drawablePadding="@dimen/padding_small"
+                android:text="2024.01.31"
+                android:textAppearance="@style/TextAppearance.App.caption4"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@id/capsuleLocationTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/capsuleLocationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_group_chip"
+                android:drawablePadding="@dimen/padding_small"
+                android:text="강남역 11번 출구"
+                android:textAppearance="@style/TextAppearance.App.caption4"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/capsuleOpenDateTextView"
+                app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/capsuleSkinLayout"
+            android:layout_width="0dp"
+            android:layout_height="274dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_solid_corner_30dp"
+            android:backgroundTint="#ECEFFE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/capsuleDetailLayout">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImg"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="@dimen/margin"
+                android:layout_marginTop="@dimen/margin"
+                android:src="@drawable/app_symbol"
+                app:civ_border_color="@color/white"
+                app:civ_border_overlay="true"
+                app:civ_circle_background_color="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/capsuleTypeCardView"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/capsuleTypeImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_secret_marker_24" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/skinCardView"
+                android:layout_width="186dp"
+                android:layout_height="186dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/progressBar"
+                app:layout_constraintBottom_toBottomOf="@id/progressBar"
+                app:cardCornerRadius="93dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/skinImg"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="centerInside"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/sample_skin" />
+
+            </androidx.cardview.widget.CardView>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminate="false"
+                android:elevation="2dp"
+                android:progressDrawable="@drawable/circle_progressbar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profileImg" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/remainTimeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.App.body1"
+                android:text="14:52"
+                android:textColor="#4263F7"
+                android:background="@drawable/rectangle_solid_corner_30dp"
+                android:backgroundTint="#66D5DDFD"
+                android:paddingVertical="15dp"
+                android:paddingHorizontal="18dp"
+                android:elevation="2dp"
+                app:layout_constraintStart_toStartOf="@id/skinCardView"
+                app:layout_constraintEnd_toEndOf="@id/skinCardView"
+                app:layout_constraintTop_toTopOf="@id/skinCardView"
+                app:layout_constraintBottom_toBottomOf="@id/skinCardView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/groupMemberLayout"
+            android:layout_width="0dp"
+            android:layout_height="110dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:background="@drawable/rectangle_solid_corner_30dp"
+            android:backgroundTint="#ECEFFE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

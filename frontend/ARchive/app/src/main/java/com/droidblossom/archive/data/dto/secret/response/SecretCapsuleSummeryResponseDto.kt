@@ -2,14 +2,15 @@ package com.droidblossom.archive.data.dto.secret.response
 
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleSummery
 
-data class SecretCapsuleSummeryDto(
+data class SecretCapsuleSummeryResponseDto(
     val address: String,
     val dueDate: String,
     val id: Int,
     val isOpened: Boolean,
     val nickname: String,
     val skinUrl: String,
-    val title: String
+    val title: String,
+    val createdAt: String
 ){
     fun toModel() = SecretCapsuleSummery(
         address = this.address,
@@ -18,6 +19,7 @@ data class SecretCapsuleSummeryDto(
         isOpened =this.isOpened,
         nickname = this.nickname,
         skinUrl = this.skinUrl,
-        title = this.title
+        title = this.title,
+        createdAt = this.createdAt
     )
 }

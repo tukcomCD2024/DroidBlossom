@@ -1,10 +1,12 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.usecase.kakao.AddressUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCapsuleViewModelImpl @Inject constructor(
-
+    private val addressUseCase: AddressUseCase
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
     private val _capsuleType = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
@@ -213,5 +215,15 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             list + listOf(Dummy(null, true))
         } else list
         viewModelScope.launch { _imgUris.emit(submitList) }
+    }
+
+    override fun getAddress(){
+        Log.d("티티", "주소 내놔")
+        viewModelScope.launch {
+            addressUseCase("129.07886532","35.21280938").collect{ addressDto->
+                Log.d("티티", "getAddress : $addressDto")
+
+            }
+        }
     }
 }

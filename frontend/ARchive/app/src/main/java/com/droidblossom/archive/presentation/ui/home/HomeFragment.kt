@@ -2,8 +2,6 @@ package com.droidblossom.archive.presentation.ui.home
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Switch
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +12,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
+import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -74,6 +73,21 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 )
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.homeEvents.collect { event ->
+                    when (event) {
+
+                        is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
+                            val sheet = CapsulePreviewDialogFragment()
+
+                            sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initMap(){
@@ -102,7 +116,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         val randomLongitude = Random.nextDouble(126.0, 129.0)
 
 
-        val marker = Marker().apply {
+        Marker().apply {
             position = LatLng(randomLatitude, randomLongitude)
             icon = when (capsuleType) {
                 CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
@@ -118,7 +132,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             onClickListener = Overlay.OnClickListener { overlay ->
                 val clickedMarker = overlay as Marker
                 val markerData = clickedMarker.tag.toString()
-                Toast.makeText(requireContext(), markerData, Toast.LENGTH_SHORT).show()
+                viewModel.homeEvent(HomeViewModel.HomeEvent.ShowCapsulePreviewDialog)
+                //Toast.makeText(requireContext(), markerData, Toast.LENGTH_SHORT).show()
                 true
             }
         }

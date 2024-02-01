@@ -62,4 +62,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="capsule_open_message">캡슐을 눌러서 열어보세요!</string>
 </resources>
