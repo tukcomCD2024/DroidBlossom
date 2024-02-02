@@ -43,8 +43,6 @@ object RetrofitModule {
         authServiceLazy: Lazy<AuthService>,
     ): OkHttpClient {
         val interceptor = HttpLoggingInterceptor().apply {
-            // level : BODY -> logs headers + bodies of request, response
-            // NONE, BASIC, HEADERS, BODY
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder().apply {
@@ -53,7 +51,7 @@ object RetrofitModule {
             connectTimeout(5, TimeUnit.SECONDS)
             readTimeout(5, TimeUnit.SECONDS)
             writeTimeout(5, TimeUnit.SECONDS)
-            //authenticator(TokenAuthenticator(ds, authServiceLazy))
+            authenticator(TokenAuthenticator(ds, authServiceLazy))
             addNetworkInterceptor(AccessTokenInterceptor(ds))
         }.build()
     }
