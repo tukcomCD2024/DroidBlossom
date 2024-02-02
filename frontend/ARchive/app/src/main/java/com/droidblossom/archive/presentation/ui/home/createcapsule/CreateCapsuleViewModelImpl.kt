@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -299,6 +300,24 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 Log.d("티티", "uploadFileToS3 : ${e.message}")
 
             }
+        }
+    }
+    
+    private fun uploadFilesToS3(files: List<File>, signedUrls: List<String>) {
+        viewModelScope.launch {
+            val uploadJobs = files.zip(signedUrls).map { (file, url) ->
+                launch(Dispatchers.IO) {
+                    try {
+                        s3Util.uploadImageWithPresignedUrl(file, url)
+                        Log.d("UploadSuccess", "File ${file.name} uploaded successfully")
+                    } catch (e: Exception) {
+                        Log.e("UploadError", "Failed to upload ${file.name}: ${e.message}")
+                    }
+                }
+            }
+
+            uploadJobs.joinAll()
+            Log.d("UploadComplete", "All files uploaded successfully")
         }
     }
 
