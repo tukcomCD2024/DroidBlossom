@@ -2,8 +2,10 @@ package com.droidblossom.archive.data.repository
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.capsule.response.AddressDataDto
+import com.droidblossom.archive.data.dto.capsule.response.CapsuleImagesDto
 import com.droidblossom.archive.data.dto.capsule.response.NearbyCapsuleResponseDto
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
+import com.droidblossom.archive.domain.model.capsule.CapsuleImages
 import com.droidblossom.archive.domain.model.capsule.NearbyCapsule
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.repository.CapsuleRepository
@@ -28,6 +30,13 @@ class CapsuleRepositoryImpl @Inject constructor(
         latitude: Double,
         longitude: Double
     ): RetrofitResult<AddressData> {
-        return  apiHandler({api.getAddressApi(latitude = latitude, longitude = longitude)}){ respons : ResponseBody<AddressDataDto> -> respons.result.toModel()}
+        return  apiHandler({api.getAddressApi(latitude = latitude, longitude = longitude)}){ response : ResponseBody<AddressDataDto> -> response.result.toModel()}
+    }
+
+    override suspend fun getCapsuleImages(
+        size: Int,
+        capsuleId: Int
+    ): RetrofitResult<CapsuleImages> {
+        return  apiHandler({api.getCapsuleImagesApi(size = size, capsuleId = capsuleId)}){ response :ResponseBody<CapsuleImagesDto> -> response.result.toModel()}
     }
 }
