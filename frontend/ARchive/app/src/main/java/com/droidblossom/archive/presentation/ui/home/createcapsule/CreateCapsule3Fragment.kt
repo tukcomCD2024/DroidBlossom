@@ -133,6 +133,10 @@ class CreateCapsule3Fragment :
                         CreateCapsuleViewModel.Create3Event.CLickSingleImgUpLoad -> {
                             pickSingle.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
+
+                        is CreateCapsuleViewModel.Create3Event.ShowToastMessage -> {
+                            showToastMessage(it.message)
+                        }
                     }
                 }
             }

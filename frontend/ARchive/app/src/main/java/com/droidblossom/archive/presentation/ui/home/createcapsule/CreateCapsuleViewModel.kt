@@ -6,6 +6,7 @@ import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -91,6 +92,7 @@ interface CreateCapsuleViewModel {
         object ClickDate : Create3Event()
         object ClickImgUpLoad : Create3Event()
         object CLickSingleImgUpLoad : Create3Event()
+        data class ShowToastMessage(val message : String) : Create3Event()
     }
 
     enum class CapsuleTypeCreate(val title: String) {

@@ -17,6 +17,8 @@ import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
+import com.droidblossom.archive.util.onError
+import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -406,7 +408,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                             title = capsuleTitle.value,
                         )
                     ).collect{ result ->
-                        Log.d("캡슐생성","$result")
+                        result.onSuccess {
+                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                            Log.d("캡슐생성","성공")
+                        }.onFail {
+                            
+                        }
                     }
 
                 }
