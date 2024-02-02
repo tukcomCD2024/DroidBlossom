@@ -286,7 +286,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 result.onSuccess {
                     uploadFileToS3(file,it.preSignedUrls[0])
                 }.onFail {
-                    Log.d("티티","getUploadUrl 실패")
+                    Log.d("getUploadUrl","getUploadUrl 실패")
                 }
             }
         }
@@ -297,7 +297,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             try {
                 s3Util.uploadImageWithPresignedUrl(file,signedUrl)
             }catch (e:Exception){
-                Log.d("티티", "uploadFileToS3 : ${e.message}")
+                Log.d("uploadFileToS3", "uploadFileToS3 : ${e.message}")
 
             }
         }
@@ -309,7 +309,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 result.onSuccess {
                     uploadFilesToS3(files,it.preSignedUrls)
                 }.onFail {
-                    Log.d("티티","getUploadUrl 실패")
+                    Log.d("getUploadUrls","getUploadUrl 실패")
                 }
             }
         }
@@ -321,15 +321,15 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 launch(Dispatchers.IO) {
                     try {
                         s3Util.uploadImageWithPresignedUrl(file, url)
-                        Log.d("UploadSuccess", "File ${file.name} uploaded successfully")
+                        Log.d("uploadFilesToS3", "File ${file.name} uploaded successfully")
                     } catch (e: Exception) {
-                        Log.e("UploadError", "Failed to upload ${file.name}: ${e.message}")
+                        Log.e("uploadFilesToS3", "Failed to upload ${file.name}: ${e.message}")
                     }
                 }
             }
 
             uploadJobs.joinAll()
-            Log.d("UploadComplete", "All files uploaded successfully")
+            Log.d("uploadFilesToS3", "All files uploaded successfully")
         }
     }
 
