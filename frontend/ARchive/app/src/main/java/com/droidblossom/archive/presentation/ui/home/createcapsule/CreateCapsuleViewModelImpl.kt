@@ -28,9 +28,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val toAddressUseCase: ToAddressUseCase,
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
-    private val _capsuleType = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
-    override val capsuleType: StateFlow<CreateCapsuleViewModel.CapsuleType>
-        get() = _capsuleType
+    private val _capsuleTypeIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
+    override val capsuleTypeIs: StateFlow<CreateCapsuleViewModel.CapsuleType>
+        get() = _capsuleTypeIs
 
     //create1
 
@@ -115,15 +115,15 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch {
             when (groupTypeInt) {
                 1 -> {
-                    _capsuleType.emit(CreateCapsuleViewModel.CapsuleType.GROUP)
+                    _capsuleTypeIs.emit(CreateCapsuleViewModel.CapsuleType.GROUP)
                 }
 
                 2 -> {
-                    _capsuleType.emit(CreateCapsuleViewModel.CapsuleType.OPEN)
+                    _capsuleTypeIs.emit(CreateCapsuleViewModel.CapsuleType.PUBLIC)
                 }
 
                 3 -> {
-                    _capsuleType.emit(CreateCapsuleViewModel.CapsuleType.SECRET)
+                    _capsuleTypeIs.emit(CreateCapsuleViewModel.CapsuleType.SECRET)
                 }
 
                 else -> {}

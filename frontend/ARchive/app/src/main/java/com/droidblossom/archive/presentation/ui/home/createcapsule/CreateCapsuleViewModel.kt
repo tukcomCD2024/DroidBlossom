@@ -4,14 +4,13 @@ import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface CreateCapsuleViewModel {
     var groupTypeInt: Int
-    val capsuleType: StateFlow<CapsuleType>
+    val capsuleTypeIs: StateFlow<CapsuleType>
 
     //Create1
     val create1Events: SharedFlow<Create1Event>
@@ -80,6 +79,6 @@ interface CreateCapsuleViewModel {
     }
 
     enum class CapsuleType(val title: String) {
-        SECRET("SECRET"), GROUP("GROUP"), OPEN("OPEN")
+        SECRET("SECRET"), GROUP("GROUP"), PUBLIC("PUBLIC")
     }
 }

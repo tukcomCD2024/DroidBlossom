@@ -2,17 +2,14 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -64,7 +61,7 @@ class CreateCapsule2Fragment :
         initSearchEdit()
 
         //테스트용
-        Toast.makeText(requireContext(), viewModel.capsuleType.value.title, Toast.LENGTH_SHORT)
+        Toast.makeText(requireContext(), viewModel.capsuleTypeIs.value.title, Toast.LENGTH_SHORT)
             .show()
     }
 
