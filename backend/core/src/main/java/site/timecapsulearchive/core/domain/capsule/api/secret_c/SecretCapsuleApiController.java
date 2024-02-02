@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<String>> createSecretCapsule(
         @AuthenticationPrincipal Long memberId,
-        @RequestBody SecretCapsuleCreateRequest request
+        @Valid @RequestBody SecretCapsuleCreateRequest request
     ) {
         secretCapsuleService.createCapsule(
             memberId,
