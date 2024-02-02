@@ -30,7 +30,7 @@ public interface AuthApi {
         description = """
             oauth2 kakao 인증 페이지 url을 반환한다.
             """,
-        tags = {"auth"}
+        tags = {"oauth2"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -50,7 +50,7 @@ public interface AuthApi {
         description = """
             oauth2 google 인증 페이지 url을 반환한다.
             """,
-        tags = {"auth"}
+        tags = {"oauth2"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -67,7 +67,7 @@ public interface AuthApi {
     @Operation(
         summary = "카카오 인증 성공시 임시 인증 토큰 발급",
         description = "oauth2 kakao 인증 성공시 임시 인증 토큰을 발급한다. (oauth2 로그인 성공시 리다이렉트 엔드포인트로 문서화 목적) ",
-        tags = {"auth"}
+        tags = {"oauth2"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -85,7 +85,7 @@ public interface AuthApi {
     @Operation(
         summary = "구글 인증 성공시 임시 인증 토큰 발급",
         description = "oauth2 google 인증 성공시 임시 인증 토큰을 발급한다. (oauth2 로그인 성공시 리다이렉트 엔드포인트로 문서화 목적) ",
-        tags = {"auth"}
+        tags = {"oauth2"}
     )
     @ApiResponses(value = {
         @ApiResponse(
