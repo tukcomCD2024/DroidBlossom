@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface CreateCapsuleViewModel {
     var groupTypeInt: Int
-    val capsuleTypeIs: StateFlow<CapsuleType>
+    val capsuleTypeCreateIs: StateFlow<CapsuleTypeCreate>
 
     //Create1
     val create1Events: SharedFlow<Create1Event>
@@ -78,7 +78,7 @@ interface CreateCapsuleViewModel {
         object CLickSingleImgUpLoad : Create3Event()
     }
 
-    enum class CapsuleType(val title: String) {
+    enum class CapsuleTypeCreate(val title: String) {
         SECRET("SECRET"), GROUP("GROUP"), PUBLIC("PUBLIC")
     }
 }

@@ -61,7 +61,7 @@ class CreateCapsule2Fragment :
         initSearchEdit()
 
         //테스트용
-        Toast.makeText(requireContext(), viewModel.capsuleTypeIs.value.title, Toast.LENGTH_SHORT)
+        Toast.makeText(requireContext(), viewModel.capsuleTypeCreateIs.value.title, Toast.LENGTH_SHORT)
             .show()
     }
 

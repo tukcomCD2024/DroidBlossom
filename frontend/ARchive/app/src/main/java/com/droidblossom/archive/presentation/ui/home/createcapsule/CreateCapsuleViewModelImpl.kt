@@ -1,13 +1,15 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
+import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
@@ -25,12 +27,13 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
+    private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
     private val toAddressUseCase: ToAddressUseCase,
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
-    private val _capsuleTypeIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
-    override val capsuleTypeIs: StateFlow<CreateCapsuleViewModel.CapsuleType>
-        get() = _capsuleTypeIs
+    private val _capsuleTypeCreateIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleTypeCreate.SECRET)
+    override val capsuleTypeCreateIs: StateFlow<CreateCapsuleViewModel.CapsuleTypeCreate>
+        get() = _capsuleTypeCreateIs
 
     //create1
 
@@ -115,15 +118,15 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch {
             when (groupTypeInt) {
                 1 -> {
-                    _capsuleTypeIs.emit(CreateCapsuleViewModel.CapsuleType.GROUP)
+                    _capsuleTypeCreateIs.emit(CreateCapsuleViewModel.CapsuleTypeCreate.GROUP)
                 }
 
                 2 -> {
-                    _capsuleTypeIs.emit(CreateCapsuleViewModel.CapsuleType.PUBLIC)
+                    _capsuleTypeCreateIs.emit(CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC)
                 }
 
                 3 -> {
-                    _capsuleTypeIs.emit(CreateCapsuleViewModel.CapsuleType.SECRET)
+                    _capsuleTypeCreateIs.emit(CreateCapsuleViewModel.CapsuleTypeCreate.SECRET)
                 }
 
                 else -> {}
@@ -173,6 +176,30 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //creat3
     override fun moveFinish() {
         viewModelScope.launch {
+            when(capsuleTypeCreateIs.value){
+                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC ->{
+
+                }
+                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
+//                    secretCapsuleCreateUseCase(SecretCapsuleCreateRequest(
+//                        capsuleSkinId = 1,
+//                        capsuleType = capsuleTypeCreateIs.value.title,
+//                        content = capsuleContent.value ,
+//                        directory = ,
+//                        dueDate = ,
+//                        fileNames = ,
+//                        addressData = ,
+//                        latitude = ,
+//                        longitude = ,
+//                        title = capsuleTitle.value,
+//                     )).collect{ result ->
+//
+//                    }
+                }
+                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
+
+                }
+            }
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
         }
     }
