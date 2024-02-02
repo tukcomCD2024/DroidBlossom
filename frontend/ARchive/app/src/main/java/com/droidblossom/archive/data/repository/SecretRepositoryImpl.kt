@@ -37,6 +37,6 @@ class SecretRepositoryImpl @Inject constructor(
         capsuleId: Int,
         request: SecretCapsuleModifyRequestDto
     ): RetrofitResult<SecretCapsuleModify> {
-        return apiHandler({ api.modifySecretCapsuleDetailApi(capsuleId , request) }) { response: ResponseBody<SecretCapsuleModifyResponseDto> -> response.result.toModel() }
+        return apiHandler({ api.modifySecretCapsuleApi(capsuleId , request) }) { response: ResponseBody<SecretCapsuleModifyResponseDto> -> response.result.toModel() }
     }
 }
