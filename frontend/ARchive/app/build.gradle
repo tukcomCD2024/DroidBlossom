@@ -148,6 +148,9 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
     implementation 'com.amazonaws:aws-android-sdk-s3:2.13.5'
 
+    // Google location
+    implementation 'com.google.android.gms:play-services-location:21.1.0'
+
 }
 kapt {
     correctErrorTypes true
