@@ -27,4 +27,5 @@
     <color name="main_alpha85">#D94263F7</color>
     <color name="main_bg_alpha70">#B3ECEFFE</color>
     <color name="main_alpha70">#B31B3AC4</color>
+    <color name="Transparency">#00FFFFFF</color>
 </resources>

@@ -7,5 +7,6 @@ data class SecretCapsuleSummery(
     val isOpened: Boolean,
     val nickname: String,
     val skinUrl: String,
-    val title: String
+    val title: String,
+    val createdAt: String
 )

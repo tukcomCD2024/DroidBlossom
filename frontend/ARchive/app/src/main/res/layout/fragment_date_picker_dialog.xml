@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pickerLayout"
+            android:layout_width="328dp"
+            android:layout_height="216dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/corner_radius_30"
+            android:theme="@style/NumberPickerTextAppearance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/corner_radius_16"
+                android:backgroundTint="@color/main_bg_1"
+                android:theme="@style/NumberPickerTextAppearance"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <NumberPicker
+                android:numbersTextColor="@color/gray_400"
+                android:id="@+id/yearPicker"
+                android:layout_width="90dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="24dp"
+                android:layout_marginStart="17dp"
+                android:descendantFocusability="blocksDescendants"
+                android:theme="@style/NumberPickerTextAppearance"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/monthPicker"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <NumberPicker
+                android:id="@+id/monthPicker"
+                android:layout_width="90dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="24dp"
+                android:descendantFocusability="blocksDescendants"
+                android:theme="@style/NumberPickerTextAppearance"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dayPicker"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/yearPicker"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <NumberPicker
+                android:id="@+id/dayPicker"
+                android:layout_width="90dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="24dp"
+                android:layout_marginEnd="17dp"
+                android:descendantFocusability="blocksDescendants"
+                android:theme="@style/NumberPickerTextAppearance"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/monthPicker"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <NumberPicker
+                android:id="@+id/hourPicker"
+                android:layout_width="90dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="24dp"
+                android:layout_marginEnd="17dp"
+                android:descendantFocusability="blocksDescendants"
+                android:theme="@style/NumberPickerTextAppearance"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/minPicker"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <NumberPicker
+                android:id="@+id/minPicker"
+                android:layout_width="90dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="24dp"
+                android:descendantFocusability="blocksDescendants"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/hourPicker"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.isSelectTime? View.GONE : View.VISIBLE}"
+                app:constraint_referenced_ids="yearPicker, monthPicker, dayPicker" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.isSelectTime? View.VISIBLE : View.GONE}"
+                app:constraint_referenced_ids="minPicker, hourPicker" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/clickBtn"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/corner_radius_30"
+            android:backgroundTint="@color/main_1"
+            android:gravity="center"
+            android:text="@{vm.isSelectTime? @string/confirmation : @string/timeSelect }"
+            android:textAppearance="@style/TextAppearance.App.subtitle1"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/pickerLayout"
+            app:layout_constraintStart_toStartOf="@id/pickerLayout"
+            app:layout_constraintTop_toBottomOf="@id/pickerLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

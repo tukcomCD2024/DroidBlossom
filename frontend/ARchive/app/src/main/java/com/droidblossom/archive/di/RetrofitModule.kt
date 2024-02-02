@@ -5,6 +5,7 @@ import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.util.AccessTokenInterceptor
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.TokenAuthenticator
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Lazy
 import dagger.Module
@@ -12,9 +13,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -28,6 +31,7 @@ object RetrofitModule {
     fun providesConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create(
             GsonBuilder()
+                .setLenient()
                 .create()
         )
     }
@@ -38,12 +42,33 @@ object RetrofitModule {
         ds: DataStoreUtils,
         authServiceLazy: Lazy<AuthService>,
     ): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
         return OkHttpClient.Builder().apply {
+
+            addInterceptor (interceptor)
             connectTimeout(5, TimeUnit.SECONDS)
             readTimeout(5, TimeUnit.SECONDS)
             writeTimeout(5, TimeUnit.SECONDS)
             authenticator(TokenAuthenticator(ds, authServiceLazy))
             addNetworkInterceptor(AccessTokenInterceptor(ds))
+        }.build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("kakaoClient")
+    fun providesKOkHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder().apply {
+
+            addInterceptor (interceptor)
+            connectTimeout(5, TimeUnit.SECONDS)
+            readTimeout(5, TimeUnit.SECONDS)
+            writeTimeout(5, TimeUnit.SECONDS)
         }.build()
     }
 
@@ -56,6 +81,20 @@ object RetrofitModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
+            .addConverterFactory(gsonConverterFactory)
+            .client(client)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("kakao")
+    fun providesKakaoRetrofit(
+        @Named("kakaoClient") client: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.KAKAO_URL)
             .addConverterFactory(gsonConverterFactory)
             .client(client)
             .build()

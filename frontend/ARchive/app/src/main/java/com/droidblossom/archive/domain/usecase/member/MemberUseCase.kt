@@ -20,8 +20,6 @@ class MemberUseCase @Inject constructor(
                 Log.d("qwer", "성공")
             }.onFail {
                 Log.d("qwer", "${it}")
-            }.onError {
-                throw Exception(it)
             }.onException {
                 throw Exception(it)
             })

@@ -26,6 +26,12 @@ android {
         buildConfigField "String", "GOOGLE_LOGIN_CLIENT_ID", properties['google_login_client_id']
         buildConfigField "String", "BASE_URL", properties['base_url']
         buildConfigField "String", "REISSUETOKEN", properties['re_issue_token']
+        buildConfigField "String", "S3ACCESSKEY", properties['s3_access_key']
+        buildConfigField "String", "S3SECRETKEY", properties['s3_secret_key']
+        buildConfigField "String", "S3BUCKET", properties['s3_bucket']
+        buildConfigField "String", "KAKAO_REST_KEY", properties['kakao_rest_api_key']
+        buildConfigField "String", "KAKAO_URL", properties["kakao_url"]
+
 
 
         manifestPlaceholders = [NAVER_CLIENT_ID: properties['naver_client_id'], KAKAO_NATIVE_APP_KEY: properties['kakao_native_app_key_no_quotes']]
@@ -136,6 +142,11 @@ dependencies {
     // DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.datastore:datastore-preferences-core:1.0.0"
+
+    // AWS S3
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.13.5'
 
 }
 kapt {

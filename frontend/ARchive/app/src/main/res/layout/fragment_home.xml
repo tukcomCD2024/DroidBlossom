@@ -299,7 +299,6 @@
             android:layout_marginBottom="22dp"
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@color/white_alpha70"
-            android:onClick="@{()->vm.clickFollowBtn()}"
             android:scaleType="center"
             android:src="@{vm.followLocation ? @drawable/ic_location_on_24 : @drawable/ic_location_off_24}"
             app:layout_constraintBottom_toTopOf="@id/place"

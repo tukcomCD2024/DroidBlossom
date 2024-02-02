@@ -1,5 +1,6 @@
 package com.droidblossom.archive.data.dto.secret.request
 
+import com.droidblossom.archive.data.dto.capsule.response.AddressDataDto
 import com.droidblossom.archive.data.dto.common.FileNameDto
 
 data class SecretCapsuleCreateRequestDto(
@@ -9,6 +10,7 @@ data class SecretCapsuleCreateRequestDto(
     val directory: String,
     val dueDate: String,
     val fileNames: List<FileNameDto>,
+    val addressDataDto: List<AddressDataDto>,
     val latitude: Int,
     val longitude: Int,
     val title: String

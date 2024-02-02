@@ -25,16 +25,18 @@ class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityC
             finish()
         }
 
-        (intent.getBooleanExtra(CREATE_CAPSULE,true)).let {
-            viewModel!!.isGroupCapsuleCreate = it
+        (intent.getIntExtra(CREATE_CAPSULE,1)).let {
+            viewModel!!.groupTypeInt = it
+            viewModel!!.choseCapsuleType(it)
         }
+
     }
     companion object {
         const val CREATE_CAPSULE = "create_capsule"
 
-        fun newIntent(context: Context, isCreateGroup: Boolean) =
+        fun newIntent(context: Context,capsuleType : Int) =
             Intent(context, CreateCapsuleActivity::class.java).apply {
-                putExtra(CREATE_CAPSULE, isCreateGroup)
+                putExtra(CREATE_CAPSULE, capsuleType)
             }
     }
 }

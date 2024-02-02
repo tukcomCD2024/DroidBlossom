@@ -41,6 +41,7 @@
             android:id="@+id/nextBtn"
             android:layout_width="0dp"
             android:layout_height="56dp"
+            android:onClick="@{()->vm.move1To2()}"
             android:layout_marginHorizontal="@dimen/margin"
             android:layout_marginBottom="@dimen/margin"
             android:background="@drawable/corner_radius_8"
