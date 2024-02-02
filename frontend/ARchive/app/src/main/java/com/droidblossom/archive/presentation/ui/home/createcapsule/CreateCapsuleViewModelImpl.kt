@@ -8,6 +8,7 @@ import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
+import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
@@ -199,7 +200,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
 
     //creat3
-    /*
+    /**/
     override fun moveFinish() {
         Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
@@ -209,7 +210,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
                     Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
-                    secretCapsuleCreateUseCase(SecretCapsuleCreateRequest(
+                    secretCapsuleCreateUseCase(
+                        SecretCapsuleCreateRequest(
                         capsuleSkinId = 1,
                         capsuleType = capsuleTypeCreateIs.value.title,
                         content = capsuleContent.value ,
@@ -220,7 +222,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         latitude = capsuleLatitude.value,
                         longitude = capsuleLongitude.value ,
                         title = capsuleTitle.value,
-                     )).collect{ result ->
+                     )
+                    ).collect{ result ->
                         Log.d("캡슐생성","${result}")
                     }
                 }
@@ -231,11 +234,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
         }
     }
-    */
-    fun moveFinishh() {
-        viewModelScope.launch {
 
-        }
+    fun moveFinishh() {
+
+    }
+
+    override fun makeFiles(files : List<File>){
+        _files.value = files
     }
     override fun moveLocation() {
         viewModelScope.launch {

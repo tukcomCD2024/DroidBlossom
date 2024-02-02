@@ -15,9 +15,20 @@ import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
 import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
+import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.LocationUtil
+import com.kakao.sdk.common.util.Utility
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class CreateCapsule3Fragment :
@@ -72,7 +83,21 @@ class CreateCapsule3Fragment :
     private fun initView(){
         with(binding){
             nextBtn.setOnClickListener {
-                viewModel.moveFinishh()
+
+                val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                val currentTime = dateFormat.format(Date())
+                CoroutineScope(Dispatchers.IO).launch {
+                    val fileDeferreds = viewModel.imgUris.value.mapIndexedNotNull { index, uri ->
+                        uri.string?.let { uriString ->
+                            async {
+                                FileUtils.convertUriToJpegFile(requireContext(), uriString, "${currentTime}_$index")
+                            }
+                        }
+                    }
+                    val fileList = fileDeferreds.awaitAll().filterNotNull()
+                    viewModel.makeFiles(fileList)
+                    viewModel.moveFinishh()
+                }
             }
         }
     }
