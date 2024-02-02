@@ -8,13 +8,13 @@ import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
-import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.io.File
@@ -37,7 +36,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
     private val toAddressUseCase: ToAddressUseCase,
     private val s3UrlsGetUseCase : S3UrlsGetUseCase,
-    private val s3Util: S3Util
+    private val s3Util: S3Util,
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
     private val _capsuleTypeCreateIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleTypeCreate.SECRET)
@@ -105,6 +104,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _imgUris = MutableStateFlow(listOf<Dummy>(Dummy(null, true)))
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
+
+    private val _files = MutableStateFlow<List<File>>(emptyList())
+    override val files: StateFlow<List<File>> = _files
 
     //dateDialog
     override val year = MutableStateFlow<Int>(DateUtils.getCurrentYear())
@@ -197,6 +199,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
 
     //creat3
+    /*
     override fun moveFinish() {
         Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
@@ -228,7 +231,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
         }
     }
+    */
+    fun moveFinishh() {
+        viewModelScope.launch {
 
+        }
+    }
     override fun moveLocation() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickLocation)

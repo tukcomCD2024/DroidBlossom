@@ -36,6 +36,7 @@ interface CreateCapsuleViewModel {
     val capsuleImgUrls: StateFlow<List<String>>
     val isSelectTimeCapsule : StateFlow<Boolean>
     val imgUris : StateFlow<List<Dummy>>
+    val files: StateFlow<List<File>>
 
     //DatePicker
     val year : MutableStateFlow<Int>
