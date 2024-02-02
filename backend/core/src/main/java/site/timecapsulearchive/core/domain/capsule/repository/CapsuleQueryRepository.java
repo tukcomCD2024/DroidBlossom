@@ -27,8 +27,8 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetail;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.QImage;
 import site.timecapsulearchive.core.domain.capsule.entity.QVideo;
@@ -41,9 +41,9 @@ public class CapsuleQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final CapsuleMapper capsuleMapper;
 
-    private static List<Long> getCapsuleIds(List<SecreteCapsuleDetail> secreteCapsuleList) {
-        return secreteCapsuleList.stream()
-            .map(SecreteCapsuleDetail::capsuleId)
+    private static List<Long> getCapsuleIds(List<SecretCapsuleDetail> secretCapsuleList) {
+        return secretCapsuleList.stream()
+            .map(SecretCapsuleDetail::capsuleId)
             .toList();
     }
 
@@ -111,12 +111,12 @@ public class CapsuleQueryRepository {
             )
             .from(capsule)
             .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
-                .and(capsule.type.eq(CapsuleType.SECRETE)))
+                .and(capsule.type.eq(CapsuleType.SECRET)))
             .fetchOne()
         );
     }
 
-    public Optional<SecreteCapsuleDetailDto> findSecreteCapsuleDetailByMemberIdAndCapsuleId(
+    public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailByMemberIdAndCapsuleId(
         Long memberId,
         Long capsuleId
     ) {
@@ -125,17 +125,17 @@ public class CapsuleQueryRepository {
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
-                .and(capsule.type.eq(CapsuleType.SECRETE)))
+                .and(capsule.type.eq(CapsuleType.SECRET)))
             .transform(
-                findSecreteCapsuleDetailDto()
+                findSecretCapsuleDetailDto()
             ).stream()
             .findFirst();
     }
 
-    private ResultTransformer<List<SecreteCapsuleDetailDto>> findSecreteCapsuleDetailDto() {
+    private ResultTransformer<List<SecretCapsuleDetailDto>> findSecretCapsuleDetailDto() {
         return groupBy(capsule.id).list(
             Projections.constructor(
-                SecreteCapsuleDetailDto.class,
+                SecretCapsuleDetailDto.class,
                 capsule.id,
                 capsule.capsuleSkin.imageUrl,
                 capsule.dueDate,
@@ -153,15 +153,15 @@ public class CapsuleQueryRepository {
         );
     }
 
-    public Slice<SecreteCapsuleDetailDto> findSecreteCapsuleSliceByMemberId(
+    public Slice<SecretCapsuleDetailDto> findSecretCapsuleSliceByMemberId(
         Long memberId,
         int size,
         ZonedDateTime createdAt
     ) {
-        List<SecreteCapsuleDetail> secreteCapsuleList = jpaQueryFactory
+        List<SecretCapsuleDetail> secretCapsuleList = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    SecreteCapsuleDetail.class,
+                    SecretCapsuleDetail.class,
                     capsule.id,
                     capsule.capsuleSkin.imageUrl,
                     capsule.dueDate,
@@ -177,25 +177,25 @@ public class CapsuleQueryRepository {
             .where(
                 capsule.member.id.eq(memberId),
                 capsule.createdAt.lt(createdAt),
-                capsule.type.eq(CapsuleType.SECRETE)
+                capsule.type.eq(CapsuleType.SECRET)
             )
             .orderBy(capsule.id.desc())
             .limit(size + 1)
             .fetch();
 
-        boolean hasNext = canMoreRead(size, secreteCapsuleList.size());
+        boolean hasNext = canMoreRead(size, secretCapsuleList.size());
         if (hasNext) {
-            secreteCapsuleList.remove(size);
+            secretCapsuleList.remove(size);
         }
 
-        List<Long> capsuleIds = getCapsuleIds(secreteCapsuleList);
+        List<Long> capsuleIds = getCapsuleIds(secretCapsuleList);
 
         Map<Long, List<String>> imageUrls = findImageUrlsByCapsuleId(capsuleIds);
 
         Map<Long, List<String>> videoUrls = findVideoUrlsByCapsuleId(capsuleIds);
 
-        List<SecreteCapsuleDetailDto> result = secreteCapsuleList.stream()
-            .map(dto -> capsuleMapper.secreteCapsuleDetailToDto(dto, imageUrls, videoUrls))
+        List<SecretCapsuleDetailDto> result = secretCapsuleList.stream()
+            .map(dto -> capsuleMapper.secretCapsuleDetailToDto(dto, imageUrls, videoUrls))
             .toList();
 
         return new SliceImpl<>(result, Pageable.ofSize(size), hasNext);

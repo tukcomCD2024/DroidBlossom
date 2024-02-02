@@ -13,8 +13,8 @@ import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryRe
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetail;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
@@ -96,7 +96,7 @@ public class CapsuleMapper {
     }
 
     public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
-        SecreteCapsuleDetailDto dto) {
+        SecretCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
@@ -111,8 +111,8 @@ public class CapsuleMapper {
             .build();
     }
 
-    public SecretCapsuleDetailResponse notOpenedSecreteCapsuleDetailDtoToResponse(
-        SecreteCapsuleDetailDto dto) {
+    public SecretCapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
+        SecretCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
@@ -125,7 +125,7 @@ public class CapsuleMapper {
     }
 
     public MyCapsulePageResponse capsuleDetailSliceToResponse(
-        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice) {
+        Slice<SecretCapsuleDetailDto> capsuleDetailSlice) {
         return new MyCapsulePageResponse(
             capsuleDetailSlice.getContent(),
             capsuleDetailSlice.hasNext(),
@@ -133,12 +133,12 @@ public class CapsuleMapper {
         );
     }
 
-    public SecreteCapsuleDetailDto secreteCapsuleDetailToDto(
-        SecreteCapsuleDetail detail,
+    public SecretCapsuleDetailDto secretCapsuleDetailToDto(
+        SecretCapsuleDetail detail,
         Map<Long, List<String>> imageUrls,
         Map<Long, List<String>> videoUrls
     ) {
-        return SecreteCapsuleDetailDto.builder()
+        return SecretCapsuleDetailDto.builder()
             .capsuleId(detail.capsuleId())
             .capsuleSkinUrl(detail.capsuleSkinUrl())
             .dueDate(detail.dueDate().withZoneSameInstant(ASIA_SEOUL))
