@@ -35,7 +35,7 @@ interface SecretService {
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
 
     //미정 (1/27 기준)
-    @PATCH("secrete/capsules/{capsule_id}")
+    @PATCH("secret/capsules/{capsule_id}")
     suspend fun modifySecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Int,
         @Body request : SecretCapsuleModifyRequestDto
