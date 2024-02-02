@@ -236,7 +236,14 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     fun moveFinishh() {
-
+        val fileMetaDataLists = files.value.map { file ->
+            FileName(
+                extension = "image/jpeg",
+                fileName = file.name
+            )
+        }
+        val getS3UrlData = S3UrlRequest("capsuleContents", fileMetaDataLists)
+        getUploadUrls(getS3UrlData)
     }
 
     override fun makeFiles(files : List<File>){
@@ -340,11 +347,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getUploadUrls(getS3UrlData : S3UrlRequest, files : List<File>){
+    override fun getUploadUrls(getS3UrlData : S3UrlRequest){
         viewModelScope.launch {
             s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
                 result.onSuccess {
-                    uploadFilesToS3(files,it.preSignedUrls)
+                    uploadFilesToS3(files.value,it.preSignedUrls)
                 }.onFail {
                     Log.d("getUploadUrls","getUploadUrl 실패")
                 }

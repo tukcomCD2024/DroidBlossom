@@ -72,7 +72,7 @@ interface CreateCapsuleViewModel {
     fun getDueTime(tiem:String)
 
     fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File)
-    fun getUploadUrls(getS3UrlData : S3UrlRequest, files : List<File>)
+    fun getUploadUrls(getS3UrlData : S3UrlRequest)
 
     fun makeFiles(files : List<File>)
 
