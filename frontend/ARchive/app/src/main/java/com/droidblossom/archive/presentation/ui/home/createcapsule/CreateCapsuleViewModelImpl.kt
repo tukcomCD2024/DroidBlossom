@@ -302,7 +302,19 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             }
         }
     }
-    
+
+    override fun getUploadUrls(getS3UrlData : S3UrlRequest, files : List<File>){
+        viewModelScope.launch {
+            s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
+                result.onSuccess {
+                    uploadFilesToS3(files,it.preSignedUrls)
+                }.onFail {
+                    Log.d("티티","getUploadUrl 실패")
+                }
+            }
+        }
+    }
+
     private fun uploadFilesToS3(files: List<File>, signedUrls: List<String>) {
         viewModelScope.launch {
             val uploadJobs = files.zip(signedUrls).map { (file, url) ->
