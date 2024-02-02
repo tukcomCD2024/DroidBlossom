@@ -1,20 +1,25 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
+import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.S3Util
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +35,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
     private val toAddressUseCase: ToAddressUseCase,
+    private val s3UrlsGetUseCase : S3UrlsGetUseCase,
+    private val s3Util: S3Util
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
     private val _capsuleTypeCreateIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleTypeCreate.SECRET)
@@ -269,6 +277,29 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             list + listOf(Dummy(null, true))
         } else list
         viewModelScope.launch { _imgUris.emit(submitList) }
+    }
+
+    override fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File){
+        viewModelScope.launch {
+            s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
+                result.onSuccess {
+                    uploadFileToS3(file,it.preSignedUrls[0])
+                }.onFail {
+                    Log.d("티티","getUploadUrl 실패")
+                }
+            }
+        }
+    }
+
+    private fun uploadFileToS3(file: File, signedUrl: String){
+        viewModelScope.launch(Dispatchers.IO){
+            try {
+                s3Util.uploadImageWithPresignedUrl(file,signedUrl)
+            }catch (e:Exception){
+                Log.d("티티", "uploadFileToS3 : ${e.message}")
+
+            }
+        }
     }
 
 

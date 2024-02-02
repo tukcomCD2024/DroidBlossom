@@ -4,9 +4,11 @@ import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.io.File
 
 interface CreateCapsuleViewModel {
     var groupTypeInt: Int
@@ -60,6 +62,8 @@ interface CreateCapsuleViewModel {
     fun addImgUris(list: List<Dummy>)
     fun submitUris(list:List<Dummy>)
     fun coordToAddress(latitude: Double, longitude: Double)
+
+    fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File)
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
