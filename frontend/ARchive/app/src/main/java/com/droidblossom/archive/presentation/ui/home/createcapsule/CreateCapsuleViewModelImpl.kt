@@ -220,7 +220,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                     secretCapsuleCreateUseCase(
                         SecretCapsuleCreateRequest(
                         capsuleSkinId = 1,
-                        capsuleType = capsuleTypeCreateIs.value.title,
                         content = capsuleContent.value ,
                         directory = "string",
                         dueDate = dueTime.value,
@@ -393,10 +392,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch{
             when(capsuleTypeCreateIs.value){
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
+                    Log.d("캡슐생성", " secretCapsuleCreate 하기 전 ")
                     secretCapsuleCreateUseCase(
                         SecretCapsuleCreateRequest(
                             capsuleSkinId = 1,
-                            capsuleType = capsuleTypeCreateIs.value.title,
                             content = capsuleContent.value ,
                             directory = fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
                             dueDate = dueTime.value,
@@ -407,8 +406,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                             title = capsuleTitle.value,
                         )
                     ).collect{ result ->
-                        Log.d("캡슐생성","${result}")
+                        Log.d("캡슐생성","$result")
                     }
+
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
                     Log.d("캡슐 타입", " 그룹 : ${capsuleTypeCreateIs.value}")

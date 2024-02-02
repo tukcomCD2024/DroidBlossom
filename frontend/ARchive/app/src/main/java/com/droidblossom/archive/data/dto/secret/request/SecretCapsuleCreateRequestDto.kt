@@ -5,7 +5,6 @@ import com.droidblossom.archive.data.dto.common.FileNameDto
 
 data class SecretCapsuleCreateRequestDto(
     val capsuleSkinId: Long,
-    val capsuleType: String,
     val content: String,
     val directory: String,
     val dueDate: String,

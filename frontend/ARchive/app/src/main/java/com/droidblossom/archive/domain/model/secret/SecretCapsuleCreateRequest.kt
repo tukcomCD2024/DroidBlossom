@@ -6,7 +6,6 @@ import com.droidblossom.archive.domain.model.common.FileName
 
 data class SecretCapsuleCreateRequest(
     val capsuleSkinId: Long,
-    val capsuleType: String,
     val content: String,
     val directory: String,
     val dueDate: String,
@@ -18,7 +17,6 @@ data class SecretCapsuleCreateRequest(
 ) {
     fun toDto() = SecretCapsuleCreateRequestDto(
         this.capsuleSkinId,
-        this.capsuleType,
         this.content,
         this.directory,
         this.dueDate,
