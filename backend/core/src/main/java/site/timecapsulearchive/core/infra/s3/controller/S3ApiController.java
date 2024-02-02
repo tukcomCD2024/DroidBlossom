@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.infra.s3.dto.S3PreSignedUrlDto;
 import site.timecapsulearchive.core.infra.s3.dto.mapper.S3ApiMapper;
 import site.timecapsulearchive.core.infra.s3.dto.request.S3PreSignedUrlRequest;
-import site.timecapsulearchive.core.infra.s3.dto.S3PreSignedUrlDto;
 import site.timecapsulearchive.core.infra.s3.dto.response.S3PreSignedUrlResponse;
 import site.timecapsulearchive.core.infra.s3.service.S3Service;
 
