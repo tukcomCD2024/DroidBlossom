@@ -393,7 +393,22 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch{
             when(capsuleTypeCreateIs.value){
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-                    Log.d("캡슐 타입", " 비밀 : ${capsuleTypeCreateIs.value}")
+                    secretCapsuleCreateUseCase(
+                        SecretCapsuleCreateRequest(
+                            capsuleSkinId = 1,
+                            capsuleType = capsuleTypeCreateIs.value.title,
+                            content = capsuleContent.value ,
+                            directory = fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
+                            dueDate = dueTime.value,
+                            fileNames = fileMetaDataLists,
+                            addressData = address.value,
+                            latitude = capsuleLatitude.value,
+                            longitude = capsuleLongitude.value ,
+                            title = capsuleTitle.value,
+                        )
+                    ).collect{ result ->
+                        Log.d("캡슐생성","${result}")
+                    }
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
                     Log.d("캡슐 타입", " 그룹 : ${capsuleTypeCreateIs.value}")
