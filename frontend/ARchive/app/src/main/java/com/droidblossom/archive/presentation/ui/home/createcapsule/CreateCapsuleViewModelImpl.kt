@@ -6,9 +6,12 @@ import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.onFail
+import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCapsuleViewModelImpl @Inject constructor(
-    private val toAddressUseCase: ToAddressUseCase
+    private val getAddressUseCase: GetAddressUseCase,
+    private val toAddressUseCase: ToAddressUseCase,
 ) : BaseViewModel(), CreateCapsuleViewModel {
     override var groupTypeInt: Int = 1
     private val _capsuleType = MutableStateFlow(CreateCapsuleViewModel.CapsuleType.SECRET)
@@ -179,10 +183,14 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun coordToAddress(x: String, y: String) {
+    override fun coordToAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            toAddressUseCase(x, y).collect{
-                _capsuleLocationName.emit(it)
+            getAddressUseCase(latitude, longitude).collect{result ->
+                result.onSuccess {
+                    _capsuleLocationName.emit(it.fullRoadAddressName)
+                }.onFail {
+                    _capsuleLocationName.emit("에러")
+                }
             }
         }
     }

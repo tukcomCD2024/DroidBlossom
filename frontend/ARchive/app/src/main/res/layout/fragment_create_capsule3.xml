@@ -105,6 +105,7 @@
                         android:ellipsize="middle"
                         android:maxWidth="250dp"
                         android:maxLines="1"
+                        android:text="@{vm.capsuleLocationName}"
                         android:textAppearance="@style/TextAppearance.App.body2"
                         android:textColor="@color/gray_600"
                         app:layout_constraintBottom_toBottomOf="@id/placeSettingBtn"

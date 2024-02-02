@@ -63,7 +63,7 @@ class CreateCapsule3Fragment :
         val locationUtil = LocationUtil(requireContext())
         locationUtil.getCurrentLocation { latitude, longitude ->
             Log.d("위치", "위도 : $latitude, 경도 : $longitude")
-            viewModel.coordToAddress(longitude.toString(),latitude.toString())
+            viewModel.coordToAddress(latitude = latitude, longitude = longitude)
         }
     }
 
@@ -106,14 +106,6 @@ class CreateCapsule3Fragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.imgUris.collect {
                     imgRVA.submitList(it)
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.capsuleLocationName.collect {
-                    binding.placeT.text = it
                 }
             }
         }

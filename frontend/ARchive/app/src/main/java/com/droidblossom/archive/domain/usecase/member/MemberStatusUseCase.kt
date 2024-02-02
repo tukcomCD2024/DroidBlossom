@@ -23,8 +23,6 @@ class MemberStatusUseCase @Inject constructor(
 
                     }.onFail {
 
-                    }.onError {
-                        throw Exception(it)
                     }.onException {
                         throw Exception(it)
                     })
