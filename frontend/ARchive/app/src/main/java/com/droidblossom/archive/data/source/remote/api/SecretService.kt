@@ -18,7 +18,7 @@ import retrofit2.http.Query
 
 interface SecretService {
 
-    @GET("secrete/capsules")
+    @GET("secret/capsules")
     suspend fun getSecretCapsulePageApi(
         @Query("size") size : Int,
         @Query("capsule_id") capsuleId: Int
