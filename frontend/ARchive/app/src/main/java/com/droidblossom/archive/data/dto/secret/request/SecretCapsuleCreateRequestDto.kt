@@ -10,8 +10,8 @@ data class SecretCapsuleCreateRequestDto(
     val directory: String,
     val dueDate: String,
     val fileNames: List<FileNameDto>,
-    val addressDataDto: List<AddressDataDto>,
-    val latitude: Int,
-    val longitude: Int,
+    val addressData: AddressDataDto,
+    val latitude: Double,
+    val longitude: Double,
     val title: String
 )

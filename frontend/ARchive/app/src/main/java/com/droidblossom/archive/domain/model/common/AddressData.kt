@@ -13,6 +13,7 @@ data class AddressData(
     val subDistinct: String?,
     val zipCode: String?
 ){
+    constructor() :this(null,null,"",null,null,null,null,null,null)
     fun toDto()=AddressDataDto(
         buildingName = this.buildingName ?: "",
         city = this.city ?: "",
