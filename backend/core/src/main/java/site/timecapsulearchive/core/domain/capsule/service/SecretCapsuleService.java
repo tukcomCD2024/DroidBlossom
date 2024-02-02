@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -25,7 +25,7 @@ import site.timecapsulearchive.core.global.geography.GeoTransformer;
 
 @Service
 @RequiredArgsConstructor
-public class SecreteCapsuleService {
+public class SecretCapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
@@ -66,13 +66,13 @@ public class SecreteCapsuleService {
      * @param createdAt 마지막 캡슐 생성 날짜
      * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
-    public MyCapsulePageResponse findSecreteCapsuleListByMemberId(
+    public MyCapsulePageResponse findSecretCapsuleListByMemberId(
         Long memberId,
         int size,
         ZonedDateTime createdAt
     ) {
-        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
-            .findSecreteCapsuleSliceByMemberId(memberId, size, createdAt);
+        Slice<SecretCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
+            .findSecretCapsuleSliceByMemberId(memberId, size, createdAt);
 
         return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
     }
@@ -107,19 +107,19 @@ public class SecreteCapsuleService {
         Long memberId,
         Long capsuleId
     ) {
-        SecreteCapsuleDetailDto dto = capsuleQueryRepository.findSecreteCapsuleDetailByMemberIdAndCapsuleId(
+        SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailByMemberIdAndCapsuleId(
                 memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(dto)) {
-            return capsuleMapper.notOpenedSecreteCapsuleDetailDtoToResponse(dto);
+            return capsuleMapper.notOpenedSecretCapsuleDetailDtoToResponse(dto);
         }
 
         return capsuleMapper.secretCapsuleDetailDtoToResponse(dto);
     }
 
-    private boolean capsuleNotOpened(SecreteCapsuleDetailDto dto) {
+    private boolean capsuleNotOpened(SecretCapsuleDetailDto dto) {
         return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now());
     }
 }

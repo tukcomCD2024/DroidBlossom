@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
-import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Builder
 public record SecretCapsuleCreateRequestDto(
@@ -16,8 +15,7 @@ public record SecretCapsuleCreateRequestDto(
     AddressData addressData,
     ZonedDateTime dueDate,
     List<FileMetaData> fileNames,
-    String directory,
-    CapsuleType capsuleType
+    String directory
 ) {
 
 }

@@ -12,14 +12,15 @@ import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetail;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
@@ -44,7 +45,6 @@ public class CapsuleMapper {
             .dueDate(request.dueDate())
             .fileNames(request.fileNames())
             .directory(request.directory())
-            .capsuleType(request.capsuleType())
             .build();
     }
 
@@ -59,7 +59,7 @@ public class CapsuleMapper {
             .content(dto.content())
             .point(point)
             .address(addressDataToEntity(dto.addressData()))
-            .type(dto.capsuleType())
+            .type(CapsuleType.SECRET)
             .member(member)
             .dueDate(dto.dueDate())
             .capsuleSkin(capsuleSkin)
@@ -96,7 +96,7 @@ public class CapsuleMapper {
     }
 
     public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
-        SecreteCapsuleDetailDto dto) {
+        SecretCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
@@ -111,8 +111,8 @@ public class CapsuleMapper {
             .build();
     }
 
-    public SecretCapsuleDetailResponse notOpenedSecreteCapsuleDetailDtoToResponse(
-        SecreteCapsuleDetailDto dto) {
+    public SecretCapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
+        SecretCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(dto.dueDate().withZoneSameInstant(ASIA_SEOUL))
@@ -125,7 +125,7 @@ public class CapsuleMapper {
     }
 
     public MyCapsulePageResponse capsuleDetailSliceToResponse(
-        Slice<SecreteCapsuleDetailDto> capsuleDetailSlice) {
+        Slice<SecretCapsuleDetailDto> capsuleDetailSlice) {
         return new MyCapsulePageResponse(
             capsuleDetailSlice.getContent(),
             capsuleDetailSlice.hasNext(),
@@ -133,12 +133,12 @@ public class CapsuleMapper {
         );
     }
 
-    public SecreteCapsuleDetailDto secreteCapsuleDetailToDto(
-        SecreteCapsuleDetail detail,
+    public SecretCapsuleDetailDto secretCapsuleDetailToDto(
+        SecretCapsuleDetail detail,
         Map<Long, List<String>> imageUrls,
         Map<Long, List<String>> videoUrls
     ) {
-        return SecreteCapsuleDetailDto.builder()
+        return SecretCapsuleDetailDto.builder()
             .capsuleId(detail.capsuleId())
             .capsuleSkinUrl(detail.capsuleSkinUrl())
             .dueDate(detail.dueDate().withZoneSameInstant(ASIA_SEOUL))
