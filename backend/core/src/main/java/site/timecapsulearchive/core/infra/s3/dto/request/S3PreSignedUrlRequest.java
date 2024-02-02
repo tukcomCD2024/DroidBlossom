@@ -3,9 +3,9 @@ package site.timecapsulearchive.core.infra.s3.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.FileMetaData;
+import site.timecapsulearchive.core.global.common.valid.annotation.Image;
+import site.timecapsulearchive.core.global.common.valid.annotation.Video;
 
 @Schema(description = "s3업로드 PreSignedURl 포맷")
 public record S3PreSignedUrlRequest(
@@ -15,8 +15,12 @@ public record S3PreSignedUrlRequest(
     String directory,
 
     @Schema(description = "파일 이름들")
-    @NotEmpty(message = "파일 이름은 필수 입니다.")
-    List<@NotNull FileMetaData> fileMetaDataList
+    @NotEmpty(message = "이미지 파일 이름은 필수 입니다.")
+    List<@Image String> imageUrls,
+
+    @Schema(description = "비디오 파일 이름들")
+    @NotEmpty(message = "비디오 파일 이름은 필수 입니다.")
+    List<@Video String> videoUrls
 ) {
 
 }
