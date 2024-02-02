@@ -29,7 +29,7 @@ interface SecretService {
         @Body request : SecretCapsuleCreateRequestDto
     ) : Response<ResponseBody<SecretCapsuleCreateResponseDto>>
 
-    @GET("secrete/capsules/{capsule_id}")
+    @GET("secret/capsules/{capsule_id}")
     suspend fun getSecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
