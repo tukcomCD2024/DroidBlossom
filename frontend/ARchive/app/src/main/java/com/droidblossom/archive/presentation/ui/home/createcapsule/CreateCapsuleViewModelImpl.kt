@@ -39,6 +39,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val s3UrlsGetUseCase : S3UrlsGetUseCase,
     private val s3Util: S3Util,
 ) : BaseViewModel(), CreateCapsuleViewModel {
+
+    companion object{
+        const val S3DIRECTORY = "capsuleContents"
+        const val IMAGEEXTENSION = "image/jpeg"
+    }
+
     override var groupTypeInt: Int = 1
     private val _capsuleTypeCreateIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleTypeCreate.SECRET)
     override val capsuleTypeCreateIs: StateFlow<CreateCapsuleViewModel.CapsuleTypeCreate>
@@ -133,6 +139,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val address: StateFlow<AddressData>
         get() = _address
 
+    private var fileMetaDataLists = listOf<FileName>()
     //create1
     override fun move1To2() {
         viewModelScope.launch {
@@ -236,17 +243,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     fun moveFinishh() {
-        Log.d("moveFinishh", "${files.value}")
         if (files.value.isEmpty()){
             secretCapsuleCreate()
         }else{
-            val fileMetaDataLists = files.value.map { file ->
+            fileMetaDataLists = files.value.map { file ->
                 FileName(
-                    extension = "image/jpeg",
+                    extension = IMAGEEXTENSION,
                     fileName = file.name
                 )
             }
-            val getS3UrlData = S3UrlRequest("capsuleContents", fileMetaDataLists)
+            val getS3UrlData = S3UrlRequest(S3DIRECTORY, fileMetaDataLists)
             getUploadUrls(getS3UrlData)
         }
     }
@@ -384,7 +390,20 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     private fun secretCapsuleCreate(){
-        
+        viewModelScope.launch{
+            when(capsuleTypeCreateIs.value){
+                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
+                    Log.d("캡슐 타입", " 비밀 : ${capsuleTypeCreateIs.value}")
+                }
+                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
+                    Log.d("캡슐 타입", " 그룹 : ${capsuleTypeCreateIs.value}")
+
+                }
+                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
+                    Log.d("캡슐 타입", "공개 : ${capsuleTypeCreateIs.value}")
+                }
+            }
+        }
     }
 
 }
