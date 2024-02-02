@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
@@ -44,6 +45,11 @@ interface CreateCapsuleViewModel {
     val min : MutableStateFlow<Int>
     val isSelectTime : StateFlow<Boolean>
 
+    val capsuleLongitude : StateFlow<Double>
+    val capsuleLatitude : StateFlow<Double>
+    val dueTime : StateFlow<String>
+    val address : StateFlow<AddressData>
+
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()
@@ -62,6 +68,7 @@ interface CreateCapsuleViewModel {
     fun addImgUris(list: List<Dummy>)
     fun submitUris(list:List<Dummy>)
     fun coordToAddress(latitude: Double, longitude: Double)
+    fun getDueTime(tiem:String)
 
     fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File)
     fun getUploadUrls(getS3UrlData : S3UrlRequest, files : List<File>)

@@ -74,8 +74,9 @@ class CreateCapsule3Fragment :
                     when (it) {
                         CreateCapsuleViewModel.Create3Event.ClickDate -> {
                             //날짜 Dialog 디자인?
-                            val sheet = DatePickerDialogFragment{ time ->
+                            val sheet = DatePickerDialogFragment{ time, server ->
                                 binding.timeT.text = time
+                                viewModel.getDueTime(server)
                             }
                             sheet.show((activity as CreateCapsuleActivity).supportFragmentManager ,  sheet.tag)
 

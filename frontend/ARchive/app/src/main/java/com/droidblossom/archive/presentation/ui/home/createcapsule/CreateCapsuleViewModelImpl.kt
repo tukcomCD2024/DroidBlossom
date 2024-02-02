@@ -116,6 +116,20 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val isSelectTime: StateFlow<Boolean>
         get() = _isSelectTime
 
+    private val _capsuleLongitude = MutableStateFlow(0.0)
+    override val capsuleLongitude: StateFlow<Double>
+        get() = _capsuleLongitude
+
+    private val _capsuleLatitude =MutableStateFlow(0.0)
+    override val capsuleLatitude: StateFlow<Double>
+        get() = _capsuleLatitude
+    private val _dueTime = MutableStateFlow("")
+    override val dueTime: StateFlow<String>
+        get() = _dueTime
+    private val _address = MutableStateFlow(AddressData())
+    override val address: StateFlow<AddressData>
+        get() = _address
+
     //create1
     override fun move1To2() {
         viewModelScope.launch {
@@ -184,26 +198,28 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     //creat3
     override fun moveFinish() {
+        Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
             when(capsuleTypeCreateIs.value){
                 CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC ->{
 
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-//                    secretCapsuleCreateUseCase(SecretCapsuleCreateRequest(
-//                        capsuleSkinId = 1,
-//                        capsuleType = capsuleTypeCreateIs.value.title,
-//                        content = capsuleContent.value ,
-//                        directory = ,
-//                        dueDate = ,
-//                        fileNames = ,
-//                        addressData = ,
-//                        latitude = ,
-//                        longitude = ,
-//                        title = capsuleTitle.value,
-//                     )).collect{ result ->
-//
-//                    }
+                    Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
+                    secretCapsuleCreateUseCase(SecretCapsuleCreateRequest(
+                        capsuleSkinId = 1,
+                        capsuleType = capsuleTypeCreateIs.value.title,
+                        content = capsuleContent.value ,
+                        directory = "secretCapsule",
+                        dueDate = dueTime.value,
+                        fileNames = listOf(),
+                        addressData = address.value,
+                        latitude = capsuleLatitude.value,
+                        longitude = capsuleLongitude.value ,
+                        title = capsuleTitle.value,
+                     )).collect{ result ->
+                        Log.d("캡슐생성","${result}")
+                    }
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
 
@@ -221,13 +237,21 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     override fun coordToAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
+            _capsuleLatitude.value = latitude
+            _capsuleLongitude.value = longitude
             getAddressUseCase(latitude, longitude).collect{result ->
                 result.onSuccess {
                     _capsuleLocationName.emit(it.fullRoadAddressName)
+                    _address.emit(it)
                 }.onFail {
                     _capsuleLocationName.emit("에러")
                 }
             }
+        }
+    }
+    override fun getDueTime(time: String) {
+        viewModelScope.launch {
+            _dueTime.emit(time)
         }
     }
 
