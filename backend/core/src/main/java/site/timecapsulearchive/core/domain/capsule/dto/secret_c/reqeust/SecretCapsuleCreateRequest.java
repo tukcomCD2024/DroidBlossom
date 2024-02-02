@@ -7,7 +7,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.FileMetaData;
-import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Schema(description = "캡슐 생성 포맷")
 public record SecretCapsuleCreateRequest(
@@ -42,11 +41,7 @@ public record SecretCapsuleCreateRequest(
     AddressData addressData,
 
     @Schema(description = "개봉일")
-    ZonedDateTime dueDate,
-
-    @Schema(description = "캡슐 타입")
-    @NotNull(message = "캡슐 타입은 필수 입니다.")
-    CapsuleType capsuleType
+    ZonedDateTime dueDate
 ) {
 
 }

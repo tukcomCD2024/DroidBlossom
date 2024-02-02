@@ -12,14 +12,15 @@ import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
@@ -44,7 +45,6 @@ public class CapsuleMapper {
             .dueDate(request.dueDate())
             .fileNames(request.fileNames())
             .directory(request.directory())
-            .capsuleType(request.capsuleType())
             .build();
     }
 
@@ -59,7 +59,7 @@ public class CapsuleMapper {
             .content(dto.content())
             .point(point)
             .address(addressDataToEntity(dto.addressData()))
-            .type(dto.capsuleType())
+            .type(CapsuleType.SECRET)
             .member(member)
             .dueDate(dto.dueDate())
             .capsuleSkin(capsuleSkin)
