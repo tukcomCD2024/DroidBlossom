@@ -86,7 +86,7 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                         viewModel.hour.value,
                         viewModel.min.value
                     ),
-                    "%04d-%02d-%02dT%02d:%02d.000+09:00".format(
+                    "%04d-%02d-%02dT%02d:%02d:01.001Z".format(
                         viewModel.year.value,
                         viewModel.month.value,
                         viewModel.day.value,
