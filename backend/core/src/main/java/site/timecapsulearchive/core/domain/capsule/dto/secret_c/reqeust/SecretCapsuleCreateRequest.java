@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
@@ -37,14 +38,14 @@ public record SecretCapsuleCreateRequest(
     double latitude,
 
     @Schema(description = "캡슐 생성 주소")
-    @NotBlank(message = "캡슐 생성 주소는 필수 입니다.")
+    @NotNull(message = "캡슐 생성 주소는 필수 입니다.")
     AddressData addressData,
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
 
     @Schema(description = "캡슐 타입")
-    @NotBlank(message = "캡슐 타입은 필수 입니다.")
+    @NotNull(message = "캡슐 타입은 필수 입니다.")
     CapsuleType capsuleType
 ) {
 
