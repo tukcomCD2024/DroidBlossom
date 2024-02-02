@@ -28,12 +28,7 @@ class SkinMakeViewModelImpl @Inject constructor(
         viewModelScope.launch {
             s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
                 result.onSuccess {
-                    val originalString = it.preSignedUrls.toString()
-                    val trimmedString = originalString.trim('[', ']')
-                    Log.d("티티","getUploadUrl 성공 : $trimmedString")
-                    signedUrl = trimmedString
-                    uploadFileToS3(getS3UrlData.fileMetaDataList[0].fileName,file)
-
+                    uploadFileToS3(file,it.preSignedUrls[0])
                 }.onFail {
                     Log.d("티티","getUploadUrl 실패")
                 }
@@ -41,11 +36,10 @@ class SkinMakeViewModelImpl @Inject constructor(
         }
     }
 
-    fun uploadFileToS3(fileName : String, file : File){
+    fun uploadFileToS3(file: File, signedUrl: String){
         viewModelScope.launch(Dispatchers.IO){
             try {
-                s3Util.putObjectWithPresignedUrl(fileName,file)
-                Log.d("티티", "성공")
+                s3Util.uploadImageWithPresignedUrl(file,signedUrl)
             }catch (e:Exception){
                 Log.d("티티", "uploadFileToS3 : ${e.message}")
 
