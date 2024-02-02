@@ -57,8 +57,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _create2Events = MutableSharedFlow<CreateCapsuleViewModel.Create2Event>()
     override val create2Events: SharedFlow<CreateCapsuleViewModel.Create2Event>
         get() = _create2Events
-    private val _skinId = MutableStateFlow<Int>(0)
-    override val skinId: StateFlow<Int>
+    private val _skinId = MutableStateFlow<Long>(0)
+    override val skinId: StateFlow<Long>
         get() = _skinId
     private val _skins = MutableStateFlow(
         listOf(Skin(1, "", false), Skin(2, "", false), Skin(3, "", false))
@@ -161,7 +161,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-            _skinId.emit(_skins.value.find { it.isClicked }?.skinId ?: 0)
+            _skinId.emit(_skins.value.find { it.isClicked }?.skinId?.toLong() ?: 0.toLong())
         }
         viewModelScope.launch {
             _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
@@ -210,9 +210,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         capsuleSkinId = 1,
                         capsuleType = capsuleTypeCreateIs.value.title,
                         content = capsuleContent.value ,
-                        directory = "secretCapsule",
+                        directory = "string",
                         dueDate = dueTime.value,
-                        fileNames = listOf(),
+                        fileNames = listOf(FileName("string","string")),
                         addressData = address.value,
                         latitude = capsuleLatitude.value,
                         longitude = capsuleLongitude.value ,

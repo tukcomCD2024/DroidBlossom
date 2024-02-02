@@ -21,7 +21,7 @@ interface CreateCapsuleViewModel {
 
     //Create2
     val create2Events: SharedFlow<Create2Event>
-    val skinId: StateFlow<Int>
+    val skinId: StateFlow<Long>
     val skins : StateFlow<List<Skin>>
     val isSearchOpen : StateFlow<Boolean>
 
@@ -91,6 +91,6 @@ interface CreateCapsuleViewModel {
     }
 
     enum class CapsuleTypeCreate(val title: String) {
-        SECRET("SECRET"), GROUP("GROUP"), PUBLIC("PUBLIC")
+        SECRET("SECRETE"), GROUP("GROUP"), PUBLIC("PUBLIC")
     }
 }

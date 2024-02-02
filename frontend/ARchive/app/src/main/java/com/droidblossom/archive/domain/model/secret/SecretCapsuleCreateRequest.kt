@@ -5,7 +5,7 @@ import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.FileName
 
 data class SecretCapsuleCreateRequest(
-    val capsuleSkinId: Int,
+    val capsuleSkinId: Long,
     val capsuleType: String,
     val content: String,
     val directory: String,
