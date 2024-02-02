@@ -236,14 +236,19 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     fun moveFinishh() {
-        val fileMetaDataLists = files.value.map { file ->
-            FileName(
-                extension = "image/jpeg",
-                fileName = file.name
-            )
+        Log.d("moveFinishh", "${files.value}")
+        if (files.value.isEmpty()){
+            secretCapsuleCreate()
+        }else{
+            val fileMetaDataLists = files.value.map { file ->
+                FileName(
+                    extension = "image/jpeg",
+                    fileName = file.name
+                )
+            }
+            val getS3UrlData = S3UrlRequest("capsuleContents", fileMetaDataLists)
+            getUploadUrls(getS3UrlData)
         }
-        val getS3UrlData = S3UrlRequest("capsuleContents", fileMetaDataLists)
-        getUploadUrls(getS3UrlData)
     }
 
     override fun makeFiles(files : List<File>){
@@ -374,8 +379,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
             uploadJobs.joinAll()
             Log.d("uploadFilesToS3", "All files uploaded successfully")
+            secretCapsuleCreate()
         }
     }
 
+    private fun secretCapsuleCreate(){
+        
+    }
 
 }
