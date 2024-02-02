@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
@@ -33,10 +34,14 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "capsule_id", nullable = false)
     private Capsule capsule;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     @Builder
-    private Image(String imageUrl, Capsule capsule) {
+    private Image(String imageUrl, Capsule capsule, Member member) {
         this.imageUrl = imageUrl;
         this.capsule = capsule;
+        this.member = member;
     }
-
 }
