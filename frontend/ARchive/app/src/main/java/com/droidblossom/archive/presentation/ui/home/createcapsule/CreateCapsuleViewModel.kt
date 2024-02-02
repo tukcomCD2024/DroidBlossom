@@ -74,6 +74,8 @@ interface CreateCapsuleViewModel {
     fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File)
     fun getUploadUrls(getS3UrlData : S3UrlRequest, files : List<File>)
 
+    fun makeFiles(files : List<File>)
+
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
     }
