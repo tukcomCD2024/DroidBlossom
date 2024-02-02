@@ -65,6 +65,16 @@ class CreateCapsule3Fragment :
             Log.d("위치", "위도 : $latitude, 경도 : $longitude")
             viewModel.coordToAddress(latitude = latitude, longitude = longitude)
         }
+
+        initView()
+    }
+
+    private fun initView(){
+        with(binding){
+            nextBtn.setOnClickListener {
+                viewModel.moveFinishh()
+            }
+        }
     }
 
     override fun observeData() {
