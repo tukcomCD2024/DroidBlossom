@@ -1,6 +1,5 @@
 package com.droidblossom.archive.presentation.ui.home
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -120,7 +119,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                             naverMap.locationTrackingMode = LocationTrackingMode.Follow
                         } else {
                             naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
-                            naverMap.minZoom = 1.0
+                            naverMap.minZoom = 6.0
                             naverMap.maxZoom = 18.0
                             naverMap.locationOverlay.circleRadius = 0
 
@@ -148,12 +147,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        naverMap.minZoom = 6.0
+        naverMap.maxZoom = 18.0
         LocationUtil(requireContext()).getCurrentLocation { latitude, longitude ->
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             naverMap.moveCamera(cameraUpdate)
 
         }
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         with(naverMap.locationOverlay) {
             isVisible = true
             icon = OverlayImage.fromResource(R.drawable.ic_my_location_24)
