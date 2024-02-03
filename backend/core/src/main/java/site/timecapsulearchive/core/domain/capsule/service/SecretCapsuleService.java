@@ -147,6 +147,10 @@ public class SecretCapsuleService {
     }
 
     private boolean capsuleNotOpened(SecretCapsuleDetailDto dto) {
+        if (dto.dueDate() == null) {
+            return false;
+        }
+
         return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now());
     }
 }
