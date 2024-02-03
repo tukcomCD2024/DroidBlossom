@@ -72,7 +72,6 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 HomeSnackBarBig(requireView(), "", "").show()
             }
             refreshBtn.setOnClickListener {
-                Log.d("티티","${naverMap.cameraPosition.zoom}")
 //                locationUtil.getCurrentLocation { latitude, longitude ->
 //                    viewModel.getNearbyCapsules(
 //                        latitude,
@@ -114,8 +113,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 viewModel.followLocation.collect {
                     if (::naverMap.isInitialized) {
                         if (it) {
-                            naverMap.maxZoom = 14.0
-                            naverMap.minZoom = 14.0
+                            naverMap.maxZoom = FIXZOOM
+                            naverMap.minZoom = FIXZOOM
                             naverMap.locationOverlay.circleRadius = 100
                             naverMap.locationOverlay.circleOutlineWidth = 1
                             naverMap.locationOverlay.circleColor =
@@ -125,8 +124,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                             naverMap.locationTrackingMode = LocationTrackingMode.Follow
                         } else {
                             naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
-                            naverMap.minZoom = 6.0
-                            naverMap.maxZoom = 18.0
+                            naverMap.minZoom = MINZOOM
+                            naverMap.maxZoom = MAXZOOM
                             naverMap.locationOverlay.circleRadius = 0
 
                         }
@@ -154,7 +153,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.minZoom = 6.0
-        naverMap.maxZoom = 18.0
+        naverMap.maxZoom = MAXZOOM
         LocationUtil(requireContext()).getCurrentLocation { latitude, longitude ->
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             naverMap.moveCamera(cameraUpdate)
@@ -197,6 +196,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
     }
 
+    // 구현은 했는데 이렇게하면 한국 전체에 생성된 캡슐을 찾기가 어려움
     private fun calculateDistanceInKilometers(): Double {
         val projection: Projection = naverMap.projection
 
@@ -241,6 +241,9 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+        const val MAXZOOM = 18.0
+        const val MINZOOM = 6.0
+        const val FIXZOOM = 14.0
     }
 
 }
