@@ -1,6 +1,7 @@
 package com.droidblossom.archive.data.repository
 
 import com.droidblossom.archive.data.dto.ResponseBody
+import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
@@ -25,8 +26,8 @@ class SecretRepositoryImpl @Inject constructor(
         return apiHandler({ api.getSecretCapsulePageApi(request.size, request.capsule_id) }) { response: ResponseBody<SecretCapsulePageResponseDto> -> response.result.toModel() }
     }
 
-    override suspend fun createSecretCapsule(request: SecretCapsuleCreateRequestDto): RetrofitResult<Nothing> {
-        return apiHandler({ api.postSecretCapsuleApi(request) }) { response: ResponseBody<SecretCapsuleCreateResponseDto> -> response.result.toModel() }
+    override suspend fun createSecretCapsule(request: SecretCapsuleCreateRequestDto): RetrofitResult<String> {
+        return apiHandler({ api.postSecretCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun getSecretCapsuleDetail(capsuleId: Int): RetrofitResult<SecretCapsuleDetail> {

@@ -96,7 +96,7 @@ class CreateCapsule3Fragment :
                     }
                     val fileList = fileDeferreds.awaitAll().filterNotNull()
                     viewModel.makeFiles(fileList)
-                    viewModel.moveFinishh()
+                    viewModel.moveFinish()
                 }
             }
         }

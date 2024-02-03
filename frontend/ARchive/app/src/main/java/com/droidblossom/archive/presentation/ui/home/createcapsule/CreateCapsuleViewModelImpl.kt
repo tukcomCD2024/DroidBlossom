@@ -213,6 +213,19 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override fun moveFinish() {
         Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
+            if (files.value.isEmpty()){
+                fileMetaDataLists = listOf()
+            }else{
+                fileMetaDataLists = files.value.map { file ->
+                    FileName(
+                        extension = IMAGEEXTENSION,
+                        fileName = file.name
+                    )
+                }
+                val getS3UrlData = S3UrlRequest(S3DIRECTORY, fileMetaDataLists)
+                getUploadUrls(getS3UrlData)
+            }
+
             when(capsuleTypeCreateIs.value){
                 CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC ->{
 
@@ -223,15 +236,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         SecretCapsuleCreateRequest(
                         capsuleSkinId = 1,
                         content = capsuleContent.value ,
-                        directory = "string",
+                        directory =  fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "noImage",
                         dueDate = dueTime.value,
-                        fileNames = listOf(FileName("string","string")),
+                        fileNames = fileMetaDataLists,
                         addressData = address.value,
                         latitude = capsuleLatitude.value,
                         longitude = capsuleLongitude.value ,
                         title = capsuleTitle.value,
                      )
                     ).collect{ result ->
+                        _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
                         Log.d("캡슐생성","${result}")
                     }
                 }
@@ -243,20 +257,20 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    fun moveFinishh() {
-        if (files.value.isEmpty()){
-            secretCapsuleCreate()
-        }else{
-            fileMetaDataLists = files.value.map { file ->
-                FileName(
-                    extension = IMAGEEXTENSION,
-                    fileName = file.name
-                )
-            }
-            val getS3UrlData = S3UrlRequest(S3DIRECTORY, fileMetaDataLists)
-            getUploadUrls(getS3UrlData)
-        }
-    }
+//    fun moveFinishh() {
+//        if (files.value.isEmpty()){
+//            secretCapsuleCreate()
+//        }else{
+//            fileMetaDataLists = files.value.map { file ->
+//                FileName(
+//                    extension = IMAGEEXTENSION,
+//                    fileName = file.name
+//                )
+//            }
+//            val getS3UrlData = S3UrlRequest(S3DIRECTORY, fileMetaDataLists)
+//            getUploadUrls(getS3UrlData)
+//        }
+//    }
 
     override fun makeFiles(files : List<File>){
         _files.value = files
@@ -386,46 +400,44 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
             uploadJobs.joinAll()
             Log.d("uploadFilesToS3", "All files uploaded successfully")
-            secretCapsuleCreate()
         }
     }
 
-    private fun secretCapsuleCreate(){
-        viewModelScope.launch{
-            when(capsuleTypeCreateIs.value){
-                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-                    Log.d("캡슐생성", " secretCapsuleCreate 하기 전 ")
-                    secretCapsuleCreateUseCase(
-                        SecretCapsuleCreateRequest(
-                            capsuleSkinId = 1,
-                            content = capsuleContent.value ,
-                            directory = fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
-                            dueDate = dueTime.value,
-                            fileNames = fileMetaDataLists,
-                            addressData = address.value,
-                            latitude = capsuleLatitude.value,
-                            longitude = capsuleLongitude.value ,
-                            title = capsuleTitle.value,
-                        )
-                    ).collect{ result ->
-                        result.onSuccess {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
-                            Log.d("캡슐생성","성공")
-                        }.onFail {
-                            
-                        }
-                    }
-
-                }
-                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
-                    Log.d("캡슐 타입", " 그룹 : ${capsuleTypeCreateIs.value}")
-
-                }
-                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
-                    Log.d("캡슐 타입", "공개 : ${capsuleTypeCreateIs.value}")
-                }
-            }
-        }
-    }
-
+//    private fun secretCapsuleCreate(){
+//        viewModelScope.launch{
+//            when(capsuleTypeCreateIs.value){
+//                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
+//                    Log.d("캡슐생성", " secretCapsuleCreate 하기 전 ")
+//                    secretCapsuleCreateUseCase(
+//                        SecretCapsuleCreateRequest(
+//                            capsuleSkinId = 1,
+//                            content = capsuleContent.value ,
+//                            directory = fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
+//                            dueDate = dueTime.value,
+//                            fileNames = fileMetaDataLists,
+//                            addressData = address.value,
+//                            latitude = capsuleLatitude.value,
+//                            longitude = capsuleLongitude.value ,
+//                            title = capsuleTitle.value,
+//                        )
+//                    ).collect{ result ->
+//                        result.onSuccess {
+//                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+//                            Log.d("캡슐생성","성공")
+//                        }.onFail {
+//
+//                        }
+//                    }
+//
+//                }
+//                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
+//                    Log.d("캡슐 타입", " 그룹 : ${capsuleTypeCreateIs.value}")
+//
+//                }
+//                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
+//                    Log.d("캡슐 타입", "공개 : ${capsuleTypeCreateIs.value}")
+//                }
+//            }
+//        }
+//    }
 }

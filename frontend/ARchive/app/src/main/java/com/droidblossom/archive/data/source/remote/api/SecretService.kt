@@ -27,7 +27,7 @@ interface SecretService {
     @POST("secret/capsules")
     suspend fun postSecretCapsuleApi(
         @Body request : SecretCapsuleCreateRequestDto
-    ) : Response<ResponseBody<SecretCapsuleCreateResponseDto>>
+    ) : Response<ResponseBody<String>>
 
     @GET("secret/capsules/{capsule_id}")
     suspend fun getSecretCapsuleDetailApi(
