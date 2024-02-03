@@ -17,7 +17,7 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
-import site.timecapsulearchive.core.infra.map.MapApiService;
+import site.timecapsulearchive.core.infra.map.service.MapApiService;
 
 @Service
 @RequiredArgsConstructor

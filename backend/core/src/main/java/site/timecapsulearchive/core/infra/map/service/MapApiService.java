@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.infra.map;
+package site.timecapsulearchive.core.infra.map.service;
 
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 
