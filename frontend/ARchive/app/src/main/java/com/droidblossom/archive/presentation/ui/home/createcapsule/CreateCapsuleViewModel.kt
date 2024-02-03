@@ -37,7 +37,8 @@ interface CreateCapsuleViewModel {
     val capsuleImgUrls: StateFlow<List<String>>
     val isSelectTimeCapsule : StateFlow<Boolean>
     val imgUris : StateFlow<List<Dummy>>
-    val files: StateFlow<List<File>>
+    val imageFiles: StateFlow<List<File>>
+    val videoFiles: StateFlow<List<File>>
 
     //DatePicker
     val year : MutableStateFlow<Int>
@@ -71,8 +72,6 @@ interface CreateCapsuleViewModel {
     fun submitUris(list:List<Dummy>)
     fun coordToAddress(latitude: Double, longitude: Double)
     fun getDueTime(tiem:String)
-
-    fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File)
     fun getUploadUrls(getS3UrlData : S3UrlRequest)
 
     fun makeFiles(files : List<File>)
