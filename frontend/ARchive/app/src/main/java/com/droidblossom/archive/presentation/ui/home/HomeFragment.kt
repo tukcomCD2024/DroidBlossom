@@ -2,8 +2,8 @@ package com.droidblossom.archive.presentation.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,7 +22,6 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
@@ -34,11 +33,11 @@ import kotlin.random.Random
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home),
-    OnMapReadyCallback{
+    OnMapReadyCallback {
 
     override val viewModel: HomeViewModelImpl by viewModels<HomeViewModelImpl>()
 
-    private lateinit var naverMap : NaverMap
+    private lateinit var naverMap: NaverMap
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
 
@@ -50,7 +49,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     }
 
     private fun initView() {
-        with(binding){
+        with(binding) {
             vm = viewModel
 
             makeGroupCapsuleBtn.setOnClickListener {
@@ -70,7 +69,12 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             }
             locationBtn.setOnClickListener {
                 locationUtil.getCurrentLocation { latitude, longitude ->
-                    viewModel.getNearbyCapsules(latitude, longitude, 500.0, viewModel.filterCapsuleSelect.value.toString())
+                    viewModel.getNearbyCapsules(
+                        latitude,
+                        longitude,
+                        500.0,
+                        viewModel.filterCapsuleSelect.value.toString()
+                    )
                 }
             }
         }
@@ -86,7 +90,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.homeEvents.collect { event ->
                     when (event) {
@@ -100,9 +104,35 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 }
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.followLocation.collect {
+                    if (::naverMap.isInitialized) {
+                        if (it) {
+                            naverMap.maxZoom = 14.0
+                            naverMap.minZoom = 14.0
+                            naverMap.locationOverlay.circleRadius = 100
+                            naverMap.locationOverlay.circleOutlineWidth = 1
+                            naverMap.locationOverlay.circleColor =
+                                ContextCompat.getColor(requireContext(), R.color.main_1_alpha20)
+                            naverMap.locationOverlay.circleOutlineColor =
+                                ContextCompat.getColor(requireContext(), R.color.main_1)
+                            naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                        } else {
+                            naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+                            naverMap.minZoom = 1.0
+                            naverMap.maxZoom = 18.0
+                            naverMap.locationOverlay.circleRadius = 0
+
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
-    private fun initMap(){
+    private fun initMap() {
         val fm = childFragmentManager
         val mapFragment = fm.findFragmentById(R.id.map_fragment) as MapFragment?
             ?: MapFragment.newInstance().also {
@@ -121,22 +151,19 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         LocationUtil(requireContext()).getCurrentLocation { latitude, longitude ->
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             naverMap.moveCamera(cameraUpdate)
-//            CircleOverlay(LatLng(latitude, longitude) , 5000.0).apply {
-//                color =Color.RED
-//                map =naverMap
-//            }
+
         }
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         with(naverMap.locationOverlay) {
             isVisible = true
             icon = OverlayImage.fromResource(R.drawable.ic_my_location_24)
-            //circleRadius = 100
         }
         addMarker(CapsuleType.SECRET)
         addMarker(CapsuleType.GROUP)
         addMarker(CapsuleType.PUBLIC)
     }
 
-    private fun addMarker(capsuleType : CapsuleType){
+    private fun addMarker(capsuleType: CapsuleType) {
         val randomLatitude = Random.nextDouble(33.0, 38.0)
         val randomLongitude = Random.nextDouble(126.0, 129.0)
 
@@ -164,11 +191,16 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
-        if (locationSource.onRequestPermissionsResult(requestCode, permissions,
-                grantResults)) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (locationSource.onRequestPermissionsResult(
+                requestCode, permissions,
+                grantResults
+            )
+        ) {
             if (!locationSource.isActivated) { // 권한 거부됨
                 naverMap.locationTrackingMode = LocationTrackingMode.None
             }
@@ -178,7 +210,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     }
 
 
-    enum class CapsuleType{
+    enum class CapsuleType {
         SECRET,
         GROUP,
         PUBLIC
