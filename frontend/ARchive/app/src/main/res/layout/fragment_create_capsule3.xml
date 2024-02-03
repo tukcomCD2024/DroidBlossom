@@ -266,7 +266,6 @@
             android:layout_marginBottom="@dimen/margin"
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
-            android:onClick="@{()->vm.moveFinish()}"
             android:text="생성하기"
             android:textAppearance="@style/TextAppearance.App.button"
             android:textColor="@color/white"

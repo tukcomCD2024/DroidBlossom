@@ -18,25 +18,25 @@ import retrofit2.http.Query
 
 interface SecretService {
 
-    @GET("secrete/capsules")
+    @GET("secret/capsules")
     suspend fun getSecretCapsulePageApi(
         @Query("size") size : Int,
         @Query("capsule_id") capsuleId: Int
     ) : Response<ResponseBody<SecretCapsulePageResponseDto>>
 
-    @POST("secrete/capsules")
+    @POST("secret/capsules")
     suspend fun postSecretCapsuleApi(
         @Body request : SecretCapsuleCreateRequestDto
-    ) : Response<ResponseBody<SecretCapsuleCreateResponseDto>>
+    ) : Response<ResponseBody<String>>
 
-    @GET("secrete/capsules/{capsule_id}")
+    @GET("secret/capsules/{capsule_id}")
     suspend fun getSecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
 
     //미정 (1/27 기준)
-    @PATCH("secrete/capsules/{capsule_id}")
-    suspend fun modifySecretCapsuleDetailApi(
+    @PATCH("secret/capsules/{capsule_id}")
+    suspend fun modifySecretCapsuleApi(
         @Path("capsule_id") capsuleId : Int,
         @Body request : SecretCapsuleModifyRequestDto
     ) : Response<ResponseBody<SecretCapsuleModifyResponseDto>>

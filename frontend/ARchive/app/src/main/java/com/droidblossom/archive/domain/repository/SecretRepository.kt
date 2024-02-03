@@ -12,7 +12,7 @@ interface SecretRepository {
 
     suspend fun getSecretCapsulePage (request: SecretCapsulePageRequestDto) : RetrofitResult<SecretCapsulePage>
 
-    suspend fun createSecretCapsule (request: SecretCapsuleCreateRequestDto) : RetrofitResult<Nothing>
+    suspend fun createSecretCapsule (request: SecretCapsuleCreateRequestDto) : RetrofitResult<String>
 
     suspend fun getSecretCapsuleDetail (capsuleId: Int) : RetrofitResult<SecretCapsuleDetail>
 

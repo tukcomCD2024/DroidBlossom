@@ -21,6 +21,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -34,7 +35,6 @@ class S3Util @Inject constructor(private val context: Context) {
     private val secretKey = BuildConfig.S3SECRETKEY
     private var region: Region = Region.getRegion(Regions.AP_NORTHEAST_2)
     private var bucketName = BuildConfig.S3BUCKET
-
     fun uploadFile(fileName: String, file: File) {
         val awsCredentials: AWSCredentials = BasicAWSCredentials(accessKey, secretKey)
         val s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
@@ -65,32 +65,30 @@ class S3Util @Inject constructor(private val context: Context) {
             }
         })
     }
-    suspend fun putObjectWithPresignedUrl(fileName: String, file: File) = withContext(Dispatchers.IO) {
-        // AWS Credentials 설정
-        val awsCredentials: AWSCredentials = BasicAWSCredentials(BuildConfig.S3ACCESSKEY, BuildConfig.S3SECRETKEY)
-        val s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
 
-        val presignedPutRequest = GeneratePresignedUrlRequest(BuildConfig.S3BUCKET, fileName)
-            .withMethod(HttpMethod.PUT)
-            .withExpiration(Date(System.currentTimeMillis() + 3600000)) // 1시간 후 만료
-
-        val presignedUrl = s3Client.generatePresignedUrl(presignedPutRequest)
+    suspend fun uploadImageWithPresignedUrl(file: File, signedUrl: String) = withContext(Dispatchers.IO) {
+        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
 
         val request = Request.Builder()
-            .url(presignedUrl.toURI().toURL())
-            .put(RequestBody.create("application/octet-stream".toMediaTypeOrNull(), file))
+            .url(signedUrl)
+            .put(requestBody)
             .build()
 
         try {
             val response = OkHttpClient().newCall(request).execute()
+
             if (response.isSuccessful) {
-                Log.d("S3Upload", "File uploaded successfully: $fileName")
+                Log.d("S3Upload", "File uploaded successfully: ${file.name}")
             } else {
-                throw IOException("Failed to upload file: ${response}")
+                val errorBody = response.body?.string() ?: "No error details"
+                Log.e("S3Upload", "Failed to upload file: ${file.name}, Response: $errorBody")
+                throw IOException("Failed to upload file: ${file.name}, Response: $errorBody")
             }
-        } catch (e: Exception) {
-            Log.e("S3Upload", "File upload failed: $fileName", e)
+        }catch (e:Exception){
+            Log.e("S3Upload", "File upload failed: ${file.name}", e)
+
         }
+
     }
 }
 

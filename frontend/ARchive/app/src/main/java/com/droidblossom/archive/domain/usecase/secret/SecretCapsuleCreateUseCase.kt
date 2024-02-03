@@ -16,7 +16,7 @@ class SecretCapsuleCreateUseCase @Inject constructor(
     private val repository: SecretRepository
 ) {
     suspend operator fun invoke(request: SecretCapsuleCreateRequest) =
-        flow<RetrofitResult<SecretCapsulePage>> {
+        flow<RetrofitResult<String>> {
             try {
                 emit(repository.createSecretCapsule(request.toDto()).onSuccess {
 

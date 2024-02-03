@@ -1,12 +1,16 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.model.s3.S3UrlRequest
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.io.File
 
 interface CreateCapsuleViewModel {
     var groupTypeInt: Int
@@ -18,7 +22,7 @@ interface CreateCapsuleViewModel {
 
     //Create2
     val create2Events: SharedFlow<Create2Event>
-    val skinId: StateFlow<Int>
+    val skinId: StateFlow<Long>
     val skins : StateFlow<List<Skin>>
     val isSearchOpen : StateFlow<Boolean>
 
@@ -33,6 +37,7 @@ interface CreateCapsuleViewModel {
     val capsuleImgUrls: StateFlow<List<String>>
     val isSelectTimeCapsule : StateFlow<Boolean>
     val imgUris : StateFlow<List<Dummy>>
+    val files: StateFlow<List<File>>
 
     //DatePicker
     val year : MutableStateFlow<Int>
@@ -41,6 +46,11 @@ interface CreateCapsuleViewModel {
     val hour : MutableStateFlow<Int>
     val min : MutableStateFlow<Int>
     val isSelectTime : StateFlow<Boolean>
+
+    val capsuleLongitude : StateFlow<Double>
+    val capsuleLatitude : StateFlow<Double>
+    val dueTime : StateFlow<String>
+    val address : StateFlow<AddressData>
 
     fun move1To2()
     fun choseCapsuleType(type: Int)
@@ -60,6 +70,12 @@ interface CreateCapsuleViewModel {
     fun addImgUris(list: List<Dummy>)
     fun submitUris(list:List<Dummy>)
     fun coordToAddress(latitude: Double, longitude: Double)
+    fun getDueTime(tiem:String)
+
+    fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File)
+    fun getUploadUrls(getS3UrlData : S3UrlRequest)
+
+    fun makeFiles(files : List<File>)
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
@@ -76,9 +92,10 @@ interface CreateCapsuleViewModel {
         object ClickDate : Create3Event()
         object ClickImgUpLoad : Create3Event()
         object CLickSingleImgUpLoad : Create3Event()
+        data class ShowToastMessage(val message : String) : Create3Event()
     }
 
     enum class CapsuleTypeCreate(val title: String) {
-        SECRET("SECRET"), GROUP("GROUP"), PUBLIC("PUBLIC")
+        SECRET("SECRETE"), GROUP("GROUP"), PUBLIC("PUBLIC")
     }
 }

@@ -1,35 +1,51 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.common.Skin
+import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
+import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.FileUtils
+import com.droidblossom.archive.util.S3Util
+import com.droidblossom.archive.util.onError
+import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
-    private val toAddressUseCase: ToAddressUseCase,
+    private val s3UrlsGetUseCase : S3UrlsGetUseCase,
+    private val s3Util: S3Util,
 ) : BaseViewModel(), CreateCapsuleViewModel {
+
+    companion object{
+        const val S3DIRECTORY = "capsuleContents"
+        const val IMAGEEXTENSION = "image/jpeg"
+    }
+
     override var groupTypeInt: Int = 1
     private val _capsuleTypeCreateIs = MutableStateFlow(CreateCapsuleViewModel.CapsuleTypeCreate.SECRET)
     override val capsuleTypeCreateIs: StateFlow<CreateCapsuleViewModel.CapsuleTypeCreate>
@@ -48,8 +64,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _create2Events = MutableSharedFlow<CreateCapsuleViewModel.Create2Event>()
     override val create2Events: SharedFlow<CreateCapsuleViewModel.Create2Event>
         get() = _create2Events
-    private val _skinId = MutableStateFlow<Int>(0)
-    override val skinId: StateFlow<Int>
+    private val _skinId = MutableStateFlow<Long>(0)
+    override val skinId: StateFlow<Long>
         get() = _skinId
     private val _skins = MutableStateFlow(
         listOf(Skin(1, "", false), Skin(2, "", false), Skin(3, "", false))
@@ -97,6 +113,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
 
+    private val _files = MutableStateFlow<List<File>>(emptyList())
+    override val files: StateFlow<List<File>> = _files
+
     //dateDialog
     override val year = MutableStateFlow<Int>(DateUtils.getCurrentYear())
     override val month: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMonth())
@@ -107,6 +126,21 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val isSelectTime: StateFlow<Boolean>
         get() = _isSelectTime
 
+    private val _capsuleLongitude = MutableStateFlow(0.0)
+    override val capsuleLongitude: StateFlow<Double>
+        get() = _capsuleLongitude
+
+    private val _capsuleLatitude =MutableStateFlow(0.0)
+    override val capsuleLatitude: StateFlow<Double>
+        get() = _capsuleLatitude
+    private val _dueTime = MutableStateFlow("")
+    override val dueTime: StateFlow<String>
+        get() = _dueTime
+    private val _address = MutableStateFlow(AddressData())
+    override val address: StateFlow<AddressData>
+        get() = _address
+
+    private var fileMetaDataLists = listOf<FileName>()
     //create1
     override fun move1To2() {
         viewModelScope.launch {
@@ -138,7 +172,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-            _skinId.emit(_skins.value.find { it.isClicked }?.skinId ?: 0)
+            _skinId.emit(_skins.value.find { it.isClicked }?.skinId?.toLong() ?: 0.toLong())
         }
         viewModelScope.launch {
             _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
@@ -175,26 +209,43 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     //creat3
     override fun moveFinish() {
+        Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
+            if (files.value.isEmpty()){
+                fileMetaDataLists = listOf()
+            }else{
+                fileMetaDataLists = files.value.map { file ->
+                    FileName(
+                        extension = IMAGEEXTENSION,
+                        fileName = file.name
+                    )
+                }
+                val getS3UrlData = S3UrlRequest(S3DIRECTORY, fileMetaDataLists)
+                getUploadUrls(getS3UrlData)
+            }
+
             when(capsuleTypeCreateIs.value){
                 CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC ->{
 
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-//                    secretCapsuleCreateUseCase(SecretCapsuleCreateRequest(
-//                        capsuleSkinId = 1,
-//                        capsuleType = capsuleTypeCreateIs.value.title,
-//                        content = capsuleContent.value ,
-//                        directory = ,
-//                        dueDate = ,
-//                        fileNames = ,
-//                        addressData = ,
-//                        latitude = ,
-//                        longitude = ,
-//                        title = capsuleTitle.value,
-//                     )).collect{ result ->
-//
-//                    }
+                    Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
+                    secretCapsuleCreateUseCase(
+                        SecretCapsuleCreateRequest(
+                        capsuleSkinId = 1,
+                        content = capsuleContent.value ,
+                        directory =  fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
+                        dueDate = dueTime.value,
+                        fileNames = fileMetaDataLists,
+                        addressData = address.value,
+                        latitude = capsuleLatitude.value,
+                        longitude = capsuleLongitude.value ,
+                        title = capsuleTitle.value,
+                     )
+                    ).collect{ result ->
+                        _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                        Log.d("캡슐생성","${result}")
+                    }
                 }
                 CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
 
@@ -204,6 +255,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun makeFiles(files : List<File>){
+        _files.value = files
+    }
     override fun moveLocation() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickLocation)
@@ -212,13 +266,21 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     override fun coordToAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
+            _capsuleLatitude.value = latitude
+            _capsuleLongitude.value = longitude
             getAddressUseCase(latitude, longitude).collect{result ->
                 result.onSuccess {
                     _capsuleLocationName.emit(it.fullRoadAddressName)
+                    _address.emit(it)
                 }.onFail {
-                    _capsuleLocationName.emit("에러")
+                    _capsuleLocationName.emit("위치를 찾을 수 없음")
                 }
             }
+        }
+    }
+    override fun getDueTime(time: String) {
+        viewModelScope.launch {
+            _dueTime.emit(time)
         }
     }
 
@@ -271,5 +333,57 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch { _imgUris.emit(submitList) }
     }
 
+    override fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File){
+        viewModelScope.launch {
+            s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
+                result.onSuccess {
+                    uploadFileToS3(file,it.preSignedUrls[0])
+                }.onFail {
+                    Log.d("getUploadUrl","getUploadUrl 실패")
+                }
+            }
+        }
+    }
+
+    private fun uploadFileToS3(file: File, signedUrl: String){
+        viewModelScope.launch(Dispatchers.IO){
+            try {
+                s3Util.uploadImageWithPresignedUrl(file,signedUrl)
+            }catch (e:Exception){
+                Log.d("uploadFileToS3", "uploadFileToS3 : ${e.message}")
+
+            }
+        }
+    }
+
+    override fun getUploadUrls(getS3UrlData : S3UrlRequest){
+        viewModelScope.launch {
+            s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
+                result.onSuccess {
+                    uploadFilesToS3(files.value,it.preSignedUrls)
+                }.onFail {
+                    Log.d("getUploadUrls","getUploadUrl 실패")
+                }
+            }
+        }
+    }
+
+    private fun uploadFilesToS3(files: List<File>, signedUrls: List<String>) {
+        viewModelScope.launch {
+            val uploadJobs = files.zip(signedUrls).map { (file, url) ->
+                launch(Dispatchers.IO) {
+                    try {
+                        s3Util.uploadImageWithPresignedUrl(file, url)
+                        Log.d("uploadFilesToS3", "File ${file.name} uploaded successfully")
+                    } catch (e: Exception) {
+                        Log.e("uploadFilesToS3", "Failed to upload ${file.name}: ${e.message}")
+                    }
+                }
+            }
+
+            uploadJobs.joinAll()
+            Log.d("uploadFilesToS3", "All files uploaded successfully")
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,9 +15,12 @@ import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsule
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 @AndroidEntryPoint
-class DatePickerDialogFragment(private val onClick: (String) -> Unit) :
+class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
     BaseDialogFragment<FragmentDatePickerDialogBinding>(R.layout.fragment_date_picker_dialog) {
 
     private val viewModel: CreateCapsuleViewModel by viewModels<CreateCapsuleViewModelImpl>()
@@ -74,7 +78,22 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit) :
             if (!viewModel.isSelectTime.value) {
                 viewModel.goSelectTime()
             } else {
-                onClick("${viewModel.year.value}/${viewModel.month.value}/${viewModel.day.value}  ${viewModel.hour.value}:${viewModel.min.value}")
+                onClick(
+                    "%04d-%02d-%02d %02d:%02d".format(
+                        viewModel.year.value,
+                        viewModel.month.value,
+                        viewModel.day.value,
+                        viewModel.hour.value,
+                        viewModel.min.value
+                    ),
+                    "%04d-%02d-%02dT%02d:%02d:01.001Z".format(
+                        viewModel.year.value,
+                        viewModel.month.value,
+                        viewModel.day.value,
+                        viewModel.hour.value,
+                        viewModel.min.value
+                    )
+                )
                 this.dismiss()
             }
         }
@@ -99,9 +118,9 @@ class DatePickerDialogFragment(private val onClick: (String) -> Unit) :
                             }
                     }
                     binding.monthPicker.apply {
-                        minValue = if (viewModel.year.value==currentYear){
+                        minValue = if (viewModel.year.value == currentYear) {
                             currentMonth
-                        }else {
+                        } else {
                             1
                         }
                     }

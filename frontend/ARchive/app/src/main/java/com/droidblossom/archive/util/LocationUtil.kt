@@ -6,37 +6,42 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Looper
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 
 class LocationUtil(private val context: Context) {
-    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
     fun getCurrentLocation(onLocationReceived: (Double, Double) -> Unit) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // 권한이 없음
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // 권한이 없는 경우 처리
             return
         }
 
-        val locationListener = LocationListener { location ->
-            onLocationReceived(location.latitude, location.longitude)
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 5000
         }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, locationListener)
-
-        val lastKnownLocationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        if (lastKnownLocationGPS != null) {
-            onLocationReceived(lastKnownLocationGPS.latitude, lastKnownLocationGPS.longitude)
-            locationManager.removeUpdates(locationListener)
-            return
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    onLocationReceived(location.latitude, location.longitude)
+                    stopLocationUpdates(this)
+                }
+            }
         }
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, locationListener)
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+    }
 
-        val lastKnownLocationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        if (lastKnownLocationNetwork != null) {
-            onLocationReceived(lastKnownLocationNetwork.latitude, lastKnownLocationNetwork.longitude)
-            locationManager.removeUpdates(locationListener)
-        }
+    // 위치 업데이트를 멈추는 함수
+    fun stopLocationUpdates(locationCallback: LocationCallback) {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
