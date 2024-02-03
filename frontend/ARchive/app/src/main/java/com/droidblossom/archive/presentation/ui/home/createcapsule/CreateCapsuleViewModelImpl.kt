@@ -37,7 +37,6 @@ import javax.inject.Inject
 class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
-    private val toAddressUseCase: ToAddressUseCase,
     private val s3UrlsGetUseCase : S3UrlsGetUseCase,
     private val s3Util: S3Util,
 ) : BaseViewModel(), CreateCapsuleViewModel {
@@ -209,7 +208,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
 
     //creat3
-    /**/
     override fun moveFinish() {
         Log.d("캡슐생성","${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
@@ -236,7 +234,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         SecretCapsuleCreateRequest(
                         capsuleSkinId = 1,
                         content = capsuleContent.value ,
-                        directory =  fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "noImage",
+                        directory =  fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
                         dueDate = dueTime.value,
                         fileNames = fileMetaDataLists,
                         addressData = address.value,
@@ -257,21 +255,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-//    fun moveFinishh() {
-//        if (files.value.isEmpty()){
-//            secretCapsuleCreate()
-//        }else{
-//            fileMetaDataLists = files.value.map { file ->
-//                FileName(
-//                    extension = IMAGEEXTENSION,
-//                    fileName = file.name
-//                )
-//            }
-//            val getS3UrlData = S3UrlRequest(S3DIRECTORY, fileMetaDataLists)
-//            getUploadUrls(getS3UrlData)
-//        }
-//    }
-
     override fun makeFiles(files : List<File>){
         _files.value = files
     }
@@ -290,7 +273,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                     _capsuleLocationName.emit(it.fullRoadAddressName)
                     _address.emit(it)
                 }.onFail {
-                    _capsuleLocationName.emit("에러")
+                    _capsuleLocationName.emit("위치를 찾을 수 없음")
                 }
             }
         }
@@ -403,41 +386,4 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-//    private fun secretCapsuleCreate(){
-//        viewModelScope.launch{
-//            when(capsuleTypeCreateIs.value){
-//                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-//                    Log.d("캡슐생성", " secretCapsuleCreate 하기 전 ")
-//                    secretCapsuleCreateUseCase(
-//                        SecretCapsuleCreateRequest(
-//                            capsuleSkinId = 1,
-//                            content = capsuleContent.value ,
-//                            directory = fileMetaDataLists.takeUnless { it.isEmpty() }?.let { S3DIRECTORY } ?: "",
-//                            dueDate = dueTime.value,
-//                            fileNames = fileMetaDataLists,
-//                            addressData = address.value,
-//                            latitude = capsuleLatitude.value,
-//                            longitude = capsuleLongitude.value ,
-//                            title = capsuleTitle.value,
-//                        )
-//                    ).collect{ result ->
-//                        result.onSuccess {
-//                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
-//                            Log.d("캡슐생성","성공")
-//                        }.onFail {
-//
-//                        }
-//                    }
-//
-//                }
-//                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
-//                    Log.d("캡슐 타입", " 그룹 : ${capsuleTypeCreateIs.value}")
-//
-//                }
-//                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
-//                    Log.d("캡슐 타입", "공개 : ${capsuleTypeCreateIs.value}")
-//                }
-//            }
-//        }
-//    }
 }
