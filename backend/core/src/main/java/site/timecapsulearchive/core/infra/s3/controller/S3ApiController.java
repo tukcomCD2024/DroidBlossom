@@ -28,7 +28,7 @@ public class S3ApiController implements S3Api {
         @AuthenticationPrincipal final Long memberId,
         @RequestBody @Valid final S3PreSignedUrlRequest request
     ) {
-        S3PreSignedUrlDto s3PreSignedUrlsDto = s3Service.getS3PreSignedUrls(
+        S3PreSignedUrlDto dto = s3Service.getS3PreSignedUrls(
             memberId,
             mapper.s3PreSignedUrlRequestToDto(request)
         );
@@ -36,7 +36,7 @@ public class S3ApiController implements S3Api {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                S3PreSignedUrlResponse.from(s3PreSignedUrlsDto.preSignedUrls())
+                S3PreSignedUrlResponse.from(dto.preSignedImageUrls(), dto.preSignedVideoUrls())
             )
         );
     }

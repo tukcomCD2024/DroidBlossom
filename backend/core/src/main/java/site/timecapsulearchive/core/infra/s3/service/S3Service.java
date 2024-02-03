@@ -1,7 +1,8 @@
 package site.timecapsulearchive.core.infra.s3.service;
 
 import java.time.Duration;
-import java.util.stream.Stream;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.infra.s3.config.S3Config;
 import site.timecapsulearchive.core.infra.s3.dto.S3PreSignedUrlDto;
@@ -39,28 +40,42 @@ public class S3Service {
         final Long memberId,
         final S3PreSignedUrlRequestDto dto
     ) {
-        Stream<String> imageUrlStream = dto.imageUrls()
+        return S3PreSignedUrlDto.from(
+            getPreSignedImageUrls(memberId, dto),
+            getPreSignedVideoUrls(memberId, dto)
+        );
+    }
+
+    private List<String> getPreSignedImageUrls(Long memberId, S3PreSignedUrlRequestDto dto) {
+        if (dto.imageUrls() == null || dto.imageUrls().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return dto.imageUrls()
             .stream()
             .map(fileName -> createS3PreSignedUrl(
                 memberId,
                 dto.directory(),
                 fileName,
                 IMAGE_CONTENT_TYPE
-            ));
+            ))
+            .toList();
+    }
 
-        Stream<String> videoUrlStream = dto.videoUrls()
+    private List<String> getPreSignedVideoUrls(Long memberId, S3PreSignedUrlRequestDto dto) {
+        if (dto.videoUrls() == null || dto.videoUrls().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return dto.videoUrls()
             .stream()
             .map(fileName -> createS3PreSignedUrl(
                 memberId,
                 dto.directory(),
                 fileName,
                 VIDEO_CONTENT_TYPE
-            ));
-
-        return S3PreSignedUrlDto.from(
-            Stream.concat(imageUrlStream, videoUrlStream)
-                .toList()
-        );
+            ))
+            .toList();
     }
 
     private String createS3PreSignedUrl(

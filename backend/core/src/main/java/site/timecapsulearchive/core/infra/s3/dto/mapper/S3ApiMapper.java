@@ -10,8 +10,8 @@ public class S3ApiMapper {
     public S3PreSignedUrlRequestDto s3PreSignedUrlRequestToDto(S3PreSignedUrlRequest request) {
         return S3PreSignedUrlRequestDto.from(
             request.directory(),
-            request.imageUrls(),
-            request.videoUrls()
+            request.imageNames(),
+            request.videoNames()
         );
     }
 }
