@@ -91,9 +91,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val capsuleLocationName: StateFlow<String>
         get() = _capsuleLocationName
 
-    private val _capsuleDueDate = MutableStateFlow("")
-    override val capsuleDueDate: StateFlow<String>
-        get() = _capsuleDueDate
+    override val capsuleDueDate: MutableStateFlow<String> =MutableStateFlow("")
 
     private val _capsuleLocation = MutableStateFlow(Location(0.0, 0.0))
     override val capsuleLocation: StateFlow<Location>
@@ -336,7 +334,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     override fun selectCapsule() {
-        viewModelScope.launch { _isSelectTimeCapsule.emit(false) }
+        viewModelScope.launch {
+            _isSelectTimeCapsule.emit(false)
+            _dueTime.emit("")
+            capsuleDueDate.emit("")
+        }
     }
 
     override fun addImgUris(list: List<Dummy>) {

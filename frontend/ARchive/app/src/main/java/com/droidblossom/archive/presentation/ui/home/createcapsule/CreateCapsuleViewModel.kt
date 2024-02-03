@@ -31,7 +31,7 @@ interface CreateCapsuleViewModel {
     val capsuleTitle: MutableStateFlow<String>
     val capsuleContent: MutableStateFlow<String>
     val capsuleLocationName: StateFlow<String>
-    val capsuleDueDate: StateFlow<String>
+    val capsuleDueDate: MutableStateFlow<String>
     val capsuleLocation : StateFlow<Location>
     val capsuleImg : StateFlow<List<FileName>>
     val capsuleImgUrls: StateFlow<List<String>>

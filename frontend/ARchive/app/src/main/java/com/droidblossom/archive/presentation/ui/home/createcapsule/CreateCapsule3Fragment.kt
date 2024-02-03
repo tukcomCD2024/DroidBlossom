@@ -80,8 +80,8 @@ class CreateCapsule3Fragment :
         initView()
     }
 
-    private fun initView(){
-        with(binding){
+    private fun initView() {
+        with(binding) {
             nextBtn.setOnClickListener {
 
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
@@ -90,7 +90,11 @@ class CreateCapsule3Fragment :
                     val fileDeferreds = viewModel.imgUris.value.mapIndexedNotNull { index, uri ->
                         uri.string?.let { uriString ->
                             async {
-                                FileUtils.convertUriToJpegFile(requireContext(), uriString, "${currentTime}_$index")
+                                FileUtils.convertUriToJpegFile(
+                                    requireContext(),
+                                    uriString,
+                                    "${currentTime}_$index"
+                                )
                             }
                         }
                     }
@@ -109,11 +113,14 @@ class CreateCapsule3Fragment :
                     when (it) {
                         CreateCapsuleViewModel.Create3Event.ClickDate -> {
                             //날짜 Dialog 디자인?
-                            val sheet = DatePickerDialogFragment{ time, server ->
-                                binding.timeT.text = time
+                            val sheet = DatePickerDialogFragment { time, server ->
+                                viewModel.capsuleDueDate.value = time
                                 viewModel.getDueTime(server)
                             }
-                            sheet.show((activity as CreateCapsuleActivity).supportFragmentManager ,  sheet.tag)
+                            sheet.show(
+                                (activity as CreateCapsuleActivity).supportFragmentManager,
+                                sheet.tag
+                            )
 
                         }
 
@@ -146,6 +153,14 @@ class CreateCapsule3Fragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.imgUris.collect {
                     imgRVA.submitList(it)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.capsuleDueDate.collect {
+                    binding.timeT.text = it
                 }
             }
         }
