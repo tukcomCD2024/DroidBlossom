@@ -85,7 +85,7 @@ public class CapsuleService {
             return CapsuleOpenedResponse.from(notOpened);
         }
 
-        findCapsule.updateOpened();
+        capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
         return CapsuleOpenedResponse.from(opened);
     }
 }
