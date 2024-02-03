@@ -12,8 +12,8 @@ import site.timecapsulearchive.core.infra.s3.service.S3UrlGenerator;
 @RequiredArgsConstructor
 public class VideoService {
 
-    private final S3UrlGenerator s3UrlGenerator;
     private final VideoQueryRepository videoQueryRepository;
+    private final S3UrlGenerator s3UrlGenerator;
 
     public void saveVideo(MediaSaveDto dto) {
         List<Video> videos = dto.fileNames().stream()
