@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,8 @@ import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
 import site.timecapsulearchive.core.domain.auth.repository.MemberInfoCacheRepository;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
+import site.timecapsulearchive.core.global.security.jwt.TokenParseResult;
+import site.timecapsulearchive.core.global.security.jwt.TokenType;
 
 @Service
 @RequiredArgsConstructor
@@ -60,14 +63,16 @@ public class TokenService {
      * @param refreshToken 리프레시 토큰
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
-    public TokenResponse reIssueToken(final String refreshToken)
-        throws AlreadyReIssuedTokenException {
-        String oldKey = jwtFactory.getSubject(refreshToken);
-        MemberInfo memberInfo = memberInfoCacheRepository.getMemberInfo(oldKey)
+    public TokenResponse reIssueToken(final String refreshToken) {
+        TokenParseResult tokenParseResult = jwtFactory.parse(
+            refreshToken,
+            List.of(TokenType.REFRESH)
+        );
+        MemberInfo memberInfo = memberInfoCacheRepository.getMemberInfo(tokenParseResult.subject())
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
         String newKey = String.valueOf(UUID.randomUUID());
-        memberInfoCacheRepository.rename(oldKey, newKey);
+        memberInfoCacheRepository.rename(tokenParseResult.subject(), newKey);
 
         return createTokenResponse(memberInfo.memberId(), newKey);
     }
