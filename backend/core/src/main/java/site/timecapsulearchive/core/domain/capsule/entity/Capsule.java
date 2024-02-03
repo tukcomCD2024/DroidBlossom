@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -103,5 +104,13 @@ public class Capsule extends BaseEntity {
         this.group = null;
         this.member = member;
         this.capsuleSkin = capsuleSkin;
+    }
+
+    public boolean isNotCapsuleOpened() {
+        return !dueDate.isBefore(ZonedDateTime.now(ZoneOffset.UTC));
+    }
+
+    public void updateOpened() {
+        this.isOpened = true;
     }
 }
