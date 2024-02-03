@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.service;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -147,6 +148,9 @@ public class SecretCapsuleService {
     }
 
     private boolean capsuleNotOpened(SecretCapsuleDetailDto dto) {
-        return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now());
+        if (dto.dueDate() == null) {
+            return false;
+        }
+        return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }
