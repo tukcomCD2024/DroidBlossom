@@ -15,7 +15,7 @@ import site.timecapsulearchive.core.global.common.valid.ImageExtensionValidator;
 @Documented
 public @interface Image {
 
-    String message() default "이미지는 png만 지원합니다.";
+    String message() default "이미지는 jpeg만 지원합니다.";
 
     Class<?>[] groups() default {};
 
