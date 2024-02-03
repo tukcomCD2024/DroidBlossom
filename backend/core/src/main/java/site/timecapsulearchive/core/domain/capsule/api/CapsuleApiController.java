@@ -35,8 +35,7 @@ public class CapsuleApiController implements CapsuleApi {
         @RequestParam(value = "latitude") double latitude,
         @RequestParam(value = "longitude") double longitude,
         @RequestParam(value = "distance") double distance,
-        @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL"
-        ) CapsuleType capsuleType
+        @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") CapsuleType capsuleType
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(

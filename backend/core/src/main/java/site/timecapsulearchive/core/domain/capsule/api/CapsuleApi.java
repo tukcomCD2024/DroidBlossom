@@ -48,7 +48,7 @@ public interface CapsuleApi {
 
     @Operation(
         summary = "현재 사용자 위치 기준 캡슐 목록 조회",
-        description = "현재 사용자 위치를 바탕으로 반경 distance만큼 조회한다.",
+        description = "현재 사용자 위치를 바탕으로 반경 distance km만큼 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"capsule"}
     )
@@ -56,6 +56,10 @@ public interface CapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
     @GetMapping(
@@ -65,17 +69,17 @@ public interface CapsuleApi {
     ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
         Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)
-        @NotNull @Valid double longitude,
+        @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
+        double longitude,
 
-        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true)
-        @NotNull @Valid double latitude,
+        @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
+        double latitude,
 
-        @Parameter(in = ParameterIn.QUERY, description = "조회 거리", required = true)
-        @NotNull @Valid double distance,
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
+        double distance,
 
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 필터링 타입", schema = @Schema(defaultValue = "ALL"))
-        @NotNull @Valid CapsuleType capsuleType
+        CapsuleType capsuleType
     );
 
     @Operation(
@@ -99,11 +103,11 @@ public interface CapsuleApi {
         produces = {"application/json"}
     )
     ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
-        @Parameter(in = ParameterIn.QUERY, description = "위도", required = true)
-        @RequestParam(value = "latitude") double latitude,
+        @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
+        double latitude,
 
-        @Parameter(in = ParameterIn.QUERY, description = "경도", required = true)
-        @RequestParam(value = "longitude") double longitude
+        @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
+        double longitude
     );
 
     @Operation(
