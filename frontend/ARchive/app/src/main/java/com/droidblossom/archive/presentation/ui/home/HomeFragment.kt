@@ -72,14 +72,14 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 HomeSnackBarBig(requireView(), "", "").show()
             }
             refreshBtn.setOnClickListener {
-//                locationUtil.getCurrentLocation { latitude, longitude ->
-//                    viewModel.getNearbyCapsules(
-//                        latitude,
-//                        longitude,
-//                        calculateDistanceInKilometers(),
-//                        viewModel.filterCapsuleSelect.value.toString()
-//                    )
-//                }
+                locationUtil.getCurrentLocation { latitude, longitude ->
+                    viewModel.getNearbyCapsules(
+                        latitude,
+                        longitude,
+                        calculateRadiusForZoomLevel(),
+                        viewModel.filterCapsuleSelect.value.toString()
+                    )
+                }
             }
         }
     }
