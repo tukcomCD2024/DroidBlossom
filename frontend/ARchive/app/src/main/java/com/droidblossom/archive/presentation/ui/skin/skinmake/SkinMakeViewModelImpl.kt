@@ -24,18 +24,6 @@ class SkinMakeViewModelImpl @Inject constructor(
     override val imgUri = MutableStateFlow<Uri?>(null)
     var signedUrl = ""
 
-    fun getUploadUrl(getS3UrlData : S3UrlRequest, file : File){
-        viewModelScope.launch {
-            s3UrlsGetUseCase(getS3UrlData.toDto()).collect{result ->
-                result.onSuccess {
-                    uploadFileToS3(file,it.preSignedUrls[0])
-                }.onFail {
-                    Log.d("티티","getUploadUrl 실패")
-                }
-            }
-        }
-    }
-
     fun uploadFileToS3(file: File, signedUrl: String){
         viewModelScope.launch(Dispatchers.IO){
             try {
