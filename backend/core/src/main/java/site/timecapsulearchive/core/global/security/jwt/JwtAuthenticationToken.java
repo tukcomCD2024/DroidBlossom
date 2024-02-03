@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
+import site.timecapsulearchive.core.domain.member.entity.Role;
 
 public class JwtAuthenticationToken implements Authentication {
 
@@ -17,20 +19,33 @@ public class JwtAuthenticationToken implements Authentication {
     private JwtAuthenticationToken(
         String accessToken,
         Long memberId,
+        List<GrantedAuthority> authorities,
         boolean authenticated
     ) {
         this.memberId = memberId;
         this.accessToken = accessToken;
-        this.authorities = Collections.emptyList();
+        this.authorities = authorities;
         this.authenticated = authenticated;
     }
 
-    public static JwtAuthenticationToken authenticated(Long memberId) {
-        return new JwtAuthenticationToken(null, memberId, true);
+    public static JwtAuthenticationToken authenticatedWithTemporary(
+        Long memberId
+    ) {
+        return new JwtAuthenticationToken(null, memberId, getAuthorities(Role.TEMPORARY), true);
+    }
+
+    private static List<GrantedAuthority> getAuthorities(Role role) {
+        return List.of(new SimpleGrantedAuthority(role.getValue()));
+    }
+
+    public static JwtAuthenticationToken authenticatedWithAccess(
+        Long memberId
+    ) {
+        return new JwtAuthenticationToken(null, memberId, getAuthorities(Role.USER), true);
     }
 
     public static JwtAuthenticationToken unauthenticated(String accessToken) {
-        return new JwtAuthenticationToken(accessToken, null, false);
+        return new JwtAuthenticationToken(accessToken, null, Collections.emptyList(), false);
     }
 
     @Override

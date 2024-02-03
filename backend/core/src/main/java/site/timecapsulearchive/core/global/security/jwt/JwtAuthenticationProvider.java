@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.global.security.jwt;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -19,11 +20,20 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         jwtFactory.validate(accessToken);
 
-        String memberId = jwtFactory.getSubject(
-            accessToken
+        TokenParseResult tokenParseResult = jwtFactory.parse(
+            accessToken, List.of(TokenType.ACCESS, TokenType.TEMPORARY)
         );
 
-        return JwtAuthenticationToken.authenticated(Long.valueOf(memberId));
+        Long memberId = getMemberId(tokenParseResult);
+        if (tokenParseResult.tokenType() == TokenType.TEMPORARY) {
+            return JwtAuthenticationToken.authenticatedWithTemporary(memberId);
+        }
+
+        return JwtAuthenticationToken.authenticatedWithAccess(memberId);
+    }
+
+    private Long getMemberId(TokenParseResult tokenParseResult) {
+        return Long.valueOf(tokenParseResult.subject());
     }
 
     @Override

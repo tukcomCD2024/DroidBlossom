@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.global.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -85,7 +84,7 @@ public class JwtFactory {
             .setIssuer(ISSUER)
             .setSubject(String.valueOf(memberId))
             .setExpiration(validity)
-            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.TEMPORARY.name())
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.TEMPORARY)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
@@ -98,27 +97,35 @@ public class JwtFactory {
      */
     public TokenParseResult parse(final String token, final List<TokenType> tokenTypes) {
         try {
-            Claims claims = jwtParser(tokenTypes)
+            Claims claims = jwtParser()
                 .parseClaimsJws(token)
                 .getBody();
 
+            validTokenType(tokenTypes, claims);
+
             return TokenParseResult.of(
                 claims.getSubject(),
-                claims.get(TOKEN_TYPE_CLAIM_NAME, TokenType.class)
+                TokenType.valueOf(claims.get(TOKEN_TYPE_CLAIM_NAME, String.class))
             );
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
         }
     }
 
-    private JwtParser jwtParser(List<TokenType> tokenTypes) {
-        JwtParserBuilder jwtParserBuilder = Jwts.parserBuilder();
-        for (TokenType tokenType : tokenTypes) {
-            jwtParserBuilder.require(TOKEN_TYPE_CLAIM_NAME, tokenType);
-        }
-
-        return jwtParserBuilder.setSigningKey(key)
+    private JwtParser jwtParser() {
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
             .build();
+    }
+
+    private void validTokenType(List<TokenType> tokenTypes, Claims claims) {
+        TokenType tokenType = TokenType.valueOf(
+            claims.get(TOKEN_TYPE_CLAIM_NAME, String.class)
+        );
+
+        if (!tokenTypes.contains(tokenType)) {
+            throw new JwtException("허용되지 않는 JWT 토큰 타입입니다.");
+        }
     }
 
     /**
@@ -126,9 +133,9 @@ public class JwtFactory {
      *
      * @param token 검증할 토큰
      */
-    public void validate(final String token, final List<TokenType> tokenTypes) {
+    public void validate(final String token) {
         try {
-            jwtParser(tokenTypes).parseClaimsJws(token);
+            jwtParser().parseClaimsJws(token);
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
         }
