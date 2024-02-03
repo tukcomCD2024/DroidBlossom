@@ -16,11 +16,11 @@ public record S3PreSignedUrlRequest(
 
     @Schema(description = "파일 이름들")
     @NotEmpty(message = "이미지 파일 이름은 필수 입니다.")
-    List<@Image String> imageUrls,
+    List<@Image String> imageNames,
 
     @Schema(description = "비디오 파일 이름들")
     @NotEmpty(message = "비디오 파일 이름은 필수 입니다.")
-    List<@Video String> videoUrls
+    List<@Video String> videoNames
 ) {
 
 }

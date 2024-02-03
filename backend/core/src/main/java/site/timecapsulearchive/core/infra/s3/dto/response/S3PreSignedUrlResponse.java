@@ -6,11 +6,17 @@ import java.util.List;
 @Schema(description = "미리 서명된 s3 url 응답")
 public record S3PreSignedUrlResponse(
 
-    @Schema(description = "미리 서명된 s3 url들")
-    List<String> preSignedUrls
+    @Schema(description = "미리 서명된 이미지들의 s3 url들")
+    List<String> preSignedImageUrls,
+
+    @Schema(description = "미리 서명된 비디오들의 s3 url들")
+    List<String> preSignedVideoUrls
 ) {
 
-    public static S3PreSignedUrlResponse from(List<String> preSignedUrls) {
-        return new S3PreSignedUrlResponse(preSignedUrls);
+    public static S3PreSignedUrlResponse from(
+        List<String> preSignedImageUrls,
+        List<String> preSignedVideoUrls
+    ) {
+        return new S3PreSignedUrlResponse(preSignedImageUrls, preSignedVideoUrls);
     }
 }
