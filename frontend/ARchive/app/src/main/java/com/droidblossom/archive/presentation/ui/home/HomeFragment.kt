@@ -1,8 +1,12 @@
 package com.droidblossom.archive.presentation.ui.home
 
+import android.graphics.Point
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toPointF
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +25,7 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.Projection
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
@@ -67,14 +72,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 HomeSnackBarBig(requireView(), "", "").show()
             }
             refreshBtn.setOnClickListener {
-                locationUtil.getCurrentLocation { latitude, longitude ->
-                    viewModel.getNearbyCapsules(
-                        latitude,
-                        longitude,
-                        500.0,
-                        viewModel.filterCapsuleSelect.value.toString()
-                    )
-                }
+                Log.d("티티","${naverMap.cameraPosition.zoom}")
+//                locationUtil.getCurrentLocation { latitude, longitude ->
+//                    viewModel.getNearbyCapsules(
+//                        latitude,
+//                        longitude,
+//                        calculateDistanceInKilometers(),
+//                        viewModel.filterCapsuleSelect.value.toString()
+//                    )
+//                }
             }
         }
     }
@@ -189,6 +195,23 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 true
             }
         }
+    }
+
+    private fun calculateDistanceInKilometers(): Double {
+        val projection: Projection = naverMap.projection
+
+        val latLng = projection.fromScreenLocation(Point(0,0).toPointF())
+
+        val centerLatLng = naverMap.cameraPosition.target
+
+        val distanceInMeters = FloatArray(1)
+        Location.distanceBetween(
+            centerLatLng.latitude, centerLatLng.longitude,
+            latLng.latitude, latLng.longitude,
+            distanceInMeters
+        )
+
+        return distanceInMeters[0] / 1000.0
     }
 
     override fun onRequestPermissionsResult(
