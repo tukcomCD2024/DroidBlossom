@@ -18,7 +18,7 @@ public interface CapsuleRepository extends Repository<Capsule, Long> {
         @Param("capsuleId") Long capsuleId
     );
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query("UPDATE Capsule c SET c.isOpened = true WHERE c.id = :capsuleId and c.member.id = :memberId")
     void updateIsOpenedTrue(
