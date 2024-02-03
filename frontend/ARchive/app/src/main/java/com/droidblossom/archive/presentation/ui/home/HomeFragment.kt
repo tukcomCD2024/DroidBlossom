@@ -66,7 +66,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             snackbarBigText.setOnClickListener {
                 HomeSnackBarBig(requireView(), "", "").show()
             }
-            locationBtn.setOnClickListener {
+            refreshBtn.setOnClickListener {
                 locationUtil.getCurrentLocation { latitude, longitude ->
                     viewModel.getNearbyCapsules(
                         latitude,
