@@ -9,21 +9,23 @@ data class SecretCapsuleCreateRequest(
     val content: String,
     val directory: String,
     val dueDate: String,
-    val fileNames: List<FileName>,
+    val imageNames: List<String>,
+    val videoNames: List<String>,
     val addressData: AddressData,
     val latitude: Double,
     val longitude: Double,
     val title: String
 ) {
     fun toDto() = SecretCapsuleCreateRequestDto(
-        this.capsuleSkinId,
-        this.content,
-        this.directory,
-        this.dueDate,
-        this.fileNames.map { it.toDto() },
-        this.addressData.toDto(),
-        this.latitude,
-        this.longitude,
-        this.title
+        capsuleSkinId = this.capsuleSkinId,
+        content = this.content,
+        directory = this.directory,
+        dueDate = this.dueDate,
+        imageNames = this.imageNames.ifEmpty { null },
+        videoNames = this.videoNames.ifEmpty { null },
+        addressData = this.addressData.toDto(),
+        latitude = this.latitude,
+        longitude = this.longitude,
+        title = this.title
     )
 }
