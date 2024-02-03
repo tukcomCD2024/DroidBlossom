@@ -11,7 +11,7 @@ public record MediaSaveDto(
     List<String> fileNames
 ) {
 
-    public static MediaSaveDto from(
+    public static MediaSaveDto of(
         Capsule capsule,
         Member member,
         String directory,

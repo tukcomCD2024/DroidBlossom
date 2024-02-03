@@ -59,7 +59,7 @@ public class SecretCapsuleService {
         ));
 
         if (isImagesNotEmpty(dto)) {
-            imageService.saveImage(MediaSaveDto.from(
+            imageService.saveImage(MediaSaveDto.of(
                 newCapsule,
                 findMember,
                 dto.directory(),
@@ -68,7 +68,7 @@ public class SecretCapsuleService {
         }
 
         if (isVideosNotEmpty(dto)) {
-            videoService.saveVideo(MediaSaveDto.from(
+            videoService.saveVideo(MediaSaveDto.of(
                 newCapsule,
                 findMember,
                 dto.directory(),

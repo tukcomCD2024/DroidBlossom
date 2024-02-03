@@ -36,7 +36,7 @@ public class S3ApiController implements S3Api {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                S3PreSignedUrlResponse.of(s3PreSignedUrlsDto.preSignedUrls())
+                S3PreSignedUrlResponse.from(s3PreSignedUrlsDto.preSignedUrls())
             )
         );
     }
