@@ -214,6 +214,12 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         return distanceInMeters[0] / 1000.0
     }
 
+    fun calculateRadiusForZoomLevel(): Double {
+        val radiusAtMinZoom = 550.0
+        val zoomDifference = naverMap.cameraPosition.zoom - MINZOOM
+        return radiusAtMinZoom * Math.pow(2.0, -zoomDifference)
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
