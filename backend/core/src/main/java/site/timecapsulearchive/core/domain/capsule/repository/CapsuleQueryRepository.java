@@ -1,9 +1,7 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import static com.querydsl.core.group.GroupBy.list;
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
@@ -30,8 +28,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSum
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetail;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecreteCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.entity.QImage;
-import site.timecapsulearchive.core.domain.capsule.entity.QVideo;
 
 @Repository
 @RequiredArgsConstructor
@@ -248,13 +244,8 @@ public class CapsuleQueryRepository {
             .select(video.capsule.id, video.videoUrl)
             .from(video)
             .where(video.capsule.id.in(capsuleIds))
-            .fetch()
-            .stream()
-            .collect(
-                groupingBy(
-                    video -> video.get(QVideo.video.capsule.id),
-                    mapping(video -> video.get(QVideo.video.videoUrl), toList())
-                )
+            .transform(
+                GroupBy.groupBy(video.capsule.id).as(list(video.videoUrl))
             );
     }
 
@@ -263,13 +254,8 @@ public class CapsuleQueryRepository {
             .select(image.capsule.id, image.imageUrl)
             .from(image)
             .where(image.capsule.id.in(capsuleIds))
-            .fetch()
-            .stream()
-            .collect(
-                groupingBy(
-                    image -> image.get(QImage.image.capsule.id),
-                    mapping(image -> image.get(QImage.image.imageUrl), toList())
-                )
+            .transform(
+                GroupBy.groupBy(image.capsule.id).as(list(image.imageUrl))
             );
     }
 }
