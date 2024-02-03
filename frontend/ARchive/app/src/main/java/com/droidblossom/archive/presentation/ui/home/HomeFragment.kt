@@ -1,7 +1,8 @@
 package com.droidblossom.archive.presentation.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.provider.CalendarContract
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,12 +18,15 @@ import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialog
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,6 +40,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     private lateinit var naverMap : NaverMap
     private lateinit var locationUtil: LocationUtil
+    private lateinit var locationSource: FusedLocationSource
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -104,14 +109,27 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 fm.beginTransaction().add(R.id.map_fragment, it).commit()
             }
         mapFragment.getMapAsync(this)
+        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+
     }
 
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+        naverMap.locationSource = locationSource
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
         LocationUtil(requireContext()).getCurrentLocation { latitude, longitude ->
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             naverMap.moveCamera(cameraUpdate)
+//            CircleOverlay(LatLng(latitude, longitude) , 5000.0).apply {
+//                color =Color.RED
+//                map =naverMap
+//            }
+        }
+        with(naverMap.locationOverlay) {
+            isVisible = true
+            icon = OverlayImage.fromResource(R.drawable.ic_my_location_24)
+            //circleRadius = 100
         }
         addMarker(CapsuleType.SECRET)
         addMarker(CapsuleType.GROUP)
@@ -146,10 +164,28 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        if (locationSource.onRequestPermissionsResult(requestCode, permissions,
+                grantResults)) {
+            if (!locationSource.isActivated) { // 권한 거부됨
+                naverMap.locationTrackingMode = LocationTrackingMode.None
+            }
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+
     enum class CapsuleType{
         SECRET,
         GROUP,
         PUBLIC
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
 }
