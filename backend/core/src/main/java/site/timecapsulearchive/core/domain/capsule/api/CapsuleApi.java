@@ -11,8 +11,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
+import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -102,6 +105,29 @@ public interface CapsuleApi {
 
         @Parameter(in = ParameterIn.QUERY, description = "경도", required = true)
         @RequestParam(value = "longitude") double longitude
+    );
+
+    @Operation(
+        summary = "캡슐 열람 상태로 변경",
+        description = "캡슐을 열람 상태를 변경해준다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        )
+    })
+    @PutMapping(
+        value = "/{capsule_id}/opened",
+        produces = {"application/json"}
+    )
+    ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "캡슐 아이디", required = true)
+        @PathVariable("capsule_id") Long capsuleId
     );
 }
 
