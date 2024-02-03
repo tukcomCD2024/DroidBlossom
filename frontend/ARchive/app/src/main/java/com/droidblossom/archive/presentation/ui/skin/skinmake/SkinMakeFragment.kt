@@ -71,8 +71,8 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 //                    // 여기서 위도(latitude)와 경도(longitude)를 사용하여 필요한 작업 수행
 //                    Log.d("위치", "위도 : $latitude, 경도 : $longitude")
 //                }
-                val data = S3UrlRequest("skinImage", listOf(FileName("image/jpeg","papa.jpeg")))
-                viewModel.getUploadUrl(data,file!!)
+//                val data = S3UrlRequest("skinImage", listOf(FileName("image/jpeg","papa.jpeg")))
+//                viewModel.getUploadUrl(data,file!!)
 
             }
 
