@@ -15,7 +15,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/titleT"
@@ -48,7 +50,9 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleBtn"
@@ -210,11 +214,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="사진 업로드"
                         android:layout_marginTop="16dp"
+                        android:text="사진 업로드"
                         android:textAppearance="@style/TextAppearance.App.body2"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT"/>
+                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT" />
 
 
                     <ImageView
@@ -226,9 +230,9 @@
                         android:onClick="@{()->vm.moveImgUpLoad()}"
                         android:src="@drawable/ic_plus_main_24"
                         android:visibility="@{vm.imgUris.size() > 1 ? View.GONE : View.VISIBLE  }"
+                        app:layout_constraintBottom_toBottomOf="@id/imageUpload"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/imageUpload"
-                        app:layout_constraintBottom_toBottomOf="@id/imageUpload"
                         app:layout_goneMarginTop="16dp" />
 
                     <androidx.viewpager2.widget.ViewPager2
