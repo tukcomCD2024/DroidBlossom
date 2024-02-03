@@ -43,7 +43,8 @@ public class CapsuleMapper {
             .latitude(request.latitude())
             .addressData(request.addressData())
             .dueDate(request.dueDate())
-            .fileNames(request.fileNames())
+            .imageNames(request.imageNames())
+            .videoNames(request.videoNames())
             .directory(request.directory())
             .build();
     }

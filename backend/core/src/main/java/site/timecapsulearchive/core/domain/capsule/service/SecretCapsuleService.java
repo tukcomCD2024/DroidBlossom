@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import site.timecapsulearchive.core.domain.capsule.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
@@ -31,7 +32,8 @@ public class SecretCapsuleService {
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
     private final MemberService memberService;
-    private final MediaService mediaService;
+    private final ImageService imageService;
+    private final VideoService videoService;
     private final GeoTransformer geoTransformer;
     private final CapsuleMapper capsuleMapper;
 
@@ -50,13 +52,38 @@ public class SecretCapsuleService {
 
         Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
 
-        Capsule newCapsule = capsuleRepository.save(
-            capsuleMapper.requestDtoToEntity(dto, point, findMember, capsuleSkin));
+        Capsule newCapsule = capsuleRepository.save(capsuleMapper.requestDtoToEntity(
+            dto, point,
+            findMember,
+            capsuleSkin
+        ));
 
-        mediaService.saveMediaData(newCapsule, dto.directory(), findMember.getId(),
-            dto.fileNames());
+        if (isImagesNotEmpty(dto)) {
+            imageService.saveImage(MediaSaveDto.of(
+                newCapsule,
+                findMember,
+                dto.directory(),
+                dto.imageNames()
+            ));
+        }
+
+        if (isVideosNotEmpty(dto)) {
+            videoService.saveVideo(MediaSaveDto.of(
+                newCapsule,
+                findMember,
+                dto.directory(),
+                dto.videoNames()
+            ));
+        }
     }
 
+    private boolean isImagesNotEmpty(SecretCapsuleCreateRequestDto dto) {
+        return dto.imageNames() != null && !dto.imageNames().isEmpty();
+    }
+
+    private boolean isVideosNotEmpty(SecretCapsuleCreateRequestDto dto) {
+        return dto.videoNames() != null && !dto.videoNames().isEmpty();
+    }
 
     /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.

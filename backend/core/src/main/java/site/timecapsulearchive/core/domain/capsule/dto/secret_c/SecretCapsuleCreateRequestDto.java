@@ -14,7 +14,8 @@ public record SecretCapsuleCreateRequestDto(
     double latitude,
     AddressData addressData,
     ZonedDateTime dueDate,
-    List<FileMetaData> fileNames,
+    List<String> imageNames,
+    List<String> videoNames,
     String directory
 ) {
 
