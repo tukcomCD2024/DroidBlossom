@@ -284,6 +284,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    
     override fun coordToAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             _capsuleLatitude.value = latitude
