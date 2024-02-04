@@ -106,8 +106,12 @@ public class Capsule extends BaseEntity {
         this.capsuleSkin = capsuleSkin;
     }
 
-    public boolean isNotCapsuleOpened() {
-        return !dueDate.isBefore(ZonedDateTime.now(ZoneOffset.UTC));
+    public boolean isCapsuleOpened() {
+        if (dueDate == null) {
+            return true;
+        }
+
+        return dueDate.isBefore(ZonedDateTime.now(ZoneOffset.UTC)) ;
     }
 
     public void updateOpened() {
