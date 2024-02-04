@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +35,9 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val capsuleId = arguments?.getString("capsule_id")
+        val capsuleType = arguments?.getString("capsule_type")
+        Log.d("다이얼로그", "${capsuleId},${capsuleType}")
     }
 
     private fun initObserver(){

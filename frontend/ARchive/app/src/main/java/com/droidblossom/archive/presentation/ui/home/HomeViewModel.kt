@@ -43,6 +43,6 @@ interface HomeViewModel {
     }
 
     sealed class HomeEvent{
-        object ShowCapsulePreviewDialog : HomeEvent()
+        data class ShowCapsulePreviewDialog(val capsuleId: String, val capsuleType: String) : HomeEvent()
     }
 }

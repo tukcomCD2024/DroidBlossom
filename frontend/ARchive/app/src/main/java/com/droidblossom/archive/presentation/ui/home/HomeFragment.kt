@@ -19,6 +19,7 @@ import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.CapsuleTypeUtils
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -112,8 +113,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     when (event) {
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment()
-
+                            val args = Bundle().apply {
+                                putString("capsule_id", event.capsuleId)
+                                putString("capsule_type", event.capsuleType)
+                            }
+                            val sheet = CapsulePreviewDialogFragment().apply {
+                                arguments = args
+                            }
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
                     }
@@ -194,19 +200,23 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
             }
             map = naverMap
-            tag = when (capsuleMarker.capsuleType) {
-                CapsuleType.SECRET -> "비밀"
-                CapsuleType.GROUP -> "그룹"
-                CapsuleType.PUBLIC -> "그룹"
-            }
+
+            tag = hashMapOf(
+                "id" to capsuleMarker.id.toString(),
+                "type" to CapsuleTypeUtils.enumToString(capsuleMarker.capsuleType)
+            )
+
             onClickListener = Overlay.OnClickListener { overlay ->
                 val clickedMarker = overlay as Marker
-                val markerData = clickedMarker.tag.toString()
-                viewModel.homeEvent(HomeViewModel.HomeEvent.ShowCapsulePreviewDialog)
+                val markerData = clickedMarker.tag as? HashMap<*, *>
+                val capsuleId = markerData?.get("id") as? String
+                val capsuleType = markerData?.get("type") as? String
+                if (capsuleId != null && capsuleType != null) {
+                    viewModel.homeEvent(HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(capsuleId, capsuleType))
+                }
                 true
             }
         }
-        Log.d("마커", "${capsuleMarker.id}")
         markers.add(marker)
     }
 
