@@ -127,7 +127,7 @@ public interface CapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "캡슐 아이디", required = true)
-        @PathVariable("capsule_id") Long capsuleId
+        Long capsuleId
     );
 }
 

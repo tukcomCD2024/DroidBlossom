@@ -66,7 +66,7 @@ public class CapsuleApiController implements CapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
         @AuthenticationPrincipal Long memberId,
-        @NotNull @PathVariable("capsule_id") Long capsuleId
+        @PathVariable("capsule_id") Long capsuleId
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
