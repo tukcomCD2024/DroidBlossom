@@ -44,6 +44,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _timerState = MutableStateFlow("0일 00시간 00분")
     override val timerState: StateFlow<String> = _timerState.asStateFlow()
 
+    private val _visibleCapsuleOpenMessage = MutableStateFlow(false)
+    override val visibleCapsuleOpenMessage: StateFlow<Boolean> = _visibleCapsuleOpenMessage.asStateFlow()
+
     fun getSecretCapsuleSummary(capsuleId: Int) {
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
@@ -122,6 +125,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             }
 
             _timerState.emit("00시간 00분")
+            _visibleCapsuleOpenMessage.emit(true)
         }
     }
     private fun getTime(millis: Long): String {

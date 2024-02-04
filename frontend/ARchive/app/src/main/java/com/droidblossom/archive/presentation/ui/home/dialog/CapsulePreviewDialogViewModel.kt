@@ -12,6 +12,7 @@ interface CapsulePreviewDialogViewModel {
     val totalTime: StateFlow<Int?>
     val initialProgress: StateFlow<Int?>
     val timerState: StateFlow<String>
+    val visibleCapsuleOpenMessage: StateFlow<Boolean>
 
     fun calculateCapsuleOpenTime(createdAt: String, dueDate: String)
     fun setProgressBar()
