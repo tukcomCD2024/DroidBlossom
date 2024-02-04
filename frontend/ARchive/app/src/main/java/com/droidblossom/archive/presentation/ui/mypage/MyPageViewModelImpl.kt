@@ -18,7 +18,8 @@ class MyPageViewModelImpl @Inject constructor(
     private val memberUseCase: MemberUseCase
 ) : BaseViewModel(), MyPageViewModel {
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER",null,""))
+    private val _myInfo = MutableStateFlow(MemberDetail("USER","",""))
+
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
