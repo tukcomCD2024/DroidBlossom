@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleDetail
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleModify
 import com.droidblossom.archive.domain.model.secret.SecretCapsulePage
+import com.droidblossom.archive.domain.model.secret.SecretCapsuleSummary
 import com.droidblossom.archive.util.RetrofitResult
 
 interface SecretRepository {
@@ -16,5 +17,6 @@ interface SecretRepository {
 
     suspend fun getSecretCapsuleDetail (capsuleId: Int) : RetrofitResult<SecretCapsuleDetail>
 
+    suspend fun getSecretCapsuleSummary (capsuleId: Int) : RetrofitResult<SecretCapsuleSummary>
     suspend fun modifySecretCapsule (capsuleId: Int, request: SecretCapsuleModifyRequestDto) : RetrofitResult<SecretCapsuleModify>
 }
