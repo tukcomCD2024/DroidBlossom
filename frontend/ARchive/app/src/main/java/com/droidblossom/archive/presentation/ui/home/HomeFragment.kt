@@ -175,7 +175,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
     }
 
-    private suspend fun addMarker(capsuleMarker: CapsuleMarker) = withContext(Dispatchers.Main) {
+    private fun addMarker(capsuleMarker: CapsuleMarker) {
         Marker().apply {
             position = LatLng(capsuleMarker.longitude, capsuleMarker.latitude)
             icon = when (capsuleMarker.capsuleType) {
