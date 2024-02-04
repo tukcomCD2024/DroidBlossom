@@ -16,6 +16,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import retrofit2.http.Url
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
@@ -62,4 +64,21 @@ fun TextView.displayRemainingTime(totalSeconds: Int) {
 @BindingAdapter("bind:animateFAB")
 fun CardView.animateFAB(y : Float){
     ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
+}
+
+@BindingAdapter("bind:displayCreationDateFormatted")
+fun TextView.setFormattedDate(dateString: String) {
+    dateString.let {
+        try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = parser.parse(dateString)
+
+            // 원하는 날짜 형식으로 변환합니다.
+            val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+            val formattedDate = date?.let { formatter.format(it) }
+            this.text = formattedDate
+        } catch (e: Exception) {
+            this.text = "날짜 형식 오류"
+        }
+    }
 }
