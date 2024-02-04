@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
@@ -38,6 +39,9 @@ class HomeViewModelImpl @Inject constructor(
     private val _followLocation: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val followLocation: StateFlow<Boolean>
         get() = _followLocation
+    private val _capsuleList=  MutableStateFlow<List<CapsuleMarker>>(listOf())
+    override val capsuleList: StateFlow<List<CapsuleMarker>>
+        get() = _capsuleList
 
     override fun homeEvent(event: HomeViewModel.HomeEvent) {
         viewModelScope.launch {
@@ -101,7 +105,7 @@ class HomeViewModelImpl @Inject constructor(
         viewModelScope.launch {
             nearbyCapsulesUseCase(latitude,longitude, distance, capsuleType ).collect{result->
                 result.onSuccess {
-                    Log.d("티티","$it")
+                    _capsuleList.emit(it.capsules)
                     Log.d("티티","getNearbyCapsules 성공")
                 }.onFail {
                     Log.d("티티","getNearbyCapsules 실패")

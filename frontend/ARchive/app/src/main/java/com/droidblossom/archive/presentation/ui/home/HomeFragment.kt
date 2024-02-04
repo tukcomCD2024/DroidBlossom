@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentHomeBinding
+import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.snack.HomeSnackBarBig
 import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
@@ -134,6 +135,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 }
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.capsuleList.collect {
+                    it.map { capsule -> addMarker(capsule) }
+                }
+            }
+        }
     }
 
     private fun initMap() {
@@ -163,25 +171,18 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             isVisible = true
             icon = OverlayImage.fromResource(R.drawable.ic_my_location_24)
         }
-        addMarker(CapsuleType.SECRET)
-        addMarker(CapsuleType.GROUP)
-        addMarker(CapsuleType.PUBLIC)
     }
 
-    private fun addMarker(capsuleType: CapsuleType) {
-        val randomLatitude = Random.nextDouble(33.0, 38.0)
-        val randomLongitude = Random.nextDouble(126.0, 129.0)
-
-
+    private fun addMarker(capsuleMarker: CapsuleMarker) {
         Marker().apply {
-            position = LatLng(randomLatitude, randomLongitude)
-            icon = when (capsuleType) {
+            position = LatLng(capsuleMarker.longitude, capsuleMarker.latitude)
+            icon = when (capsuleMarker.capsuleType) {
                 CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
                 CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
                 CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
             }
             map = naverMap
-            tag = when (capsuleType) {
+            tag = when (capsuleMarker.capsuleType) {
                 CapsuleType.SECRET -> "비밀"
                 CapsuleType.GROUP -> "그룹"
                 CapsuleType.PUBLIC -> "그룹"
@@ -200,7 +201,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun calculateDistanceInKilometers(): Double {
         val projection: Projection = naverMap.projection
 
-        val latLng = projection.fromScreenLocation(Point(0,0).toPointF())
+        val latLng = projection.fromScreenLocation(Point(0, 0).toPointF())
 
         val centerLatLng = naverMap.cameraPosition.target
 

@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home
 
+import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,6 +11,7 @@ interface HomeViewModel {
     val isClickedFAB : StateFlow<Boolean>
     val existsNotification : StateFlow<Boolean>
     val followLocation : StateFlow<Boolean>
+    val capsuleList: StateFlow<List<CapsuleMarker>>
 
     val homeEvents: SharedFlow<HomeEvent>
 
