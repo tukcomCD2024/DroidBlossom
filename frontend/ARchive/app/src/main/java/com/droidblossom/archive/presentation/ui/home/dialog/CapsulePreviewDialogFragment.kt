@@ -47,6 +47,7 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
         val capsuleType = arguments?.getString("capsule_type")
             ?.let { CapsuleTypeUtils.stringToEnum(it) }
 
+        binding.vm = viewModel
         viewModel.getSecretCapsuleSummary(capsuleId)
 
     }
