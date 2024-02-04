@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,4 +24,9 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
 
     }
 
+    companion object{
+
+        const val TAG = "MY"
+        fun newIntent()= MyPageFragment()
+    }
 }
