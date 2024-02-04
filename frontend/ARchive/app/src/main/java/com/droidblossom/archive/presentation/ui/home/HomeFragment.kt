@@ -200,6 +200,11 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         markers.add(marker)
     }
 
+    private fun removeAllMarkers() {
+        markers.forEach { it.map = null } // 각 마커를 지도에서 제거
+        markers.clear() // 리스트에서 모든 마커 제거
+    }
+
     // 구현은 했는데 이렇게하면 한국 전체에 생성된 캡슐을 찾기가 어려움
     private fun calculateDistanceInKilometers(): Double {
         val projection: Projection = naverMap.projection
