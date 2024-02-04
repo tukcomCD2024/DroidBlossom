@@ -5,6 +5,7 @@
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
@@ -25,6 +26,7 @@
             android:backgroundTint="#B21B3AC4"
             android:paddingHorizontal="@dimen/padding"
             android:paddingVertical="18dp"
+            android:visibility="@{vm.visibleCapsuleOpenMessage ? View.VISIBLE : View.GONE}"
             android:text="@string/capsule_open_message"
             android:textAppearance="@style/TextAppearance.App.caption1"
             android:textColor="@color/white"
