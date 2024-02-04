@@ -100,6 +100,12 @@ class HomeViewModelImpl @Inject constructor(
         viewModelScope.launch { _isClickedFAB.emit(!isClickedFAB.value) }
     }
 
+    override fun resetNearbyCapsules(){
+        viewModelScope.launch {
+            _capsuleList.emit(emptyList())
+        }
+    }
+
     override fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String) {
         Log.d("티티","$latitude, $longitude, $distance, $capsuleType")
         viewModelScope.launch {

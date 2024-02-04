@@ -23,6 +23,7 @@ interface HomeViewModel {
     fun clickNotificationBtn()
     fun clickFAB()
 
+    fun resetNearbyCapsules()
     fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String)
 
     fun homeEvent(event:HomeEvent)
