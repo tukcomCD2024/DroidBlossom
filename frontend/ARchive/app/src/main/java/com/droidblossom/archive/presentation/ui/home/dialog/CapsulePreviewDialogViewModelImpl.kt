@@ -94,7 +94,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             _totalTime.emit(totalTimeInt)
             _initialProgress.emit(initialProgressInt)
 
-            startTimer()
+            if (totalTimeLong > 24 * 60 * 60 * 1000) {
+
+            } else {
+                startTimer()
+            }
         }
     }
 
