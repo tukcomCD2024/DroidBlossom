@@ -94,17 +94,25 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             _totalTime.emit(totalTimeInt)
             _initialProgress.emit(initialProgressInt)
 
-            if (totalTimeLong > 24 * 60 * 60 * 1000) {
-                _timerState.emit(formatReleaseDate(endTime.value))
+            updateTimerState(endTimeMillis)
+        }
+    }
+
+    private fun updateTimerState(endTimeMillis: Long) {
+        viewModelScope.launch {
+            val remainingTime = endTimeMillis - System.currentTimeMillis()
+
+            if (remainingTime > 24 * 60 * 60 * 1000) {
+                _timerState.emit(formatReleaseDate(Calendar.getInstance().apply { timeInMillis = endTimeMillis }))
+                delay(60000)
             } else {
-                startTimer()
+                startTimer(endTimeMillis)
             }
         }
     }
 
-    private fun startTimer() {
+    private fun startTimer(endTimeMillis: Long) {
         viewModelScope.launch {
-            val endTimeMillis = endTime.value?.timeInMillis ?: return@launch
             var remainingTime = endTimeMillis - System.currentTimeMillis()
 
             while (remainingTime > 0) {
