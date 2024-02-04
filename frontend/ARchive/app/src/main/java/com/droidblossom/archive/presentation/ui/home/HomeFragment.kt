@@ -5,6 +5,7 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toPointF
 import androidx.fragment.app.viewModels
@@ -93,15 +94,17 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         //FAB 상태
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.filterCapsuleSelect.collect{
+                viewModel.filterCapsuleSelect.collect {
                     viewModel.resetNearbyCapsules()
                     locationUtil.getCurrentLocation { latitude, longitude ->
-                        viewModel.getNearbyCapsules(
-                            latitude,
-                            longitude,
-                            calculateRadiusForZoomLevel(),
-                            viewModel.filterCapsuleSelect.value.toString()
-                        )
+                        if (::naverMap.isInitialized) {
+                            viewModel.getNearbyCapsules(
+                                latitude,
+                                longitude,
+                                calculateRadiusForZoomLevel(),
+                                viewModel.filterCapsuleSelect.value.toString()
+                            )
+                        }
                     }
                 }
             }
@@ -212,7 +215,12 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 val capsuleId = markerData?.get("id") as? String
                 val capsuleType = markerData?.get("type") as? String
                 if (capsuleId != null && capsuleType != null) {
-                    viewModel.homeEvent(HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(capsuleId, capsuleType))
+                    viewModel.homeEvent(
+                        HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
+                            capsuleId,
+                            capsuleType
+                        )
+                    )
                 }
                 true
             }
@@ -276,7 +284,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     companion object {
         const val TAG = "homeFragment"
-        fun newIntent()= HomeFragment()
+        fun newIntent() = HomeFragment()
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val MAXZOOM = 18.0
