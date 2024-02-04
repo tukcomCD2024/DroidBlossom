@@ -32,8 +32,10 @@ import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 @AndroidEntryPoint
@@ -173,7 +175,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
     }
 
-    private fun addMarker(capsuleMarker: CapsuleMarker) {
+    private suspend fun addMarker(capsuleMarker: CapsuleMarker) = withContext(Dispatchers.Main) {
         Marker().apply {
             position = LatLng(capsuleMarker.longitude, capsuleMarker.latitude)
             icon = when (capsuleMarker.capsuleType) {
