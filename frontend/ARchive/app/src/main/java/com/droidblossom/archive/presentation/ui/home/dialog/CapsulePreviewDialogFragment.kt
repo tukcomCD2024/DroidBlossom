@@ -7,13 +7,18 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.SavedStateViewModelFactory
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
+import com.droidblossom.archive.util.CapsuleTypeUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDialogBinding>(R.layout.fragment_capsule_preview_dialog) {
+
+    private val viewModel: CapsulePreviewDialogViewModelImpl by viewModels()
 
     override fun onStart() {
         super.onStart()
@@ -37,9 +42,13 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val capsuleId = arguments?.getString("capsule_id")
+
+        val capsuleId = arguments?.getString("capsule_id")!!.toInt()
         val capsuleType = arguments?.getString("capsule_type")
-        Log.d("다이얼로그", "${capsuleId},${capsuleType}")
+            ?.let { CapsuleTypeUtils.stringToEnum(it) }
+
+        viewModel.getSecretCapsuleSummary(capsuleId)
+
     }
 
     private fun initObserver(){
