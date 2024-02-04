@@ -47,7 +47,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private lateinit var naverMap: NaverMap
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
-    private var MackerList = listOf<Marker>()
+    private val markers: MutableList<Marker> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -177,7 +177,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     }
 
     private fun addMarker(capsuleMarker: CapsuleMarker) {
-        Marker().apply {
+        val marker = Marker().apply {
             position = LatLng(capsuleMarker.longitude, capsuleMarker.latitude)
             icon = when (capsuleMarker.capsuleType) {
                 CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
@@ -194,10 +194,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 val clickedMarker = overlay as Marker
                 val markerData = clickedMarker.tag.toString()
                 viewModel.homeEvent(HomeViewModel.HomeEvent.ShowCapsulePreviewDialog)
-                //Toast.makeText(requireContext(), markerData, Toast.LENGTH_SHORT).show()
                 true
             }
         }
+        markers.add(marker)
     }
 
     // 구현은 했는데 이렇게하면 한국 전체에 생성된 캡슐을 찾기가 어려움
