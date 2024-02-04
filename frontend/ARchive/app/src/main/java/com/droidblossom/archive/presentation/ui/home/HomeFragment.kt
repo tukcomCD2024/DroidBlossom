@@ -275,6 +275,9 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     }
 
     companion object {
+        const val TAG = "homeFragment"
+        fun newIntent()= HomeFragment()
+
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
         const val MAXZOOM = 18.0
         const val MINZOOM = 6.0
