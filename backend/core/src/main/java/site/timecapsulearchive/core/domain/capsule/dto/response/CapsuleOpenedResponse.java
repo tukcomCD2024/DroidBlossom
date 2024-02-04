@@ -1,10 +1,14 @@
 package site.timecapsulearchive.core.domain.capsule.dto.response;
 
 public record CapsuleOpenedResponse(
-    String answer
+    String result
 ) {
 
-    public static CapsuleOpenedResponse from(String answer) {
-        return new CapsuleOpenedResponse(answer);
+    public static CapsuleOpenedResponse notOpened() {
+        return new CapsuleOpenedResponse("NO");
+    }
+
+    public static CapsuleOpenedResponse opened() {
+        return new CapsuleOpenedResponse("YES");
     }
 }
