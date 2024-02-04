@@ -11,6 +11,9 @@ public record SecretCapsuleSummaryResponse(
     @Schema(description = "생성자 닉네임")
     String nickname,
 
+    @Schema(description = "생성자 프로필 url")
+    String profileUrl,
+
     @Schema(description = "캡슐 스킨 url")
     String skinUrl,
 
@@ -22,6 +25,9 @@ public record SecretCapsuleSummaryResponse(
 
     @Schema(description = "캡슐 생성 주소")
     String address,
+
+    @Schema(description = "캡슐 생성 거리 이름")
+    String roadName,
 
     @Schema(description = "개봉 여부")
     Boolean isOpened,
