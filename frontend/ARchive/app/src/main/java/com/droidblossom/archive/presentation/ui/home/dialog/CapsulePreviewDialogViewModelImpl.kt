@@ -80,6 +80,24 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
+    override fun setProgressBar() {
+        viewModelScope.launch {
+            val endTimeMillis = endTime.value?.timeInMillis ?: return@launch
+            val startTimeMillis = startTime.value?.timeInMillis ?: return@launch
+            val totalTimeLong = endTimeMillis - startTimeMillis
+            val currentTimeMillis = System.currentTimeMillis()
+            val initialProgressLong = currentTimeMillis - startTimeMillis
+
+            val totalTimeInt = if (totalTimeLong > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeLong.toInt()
+            val initialProgressInt = if (initialProgressLong > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressLong.toInt()
+
+            _totalTime.emit(totalTimeInt)
+            _initialProgress.emit(initialProgressInt)
+
+            startTimer()
+        }
+    }
+
     private fun startTimer() {
         viewModelScope.launch {
             val endTimeMillis = endTime.value?.timeInMillis ?: return@launch
