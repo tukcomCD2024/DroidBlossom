@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -63,7 +62,7 @@ public interface SecretCapsuleApi {
         value = "/capsules",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecreteCapsules(
+    ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecretCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
@@ -93,7 +92,7 @@ public interface SecretCapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        Long capsuleId
+        @PathVariable("capsule_id") Long capsuleId
     );
 
     @Operation(
@@ -112,11 +111,11 @@ public interface SecretCapsuleApi {
         value = "/capsules/{capsule_id}/summary",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> findSecretCapsuleSummary(
+    ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        Long capsuleId
+        @PathVariable("capsule_id") Long capsuleId
     );
 
     @Operation(
@@ -136,7 +135,7 @@ public interface SecretCapsuleApi {
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
-        @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
         @PathVariable("capsule_id") Long capsuleId,
 
         @ModelAttribute SecretCapsuleUpdateRequest request

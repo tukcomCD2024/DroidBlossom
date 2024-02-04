@@ -11,7 +11,7 @@ public class PhoneValidator implements ConstraintValidator<Phone, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value.isBlank()) {
+        if (value == null || value.isBlank()) {
             return false;
         }
 

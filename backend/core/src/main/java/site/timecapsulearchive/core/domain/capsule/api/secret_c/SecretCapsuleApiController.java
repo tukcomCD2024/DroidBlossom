@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
@@ -16,24 +17,24 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCa
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.service.SecreteCapsuleService;
+import site.timecapsulearchive.core.domain.capsule.service.SecretCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
-@RequestMapping("/secrete")
+@RequestMapping("/secret")
 @RequiredArgsConstructor
 public class SecretCapsuleApiController implements SecretCapsuleApi {
 
-    private final SecreteCapsuleService secreteCapsuleService;
+    private final SecretCapsuleService secretCapsuleService;
     private final CapsuleMapper capsuleMapper;
 
     @Override
     public ResponseEntity<ApiSpec<String>> createSecretCapsule(
         @AuthenticationPrincipal Long memberId,
-        @RequestBody SecretCapsuleCreateRequest request
+        @Valid @RequestBody SecretCapsuleCreateRequest request
     ) {
-        secreteCapsuleService.createCapsule(
+        secretCapsuleService.createCapsule(
             memberId,
             capsuleMapper.secretCapsuleCreateRequestToDto(request)
         );
@@ -46,7 +47,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     }
 
     @Override
-    public ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecreteCapsules(
+    public ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecretCapsules(
         @AuthenticationPrincipal Long memberId,
         @RequestParam(defaultValue = "20", value = "size") int size,
         @RequestParam(defaultValue = "0", value = "createdAt") ZonedDateTime createdAt
@@ -54,7 +55,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                secreteCapsuleService.findSecreteCapsuleListByMemberId(
+                secretCapsuleService.findSecretCapsuleListByMemberId(
                     memberId,
                     size,
                     createdAt
@@ -70,19 +71,19 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                secreteCapsuleService.findSecretCapsuleDetailById(memberId, capsuleId)
+                secretCapsuleService.findSecretCapsuleDetailById(memberId, capsuleId)
             )
         );
     }
 
-    public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> findSecretCapsuleSummary(
+    public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
         @AuthenticationPrincipal Long memberId,
         @NotNull @PathVariable("capsule_id") Long capsuleId
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                secreteCapsuleService.findSecretCapsuleSummaryById(memberId, capsuleId)
+                secretCapsuleService.findSecretCapsuleSummaryById(memberId, capsuleId)
             )
         );
     }
