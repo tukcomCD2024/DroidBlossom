@@ -3,18 +3,12 @@ package com.droidblossom.archive.presentation.ui.camera
 import android.Manifest
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
-import com.droidblossom.archive.databinding.FragmentHomeBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.home.HomeViewModelImpl
-import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
 import com.google.ar.core.Plane
@@ -119,4 +113,9 @@ class CameraFragment : BaseFragment<CameraViewModelImpl, FragmentCameraBinding>(
         session.configure(config)
     }
 
+    companion object{
+        
+        const val TAG = "CAMERA"
+        fun newIntent()= CameraFragment()
+    }
 }
