@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,8 +50,7 @@
                 android:id="@+id/capsuleTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARchive"
-                android:textAppearance="@style/TextAppearance.App.h2"
+                android:text="@{vm.secretCapsuleSummary.title}"                android:textAppearance="@style/TextAppearance.App.h2"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_group_chip"
                 android:drawablePadding="@dimen/padding_small"
-                android:text="2024.01.31"
+                android:text="@{vm.secretCapsuleSummary.dueDate}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toStartOf="@id/capsuleLocationTextView"
@@ -74,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_group_chip"
                 android:drawablePadding="@dimen/padding_small"
-                android:text="강남역 11번 출구"
+                android:text="@{vm.secretCapsuleSummary.address}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
