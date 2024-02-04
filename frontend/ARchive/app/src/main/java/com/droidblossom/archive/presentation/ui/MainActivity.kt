@@ -3,13 +3,21 @@ package com.droidblossom.archive.presentation.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.ui.camera.CameraFragment
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
+import com.droidblossom.archive.presentation.ui.skin.SkinFragment
+import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,57 +32,56 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
         super.onCreate(savedInstanceState)
 
-        val navController = findNavController(R.id.mainNavHost)
-        NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.mainNavHost))
-
         viewBinding = binding
+        showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
+
 
         binding.fab.setOnClickListener {
-            navController.navigate(
-                R.id.cameraFragment, null, NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_main_graph, true)
-                    .build())
+            showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
             binding.bottomNavigation.selectedItemId = R.id.menuCamera
         }
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            if (navController.currentDestination?.id != item.itemId) {
-                when (item.itemId) {
-                    R.id.menuHome -> {
-                        navController.navigate(
-                            R.id.homeFragment, null, NavOptions.Builder()
-                                .setPopUpTo(R.id.nav_main_graph, true)
-                                .build())
-                        true
-                    }
-                    R.id.menuSkin -> {
-                        navController.navigate(
-                            R.id.skinFragment, null, NavOptions.Builder()
-                                .setPopUpTo(R.id.nav_main_graph, true)
-                                .build())
-                        true
-                    }
-                    R.id.menuMyPage -> {
-                        navController.navigate(
-                            R.id.myPageFragment, null, NavOptions.Builder()
-                                .setPopUpTo(R.id.nav_main_graph, true)
-                                .build())
-                        true
-                    }
-                    R.id.menuSocial -> {
-                        navController.navigate(
-                            R.id.socialFragment, null, NavOptions.Builder()
-                                .setPopUpTo(R.id.nav_main_graph, true)
-                                .build())
-                        true
-                    }
-                    else -> false
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.menuHome -> {
+                    showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
+                    return@setOnItemSelectedListener true
                 }
-            } else {
-                false
+
+                R.id.menuSkin -> {
+                    showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
+                    return@setOnItemSelectedListener true
+                }
+
+                R.id.menuSocial -> {
+                    showFragment(SocialFragment(), SocialFragment.TAG)
+                    return@setOnItemSelectedListener true
+                }
+
+                R.id.menuMyPage -> {
+                    showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
+                    return@setOnItemSelectedListener true
+                }
+
+                else -> {
+                    return@setOnItemSelectedListener false
+                }
             }
         }
 
+    }
+    private fun showFragment(fragment: Fragment, tag: String) {
+        val findFragment = supportFragmentManager.findFragmentByTag(tag)
+        supportFragmentManager.fragments.forEach {
+            supportFragmentManager.beginTransaction().hide(it).commitAllowingStateLoss()
+        }
+        findFragment?.let {
+            supportFragmentManager.beginTransaction().show(it).commitAllowingStateLoss()
+        } ?: kotlin.run {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.mainNavHost, fragment, tag)
+                .commitAllowingStateLoss()
+        }
     }
 
     companion object{
