@@ -7,7 +7,6 @@ import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
 
 import com.querydsl.core.ResultTransformer;
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -161,9 +160,9 @@ public class CapsuleQueryRepository {
                 capsule.address.fullRoadAddressName,
                 capsule.title,
                 capsule.content,
-                GroupBy.list(
+                list(
                     Projections.constructor(String.class, image.imageUrl).skipNulls()),
-                GroupBy.list(
+                list(
                     Projections.constructor(String.class, video.videoUrl).skipNulls()),
                 capsule.isOpened
             )
@@ -245,7 +244,7 @@ public class CapsuleQueryRepository {
             .from(video)
             .where(video.capsule.id.in(capsuleIds))
             .transform(
-                GroupBy.groupBy(video.capsule.id).as(list(video.videoUrl))
+                groupBy(video.capsule.id).as(list(video.videoUrl))
             );
     }
 
@@ -255,7 +254,7 @@ public class CapsuleQueryRepository {
             .from(image)
             .where(image.capsule.id.in(capsuleIds))
             .transform(
-                GroupBy.groupBy(image.capsule.id).as(list(image.imageUrl))
+                groupBy(image.capsule.id).as(list(image.imageUrl))
             );
     }
 }
