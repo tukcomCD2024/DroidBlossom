@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDialogBinding>(R.layout.fragment_capsule_preview_dialog) {
 
     override fun onStart() {
