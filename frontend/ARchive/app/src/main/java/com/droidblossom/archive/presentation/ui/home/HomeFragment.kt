@@ -47,6 +47,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private lateinit var naverMap: NaverMap
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
+    private var MackerList = listOf<Marker>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -175,7 +176,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
     }
 
-    private suspend fun addMarker(capsuleMarker: CapsuleMarker) = withContext(Dispatchers.Main) {
+    private fun addMarker(capsuleMarker: CapsuleMarker) {
         Marker().apply {
             position = LatLng(capsuleMarker.longitude, capsuleMarker.latitude)
             icon = when (capsuleMarker.capsuleType) {
