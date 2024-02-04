@@ -4,12 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
-import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
