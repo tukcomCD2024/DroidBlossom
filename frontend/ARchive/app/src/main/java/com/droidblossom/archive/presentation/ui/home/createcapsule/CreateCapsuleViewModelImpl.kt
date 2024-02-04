@@ -91,7 +91,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val capsuleLocationName: StateFlow<String>
         get() = _capsuleLocationName
 
-    override val capsuleDueDate: MutableStateFlow<String> =MutableStateFlow("")
+    override val capsuleDueDate: MutableStateFlow<String> = MutableStateFlow("")
 
     private val _capsuleLocation = MutableStateFlow(Location(0.0, 0.0))
     override val capsuleLocation: StateFlow<Location>
@@ -219,11 +219,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 imageNames = listOf<String>()
                 videoNames = listOf<String>()
 
-            } else if (imageFiles.value.isNotEmpty() && videoFiles.value.isEmpty()){
+            } else if (imageFiles.value.isNotEmpty() && videoFiles.value.isEmpty()) {
                 imageNames = imageFiles.value.map { file ->
                     file.name
                 }
-            } else if (imageFiles.value.isEmpty() && videoFiles.value.isNotEmpty()){
+            } else if (imageFiles.value.isEmpty() && videoFiles.value.isNotEmpty()) {
                 videoNames = videoFiles.value.map { file ->
                     file.name
                 }
@@ -290,7 +290,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             _capsuleLongitude.value = longitude
             getAddressUseCase(latitude, longitude).collect { result ->
                 result.onSuccess {
-                    _capsuleLocationName.emit(it.fullRoadAddressName)
+                    _capsuleLocationName.emit(if (it.roadName.isNullOrEmpty()) it.fullRoadAddressName else it.roadName)
                     _address.emit(it)
                 }.onFail {
                     _capsuleLocationName.emit("위치를 찾을 수 없음")
@@ -371,7 +371,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    private fun uploadFilesToS3(files: List<File>, preSignedImageUrls: List<String>, preSignedVideoUrls: List<String>) {
+    private fun uploadFilesToS3(
+        files: List<File>,
+        preSignedImageUrls: List<String>,
+        preSignedVideoUrls: List<String>
+    ) {
         viewModelScope.launch {
             val uploadJobs = files.zip(preSignedImageUrls).map { (file, url) ->
                 launch(Dispatchers.IO) {
