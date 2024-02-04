@@ -17,6 +17,7 @@ data class CapsuleSummaryDto(
         id = this.id,
         longitude = this.longitude,
         latitude = this.latitude,
-        capsuleType = HomeFragment.CapsuleType.valueOf(capsuleType)
+        capsuleType = HomeFragment.CapsuleType.valueOf(capsuleType),
+        skinUrl = this.capsuleSkinUrl
     )
 }

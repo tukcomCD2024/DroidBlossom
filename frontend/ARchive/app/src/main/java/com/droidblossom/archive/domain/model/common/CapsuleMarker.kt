@@ -6,5 +6,6 @@ data class CapsuleMarker(
     val id : Long,
     val longitude : Double,
     val latitude : Double,
-    val capsuleType : HomeFragment.CapsuleType
+    val capsuleType : HomeFragment.CapsuleType,
+    val skinUrl : String
 )
