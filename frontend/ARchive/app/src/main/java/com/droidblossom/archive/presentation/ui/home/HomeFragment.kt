@@ -92,9 +92,17 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         //FAB 상태
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.filterCapsuleSelect.collect(
-
-                )
+                viewModel.filterCapsuleSelect.collect{
+                    viewModel.resetNearbyCapsules()
+                    locationUtil.getCurrentLocation { latitude, longitude ->
+                        viewModel.getNearbyCapsules(
+                            latitude,
+                            longitude,
+                            calculateRadiusForZoomLevel(),
+                            viewModel.filterCapsuleSelect.value.toString()
+                        )
+                    }
+                }
             }
         }
 
