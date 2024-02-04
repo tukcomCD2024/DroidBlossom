@@ -5,7 +5,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.util.CapsuleTypeUtils
 
 data class CapsuleSummary(
-    val id: Int,
+    val id: Long,
     val longitude: Double,
     val latitude: Double,
     val nickname: String,
