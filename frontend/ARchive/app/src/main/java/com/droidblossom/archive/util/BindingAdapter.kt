@@ -11,6 +11,9 @@ import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
+import retrofit2.http.Url
+import java.net.URL
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
@@ -22,6 +25,16 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
                 placeholder(placeholder)
             }
         }
+        .into(this)
+}
+
+@BindingAdapter(value = ["bind:url", "bind:baseImg"], requireAll = false)
+fun ImageView.setUrlImg(imageUrl: URL, placeholder: Drawable?) {
+    Glide.with(this.context)
+        .load(imageUrl)
+        .placeholder(placeholder)
+        .error(placeholder)
+        .apply(RequestOptions().fitCenter())
         .into(this)
 }
 
