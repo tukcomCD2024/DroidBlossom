@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinBinding
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity
 
 class SkinFragment : Fragment() {
@@ -34,6 +35,11 @@ class SkinFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+    companion object{
+
+        const val TAG = "SKIN"
+        fun newIntent()= SkinFragment()
     }
 
 }
