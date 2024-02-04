@@ -95,7 +95,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             _initialProgress.emit(initialProgressInt)
 
             if (totalTimeLong > 24 * 60 * 60 * 1000) {
-
+                _timerState.emit(formatReleaseDate(endTime.value))
             } else {
                 startTimer()
             }
