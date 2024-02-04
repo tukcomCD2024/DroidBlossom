@@ -122,4 +122,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         return String.format("%02d시간 %02d분", hours, minutes)
     }
 
+    private fun formatReleaseDate(calendar: Calendar?): String {
+        if (calendar == null) return ""
+        val dateFormat = SimpleDateFormat("yy MMM dd", Locale.ENGLISH)
+        return dateFormat.format(calendar.time)
+    }
+
 }
