@@ -73,19 +73,16 @@ public class CapsuleService {
 
     @Transactional
     public CapsuleOpenedResponse updateCapsuleOpened(Long memberId, Long capsuleId) {
-        String notOpened = "NO";
-        String opened = "OK";
-
         Capsule findCapsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(
             memberId,
             capsuleId
         ).orElseThrow(CapsuleNotFondException::new);
 
-        if (findCapsule.isNotCapsuleOpened()) {
-            return CapsuleOpenedResponse.from(notOpened);
+        if (findCapsule.isCapsuleOpened()) {
+            capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+            return CapsuleOpenedResponse.opened();
         }
 
-        capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
-        return CapsuleOpenedResponse.from(opened);
+        return CapsuleOpenedResponse.notOpened();
     }
 }
