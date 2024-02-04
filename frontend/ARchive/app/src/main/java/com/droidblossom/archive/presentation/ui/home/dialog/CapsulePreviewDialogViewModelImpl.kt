@@ -79,7 +79,21 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             _endTime.emit(endTimeCalendar)
         }
     }
-    
+
+    private fun startTimer() {
+        viewModelScope.launch {
+            val endTimeMillis = endTime.value?.timeInMillis ?: return@launch
+            var remainingTime = endTimeMillis - System.currentTimeMillis()
+
+            while (remainingTime > 0) {
+                _timerState.emit(getTime(remainingTime))
+                delay(60000)
+                remainingTime = endTimeMillis - System.currentTimeMillis()
+            }
+
+            _timerState.emit("00시간 00분")
+        }
+    }
     private fun getTime(millis: Long): String {
         val hours = (millis / (1000 * 60 * 60)) % 24
         val minutes = (millis / (1000 * 60)) % 60
