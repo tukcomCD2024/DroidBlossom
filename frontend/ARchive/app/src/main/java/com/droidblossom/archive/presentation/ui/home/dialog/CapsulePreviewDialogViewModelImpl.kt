@@ -41,10 +41,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _initialProgress = MutableStateFlow<Int?>(0)
     override val initialProgress: StateFlow<Int?> = _initialProgress.asStateFlow()
 
-    private val _timerState = MutableStateFlow("0일 00시간 00분")
+    private val _timerState = MutableStateFlow("00:00")
     override val timerState: StateFlow<String> = _timerState.asStateFlow()
 
-    private val _visibleCapsuleOpenMessage = MutableStateFlow(false)
+    private val _visibleCapsuleOpenMessage = MutableStateFlow(true)
     override val visibleCapsuleOpenMessage: StateFlow<Boolean> = _visibleCapsuleOpenMessage.asStateFlow()
 
     fun getSecretCapsuleSummary(capsuleId: Int) {
@@ -77,7 +77,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             val endTimeCalendar = Calendar.getInstance().apply {
                 time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
             }
-
+            _visibleCapsuleOpenMessage.emit(false)
             _startTime.emit(startTimeCalendar)
             _endTime.emit(endTimeCalendar)
         }
@@ -124,14 +124,14 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 remainingTime = endTimeMillis - System.currentTimeMillis()
             }
 
-            _timerState.emit("00시간 00분")
+            _timerState.emit("00:00")
             _visibleCapsuleOpenMessage.emit(true)
         }
     }
     private fun getTime(millis: Long): String {
         val hours = (millis / (1000 * 60 * 60)) % 24
         val minutes = (millis / (1000 * 60)) % 60
-        return String.format("%02d시간 %02d분", hours, minutes)
+        return String.format("%02d:%02d분", hours, minutes)
     }
 
     private fun formatReleaseDate(calendar: Calendar?): String {
