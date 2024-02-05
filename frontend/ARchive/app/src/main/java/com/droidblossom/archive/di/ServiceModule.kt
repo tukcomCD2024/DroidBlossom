@@ -2,6 +2,7 @@ package com.droidblossom.archive.di
 
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
+import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
 import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
@@ -36,4 +37,8 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providesCapsuleService(retrofit: Retrofit) : CapsuleService = retrofit.create(CapsuleService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesCapsuleSkinService(retrofit: Retrofit) : CapsuleSkinService = retrofit.create(CapsuleSkinService::class.java)
 }
