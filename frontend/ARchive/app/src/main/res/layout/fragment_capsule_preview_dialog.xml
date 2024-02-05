@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_group_chip"
                 android:drawablePadding="@dimen/padding_small"
-                android:text="@{vm.secretCapsuleSummary.address}"
+                android:text="@{vm.secretCapsuleSummary.roadName.empty ? vm.secretCapsuleSummary.address : vm.secretCapsuleSummary.roadName}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
