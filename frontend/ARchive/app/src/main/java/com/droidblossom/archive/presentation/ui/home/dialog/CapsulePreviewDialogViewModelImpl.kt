@@ -47,6 +47,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _visibleCapsuleOpenMessage = MutableStateFlow(true)
     override val visibleCapsuleOpenMessage: StateFlow<Boolean> = _visibleCapsuleOpenMessage.asStateFlow()
 
+    private val _capsuleTypeImage = MutableStateFlow(0)
+    override val capsuleTypeImage: StateFlow<Int> = _capsuleTypeImage.asStateFlow()
+
     fun getSecretCapsuleSummary(capsuleId: Int) {
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
@@ -138,6 +141,12 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         if (calendar == null) return ""
         val dateFormat = SimpleDateFormat("yy MMM dd", Locale.ENGLISH)
         return dateFormat.format(calendar.time)
+    }
+
+    override fun setCapsuleTypeImage(image : Int){
+        viewModelScope.launch {
+            _capsuleTypeImage.emit(image)
+        }
     }
 
 }
