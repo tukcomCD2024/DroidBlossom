@@ -105,6 +105,10 @@ public class Capsule extends BaseEntity {
         this.capsuleSkin = capsuleSkin;
     }
 
+    public void open() {
+        this.isOpened = true;
+    } 
+  
     public boolean isNotCapsuleOpened() {
         if (dueDate == null) {
             return false;

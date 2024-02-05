@@ -26,7 +26,7 @@ public record SecretCapsuleSummaryResponse(
     @Schema(description = "캡슐 생성 주소")
     String address,
 
-    @Schema(description = "캡슐 생성 거리 이름")
+    @Schema(description = "캡슐 생성 도로 이름")
     String roadName,
 
     @Schema(description = "개봉 여부")

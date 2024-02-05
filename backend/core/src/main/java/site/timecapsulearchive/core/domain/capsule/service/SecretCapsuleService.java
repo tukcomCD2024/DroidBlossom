@@ -13,7 +13,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCre
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
@@ -53,33 +52,50 @@ public class SecretCapsuleService {
 
         Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
 
-        Capsule newCapsule = capsuleRepository.save(capsuleMapper.requestDtoToEntity(
+        Capsule capsule = capsuleMapper.requestDtoToEntity(
             dto, point,
             findMember,
             capsuleSkin
-        ));
+        );
 
+        if (isNotTimeCapsule(capsule)) {
+            capsule.open();
+        }
+
+        capsuleRepository.save(capsule);
+
+        saveImage(dto, capsule, findMember);
+        saveVideo(dto, capsule, findMember);
+    }
+
+    private boolean isNotTimeCapsule(Capsule capsule) {
+        return capsule.getDueDate() == null;
+    }
+
+    private void saveImage(SecretCapsuleCreateRequestDto dto, Capsule capsule, Member findMember) {
         if (isImagesNotEmpty(dto)) {
             imageService.saveImage(MediaSaveDto.of(
-                newCapsule,
+                capsule,
                 findMember,
                 dto.directory(),
                 dto.imageNames()
-            ));
-        }
-
-        if (isVideosNotEmpty(dto)) {
-            videoService.saveVideo(MediaSaveDto.of(
-                newCapsule,
-                findMember,
-                dto.directory(),
-                dto.videoNames()
             ));
         }
     }
 
     private boolean isImagesNotEmpty(SecretCapsuleCreateRequestDto dto) {
         return dto.imageNames() != null && !dto.imageNames().isEmpty();
+    }
+
+    private void saveVideo(SecretCapsuleCreateRequestDto dto, Capsule capsule, Member findMember) {
+        if (isVideosNotEmpty(dto)) {
+            videoService.saveVideo(MediaSaveDto.of(
+                capsule,
+                findMember,
+                dto.directory(),
+                dto.videoNames()
+            ));
+        }
     }
 
     private boolean isVideosNotEmpty(SecretCapsuleCreateRequestDto dto) {
@@ -112,16 +128,13 @@ public class SecretCapsuleService {
      * @param capsuleId 캡슐 아이디
      * @return 캡슐 요약 정보
      */
-    public SecretCapsuleSummaryResponse findSecretCapsuleSummaryById(
+    public SecretCapsuleSummaryDto findSecretCapsuleSummaryById(
         Long memberId,
         Long capsuleId
     ) {
-        SecretCapsuleSummaryDto dto = capsuleQueryRepository.findSecretCapsuleSummaryByMemberIdAndCapsuleId(
-                memberId,
+        return capsuleQueryRepository.findSecretCapsuleSummaryByMemberIdAndCapsuleId(memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
-
-        return capsuleMapper.secretCapsuleSummaryDtoToResponse(dto);
     }
 
     /**

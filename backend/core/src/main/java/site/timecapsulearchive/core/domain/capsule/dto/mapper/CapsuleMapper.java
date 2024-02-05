@@ -87,8 +87,8 @@ public class CapsuleMapper {
 
         return CapsuleSummaryResponse.builder()
             .id(dto.id())
-            .longitude(point.getX())
-            .latitude(point.getY())
+            .latitude(point.getX())
+            .longitude(point.getY())
             .nickname(dto.nickname())
             .capsuleSkinUrl(dto.skinUrl())
             .title(dto.title())
@@ -125,6 +125,7 @@ public class CapsuleMapper {
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(checkNullable(dto.dueDate()))
             .nickname(dto.nickname())
+            .profileUrl(dto.profileUrl())
             .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(dto.address())
             .title(dto.title())
