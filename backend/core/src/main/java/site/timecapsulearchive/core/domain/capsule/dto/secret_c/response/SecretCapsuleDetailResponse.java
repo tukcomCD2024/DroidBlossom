@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Builder;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Schema(description = "비밀 캡슐 상세 정보")
 @Builder
@@ -40,7 +41,10 @@ public record SecretCapsuleDetailResponse(
     List<String> videoUrls,
 
     @Schema(description = "개봉 여부")
-    Boolean isOpened
+    Boolean isOpened,
+
+    @Schema(description = "캡슐 타입")
+    CapsuleType capsuleType
 ) {
 
 }
