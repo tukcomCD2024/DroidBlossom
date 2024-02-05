@@ -8,8 +8,8 @@ data class SecretCapsuleDetail(
     val createdDate: String,
     val dueDate: String?,
     val isOpened: Boolean,
-    val imageUrls: List<String>,
-    val videoUrls : List<String>,
+    val imageUrls: List<String>?,
+    val videoUrls : List<String>?,
     val nickname: String,
     val title: String
 ){

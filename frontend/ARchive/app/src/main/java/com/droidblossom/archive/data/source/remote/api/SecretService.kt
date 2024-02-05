@@ -30,7 +30,7 @@ interface SecretService {
         @Body request : SecretCapsuleCreateRequestDto
     ) : Response<ResponseBody<String>>
 
-    @GET("secret/capsules/{capsule_id}")
+    @GET("secret/capsules/{capsule_id}/detail")
     suspend fun getSecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
