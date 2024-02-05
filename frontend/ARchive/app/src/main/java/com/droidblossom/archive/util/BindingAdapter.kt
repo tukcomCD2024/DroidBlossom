@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.http.Url
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -30,6 +31,20 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
             }
         }
         .into(this)
+}
+
+@BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
+fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
+    if (imageUrl != null) {
+        Glide.with(context)
+            .load(imageUrl)
+            .apply {
+                if (placeholder != null) {
+                    placeholder(placeholder)
+                }
+            }
+            .into(this)
+    }
 }
 
 @SuppressLint("CheckResult")
