@@ -4,6 +4,6 @@ data class SecretCapsuleModifyRequestDto(
     val title: String,
     val content: String,
     val media: List<String>,
-    val dueData: Int,
-    val capsuleSkinId: Int
+    val dueData: String,
+    val capsuleSkinId: Long
 )
