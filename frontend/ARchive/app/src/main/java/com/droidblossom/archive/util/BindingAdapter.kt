@@ -33,16 +33,13 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
 }
 
 @SuppressLint("CheckResult")
-@BindingAdapter(value = ["bind:url", "bind:baseImg", "bind:radius"], requireAll = false)
-fun ImageView.setUrlImg(imageUrl: String, placeholder: Drawable?, radius : Int) {
+@BindingAdapter(value = ["bind:url", "bind:baseImg"], requireAll = false)
+fun ImageView.setUrlImg(imageUrl: String, placeholder: Drawable?) {
     Glide.with(this.context)
         .load(imageUrl)
         .placeholder(placeholder)
         .error(placeholder)
         .apply(RequestOptions().fitCenter())
-        .apply {
-            apply(RequestOptions.bitmapTransform(RoundedCorners(radius)))
-        }
         .into(this)
 }
 
