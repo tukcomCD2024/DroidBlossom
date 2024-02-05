@@ -3,7 +3,7 @@ package com.droidblossom.archive.data.dto.secret.response
 import com.droidblossom.archive.domain.model.secret.SecretCapsulePage
 
 data class SecretCapsulePageResponseDto(
-    val capsules: List<SecretCapsuleSummaryResponseDto>,
+    val capsules: List<SecretCapsuleResponseDto>,
     val hasNext: Boolean,
     val hasPrevious: Boolean
 ){
