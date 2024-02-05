@@ -32,7 +32,7 @@ interface SecretService {
 
     @GET("secret/capsules/{capsule_id}")
     suspend fun getSecretCapsuleDetailApi(
-        @Path("capsule_id") capsuleId : Int,
+        @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
 
     @GET("secret/capsules/{capsule_id}/summary")
