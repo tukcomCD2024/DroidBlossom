@@ -59,12 +59,9 @@ class CameraFragment :
                                                 val latitude = capsule.latitude
                                                 val longitude = capsule.longitude
                                                 val altitude = earth.cameraGeospatialPose.altitude
-                                                Log.d(
-                                                    "CameraFragmentAR",
-                                                    "earth.trackingState = 위도 - $latitude : 경도 - $longitude"
-                                                )
+
                                                 // 앵커 생성 및 노드 추가
-                                                val earthAnchor = earth.createAnchor(longitude,latitude, altitude, 0f, 0f, 0f, 0f)
+                                                val earthAnchor = earth.createAnchor(latitude,longitude, altitude, 0f, 0f, 0f, 0f)
                                                 addAnchorNode(earthAnchor)
                                             }
                                         }
