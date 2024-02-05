@@ -10,13 +10,20 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCapsuleDetailBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityCapsuleDetailBinding>(R.layout.activity_capsule_detail) {
     override val viewModel: CapsuleDetailViewModelImpl? by viewModels()
 
-    override fun observeData() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.vm = viewModel
     }
 
+    override fun observeData() {
+
+    }
 
     companion object {
         const val CAPSULE_DETAIL = "capsule_detail"

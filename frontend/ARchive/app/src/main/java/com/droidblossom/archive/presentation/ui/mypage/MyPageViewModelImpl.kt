@@ -37,7 +37,7 @@ class MyPageViewModelImpl @Inject constructor(
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
-    val _myCapsules = MutableStateFlow(listOf<MyCapsule>())
+    private val _myCapsules = MutableStateFlow(listOf<MyCapsule>())
     override val myCapsules: StateFlow<List<MyCapsule>>
         get() = _myCapsules
 
