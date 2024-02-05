@@ -58,6 +58,7 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
         when(capsuleType){
             HomeFragment.CapsuleType.SECRET -> {
                 viewModel.getSecretCapsuleSummary(capsuleId)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24)
             }
             HomeFragment.CapsuleType.PUBLIC -> {
 
