@@ -4,7 +4,7 @@ import com.droidblossom.archive.domain.model.common.MyCapsule
 
 data class SecretCapsuleResponseDto(
     val address: String,
-    val capsuleId: Int,
+    val capsuleId: Long,
     val capsuleSkinUrl: String,
     val content: String,
     val createdAt: String,

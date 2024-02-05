@@ -63,7 +63,7 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
     companion object {
         val differ = object : DiffUtil.ItemCallback<Dummy>() {
             override fun areItemsTheSame(oldItem: Dummy, newItem: Dummy): Boolean {
-                return oldItem.last == newItem.last
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: Dummy, newItem: Dummy): Boolean {

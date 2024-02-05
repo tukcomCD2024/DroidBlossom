@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,7 +65,7 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:maxWidth="250dp"
-                    android:text="캡술 타이틀\n 2줄이라면~~~dddd~"
+                    android:text="@{vm.capsuleDetail.title}"
                     android:textAppearance="@style/TextAppearance.App.h1"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="@id/capsuleTypeT"
@@ -83,7 +90,7 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/line"
-                    tools:src="@color/main_4" />
+                    android:src="@color/main_4" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/nameT"
@@ -92,7 +99,7 @@
                     android:layout_marginStart="8dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="user"
+                    android:text="@{vm.capsuleDetail.nickname}"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/profileImg"
@@ -105,7 +112,7 @@
                     android:layout_marginTop="4dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="강남역 1번 출구"
+                    android:text="@{vm.capsuleDetail.address}"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_600"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -121,13 +128,20 @@
                     android:src="@drawable/sample_skin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/locationT" />
+                    app:layout_constraintTop_toBottomOf="@id/locationT"
+                    bind:baseImg="@{@drawable/sample_skin}"
+                    bind:url="@{vm.capsuleDetail.capsuleSkinUrl}" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/postImgVP"
                     android:layout_width="0dp"
-                    android:layout_height="280dp"
+                    android:layout_height="360dp"
                     android:layout_marginTop="32dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:visibility="@{vm.capsuleDetail.imageUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinImg" />
@@ -151,8 +165,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/indicator"
-                    tools:text="국군의 조직과 편성은 법률로 정한다.대통령은 법률안의 일부에 대하여 또는법률안을 수정하여 재의를 요구할 수 없다. \n\n재의의 요구가 있을 때에는 국회는 재의에
-                        붙이고, 재적의원과반수의 출석과 출석의원3분의 2 이상의 찬성으로 전과 같은 의결을하면 그 법률안은 법률로서 확정된다. " />
+                    tools:text="@{vm.capsuleDetail.content}" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/createDateSettingT"
@@ -175,6 +188,7 @@
                     android:text="오픈 날짜"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_600"
+                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.GONE }"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/createDateSettingT" />
 
@@ -185,12 +199,12 @@
                     android:layout_marginStart="8dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="xxxx.xx.xx"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="@id/createDateSettingT"
                     app:layout_constraintStart_toEndOf="@id/createDateSettingT"
-                    app:layout_constraintTop_toTopOf="@id/createDateSettingT" />
+                    app:layout_constraintTop_toTopOf="@id/createDateSettingT"
+                    bind:displayCreationDateFormatted="@{vm.capsuleDetail.createdDate}" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/openDateT"
@@ -199,12 +213,13 @@
                     android:layout_marginStart="8dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="xxxx.xx.xx"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/black"
+                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@id/openDateSettingT"
                     app:layout_constraintStart_toEndOf="@id/openDateSettingT"
-                    app:layout_constraintTop_toTopOf="@id/openDateSettingT" />
+                    app:layout_constraintTop_toTopOf="@id/openDateSettingT"
+                    bind:displayCreationDateFormatted="@{vm.capsuleDetail.dueDate != null ? vm.capsuleDetail.dueDate : ``}" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -216,22 +231,26 @@
                     android:text="그룹원"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_600"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/openDateSettingT" />
+                    app:layout_constraintTop_toBottomOf="@id/openDateSettingT"
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/groupNumberRecycleView"
                     android:layout_width="0dp"
-                    android:layout_marginStart="8dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_marginBottom="32dp"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/groupNumberT"
-                    tools:listitem="@layout/item_group_number" />
+                    tools:listitem="@layout/item_group_number"
+                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

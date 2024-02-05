@@ -13,7 +13,7 @@ import javax.inject.Inject
 class SecretCapsuleDetailUseCase @Inject constructor(
     private val repository: SecretRepository
 ) {
-    suspend operator fun invoke(capsuleId: Int) =
+    suspend operator fun invoke(capsuleId: Long) =
         flow<RetrofitResult<SecretCapsuleDetail>> {
             try {
                 emit(repository.getSecretCapsuleDetail(capsuleId).onSuccess {
