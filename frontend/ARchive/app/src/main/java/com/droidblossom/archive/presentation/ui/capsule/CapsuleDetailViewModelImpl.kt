@@ -38,7 +38,7 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                     _capsuleDetail.emit(detail)
                 }.onFail {
                     Log.d("디테일","${it}")
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세 불러오기 실패"))
+                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }
             }
         }

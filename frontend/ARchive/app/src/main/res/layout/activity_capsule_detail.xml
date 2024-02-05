@@ -244,6 +244,7 @@
                     android:layout_marginBottom="32dp"
                     android:orientation="horizontal"
                     android:visibility="gone"
+                    app:layout_goneMarginBottom="32dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

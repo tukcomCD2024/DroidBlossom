@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager.widget.ViewPager
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCapsuleDetailBinding
 import com.droidblossom.archive.domain.model.common.ImageUrl
@@ -50,18 +51,22 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
             }
             null -> {}
         }
+        binding.closeBtn.setOnClickListener {
+            finish()
+        }
     }
 
     private fun initRVA(){
         binding.postImgVP.adapter = imageVP
         binding.postImgVP.offscreenPageLimit = 3
+        binding.indicator.setViewPager(binding.postImgVP as ViewPager);
     }
 
     override fun observeData() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.capsuleDetail.collect{
-                    imageVP.submitList(it.imageUrls?.map { ImageUrl(it) }?.toList() ?: listOf())
+                    imageVP.submitList(it.imageUrls?.map { url -> ImageUrl(url) }?.toList() ?: listOf())
                 }
             }
         }
