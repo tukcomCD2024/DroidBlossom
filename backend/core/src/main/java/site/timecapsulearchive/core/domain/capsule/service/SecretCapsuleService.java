@@ -13,7 +13,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCre
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
@@ -112,16 +111,13 @@ public class SecretCapsuleService {
      * @param capsuleId 캡슐 아이디
      * @return 캡슐 요약 정보
      */
-    public SecretCapsuleSummaryResponse findSecretCapsuleSummaryById(
+    public SecretCapsuleSummaryDto findSecretCapsuleSummaryById(
         Long memberId,
         Long capsuleId
     ) {
-        SecretCapsuleSummaryDto dto = capsuleQueryRepository.findSecretCapsuleSummaryByMemberIdAndCapsuleId(
-                memberId,
+        return capsuleQueryRepository.findSecretCapsuleSummaryByMemberIdAndCapsuleId(memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
-
-        return capsuleMapper.secretCapsuleSummaryDtoToResponse(dto);
     }
 
     /**

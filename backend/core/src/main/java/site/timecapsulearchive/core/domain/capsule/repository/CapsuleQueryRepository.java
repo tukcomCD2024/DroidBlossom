@@ -96,23 +96,26 @@ public class CapsuleQueryRepository {
         Long memberId,
         Long capsuleId
     ) {
-        return Optional.ofNullable(jpaQueryFactory
-            .select(
-                Projections.constructor(
-                    SecretCapsuleSummaryDto.class,
-                    capsule.member.nickname,
-                    capsule.capsuleSkin.imageUrl,
-                    capsule.title,
-                    capsule.dueDate,
-                    capsule.address.fullRoadAddressName,
-                    capsule.isOpened,
-                    capsule.createdAt
+        return Optional.ofNullable(
+            jpaQueryFactory
+                .select(
+                    Projections.constructor(
+                        SecretCapsuleSummaryDto.class,
+                        capsule.member.nickname,
+                        capsule.member.profileUrl,
+                        capsule.capsuleSkin.imageUrl,
+                        capsule.title,
+                        capsule.dueDate,
+                        capsule.address.fullRoadAddressName,
+                        capsule.address.roadName,
+                        capsule.isOpened,
+                        capsule.createdAt
+                    )
                 )
-            )
-            .from(capsule)
-            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
-                .and(capsule.type.eq(CapsuleType.SECRET)))
-            .fetchOne()
+                .from(capsule)
+                .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
+                    .and(capsule.type.eq(CapsuleType.SECRET)))
+                .fetchOne()
         );
     }
 

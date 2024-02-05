@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
@@ -78,12 +79,15 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
         @AuthenticationPrincipal Long memberId,
-        @NotNull @PathVariable("capsule_id") Long capsuleId
+        @PathVariable("capsule_id") Long capsuleId
     ) {
+        SecretCapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(memberId,
+            capsuleId);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                secretCapsuleService.findSecretCapsuleSummaryById(memberId, capsuleId)
+                capsuleMapper.secretCapsuleSummaryDtoToResponse(dto)
             )
         );
     }
