@@ -1,14 +1,19 @@
 package com.droidblossom.archive.presentation.ui.mypage.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.amazonaws.util.ClassLoaderHelper.getResource
+import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemMyCapsuleBinding
 import com.droidblossom.archive.domain.model.common.MyCapsule
 
-class MyCapsuleRVA( ) :
+class MyCapsuleRVA(private val currentDate: String) :
     ListAdapter<MyCapsule, MyCapsuleRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(

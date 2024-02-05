@@ -29,7 +29,7 @@ class MyPageFragment :
     override val viewModel: MyPageViewModelImpl by viewModels()
 
     private val myCapsuleRVA by lazy {
-        MyCapsuleRVA()
+        MyCapsuleRVA(DateUtils.dataServerString)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

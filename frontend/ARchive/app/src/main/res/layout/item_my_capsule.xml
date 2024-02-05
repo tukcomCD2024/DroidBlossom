@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
-<data>
+    <data>
 
         <variable
             name="item"
@@ -22,18 +22,30 @@
             android:layout_height="0dp"
             android:layout_margin="4dp"
             android:background="@drawable/corner_radius_8"
-            android:clipToOutline="true"
             android:backgroundTint="@color/main_bg_2"
+            android:clipToOutline="true"
             android:scaleType="centerCrop"
-            bind:url="@{item.capsuleSkinUrl}"
-            tools:src="@drawable/sample_skin"
-            bind:baseImg="@{@drawable/sample_skin}"
             app:layout_constraintBottom_toTopOf="@id/capsuleT"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
+            android:foreground="@{item.isOpened ? @color/Transparency : @color/main_alpha70}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="UnusedAttribute" />
+            bind:baseImg="@{@drawable/sample_skin}"
+            bind:url="@{item.capsuleSkinUrl}"
+            tools:ignore="UnusedAttribute"
+            tools:src="@drawable/sample_skin" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/capsuleImg"
+            app:layout_constraintBottom_toBottomOf="@id/capsuleImg"
+            app:layout_constraintStart_toStartOf="@id/capsuleImg"
+            app:layout_constraintEnd_toEndOf="@id/capsuleImg"
+            android:text="@{item.isOpened ? `` : `CLOSE`}"
+            android:textAppearance="@style/TextAppearance.App.h1"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/capsuleT"
@@ -42,8 +54,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
             android:ellipsize="end"
-            android:maxLines="1"
             android:lines="1"
+            android:maxLines="1"
             android:text="@{item.title}"
             android:textAppearance="@style/TextAppearance.App.body2"
             app:layout_constraintBottom_toBottomOf="parent"
