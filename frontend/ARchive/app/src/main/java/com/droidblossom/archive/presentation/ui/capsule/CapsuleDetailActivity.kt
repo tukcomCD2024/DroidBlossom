@@ -2,10 +2,8 @@ package com.droidblossom.archive.presentation.ui.capsule
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,7 +13,6 @@ import com.droidblossom.archive.domain.model.common.ImageUrl
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageUrlRVA
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.util.intentSerializable
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -65,6 +62,18 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.capsuleDetail.collect{
                     imageVP.submitList(it.imageUrls?.map { ImageUrl(it) }?.toList() ?: listOf())
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.detailEvents.collect{
+                    when(it){
+                        is CapsuleDetailViewModel.DetailEvent.ShowToastMessage -> {
+                            showToastMessage(it.message)
+                        }
+                        else -> {}
+                    }
                 }
             }
         }

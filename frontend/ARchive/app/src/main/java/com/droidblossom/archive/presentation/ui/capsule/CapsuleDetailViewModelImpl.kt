@@ -9,8 +9,11 @@ import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +21,11 @@ import javax.inject.Inject
 class CapsuleDetailViewModelImpl @Inject constructor(
     private val secretCapsuleDetailUseCase: SecretCapsuleDetailUseCase
 ): BaseViewModel(), CapsuleDetailViewModel {
+
+    private val _detailEvent = MutableSharedFlow<CapsuleDetailViewModel.DetailEvent>()
+    override val detailEvents: SharedFlow<CapsuleDetailViewModel.DetailEvent>
+        get() =  _detailEvent.asSharedFlow()
+
     private val _capsuleDetail = MutableStateFlow(SecretCapsuleDetail())
     override val capsuleDetail: StateFlow<SecretCapsuleDetail>
         get() = _capsuleDetail
@@ -30,6 +38,7 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                     _capsuleDetail.emit(detail)
                 }.onFail {
                     Log.d("디테일","${it}")
+                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세 불러오기 실패"))
                 }
             }
         }
