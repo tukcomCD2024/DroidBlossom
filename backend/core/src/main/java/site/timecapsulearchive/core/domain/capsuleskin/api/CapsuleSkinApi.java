@@ -36,7 +36,8 @@ public interface CapsuleSkinApi {
     @PostMapping(
         consumes = {"multipart/form-data"}
     )
-    ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(CapsuleSkinCreateRequest request);
+    ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
+        CapsuleSkinCreateRequest request);
 
     @Operation(
         summary = "캡슐 스킨 삭제",

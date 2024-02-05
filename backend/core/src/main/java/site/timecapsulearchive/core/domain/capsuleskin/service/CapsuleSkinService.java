@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinSummaryDto;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinsPageDto;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.mapper.CapsuleSkinMapper;
+import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinsPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
 
 @Service
@@ -13,8 +14,9 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQue
 public class CapsuleSkinService {
 
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
+    private final CapsuleSkinMapper capsuleSkinMapper;
 
-    public CapsuleSkinsPageDto findCapsuleSkinSliceByCreatedAtAndMemberId(
+    public CapsuleSkinsPageResponse findCapsuleSkinSliceByCreatedAtAndMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
@@ -25,6 +27,6 @@ public class CapsuleSkinService {
             createdAt
         );
 
-        return CapsuleSkinsPageDto.from(slice.getContent(), slice.hasNext());
+        return capsuleSkinMapper.capsuleSkinSliceToResponse(slice.getContent(), slice.hasNext());
     }
 }
