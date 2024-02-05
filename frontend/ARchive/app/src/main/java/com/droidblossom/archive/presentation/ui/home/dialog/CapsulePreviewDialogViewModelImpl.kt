@@ -54,9 +54,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
+                    Log.d("캡슐 요약", "$it")
                     _secretCapsuleSummary.emit(it)
                     calculateCapsuleOpenTime(it.createdAt, it.dueDate)
-                    Log.d("getSecretCapsuleSummary", "$it")
                 }.onFail {
 
                 }.onException {
@@ -69,20 +69,23 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     override fun calculateCapsuleOpenTime(createdAt: String, dueDate: String) {
-        if (dueDate.isEmpty()) return
-        viewModelScope.launch {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+        if (dueDate.isEmpty()) {
+            return
+        }else{
+            viewModelScope.launch {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
 
-            val startTimeCalendar = Calendar.getInstance().apply {
-                time = dateFormat.parse(createdAt) ?: throw IllegalArgumentException("Invalid createdAt format")
-            }
+                val startTimeCalendar = Calendar.getInstance().apply {
+                    time = dateFormat.parse(createdAt) ?: throw IllegalArgumentException("Invalid createdAt format")
+                }
 
-            val endTimeCalendar = Calendar.getInstance().apply {
-                time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
+                val endTimeCalendar = Calendar.getInstance().apply {
+                    time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
+                }
+                _visibleCapsuleOpenMessage.emit(false)
+                _startTime.emit(startTimeCalendar)
+                _endTime.emit(endTimeCalendar)
             }
-            _visibleCapsuleOpenMessage.emit(false)
-            _startTime.emit(startTimeCalendar)
-            _endTime.emit(endTimeCalendar)
         }
     }
 
