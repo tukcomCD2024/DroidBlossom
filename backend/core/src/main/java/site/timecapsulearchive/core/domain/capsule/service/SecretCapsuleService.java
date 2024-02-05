@@ -115,10 +115,10 @@ public class SecretCapsuleService {
         int size,
         ZonedDateTime createdAt
     ) {
-        Slice<SecretCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
+        Slice<SecretCapsuleDetailDto> slice = capsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
-        return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
+        return capsuleMapper.capsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
     }
 
     /**

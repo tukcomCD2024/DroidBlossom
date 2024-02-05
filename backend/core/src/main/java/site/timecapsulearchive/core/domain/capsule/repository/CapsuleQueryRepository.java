@@ -29,9 +29,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDet
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.entity.QImage;
-import site.timecapsulearchive.core.domain.capsule.entity.QVideo;
-import site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin;
 
 @Repository
 @RequiredArgsConstructor
@@ -229,9 +226,10 @@ public class CapsuleQueryRepository {
                 Projections.constructor(
                     SecretCapsuleDetail.class,
                     capsule.id,
-                    capsule.capsuleSkin.imageUrl,
+                    capsuleSkin.imageUrl,
                     capsule.dueDate,
-                    capsule.member.nickname,
+                    member.nickname,
+                    member.profileUrl,
                     capsule.createdAt,
                     capsule.address.fullRoadAddressName,
                     capsule.title,
@@ -241,6 +239,8 @@ public class CapsuleQueryRepository {
                 )
             )
             .from(capsule)
+            .join(member).on(capsule.member.id.eq(member.id))
+            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
             .where(
                 capsule.member.id.eq(memberId),
                 capsule.createdAt.lt(createdAt),

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
@@ -133,6 +132,7 @@ public class CapsuleMapper {
             .imageUrls(dto.images())
             .videoUrls(dto.videos())
             .isOpened(dto.isOpened())
+            .capsuleType(dto.capsuleType())
             .build();
     }
 
@@ -149,11 +149,15 @@ public class CapsuleMapper {
             .build();
     }
 
-    public MyCapsulePageResponse capsuleDetailSliceToResponse(
-        Slice<SecretCapsuleDetailDto> capsuleDetailSlice) {
+    public MyCapsulePageResponse capsuleDetailSliceToResponse(List<SecretCapsuleDetailDto> content,
+        boolean hasNext) {
+        List<SecretCapsuleDetailResponse> responses = content.stream()
+            .map(this::secretCapsuleDetailDtoToResponse)
+            .toList();
+
         return new MyCapsulePageResponse(
-            capsuleDetailSlice.getContent(),
-            capsuleDetailSlice.hasNext()
+            responses,
+            hasNext
         );
     }
 
@@ -167,6 +171,7 @@ public class CapsuleMapper {
             .capsuleSkinUrl(detail.capsuleSkinUrl())
             .dueDate(checkNullable(detail.dueDate()))
             .nickname(detail.nickname())
+            .profileUrl(detail.profileUrl())
             .createdAt(detail.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(detail.address())
             .title(detail.title())
@@ -174,6 +179,7 @@ public class CapsuleMapper {
             .images(imageUrls.get(detail.capsuleId()))
             .videos(videoUrls.get(detail.capsuleId()))
             .isOpened(detail.isOpened())
+            .capsuleType(detail.capsuleType())
             .build();
 
     }
