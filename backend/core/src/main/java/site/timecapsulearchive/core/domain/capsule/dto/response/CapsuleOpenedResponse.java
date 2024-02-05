@@ -5,10 +5,10 @@ public record CapsuleOpenedResponse(
 ) {
 
     public static CapsuleOpenedResponse notOpened() {
-        return new CapsuleOpenedResponse("NO");
+        return new CapsuleOpenedResponse("캡슐을 열 수 없습니다.");
     }
 
     public static CapsuleOpenedResponse opened() {
-        return new CapsuleOpenedResponse("YES");
+        return new CapsuleOpenedResponse("캡슐을 열었습니다.");
     }
 }
