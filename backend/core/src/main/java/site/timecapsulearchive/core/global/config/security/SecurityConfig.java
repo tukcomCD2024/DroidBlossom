@@ -58,7 +58,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(notRequireAuthenticationMatcher()).permitAll()
                 .requestMatchers(
-                    "/auth/verification/**"
+                    "/auth/verification/**",
+                    "/temporary-token/re-issue"
                 ).hasRole(Role.TEMPORARY.name())
                 .anyRequest().hasRole(Role.USER.name())
             )
