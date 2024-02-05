@@ -166,6 +166,7 @@
                 android:elevation="2dp"
                 android:max="@{vm.totalTime}"
                 android:progress="@{vm.initialProgress}"
+                android:visibility="@{vm.secretCapsuleSummary.opened ? View.GONE : View.VISIBLE}"
                 android:progressDrawable="@drawable/circle_progressbar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
