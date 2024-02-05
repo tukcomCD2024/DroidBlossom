@@ -16,6 +16,8 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.domain.model.common.MyCapsule
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
@@ -38,6 +40,10 @@ class MyPageFragment :
         viewModel.getMe()
         viewModel.getSecretCapsulePage()
         initRVA()
+
+        binding.settingBtn.setOnClickListener {
+            startActivity(CapsuleDetailActivity.newIntent(requireContext(),71, HomeFragment.CapsuleType.SECRET))
+        }
     }
 
     private fun initRVA() {

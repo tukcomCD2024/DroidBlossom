@@ -59,7 +59,7 @@ class CreateCapsule3Fragment :
         }
 
 
-    private val imgRVA by lazy {
+    private val imgVPA by lazy {
         ImageRVA(
             { viewModel.moveSingleImgUpLoad() },
             { viewModel.submitUris(it) }
@@ -75,7 +75,7 @@ class CreateCapsule3Fragment :
     }
 
     private fun initRVA(){
-        binding.recycleView.adapter = imgRVA
+        binding.recycleView.adapter = imgVPA
         binding.recycleView.offscreenPageLimit = 3
         val locationUtil = LocationUtil(requireContext())
         locationUtil.getCurrentLocation { latitude, longitude ->
@@ -156,7 +156,7 @@ class CreateCapsule3Fragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.imgUris.collect {
-                    imgRVA.submitList(it)
+                    imgVPA.submitList(it)
                 }
             }
         }

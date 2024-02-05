@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemImageBinding
-import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.ImageUrl
 
-class ImageUrlRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
+class ImageUrlRVA(val onClick: () -> Unit) :
     ListAdapter<ImageUrl, ImageUrlRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(

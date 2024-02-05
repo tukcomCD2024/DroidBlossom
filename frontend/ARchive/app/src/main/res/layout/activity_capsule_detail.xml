@@ -90,7 +90,7 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/line"
-                    tools:src="@color/main_4" />
+                    android:src="@color/main_4" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/nameT"
@@ -137,6 +137,10 @@
                     android:layout_width="0dp"
                     android:layout_height="360dp"
                     android:layout_marginTop="32dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:visibility="@{vm.capsuleDetail.imageUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +188,7 @@
                     android:text="오픈 날짜"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_600"
-                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.VISIBLE }"
+                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.GONE }"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/createDateSettingT" />
 
@@ -211,11 +215,11 @@
                     android:lines="1"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/black"
-                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.VISIBLE }"
+                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@id/openDateSettingT"
                     app:layout_constraintStart_toEndOf="@id/openDateSettingT"
                     app:layout_constraintTop_toTopOf="@id/openDateSettingT"
-                    bind:displayCreationDateFormatted="@{vm.capsuleDetail.dueDate}" />
+                    bind:displayCreationDateFormatted="@{vm.capsuleDetail.dueDate != null ? vm.capsuleDetail.dueDate : ``}" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
