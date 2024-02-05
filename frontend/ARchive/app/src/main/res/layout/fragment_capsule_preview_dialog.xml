@@ -130,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_secret_marker_24" />
+                    bind:srcCompat="@{vm.capsuleTypeImage}" />
 
             </androidx.cardview.widget.CardView>
 
@@ -149,6 +149,7 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:scaleType="centerInside"
+                    android:alpha="@{vm.visibleCapsuleOpenMessage ? 1.0F : 0.2F}"
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/sample_skin" />
 
@@ -165,6 +166,7 @@
                 android:elevation="2dp"
                 android:max="@{vm.totalTime}"
                 android:progress="@{vm.initialProgress}"
+                android:visibility="@{vm.secretCapsuleSummary.opened ? View.GONE : View.VISIBLE}"
                 android:progressDrawable="@drawable/circle_progressbar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
@@ -183,6 +185,7 @@
                 android:paddingVertical="15dp"
                 android:paddingHorizontal="18dp"
                 android:text="@{vm.timerState}"
+                android:visibility="@{vm.visibleCapsuleOpenMessage ? View.GONE : View.VISIBLE}"
                 android:elevation="2dp"
                 app:layout_constraintStart_toStartOf="@id/skinCardView"
                 app:layout_constraintEnd_toEndOf="@id/skinCardView"

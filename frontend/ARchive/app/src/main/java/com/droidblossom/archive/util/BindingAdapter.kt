@@ -70,12 +70,18 @@ fun TextView.setFormattedDate(dateString: String) {
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
             val date = parser.parse(dateString)
 
-            // 원하는 날짜 형식으로 변환합니다.
             val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
             val formattedDate = date?.let { formatter.format(it) }
             this.text = formattedDate
         } catch (e: Exception) {
             this.text = "날짜 형식 오류"
         }
+    }
+}
+
+@BindingAdapter("bind:srcCompat")
+fun ImageView.setImageResource(resource: Int?) {
+    resource?.let {
+        this.setImageResource(it)
     }
 }

@@ -15,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +54,23 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
             ?.let { CapsuleTypeUtils.stringToEnum(it) }
 
         binding.vm = viewModel
-        viewModel.getSecretCapsuleSummary(capsuleId)
+
+        when(capsuleType){
+            HomeFragment.CapsuleType.SECRET -> {
+                viewModel.getSecretCapsuleSummary(capsuleId)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24)
+            }
+            HomeFragment.CapsuleType.PUBLIC -> {
+
+            }
+            HomeFragment.CapsuleType.GROUP ->{
+
+            }
+            else -> {
+                
+            }
+        }
+
         initObserver()
     }
 
