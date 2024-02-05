@@ -10,10 +10,7 @@ public record CapsuleSkinsPageResponse(
     List<CapsuleSkinSummaryResponse> skins,
 
     @Schema(description = "다음 페이지 유무")
-    Boolean hasNext,
-
-    @Schema(description = "이전 페이지 유무")
-    Boolean hasPrevious
+    Boolean hasNext
 ) {
 
 }

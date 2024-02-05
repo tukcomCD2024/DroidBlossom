@@ -150,8 +150,7 @@ public class CapsuleMapper {
         Slice<SecretCapsuleDetailDto> capsuleDetailSlice) {
         return new MyCapsulePageResponse(
             capsuleDetailSlice.getContent(),
-            capsuleDetailSlice.hasNext(),
-            capsuleDetailSlice.hasPrevious()
+            capsuleDetailSlice.hasNext()
         );
     }
 

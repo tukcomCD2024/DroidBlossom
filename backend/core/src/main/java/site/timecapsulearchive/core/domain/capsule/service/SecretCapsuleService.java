@@ -100,7 +100,7 @@ public class SecretCapsuleService {
         ZonedDateTime createdAt
     ) {
         Slice<SecretCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
-            .findSecretCapsuleSliceByMemberId(memberId, size, createdAt);
+            .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
         return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
     }
