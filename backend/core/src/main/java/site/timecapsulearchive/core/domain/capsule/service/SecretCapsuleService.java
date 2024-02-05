@@ -151,6 +151,7 @@ public class SecretCapsuleService {
         if (dto.dueDate() == null) {
             return false;
         }
+
         return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }
