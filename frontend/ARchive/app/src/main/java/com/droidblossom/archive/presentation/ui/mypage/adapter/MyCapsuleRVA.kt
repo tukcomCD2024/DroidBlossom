@@ -15,6 +15,7 @@ class MyCapsuleRVA( val MyCapsuleFlow: (MyCapsule) -> Unit) :
         private val binding: ItemMyCapsuleBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: MyCapsule) {
+            binding.item = data
         }
     }
 
