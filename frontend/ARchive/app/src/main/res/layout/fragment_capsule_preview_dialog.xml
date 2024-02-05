@@ -107,12 +107,13 @@
                 android:layout_height="44dp"
                 android:layout_marginStart="@dimen/margin"
                 android:layout_marginTop="@dimen/margin"
-                android:src="@drawable/app_symbol"
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
                 app:civ_circle_background_color="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                bind:imageUrl="@{vm.secretCapsuleSummary.profileUrl}"
+                bind:placeholder="@{@drawable/app_symbol}"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/capsuleTypeCardView"
