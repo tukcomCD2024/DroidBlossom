@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - develop_back
+      - 'hotfix/[0-9a-zA-z]+-B-#[0-9a-zA-z]+'
   pull_request:
     branches:
       - develop_back
-      - hotfix\/.*-B-.*
 
 jobs:
   formatting:
