@@ -8,7 +8,7 @@ data class SecretCapsuleResponseDto(
     val capsuleSkinUrl: String,
     val content: String,
     val createdAt: String,
-    val dueDate: String,
+    val dueDate: String?,
     val images: List<String>,
     val isOpened: Boolean,
     val nickname: String,
