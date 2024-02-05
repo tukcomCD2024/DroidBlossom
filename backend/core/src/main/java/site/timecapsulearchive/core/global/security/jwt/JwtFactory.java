@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.global.security.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -7,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.global.config.security.JwtProperties;
@@ -16,6 +18,7 @@ import site.timecapsulearchive.core.global.error.exception.InvalidTokenException
 public class JwtFactory {
 
     private static final String ISSUER = "https://archive-timecapsule.kro.kr";
+    private static final String TOKEN_TYPE_CLAIM_NAME = "token_type";
 
     private final SecretKey key;
     private final long accessTokenValidityMs;
@@ -43,6 +46,7 @@ public class JwtFactory {
             .setIssuer(ISSUER)
             .setSubject(String.valueOf(memberId))
             .setExpiration(validity)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.ACCESS.name())
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
@@ -61,6 +65,7 @@ public class JwtFactory {
             .setIssuer(ISSUER)
             .setSubject(memberInfoKey)
             .setExpiration(validity)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.REFRESH.name())
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
@@ -79,22 +84,29 @@ public class JwtFactory {
             .setIssuer(ISSUER)
             .setSubject(String.valueOf(memberId))
             .setExpiration(validity)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.TEMPORARY)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
 
     /**
-     * 토큰과 토큰 타입으로 토큰의 사용자 식별자 추출
+     * 토큰과 토큰 타입으로 토큰의 사용자 식별자와 타입 추출
      *
      * @param token 토큰
      * @return 사용자 식별자
      */
-    public String getSubject(final String token) {
+    public TokenParseResult parse(final String token, final List<TokenType> tokenTypes) {
         try {
-            return jwtParser()
+            Claims claims = jwtParser()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+            validTokenType(tokenTypes, claims);
+
+            return TokenParseResult.of(
+                claims.getSubject(),
+                TokenType.valueOf(claims.get(TOKEN_TYPE_CLAIM_NAME, String.class))
+            );
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
         }
@@ -104,6 +116,16 @@ public class JwtFactory {
         return Jwts.parserBuilder()
             .setSigningKey(key)
             .build();
+    }
+
+    private void validTokenType(List<TokenType> tokenTypes, Claims claims) {
+        TokenType tokenType = TokenType.valueOf(
+            claims.get(TOKEN_TYPE_CLAIM_NAME, String.class)
+        );
+
+        if (!tokenTypes.contains(tokenType)) {
+            throw new JwtException("허용되지 않는 JWT 토큰 타입입니다.");
+        }
     }
 
     /**
