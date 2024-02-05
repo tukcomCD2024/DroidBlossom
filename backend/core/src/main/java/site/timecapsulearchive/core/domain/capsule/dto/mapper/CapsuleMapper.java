@@ -123,6 +123,7 @@ public class CapsuleMapper {
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(checkNullable(dto.dueDate()))
             .nickname(dto.nickname())
+            .profileUrl(dto.profileUrl())
             .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(dto.address())
             .title(dto.title())

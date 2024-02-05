@@ -11,6 +11,7 @@ public record SecretCapsuleDetailDto(
     String capsuleSkinUrl,
     ZonedDateTime dueDate,
     String nickname,
+    String profileUrl,
     ZonedDateTime createdAt,
     String address,
     String title,

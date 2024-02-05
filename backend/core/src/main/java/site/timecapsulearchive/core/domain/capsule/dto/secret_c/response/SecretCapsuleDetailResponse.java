@@ -18,6 +18,9 @@ public record SecretCapsuleDetailResponse(
     @Schema(description = "생성자 닉네임")
     String nickname,
 
+    @Schema(description = "생성자 프로필 url")
+    String profileUrl,
+
     @Schema(description = "생성일")
     ZonedDateTime createdDate,
 

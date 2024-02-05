@@ -7,6 +7,8 @@ import static java.util.stream.Collectors.toList;
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
+import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
+import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.ResultTransformer;
 import com.querydsl.core.group.GroupBy;
@@ -32,6 +34,7 @@ import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSum
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.QImage;
 import site.timecapsulearchive.core.domain.capsule.entity.QVideo;
+import site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin;
 
 @Repository
 @RequiredArgsConstructor
@@ -124,7 +127,24 @@ public class CapsuleQueryRepository {
         Long capsuleId
     ) {
         return jpaQueryFactory
+            .select(
+                capsule.id,
+                capsuleSkin.imageUrl,
+                capsule.dueDate,
+                member.nickname,
+                member.profileUrl,
+                capsule.createdAt,
+                capsule.address.fullRoadAddressName,
+                capsule.title,
+                capsule.content,
+                image.imageUrl,
+                video.videoUrl,
+                capsule.isOpened,
+                capsule.type
+            )
             .from(capsule)
+            .join(member).on(capsule.member.id.eq(member.id))
+            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
@@ -140,9 +160,10 @@ public class CapsuleQueryRepository {
             Projections.constructor(
                 SecretCapsuleDetailDto.class,
                 capsule.id,
-                capsule.capsuleSkin.imageUrl,
+                capsuleSkin.imageUrl,
                 capsule.dueDate,
-                capsule.member.nickname,
+                member.nickname,
+                member.profileUrl,
                 capsule.createdAt,
                 capsule.address.fullRoadAddressName,
                 capsule.title,
@@ -151,7 +172,8 @@ public class CapsuleQueryRepository {
                     Projections.constructor(String.class, image.imageUrl).skipNulls()),
                 GroupBy.list(
                     Projections.constructor(String.class, video.videoUrl).skipNulls()),
-                capsule.isOpened
+                capsule.isOpened,
+                capsule.type
             )
         );
     }
