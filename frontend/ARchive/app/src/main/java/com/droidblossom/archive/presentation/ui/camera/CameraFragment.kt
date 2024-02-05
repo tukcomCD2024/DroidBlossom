@@ -29,60 +29,54 @@ class CameraFragment :
     BaseFragment<CameraViewModelImpl, FragmentCameraBinding>(R.layout.fragment_camera) {
 
     override val viewModel: CameraViewModelImpl by viewModels<CameraViewModelImpl>()
+
     // private val capsules: MutableList<CapsuleMarker> = mutableListOf()
+    private var anchorNode: AnchorNode? = null
+    private lateinit var session: Session
+    private lateinit var config: Config
 
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.capsuleList.collect {
-                    it.map { capsule ->
-                        binding.sceneView.onSessionUpdated = { session, frame ->
-                            if (anchorNode == null) {
-                                frame.getUpdatedPlanes()
-                                    .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
-                                    ?.let { plane ->
-                                        Log.d("CameraFragmentAR", "earth setting start")
-                                        val earth = session.earth
-                                        if (earth == null) {
-                                            Log.d("CameraFragmentAR", "earth is null")
-                                            return@let
-                                        } else {
-                                            Log.d(
-                                                "CameraFragmentAR",
-                                                "earth.trackingState = ${earth.cameraGeospatialPose.latitude}"
-                                            )
-                                            if (earth.trackingState == TrackingState.TRACKING) {
-                                                val altitude = earth.cameraGeospatialPose.altitude
-                                                // Put the anchor somewhere around the user.
+                viewModel.capsuleList.collect { capsuleList ->
+                    binding.sceneView.onSessionUpdated = { session, frame ->
+                        if (anchorNode == null) {
+                            frame.getUpdatedPlanes()
+                                .firstOrNull() { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
+                                ?.let { plane ->
+                                    Log.d("CameraFragmentAR", "earth setting start")
+                                    val earth = session.earth
+                                    if (earth == null) {
+                                        Log.d("CameraFragmentAR", "earth is null")
+                                        return@let
+                                    } else {
+                                        Log.d(
+                                            "CameraFragmentAR",
+                                            "earth.trackingState = ${earth.cameraGeospatialPose.latitude}"
+                                        )
+                                        if (earth.trackingState == TrackingState.TRACKING) {
+                                            capsuleList.forEach { capsule ->
                                                 val latitude = capsule.latitude
                                                 val longitude = capsule.longitude
-                                                Log.d("CameraFragmentARR", " ${capsule}")
-
-                                                val earthAnchor = earth.createAnchor(
-                                                    latitude,
-                                                    longitude,
-                                                    altitude,
-                                                    0f,
-                                                    0f,
-                                                    0f,
-                                                    0f
+                                                val altitude = earth.cameraGeospatialPose.altitude
+                                                Log.d(
+                                                    "CameraFragmentAR",
+                                                    "earth.trackingState = 위도 - $latitude : 경도 - $longitude"
                                                 )
+                                                // 앵커 생성 및 노드 추가
+                                                val earthAnchor = earth.createAnchor(longitude,latitude, altitude, 0f, 0f, 0f, 0f)
                                                 addAnchorNode(earthAnchor)
                                             }
-
                                         }
                                     }
-                            }
+                                }
                         }
+
                     }
                 }
             }
         }
     }
-
-    private var anchorNode: AnchorNode? = null
-    private lateinit var session: Session
-    private lateinit var config: Config
 
     val permissionList = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -93,9 +87,9 @@ class CameraFragment :
         super.onViewCreated(view, savedInstanceState)
         val locationUtil = LocationUtil(requireContext())
         locationUtil.getCurrentLocation { latitude, longitude ->
-            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
             viewModel.getCapsules(latitude = latitude, longitude = longitude)
         }
+
         initView()
         createSession()
 
@@ -105,53 +99,12 @@ class CameraFragment :
         with(binding) {
             sceneView.configureSession { session, config ->
                 config.geospatialMode = Config.GeospatialMode.ENABLED
-                //config.planeFindingMode = Config.PlaneFindingMode.DISABLED
             }
-
-//            sceneView.onSessionUpdated = { session, frame ->
-//                if (anchorNode == null) {
-//                    frame.getUpdatedPlanes()
-//                        .firstOrNull { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
-//                        ?.let { plane ->
-//                            Log.d("CameraFragmentAR", "earth setting start")
-//                            val earth = session.earth
-//                            if (earth == null) {
-//                                Log.d("CameraFragmentAR", "earth is null")
-//                                return@let
-//                            } else {
-//                                Log.d(
-//                                    "CameraFragmentAR",
-//                                    "earth.trackingState = ${earth.cameraGeospatialPose.latitude}"
-//                                )
-//                                if (earth.trackingState == TrackingState.TRACKING) {
-//                                    val altitude = earth.cameraGeospatialPose.altitude
-//                                    // Put the anchor somewhere around the user.
-//                                    val latitude = earth.cameraGeospatialPose.latitude
-//                                    val longitude = earth.cameraGeospatialPose.longitude
-//                                    capsules.map { capsule ->
-//                                        Log.d("CameraFragmentARR"," ${capsule}")
-//
-//                                        val earthAnchor = earth.createAnchor(
-//                                            capsule.latitude as Double,
-//                                            capsule.longitude as Double,
-//                                            altitude,
-//                                            0f,
-//                                            0f,
-//                                            0f,
-//                                            0f
-//                                        )
-//                                        addAnchorNode(earthAnchor)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                }
-        //           }
         }
     }
 
     private fun addAnchorNode(anchor: Anchor) {
-        Log.d("CameraFragmentARR", "addAnchorNode added ")
+        Log.d("CameraFragmentAR", "addAnchorNode added ")
         binding.sceneView.addChildNode(
             AnchorNode(binding.sceneView.engine, anchor)
                 .apply {
@@ -161,6 +114,7 @@ class CameraFragment :
                         )?.let { modelInstance ->
 
                             addChildNode(
+
                                 node =
                                 ModelNode(
                                     modelInstance = modelInstance,
