@@ -69,6 +69,18 @@ class MyPageFragment :
                 }
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.myPageEvents.collect{ event ->
+                    when(event){
+                        is MyPageViewModel.MyPageEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+                        else ->{}
+                    }
+                }
+            }
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

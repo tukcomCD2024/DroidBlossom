@@ -8,12 +8,16 @@ import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,7 +28,12 @@ class MyPageViewModelImpl @Inject constructor(
     private val secretCapsulePageUseCase: SecretCapsulePageUseCase
 ) : BaseViewModel(), MyPageViewModel {
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", ""))
+    private val _myPageEvents = MutableSharedFlow<MyPageViewModel.MyPageEvent>()
+    override val myPageEvents: SharedFlow<MyPageViewModel.MyPageEvent>
+        get() =_myPageEvents.asSharedFlow()
+
+
+            private val _myInfo = MutableStateFlow(MemberDetail("USER", "", ""))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
@@ -46,7 +55,7 @@ class MyPageViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _myInfo.emit(it)
                 }.onFail {
-
+                    _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                 }
             }
         }
@@ -62,12 +71,11 @@ class MyPageViewModelImpl @Inject constructor(
                     ).toDto()
                 ).collect { result ->
                     result.onSuccess {
-                        Log.d("페이지","${it}")
                         _hasNextPage.value = it.hasNext
                         _myCapsules.emit(myCapsules.value + it.capsules)
                         _lastCreatedTime.value = _myCapsules.value.last().createdAt
                     }.onFail {
-                        Log.d("페이지","${it}")
+                        _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
                 }
             }
