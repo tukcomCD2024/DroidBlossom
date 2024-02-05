@@ -78,11 +78,11 @@ public class CapsuleService {
             capsuleId
         ).orElseThrow(CapsuleNotFondException::new);
 
-        if (findCapsule.isCapsuleOpened()) {
-            capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
-            return CapsuleOpenedResponse.opened();
+        if (findCapsule.isNotCapsuleOpened()) {
+            return CapsuleOpenedResponse.notOpened();
         }
 
-        return CapsuleOpenedResponse.notOpened();
+        capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+        return CapsuleOpenedResponse.opened();
     }
 }
