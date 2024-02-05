@@ -22,7 +22,7 @@ interface SecretService {
     @GET("secret/capsules")
     suspend fun getSecretCapsulePageApi(
         @Query("size") size : Int,
-        @Query("capsule_id") capsuleId: Int
+        @Query("createdAt") createdAt: String
     ) : Response<ResponseBody<SecretCapsulePageResponseDto>>
 
     @POST("secret/capsules")
