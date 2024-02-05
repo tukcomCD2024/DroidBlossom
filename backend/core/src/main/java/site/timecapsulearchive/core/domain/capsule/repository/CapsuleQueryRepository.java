@@ -134,7 +134,7 @@ public class CapsuleQueryRepository {
         Long memberId,
         Long capsuleId
     ) {
-        return jpaQueryFactory
+        List<SecretCapsuleDetailDto> detailDtoList = jpaQueryFactory
             .select(
                 capsule.id,
                 capsuleSkin.imageUrl,
