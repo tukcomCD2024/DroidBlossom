@@ -52,33 +52,50 @@ public class SecretCapsuleService {
 
         Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
 
-        Capsule newCapsule = capsuleRepository.save(capsuleMapper.requestDtoToEntity(
+        Capsule capsule = capsuleMapper.requestDtoToEntity(
             dto, point,
             findMember,
             capsuleSkin
-        ));
+        );
 
+        if (isNotTimeCapsule(capsule)) {
+            capsule.open();
+        }
+
+        capsuleRepository.save(capsule);
+
+        saveImage(dto, capsule, findMember);
+        saveVideo(dto, capsule, findMember);
+    }
+
+    private boolean isNotTimeCapsule(Capsule capsule) {
+        return capsule.getDueDate() == null;
+    }
+
+    private void saveImage(SecretCapsuleCreateRequestDto dto, Capsule capsule, Member findMember) {
         if (isImagesNotEmpty(dto)) {
             imageService.saveImage(MediaSaveDto.of(
-                newCapsule,
+                capsule,
                 findMember,
                 dto.directory(),
                 dto.imageNames()
-            ));
-        }
-
-        if (isVideosNotEmpty(dto)) {
-            videoService.saveVideo(MediaSaveDto.of(
-                newCapsule,
-                findMember,
-                dto.directory(),
-                dto.videoNames()
             ));
         }
     }
 
     private boolean isImagesNotEmpty(SecretCapsuleCreateRequestDto dto) {
         return dto.imageNames() != null && !dto.imageNames().isEmpty();
+    }
+
+    private void saveVideo(SecretCapsuleCreateRequestDto dto, Capsule capsule, Member findMember) {
+        if (isVideosNotEmpty(dto)) {
+            videoService.saveVideo(MediaSaveDto.of(
+                capsule,
+                findMember,
+                dto.directory(),
+                dto.videoNames()
+            ));
+        }
     }
 
     private boolean isVideosNotEmpty(SecretCapsuleCreateRequestDto dto) {

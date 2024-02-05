@@ -104,4 +104,8 @@ public class Capsule extends BaseEntity {
         this.member = member;
         this.capsuleSkin = capsuleSkin;
     }
+
+    public void open() {
+        this.isOpened = true;
+    }
 }
