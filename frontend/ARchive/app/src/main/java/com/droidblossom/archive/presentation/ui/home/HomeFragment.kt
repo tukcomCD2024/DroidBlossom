@@ -196,7 +196,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     private fun addMarker(capsuleMarker: CapsuleMarker) {
         val marker = Marker().apply {
-            position = LatLng(capsuleMarker.longitude, capsuleMarker.latitude)
+            position = LatLng(capsuleMarker.latitude, capsuleMarker.longitude)
             icon = when (capsuleMarker.capsuleType) {
                 CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
                 CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
