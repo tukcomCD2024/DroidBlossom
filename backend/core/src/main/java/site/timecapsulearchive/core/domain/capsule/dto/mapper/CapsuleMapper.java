@@ -108,10 +108,12 @@ public class CapsuleMapper {
         SecretCapsuleSummaryDto dto) {
         return SecretCapsuleSummaryResponse.builder()
             .nickname(dto.nickname())
+            .profileUrl(dto.profileUrl())
             .skinUrl(dto.skinUrl())
             .title(dto.title())
             .dueDate(checkNullable(dto.dueDate()))
             .address(dto.address())
+            .roadName(dto.roadName())
             .isOpened(dto.isOpened())
             .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .build();

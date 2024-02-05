@@ -107,10 +107,12 @@ public class CapsuleQueryRepository {
                 Projections.constructor(
                     SecretCapsuleSummaryDto.class,
                     capsule.member.nickname,
+                    capsule.member.profileUrl,
                     capsule.capsuleSkin.imageUrl,
                     capsule.title,
                     capsule.dueDate,
                     capsule.address.fullRoadAddressName,
+                    capsule.address.roadName,
                     capsule.isOpened,
                     capsule.createdAt
                 )
