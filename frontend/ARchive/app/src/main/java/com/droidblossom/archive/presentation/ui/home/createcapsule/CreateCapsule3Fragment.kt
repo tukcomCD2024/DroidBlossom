@@ -69,6 +69,12 @@ class CreateCapsule3Fragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        initRVA()
+        initView()
+    }
+
+    private fun initRVA(){
         binding.recycleView.adapter = imgRVA
         binding.recycleView.offscreenPageLimit = 3
         val locationUtil = LocationUtil(requireContext())
@@ -76,8 +82,6 @@ class CreateCapsule3Fragment :
             Log.d("위치", "위도 : $latitude, 경도 : $longitude")
             viewModel.coordToAddress(latitude = latitude, longitude = longitude)
         }
-
-        initView()
     }
 
     private fun initView() {

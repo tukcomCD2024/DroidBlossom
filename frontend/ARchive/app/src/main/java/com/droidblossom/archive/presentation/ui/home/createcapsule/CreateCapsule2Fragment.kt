@@ -55,9 +55,8 @@ class CreateCapsule2Fragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
-        binding.recycleView.adapter = skinRVA
-        binding.recycleView.itemAnimator = null
 
+        initRVA()
         initSearchEdit()
 
         //테스트용
@@ -100,6 +99,11 @@ class CreateCapsule2Fragment :
         }
 
 
+    }
+
+    private fun initRVA(){
+        binding.recycleView.adapter = skinRVA
+        binding.recycleView.itemAnimator = null
     }
 
     @SuppressLint("ClickableViewAccessibility")
