@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemMyCapsuleBinding
 import com.droidblossom.archive.domain.model.common.MyCapsule
 
-class MyCapsuleRVA( val MyCapsuleFlow: (MyCapsule) -> Unit) :
+class MyCapsuleRVA( ) :
     ListAdapter<MyCapsule, MyCapsuleRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(

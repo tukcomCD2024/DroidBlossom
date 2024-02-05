@@ -28,7 +28,7 @@ class MyPageViewModelImpl @Inject constructor(
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
-    private val _myCapsules = MutableStateFlow(listOf<MyCapsule>())
+    val _myCapsules = MutableStateFlow(listOf<MyCapsule>())
     override val myCapsules: StateFlow<List<MyCapsule>>
         get() = _myCapsules
 
@@ -57,7 +57,7 @@ class MyPageViewModelImpl @Inject constructor(
             if (hasNextPage.value) {
                 secretCapsulePageUseCase(
                     SecretCapsulePageRequest(
-                        12,
+                        15,
                         lastCreatedTime.value
                     ).toDto()
                 ).collect { result ->
@@ -71,6 +71,15 @@ class MyPageViewModelImpl @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    override fun clearCapsules() {
+        viewModelScope.launch {
+            _myCapsules.value = listOf()
+            _lastCreatedTime.value = DateUtils.dataServerString
+            _hasNextPage.value = true
+            getSecretCapsulePage()
         }
     }
 }

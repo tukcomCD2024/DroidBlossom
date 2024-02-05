@@ -14,6 +14,5 @@ interface MyPageViewModel {
 
     fun getMe()
     fun getSecretCapsulePage()
-
-
+    fun clearCapsules()
 }

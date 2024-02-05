@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.domain.model.common.MyCapsule
@@ -18,6 +19,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
+import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,7 +29,7 @@ class MyPageFragment :
     override val viewModel: MyPageViewModelImpl by viewModels()
 
     private val myCapsuleRVA by lazy {
-        MyCapsuleRVA { }
+        MyCapsuleRVA()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,7 +42,7 @@ class MyPageFragment :
 
     private fun initRVA() {
         binding.capsuleRecycleView.adapter = myCapsuleRVA
-        binding.capsuleRecycleView.layoutManager = GridLayoutManager(requireContext(), 3)
+        binding.capsuleRecycleView.animation = null
          //무한 스크롤
         binding.capsuleRecycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -69,6 +71,12 @@ class MyPageFragment :
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden){
+            viewModel.clearCapsules()
+        }
+    }
     companion object {
 
         const val TAG = "MY"
