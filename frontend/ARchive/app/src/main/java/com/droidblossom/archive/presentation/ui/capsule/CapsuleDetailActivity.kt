@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCapsuleDetailBinding
+import com.droidblossom.archive.domain.model.common.ImageUrl
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageUrlRVA
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -63,7 +64,7 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.capsuleDetail.collect{
-
+                    imageVP.submitList(it.imageUrls?.map { ImageUrl(it) }?.toList() ?: listOf())
                 }
             }
         }
