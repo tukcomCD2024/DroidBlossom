@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
@@ -75,7 +75,7 @@ public interface SecretCapsuleApi {
         value = "/capsules",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecretCapsules(
+    ResponseEntity<ApiSpec<MySecretCapsulePageResponse>> getMySecretCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
