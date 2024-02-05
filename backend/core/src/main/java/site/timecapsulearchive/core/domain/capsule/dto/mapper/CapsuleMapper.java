@@ -87,8 +87,8 @@ public class CapsuleMapper {
 
         return CapsuleSummaryResponse.builder()
             .id(dto.id())
-            .longitude(point.getX())
-            .latitude(point.getY())
+            .latitude(point.getX())
+            .longitude(point.getY())
             .nickname(dto.nickname())
             .capsuleSkinUrl(dto.skinUrl())
             .title(dto.title())
