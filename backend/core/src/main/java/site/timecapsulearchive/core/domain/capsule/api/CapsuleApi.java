@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,6 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageRespon
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface CapsuleApi {
 
@@ -120,6 +122,11 @@ public interface CapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PatchMapping(

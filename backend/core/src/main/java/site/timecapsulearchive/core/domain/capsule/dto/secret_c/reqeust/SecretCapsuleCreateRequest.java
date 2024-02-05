@@ -35,10 +35,10 @@ public record SecretCapsuleCreateRequest(
     @NotBlank(message = "캡슐 내용은 필수 입니다.")
     String content,
 
-    @Schema(description = "현재 경도", requiredMode = RequiredMode.REQUIRED)
+    @Schema(description = "현재 경도(wsg84)", requiredMode = RequiredMode.REQUIRED)
     double longitude,
 
-    @Schema(description = "현재 위도", requiredMode = RequiredMode.REQUIRED)
+    @Schema(description = "현재 위도(wsg84)", requiredMode = RequiredMode.REQUIRED)
     double latitude,
 
     @Schema(description = "캡슐 생성 주소")
