@@ -20,6 +20,11 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
+        initRVA()
+    }
+
+    private fun initRVA(){
+
     }
 
     override fun observeData() {
