@@ -149,6 +149,7 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:scaleType="centerInside"
+                    android:alpha=""
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/sample_skin" />
 
@@ -183,6 +184,7 @@
                 android:paddingVertical="15dp"
                 android:paddingHorizontal="18dp"
                 android:text="@{vm.timerState}"
+                android:visibility="@{vm.visibleCapsuleOpenMessage ? View.GONE : View.VISIBLE}"
                 android:elevation="2dp"
                 app:layout_constraintStart_toStartOf="@id/skinCardView"
                 app:layout_constraintEnd_toEndOf="@id/skinCardView"
