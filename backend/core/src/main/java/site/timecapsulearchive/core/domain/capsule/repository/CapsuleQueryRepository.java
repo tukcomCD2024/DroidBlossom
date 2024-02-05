@@ -173,7 +173,8 @@ public class CapsuleQueryRepository {
                     capsule.address.fullRoadAddressName,
                     capsule.title,
                     capsule.content,
-                    capsule.isOpened
+                    capsule.isOpened,
+                    capsule.type
                 )
             )
             .from(capsule)
