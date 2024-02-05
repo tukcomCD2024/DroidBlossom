@@ -68,6 +68,20 @@ public class CapsuleMapper {
             .build();
     }
 
+    private Address addressDataToEntity(AddressData addressData) {
+        return Address.builder()
+            .fullRoadAddressName(addressData.fullRoadAddressName())
+            .province(addressData.province())
+            .city(addressData.city())
+            .subDistinct(addressData.subDistinct())
+            .roadName(addressData.roadName())
+            .mainBuildingNumber(addressData.mainBuildingNumber())
+            .subBuildingNumber(addressData.subBuildingNumber())
+            .buildingName(addressData.buildingName())
+            .zipCode(addressData.zipCode())
+            .build();
+    }
+
     public CapsuleSummaryResponse capsuleSummaryDtoToResponse(CapsuleSummaryDto dto) {
         Point point = geoTransformer.changePoint3857To4326(dto.point());
 
@@ -84,9 +98,11 @@ public class CapsuleMapper {
     }
 
     private ZonedDateTime checkNullable(ZonedDateTime zonedDateTime) {
-        return zonedDateTime != null ? zonedDateTime.withZoneSameInstant(ASIA_SEOUL) : null;
+        if (zonedDateTime != null) {
+            return zonedDateTime.withZoneSameInstant(ASIA_SEOUL);
+        }
+        return null;
     }
-
 
     public SecretCapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
         SecretCapsuleSummaryDto dto) {
@@ -134,8 +150,7 @@ public class CapsuleMapper {
         Slice<SecretCapsuleDetailDto> capsuleDetailSlice) {
         return new MyCapsulePageResponse(
             capsuleDetailSlice.getContent(),
-            capsuleDetailSlice.hasNext(),
-            capsuleDetailSlice.hasPrevious()
+            capsuleDetailSlice.hasNext()
         );
     }
 
@@ -171,20 +186,6 @@ public class CapsuleMapper {
             .subBuildingNumber(address.getSubBuildingNumber())
             .buildingName(address.getBuildingName())
             .zipCode(address.getZipCode())
-            .build();
-    }
-
-    private Address addressDataToEntity(AddressData addressData) {
-        return Address.builder()
-            .fullRoadAddressName(addressData.fullRoadAddressName())
-            .province(addressData.province())
-            .city(addressData.city())
-            .subDistinct(addressData.subDistinct())
-            .roadName(addressData.roadName())
-            .mainBuildingNumber(addressData.mainBuildingNumber())
-            .subBuildingNumber(addressData.subBuildingNumber())
-            .buildingName(addressData.buildingName())
-            .zipCode(addressData.zipCode())
             .build();
     }
 }
