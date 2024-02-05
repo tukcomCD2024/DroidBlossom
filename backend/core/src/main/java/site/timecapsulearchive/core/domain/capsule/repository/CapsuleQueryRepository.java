@@ -1,9 +1,7 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
+import static com.querydsl.core.group.GroupBy.list;
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
@@ -11,7 +9,6 @@ import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSki
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.ResultTransformer;
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -44,12 +41,6 @@ public class CapsuleQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final CapsuleMapper capsuleMapper;
 
-    private static List<Long> getCapsuleIds(List<SecretCapsuleDetail> secretCapsuleList) {
-        return secretCapsuleList.stream()
-            .map(SecretCapsuleDetail::capsuleId)
-            .toList();
-    }
-
     /**
      * 캡슐 타입에 따라 현재 위치에서 범위 내의 캡슐을 조회한다.
      *
@@ -61,6 +52,31 @@ public class CapsuleQueryRepository {
     public List<CapsuleSummaryDto> findCapsuleByCurrentLocationAndCapsuleType(
         Long memberId,
         Polygon mbr,
+        CapsuleType capsuleType
+    ) {
+        TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+            capsuleType);
+
+        assignParameter(memberId, mbr, capsuleType, query);
+
+        return query.getResultList();
+    }
+
+    private void assignParameter(
+        Long memberId,
+        Polygon mbr,
+        CapsuleType capsuleType,
+        TypedQuery<CapsuleSummaryDto> query
+    ) {
+        query.setParameter("mbr", mbr);
+        query.setParameter("memberId", memberId);
+
+        if (capsuleType != CapsuleType.ALL) {
+            query.setParameter("capsuleType", capsuleType);
+        }
+    }
+
+    private TypedQuery<CapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
         CapsuleType capsuleType
     ) {
         String queryString = """
@@ -79,20 +95,12 @@ public class CapsuleQueryRepository {
             join c.capsuleSkin cs
             where ST_Contains(:mbr, c.point) and m.id=:memberId
             """;
+
         if (capsuleType != CapsuleType.ALL) {
             queryString += " and c.type = :capsuleType";
         }
 
-        TypedQuery<CapsuleSummaryDto> query = entityManager.createQuery(queryString,
-            CapsuleSummaryDto.class);
-        query.setParameter("mbr", mbr);
-        query.setParameter("memberId", memberId);
-
-        if (capsuleType != CapsuleType.ALL) {
-            query.setParameter("capsuleType", capsuleType);
-        }
-
-        return query.getResultList();
+        return entityManager.createQuery(queryString, CapsuleSummaryDto.class);
     }
 
     public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryByMemberIdAndCapsuleId(
@@ -150,12 +158,17 @@ public class CapsuleQueryRepository {
             .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
                 .and(capsule.type.eq(CapsuleType.SECRET)))
             .transform(
-                findSecretCapsuleDetailDto()
-            ).stream()
-            .findFirst();
+                transformSecretCapsuleDetailDto()
+            );
+
+        if (detailDtoList.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(detailDtoList.get(0));
     }
 
-    private ResultTransformer<List<SecretCapsuleDetailDto>> findSecretCapsuleDetailDto() {
+    private ResultTransformer<List<SecretCapsuleDetailDto>> transformSecretCapsuleDetailDto() {
         return groupBy(capsule.id).list(
             Projections.constructor(
                 SecretCapsuleDetailDto.class,
@@ -168,9 +181,9 @@ public class CapsuleQueryRepository {
                 capsule.address.fullRoadAddressName,
                 capsule.title,
                 capsule.content,
-                GroupBy.list(
+                list(
                     Projections.constructor(String.class, image.imageUrl).skipNulls()),
-                GroupBy.list(
+                list(
                     Projections.constructor(String.class, video.videoUrl).skipNulls()),
                 capsule.isOpened,
                 capsule.type
@@ -178,12 +191,40 @@ public class CapsuleQueryRepository {
         );
     }
 
-    public Slice<SecretCapsuleDetailDto> findSecretCapsuleSliceByMemberId(
+    public Slice<SecretCapsuleDetailDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
         Long memberId,
         int size,
         ZonedDateTime createdAt
     ) {
-        List<SecretCapsuleDetail> secretCapsuleList = jpaQueryFactory
+        List<SecretCapsuleDetail> secretCapsuleList = findSecretCapsuleDetailByMemberIdAndCreatedAt(
+            memberId,
+            size,
+            createdAt
+        );
+
+        boolean hasNext = canMoreRead(size, secretCapsuleList.size());
+        if (hasNext) {
+            secretCapsuleList.remove(size);
+        }
+
+        List<Long> capsuleIds = getCapsuleIds(secretCapsuleList);
+
+        Map<Long, List<String>> imageUrls = findImageUrlsByCapsuleId(capsuleIds);
+        Map<Long, List<String>> videoUrls = findVideoUrlsByCapsuleId(capsuleIds);
+
+        List<SecretCapsuleDetailDto> result = secretCapsuleList.stream()
+            .map(dto -> capsuleMapper.secretCapsuleDetailToDto(dto, imageUrls, videoUrls))
+            .toList();
+
+        return new SliceImpl<>(result, Pageable.ofSize(size), hasNext);
+    }
+
+    private List<SecretCapsuleDetail> findSecretCapsuleDetailByMemberIdAndCreatedAt(
+        Long memberId,
+        int size,
+        ZonedDateTime createdAt
+    ) {
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
                     SecretCapsuleDetail.class,
@@ -208,27 +249,16 @@ public class CapsuleQueryRepository {
             .orderBy(capsule.id.desc())
             .limit(size + 1)
             .fetch();
-
-        boolean hasNext = canMoreRead(size, secretCapsuleList.size());
-        if (hasNext) {
-            secretCapsuleList.remove(size);
-        }
-
-        List<Long> capsuleIds = getCapsuleIds(secretCapsuleList);
-
-        Map<Long, List<String>> imageUrls = findImageUrlsByCapsuleId(capsuleIds);
-
-        Map<Long, List<String>> videoUrls = findVideoUrlsByCapsuleId(capsuleIds);
-
-        List<SecretCapsuleDetailDto> result = secretCapsuleList.stream()
-            .map(dto -> capsuleMapper.secretCapsuleDetailToDto(dto, imageUrls, videoUrls))
-            .toList();
-
-        return new SliceImpl<>(result, Pageable.ofSize(size), hasNext);
     }
 
     private boolean canMoreRead(int size, int capsuleSize) {
         return capsuleSize > size;
+    }
+
+    private List<Long> getCapsuleIds(List<SecretCapsuleDetail> secretCapsuleList) {
+        return secretCapsuleList.stream()
+            .map(SecretCapsuleDetail::capsuleId)
+            .toList();
     }
 
     private Map<Long, List<String>> findVideoUrlsByCapsuleId(List<Long> capsuleIds) {
@@ -236,13 +266,8 @@ public class CapsuleQueryRepository {
             .select(video.capsule.id, video.videoUrl)
             .from(video)
             .where(video.capsule.id.in(capsuleIds))
-            .fetch()
-            .stream()
-            .collect(
-                groupingBy(
-                    video -> video.get(QVideo.video.capsule.id),
-                    mapping(video -> video.get(QVideo.video.videoUrl), toList())
-                )
+            .transform(
+                groupBy(video.capsule.id).as(list(video.videoUrl))
             );
     }
 
@@ -251,13 +276,8 @@ public class CapsuleQueryRepository {
             .select(image.capsule.id, image.imageUrl)
             .from(image)
             .where(image.capsule.id.in(capsuleIds))
-            .fetch()
-            .stream()
-            .collect(
-                groupingBy(
-                    image -> image.get(QImage.image.capsule.id),
-                    mapping(image -> image.get(QImage.image.imageUrl), toList())
-                )
+            .transform(
+                groupBy(image.capsule.id).as(list(image.imageUrl))
             );
     }
 }

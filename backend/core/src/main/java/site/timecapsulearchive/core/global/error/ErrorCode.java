@@ -18,10 +18,13 @@ public enum ErrorCode {
 
     //auth
     AUTHENTICATION_ERROR(401, "AUTH-003", "인증에 실패했습니다. 인증 수단이 유효한지 확인하세요."),
+    AUTHORIZATION_ERROR(403, "AUTH-004", "권한이 존재하지 않습니다."),
 
     //message
     TOO_MANY_REQUEST_ERROR(429, "MESSAGE-001", "너무 많은 인증 메시지를 요청했습니다. 24시간 후 요청해주세요."),
+
     CERTIFICATION_NUMBER_NOT_FOUND_ERROR(404, "MESSAGE-002", "인증 번호를 찾지 못하였습니다."),
+
     CERTIFICATION_NUMBER_NOT_MATCH_ERROR(400, "MESSAGE-003", "인증 번호가 일치하지 않습니다."),
 
     //ouath
@@ -32,7 +35,9 @@ public enum ErrorCode {
 
     //member
     LOGIN_ON_NOT_VERIFIED_ERROR(400, "MEMBER-001", "인증되지 않은 사용자로 로그인을 시도했습니다."),
+
     ALREADY_VERIFIED_ERROR(400, "MEMBER-002", "이미 인증된 사용자입니다."),
+
     MEMBER_NOT_FOUND_ERROR(404, "MEMBER-003", "사용자 데이터를 찾지 못하였습니다."),
 
     //geo

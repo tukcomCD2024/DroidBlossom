@@ -1,13 +1,16 @@
 package site.timecapsulearchive.core.domain.capsule.api;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.CoordinateRangeRequestDto;
+import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -56,6 +59,19 @@ public class CapsuleApiController implements CapsuleApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 capsuleService.getFullAddressByCoordinate(latitude, longitude)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
+        @AuthenticationPrincipal Long memberId,
+        @PathVariable("capsule_id") Long capsuleId
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                capsuleService.updateCapsuleOpened(memberId, capsuleId)
             )
         );
     }

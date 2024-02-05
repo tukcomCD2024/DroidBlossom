@@ -17,11 +17,13 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
+import site.timecapsulearchive.core.domain.member.entity.Role;
 
 @EnableWebSecurity
 @Configuration
@@ -34,6 +36,8 @@ public class SecurityConfig {
     private final AuthenticationFailureHandler oauth2LoginFailureHandler;
     private final AuthenticationProvider jwtAuthenticationProvider;
     private final ObjectMapper objectMapper;
+
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -53,8 +57,13 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(notRequireAuthenticationMatcher()).permitAll()
-                .anyRequest().authenticated()
-            );
+                .requestMatchers(
+                    "/auth/verification/**",
+                    "/temporary-token/re-issue"
+                ).hasRole(Role.TEMPORARY.name())
+                .anyRequest().hasRole(Role.USER.name())
+            )
+            .exceptionHandling(error -> error.accessDeniedHandler(accessDeniedHandler));
 
         http.apply(
             JwtDsl.jwtDsl(

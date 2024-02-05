@@ -116,7 +116,7 @@ public class SecretCapsuleService {
         ZonedDateTime createdAt
     ) {
         Slice<SecretCapsuleDetailDto> capsuleDetailSlice = capsuleQueryRepository
-            .findSecretCapsuleSliceByMemberId(memberId, size, createdAt);
+            .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
         return capsuleMapper.capsuleDetailSliceToResponse(capsuleDetailSlice);
     }
@@ -164,6 +164,7 @@ public class SecretCapsuleService {
         if (dto.dueDate() == null) {
             return false;
         }
+
         return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }
