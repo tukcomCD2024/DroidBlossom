@@ -25,7 +25,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val secretCapsuleSummaryUseCase: SecretCapsuleSummaryUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
-    private val _secretCapsuleSummary = MutableStateFlow(SecretCapsuleSummary("","","","","",false,""))
+    private val _secretCapsuleSummary = MutableStateFlow(SecretCapsuleSummary("","","","","","","", false, ""))
     override val secretCapsuleSummary: StateFlow<SecretCapsuleSummary>
         get() = _secretCapsuleSummary
 
