@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface CapsuleSkinService {
 
     @GET("capsule-skins")
-    suspend fun getCapsuleSkins(
+    suspend fun getCapsuleSkinsPageApi(
         @Query("size") size : Int,
         @Query("createdAt") createdAt: String
     ) : Response<ResponseBody<CapsuleSkinsPageResponseDto>>
