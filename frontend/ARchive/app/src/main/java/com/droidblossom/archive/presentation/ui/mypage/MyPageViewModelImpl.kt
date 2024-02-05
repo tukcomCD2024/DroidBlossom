@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.MyCapsule
 import com.droidblossom.archive.domain.model.member.MemberDetail
@@ -56,16 +57,17 @@ class MyPageViewModelImpl @Inject constructor(
             if (hasNextPage.value) {
                 secretCapsulePageUseCase(
                     SecretCapsulePageRequest(
-                        15,
+                        12,
                         lastCreatedTime.value
                     ).toDto()
                 ).collect { result ->
                     result.onSuccess {
+                        Log.d("페이지","${it}")
                         _hasNextPage.value = it.hasNext
-                        _myCapsules.emit(it.capsules)
+                        _myCapsules.emit(myCapsules.value + it.capsules)
                         _lastCreatedTime.value = _myCapsules.value.last().createdAt
                     }.onFail {
-
+                        Log.d("페이지","${it}")
                     }
                 }
             }

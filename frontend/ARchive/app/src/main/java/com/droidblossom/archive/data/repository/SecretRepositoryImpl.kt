@@ -25,7 +25,7 @@ class SecretRepositoryImpl @Inject constructor(
 ) : SecretRepository {
 
     override suspend fun getSecretCapsulePage(request: SecretCapsulePageRequestDto): RetrofitResult<SecretCapsulePage> {
-        return apiHandler({ api.getSecretCapsulePageApi(request.size, request.capsule_id) }) { response: ResponseBody<SecretCapsulePageResponseDto> -> response.result.toModel() }
+        return apiHandler({ api.getSecretCapsulePageApi(request.size, request.createdAt) }) { response: ResponseBody<SecretCapsulePageResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun createSecretCapsule(request: SecretCapsuleCreateRequestDto): RetrofitResult<String> {
