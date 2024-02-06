@@ -10,6 +10,7 @@ import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
@@ -32,6 +33,11 @@ interface CapsuleSkinService {
 
     @DELETE("capsule-skins/{capsule_skin_id}")
     suspend fun deleteCapsuleSkinsApi(
+        @Query("capsule_skin_id") capsuleSkinId : Long,
+    ) : Response<ResponseBody<String>>
+
+    @PATCH("capsule-skins/{capsule_skin_id}")
+    suspend fun patchCapsuleSkinsModifyApi(
         @Query("capsule_skin_id") capsuleSkinId : Long,
     ) : Response<ResponseBody<String>>
 
