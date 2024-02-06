@@ -15,7 +15,7 @@ import site.timecapsulearchive.core.global.common.valid.VideoExtensionValidator;
 @Documented
 public @interface Video {
 
-    String message() default "비디오는 mp4만 지원합니다.";
+    String message() default "비디오는 공백을 포함하지 않는 mp4만 지원합니다.";
 
     Class<?>[] groups() default {};
 
