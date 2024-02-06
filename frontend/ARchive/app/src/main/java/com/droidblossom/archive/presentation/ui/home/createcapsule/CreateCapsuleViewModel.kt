@@ -26,6 +26,8 @@ interface CreateCapsuleViewModel {
     val skinId: StateFlow<Long>
     val skins : StateFlow<List<CapsuleSkinSummary>>
     val isSearchOpen : StateFlow<Boolean>
+    val lastCreatedSkinTime : StateFlow<String>
+    val hasNextSkins : StateFlow<Boolean>
 
     //Create3
     val create3Events: SharedFlow<Create3Event>
@@ -61,6 +63,7 @@ interface CreateCapsuleViewModel {
     fun closeSearchSkin()
     fun searchSkin()
     fun changeSkin(skin: CapsuleSkinSummary)
+    fun getSkinList()
     fun moveFinish()
     fun moveLocation()
     fun moveDate()
@@ -83,6 +86,8 @@ interface CreateCapsuleViewModel {
 
     sealed class Create2Event {
         object NavigateTo3 : Create2Event()
+
+        data class ShowToastMessage(val message : String) : Create2Event()
 
     }
 
