@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.AddressData
+import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
@@ -68,10 +69,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _skinId = MutableStateFlow<Long>(0)
     override val skinId: StateFlow<Long>
         get() = _skinId
-    private val _skins = MutableStateFlow(
-        listOf(Skin(1, "", false), Skin(2, "", false), Skin(3, "", false))
-    )
-    override val skins: StateFlow<List<Skin>>
+    private val _skins = MutableStateFlow(listOf<CapsuleSkinSummary>())
+    override val skins: StateFlow<List<CapsuleSkinSummary>>
         get() = _skins
 
     private val _isSearchOpen = MutableStateFlow(false)
@@ -201,7 +200,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun changeSkin(skin: Skin) {
+
+
+    override fun changeSkin(skin: CapsuleSkinSummary) {
         val submitList = skins.value
         submitList.map { it.isClicked = false }
         submitList[submitList.indexOf(skin)].isClicked = true

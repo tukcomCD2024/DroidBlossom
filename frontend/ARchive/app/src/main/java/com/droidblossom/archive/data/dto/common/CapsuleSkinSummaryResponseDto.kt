@@ -12,6 +12,7 @@ data class CapsuleSkinSummaryResponseDto (
         id = this.id,
         skinUrl = this.skinUrl,
         name = this.name,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        isClicked = false
     )
 }

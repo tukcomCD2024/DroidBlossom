@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.droidblossom.archive.domain.model.common.Skin" />
+            type="com.droidblossom.archive.domain.model.common.CapsuleSkinSummary" />
 
     </data>
 

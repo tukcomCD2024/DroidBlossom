@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
 import com.droidblossom.archive.domain.model.common.AddressData
+import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
@@ -23,7 +24,7 @@ interface CreateCapsuleViewModel {
     //Create2
     val create2Events: SharedFlow<Create2Event>
     val skinId: StateFlow<Long>
-    val skins : StateFlow<List<Skin>>
+    val skins : StateFlow<List<CapsuleSkinSummary>>
     val isSearchOpen : StateFlow<Boolean>
 
     //Create3
@@ -59,7 +60,7 @@ interface CreateCapsuleViewModel {
     fun openSearchSkin()
     fun closeSearchSkin()
     fun searchSkin()
-    fun changeSkin(skin: Skin)
+    fun changeSkin(skin: CapsuleSkinSummary)
     fun moveFinish()
     fun moveLocation()
     fun moveDate()
