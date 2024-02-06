@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
@@ -92,7 +93,7 @@ class CapsulePreviewDialogFragment :
                     val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
                     startActivity(intent)
                 } else {
-                    // 캡슐 열기 로직
+                    viewModel.openCapsule(capsuleId.toLong())
                 }
             }
         }
@@ -110,6 +111,21 @@ class CapsulePreviewDialogFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.visibleTimeProgressBar.collect { isVisible ->
                     updateSkinCardViewConstraints(isVisible)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.capsulePreviewDialogEvents.collect { event ->
+                    when (event) {
+
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
+                    }
+
                 }
             }
         }
