@@ -7,6 +7,10 @@ import com.droidblossom.archive.util.RetrofitResult
 
 interface CapsuleRepository {
 
+    suspend fun openCapsule(
+        capsuleId : Long
+    ): RetrofitResult<String>
+
     suspend fun NearbyCapsules(
         latitude: Double,
         longitude: Double,
