@@ -196,24 +196,15 @@ public class CapsuleQueryRepository {
             memberId, size, createdAt
         );
 
-        boolean hasNext = canMoreRead(size, secretCapsuleList.size());
+        boolean hasNext = canMoreRead(size, mySecretCapsules.size());
         if (hasNext) {
-            secretCapsuleList.remove(size);
+            mySecretCapsules.remove(size);
         }
 
-        List<Long> capsuleIds = getCapsuleIds(secretCapsuleList);
-
-        Map<Long, List<String>> imageUrls = findImageUrlsByCapsuleId(capsuleIds);
-        Map<Long, List<String>> videoUrls = findVideoUrlsByCapsuleId(capsuleIds);
-
-        List<SecretCapsuleDetailDto> result = secretCapsuleList.stream()
-            .map(dto -> capsuleMapper.secretCapsuleDetailToDto(dto, imageUrls, videoUrls))
-            .toList();
-
-        return new SliceImpl<>(result, Pageable.ofSize(size), hasNext);
+        return new SliceImpl<>(mySecretCapsules, Pageable.ofSize(size), hasNext);
     }
 
-    private List<SecretCapsuleDetail> findSecretCapsuleDetailByMemberIdAndCreatedAt(
+    private List<MySecreteCapsuleDto> findMySecretCapsulesByMemberIdAndCreatedAt(
         Long memberId,
         int size,
         ZonedDateTime createdAt
@@ -221,22 +212,17 @@ public class CapsuleQueryRepository {
         return jpaQueryFactory
             .select(
                 Projections.constructor(
-                    SecretCapsuleDetail.class,
+                    MySecreteCapsuleDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
-                    member.nickname,
-                    member.profileUrl,
                     capsule.createdAt,
-                    capsule.address.fullRoadAddressName,
                     capsule.title,
-                    capsule.content,
                     capsule.isOpened,
                     capsule.type
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.eq(member.id))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
             .where(
                 capsule.member.id.eq(memberId),
@@ -250,31 +236,5 @@ public class CapsuleQueryRepository {
 
     private boolean canMoreRead(int size, int capsuleSize) {
         return capsuleSize > size;
-    }
-
-    private List<Long> getCapsuleIds(List<SecretCapsuleDetail> secretCapsuleList) {
-        return secretCapsuleList.stream()
-            .map(SecretCapsuleDetail::capsuleId)
-            .toList();
-    }
-
-    private Map<Long, List<String>> findVideoUrlsByCapsuleId(List<Long> capsuleIds) {
-        return jpaQueryFactory
-            .select(video.capsule.id, video.videoUrl)
-            .from(video)
-            .where(video.capsule.id.in(capsuleIds))
-            .transform(
-                groupBy(video.capsule.id).as(list(video.videoUrl))
-            );
-    }
-
-    private Map<Long, List<String>> findImageUrlsByCapsuleId(List<Long> capsuleIds) {
-        return jpaQueryFactory
-            .select(image.capsule.id, image.imageUrl)
-            .from(image)
-            .where(image.capsule.id.in(capsuleIds))
-            .transform(
-                groupBy(image.capsule.id).as(list(image.imageUrl))
-            );
     }
 }
