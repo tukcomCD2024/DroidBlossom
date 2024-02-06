@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.infra.s3.dto.request.S3PreSignedUrlRequestDt
 public class S3ApiMapper {
 
     public S3PreSignedUrlRequestDto s3PreSignedUrlRequestToDto(S3PreSignedUrlRequest request) {
-        return S3PreSignedUrlRequestDto.from(
+        return S3PreSignedUrlRequestDto.forPut(
             request.directory(),
             request.imageNames(),
             request.videoNames()
