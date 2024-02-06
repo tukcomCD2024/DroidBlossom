@@ -38,6 +38,10 @@ class CapsuleSkinRepositoryImpl @Inject constructor(
         return apiHandler({api.deleteCapsuleSkinsApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<String> -> response.result.toModel()}
     }
 
+    override suspend fun modifyCapsuleSkin(capsuleSKinId: Long): RetrofitResult<String> {
+        return apiHandler({api.patchCapsuleSkinsModifyApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<String> -> response.result.toModel()}
+    }
+
     override suspend fun getCapsuleSkinSearch(request: CapsuleSkinsSearchPageRequestDto): RetrofitResult<CapsuleSkinsSearchPageResponse> {
         return apiHandler({ api.getCapsuleSkinSearchApi(request.capsule_skin_name, request.size, request.capsule_skin_id) }) { response: ResponseBody<CapsuleSkinsSearchPageResponseDto> -> response.result.toModel() }
     }
