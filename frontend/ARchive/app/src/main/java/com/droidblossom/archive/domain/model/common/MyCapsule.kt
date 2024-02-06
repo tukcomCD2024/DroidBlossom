@@ -7,5 +7,5 @@ data class MyCapsule (
     val dueDate: String?,
     val isOpened: Boolean,
     val title: String,
-    val capsuleType: String?
+    val capsuleType: String
 )

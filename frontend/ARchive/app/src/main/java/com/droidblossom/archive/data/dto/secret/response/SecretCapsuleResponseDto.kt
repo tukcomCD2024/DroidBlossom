@@ -9,7 +9,7 @@ data class SecretCapsuleResponseDto(
     val dueDate: String?,
     val isOpened: Boolean,
     val title: String,
-    val capsuleType : String?,
+    val type: String,
 ){
     fun toModel()=MyCapsule(
         capsuleId = this.capsuleId,
@@ -18,6 +18,6 @@ data class SecretCapsuleResponseDto(
         dueDate = this.dueDate,
         isOpened = this.isOpened,
         title =this.title,
-        capsuleType = this.capsuleType
+        capsuleType = this.type
     )
 }

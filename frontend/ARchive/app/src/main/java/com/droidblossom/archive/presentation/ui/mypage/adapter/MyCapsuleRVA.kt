@@ -28,9 +28,9 @@ class MyCapsuleRVA(
             binding.item = data
             binding.root.setOnClickListener {
                 if (data.isOpened) {
-                    goDetail(data.capsuleId, stringToEnum(data.capsuleType ?: "SECRET"))
+                    goDetail(data.capsuleId, stringToEnum(data.capsuleType))
                 } else {
-                    goSummary(data.capsuleId, stringToEnum(data.capsuleType ?: "SECRET"))
+                    goSummary(data.capsuleId, stringToEnum(data.capsuleType))
                 }
 
             }

@@ -88,9 +88,9 @@
                     android:layout_height="46dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:src="@color/main_4"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line"
-                    android:src="@color/main_4" />
+                    app:layout_constraintTop_toBottomOf="@id/line" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/nameT"
@@ -241,17 +241,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginBottom="32dp"
                     android:orientation="horizontal"
                     android:visibility="gone"
-                    app:layout_goneMarginBottom="32dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/groupNumberT"
                     tools:listitem="@layout/item_group_number"
                     tools:visibility="visible" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/groupNumberRecycleView" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
