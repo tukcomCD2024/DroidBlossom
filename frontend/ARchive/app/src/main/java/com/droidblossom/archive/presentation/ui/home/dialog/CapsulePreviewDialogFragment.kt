@@ -1,25 +1,19 @@
 package com.droidblossom.archive.presentation.ui.home.dialog
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -89,7 +83,7 @@ class CapsulePreviewDialogFragment :
     private fun initView() {
         with(binding) {
             skinCardView.setOnClickListener {
-                if (viewModel.secretCapsuleSummary.value.isOpened) {
+                if (viewModel.capsuleOpenState.value) {
                     val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
                     startActivity(intent)
                 } else {

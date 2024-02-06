@@ -14,6 +14,7 @@ interface CapsulePreviewDialogViewModel {
     val totalTime: StateFlow<Int?>
     val timeProgress: StateFlow<Int?>
     val timerState: StateFlow<String>
+    val capsuleOpenState: StateFlow<Boolean>
     val visibleCapsuleOpenMessage: StateFlow<Boolean>
     val capsuleTypeImage: StateFlow<Int>
     val visibleTimeProgressBar: StateFlow<Boolean>

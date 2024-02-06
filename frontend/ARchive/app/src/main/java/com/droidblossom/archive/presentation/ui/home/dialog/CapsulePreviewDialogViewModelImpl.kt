@@ -53,6 +53,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _timerState = MutableStateFlow("00:00")
     override val timerState: StateFlow<String> = _timerState.asStateFlow()
 
+    private val _capsuleOpenState = MutableStateFlow(false)
+    override val capsuleOpenState: StateFlow<Boolean> = _capsuleOpenState.asStateFlow()
+
     private val _visibleCapsuleOpenMessage = MutableStateFlow(true)
     override val visibleCapsuleOpenMessage: StateFlow<Boolean> = _visibleCapsuleOpenMessage.asStateFlow()
 
@@ -75,7 +78,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
                     _secretCapsuleSummary.emit(it)
-                    if (!secretCapsuleSummary.value.isOpened){
+                    _capsuleOpenState.emit(secretCapsuleSummary.value.isOpened)
+                    if (!capsuleOpenState.value){
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
@@ -116,8 +120,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 _visibleTimeProgressBar.emit(false)
                 _visibleOpenProgressBar.emit(true)
             } else {
-                val totalTimeSeconds = (endTimeMillis - startTimeMillis) / 1000
-                val initialProgressSeconds = (currentTimeMillis - startTimeMillis) / 1000
+                val totalTimeSeconds = (endTimeMillis - startTimeMillis)
+                val initialProgressSeconds = (currentTimeMillis - startTimeMillis)
 
                 val totalTimeInt = if (totalTimeSeconds > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeSeconds.toInt()
                 val initialProgressInt = if (initialProgressSeconds > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressSeconds.toInt()
@@ -183,6 +187,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             patchCapsuleOpenedUseCase(capsuleId).collect{result ->
                 result.onSuccess {
                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐이 열리는 중입니다."))
+                    _capsuleOpenState.emit(true)
                     Log.d("개봉", "${it}")
                 }.onFail {
                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
