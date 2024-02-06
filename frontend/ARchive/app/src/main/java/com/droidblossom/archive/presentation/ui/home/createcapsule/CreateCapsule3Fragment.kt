@@ -77,11 +77,11 @@ class CreateCapsule3Fragment :
     private fun initRVA(){
         binding.recycleView.adapter = imgVPA
         binding.recycleView.offscreenPageLimit = 3
-        val locationUtil = LocationUtil(requireContext())
-        locationUtil.getCurrentLocation { latitude, longitude ->
-            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
-            viewModel.coordToAddress(latitude = latitude, longitude = longitude)
-        }
+//        val locationUtil = LocationUtil(requireContext())
+//        locationUtil.getCurrentLocation { latitude, longitude ->
+//            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
+//            viewModel.coordToAddress(latitude = latitude, longitude = longitude)
+//        }
     }
 
     private fun initView() {
