@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.lang.Long.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -114,32 +115,30 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 _visibleCapsuleOpenMessage.emit(false)
                 _visibleTimeProgressBar.emit(true)
                 _visibleOpenProgressBar.emit(false)
-                updateTimerState(endTimeMillis)
+                startTimer(startTimeMillis, endTimeMillis)
             }
         }
     }
 
-    private fun updateTimerState(endTimeMillis: Long) {
+    private fun startTimer(startTimeMillis: Long, endTimeMillis: Long) {
         viewModelScope.launch {
-            val remainingTime = endTimeMillis - System.currentTimeMillis()
-
-            if (remainingTime > 24 * 60 * 60 * 1000) {
-                _timerState.emit(formatReleaseDate(Calendar.getInstance().apply { timeInMillis = endTimeMillis }))
-                delay(60000)
-            } else {
-                startTimer(endTimeMillis)
-            }
-        }
-    }
-
-    private fun startTimer(endTimeMillis: Long) {
-        viewModelScope.launch {
-            var remainingTime = endTimeMillis - System.currentTimeMillis()
+            var currentTimeMillis = System.currentTimeMillis()
+            var remainingTime = endTimeMillis - currentTimeMillis
 
             while (remainingTime > 0) {
+                val elapsed = currentTimeMillis - startTimeMillis
+                val initialProgress = min(elapsed, endTimeMillis - startTimeMillis).toInt()
+
+                _initialProgress.emit(initialProgress)
+
+                if (remainingTime > 24 * 60 * 60 * 1000) {
+                    _timerState.emit(formatReleaseDate(Calendar.getInstance().apply { timeInMillis = endTimeMillis }))
+                }
                 _timerState.emit(getTime(remainingTime))
-                delay(60000)
-                remainingTime = endTimeMillis - System.currentTimeMillis()
+
+                delay(1000)
+                currentTimeMillis = System.currentTimeMillis()
+                remainingTime = endTimeMillis - currentTimeMillis
             }
 
             _timerState.emit("00:00")
