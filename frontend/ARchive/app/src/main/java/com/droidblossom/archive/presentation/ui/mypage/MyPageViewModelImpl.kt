@@ -73,7 +73,7 @@ class MyPageViewModelImpl @Inject constructor(
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
                         _myCapsules.emit(myCapsules.value + it.capsules)
-                        _lastCreatedTime.value = _myCapsules.value.last().createdAt
+                        _lastCreatedTime.value = _myCapsules.value.last().createdDate
                     }.onFail {
                         _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
