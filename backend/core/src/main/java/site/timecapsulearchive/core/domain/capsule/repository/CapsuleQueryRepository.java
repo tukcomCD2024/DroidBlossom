@@ -15,7 +15,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Polygon;
@@ -25,7 +24,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -188,15 +187,13 @@ public class CapsuleQueryRepository {
         );
     }
 
-    public Slice<SecretCapsuleDetailDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
+    public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
         Long memberId,
         int size,
         ZonedDateTime createdAt
     ) {
-        List<SecretCapsuleDetail> secretCapsuleList = findSecretCapsuleDetailByMemberIdAndCreatedAt(
-            memberId,
-            size,
-            createdAt
+        List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsulesByMemberIdAndCreatedAt(
+            memberId, size, createdAt
         );
 
         boolean hasNext = canMoreRead(size, secretCapsuleList.size());
