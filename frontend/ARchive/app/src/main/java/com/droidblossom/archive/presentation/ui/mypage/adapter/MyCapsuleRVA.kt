@@ -12,8 +12,13 @@ import com.amazonaws.util.ClassLoaderHelper.getResource
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemMyCapsuleBinding
 import com.droidblossom.archive.domain.model.common.MyCapsule
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.util.CapsuleTypeUtils.stringToEnum
 
-class MyCapsuleRVA(private val currentDate: String) :
+class MyCapsuleRVA(
+    private val goDetail: (Long, HomeFragment.CapsuleType) -> Unit,
+    private val goSummary: (Long, HomeFragment.CapsuleType) -> Unit
+) :
     ListAdapter<MyCapsule, MyCapsuleRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -21,6 +26,14 @@ class MyCapsuleRVA(private val currentDate: String) :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: MyCapsule) {
             binding.item = data
+            binding.root.setOnClickListener {
+                if (data.isOpened) {
+                    goDetail(data.capsuleId, stringToEnum(data.capsuleType ?: "SECRET"))
+                } else {
+                    goSummary(data.capsuleId, stringToEnum(data.capsuleType ?: "SECRET"))
+                }
+
+            }
         }
     }
 

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +21,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
+import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.util.DateUtils
@@ -31,7 +34,27 @@ class MyPageFragment :
     override val viewModel: MyPageViewModelImpl by viewModels()
 
     private val myCapsuleRVA by lazy {
-        MyCapsuleRVA(DateUtils.dataServerString)
+        MyCapsuleRVA(
+            { id, type ->
+                startActivity(
+                    CapsuleDetailActivity.newIntent(
+                        requireContext(),
+                        id,
+                        type
+                    )
+                )
+            },
+            { id, type ->
+                val args = Bundle().apply {
+                    putString("capsule_id", id.toString())
+                    putString("capsule_type", type.toString())
+                }
+                val sheet = CapsulePreviewDialogFragment().apply {
+                    arguments = args
+                }
+                sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+            },
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,14 +65,13 @@ class MyPageFragment :
         initRVA()
 
         binding.settingBtn.setOnClickListener {
-            startActivity(CapsuleDetailActivity.newIntent(requireContext(),71, HomeFragment.CapsuleType.SECRET))
         }
     }
 
     private fun initRVA() {
         binding.capsuleRecycleView.adapter = myCapsuleRVA
         binding.capsuleRecycleView.animation = null
-         //무한 스크롤
+        //무한 스크롤
         binding.capsuleRecycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -69,20 +91,21 @@ class MyPageFragment :
 
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.myCapsules.collect{ capsule ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.myCapsules.collect { capsule ->
                     myCapsuleRVA.submitList(capsule)
                 }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.myPageEvents.collect{ event ->
-                    when(event){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.myPageEvents.collect { event ->
+                    when (event) {
                         is MyPageViewModel.MyPageEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
-                        else ->{}
+
+                        else -> {}
                     }
                 }
             }
@@ -91,10 +114,11 @@ class MyPageFragment :
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden){
+        if (!hidden) {
             viewModel.clearCapsules()
         }
     }
+
     companion object {
 
         const val TAG = "MY"
