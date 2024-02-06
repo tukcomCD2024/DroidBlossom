@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
@@ -115,7 +116,7 @@ public class SecretCapsuleService {
         int size,
         ZonedDateTime createdAt
     ) {
-        Slice<SecretCapsuleDetailDto> slice = capsuleQueryRepository
+        Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
         return capsuleMapper.capsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
