@@ -178,6 +178,6 @@ public class SecretCapsuleService {
             return false;
         }
 
-        return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
+        return !dto.isOpened() || dto.dueDate().isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }
