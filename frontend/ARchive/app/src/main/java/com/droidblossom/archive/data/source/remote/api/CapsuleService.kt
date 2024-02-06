@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface CapsuleService {
 
     @PATCH("capsules/{capsule_id}/opened")
-    suspend fun patchCapsuleOpen(
+    suspend fun patchCapsuleOpenApi(
         @Query("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<String>>
 

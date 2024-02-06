@@ -7,6 +7,7 @@ import com.droidblossom.archive.data.dto.common.CapsuleSkinSummaryResponseDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -28,6 +29,11 @@ interface CapsuleSkinService {
         @Part skinImage: MultipartBody.Part,
         @Part("motionName") motionName: String
     ): Response<ResponseBody<CapsuleSkinSummaryResponseDto>>
+
+    @DELETE("capsule-skins/{}")
+    suspend fun deleteCapsuleSkinsPageApi(
+        @Query("capsule_skin_id") capsuleSkinId : Long,
+    ) : Response<ResponseBody<String>>
 
     @GET("capsule-skins/search")
     suspend fun getCapsuleSkinSearchApi(

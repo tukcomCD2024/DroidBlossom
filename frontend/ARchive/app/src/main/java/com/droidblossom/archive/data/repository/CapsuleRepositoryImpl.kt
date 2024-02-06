@@ -18,7 +18,7 @@ class CapsuleRepositoryImpl @Inject constructor(
     private val api: CapsuleService
 ) : CapsuleRepository {
     override suspend fun openCapsule(capsuleId: Long): RetrofitResult<String> {
-        return apiHandler({ api.patchCapsuleOpen(capsuleId = capsuleId) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ api.patchCapsuleOpenApi(capsuleId = capsuleId) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun NearbyCapsules(
