@@ -11,7 +11,8 @@ data class SecretCapsuleDetail(
     val imageUrls: List<String>?,
     val videoUrls : List<String>?,
     val nickname: String,
-    val title: String
+    val title: String,
+    val capsuleType: String
 ){
-    constructor() : this("","","","",null,false, listOf(), listOf(),"","")
+    constructor() : this("","","","",null,false, listOf(), listOf(),"","","")
 }

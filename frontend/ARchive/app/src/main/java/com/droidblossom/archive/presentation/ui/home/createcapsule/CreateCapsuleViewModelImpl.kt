@@ -248,7 +248,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
                     secretCapsuleCreateUseCase(
                         SecretCapsuleCreateRequest(
-                            capsuleSkinId = 1,
+                            capsuleSkinId = 4,
                             content = capsuleContent.value,
                             directory = imageNames.takeUnless { it.isEmpty() }?.let { S3DIRECTORY }
                                 ?: "",
