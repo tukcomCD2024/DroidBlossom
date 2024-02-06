@@ -186,12 +186,12 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             patchCapsuleOpenedUseCase(capsuleId).collect{result ->
                 result.onSuccess {
-                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐이 열리는 중입니다."))
                     _capsuleOpenState.emit(true)
-                    Log.d("개봉", "${it}")
+                    _visibleOpenProgressBar.emit(false)
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.moveCapsuleDetail)
                 }.onFail {
                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
-                    Log.d("개봉", "${it}")
                 }
             }
         }

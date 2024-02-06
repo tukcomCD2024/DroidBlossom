@@ -31,5 +31,6 @@ interface CapsulePreviewDialogViewModel {
 
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
+        object moveCapsuleDetail : CapsulePreviewDialogEvent()
     }
 }

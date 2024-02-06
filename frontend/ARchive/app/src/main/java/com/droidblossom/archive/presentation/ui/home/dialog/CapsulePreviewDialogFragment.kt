@@ -16,6 +16,7 @@ import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -84,8 +85,7 @@ class CapsulePreviewDialogFragment :
         with(binding) {
             skinCardView.setOnClickListener {
                 if (viewModel.capsuleOpenState.value) {
-                    val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
-                    startActivity(intent)
+                    moveCapsuleDetail()
                 } else {
                     viewModel.openCapsule(capsuleId.toLong())
                 }
@@ -116,6 +116,12 @@ class CapsulePreviewDialogFragment :
 
                         is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.moveCapsuleDetail -> {
+                            // 딜레이 달고 프로그래스바 움직여야함
+                            delay(3000)
+                            moveCapsuleDetail()
                         }
 
                     }
@@ -157,5 +163,10 @@ class CapsulePreviewDialogFragment :
         }
 
         constraintSet.applyTo(constraintLayout)
+    }
+
+    private fun moveCapsuleDetail(){
+        val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
+        startActivity(intent)
     }
 }
