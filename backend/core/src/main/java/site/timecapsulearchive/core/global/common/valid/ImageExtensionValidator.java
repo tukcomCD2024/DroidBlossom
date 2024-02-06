@@ -7,7 +7,7 @@ import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 
 public class ImageExtensionValidator implements ConstraintValidator<Image, String> {
 
-    private static final String AVAILABLE_IMAGE_EXTENSION_REGEX = "^.*\\.jpeg$";
+    private static final String AVAILABLE_IMAGE_EXTENSION_REGEX = "^\\S+\\.jpeg$";
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
