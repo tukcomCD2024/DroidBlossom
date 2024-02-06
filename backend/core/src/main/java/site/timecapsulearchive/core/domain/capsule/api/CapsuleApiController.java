@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.api;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

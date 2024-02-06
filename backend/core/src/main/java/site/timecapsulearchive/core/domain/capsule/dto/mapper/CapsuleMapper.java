@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.dto.mapper;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
@@ -11,11 +10,12 @@ import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
@@ -119,7 +119,10 @@ public class CapsuleMapper {
     }
 
     public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
-        SecretCapsuleDetailDto dto) {
+        SecretCapsuleDetailDto dto,
+        List<String> imageUrls,
+        List<String> videoUrls
+    ) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(checkNullable(dto.dueDate()))
@@ -129,8 +132,8 @@ public class CapsuleMapper {
             .address(dto.address())
             .title(dto.title())
             .content(dto.content())
-            .imageUrls(dto.images())
-            .videoUrls(dto.videos())
+            .imageUrls(imageUrls)
+            .videoUrls(videoUrls)
             .isOpened(dto.isOpened())
             .capsuleType(dto.capsuleType())
             .build();
@@ -149,10 +152,10 @@ public class CapsuleMapper {
             .build();
     }
 
-    public MyCapsulePageResponse capsuleDetailSliceToResponse(List<SecretCapsuleDetailDto> content,
+    public MyCapsulePageResponse capsuleDetailSliceToResponse(List<MySecreteCapsuleDto> content,
         boolean hasNext) {
-        List<SecretCapsuleDetailResponse> responses = content.stream()
-            .map(this::secretCapsuleDetailDtoToResponse)
+        List<MySecreteCapsuleResponse> responses = content.stream()
+            .map(this::mySecreteCapsuleDtoToResponse)
             .toList();
 
         return new MyCapsulePageResponse(
@@ -161,27 +164,16 @@ public class CapsuleMapper {
         );
     }
 
-    public SecretCapsuleDetailDto secretCapsuleDetailToDto(
-        SecretCapsuleDetail detail,
-        Map<Long, List<String>> imageUrls,
-        Map<Long, List<String>> videoUrls
-    ) {
-        return SecretCapsuleDetailDto.builder()
-            .capsuleId(detail.capsuleId())
-            .capsuleSkinUrl(detail.capsuleSkinUrl())
-            .dueDate(checkNullable(detail.dueDate()))
-            .nickname(detail.nickname())
-            .profileUrl(detail.profileUrl())
-            .createdAt(detail.createdAt().withZoneSameInstant(ASIA_SEOUL))
-            .address(detail.address())
-            .title(detail.title())
-            .content(detail.content())
-            .images(imageUrls.get(detail.capsuleId()))
-            .videos(videoUrls.get(detail.capsuleId()))
-            .isOpened(detail.isOpened())
-            .capsuleType(detail.capsuleType())
+    private MySecreteCapsuleResponse mySecreteCapsuleDtoToResponse(MySecreteCapsuleDto dto) {
+        return MySecreteCapsuleResponse.builder()
+            .capsuleId(dto.capsuleId())
+            .SkinUrl(dto.SkinUrl())
+            .dueDate(dto.dueDate())
+            .createdAt(dto.createdAt())
+            .title(dto.title())
+            .isOpened(dto.isOpened())
+            .type(dto.type())
             .build();
-
     }
 
     public AddressData addressEntityToData(Address address) {

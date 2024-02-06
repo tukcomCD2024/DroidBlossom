@@ -7,7 +7,7 @@ import site.timecapsulearchive.core.global.common.valid.annotation.Video;
 
 public class VideoExtensionValidator implements ConstraintValidator<Video, String> {
 
-    private static final String AVAILABLE_VIDEO_EXTENSION_REGEX = "^.*\\.mp4$";
+    private static final String AVAILABLE_VIDEO_EXTENSION_REGEX = "^\\S+\\.mp4$";
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {

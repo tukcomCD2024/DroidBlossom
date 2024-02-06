@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
@@ -23,6 +24,9 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
+import site.timecapsulearchive.core.infra.s3.dto.S3PreSignedUrlDto;
+import site.timecapsulearchive.core.infra.s3.dto.request.S3PreSignedUrlRequestDto;
+import site.timecapsulearchive.core.infra.s3.service.S3PreSignedUrlManager;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class SecretCapsuleService {
     private final VideoService videoService;
     private final GeoTransformer geoTransformer;
     private final CapsuleMapper capsuleMapper;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     /**
      * 멤버 아이디와 캡슐 생성 포맷을 받아서 캡슐을 생성한다.
@@ -115,7 +120,7 @@ public class SecretCapsuleService {
         int size,
         ZonedDateTime createdAt
     ) {
-        Slice<SecretCapsuleDetailDto> slice = capsuleQueryRepository
+        Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
         return capsuleMapper.capsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
@@ -157,7 +162,15 @@ public class SecretCapsuleService {
             return capsuleMapper.notOpenedSecretCapsuleDetailDtoToResponse(dto);
         }
 
-        return capsuleMapper.secretCapsuleDetailDtoToResponse(dto);
+        S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
+            S3PreSignedUrlRequestDto.forGet(dto.images(), dto.videos())
+        );
+
+        return capsuleMapper.secretCapsuleDetailDtoToResponse(
+            dto,
+            s3UrlsForGet.preSignedImageUrls(),
+            s3UrlsForGet.preSignedVideoUrls()
+        );
     }
 
     private boolean capsuleNotOpened(SecretCapsuleDetailDto dto) {
@@ -165,6 +178,6 @@ public class SecretCapsuleService {
             return false;
         }
 
-        return !dto.isOpened() || dto.dueDate().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
+        return !dto.isOpened() || dto.dueDate().isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }
