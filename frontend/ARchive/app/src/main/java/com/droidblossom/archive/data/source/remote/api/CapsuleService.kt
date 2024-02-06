@@ -6,9 +6,15 @@ import com.droidblossom.archive.data.dto.capsule.response.CapsuleImagesDto
 import com.droidblossom.archive.data.dto.capsule.response.NearbyCapsuleResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.Query
 
 interface CapsuleService {
+
+    @PATCH("capsules/{capsule_id}/opened")
+    suspend fun patchCapsuleOpen(
+        @Query("capsule_id") capsuleId : Long,
+    ) : Response<ResponseBody<String>>
 
     @GET("capsules/nearby")
     suspend fun getNearbyCapsulesApi(
