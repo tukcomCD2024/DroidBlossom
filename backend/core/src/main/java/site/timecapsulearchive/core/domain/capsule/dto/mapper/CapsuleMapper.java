@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.dto.mapper;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryRe
 import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetail;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;

@@ -2,9 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecreteCapsuleResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 
 @Schema(description = "내가 생성한 비밀 캡슐 목록 응답")
 public record MyCapsulePageResponse(
