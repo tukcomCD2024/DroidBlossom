@@ -39,8 +39,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _totalTime = MutableStateFlow<Int?>(0)
     override val totalTime: StateFlow<Int?> = _totalTime.asStateFlow()
 
-    private val _initialProgress = MutableStateFlow<Int?>(0)
-    override val initialProgress: StateFlow<Int?> = _initialProgress.asStateFlow()
+    private val _timeProgress = MutableStateFlow<Int?>(0)
+    override val timeProgress: StateFlow<Int?> = _timeProgress.asStateFlow()
 
     private val _timerState = MutableStateFlow("00:00")
     override val timerState: StateFlow<String> = _timerState.asStateFlow()
@@ -110,7 +110,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 val initialProgressInt = if (initialProgressSeconds > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressSeconds.toInt()
 
                 _totalTime.emit(totalTimeInt)
-                _initialProgress.emit(initialProgressInt)
+                _timeProgress.emit(initialProgressInt)
 
                 _visibleCapsuleOpenMessage.emit(false)
                 _visibleTimeProgressBar.emit(true)
@@ -129,7 +129,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 val elapsed = currentTimeMillis - startTimeMillis
                 val initialProgress = min(elapsed, endTimeMillis - startTimeMillis).toInt()
 
-                _initialProgress.emit(initialProgress)
+                _timeProgress.emit(initialProgress)
 
                 if (remainingTime > 24 * 60 * 60 * 1000) {
                     _timerState.emit(formatReleaseDate(Calendar.getInstance().apply { timeInMillis = endTimeMillis }))

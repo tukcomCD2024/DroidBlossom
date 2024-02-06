@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
+import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import com.droidblossom.archive.util.CapsuleTypeUtils
@@ -28,6 +29,14 @@ class CapsulePreviewDialogFragment :
 
     private val viewModel: CapsulePreviewDialogViewModelImpl by viewModels()
 
+    val capsuleId: Int by lazy {
+        arguments?.getString("capsule_id")!!.toInt()
+    }
+
+    val capsuleType by lazy {
+        arguments?.getString("capsule_type")
+            ?.let { CapsuleTypeUtils.stringToEnum(it) }
+    }
     override fun onStart() {
         super.onStart()
         val dialog = dialog
@@ -51,10 +60,6 @@ class CapsulePreviewDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val capsuleId = arguments?.getString("capsule_id")!!.toInt()
-        val capsuleType = arguments?.getString("capsule_type")
-            ?.let { CapsuleTypeUtils.stringToEnum(it) }
-
         binding.vm = viewModel
 
         when (capsuleType) {
@@ -77,8 +82,21 @@ class CapsulePreviewDialogFragment :
         }
 
         initObserver()
+        initView()
     }
 
+    private fun initView() {
+        with(binding) {
+            skinCardView.setOnClickListener {
+                if (viewModel.secretCapsuleSummary.value.isOpened) {
+                    val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
+                    startActivity(intent)
+                } else {
+                    // 캡슐 열기 로직
+                }
+            }
+        }
+    }
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

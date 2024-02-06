@@ -167,7 +167,7 @@
                 android:indeterminate="false"
                 android:elevation="2dp"
                 android:max="@{vm.totalTime}"
-                android:progress="@{vm.initialProgress}"
+                android:progress="@{vm.timeProgress}"
                 android:visibility="@{vm.visibleTimeProgressBar ? View.VISIBLE : View.GONE}"
                 android:progressDrawable="@drawable/circle_progressbar"
                 app:layout_constraintBottom_toBottomOf="parent"
