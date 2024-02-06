@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateViewModelFactory
@@ -79,6 +80,43 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.endTime.collect{
                     viewModel.setProgressBar()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.visibleTimeProgressBar.collect { isVisible ->
+                    val constraintLayout = binding.capsuleSkinLayout
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(constraintLayout)
+
+                    if (isVisible) {
+                        constraintSet.connect(
+                            binding.skinCardView.id, ConstraintSet.TOP,
+                            binding.progressBar.id, ConstraintSet.TOP,
+                            0
+                        )
+
+                        constraintSet.connect(
+                            binding.skinCardView.id, ConstraintSet.BOTTOM,
+                            binding.progressBar.id, ConstraintSet.BOTTOM,
+                            0
+                        )
+                    } else {
+                        constraintSet.connect(
+                            binding.skinCardView.id, ConstraintSet.TOP,
+                            binding.openProgressBar.id, ConstraintSet.TOP,
+                            0
+                        )
+
+                        constraintSet.connect(
+                            binding.skinCardView.id, ConstraintSet.BOTTOM,
+                            binding.openProgressBar.id, ConstraintSet.BOTTOM,
+                            0
+                        )
+                    }
+                    constraintSet.applyTo(constraintLayout)
                 }
             }
         }
