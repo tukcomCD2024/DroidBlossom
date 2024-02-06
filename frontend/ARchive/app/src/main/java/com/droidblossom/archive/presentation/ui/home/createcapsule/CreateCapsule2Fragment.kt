@@ -72,6 +72,10 @@ class CreateCapsule2Fragment :
                         CreateCapsuleViewModel.Create2Event.NavigateTo3 -> {
                             navController.navigate(R.id.action_createCapsule2Fragment_to_createCapsule3Fragment)
                         }
+
+                        is CreateCapsuleViewModel.Create2Event.ShowToastMessage -> {
+                            showToastMessage(it.message)
+                        }
                     }
                 }
             }
