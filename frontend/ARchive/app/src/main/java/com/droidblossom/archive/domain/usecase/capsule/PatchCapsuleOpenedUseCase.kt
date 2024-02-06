@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.usecase.capsule
 
 import android.util.Log
+import com.droidblossom.archive.domain.model.capsule.CapsuleOpenedResponse
 import com.droidblossom.archive.domain.repository.CapsuleRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onException
@@ -13,7 +14,7 @@ class PatchCapsuleOpenedUseCase @Inject constructor(
     private val repository: CapsuleRepository
 ) {
     suspend operator fun invoke(capsuleId: Long) =
-        flow<RetrofitResult<String>> {
+        flow<RetrofitResult<CapsuleOpenedResponse>> {
             try {
                 emit(repository.openCapsule(capsuleId)
                     .onSuccess {
@@ -25,7 +26,7 @@ class PatchCapsuleOpenedUseCase @Inject constructor(
                     })
 
             } catch (e: Exception) {
-                Log.d("예외확인", "$e")
+                Log.d("예외 확인", "$e")
                 e.printStackTrace()
             }
         }
