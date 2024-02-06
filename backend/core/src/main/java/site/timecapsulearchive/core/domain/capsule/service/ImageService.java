@@ -18,7 +18,7 @@ public class ImageService {
     public void saveImage(MediaSaveDto dto) {
         List<Image> images = dto.fileNames().stream()
             .map(fileName -> Image.builder()
-                .imageUrl(s3UrlGenerator.generateS3UrlFormat(
+                .imageUrl(s3UrlGenerator.generateFileName(
                     dto.member().getId(),
                     dto.directory(),
                     fileName)

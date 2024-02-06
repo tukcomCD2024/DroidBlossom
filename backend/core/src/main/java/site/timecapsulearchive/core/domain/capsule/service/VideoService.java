@@ -18,7 +18,7 @@ public class VideoService {
     public void saveVideo(MediaSaveDto dto) {
         List<Video> videos = dto.fileNames().stream()
             .map(fileName -> Video.builder()
-                .videoUrl(s3UrlGenerator.generateS3UrlFormat(
+                .videoUrl(s3UrlGenerator.generateFileName(
                     dto.member().getId(),
                     dto.directory(),
                     fileName)
