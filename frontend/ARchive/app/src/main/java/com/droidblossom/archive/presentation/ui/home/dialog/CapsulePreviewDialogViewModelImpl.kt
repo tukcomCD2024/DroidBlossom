@@ -47,6 +47,12 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _visibleCapsuleOpenMessage = MutableStateFlow(true)
     override val visibleCapsuleOpenMessage: StateFlow<Boolean> = _visibleCapsuleOpenMessage.asStateFlow()
 
+    private val _visibleTimeProgressBar = MutableStateFlow(false)
+    override val visibleTimeProgressBar: StateFlow<Boolean> = _visibleTimeProgressBar.asStateFlow()
+
+    private val _visibleOpenProgressBar = MutableStateFlow(false)
+    override val visibleOpenProgressBar: StateFlow<Boolean> = _visibleOpenProgressBar.asStateFlow()
+
     private val _capsuleTypeImage = MutableStateFlow(0)
     override val capsuleTypeImage: StateFlow<Int> = _capsuleTypeImage.asStateFlow()
 
@@ -54,9 +60,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
-                    Log.d("캡슐 요약", "$it")
                     _secretCapsuleSummary.emit(it)
-                    calculateCapsuleOpenTime(it.createdAt, it.dueDate)
+                    if (!secretCapsuleSummary.value.isOpened){
+                        calculateCapsuleOpenTime(it.createdAt, it.dueDate)
+                    }
                 }.onFail {
 
                 }.onException {
@@ -69,23 +76,18 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     override fun calculateCapsuleOpenTime(createdAt: String, dueDate: String) {
-        if (dueDate.isEmpty()) {
-            return
-        }else{
-            viewModelScope.launch {
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+        viewModelScope.launch {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
 
-                val startTimeCalendar = Calendar.getInstance().apply {
-                    time = dateFormat.parse(createdAt) ?: throw IllegalArgumentException("Invalid createdAt format")
-                }
-
-                val endTimeCalendar = Calendar.getInstance().apply {
-                    time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
-                }
-                _visibleCapsuleOpenMessage.emit(false)
-                _startTime.emit(startTimeCalendar)
-                _endTime.emit(endTimeCalendar)
+            val startTimeCalendar = Calendar.getInstance().apply {
+                time = dateFormat.parse(createdAt) ?: throw IllegalArgumentException("Invalid createdAt format")
             }
+
+            val endTimeCalendar = Calendar.getInstance().apply {
+                time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
+            }
+            _startTime.emit(startTimeCalendar)
+            _endTime.emit(endTimeCalendar)
         }
     }
 
@@ -93,17 +95,27 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             val endTimeMillis = endTime.value?.timeInMillis ?: return@launch
             val startTimeMillis = startTime.value?.timeInMillis ?: return@launch
-            val totalTimeLong = endTimeMillis - startTimeMillis
             val currentTimeMillis = System.currentTimeMillis()
-            val initialProgressLong = currentTimeMillis - startTimeMillis
 
-            val totalTimeInt = if (totalTimeLong > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeLong.toInt()
-            val initialProgressInt = if (initialProgressLong > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressLong.toInt()
+            if (currentTimeMillis > endTimeMillis) {
+                _visibleCapsuleOpenMessage.emit(true)
+                _visibleTimeProgressBar.emit(false)
+                _visibleOpenProgressBar.emit(true)
+            } else {
+                val totalTimeLong = endTimeMillis - startTimeMillis
+                val initialProgressLong = currentTimeMillis - startTimeMillis
 
-            _totalTime.emit(totalTimeInt)
-            _initialProgress.emit(initialProgressInt)
+                val totalTimeInt = if (totalTimeLong > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeLong.toInt()
+                val initialProgressInt = if (initialProgressLong > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressLong.toInt()
 
-            updateTimerState(endTimeMillis)
+                _totalTime.emit(totalTimeInt)
+                _initialProgress.emit(initialProgressInt)
+
+                _visibleCapsuleOpenMessage.emit(false)
+                _visibleTimeProgressBar.emit(true)
+                _visibleOpenProgressBar.emit(false)
+                updateTimerState(endTimeMillis)
+            }
         }
     }
 
@@ -132,12 +144,14 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
             _timerState.emit("00:00")
             _visibleCapsuleOpenMessage.emit(true)
+            _visibleTimeProgressBar.emit(false)
+            _visibleOpenProgressBar.emit(true)
         }
     }
     private fun getTime(millis: Long): String {
         val hours = (millis / (1000 * 60 * 60)) % 24
         val minutes = (millis / (1000 * 60)) % 60
-        return String.format("%02d:%02d분", hours, minutes)
+        return String.format("%02d:%02d", hours, minutes)
     }
 
     private fun formatReleaseDate(calendar: Calendar?): String {
