@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.dialog
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleSummary
+import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onError
@@ -11,8 +12,11 @@ import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.lang.Long.min
@@ -23,8 +27,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CapsulePreviewDialogViewModelImpl @Inject constructor(
-    private val secretCapsuleSummaryUseCase: SecretCapsuleSummaryUseCase
+    private val secretCapsuleSummaryUseCase: SecretCapsuleSummaryUseCase,
+    private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
+
+    private val _capsulePreviewDialogEvents = MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
+    override val capsulePreviewDialogEvents: SharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent> = _capsulePreviewDialogEvents.asSharedFlow()
 
     private val _secretCapsuleSummary = MutableStateFlow(SecretCapsuleSummary("","","","","","","", false, ""))
     override val secretCapsuleSummary: StateFlow<SecretCapsuleSummary>
@@ -57,6 +65,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _capsuleTypeImage = MutableStateFlow(0)
     override val capsuleTypeImage: StateFlow<Int> = _capsuleTypeImage.asStateFlow()
 
+    override fun capsulePreviewDialogEvent(event: CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent){
+        viewModelScope.launch {
+            _capsulePreviewDialogEvents.emit(event)
+        }
+    }
     fun getSecretCapsuleSummary(capsuleId: Int) {
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
@@ -162,6 +175,20 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override fun setCapsuleTypeImage(image : Int){
         viewModelScope.launch {
             _capsuleTypeImage.emit(image)
+        }
+    }
+
+    override fun openCapsule(capsuleId : Long){
+        viewModelScope.launch {
+            patchCapsuleOpenedUseCase(capsuleId).collect{result ->
+                result.onSuccess {
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐이 열리는 중입니다."))
+                    Log.d("개봉", "${it}")
+                }.onFail {
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
+                    Log.d("개봉", "${it}")
+                }
+            }
         }
     }
 
