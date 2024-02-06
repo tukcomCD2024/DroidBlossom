@@ -101,6 +101,6 @@ interface CreateCapsuleViewModel {
     }
 
     enum class CapsuleTypeCreate(val title: String) {
-        SECRET("SECRETE"), GROUP("GROUP"), PUBLIC("PUBLIC")
+        SECRET("SECRET"), GROUP("GROUP"), PUBLIC("PUBLIC")
     }
 }
