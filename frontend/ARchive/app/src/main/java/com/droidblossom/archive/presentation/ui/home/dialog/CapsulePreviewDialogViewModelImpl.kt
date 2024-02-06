@@ -103,11 +103,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 _visibleTimeProgressBar.emit(false)
                 _visibleOpenProgressBar.emit(true)
             } else {
-                val totalTimeLong = endTimeMillis - startTimeMillis
-                val initialProgressLong = currentTimeMillis - startTimeMillis
+                val totalTimeSeconds = (endTimeMillis - startTimeMillis) / 1000
+                val initialProgressSeconds = (currentTimeMillis - startTimeMillis) / 1000
 
-                val totalTimeInt = if (totalTimeLong > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeLong.toInt()
-                val initialProgressInt = if (initialProgressLong > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressLong.toInt()
+                val totalTimeInt = if (totalTimeSeconds > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeSeconds.toInt()
+                val initialProgressInt = if (initialProgressSeconds > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressSeconds.toInt()
 
                 _totalTime.emit(totalTimeInt)
                 _initialProgress.emit(initialProgressInt)
