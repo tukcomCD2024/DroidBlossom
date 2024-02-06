@@ -111,17 +111,17 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                 viewModel.year.collect {
                     binding.dayPicker.apply {
                         minValue =
-                            if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
+                            if (viewModel.year.value == currentYear && viewModel.month.value <= currentMonth) {
                                 currentDay
                             } else {
                                 1
                             }
                     }
                     binding.monthPicker.apply {
-                        minValue = if (viewModel.year.value == currentYear) {
-                            currentMonth
+                        if (viewModel.year.value == currentYear) {
+                            minValue = currentMonth
                         } else {
-                            1
+                            minValue = 1
                         }
                     }
                 }
