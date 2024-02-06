@@ -23,7 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDialogBinding>(R.layout.fragment_capsule_preview_dialog) {
+class CapsulePreviewDialogFragment :
+    BaseDialogFragment<FragmentCapsulePreviewDialogBinding>(R.layout.fragment_capsule_preview_dialog) {
 
     private val viewModel: CapsulePreviewDialogViewModelImpl by viewModels()
 
@@ -56,29 +57,32 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
 
         binding.vm = viewModel
 
-        when(capsuleType){
+        when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
                 viewModel.getSecretCapsuleSummary(capsuleId)
                 viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24)
             }
+
             HomeFragment.CapsuleType.PUBLIC -> {
 
             }
-            HomeFragment.CapsuleType.GROUP ->{
+
+            HomeFragment.CapsuleType.GROUP -> {
 
             }
+
             else -> {
-                
+
             }
         }
 
         initObserver()
     }
 
-    private fun initObserver(){
+    private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.endTime.collect{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.endTime.collect {
                     viewModel.setProgressBar()
                 }
             }
@@ -87,38 +91,43 @@ class CapsulePreviewDialogFragment : BaseDialogFragment<FragmentCapsulePreviewDi
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.visibleTimeProgressBar.collect { isVisible ->
-                    val constraintLayout = binding.capsuleSkinLayout
-                    val constraintSet = ConstraintSet()
-                    constraintSet.clone(constraintLayout)
-
-                    if (isVisible) {
-                        constraintSet.connect(
-                            binding.skinCardView.id, ConstraintSet.TOP,
-                            binding.progressBar.id, ConstraintSet.TOP,
-                            0
-                        )
-
-                        constraintSet.connect(
-                            binding.skinCardView.id, ConstraintSet.BOTTOM,
-                            binding.progressBar.id, ConstraintSet.BOTTOM,
-                            0
-                        )
-                    } else {
-                        constraintSet.connect(
-                            binding.skinCardView.id, ConstraintSet.TOP,
-                            binding.openProgressBar.id, ConstraintSet.TOP,
-                            0
-                        )
-
-                        constraintSet.connect(
-                            binding.skinCardView.id, ConstraintSet.BOTTOM,
-                            binding.openProgressBar.id, ConstraintSet.BOTTOM,
-                            0
-                        )
-                    }
-                    constraintSet.applyTo(constraintLayout)
+                    updateSkinCardViewConstraints(isVisible)
                 }
             }
         }
+    }
+
+    private fun updateSkinCardViewConstraints(isVisible: Boolean) {
+        val constraintLayout = binding.capsuleSkinLayout
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(constraintLayout)
+
+        if (isVisible) {
+            constraintSet.connect(
+                binding.skinCardView.id, ConstraintSet.TOP,
+                binding.progressBar.id, ConstraintSet.TOP,
+                0
+            )
+
+            constraintSet.connect(
+                binding.skinCardView.id, ConstraintSet.BOTTOM,
+                binding.progressBar.id, ConstraintSet.BOTTOM,
+                0
+            )
+        } else {
+            constraintSet.connect(
+                binding.skinCardView.id, ConstraintSet.TOP,
+                binding.openProgressBar.id, ConstraintSet.TOP,
+                0
+            )
+
+            constraintSet.connect(
+                binding.skinCardView.id, ConstraintSet.BOTTOM,
+                binding.openProgressBar.id, ConstraintSet.BOTTOM,
+                0
+            )
+        }
+
+        constraintSet.applyTo(constraintLayout)
     }
 }
