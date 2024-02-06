@@ -14,5 +14,6 @@ interface CapsuleSkinRepository {
 
     suspend fun postCapsuleSkinMake(request: CapsuleSkinsMakeRequestDto) : RetrofitResult<CapsuleSkinSummary>
 
+    suspend fun deleteCapsuleSkin(capsuleSKinId : Long ) : RetrofitResult<String>
     suspend fun getCapsuleSkinSearch(request: CapsuleSkinsSearchPageRequestDto) : RetrofitResult<CapsuleSkinsSearchPageResponse>
 }

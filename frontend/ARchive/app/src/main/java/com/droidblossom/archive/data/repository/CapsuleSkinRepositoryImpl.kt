@@ -7,6 +7,7 @@ import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsSearch
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsSearchPageResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSkinSummaryResponseDto
+import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsPageResponse
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsSearchPageResponse
@@ -31,6 +32,10 @@ class CapsuleSkinRepositoryImpl @Inject constructor(
         val fileRequestBody = request.skinImage.asRequestBody("image/jpeg".toMediaType())
         val skinImagePart = MultipartBody.Part.createFormData("skinImage", request.skinImage.name, fileRequestBody)
         return apiHandler({api.postCapsuleSkinsApi(request.name, skinImagePart, request.motionName) }) { response: ResponseBody<CapsuleSkinSummaryResponseDto> -> response.result.toModel()}
+    }
+
+    override suspend fun deleteCapsuleSkin(capsuleSKinId: Long): RetrofitResult<String> {
+        return apiHandler({api.deleteCapsuleSkinsApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun getCapsuleSkinSearch(request: CapsuleSkinsSearchPageRequestDto): RetrofitResult<CapsuleSkinsSearchPageResponse> {

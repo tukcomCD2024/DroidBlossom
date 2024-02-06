@@ -30,8 +30,8 @@ interface CapsuleSkinService {
         @Part("motionName") motionName: String
     ): Response<ResponseBody<CapsuleSkinSummaryResponseDto>>
 
-    @DELETE("capsule-skins/{}")
-    suspend fun deleteCapsuleSkinsPageApi(
+    @DELETE("capsule-skins/{capsule_skin_id}")
+    suspend fun deleteCapsuleSkinsApi(
         @Query("capsule_skin_id") capsuleSkinId : Long,
     ) : Response<ResponseBody<String>>
 
