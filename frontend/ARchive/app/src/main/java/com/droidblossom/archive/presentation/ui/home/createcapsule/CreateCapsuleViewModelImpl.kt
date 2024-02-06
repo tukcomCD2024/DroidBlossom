@@ -250,6 +250,15 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override fun moveFinish() {
         Log.d("캡슐생성", "${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
+            if (isSelectTimeCapsule.value && (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty() || dueTime.value.isEmpty())) {
+                _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("타임캡슐은 시간, 제목, 내용이 필수 입니다."))
+                return@launch
+            }
+            if (!isSelectTimeCapsule.value &&  (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty())){
+                _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐은 제목, 내용이 필수 입니다."))
+                return@launch
+            }
+
             if (imageFiles.value.isEmpty() && videoFiles.value.isEmpty()) {
                 imageNames = listOf<String>()
                 videoNames = listOf<String>()
