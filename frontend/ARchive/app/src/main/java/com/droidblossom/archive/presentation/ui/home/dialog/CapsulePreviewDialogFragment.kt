@@ -1,9 +1,13 @@
 package com.droidblossom.archive.presentation.ui.home.dialog
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -118,9 +122,12 @@ class CapsulePreviewDialogFragment :
                             showToastMessage(event.message)
                         }
 
-                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.moveCapsuleDetail -> {
-                            // 딜레이 달고 프로그래스바 움직여야함
-                            delay(3000)
+
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess -> {
+                            animateProgressBar()
+                        }
+
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.MoveCapsuleDetail -> {
                             moveCapsuleDetail()
                         }
 
@@ -168,5 +175,22 @@ class CapsulePreviewDialogFragment :
     private fun moveCapsuleDetail(){
         val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
         startActivity(intent)
+    }
+
+
+    private fun animateProgressBar() {
+        viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐이 열리는 중입니다."))
+        val animator = ObjectAnimator.ofInt(binding.openProgressBar, "progress", 0, 100).apply {
+            duration = 2000 // 2초 동안
+            interpolator = LinearInterpolator() // 여기에 LinearInterpolator 적용
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    super.onAnimationEnd(animation)
+                    viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.MoveCapsuleDetail)
+                    viewModel.setVisibleOpenProgressBar(false)
+                }
+            })
+        }
+        animator.start()
     }
 }

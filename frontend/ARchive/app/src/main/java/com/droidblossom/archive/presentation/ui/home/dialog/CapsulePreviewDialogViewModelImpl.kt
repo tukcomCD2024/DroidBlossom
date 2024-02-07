@@ -186,15 +186,23 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             patchCapsuleOpenedUseCase(capsuleId).collect{result ->
                 result.onSuccess {
-                    _capsuleOpenState.emit(true)
-                    _visibleOpenProgressBar.emit(false)
-                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
-                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.moveCapsuleDetail)
+                    Log.d("개봉", " 개봉 성공 코드 : $it")
+                    if(it.result == "캡슐을 열 수 없습니다."){
+                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
+                    }else{
+                        _capsuleOpenState.emit(true)
+                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
+                    }
                 }.onFail {
+                    Log.d("개봉", " 개봉 실패 코드 : $it")
                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
                 }
             }
         }
+    }
+
+    override fun setVisibleOpenProgressBar(visible: Boolean) {
+        _visibleOpenProgressBar.value = visible
     }
 
 }

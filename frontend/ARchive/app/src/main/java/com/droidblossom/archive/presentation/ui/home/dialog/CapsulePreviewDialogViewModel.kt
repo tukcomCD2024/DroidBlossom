@@ -27,10 +27,13 @@ interface CapsulePreviewDialogViewModel {
     fun setCapsuleTypeImage(image : Int)
 
     fun openCapsule(capsuleId : Long)
-
+    fun setVisibleOpenProgressBar(visible: Boolean)
 
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
-        object moveCapsuleDetail : CapsulePreviewDialogEvent()
+
+        object CapsuleOpenSuccess : CapsulePreviewDialogEvent()
+        object MoveCapsuleDetail : CapsulePreviewDialogEvent()
+
     }
 }
