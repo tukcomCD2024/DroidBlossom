@@ -150,8 +150,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
                 if (remainingTime > 24 * 60 * 60 * 1000) {
                     _timerState.emit(formatReleaseDate(Calendar.getInstance().apply { timeInMillis = endTimeMillis }))
+                }else{
+                    _timerState.emit(getTime(remainingTime))
                 }
-                _timerState.emit(getTime(remainingTime))
 
                 delay(1000)
                 currentTimeMillis = System.currentTimeMillis()

@@ -16,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
@@ -108,6 +110,21 @@ class CreateCapsule2Fragment :
     private fun initRVA(){
         binding.recycleView.adapter = skinRVA
         binding.recycleView.itemAnimator = null
+        binding.recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val lastVisibleItemPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
+
+                if (newState == 2 && !recyclerView.canScrollVertically(1)
+                    && lastVisibleItemPosition == totalItemViewCount
+                ) {
+                    viewModel.getSkinList()
+                }
+            }
+
+        })
     }
 
     @SuppressLint("ClickableViewAccessibility")
