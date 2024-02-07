@@ -11,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.AddressMapper;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.global.error.ErrorCode;
-import site.timecapsulearchive.core.infra.map.MapApiService;
 import site.timecapsulearchive.core.infra.map.config.KakaoMapProperties;
 import site.timecapsulearchive.core.infra.map.dto.Document;
 import site.timecapsulearchive.core.infra.map.dto.KakaoMapApiResponse;

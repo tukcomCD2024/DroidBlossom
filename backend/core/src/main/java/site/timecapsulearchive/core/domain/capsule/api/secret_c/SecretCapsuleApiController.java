@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
@@ -48,7 +48,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     }
 
     @Override
-    public ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecretCapsules(
+    public ResponseEntity<ApiSpec<MySecretCapsulePageResponse>> getMySecretCapsules(
         @AuthenticationPrincipal Long memberId,
         @RequestParam(defaultValue = "20", value = "size") int size,
         @RequestParam(defaultValue = "0", value = "createdAt") ZonedDateTime createdAt

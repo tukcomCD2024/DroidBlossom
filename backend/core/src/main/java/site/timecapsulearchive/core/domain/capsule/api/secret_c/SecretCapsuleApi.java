@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,12 +18,13 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface SecretCapsuleApi {
 
@@ -35,6 +38,16 @@ public interface SecretCapsuleApi {
         @ApiResponse(
             responseCode = "202",
             description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "좌표변환을 할 수 없을 때 발생하는 예외, 입력좌표 확인 요망",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "캡슐 스킨을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @PostMapping(
@@ -62,7 +75,7 @@ public interface SecretCapsuleApi {
         value = "/capsules",
         produces = {"application/json"}
     )
-    ResponseEntity<ApiSpec<MyCapsulePageResponse>> getMySecretCapsules(
+    ResponseEntity<ApiSpec<MySecretCapsulePageResponse>> getMySecretCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
@@ -82,6 +95,11 @@ public interface SecretCapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @GetMapping(
@@ -105,6 +123,11 @@ public interface SecretCapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     @GetMapping(
