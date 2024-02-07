@@ -60,7 +60,7 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
         binding.hourPicker.apply {
             minValue = 0
             maxValue = 24
-            value = viewModel.hour.value
+            value = currentHour
         }
         binding.hourPicker.setOnValueChangedListener { _, oldVal, newVal ->
             viewModel.hour.value = newVal
@@ -68,7 +68,7 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
         binding.minPicker.apply {
             minValue = 0
             maxValue = 59
-            value = viewModel.min.value
+            value = currentMin
         }
         binding.minPicker.setOnValueChangedListener { _, oldVal, newVal ->
             viewModel.min.value = newVal
@@ -86,7 +86,7 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                         viewModel.hour.value,
                         viewModel.min.value
                     ),
-                    "%04d-%02d-%02dT%02d:%02d:01.001Z".format(
+                    "%04d-%02d-%02dT%02d:%02d:01.001+09:00".format(
                         viewModel.year.value,
                         viewModel.month.value,
                         viewModel.day.value,
@@ -110,18 +110,19 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.year.collect {
                     binding.dayPicker.apply {
-                        minValue =
-                            if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
-                                currentDay
-                            } else {
-                                1
-                            }
+                        if (viewModel.year.value == currentYear && viewModel.month.value <= currentMonth) {
+                            minValue = currentDay
+                            viewModel.day.value = currentDay
+                        } else {
+                            minValue = 1
+                        }
                     }
                     binding.monthPicker.apply {
-                        minValue = if (viewModel.year.value == currentYear) {
-                            currentMonth
+                        if (viewModel.year.value == currentYear) {
+                            minValue = currentMonth
+                            viewModel.month.value = currentMonth
                         } else {
-                            1
+                            minValue = 1
                         }
                     }
                 }
@@ -134,6 +135,7 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                     binding.dayPicker.apply {
                         if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth) {
                             minValue = currentDay
+                            viewModel.day.value = currentDay
                             when (viewModel.month.value) {
                                 1, 3, 5, 7, 8, 10, 12 -> {
                                     maxValue = 31
@@ -167,6 +169,33 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                 }
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isSelectTime.collect {
+                    if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth && viewModel.day.value == currentDay) {
+                        binding.hourPicker.apply {
+                            minValue = currentHour
+                            viewModel.hour.value = currentHour
+                            maxValue = 23
+                        }
+                        binding.minPicker.apply {
+                            minValue = currentMin
+                            viewModel.min.value = currentMin
+                            maxValue = 59
+                        }
+                    } else {
+                        binding.hourPicker.apply {
+                            minValue = 0
+                            maxValue = 23
+                        }
+                        binding.minPicker.apply {
+                            minValue = 0
+                            maxValue = 59
+                        }
+                    }
+                }
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -174,10 +203,12 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                     if (viewModel.year.value == currentYear && viewModel.month.value == currentMonth && viewModel.day.value == currentDay) {
                         binding.hourPicker.apply {
                             minValue = currentHour
+                            viewModel.hour.value = currentHour
                             maxValue = 23
                         }
                         binding.minPicker.apply {
                             minValue = currentMin
+                            viewModel.min.value = currentMin
                             maxValue = 59
                         }
                     }
@@ -191,6 +222,7 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
                     if (viewModel.day.value == currentDay && viewModel.hour.value == currentHour) {
                         binding.minPicker.apply {
                             minValue = currentMin
+                            viewModel.min.value = currentMin
                             maxValue = 59
                         }
                     } else {

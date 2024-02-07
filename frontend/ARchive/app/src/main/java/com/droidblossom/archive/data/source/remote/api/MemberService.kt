@@ -14,7 +14,7 @@ import retrofit2.http.POST
 
 interface MemberService {
 
-    @GET("me/")
+    @GET("me")
     suspend fun getMeApi(): Response<ResponseBody<MemberDetailResponseDto>>
 
     @POST("me/status")

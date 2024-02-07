@@ -55,9 +55,8 @@ class CreateCapsule2Fragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
-        binding.recycleView.adapter = skinRVA
-        binding.recycleView.itemAnimator = null
 
+        initRVA()
         initSearchEdit()
 
         //테스트용
@@ -72,6 +71,10 @@ class CreateCapsule2Fragment :
                     when (it) {
                         CreateCapsuleViewModel.Create2Event.NavigateTo3 -> {
                             navController.navigate(R.id.action_createCapsule2Fragment_to_createCapsule3Fragment)
+                        }
+
+                        is CreateCapsuleViewModel.Create2Event.ShowToastMessage -> {
+                            showToastMessage(it.message)
                         }
                     }
                 }
@@ -100,6 +103,11 @@ class CreateCapsule2Fragment :
         }
 
 
+    }
+
+    private fun initRVA(){
+        binding.recycleView.adapter = skinRVA
+        binding.recycleView.itemAnimator = null
     }
 
     @SuppressLint("ClickableViewAccessibility")

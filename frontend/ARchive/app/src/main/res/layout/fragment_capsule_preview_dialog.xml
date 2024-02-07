@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +27,7 @@
             android:paddingHorizontal="@dimen/padding"
             android:paddingVertical="18dp"
             android:text="@string/capsule_open_message"
+            android:visibility="@{vm.visibleCapsuleOpenMessage ? View.VISIBLE : View.GONE}"
             android:textAppearance="@style/TextAppearance.App.caption1"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +53,7 @@
                 android:id="@+id/capsuleTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARchive"
+                android:text="@{vm.secretCapsuleSummary.title}"
                 android:textAppearance="@style/TextAppearance.App.h2"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_group_chip"
                 android:drawablePadding="@dimen/padding_small"
-                android:text="2024.01.31"
+                bind:displayCreationDateFormatted="@{vm.secretCapsuleSummary.createdAt}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toStartOf="@id/capsuleLocationTextView"
@@ -74,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_group_chip"
                 android:drawablePadding="@dimen/padding_small"
-                android:text="강남역 11번 출구"
+                android:text="@{vm.secretCapsuleSummary.roadName.empty ? vm.secretCapsuleSummary.address : vm.secretCapsuleSummary.roadName}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -103,12 +108,13 @@
                 android:layout_height="44dp"
                 android:layout_marginStart="@dimen/margin"
                 android:layout_marginTop="@dimen/margin"
-                android:src="@drawable/app_symbol"
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
                 app:civ_circle_background_color="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                bind:imageUrl="@{vm.secretCapsuleSummary.profileUrl}"
+                bind:placeholder="@{@drawable/app_symbol}"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/capsuleTypeCardView"
@@ -126,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_secret_marker_24" />
+                    bind:srcCompat="@{vm.capsuleTypeImage}" />
 
             </androidx.cardview.widget.CardView>
 
@@ -145,6 +151,7 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:scaleType="centerInside"
+                    android:alpha="@{vm.visibleCapsuleOpenMessage ? 1.0F : 0.2F}"
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/sample_skin" />
 
@@ -159,24 +166,46 @@
                 android:layout_marginBottom="16dp"
                 android:indeterminate="false"
                 android:elevation="2dp"
+                android:max="@{vm.totalTime}"
+                android:progress="@{vm.timeProgress}"
+                android:visibility="@{vm.visibleTimeProgressBar ? View.VISIBLE : View.GONE}"
                 android:progressDrawable="@drawable/circle_progressbar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/profileImg" />
+                app:layout_constraintTop_toBottomOf="@id/profileImg"/>
+
+            <ProgressBar
+                android:id="@+id/openProgressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminate="false"
+                android:elevation="2dp"
+                android:visibility="@{vm.visibleOpenProgressBar ? View.VISIBLE : View.GONE}"
+                android:progressDrawable="@drawable/circle_progressbar_open"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:max="100"
+                app:layout_constraintTop_toBottomOf="@id/profileImg"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/remainTimeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.App.body1"
-                android:text="14:52"
                 android:textColor="#4263F7"
                 android:background="@drawable/rectangle_solid_corner_30dp"
                 android:backgroundTint="#66D5DDFD"
                 android:paddingVertical="15dp"
                 android:paddingHorizontal="18dp"
+                android:text="@{vm.timerState}"
+                android:visibility="@{vm.visibleTimeProgressBar ? View.VISIBLE : View.GONE}"
                 android:elevation="2dp"
                 app:layout_constraintStart_toStartOf="@id/skinCardView"
                 app:layout_constraintEnd_toEndOf="@id/skinCardView"

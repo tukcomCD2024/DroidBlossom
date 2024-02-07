@@ -7,6 +7,6 @@ data class NearbyCapsuleResponseDto (
     val capsules : List<CapsuleSummaryDto>
 ){
     fun toModel() = NearbyCapsule(
-        capsules = this.capsules
+        capsules = this.capsules.map { it.toModel() }
     )
 }

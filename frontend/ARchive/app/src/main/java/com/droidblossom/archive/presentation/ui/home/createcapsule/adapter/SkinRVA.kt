@@ -8,16 +8,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemSkinBinding
+import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Skin
 
-class SkinRVA( val SkinFlow: (Skin) -> Unit) :
-    ListAdapter<Skin, SkinRVA.ItemViewHolder>(differ) {
+class SkinRVA( val SkinFlow: (CapsuleSkinSummary) -> Unit) :
+    ListAdapter<CapsuleSkinSummary, SkinRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemSkinBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("NotifyDataSetChanged")
-        fun bind(data: Skin) {
+        fun bind(data: CapsuleSkinSummary) {
             binding.item = data
             binding.root.setOnClickListener {
                 SkinFlow(data)
@@ -44,12 +45,12 @@ class SkinRVA( val SkinFlow: (Skin) -> Unit) :
     }
 
     companion object {
-        val differ = object : DiffUtil.ItemCallback<Skin>() {
-            override fun areItemsTheSame(oldItem: Skin, newItem: Skin): Boolean {
-                return oldItem.skinId == newItem.skinId
+        val differ = object : DiffUtil.ItemCallback<CapsuleSkinSummary>() {
+            override fun areItemsTheSame(oldItem: CapsuleSkinSummary, newItem: CapsuleSkinSummary): Boolean {
+                return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: Skin, newItem: Skin): Boolean {
+            override fun areContentsTheSame(oldItem: CapsuleSkinSummary, newItem: CapsuleSkinSummary): Boolean {
                 return oldItem == newItem
             }
         }

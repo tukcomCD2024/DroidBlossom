@@ -2,7 +2,9 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
 import com.droidblossom.archive.domain.model.common.AddressData
+import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
@@ -10,6 +12,7 @@ import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
+import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
 import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
@@ -38,6 +41,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
     private val s3UrlsGetUseCase: S3UrlsGetUseCase,
+    private val capsuleSkinsPageUseCase: CapsuleSkinsPageUseCase,
     private val s3Util: S3Util,
 ) : BaseViewModel(), CreateCapsuleViewModel {
 
@@ -68,21 +72,28 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _skinId = MutableStateFlow<Long>(0)
     override val skinId: StateFlow<Long>
         get() = _skinId
-    private val _skins = MutableStateFlow(
-        listOf(Skin(1, "", false), Skin(2, "", false), Skin(3, "", false))
-    )
-    override val skins: StateFlow<List<Skin>>
+    private val _skins = MutableStateFlow(listOf<CapsuleSkinSummary>())
+    override val skins: StateFlow<List<CapsuleSkinSummary>>
         get() = _skins
 
     private val _isSearchOpen = MutableStateFlow(false)
     override val isSearchOpen: StateFlow<Boolean>
         get() = _isSearchOpen
 
+    private val _lastCreatedSkinTime = MutableStateFlow(DateUtils.dataServerString)
+    override val lastCreatedSkinTime: StateFlow<String>
+        get() = _lastCreatedSkinTime
+
+    private val _hasNextSkins = MutableStateFlow(true)
+    override val hasNextSkins: StateFlow<Boolean>
+        get() = _hasNextSkins
+
 
     //create3
     private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
     override val create3Events: SharedFlow<CreateCapsuleViewModel.Create3Event>
         get() = _create3Events.asSharedFlow()
+
     override val capsuleTitle: MutableStateFlow<String> = MutableStateFlow("")
 
     override val capsuleContent: MutableStateFlow<String> = MutableStateFlow("")
@@ -91,9 +102,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val capsuleLocationName: StateFlow<String>
         get() = _capsuleLocationName
 
-    private val _capsuleDueDate = MutableStateFlow("")
-    override val capsuleDueDate: StateFlow<String>
-        get() = _capsuleDueDate
+    override val capsuleDueDate: MutableStateFlow<String> = MutableStateFlow("")
 
     private val _capsuleLocation = MutableStateFlow(Location(0.0, 0.0))
     override val capsuleLocation: StateFlow<Location>
@@ -178,10 +187,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-            _skinId.emit(_skins.value.find { it.isClicked }?.skinId?.toLong() ?: 0.toLong())
-        }
-        viewModelScope.launch {
-            _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
+            if (_skins.value.find { it.isClicked } == null) {
+                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
+            } else {
+                _skinId.emit(_skins.value.find { it.isClicked }!!.id)
+                _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
+            }
         }
     }
 
@@ -203,7 +214,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun changeSkin(skin: Skin) {
+    override fun changeSkin(skin: CapsuleSkinSummary) {
         val submitList = skins.value
         submitList.map { it.isClicked = false }
         submitList[submitList.indexOf(skin)].isClicked = true
@@ -212,20 +223,51 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun getSkinList() {
+        viewModelScope.launch {
+            if (hasNextSkins.value) {
+                capsuleSkinsPageUseCase(
+                    CapsuleSkinsPageRequestDto(
+                        15,
+                        _lastCreatedSkinTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        _skins.emit(it.skins)
+                        _hasNextSkins.emit(it.hasNext)
+                        _lastCreatedSkinTime.emit(it.skins.last().createdAt)
+                    }.onFail {
+                        _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨 불러오기 실패."))
+                    }
+
+                }
+            }
+        }
+    }
+
 
     //creat3
     override fun moveFinish() {
         Log.d("캡슐생성", "${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
+            if (isSelectTimeCapsule.value && (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty() || dueTime.value.isEmpty())) {
+                _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("타임캡슐은 시간, 제목, 내용이 필수 입니다."))
+                return@launch
+            }
+            if (!isSelectTimeCapsule.value &&  (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty())){
+                _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐은 제목, 내용이 필수 입니다."))
+                return@launch
+            }
+
             if (imageFiles.value.isEmpty() && videoFiles.value.isEmpty()) {
                 imageNames = listOf<String>()
                 videoNames = listOf<String>()
 
-            } else if (imageFiles.value.isNotEmpty() && videoFiles.value.isEmpty()){
+            } else if (imageFiles.value.isNotEmpty() && videoFiles.value.isEmpty()) {
                 imageNames = imageFiles.value.map { file ->
                     file.name
                 }
-            } else if (imageFiles.value.isEmpty() && videoFiles.value.isNotEmpty()){
+            } else if (imageFiles.value.isEmpty() && videoFiles.value.isNotEmpty()) {
                 videoNames = videoFiles.value.map { file ->
                     file.name
                 }
@@ -250,7 +292,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
                     secretCapsuleCreateUseCase(
                         SecretCapsuleCreateRequest(
-                            capsuleSkinId = 1,
+                            capsuleSkinId = 4,
                             content = capsuleContent.value,
                             directory = imageNames.takeUnless { it.isEmpty() }?.let { S3DIRECTORY }
                                 ?: "",
@@ -286,13 +328,14 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+
     override fun coordToAddress(latitude: Double, longitude: Double) {
         viewModelScope.launch {
             _capsuleLatitude.value = latitude
             _capsuleLongitude.value = longitude
             getAddressUseCase(latitude, longitude).collect { result ->
                 result.onSuccess {
-                    _capsuleLocationName.emit(it.fullRoadAddressName)
+                    _capsuleLocationName.emit(if (it.roadName.isNullOrEmpty()) it.fullRoadAddressName else it.roadName)
                     _address.emit(it)
                 }.onFail {
                     _capsuleLocationName.emit("위치를 찾을 수 없음")
@@ -336,7 +379,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     override fun selectCapsule() {
-        viewModelScope.launch { _isSelectTimeCapsule.emit(false) }
+        viewModelScope.launch {
+            _isSelectTimeCapsule.emit(false)
+            _dueTime.emit("")
+            capsuleDueDate.emit("")
+        }
     }
 
     override fun addImgUris(list: List<Dummy>) {
@@ -369,7 +416,11 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    private fun uploadFilesToS3(files: List<File>, preSignedImageUrls: List<String>, preSignedVideoUrls: List<String>) {
+    private fun uploadFilesToS3(
+        files: List<File>,
+        preSignedImageUrls: List<String>,
+        preSignedVideoUrls: List<String>
+    ) {
         viewModelScope.launch {
             val uploadJobs = files.zip(preSignedImageUrls).map { (file, url) ->
                 launch(Dispatchers.IO) {

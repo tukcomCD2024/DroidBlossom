@@ -10,13 +10,14 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
+
     namespace 'com.droidblossom.archive'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.droidblossom.archive"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -34,7 +35,11 @@ android {
 
 
 
-        manifestPlaceholders = [NAVER_CLIENT_ID: properties['naver_client_id'], KAKAO_NATIVE_APP_KEY: properties['kakao_native_app_key_no_quotes']]
+        manifestPlaceholders = [
+                NAVER_CLIENT_ID: properties['naver_client_id'],
+                KAKAO_NATIVE_APP_KEY: properties['kakao_native_app_key_no_quotes'],
+                GOOGLE_APP_KEY :properties['google_api_key']
+        ]
 
     }
 
@@ -150,6 +155,10 @@ dependencies {
 
     // Google location
     implementation 'com.google.android.gms:play-services-location:21.1.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+
+    // SceneView
+    implementation 'io.github.sceneview:arsceneview:2.0.2'
 
 }
 kapt {

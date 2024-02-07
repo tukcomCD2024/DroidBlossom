@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
 import com.droidblossom.archive.domain.model.common.AddressData
+import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
@@ -23,15 +24,17 @@ interface CreateCapsuleViewModel {
     //Create2
     val create2Events: SharedFlow<Create2Event>
     val skinId: StateFlow<Long>
-    val skins : StateFlow<List<Skin>>
+    val skins : StateFlow<List<CapsuleSkinSummary>>
     val isSearchOpen : StateFlow<Boolean>
+    val lastCreatedSkinTime : StateFlow<String>
+    val hasNextSkins : StateFlow<Boolean>
 
     //Create3
     val create3Events: SharedFlow<Create3Event>
     val capsuleTitle: MutableStateFlow<String>
     val capsuleContent: MutableStateFlow<String>
     val capsuleLocationName: StateFlow<String>
-    val capsuleDueDate: StateFlow<String>
+    val capsuleDueDate: MutableStateFlow<String>
     val capsuleLocation : StateFlow<Location>
     val capsuleImg : StateFlow<List<FileName>>
     val capsuleImgUrls: StateFlow<List<String>>
@@ -59,7 +62,8 @@ interface CreateCapsuleViewModel {
     fun openSearchSkin()
     fun closeSearchSkin()
     fun searchSkin()
-    fun changeSkin(skin: Skin)
+    fun changeSkin(skin: CapsuleSkinSummary)
+    fun getSkinList()
     fun moveFinish()
     fun moveLocation()
     fun moveDate()
@@ -83,6 +87,8 @@ interface CreateCapsuleViewModel {
     sealed class Create2Event {
         object NavigateTo3 : Create2Event()
 
+        data class ShowToastMessage(val message : String) : Create2Event()
+
     }
 
     sealed class Create3Event {
@@ -95,6 +101,6 @@ interface CreateCapsuleViewModel {
     }
 
     enum class CapsuleTypeCreate(val title: String) {
-        SECRET("SECRETE"), GROUP("GROUP"), PUBLIC("PUBLIC")
+        SECRET("SECRET"), GROUP("GROUP"), PUBLIC("PUBLIC")
     }
 }
