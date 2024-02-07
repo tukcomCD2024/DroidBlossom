@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.skin.SkinViewModel" />
     </data>
 
     <FrameLayout
