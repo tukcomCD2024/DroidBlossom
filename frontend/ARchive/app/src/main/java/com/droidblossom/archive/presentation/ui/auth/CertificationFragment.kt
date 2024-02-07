@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -20,8 +21,11 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.util.AuthOtpReceiver
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<AuthViewModelImpl, FragmentCertificationBinding>(R.layout.fragment_certification) {
@@ -33,7 +37,6 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onResume() {
         super.onResume()
-        viewModel.initTimer()
         if (binding.certificationNumberEditText1.requestFocus()) {
             val imm =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -43,12 +46,14 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initTimer()
 
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
 
         viewModel.startTimer()
         initView()
+        addTextWatcher()
     }
 
     private fun initView(){
@@ -56,25 +61,24 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
         with(binding){
             resendBtn.setOnClickListener {
                 viewModel.reSend()
-                binding.certificationNumberEditText1.requestFocus()
+                resetCertificationNumber()
             }
-
-            setupAutoFocusOnLength(null, certificationNumberEditText1, certificationNumberEditText2)
-            setupAutoFocusOnLength(certificationNumberEditText1, certificationNumberEditText2, certificationNumberEditText3)
-            setupAutoFocusOnLength(certificationNumberEditText2, certificationNumberEditText3, certificationNumberEditText4)
-            setupAutoFocusOnLength(certificationNumberEditText3, certificationNumberEditText4, null)
         }
     }
     override fun observeData() {
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.certificationNumber
-                    .filter { it.length == 4 }
-                    .collect { certificationNum ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.certificationNumber.collect { certificationNum ->
+                    if (certificationNum.length == 4) {
                         // 길이가 4일 때의 처리 로직
                         viewModel.submitCertificationNumber()
+                    } else if (certificationNum.isEmpty()) {
+                        binding.certificationNumberEditText1.postDelayed({
+                            binding.certificationNumberEditText1.requestFocus()
+                        }, 50)
                     }
+                }
             }
         }
 
@@ -83,20 +87,18 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                 viewModel.certificationEvents.collect { event ->
                     when (event) {
 
-                        is AuthViewModel.CertificationEvent.ReSend -> {
-                            // 서버에게 재전송 요청
-                            viewModel.initTimer()
-                            viewModel.submitPhoneNumber()
-                        }
-
                         is AuthViewModel.CertificationEvent.NavigateToSignUpSuccess -> {
                             if(navController.currentDestination?.id != R.id.signUpSuccessFragment) {
                                 navController.navigate(R.id.action_certificationFragment_to_signUpSuccessFragment)
                             }
                         }
 
-                        is AuthViewModel.CertificationEvent.failCertificationCode -> {
-                            binding.certificationNumberEditText1.requestFocus()
+                        is AuthViewModel.CertificationEvent.VerificationCodeMismatch -> {
+                            resetCertificationNumber()
+                        }
+
+                        is AuthViewModel.CertificationEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
                         }
 
                     }
@@ -106,21 +108,37 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
         }
     }
 
-    private fun setupAutoFocusOnLength(previousEditText: EditText?, currentEditText: EditText, nextEditText: EditText?) {
-        currentEditText.addTextChangedListener(object : TextWatcher {
+    private fun addTextWatcher() {
+        setupAutoFocusOnLength(null, binding.certificationNumberEditText1, binding.certificationNumberEditText2)
+        setupAutoFocusOnLength(binding.certificationNumberEditText1, binding.certificationNumberEditText2, binding.certificationNumberEditText3)
+        setupAutoFocusOnLength(binding.certificationNumberEditText2, binding.certificationNumberEditText3, binding.certificationNumberEditText4)
+        setupAutoFocusOnLength(binding.certificationNumberEditText3, binding.certificationNumberEditText4, null)
+    }
+
+
+    private fun resetCertificationNumber() {
+        viewModel.certificationNumber4.value = ""
+        viewModel.certificationNumber3.value = ""
+        viewModel.certificationNumber2.value = ""
+        viewModel.certificationNumber1.value = ""
+    }
+
+    private fun setupAutoFocusOnLength(previousEditText: EditText?, currentEditText: EditText, nextEditText: EditText?): TextWatcher {
+        val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (s != null) {
-                    if (s.length == 1) {
-                        nextEditText?.requestFocus()
-                    } else if (s.isEmpty()) {
-                        previousEditText?.requestFocus()
-                    }
+                if (s == null) return
+
+                when {
+                    s.length == 1 -> nextEditText?.requestFocus()
+                    s.isEmpty() -> previousEditText?.requestFocus()
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        }
+        currentEditText.addTextChangedListener(textWatcher)
+        return textWatcher
     }
 
     override fun onOtpReceived(otp: String) {

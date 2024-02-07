@@ -1,28 +1,24 @@
 package com.droidblossom.archive.di
 
 import com.droidblossom.archive.BuildConfig
+import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.util.AccessTokenInterceptor
+import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.TokenAuthenticator
-import com.droidblossom.archive.util.SharedPreferencesUtils
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
+import javax.inject.Named
 import javax.inject.Singleton
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ResourceRetrofit
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ResourceRetrofitWithToken
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -35,6 +31,7 @@ object RetrofitModule {
     fun providesConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create(
             GsonBuilder()
+                .setLenient()
                 .create()
         )
     }
@@ -42,38 +39,38 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun providesOkHttpClient(
-        pf: SharedPreferencesUtils
+        ds: DataStoreUtils,
+        authServiceLazy: Lazy<AuthService>,
     ): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
         return OkHttpClient.Builder().apply {
+
+            addInterceptor (interceptor)
             connectTimeout(5, TimeUnit.SECONDS)
             readTimeout(5, TimeUnit.SECONDS)
             writeTimeout(5, TimeUnit.SECONDS)
-            authenticator(TokenAuthenticator(pf))
-            addNetworkInterceptor(AccessTokenInterceptor(pf))
+            authenticator(TokenAuthenticator(ds, authServiceLazy))
+            addNetworkInterceptor(AccessTokenInterceptor(ds))
         }.build()
     }
-//
-//    @Provides
-//    @Singleton
-//    fun providesOkHttpClientWithToken(sharedPreferences: SharedPreferences) : OkHttpClient {
-//        val token = sharedPreferences.getString("token_key", "") ?: ""
-//        return OkHttpClient.Builder().apply {
-//            if (token.isNotEmpty()) {
-//                addInterceptor { chain ->
-//                    val newRequest = chain.request().newBuilder()
-//                        .addHeader("Authorization", "Bearer $token")
-//                        .build()
-//                    chain.proceed(newRequest)
-//                }
-//            }
-//            connectTimeout(5, TimeUnit.SECONDS)
-//            readTimeout(5, TimeUnit.SECONDS)
-//            writeTimeout(5, TimeUnit.SECONDS)
-//            addInterceptor(HttpLoggingInterceptor().apply {
-//                level = HttpLoggingInterceptor.Level.BODY
-//            })
-//        }.build()
-//    }
+
+    @Provides
+    @Singleton
+    @Named("kakaoClient")
+    fun providesKOkHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder().apply {
+
+            addInterceptor (interceptor)
+            connectTimeout(5, TimeUnit.SECONDS)
+            readTimeout(5, TimeUnit.SECONDS)
+            writeTimeout(5, TimeUnit.SECONDS)
+        }.build()
+    }
 
 
     @Provides
@@ -89,18 +86,18 @@ object RetrofitModule {
             .build()
     }
 
-//    @Provides
-//    @Singleton
-//    @ResourceRetrofitWithToken
-//    fun providesRetrofitWithToken(
-//        client : OkHttpClient,
-//        gsonConverterFactory: GsonConverterFactory
-//    ) : Retrofit {
-//        return Retrofit.Builder()
-//            .baseUrl(BuildConfig.BASE_URL)
-//            .addConverterFactory(gsonConverterFactory)
-//            .client(client)
-//            .build()
-//    }
+    @Provides
+    @Singleton
+    @Named("kakao")
+    fun providesKakaoRetrofit(
+        @Named("kakaoClient") client: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.KAKAO_URL)
+            .addConverterFactory(gsonConverterFactory)
+            .client(client)
+            .build()
+    }
 
 }

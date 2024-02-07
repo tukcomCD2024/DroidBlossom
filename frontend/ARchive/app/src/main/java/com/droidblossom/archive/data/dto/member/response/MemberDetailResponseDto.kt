@@ -11,7 +11,7 @@ data class MemberDetailResponseDto(
 
     fun toModel() = MemberDetail(
         nickname = this.nickname,
-        profileUrl = this.profileUrl.ifEmpty { null },
+        profileUrl = this.profileUrl,
         phone = this.phone
     )
 }

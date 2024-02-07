@@ -7,14 +7,15 @@ import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.auth.VerificationMessageSend
 import com.droidblossom.archive.domain.model.auth.VerificationNumberValid
 import com.droidblossom.archive.domain.model.member.CheckStatus
-import com.droidblossom.archive.domain.usecase.MemberStatusUseCase
-import com.droidblossom.archive.domain.usecase.ReIssueUseCase
-import com.droidblossom.archive.domain.usecase.SendMessageUseCase
-import com.droidblossom.archive.domain.usecase.SignInUseCase
-import com.droidblossom.archive.domain.usecase.SignUpUseCase
-import com.droidblossom.archive.domain.usecase.TemporaryTokenReIssueUseCase
-import com.droidblossom.archive.domain.usecase.ValidMessageUseCase
+import com.droidblossom.archive.domain.usecase.member.MemberStatusUseCase
+import com.droidblossom.archive.domain.usecase.auth.ReIssueUseCase
+import com.droidblossom.archive.domain.usecase.auth.SendMessageUseCase
+import com.droidblossom.archive.domain.usecase.auth.SignInUseCase
+import com.droidblossom.archive.domain.usecase.auth.SignUpUseCase
+import com.droidblossom.archive.domain.usecase.auth.TemporaryTokenReIssueUseCase
+import com.droidblossom.archive.domain.usecase.auth.ValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onFail
@@ -44,7 +45,7 @@ class AuthViewModelImpl @Inject constructor(
     private val validMessageUseCase: ValidMessageUseCase,
     private val memberStatusUseCase: MemberStatusUseCase,
     private val temporaryTokenReIssueUseCase: TemporaryTokenReIssueUseCase,
-    private val sharedPreferencesUtils : SharedPreferencesUtils
+    private val dataStoreUtils: DataStoreUtils
 ) : BaseViewModel(), AuthViewModel {
 
     // SignInFragment
@@ -98,6 +99,14 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
+    private fun authDataReset(){
+        certificationNumber4.value = ""
+        certificationNumber3.value = ""
+        certificationNumber2.value = ""
+        certificationNumber1.value = ""
+        _phoneNumber.value = ""
+    }
+
     override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
@@ -109,6 +118,9 @@ class AuthViewModelImpl @Inject constructor(
                     }else{
                         submitSignUpData(signUpData)
                     }
+                    authDataReset()
+                }.onFail {
+                    Log.d("티티","memberStatusCheck 실패")
                 }
             }
         }
@@ -119,13 +131,12 @@ class AuthViewModelImpl @Inject constructor(
             signInUseCase(signInData.toDto()).collect{ result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    sharedPreferencesUtils.resetTokenData()
+                    dataStoreUtils.resetTokenData()
                     signInEvent(AuthViewModel.SignInEvent.NavigateToMain)
-                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
-                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
-                }.onError {
-                    // ToastMessage 있으면 좋을듯
-                    Log.d("티티","submitSignInData 에러")
+                    dataStoreUtils.saveAccessToken(it.accessToken)
+                    dataStoreUtils.saveRefreshToken(it.refreshToken)
+                }.onFail {
+                    Log.d("티티","submitSignInData 실패")
                 }
             }
         }
@@ -136,10 +147,10 @@ class AuthViewModelImpl @Inject constructor(
             signUpUseCase(signUpData.toDto()).collect{result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
-                    sharedPreferencesUtils.resetTokenData()
-                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    dataStoreUtils.resetTokenData()
+                    dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
-                }.onError {
+                }.onFail {
                     // ToastMessage 있으면 좋을듯
                     Log.d("티티","submitSignUpData 에러")
                 }
@@ -151,11 +162,11 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
                 result.onSuccess {
-                    sharedPreferencesUtils.resetTokenData()
-                    sharedPreferencesUtils.saveAccessToken(it.temporaryAccessToken)
+                    dataStoreUtils.resetTokenData()
+                    dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-                    Log.d("티티","temporaryTokenReIssue 에러")
+                    Log.d("티티","temporaryTokenReIssue 실패")
                 }
             }
         }
@@ -174,6 +185,7 @@ class AuthViewModelImpl @Inject constructor(
     override fun checkPhoneNumber(): Boolean {
         val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
         if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
+            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("올바른 휴대폰 번호를 입력해주세요."))
             return false
         }
         return true
@@ -184,12 +196,13 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{result ->
                 result.onSuccess{
-                    Log.d("티티","submitPhoneNumber 성공")
                     signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                 }.onFail {
-                    // Toast 메시지 있으면 좋을듯
-                    // 아마 5번 하루 5번 이상 이면 안 실패(?)
-                    Log.d("티티","submitPhoneNumber 에러")
+                    if (it == 429){
+                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
+                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                    }
+                    Log.d("티티","$it : submitPhoneNumber 실패")
                 }
 
             }
@@ -224,15 +237,16 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
                 result.onSuccess {
-                    sharedPreferencesUtils.saveAccessToken(it.accessToken)
-                    sharedPreferencesUtils.saveRefreshToken(it.refreshToken)
+                    dataStoreUtils.saveAccessToken(it.accessToken)
+                    dataStoreUtils.saveRefreshToken(it.refreshToken)
                     certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
 
                 }.onFail {
                     // Toast 메시지 있으면 좋을듯
-                    resetCertificationNumber()
-                    certificationEvent(AuthViewModel.CertificationEvent.failCertificationCode)
-                    Log.d("티티","submitCertificationNumber 에러")
+                    if (it == 400){
+                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
+                        certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                    }
 
                 }
             }
@@ -241,15 +255,7 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun reSend(){
         initTimer()
-        resetCertificationNumber()
         submitPhoneNumber()
-    }
-
-    private fun resetCertificationNumber(){
-        certificationNumber1.value = ""
-        certificationNumber2.value = ""
-        certificationNumber3.value = ""
-        certificationNumber4.value = ""
     }
 
 }

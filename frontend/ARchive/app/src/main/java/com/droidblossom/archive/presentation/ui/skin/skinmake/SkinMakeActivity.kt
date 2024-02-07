@@ -24,6 +24,7 @@ class SkinMakeActivity : BaseActivity<SkinMakeViewModelImpl, ActivitySkinMakeBin
     }
 
     companion object{
+
         fun goSkinMake(context: Context) {
             val intent = Intent(context, SkinMakeActivity::class.java)
             context.startActivity(intent)

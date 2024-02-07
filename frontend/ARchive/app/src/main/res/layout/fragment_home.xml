@@ -145,6 +145,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/refreshBtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/corner_radius_22"
+            android:backgroundTint="@color/white_alpha60"
+            android:scaleType="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/notificationBtn" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/makeSecretCapsuleBtn"
             android:layout_width="66dp"
@@ -299,8 +313,8 @@
             android:layout_marginBottom="22dp"
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@color/white_alpha70"
-            android:onClick="@{()->vm.clickFollowBtn()}"
             android:scaleType="center"
+            android:onClick="@{()->vm.clickFollowBtn()}"
             android:src="@{vm.followLocation ? @drawable/ic_location_on_24 : @drawable/ic_location_off_24}"
             app:layout_constraintBottom_toTopOf="@id/place"
             app:layout_constraintStart_toStartOf="parent" />
