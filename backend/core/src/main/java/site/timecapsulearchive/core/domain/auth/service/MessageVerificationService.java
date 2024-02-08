@@ -1,7 +1,7 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ThreadLocalRandom;
+import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +14,15 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
-import site.timecapsulearchive.core.infra.sms.SmsApiService;
 import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
+import site.timecapsulearchive.core.infra.sms.service.SmsApiService;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class MessageVerificationService {
 
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final int MIN = 1000;
     private static final int MAX = 10000;
 
@@ -59,8 +60,7 @@ public class MessageVerificationService {
 
     private String generateRandomCode() {
         return String.valueOf(
-            ThreadLocalRandom.current()
-                .nextInt(MIN, MAX)
+            SECURE_RANDOM.nextInt(MIN, MAX)
         );
     }
 

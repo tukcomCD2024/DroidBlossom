@@ -1,6 +1,8 @@
 package site.timecapsulearchive.core.domain.member.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,6 +16,7 @@ import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdate
 import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface MemberApi {
 
@@ -27,13 +30,17 @@ public interface MemberApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
-        )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
     })
     @GetMapping(
-        value = "/",
         produces = {"application/json"}
     )
-    ResponseEntity<MemberDetailResponse> findMemberById();
+    ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(Long memberId);
 
     @Operation(
         summary = "회원 수정",
@@ -48,7 +55,6 @@ public interface MemberApi {
         )
     })
     @PatchMapping(
-        value = "/",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<Void> updateMemberById(@ModelAttribute MemberDetailUpdateRequest request);

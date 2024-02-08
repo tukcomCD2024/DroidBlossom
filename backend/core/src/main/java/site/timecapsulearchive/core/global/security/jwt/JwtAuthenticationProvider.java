@@ -1,17 +1,15 @@
 package site.timecapsulearchive.core.global.security.jwt;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
-
-    private static final String MEMBER_ID_CLAIM_KEY = JwtConstants.MEMBER_ID.getValue();
 
     private final JwtFactory jwtFactory;
 
@@ -20,20 +18,22 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         throws AuthenticationException {
         String accessToken = (String) authentication.getCredentials();
 
-        if (isNotValid(accessToken)) {
-            throw new InvalidTokenException();
-        }
+        jwtFactory.validate(accessToken);
 
-        String memberId = jwtFactory.getClaimValue(
-            accessToken,
-            MEMBER_ID_CLAIM_KEY
+        TokenParseResult tokenParseResult = jwtFactory.parse(
+            accessToken, List.of(TokenType.ACCESS, TokenType.TEMPORARY)
         );
 
-        return JwtAuthenticationToken.authenticated(Long.valueOf(memberId));
+        Long memberId = getMemberId(tokenParseResult);
+        if (tokenParseResult.tokenType() == TokenType.TEMPORARY) {
+            return JwtAuthenticationToken.authenticatedWithTemporary(memberId);
+        }
+
+        return JwtAuthenticationToken.authenticatedWithAccess(memberId);
     }
 
-    private boolean isNotValid(String accessToken) {
-        return !jwtFactory.isValid(accessToken);
+    private Long getMemberId(TokenParseResult tokenParseResult) {
+        return Long.valueOf(tokenParseResult.subject());
     }
 
     @Override

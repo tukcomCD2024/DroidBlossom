@@ -35,11 +35,26 @@ public record ErrorResponse(
         );
     }
 
+    public static ErrorResponse parameter(
+        final ErrorCode errorCode,
+        final String parameterName
+    ) {
+        return new ErrorResponse(
+            errorCode.getCode(),
+            errorCode.getMessage(),
+            List.of(Error.parameter(parameterName))
+        );
+    }
+
     public record Error(
         String field,
         String value,
         String reason
     ) {
+
+        public static Error parameter(String parameterName) {
+            return new Error(parameterName, null, "필수 입력 파라미터를 포함하지 않았습니다.");
+        }
 
         public static List<Error> from(final BindingResult bindingResult) {
             return bindingResult.getFieldErrors().stream()

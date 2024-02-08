@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.global.security.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -7,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.global.config.security.JwtProperties;
@@ -15,8 +17,8 @@ import site.timecapsulearchive.core.global.error.exception.InvalidTokenException
 @Component
 public class JwtFactory {
 
-    private static final String MEMBER_ID_CLAIM = JwtConstants.MEMBER_ID.getValue();
-    private static final String MEMBER_INFO_CLAIM = JwtConstants.MEMBER_INFO_KEY.getValue();
+    private static final String ISSUER = "https://archive-timecapsule.kro.kr";
+    private static final String TOKEN_TYPE_CLAIM_NAME = "token_type";
 
     private final SecretKey key;
     private final long accessTokenValidityMs;
@@ -41,8 +43,10 @@ public class JwtFactory {
         Date validity = new Date(now.getTime() + accessTokenValidityMs);
 
         return Jwts.builder()
-            .claim(MEMBER_ID_CLAIM, memberId.toString())
+            .setIssuer(ISSUER)
+            .setSubject(String.valueOf(memberId))
             .setExpiration(validity)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.ACCESS.name())
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
@@ -50,16 +54,18 @@ public class JwtFactory {
     /**
      * 사용자 식별자를 받아서 리프레시 토큰 반환
      *
-     * @param memberProfileKey 사용자 식별자
+     * @param memberInfoKey 사용자 식별자
      * @return 리프레시 토큰
      */
-    public String createRefreshToken(final String memberProfileKey) {
+    public String createRefreshToken(final String memberInfoKey) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenValidityMs);
 
         return Jwts.builder()
-            .claim(MEMBER_INFO_CLAIM, memberProfileKey)
+            .setIssuer(ISSUER)
+            .setSubject(memberInfoKey)
             .setExpiration(validity)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.REFRESH.name())
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
@@ -75,25 +81,32 @@ public class JwtFactory {
         Date validity = new Date(now.getTime() + temporaryValidityMs);
 
         return Jwts.builder()
-            .claim(MEMBER_ID_CLAIM, memberId.toString())
+            .setIssuer(ISSUER)
+            .setSubject(String.valueOf(memberId))
             .setExpiration(validity)
+            .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.TEMPORARY)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
 
     /**
-     * 토큰과 클레임 키로 클레임 값 파싱
+     * 토큰과 토큰 타입으로 토큰의 사용자 식별자와 타입 추출
      *
-     * @param token    토큰
-     * @param claimKey 파싱할 클레임 키
-     * @return 클레임 키에 따른 값
+     * @param token 토큰
+     * @return 사용자 식별자
      */
-    public String getClaimValue(final String token, final String claimKey) {
+    public TokenParseResult parse(final String token, final List<TokenType> tokenTypes) {
         try {
-            return jwtParser()
+            Claims claims = jwtParser()
                 .parseClaimsJws(token)
-                .getBody()
-                .get(claimKey, String.class);
+                .getBody();
+
+            validTokenType(tokenTypes, claims);
+
+            return TokenParseResult.of(
+                claims.getSubject(),
+                TokenType.valueOf(claims.get(TOKEN_TYPE_CLAIM_NAME, String.class))
+            );
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
         }
@@ -105,31 +118,38 @@ public class JwtFactory {
             .build();
     }
 
+    private void validTokenType(List<TokenType> tokenTypes, Claims claims) {
+        TokenType tokenType = TokenType.valueOf(
+            claims.get(TOKEN_TYPE_CLAIM_NAME, String.class)
+        );
+
+        if (!tokenTypes.contains(tokenType)) {
+            throw new JwtException("허용되지 않는 JWT 토큰 타입입니다.");
+        }
+    }
+
     /**
      * 토큰을 파싱해서 올바른 토큰인지 확인
      *
      * @param token 검증할 토큰
-     * @return 유효한 토큰이면 {@code true}
      */
-    public boolean isValid(final String token) {
+    public void validate(final String token) {
         try {
             jwtParser().parseClaimsJws(token);
-
-            return true;
         } catch (final JwtException | IllegalArgumentException e) {
-            return false;
+            throw new InvalidTokenException(e);
         }
     }
 
-    public String getExpiresIn() {
-        return String.valueOf(accessTokenValidityMs);
+    public long getExpiresIn() {
+        return accessTokenValidityMs;
     }
 
-    public String getRefreshTokenExpiresIn() {
-        return String.valueOf(refreshTokenValidityMs);
+    public long getRefreshTokenExpiresIn() {
+        return refreshTokenValidityMs;
     }
 
-    public String getTemporaryTokenExpiresIn() {
-        return String.valueOf(temporaryValidityMs);
+    public long getTemporaryTokenExpiresIn() {
+        return temporaryValidityMs;
     }
 }

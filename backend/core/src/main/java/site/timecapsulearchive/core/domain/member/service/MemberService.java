@@ -3,7 +3,11 @@ package site.timecapsulearchive.core.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.member.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.dto.VerifiedCheckDto;
+import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
+import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -12,6 +16,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,9 +25,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
+    private final AESEncryptionManager aesEncryptionManager;
+
+    private final MemberMapper memberMapper;
 
     @Transactional
-    public Long createMember(Member member) {
+    public Long createMember(SignUpRequestDto dto) {
+        Member member = memberMapper.signUpRequestDtoToEntity(dto);
+
         Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();
@@ -108,5 +118,14 @@ public class MemberService {
 
     private boolean isVerified(VerifiedCheckDto dto) {
         return dto.isVerified();
+    }
+
+    public MemberDetailResponse findMemberDetailById(Long memberId) {
+        MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
+
+        return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }
 }

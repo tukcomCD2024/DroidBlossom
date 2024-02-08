@@ -31,7 +31,7 @@ public class S3Config {
         return s3Properties.bucket();
     }
 
-    public String getS3Location() {
-        return s3Properties.region();
+    public String getTemporaryBucketName() {
+        return s3Properties.temporaryBucket();
     }
 }

@@ -3,11 +3,13 @@ package site.timecapsulearchive.core.global.error;
 import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_TYPE_ERROR;
 import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_VALUE_ERROR;
 import static site.timecapsulearchive.core.global.error.ErrorCode.INTERNAL_SERVER_ERROR;
+import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_NOT_FOUND_ERROR;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
@@ -60,7 +62,7 @@ public class GlobalExceptionHandler {
             .body(response);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ExternalApiException.class)
     protected ResponseEntity<ErrorResponse> handleExternalApiException(ExternalApiException e) {
         log.warn(e.getMessage(), e);
 
@@ -69,5 +71,18 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(response);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    protected ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
+        MissingServletRequestParameterException e
+    ) {
+        log.warn(e.getMessage(), e);
+
+        ErrorResponse errorResponse = ErrorResponse.parameter(REQUEST_PARAMETER_NOT_FOUND_ERROR,
+            e.getParameterName());
+
+        return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
+            .body(errorResponse);
     }
 }

@@ -15,8 +15,10 @@ public record ApiSpec<T>(
     T result
 ) {
 
-    public static <T> ApiSpec<T> empty(SuccessCode code) {
-        return new ApiSpec<>(code.getMessage(), code.getCode(), null);
+    private static final String EMPTY_RESULT = "";
+
+    public static ApiSpec<String> empty(SuccessCode code) {
+        return new ApiSpec<>(code.getMessage(), code.getCode(), EMPTY_RESULT);
     }
 
     public static <T> ApiSpec<T> success(SuccessCode code, T result) {

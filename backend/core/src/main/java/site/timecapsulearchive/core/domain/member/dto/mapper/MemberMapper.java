@@ -2,6 +2,9 @@ package site.timecapsulearchive.core.domain.member.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.member.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.dto.SignUpRequestDto;
+import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.oauth.dto.OAuth2UserInfo;
@@ -22,12 +25,28 @@ public class MemberMapper {
             .build();
     }
 
-    public Member signUpRequestToEntity(SignUpRequest request) {
+    public SignUpRequestDto signUpRequestToDto(SignUpRequest request) {
+        return new SignUpRequestDto(
+            request.authId(),
+            request.email(),
+            request.profileUrl(),
+            request.socialType()
+        );
+    }
+
+    public Member signUpRequestDtoToEntity(SignUpRequestDto dto) {
         return Member.builder()
-            .authId(request.authId())
-            .email(request.email())
-            .profileUrl(request.profileUrl())
-            .socialType(request.socialType())
+            .authId(dto.authId())
+            .email(dto.email())
+            .profileUrl(dto.profileUrl())
+            .socialType(dto.socialType())
             .build();
+    }
+
+    public MemberDetailResponse memberDetailResponseDtoToResponse(
+        MemberDetailResponseDto dto,
+        String decryptedPhone
+    ) {
+        return new MemberDetailResponse(dto.nickname(), dto.profileUrl(), decryptedPhone);
     }
 }
