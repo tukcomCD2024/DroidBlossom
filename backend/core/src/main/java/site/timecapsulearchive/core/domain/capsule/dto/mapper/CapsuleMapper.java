@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.response.CapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleSummaryResponse;
@@ -152,13 +152,13 @@ public class CapsuleMapper {
             .build();
     }
 
-    public MyCapsulePageResponse capsuleDetailSliceToResponse(List<MySecreteCapsuleDto> content,
+    public MySecretCapsulePageResponse capsuleDetailSliceToResponse(List<MySecreteCapsuleDto> content,
         boolean hasNext) {
         List<MySecreteCapsuleResponse> responses = content.stream()
             .map(this::mySecreteCapsuleDtoToResponse)
             .toList();
 
-        return new MyCapsulePageResponse(
+        return new MySecretCapsulePageResponse(
             responses,
             hasNext
         );
