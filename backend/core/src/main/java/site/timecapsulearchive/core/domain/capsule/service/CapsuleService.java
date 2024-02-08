@@ -16,18 +16,18 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
-import site.timecapsulearchive.core.global.geography.GeoTransformer;
-import site.timecapsulearchive.core.infra.map.service.MapApiService;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
+import site.timecapsulearchive.core.infra.map.manager.MapApiManager;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CapsuleService {
 
-    private final MapApiService mapApiService;
+    private final MapApiManager mapApiManager;
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
-    private final GeoTransformer geoTransformer;
+    private final GeoTransformManager geoTransformManager;
     private final CapsuleMapper capsuleMapper;
 
     /**
@@ -44,13 +44,13 @@ public class CapsuleService {
         CoordinateRangeRequestDto dto,
         CapsuleType capsuleType
     ) {
-        Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
+        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(), dto.longitude());
 
-        Polygon mbr = geoTransformer.getDistanceMBROf3857(point, dto.distance());
+        Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
         return NearbyCapsuleResponse.from(
-            capsuleQueryRepository.findCapsuleByCurrentLocationAndCapsuleType(memberId, mbr,
-                    capsuleType)
+            capsuleQueryRepository.findCapsuleSummaryDtoListByCurrentLocationAndCapsuleType(
+                    memberId, mbr, capsuleType)
                 .stream()
                 .map(capsuleMapper::capsuleSummaryDtoToResponse)
                 .toList()
@@ -64,8 +64,8 @@ public class CapsuleService {
      * @param longitude 경도
      * @return 위도와 경도 데이터로 카카오 맵 주소룰 번환하다.
      */
-    public AddressData getFullAddressByCoordinate(double latitude, double longitude) {
-        Address address = mapApiService.reverseGeoCoding(longitude, latitude);
+    public AddressData findFullAddressByCoordinate(double latitude, double longitude) {
+        Address address = mapApiManager.reverseGeoCoding(longitude, latitude);
 
         return capsuleMapper.addressEntityToData(address);
     }

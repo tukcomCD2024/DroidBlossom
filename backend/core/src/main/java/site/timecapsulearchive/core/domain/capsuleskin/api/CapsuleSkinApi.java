@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSummaryResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface CapsuleSkinApi {
@@ -51,7 +51,7 @@ public interface CapsuleSkinApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> getCapsuleSkins(
+    ResponseEntity<ApiSpec<CapsuleSkinsSliceResponse>> getCapsuleSkins(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)

@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -32,7 +32,7 @@ public interface SecretCapsuleApi {
             description = "처리 완료"
         )
     })
-    ResponseEntity<ApiSpec<MySecretCapsulePageResponse>> getMySecretCapsules(
+    ResponseEntity<ApiSpec<MySecretCapsuleSliceResponse>> getMySecretCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)

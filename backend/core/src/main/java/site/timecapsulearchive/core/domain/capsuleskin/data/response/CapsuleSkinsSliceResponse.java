@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(description = "캡슐 스킨 페이징")
-public record CapsuleSkinsPageResponse(
+public record CapsuleSkinsSliceResponse(
 
     @Schema(description = "캡슐 스킨 요약 정보 리스트")
     List<CapsuleSkinSummaryResponse> skins,

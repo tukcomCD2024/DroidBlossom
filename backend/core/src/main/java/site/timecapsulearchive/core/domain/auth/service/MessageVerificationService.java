@@ -15,7 +15,7 @@ import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
-import site.timecapsulearchive.core.infra.sms.service.SmsApiService;
+import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
 @Service
 @Transactional
@@ -27,9 +27,9 @@ public class MessageVerificationService {
     private static final int MAX = 10000;
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
-    private final SmsApiService smsApiService;
+    private final SmsApiManager smsApiManager;
     private final MemberService memberService;
-    private final TokenService tokenService;
+    private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
     private final HashEncryptionManager hashEncryptionManager;
@@ -50,7 +50,7 @@ public class MessageVerificationService {
 
         final String message = generateMessage(code, appHashKey);
 
-        final SmsApiResponse apiResponse = smsApiService.sendMessage(receiver, message);
+        final SmsApiResponse apiResponse = smsApiManager.sendMessage(receiver, message);
 
         messageAuthenticationCacheRepository.save(memberId, code);
 
@@ -86,7 +86,7 @@ public class MessageVerificationService {
 
         updateMemberData(memberId, receiver);
 
-        return tokenService.createNewToken(memberId);
+        return tokenManager.createNewToken(memberId);
     }
 
     private boolean isNotMatch(String certificationNumber, String findCertificationNumber) {

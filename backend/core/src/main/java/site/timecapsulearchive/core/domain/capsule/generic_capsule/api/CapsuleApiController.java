@@ -61,7 +61,7 @@ public class CapsuleApiController implements CapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleService.getFullAddressByCoordinate(latitude, longitude)
+                capsuleService.findFullAddressByCoordinate(latitude, longitude)
             )
         );
     }

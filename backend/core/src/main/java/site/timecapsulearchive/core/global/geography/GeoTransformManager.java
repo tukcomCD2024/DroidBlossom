@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GeoTransformer {
+public class GeoTransformManager {
 
     private static final int SRID_3857 = 3857;
     private static final int DISTANCE_MITER_UNIT = 1000;

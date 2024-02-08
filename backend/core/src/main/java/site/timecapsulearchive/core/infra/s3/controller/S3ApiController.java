@@ -14,7 +14,7 @@ import site.timecapsulearchive.core.infra.s3.data.dto.S3PreSignedUrlDto;
 import site.timecapsulearchive.core.infra.s3.data.mapper.S3ApiMapper;
 import site.timecapsulearchive.core.infra.s3.data.request.S3PreSignedUrlRequest;
 import site.timecapsulearchive.core.infra.s3.data.response.S3PreSignedUrlResponse;
-import site.timecapsulearchive.core.infra.s3.service.S3PreSignedUrlManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
 @RequiredArgsConstructor

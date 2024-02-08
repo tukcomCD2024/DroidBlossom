@@ -44,7 +44,7 @@ public class CapsuleQueryRepository {
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
-    public List<CapsuleSummaryDto> findCapsuleByCurrentLocationAndCapsuleType(
+    public List<CapsuleSummaryDto> findCapsuleSummaryDtoListByCurrentLocationAndCapsuleType(
         Long memberId,
         Polygon mbr,
         CapsuleType capsuleType

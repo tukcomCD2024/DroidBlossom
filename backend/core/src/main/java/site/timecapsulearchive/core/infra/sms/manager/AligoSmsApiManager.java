@@ -1,10 +1,10 @@
-package site.timecapsulearchive.core.infra.sms.service;
+package site.timecapsulearchive.core.infra.sms.manager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -13,9 +13,9 @@ import site.timecapsulearchive.core.infra.sms.config.AligoSmsProperties;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class AligoSmsApiService implements SmsApiService {
+public class AligoSmsApiManager implements SmsApiManager {
 
     private static final String SEND_URL = "https://apis.aligo.in/send/";
     private static final Integer SUCCESS_STATUS = 1;

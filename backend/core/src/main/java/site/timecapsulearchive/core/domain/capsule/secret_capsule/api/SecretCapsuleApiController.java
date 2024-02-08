@@ -18,7 +18,7 @@ import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.service.SecretCapsuleService;
@@ -35,7 +35,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     @GetMapping(value = "/capsules", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<MySecretCapsulePageResponse>> getMySecretCapsules(
+    public ResponseEntity<ApiSpec<MySecretCapsuleSliceResponse>> getMySecretCapsules(
         @AuthenticationPrincipal Long memberId,
         @RequestParam(defaultValue = "20", value = "size") int size,
         @RequestParam(defaultValue = "0", value = "createdAt") ZonedDateTime createdAt
@@ -43,7 +43,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                secretCapsuleService.findSecretCapsuleListByMemberId(
+                secretCapsuleService.findSecretCapsuleSliceByMemberId(
                     memberId,
                     size,
                     createdAt
@@ -89,7 +89,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody SecretCapsuleCreateRequest request
     ) {
-        secretCapsuleService.createCapsule(
+        secretCapsuleService.saveCapsule(
             memberId,
             capsuleMapper.secretCapsuleCreateRequestToDto(request)
         );

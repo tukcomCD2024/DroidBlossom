@@ -1,8 +1,8 @@
-package site.timecapsulearchive.core.infra.map.service;
+package site.timecapsulearchive.core.infra.map.manager;
 
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 
-public interface MapApiService {
+public interface MapApiManager {
 
     /**
      * 경도와 위도를 받아서 주소를 반환한다.

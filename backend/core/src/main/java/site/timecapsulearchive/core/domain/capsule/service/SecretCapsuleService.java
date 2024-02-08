@@ -17,17 +17,17 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySec
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
-import site.timecapsulearchive.core.global.geography.GeoTransformer;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.data.dto.S3PreSignedUrlDto;
 import site.timecapsulearchive.core.infra.s3.data.request.S3PreSignedUrlRequestDto;
-import site.timecapsulearchive.core.infra.s3.service.S3PreSignedUrlManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class SecretCapsuleService {
     private final MemberService memberService;
     private final ImageService imageService;
     private final VideoService videoService;
-    private final GeoTransformer geoTransformer;
+    private final GeoTransformManager geoTransformManager;
     private final CapsuleMapper capsuleMapper;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
@@ -49,14 +49,14 @@ public class SecretCapsuleService {
      * @param memberId 캡슐을 생성할 멤버 아이디
      * @param dto      캡슐 생성 요청 포맷
      */
-    public void createCapsule(Long memberId, SecretCapsuleCreateRequestDto dto) {
+    public void saveCapsule(Long memberId, SecretCapsuleCreateRequestDto dto) {
         Member findMember = memberService.findMemberByMemberId(memberId);
 
         CapsuleSkin capsuleSkin = capsuleSkinRepository
             .findById(dto.capsuleSkinId())
             .orElseThrow(CapsuleSkinNotFoundException::new);
 
-        Point point = geoTransformer.changePoint4326To3857(dto.latitude(), dto.longitude());
+        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(), dto.longitude());
 
         Capsule capsule = capsuleMapper.requestDtoToEntity(
             dto, point,
@@ -116,7 +116,7 @@ public class SecretCapsuleService {
      * @param createdAt 마지막 캡슐 생성 날짜
      * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
-    public MySecretCapsulePageResponse findSecretCapsuleListByMemberId(
+    public MySecretCapsuleSliceResponse findSecretCapsuleSliceByMemberId(
         Long memberId,
         int size,
         ZonedDateTime createdAt

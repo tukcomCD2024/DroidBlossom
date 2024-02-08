@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.infra.s3.service;
+package site.timecapsulearchive.core.infra.s3.manager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

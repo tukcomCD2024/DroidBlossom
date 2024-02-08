@@ -6,7 +6,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
-import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
 
 @Service
@@ -16,7 +16,7 @@ public class CapsuleSkinService {
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
     private final CapsuleSkinMapper capsuleSkinMapper;
 
-    public CapsuleSkinsPageResponse findCapsuleSkinSliceByCreatedAtAndMemberId(
+    public CapsuleSkinsSliceResponse findCapsuleSkinSliceByCreatedAtAndMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

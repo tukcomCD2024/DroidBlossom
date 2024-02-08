@@ -21,7 +21,7 @@ import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResp
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
-import site.timecapsulearchive.core.domain.auth.service.TokenService;
+import site.timecapsulearchive.core.domain.auth.service.TokenManager;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -35,7 +35,7 @@ public class AuthApiController implements AuthApi {
     private static final String KAKAO_AUTHORIZATION_ENDPOINT = "/auth/login/kakao";
     private static final String GOOGLE_AUTHORIZATION_ENDPOINT = "/auth/login/google";
 
-    private final TokenService tokenService;
+    private final TokenManager tokenService;
     private final MessageVerificationService messageVerificationService;
     private final MemberService memberService;
     private final MemberMapper memberMapper;

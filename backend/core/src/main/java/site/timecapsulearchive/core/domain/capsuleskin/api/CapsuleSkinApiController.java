@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSummaryResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.service.CapsuleSkinService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -40,7 +40,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     @GetMapping(produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> getCapsuleSkins(
+    public ResponseEntity<ApiSpec<CapsuleSkinsSliceResponse>> getCapsuleSkins(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "size", defaultValue = "20") final int size,
         @RequestParam(value = "createdAt") final ZonedDateTime createdAt

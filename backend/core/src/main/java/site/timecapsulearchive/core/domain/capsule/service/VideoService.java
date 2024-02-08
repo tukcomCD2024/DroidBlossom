@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
-import site.timecapsulearchive.core.infra.s3.service.S3UrlGenerator;
+import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Service
 @RequiredArgsConstructor

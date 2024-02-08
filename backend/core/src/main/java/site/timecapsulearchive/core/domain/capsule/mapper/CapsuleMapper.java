@@ -17,13 +17,13 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.Secre
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.global.geography.GeoTransformer;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class CapsuleMapper {
 
     private static final ZoneId ASIA_SEOUL = ZoneId.of("Asia/Seoul");
 
-    private final GeoTransformer geoTransformer;
+    private final GeoTransformManager geoTransformManager;
 
     public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
         SecretCapsuleCreateRequest request) {
@@ -82,7 +82,7 @@ public class CapsuleMapper {
     }
 
     public CapsuleSummaryResponse capsuleSummaryDtoToResponse(CapsuleSummaryDto dto) {
-        Point point = geoTransformer.changePoint3857To4326(dto.point());
+        Point point = geoTransformManager.changePoint3857To4326(dto.point());
 
         return CapsuleSummaryResponse.builder()
             .id(dto.id())
@@ -152,14 +152,14 @@ public class CapsuleMapper {
             .build();
     }
 
-    public MySecretCapsulePageResponse capsuleDetailSliceToResponse(
+    public MySecretCapsuleSliceResponse capsuleDetailSliceToResponse(
         List<MySecreteCapsuleDto> content,
         boolean hasNext) {
         List<MySecreteCapsuleResponse> responses = content.stream()
             .map(this::mySecreteCapsuleDtoToResponse)
             .toList();
 
-        return new MySecretCapsulePageResponse(
+        return new MySecretCapsuleSliceResponse(
             responses,
             hasNext
         );

@@ -1,9 +1,9 @@
-package site.timecapsulearchive.core.infra.sms.service;
+package site.timecapsulearchive.core.infra.sms.manager;
 
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
-public interface SmsApiService {
+public interface SmsApiManager {
 
     /**
      * 수신자와 메시지를 받아서 Sms Api에 요청을 보낸다. 실제 문자 도착에는 지연이 발생할 수 있다.

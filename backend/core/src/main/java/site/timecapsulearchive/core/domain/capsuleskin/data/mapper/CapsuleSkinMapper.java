@@ -4,12 +4,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSummaryResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 
 @Component
 public class CapsuleSkinMapper {
 
-    public CapsuleSkinsPageResponse capsuleSkinSliceToResponse(
+    public CapsuleSkinsSliceResponse capsuleSkinSliceToResponse(
         List<CapsuleSkinSummaryDto> content,
         boolean hasNext
     ) {
@@ -18,7 +18,7 @@ public class CapsuleSkinMapper {
             .map(this::getCapsuleSkinSummaryResponse)
             .toList();
 
-        return new CapsuleSkinsPageResponse(responses, hasNext);
+        return new CapsuleSkinsSliceResponse(responses, hasNext);
     }
 
     private CapsuleSkinSummaryResponse getCapsuleSkinSummaryResponse(CapsuleSkinSummaryDto skin) {
