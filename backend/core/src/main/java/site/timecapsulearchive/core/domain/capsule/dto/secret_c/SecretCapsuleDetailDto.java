@@ -16,8 +16,8 @@ public record SecretCapsuleDetailDto(
     String address,
     String title,
     String content,
-    List<String> images,
-    List<String> videos,
+    String images,
+    String videos,
     Boolean isOpened,
     CapsuleType capsuleType
 ) {
