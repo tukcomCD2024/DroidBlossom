@@ -37,7 +37,7 @@ public class ApiLimitCheckInterceptor implements HandlerInterceptor {
             .getAuthentication()
             .getPrincipal();
 
-        Integer apiUsageCount = apiUsageCacheRepository.getSmsApiUsage(memberId)
+        Integer apiUsageCount = apiUsageCacheRepository.findSmsApiUsageByMemberId(memberId)
             .orElse(NO_USAGE);
 
         if (apiUsageCount > apiLimitProperties.smsLimit()) {

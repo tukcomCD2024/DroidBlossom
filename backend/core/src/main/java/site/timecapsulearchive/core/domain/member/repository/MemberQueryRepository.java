@@ -46,7 +46,7 @@ public class MemberQueryRepository {
         );
     }
 
-    public Optional<MemberDetailResponseDto> findMemberDetailById(Long memberId) {
+    public Optional<MemberDetailResponseDto> findMemberDetailResponseDtoById(Long memberId) {
         return Optional.ofNullable(
             query
                 .select(

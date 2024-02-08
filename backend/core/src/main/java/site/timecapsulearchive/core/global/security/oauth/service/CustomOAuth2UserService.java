@@ -62,7 +62,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
     private Member getMember(OAuthAttributes attributes, SocialType socialType) {
-        return memberRepository.findByAuthIdAndSocialType(
+        return memberRepository.findMemberByAuthIdAndSocialType(
                 attributes.getAuthId(),
                 socialType
             )

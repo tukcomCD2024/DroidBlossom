@@ -77,7 +77,8 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
-        String findCertificationNumber = messageAuthenticationCacheRepository.get(memberId)
+        String findCertificationNumber = messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
+                memberId)
             .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {

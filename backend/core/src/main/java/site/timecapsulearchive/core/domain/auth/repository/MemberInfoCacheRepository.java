@@ -40,7 +40,7 @@ public class MemberInfoCacheRepository {
      * @param infoKey 캐시에 저장된 키, UUID string
      * @return {@code Optional<MemberInfo>} 사용자 정보
      */
-    public Optional<MemberInfo> getMemberInfo(final String infoKey) {
+    public Optional<MemberInfo> findMemberInfoByInfoKey(final String infoKey) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + infoKey));
     }
 

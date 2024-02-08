@@ -138,7 +138,7 @@ public class SecretCapsuleService {
         Long memberId,
         Long capsuleId
     ) {
-        return capsuleQueryRepository.findSecretCapsuleSummaryByMemberIdAndCapsuleId(memberId,
+        return capsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
     }
@@ -154,7 +154,7 @@ public class SecretCapsuleService {
         Long memberId,
         Long capsuleId
     ) {
-        SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailByMemberIdAndCapsuleId(
+        SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);

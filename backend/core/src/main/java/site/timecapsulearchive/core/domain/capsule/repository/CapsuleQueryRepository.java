@@ -23,7 +23,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
@@ -34,7 +33,6 @@ public class CapsuleQueryRepository {
 
     private final EntityManager entityManager;
     private final JPAQueryFactory jpaQueryFactory;
-    private final CapsuleMapper capsuleMapper;
 
     /**
      * 캡슐 타입에 따라 현재 위치에서 범위 내의 캡슐을 조회한다.
@@ -44,7 +42,7 @@ public class CapsuleQueryRepository {
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
-    public List<CapsuleSummaryDto> findCapsuleSummaryDtoListByCurrentLocationAndCapsuleType(
+    public List<CapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         Long memberId,
         Polygon mbr,
         CapsuleType capsuleType
@@ -61,7 +59,7 @@ public class CapsuleQueryRepository {
         CapsuleType capsuleType
     ) {
         String queryString = """
-            select new site.timecapsulearchive.core.domain.capsule.data.CapsuleSummaryDto(
+            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto(
                 c.id,
                 c.point,
                 m.nickname,
@@ -98,7 +96,7 @@ public class CapsuleQueryRepository {
         }
     }
 
-    public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryByMemberIdAndCapsuleId(
+    public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
         Long memberId,
         Long capsuleId
     ) {
@@ -125,7 +123,7 @@ public class CapsuleQueryRepository {
         );
     }
 
-    public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailByMemberIdAndCapsuleId(
+    public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
         Long memberId,
         Long capsuleId
     ) {
@@ -172,7 +170,7 @@ public class CapsuleQueryRepository {
         int size,
         ZonedDateTime createdAt
     ) {
-        List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsulesByMemberIdAndCreatedAt(
+        List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsuleDtosByMemberIdAndCreatedAt(
             memberId, size, createdAt
         );
 
@@ -184,7 +182,7 @@ public class CapsuleQueryRepository {
         return new SliceImpl<>(mySecretCapsules, Pageable.ofSize(size), hasNext);
     }
 
-    private List<MySecreteCapsuleDto> findMySecretCapsulesByMemberIdAndCreatedAt(
+    private List<MySecreteCapsuleDto> findMySecretCapsuleDtosByMemberIdAndCreatedAt(
         Long memberId,
         int size,
         ZonedDateTime createdAt

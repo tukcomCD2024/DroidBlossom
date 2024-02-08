@@ -63,7 +63,7 @@ public class MemberService {
     }
 
     public Member findMemberByMemberId(Long memberId) {
-        return memberRepository.findById(memberId)
+        return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
 
@@ -122,7 +122,8 @@ public class MemberService {
     }
 
     public MemberDetailResponse findMemberDetailById(Long memberId) {
-        MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailById(memberId)
+        MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailResponseDtoById(
+                memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());

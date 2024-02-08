@@ -49,7 +49,7 @@ public class CapsuleService {
         Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
         return NearbyCapsuleResponse.from(
-            capsuleQueryRepository.findCapsuleSummaryDtoListByCurrentLocationAndCapsuleType(
+            capsuleQueryRepository.findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
                     memberId, mbr, capsuleType)
                 .stream()
                 .map(capsuleMapper::capsuleSummaryDtoToResponse)

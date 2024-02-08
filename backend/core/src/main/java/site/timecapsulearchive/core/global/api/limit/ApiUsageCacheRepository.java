@@ -17,7 +17,7 @@ public class ApiUsageCacheRepository {
 
     private final StringRedisTemplate redisTemplate;
 
-    public Optional<Integer> getSmsApiUsage(Long memberId) {
+    public Optional<Integer> findSmsApiUsageByMemberId(Long memberId) {
         String result = (String) redisTemplate.opsForHash().get(PREFIX + memberId, SMS_API_USAGE);
 
         if (result == null) {

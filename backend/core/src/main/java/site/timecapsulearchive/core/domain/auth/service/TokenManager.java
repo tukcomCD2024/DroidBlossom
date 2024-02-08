@@ -66,7 +66,8 @@ public class TokenManager {
             refreshToken,
             List.of(TokenType.REFRESH)
         );
-        MemberInfo memberInfo = memberInfoCacheRepository.getMemberInfo(tokenParseResult.subject())
+        MemberInfo memberInfo = memberInfoCacheRepository.findMemberInfoByInfoKey(
+                tokenParseResult.subject())
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
         String newKey = String.valueOf(UUID.randomUUID());

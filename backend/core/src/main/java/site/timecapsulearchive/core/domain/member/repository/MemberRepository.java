@@ -7,9 +7,9 @@ import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 public interface MemberRepository extends Repository<Member, Long> {
 
-    Optional<Member> findByAuthIdAndSocialType(String authId, SocialType socialType);
+    Optional<Member> findMemberByAuthIdAndSocialType(String authId, SocialType socialType);
 
     Member save(Member createMember);
 
-    Optional<Member> findById(Long memberId);
+    Optional<Member> findMemberById(Long memberId);
 }
