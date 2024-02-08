@@ -8,8 +8,8 @@ public record S3PreSignedUrlDto(
 ) {
 
     public static S3PreSignedUrlDto from(
-        List<String> preSignedImageUrls,
-        List<String> preSignedVideoUrls
+        final List<String> preSignedImageUrls,
+        final List<String> preSignedVideoUrls
     ) {
         return new S3PreSignedUrlDto(preSignedImageUrls, preSignedVideoUrls);
     }

@@ -18,8 +18,9 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, MemberInfo> memberInfoRedisTemplate(
-        RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, MemberInfo> template = new RedisTemplate<>();
+        final RedisConnectionFactory connectionFactory
+    ) {
+        final RedisTemplate<String, MemberInfo> template = new RedisTemplate<>();
 
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new Jackson2JsonRedisSerializer<>(MemberInfo.class));
@@ -32,7 +33,8 @@ public class RedisConfig {
 
     @Bean
     public PlatformTransactionManager transactionManager(
-        EntityManagerFactory entityManagerFactory) {
+        final EntityManagerFactory entityManagerFactory
+    ) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 }

@@ -18,11 +18,11 @@ public class VideoQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void bulkSave(List<Video> videos) {
+    public void bulkSave(final List<Video> videos) {
         batchInsert(videos);
     }
 
-    private void batchInsert(List<Video> videos) {
+    private void batchInsert(final List<Video> videos) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO video (
@@ -32,8 +32,8 @@ public class VideoQueryRepository {
             new BatchPreparedStatementSetter() {
 
                 @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    Video video = videos.get(i);
+                public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                    final Video video = videos.get(i);
                     ps.setNull(1, Types.BIGINT);
                     ps.setString(2, video.getVideoUrl());
                     ps.setLong(3, video.getMember().getId());

@@ -17,8 +17,9 @@ public class ApiUsageCacheRepository {
 
     private final StringRedisTemplate redisTemplate;
 
-    public Optional<Integer> findSmsApiUsageByMemberId(Long memberId) {
-        String result = (String) redisTemplate.opsForHash().get(PREFIX + memberId, SMS_API_USAGE);
+    public Optional<Integer> findSmsApiUsageByMemberId(final Long memberId) {
+        final String result = (String) redisTemplate.opsForHash()
+            .get(PREFIX + memberId, SMS_API_USAGE);
 
         if (result == null) {
             return Optional.empty();
@@ -27,12 +28,12 @@ public class ApiUsageCacheRepository {
         return Optional.of(Integer.parseInt(result));
     }
 
-    public void increaseSmsApiUsage(Long memberId) {
+    public void increaseSmsApiUsage(final Long memberId) {
         redisTemplate.opsForHash().increment(PREFIX + memberId, SMS_API_USAGE, 1);
     }
 
-    public void saveAsFirstRequest(Long memberId) {
-        String key = PREFIX + memberId;
+    public void saveAsFirstRequest(final Long memberId) {
+        final String key = PREFIX + memberId;
 
         redisTemplate.opsForHash().put(key, SMS_API_USAGE, FIRST_REQUEST);
 

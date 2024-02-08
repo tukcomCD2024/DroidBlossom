@@ -49,16 +49,17 @@ public class SecretCapsuleService {
      * @param memberId 캡슐을 생성할 멤버 아이디
      * @param dto      캡슐 생성 요청 포맷
      */
-    public void saveCapsule(Long memberId, SecretCapsuleCreateRequestDto dto) {
-        Member findMember = memberService.findMemberByMemberId(memberId);
+    public void saveCapsule(final Long memberId, final SecretCapsuleCreateRequestDto dto) {
+        final Member findMember = memberService.findMemberByMemberId(memberId);
 
-        CapsuleSkin capsuleSkin = capsuleSkinRepository
+        final CapsuleSkin capsuleSkin = capsuleSkinRepository
             .findById(dto.capsuleSkinId())
             .orElseThrow(CapsuleSkinNotFoundException::new);
 
-        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(), dto.longitude());
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
 
-        Capsule capsule = capsuleMapper.requestDtoToEntity(
+        final Capsule capsule = capsuleMapper.requestDtoToEntity(
             dto, point,
             findMember,
             capsuleSkin
@@ -74,11 +75,15 @@ public class SecretCapsuleService {
         saveVideo(dto, capsule, findMember);
     }
 
-    private boolean isNotTimeCapsule(Capsule capsule) {
+    private boolean isNotTimeCapsule(final Capsule capsule) {
         return capsule.getDueDate() == null;
     }
 
-    private void saveImage(SecretCapsuleCreateRequestDto dto, Capsule capsule, Member findMember) {
+    private void saveImage(
+        final SecretCapsuleCreateRequestDto dto,
+        final Capsule capsule,
+        final Member findMember
+    ) {
         if (isImagesNotEmpty(dto)) {
             imageService.saveImage(MediaSaveDto.of(
                 capsule,
@@ -89,11 +94,15 @@ public class SecretCapsuleService {
         }
     }
 
-    private boolean isImagesNotEmpty(SecretCapsuleCreateRequestDto dto) {
+    private boolean isImagesNotEmpty(final SecretCapsuleCreateRequestDto dto) {
         return dto.imageNames() != null && !dto.imageNames().isEmpty();
     }
 
-    private void saveVideo(SecretCapsuleCreateRequestDto dto, Capsule capsule, Member findMember) {
+    private void saveVideo(
+        final SecretCapsuleCreateRequestDto dto,
+        final Capsule capsule,
+        final Member findMember
+    ) {
         if (isVideosNotEmpty(dto)) {
             videoService.saveVideo(MediaSaveDto.of(
                 capsule,
@@ -104,7 +113,7 @@ public class SecretCapsuleService {
         }
     }
 
-    private boolean isVideosNotEmpty(SecretCapsuleCreateRequestDto dto) {
+    private boolean isVideosNotEmpty(final SecretCapsuleCreateRequestDto dto) {
         return dto.videoNames() != null && !dto.videoNames().isEmpty();
     }
 
@@ -117,11 +126,11 @@ public class SecretCapsuleService {
      * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
     public MySecretCapsuleSliceResponse findSecretCapsuleSliceByMemberId(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
-        Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
+        final Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
         return capsuleMapper.capsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
@@ -135,8 +144,8 @@ public class SecretCapsuleService {
      * @return 캡슐 요약 정보
      */
     public SecretCapsuleSummaryDto findSecretCapsuleSummaryById(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
         return capsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(memberId,
                 capsuleId)
@@ -151,10 +160,10 @@ public class SecretCapsuleService {
      * @return 캡슐 상세 정보
      */
     public SecretCapsuleDetailResponse findSecretCapsuleDetailById(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
-        SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
@@ -163,7 +172,7 @@ public class SecretCapsuleService {
             return capsuleMapper.notOpenedSecretCapsuleDetailDtoToResponse(dto);
         }
 
-        S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
+        final S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
             S3PreSignedUrlRequestDto.forGet(
                 List.of(dto.images().split(",")),
                 List.of(dto.videos().split(","))
@@ -177,7 +186,7 @@ public class SecretCapsuleService {
         );
     }
 
-    private boolean capsuleNotOpened(SecretCapsuleDetailDto dto) {
+    private boolean capsuleNotOpened(final SecretCapsuleDetailDto dto) {
         if (dto.dueDate() == null) {
             return false;
         }

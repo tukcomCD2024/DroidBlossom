@@ -36,9 +36,9 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @GetMapping(value = "/capsules", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<MySecretCapsuleSliceResponse>> getMySecretCapsules(
-        @AuthenticationPrincipal Long memberId,
-        @RequestParam(defaultValue = "20", value = "size") int size,
-        @RequestParam(defaultValue = "0", value = "createdAt") ZonedDateTime createdAt
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(defaultValue = "0", value = "createdAt") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -55,8 +55,8 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @GetMapping(value = "/capsules/{capsule_id}/detail", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
-        @AuthenticationPrincipal Long memberId,
-        @PathVariable("capsule_id") Long capsuleId
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -69,10 +69,11 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @GetMapping(value = "/capsules/{capsule_id}/summary", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
-        @AuthenticationPrincipal Long memberId,
-        @PathVariable("capsule_id") Long capsuleId
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
     ) {
-        SecretCapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(memberId,
+        final SecretCapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(
+            memberId,
             capsuleId);
 
         return ResponseEntity.ok(
@@ -86,8 +87,8 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @PostMapping(value = "/capsules", consumes = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        @AuthenticationPrincipal Long memberId,
-        @Valid @RequestBody SecretCapsuleCreateRequest request
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final SecretCapsuleCreateRequest request
     ) {
         secretCapsuleService.saveCapsule(
             memberId,
@@ -104,9 +105,9 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @PatchMapping(value = "/capsules/{capsule_id}", consumes = {"multipart/form-data"})
     @Override
     public ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
-        @AuthenticationPrincipal Long memberId,
-        @ModelAttribute SecretCapsuleUpdateRequest request,
-        @PathVariable("capsule_id") Long capsuleId
+        @AuthenticationPrincipal final Long memberId,
+        @ModelAttribute final SecretCapsuleUpdateRequest request,
+        @PathVariable("capsule_id") final Long capsuleId
     ) {
         return null;
     }

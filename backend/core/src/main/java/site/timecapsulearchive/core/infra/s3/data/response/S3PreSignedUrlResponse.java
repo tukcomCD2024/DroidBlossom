@@ -14,8 +14,8 @@ public record S3PreSignedUrlResponse(
 ) {
 
     public static S3PreSignedUrlResponse from(
-        List<String> preSignedImageUrls,
-        List<String> preSignedVideoUrls
+        final List<String> preSignedImageUrls,
+        final List<String> preSignedVideoUrls
     ) {
         return new S3PreSignedUrlResponse(preSignedImageUrls, preSignedVideoUrls);
     }

@@ -10,23 +10,10 @@ public class S3UrlGenerator {
 
     private final S3Properties s3Properties;
 
-    public String generateS3UrlFormat(
-        Long memberId,
-        String directory,
-        String fileName
-    ) {
-        return "https://"
-            + s3Properties.bucket()
-            + ".s3."
-            + s3Properties.region()
-            + ".amazonaws.com/"
-            + generateFileName(memberId, directory, fileName);
-    }
-
     public String generateFileName(
-        Long memberId,
-        String directory,
-        String fileName
+        final Long memberId,
+        final String directory,
+        final String fileName
     ) {
         return directory + "/" + memberId + "/" + fileName;
     }

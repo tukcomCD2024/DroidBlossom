@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.infra.map.data.dto.RoadAddressDto;
 @Component
 public class AddressMapper {
 
-    public Address roadAddressToAddress(RoadAddressDto dto) {
+    public Address roadAddressToAddress(final RoadAddressDto dto) {
         return Address.builder()
             .fullRoadAddressName(dto.addressName())
             .province(dto.region1depthName())
@@ -22,7 +22,7 @@ public class AddressMapper {
             .build();
     }
 
-    public Address addressDtoToAddress(AddressDto dto) {
+    public Address addressDtoToAddress(final AddressDto dto) {
         return Address.builder()
             .fullRoadAddressName(dto.addressName())
             .province(dto.region1depthName())

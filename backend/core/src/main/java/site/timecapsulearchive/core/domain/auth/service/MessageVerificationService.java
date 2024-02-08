@@ -77,7 +77,7 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
-        String findCertificationNumber = messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
+        final String findCertificationNumber = messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
                 memberId)
             .orElseThrow(CertificationNumberNotFoundException::new);
 
@@ -90,14 +90,15 @@ public class MessageVerificationService {
         return tokenManager.createNewToken(memberId);
     }
 
-    private boolean isNotMatch(String certificationNumber, String findCertificationNumber) {
+    private boolean isNotMatch(final String certificationNumber,
+        final String findCertificationNumber) {
         return !certificationNumber.equals(findCertificationNumber);
     }
 
-    private void updateMemberData(Long memberId, String receiver) {
-        Member findMember = memberService.findMemberByMemberId(memberId);
+    private void updateMemberData(final Long memberId, final String receiver) {
+        final Member findMember = memberService.findMemberByMemberId(memberId);
 
-        byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
 
         findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
         findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));

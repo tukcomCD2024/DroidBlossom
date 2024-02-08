@@ -27,7 +27,7 @@ public class TokenManager {
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
     public TokenResponse createNewToken(final Long memberId) {
-        String key = String.valueOf(UUID.randomUUID());
+        final String key = String.valueOf(UUID.randomUUID());
         memberInfoCacheRepository.save(key, MemberInfo.from(memberId));
 
         return createTokenResponse(memberId, key);
@@ -62,15 +62,15 @@ public class TokenManager {
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
     public TokenResponse reIssueToken(final String refreshToken) {
-        TokenParseResult tokenParseResult = jwtFactory.parse(
+        final TokenParseResult tokenParseResult = jwtFactory.parse(
             refreshToken,
             List.of(TokenType.REFRESH)
         );
-        MemberInfo memberInfo = memberInfoCacheRepository.findMemberInfoByInfoKey(
+        final MemberInfo memberInfo = memberInfoCacheRepository.findMemberInfoByInfoKey(
                 tokenParseResult.subject())
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
-        String newKey = String.valueOf(UUID.randomUUID());
+        final String newKey = String.valueOf(UUID.randomUUID());
         memberInfoCacheRepository.rename(tokenParseResult.subject(), newKey);
 
         return createTokenResponse(memberInfo.memberId(), newKey);

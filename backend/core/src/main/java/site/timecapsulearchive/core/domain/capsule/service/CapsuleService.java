@@ -40,13 +40,14 @@ public class CapsuleService {
      * {@code dto.distance()} 안에 캡슐 목록을 조회한다. 응답 좌표는 SRID 4326이다.
      */
     public NearbyCapsuleResponse findCapsuleByCurrentLocationAndCapsuleType(
-        Long memberId,
-        CoordinateRangeRequestDto dto,
-        CapsuleType capsuleType
+        final Long memberId,
+        final CoordinateRangeRequestDto dto,
+        final CapsuleType capsuleType
     ) {
-        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(), dto.longitude());
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
 
-        Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
+        final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
         return NearbyCapsuleResponse.from(
             capsuleQueryRepository.findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
@@ -64,16 +65,16 @@ public class CapsuleService {
      * @param longitude 경도
      * @return 위도와 경도 데이터로 카카오 맵 주소룰 번환하다.
      */
-    public AddressData findFullAddressByCoordinate(double latitude, double longitude) {
-        Address address = mapApiManager.reverseGeoCoding(longitude, latitude);
+    public AddressData findFullAddressByCoordinate(final double latitude, final double longitude) {
+        final Address address = mapApiManager.reverseGeoCoding(longitude, latitude);
 
         return capsuleMapper.addressEntityToData(address);
     }
 
 
     @Transactional
-    public CapsuleOpenedResponse updateCapsuleOpened(Long memberId, Long capsuleId) {
-        Capsule findCapsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(
+    public CapsuleOpenedResponse updateCapsuleOpened(final Long memberId, final Long capsuleId) {
+        final Capsule findCapsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(
             memberId,
             capsuleId
         ).orElseThrow(CapsuleNotFondException::new);

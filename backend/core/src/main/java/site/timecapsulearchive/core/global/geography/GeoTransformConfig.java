@@ -19,16 +19,16 @@ public class GeoTransformConfig {
 
     @Bean
     public MathTransform mathTransform4326To3857() throws FactoryException {
-        CoordinateReferenceSystem sourceCrs = CRS.decode(EPSG_4326);
-        CoordinateReferenceSystem targetCrs = CRS.decode(EPSG_3857);
+        final CoordinateReferenceSystem sourceCrs = CRS.decode(EPSG_4326);
+        final CoordinateReferenceSystem targetCrs = CRS.decode(EPSG_3857);
 
         return CRS.findMathTransform(sourceCrs, targetCrs, true);
     }
 
     @Bean
     public MathTransform mathTransform3857To4326() throws FactoryException {
-        CoordinateReferenceSystem sourceCrs = CRS.decode(EPSG_3857);
-        CoordinateReferenceSystem targetCrs = CRS.decode(EPSG_4326);
+        final CoordinateReferenceSystem sourceCrs = CRS.decode(EPSG_3857);
+        final CoordinateReferenceSystem targetCrs = CRS.decode(EPSG_4326);
 
         return CRS.findMathTransform(sourceCrs, targetCrs, true);
     }

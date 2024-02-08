@@ -17,9 +17,9 @@ public class OAuthDsl extends AbstractHttpConfigurer<OAuthDsl, HttpSecurity> {
     private final AuthenticationFailureHandler oauth2LoginFailureHandler;
 
     public static OAuthDsl oauthDsl(
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> customOauth2UserService,
-        AuthenticationSuccessHandler oAuth2LoginSuccessHandler,
-        AuthenticationFailureHandler oauth2LoginFailureHandler
+        final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOauth2UserService,
+        final AuthenticationSuccessHandler oAuth2LoginSuccessHandler,
+        final AuthenticationFailureHandler oauth2LoginFailureHandler
     ) {
         return new OAuthDsl(
             customOauth2UserService,
@@ -29,7 +29,7 @@ public class OAuthDsl extends AbstractHttpConfigurer<OAuthDsl, HttpSecurity> {
     }
 
     @Override
-    public void init(HttpSecurity http) throws Exception {
+    public void init(final HttpSecurity http) throws Exception {
         http.oauth2Login(oauth2login -> oauth2login
             .userInfoEndpoint(
                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(

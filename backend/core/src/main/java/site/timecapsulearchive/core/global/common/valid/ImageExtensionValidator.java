@@ -10,7 +10,7 @@ public class ImageExtensionValidator implements ConstraintValidator<Image, Strin
     private static final String AVAILABLE_IMAGE_EXTENSION_REGEX = "^\\S+\\.jpeg$";
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
         if (value == null || value.isBlank()) {
             return false;
         }

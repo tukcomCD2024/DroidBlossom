@@ -31,15 +31,15 @@ public class GeoTransformManager {
      * @return Point 변환된 SRID 3857 Point 객체
      * @throws GeoTransformException 잘못된 값의 범위로 인해 오류가 발생할 수 있다.
      */
-    public Point changePoint4326To3857(double latitude, double longitude) {
-        Point point = geometryFactoryOf4326.createPoint(new Coordinate(latitude, longitude));
+    public Point changePoint4326To3857(final double latitude, final double longitude) {
+        final Point point = geometryFactoryOf4326.createPoint(new Coordinate(latitude, longitude));
 
         try {
-            Point transPoint = (Point) JTS.transform(point, mathTransform4326To3857);
+            final Point transPoint = (Point) JTS.transform(point, mathTransform4326To3857);
             transPoint.setSRID(SRID_3857);
 
             return transPoint;
-        } catch (TransformException e) {
+        } catch (final TransformException e) {
             throw new GeoTransformException(e);
         }
     }
@@ -51,16 +51,16 @@ public class GeoTransformManager {
      * @param distance 범위 거리
      * @return Polygon 최소 범위 사각형인 Polygon 객체
      */
-    public Polygon getDistanceMBROf3857(Point point, double distance) {
-        double x = point.getX();
-        double y = point.getY();
+    public Polygon getDistanceMBROf3857(final Point point, final double distance) {
+        final double x = point.getX();
+        final double y = point.getY();
 
-        double minX = x - distance * DISTANCE_MITER_UNIT;
-        double minY = y - distance * DISTANCE_MITER_UNIT;
-        double maxX = x + distance * DISTANCE_MITER_UNIT;
-        double maxY = y + distance * DISTANCE_MITER_UNIT;
+        final double minX = x - distance * DISTANCE_MITER_UNIT;
+        final double minY = y - distance * DISTANCE_MITER_UNIT;
+        final double maxX = x + distance * DISTANCE_MITER_UNIT;
+        final double maxY = y + distance * DISTANCE_MITER_UNIT;
 
-        Polygon polygon = geometryFactoryOf3857.createPolygon(new Coordinate[]{
+        final Polygon polygon = geometryFactoryOf3857.createPolygon(new Coordinate[]{
             new Coordinate(minX, minY),
             new Coordinate(maxX, minY),
             new Coordinate(maxX, maxY),
@@ -79,10 +79,10 @@ public class GeoTransformManager {
      * @return Point SRID 3857 좌표인 Point 객체
      * @throws GeoTransformException 잘못된 값의 범위로 인해 오류가 발생할 수 있다.
      */
-    public Point changePoint3857To4326(Point point) {
+    public Point changePoint3857To4326(final Point point) {
         try {
             return (Point) JTS.transform(point, mathTransform3857To4326);
-        } catch (TransformException e) {
+        } catch (final TransformException e) {
             throw new GeoTransformException(e);
         }
     }

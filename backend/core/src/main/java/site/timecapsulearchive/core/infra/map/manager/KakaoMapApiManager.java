@@ -29,12 +29,12 @@ public class KakaoMapApiManager implements MapApiManager {
     private final RestTemplate restTemplate;
     private final AddressMapper addressMapper;
 
-    public Address reverseGeoCoding(Double longitude, Double latitude) {
-        URI uri = getKakaoMapApiUrl(longitude, latitude);
+    public Address reverseGeoCoding(final Double longitude, final Double latitude) {
+        final URI uri = getKakaoMapApiUrl(longitude, latitude);
 
-        HttpEntity<Void> entity = getHttpEntity();
+        final HttpEntity<Void> entity = getHttpEntity();
 
-        KakaoMapApiResponse response = restTemplate.exchange(
+        final KakaoMapApiResponse response = restTemplate.exchange(
             uri,
             HttpMethod.GET,
             entity,
@@ -45,7 +45,7 @@ public class KakaoMapApiManager implements MapApiManager {
             throw new ExternalApiException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
-        Document document = response.documents().get(0);
+        final Document document = response.documents().get(0);
         if (document.roadAddressDto() == null) {
             return addressMapper.addressDtoToAddress(document.addressDto());
         }
@@ -53,7 +53,7 @@ public class KakaoMapApiManager implements MapApiManager {
         return addressMapper.roadAddressToAddress(document.roadAddressDto());
     }
 
-    private URI getKakaoMapApiUrl(Double longitude, Double latitude) {
+    private URI getKakaoMapApiUrl(final Double longitude, final Double latitude) {
         return UriComponentsBuilder.fromHttpUrl(URL)
             .path(PATH)
             .queryParam(LONGITUDE, longitude)
@@ -62,13 +62,13 @@ public class KakaoMapApiManager implements MapApiManager {
             .toUri();
     }
 
-    private boolean isError(KakaoMapApiResponse response) {
+    private boolean isError(final KakaoMapApiResponse response) {
         return response == null ||
             response.documents() == null;
     }
 
     private HttpEntity<Void> getHttpEntity() {
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, kakaoMapProperties.apiKey());
 
         return new HttpEntity<>(null, headers);

@@ -21,7 +21,7 @@ public class CapsuleSkinService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        Slice<CapsuleSkinSummaryDto> slice = capsuleSkinQueryRepository.findCapsuleSkinSliceByCreatedAtAndMemberId(
+        final Slice<CapsuleSkinSummaryDto> slice = capsuleSkinQueryRepository.findCapsuleSkinSliceByCreatedAtAndMemberId(
             memberId,
             size,
             createdAt

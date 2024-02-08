@@ -28,18 +28,18 @@ public class CapsuleApiController implements CapsuleApi {
 
     @GetMapping(value = "/images", produces = {"application/json"})
     @Override
-    public ResponseEntity<ImagesPageResponse> getImages(Long size, Long capsuleId) {
+    public ResponseEntity<ImagesPageResponse> getImages(final Long size, final Long capsuleId) {
         return null;
     }
 
     @GetMapping(value = "/nearby", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
-        @AuthenticationPrincipal Long memberId,
-        @RequestParam(value = "latitude") double latitude,
-        @RequestParam(value = "longitude") double longitude,
-        @RequestParam(value = "distance") double distance,
-        @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") CapsuleType capsuleType
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance,
+        @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") final CapsuleType capsuleType
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -55,8 +55,8 @@ public class CapsuleApiController implements CapsuleApi {
 
     @GetMapping(value = "/full-address", produces = {"application/json"})
     public ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
-        @RequestParam(value = "latitude") double latitude,
-        @RequestParam(value = "longitude") double longitude
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -69,8 +69,8 @@ public class CapsuleApiController implements CapsuleApi {
     @PatchMapping(value = "/{capsule_id}/opened", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
-        @AuthenticationPrincipal Long memberId,
-        @PathVariable("capsule_id") Long capsuleId
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(

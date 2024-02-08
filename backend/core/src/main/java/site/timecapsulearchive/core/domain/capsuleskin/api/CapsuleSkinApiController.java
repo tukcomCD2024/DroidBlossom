@@ -31,9 +31,9 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     @GetMapping(value = "/search", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkins(
-        @RequestParam(value = "capsule_skin_name") Long capsuleSkinName,
-        @RequestParam(value = "size") Long size,
-        @RequestParam(value = "capsule_skin_id") Long capsuleSkinId
+        @RequestParam(value = "capsule_skin_name") final Long capsuleSkinName,
+        @RequestParam(value = "size") final Long size,
+        @RequestParam(value = "capsule_skin_id") final Long capsuleSkinId
     ) {
         return null;
     }
@@ -60,7 +60,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     @PostMapping(consumes = {"multipart/form-data"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
-        @ModelAttribute CapsuleSkinCreateRequest request
+        @ModelAttribute final CapsuleSkinCreateRequest request
     ) {
         return null;
     }
@@ -68,7 +68,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     @PatchMapping(value = "/{capsule_skin_id}", consumes = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<String>> updateCapsuleSkin(
-        @PathVariable(name = "capsule_skin_id") Long capsuleSkinId
+        @PathVariable(name = "capsule_skin_id") final Long capsuleSkinId
     ) {
         return null;
     }
@@ -76,7 +76,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     @DeleteMapping(value = "/{capsule_skin_id}")
     @Override
     public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(
-        @PathVariable(name = "capsule_skin_id") Long capsuleSkinId
+        @PathVariable(name = "capsule_skin_id") final Long capsuleSkinId
     ) {
         return null;
     }

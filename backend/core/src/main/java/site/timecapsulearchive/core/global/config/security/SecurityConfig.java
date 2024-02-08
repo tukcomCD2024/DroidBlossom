@@ -46,7 +46,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain filterChainWithJwt(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChainWithJwt(final HttpSecurity http) throws Exception {
         http.apply(
             CommonSecurityDsl.commonSecurityDsl()
         );
@@ -92,7 +92,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain filterChainWithOAuth(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChainWithOAuth(final HttpSecurity http) throws Exception {
         http.apply(
             CommonSecurityDsl.commonSecurityDsl()
         );

@@ -118,7 +118,7 @@ public class JwtFactory {
             .build();
     }
 
-    private void validTokenType(List<TokenType> tokenTypes, Claims claims) {
+    private void validTokenType(final List<TokenType> tokenTypes, final Claims claims) {
         TokenType tokenType = TokenType.valueOf(
             claims.get(TOKEN_TYPE_CLAIM_NAME, String.class)
         );

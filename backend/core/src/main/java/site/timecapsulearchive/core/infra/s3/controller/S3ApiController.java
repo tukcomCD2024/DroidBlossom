@@ -34,7 +34,7 @@ public class S3ApiController implements S3Api {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final S3PreSignedUrlRequest request
     ) {
-        S3PreSignedUrlDto dto = s3Service.getS3PreSignedUrlsForPut(
+        final S3PreSignedUrlDto dto = s3Service.getS3PreSignedUrlsForPut(
             memberId,
             mapper.s3PreSignedUrlRequestToDto(request)
         );

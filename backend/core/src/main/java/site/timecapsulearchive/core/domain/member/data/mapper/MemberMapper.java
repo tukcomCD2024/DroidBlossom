@@ -13,9 +13,9 @@ import site.timecapsulearchive.core.global.security.oauth.dto.OAuth2UserInfo;
 public class MemberMapper {
 
     public Member OAuthToEntity(
-        String authId,
-        SocialType socialType,
-        OAuth2UserInfo oAuth2UserInfo
+        final String authId,
+        final SocialType socialType,
+        final OAuth2UserInfo oAuth2UserInfo
     ) {
         return Member.builder()
             .authId(authId)
@@ -25,7 +25,7 @@ public class MemberMapper {
             .build();
     }
 
-    public SignUpRequestDto signUpRequestToDto(SignUpRequest request) {
+    public SignUpRequestDto signUpRequestToDto(final SignUpRequest request) {
         return new SignUpRequestDto(
             request.authId(),
             request.email(),
@@ -34,7 +34,7 @@ public class MemberMapper {
         );
     }
 
-    public Member signUpRequestDtoToEntity(SignUpRequestDto dto) {
+    public Member signUpRequestDtoToEntity(final SignUpRequestDto dto) {
         return Member.builder()
             .authId(dto.authId())
             .email(dto.email())
@@ -44,8 +44,8 @@ public class MemberMapper {
     }
 
     public MemberDetailResponse memberDetailResponseDtoToResponse(
-        MemberDetailResponseDto dto,
-        String decryptedPhone
+        final MemberDetailResponseDto dto,
+        final String decryptedPhone
     ) {
         return new MemberDetailResponse(dto.nickname(), dto.profileUrl(), decryptedPhone);
     }

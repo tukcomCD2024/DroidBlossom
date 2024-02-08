@@ -43,11 +43,11 @@ public class CapsuleQueryRepository {
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
     public List<CapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
-        Long memberId,
-        Polygon mbr,
-        CapsuleType capsuleType
+        final Long memberId,
+        final Polygon mbr,
+        final CapsuleType capsuleType
     ) {
-        TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+        final TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
             capsuleType);
 
         assignParameter(memberId, mbr, capsuleType, query);
@@ -56,7 +56,7 @@ public class CapsuleQueryRepository {
     }
 
     private TypedQuery<CapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
-        CapsuleType capsuleType
+        final CapsuleType capsuleType
     ) {
         String queryString = """
             select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto(
@@ -83,10 +83,10 @@ public class CapsuleQueryRepository {
     }
 
     private void assignParameter(
-        Long memberId,
-        Polygon mbr,
-        CapsuleType capsuleType,
-        TypedQuery<CapsuleSummaryDto> query
+        final Long memberId,
+        final Polygon mbr,
+        final CapsuleType capsuleType,
+        final TypedQuery<CapsuleSummaryDto> query
     ) {
         query.setParameter("mbr", mbr);
         query.setParameter("memberId", memberId);
@@ -97,8 +97,8 @@ public class CapsuleQueryRepository {
     }
 
     public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
         return Optional.ofNullable(
             jpaQueryFactory
@@ -124,10 +124,10 @@ public class CapsuleQueryRepository {
     }
 
     public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
-        SecretCapsuleDetailDto detailDto = jpaQueryFactory
+        final SecretCapsuleDetailDto detailDto = jpaQueryFactory
             .select(
                 Projections.constructor(
                     SecretCapsuleDetailDto.class,
@@ -161,20 +161,20 @@ public class CapsuleQueryRepository {
         return Optional.ofNullable(detailDto);
     }
 
-    private StringExpression groupConcatDistinct(StringExpression expression) {
+    private StringExpression groupConcatDistinct(final StringExpression expression) {
         return Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", expression);
     }
 
     public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
-        List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsuleDtosByMemberIdAndCreatedAt(
+        final List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsuleDtosByMemberIdAndCreatedAt(
             memberId, size, createdAt
         );
 
-        boolean hasNext = canMoreRead(size, mySecretCapsules.size());
+        final boolean hasNext = canMoreRead(size, mySecretCapsules.size());
         if (hasNext) {
             mySecretCapsules.remove(size);
         }
@@ -183,9 +183,9 @@ public class CapsuleQueryRepository {
     }
 
     private List<MySecreteCapsuleDto> findMySecretCapsuleDtosByMemberIdAndCreatedAt(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
         return jpaQueryFactory
             .select(
@@ -212,7 +212,7 @@ public class CapsuleQueryRepository {
             .fetch();
     }
 
-    private boolean canMoreRead(int size, int capsuleSize) {
+    private boolean canMoreRead(final int size, final int capsuleSize) {
         return capsuleSize > size;
     }
 }

@@ -10,10 +10,10 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 public class CapsuleSkinMapper {
 
     public CapsuleSkinsSliceResponse capsuleSkinSliceToResponse(
-        List<CapsuleSkinSummaryDto> content,
-        boolean hasNext
+        final List<CapsuleSkinSummaryDto> content,
+        final boolean hasNext
     ) {
-        List<CapsuleSkinSummaryResponse> responses = content
+        final List<CapsuleSkinSummaryResponse> responses = content
             .stream()
             .map(this::getCapsuleSkinSummaryResponse)
             .toList();
@@ -21,7 +21,8 @@ public class CapsuleSkinMapper {
         return new CapsuleSkinsSliceResponse(responses, hasNext);
     }
 
-    private CapsuleSkinSummaryResponse getCapsuleSkinSummaryResponse(CapsuleSkinSummaryDto skin) {
+    private CapsuleSkinSummaryResponse getCapsuleSkinSummaryResponse(
+        final CapsuleSkinSummaryDto skin) {
         return CapsuleSkinSummaryResponse.builder()
             .id(skin.id())
             .skinUrl(skin.skinUrl())

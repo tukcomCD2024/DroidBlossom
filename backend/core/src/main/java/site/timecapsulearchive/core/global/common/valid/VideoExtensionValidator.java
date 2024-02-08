@@ -10,7 +10,7 @@ public class VideoExtensionValidator implements ConstraintValidator<Video, Strin
     private static final String AVAILABLE_VIDEO_EXTENSION_REGEX = "^\\S+\\.mp4$";
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
         if (value == null || value.isBlank()) {
             return false;
         }

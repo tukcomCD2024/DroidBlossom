@@ -34,7 +34,7 @@ public class CapsuleMapper {
     private final GeoTransformManager geoTransformManager;
 
     public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
-        SecretCapsuleCreateRequest request) {
+        final SecretCapsuleCreateRequest request) {
         return SecretCapsuleCreateRequestDto.builder()
             .capsuleSkinId(request.capsuleSkinId())
             .title(request.title())
@@ -50,10 +50,10 @@ public class CapsuleMapper {
     }
 
     public Capsule requestDtoToEntity(
-        SecretCapsuleCreateRequestDto dto,
-        Point point,
-        Member member,
-        CapsuleSkin capsuleSkin
+        final SecretCapsuleCreateRequestDto dto,
+        final Point point,
+        final Member member,
+        final CapsuleSkin capsuleSkin
     ) {
         return Capsule.builder()
             .title(dto.title())
@@ -67,7 +67,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    private Address addressDataToEntity(AddressData addressData) {
+    private Address addressDataToEntity(final AddressData addressData) {
         return Address.builder()
             .fullRoadAddressName(addressData.fullRoadAddressName())
             .province(addressData.province())
@@ -81,7 +81,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    public CapsuleSummaryResponse capsuleSummaryDtoToResponse(CapsuleSummaryDto dto) {
+    public CapsuleSummaryResponse capsuleSummaryDtoToResponse(final CapsuleSummaryDto dto) {
         Point point = geoTransformManager.changePoint3857To4326(dto.point());
 
         return CapsuleSummaryResponse.builder()
@@ -96,7 +96,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    private ZonedDateTime checkNullable(ZonedDateTime zonedDateTime) {
+    private ZonedDateTime checkNullable(final ZonedDateTime zonedDateTime) {
         if (zonedDateTime != null) {
             return zonedDateTime.withZoneSameInstant(ASIA_SEOUL);
         }
@@ -104,7 +104,7 @@ public class CapsuleMapper {
     }
 
     public SecretCapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
-        SecretCapsuleSummaryDto dto) {
+        final SecretCapsuleSummaryDto dto) {
         return SecretCapsuleSummaryResponse.builder()
             .nickname(dto.nickname())
             .profileUrl(dto.profileUrl())
@@ -119,9 +119,9 @@ public class CapsuleMapper {
     }
 
     public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
-        SecretCapsuleDetailDto dto,
-        List<String> imageUrls,
-        List<String> videoUrls
+        final SecretCapsuleDetailDto dto,
+        final List<String> imageUrls,
+        final List<String> videoUrls
     ) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
@@ -140,7 +140,7 @@ public class CapsuleMapper {
     }
 
     public SecretCapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
-        SecretCapsuleDetailDto dto) {
+        final SecretCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
             .capsuleSkinUrl(dto.capsuleSkinUrl())
             .dueDate(checkNullable(dto.dueDate()))
@@ -153,8 +153,9 @@ public class CapsuleMapper {
     }
 
     public MySecretCapsuleSliceResponse capsuleDetailSliceToResponse(
-        List<MySecreteCapsuleDto> content,
-        boolean hasNext) {
+        final List<MySecreteCapsuleDto> content,
+        final boolean hasNext
+    ) {
         List<MySecreteCapsuleResponse> responses = content.stream()
             .map(this::mySecreteCapsuleDtoToResponse)
             .toList();
@@ -165,7 +166,7 @@ public class CapsuleMapper {
         );
     }
 
-    private MySecreteCapsuleResponse mySecreteCapsuleDtoToResponse(MySecreteCapsuleDto dto) {
+    private MySecreteCapsuleResponse mySecreteCapsuleDtoToResponse(final MySecreteCapsuleDto dto) {
         return MySecreteCapsuleResponse.builder()
             .capsuleId(dto.capsuleId())
             .SkinUrl(dto.SkinUrl())
@@ -177,7 +178,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    public AddressData addressEntityToData(Address address) {
+    public AddressData addressEntityToData(final Address address) {
         return AddressData.builder()
             .fullRoadAddressName(address.getFullRoadAddressName())
             .province(address.getProvince())

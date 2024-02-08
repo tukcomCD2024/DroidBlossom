@@ -59,8 +59,8 @@ public class S3PreSignedUrlManager {
     }
 
     private List<String> getPreSignedImageUrls(
-        S3PreSignedUrlRequestDto dto,
-        UnaryOperator<String> preSignedUrlConvertFunction
+        final S3PreSignedUrlRequestDto dto,
+        final UnaryOperator<String> preSignedUrlConvertFunction
     ) {
         if (dto.imageUrls() == null || dto.imageUrls().isEmpty()) {
             return Collections.emptyList();
@@ -73,8 +73,8 @@ public class S3PreSignedUrlManager {
     }
 
     private List<String> getPreSignedVideoUrls(
-        S3PreSignedUrlRequestDto dto,
-        UnaryOperator<String> preSignedUrlConvertFunction
+        final S3PreSignedUrlRequestDto dto,
+        final UnaryOperator<String> preSignedUrlConvertFunction
     ) {
         if (dto.videoUrls() == null || dto.videoUrls().isEmpty()) {
             return Collections.emptyList();
@@ -92,9 +92,9 @@ public class S3PreSignedUrlManager {
         final String fileName,
         final String contentType
     ) {
-        String newFileName = s3UrlGenerator.generateFileName(memberId, directory, fileName);
+        final String newFileName = s3UrlGenerator.generateFileName(memberId, directory, fileName);
 
-        PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
+        final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
             .signatureDuration(Duration.ofMinutes(PRE_SIGNED_URL_EXPIRATION_TIME))
             .putObjectRequest(builder -> builder
                 .bucket(temporaryBucketName)
@@ -104,7 +104,7 @@ public class S3PreSignedUrlManager {
             )
             .build();
 
-        PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(
+        final PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(
             putObjectPresignRequest);
         return String.valueOf(presignedPutObjectRequest.url());
     }
@@ -121,7 +121,7 @@ public class S3PreSignedUrlManager {
     private String createS3PreSignedUrlForGet(
         final String fileName
     ) {
-        GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+        final GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
             .signatureDuration(Duration.ofMinutes(PRE_SIGNED_URL_EXPIRATION_TIME))
             .getObjectRequest(builder -> builder
                 .bucket(bucketName)
@@ -130,7 +130,7 @@ public class S3PreSignedUrlManager {
             )
             .build();
 
-        PresignedGetObjectRequest presignedGetObjectRequest = s3Presigner.presignGetObject(
+        final PresignedGetObjectRequest presignedGetObjectRequest = s3Presigner.presignGetObject(
             getObjectPresignRequest);
         return String.valueOf(presignedGetObjectRequest.url());
     }

@@ -30,10 +30,10 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public Long createMember(SignUpRequestDto dto) {
-        Member member = memberMapper.signUpRequestDtoToEntity(dto);
+    public Long createMember(final SignUpRequestDto dto) {
+        final Member member = memberMapper.signUpRequestDtoToEntity(dto);
 
-        Member savedMember = memberRepository.save(member);
+        final Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();
     }
@@ -62,7 +62,7 @@ public class MemberService {
         return MemberStatusResponse.from(isVerified);
     }
 
-    public Member findMemberByMemberId(Long memberId) {
+    public Member findMemberByMemberId(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
@@ -90,7 +90,7 @@ public class MemberService {
         return dto.memberId();
     }
 
-    private boolean isNotVerified(VerifiedCheckDto dto) {
+    private boolean isNotVerified(final VerifiedCheckDto dto) {
         return !dto.isVerified();
     }
 
@@ -106,7 +106,7 @@ public class MemberService {
         final String authId,
         final SocialType socialType
     ) throws AlreadyVerifiedException {
-        VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
+        final VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -117,16 +117,16 @@ public class MemberService {
         return dto.memberId();
     }
 
-    private boolean isVerified(VerifiedCheckDto dto) {
+    private boolean isVerified(final VerifiedCheckDto dto) {
         return dto.isVerified();
     }
 
-    public MemberDetailResponse findMemberDetailById(Long memberId) {
-        MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailResponseDtoById(
+    public MemberDetailResponse findMemberDetailById(final Long memberId) {
+        final MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailResponseDtoById(
                 memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
+        final String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
 
         return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }

@@ -28,7 +28,7 @@ public class MemberApiController implements MemberApi {
     @GetMapping(produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(
-        @AuthenticationPrincipal Long memberId
+        @AuthenticationPrincipal final Long memberId
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -60,7 +60,7 @@ public class MemberApiController implements MemberApi {
 
     @Override
     @PatchMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<Void> updateMemberById(MemberDetailUpdateRequest request) {
+    public ResponseEntity<Void> updateMemberById(final MemberDetailUpdateRequest request) {
         return null;
     }
 }

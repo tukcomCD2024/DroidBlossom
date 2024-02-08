@@ -27,28 +27,29 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final MemberMapper memberMapper;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(final OAuth2UserRequest userRequest)
+        throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
 
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = delegate.loadUser(userRequest);
+        final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
+        final OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        final String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        SocialType socialType = SocialType.getSocialType(registrationId);
-        String userNameAttributeName = userRequest.getClientRegistration()
+        final SocialType socialType = SocialType.getSocialType(registrationId);
+        final String userNameAttributeName = userRequest.getClientRegistration()
             .getProviderDetails()
             .getUserInfoEndpoint()
             .getUserNameAttributeName();
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        final Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        OAuthAttributes extractAttributes = OAuthAttributes.of(
+        final OAuthAttributes extractAttributes = OAuthAttributes.of(
             socialType,
             userNameAttributeName,
             attributes
         );
 
-        Member createMember = getMember(extractAttributes, socialType);
+        final Member createMember = getMember(extractAttributes, socialType);
 
         return new CustomOAuth2User(
             Collections.emptyList(),
@@ -61,7 +62,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
 
-    private Member getMember(OAuthAttributes attributes, SocialType socialType) {
+    private Member getMember(final OAuthAttributes attributes, final SocialType socialType) {
         return memberRepository.findMemberByAuthIdAndSocialType(
                 attributes.getAuthId(),
                 socialType
@@ -69,8 +70,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             .orElseGet(() -> saveMember(socialType, attributes));
     }
 
-    private Member saveMember(SocialType socialType, OAuthAttributes attributes) {
-        Member createMember = memberMapper.OAuthToEntity(
+    private Member saveMember(final SocialType socialType, final OAuthAttributes attributes) {
+        final Member createMember = memberMapper.OAuthToEntity(
             attributes.getAuthId(),
             socialType,
             attributes.getOauth2UserInfo()

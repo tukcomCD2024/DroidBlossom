@@ -9,16 +9,16 @@ public record S3PreSignedUrlRequestDto(
 ) {
 
     public static S3PreSignedUrlRequestDto forPut(
-        String directory,
-        List<String> imageUrls,
-        List<String> videoUrls
+        final String directory,
+        final List<String> imageUrls,
+        final List<String> videoUrls
     ) {
         return new S3PreSignedUrlRequestDto(directory, imageUrls, videoUrls);
     }
 
     public static S3PreSignedUrlRequestDto forGet(
-        List<String> imageUrls,
-        List<String> videoUrls
+        final List<String> imageUrls,
+        final List<String> videoUrls
     ) {
         return new S3PreSignedUrlRequestDto("", imageUrls, videoUrls);
     }

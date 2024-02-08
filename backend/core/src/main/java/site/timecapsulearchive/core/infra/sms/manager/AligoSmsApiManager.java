@@ -53,7 +53,7 @@ public class AligoSmsApiManager implements SmsApiManager {
         final String receiver,
         final String message
     ) {
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        final MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 
         map.add(KEY, aligoSmsProperties.apiKey());
         map.add(USER_ID, aligoSmsProperties.userId());
@@ -62,7 +62,7 @@ public class AligoSmsApiManager implements SmsApiManager {
         map.add(MSG, message);
         map.add(RECEIVER, receiver);
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         return new HttpEntity<>(map, headers);

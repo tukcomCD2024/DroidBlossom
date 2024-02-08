@@ -29,22 +29,22 @@ public class JwtAuthenticationToken implements Authentication {
     }
 
     public static JwtAuthenticationToken authenticatedWithTemporary(
-        Long memberId
+        final Long memberId
     ) {
         return new JwtAuthenticationToken(null, memberId, getAuthorities(Role.TEMPORARY), true);
     }
 
-    private static List<GrantedAuthority> getAuthorities(Role role) {
+    private static List<GrantedAuthority> getAuthorities(final Role role) {
         return List.of(new SimpleGrantedAuthority(role.getValue()));
     }
 
     public static JwtAuthenticationToken authenticatedWithAccess(
-        Long memberId
+        final Long memberId
     ) {
         return new JwtAuthenticationToken(null, memberId, getAuthorities(Role.USER), true);
     }
 
-    public static JwtAuthenticationToken unauthenticated(String accessToken) {
+    public static JwtAuthenticationToken unauthenticated(final String accessToken) {
         return new JwtAuthenticationToken(accessToken, null, Collections.emptyList(), false);
     }
 
@@ -74,7 +74,7 @@ public class JwtAuthenticationToken implements Authentication {
     }
 
     @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    public void setAuthenticated(final boolean isAuthenticated) throws IllegalArgumentException {
         Assert.isTrue(!isAuthenticated, "false로만 설정이 가능합니다. 생성자를 이용하세요");
         this.authenticated = false;
     }
