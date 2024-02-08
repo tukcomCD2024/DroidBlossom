@@ -10,6 +10,8 @@ import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.ResultTransformer;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -58,20 +60,6 @@ public class CapsuleQueryRepository {
         return query.getResultList();
     }
 
-    private void assignParameter(
-        Long memberId,
-        Polygon mbr,
-        CapsuleType capsuleType,
-        TypedQuery<CapsuleSummaryDto> query
-    ) {
-        query.setParameter("mbr", mbr);
-        query.setParameter("memberId", memberId);
-
-        if (capsuleType != CapsuleType.ALL) {
-            query.setParameter("capsuleType", capsuleType);
-        }
-    }
-
     private TypedQuery<CapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
         CapsuleType capsuleType
     ) {
@@ -97,6 +85,20 @@ public class CapsuleQueryRepository {
         }
 
         return entityManager.createQuery(queryString, CapsuleSummaryDto.class);
+    }
+
+    private void assignParameter(
+        Long memberId,
+        Polygon mbr,
+        CapsuleType capsuleType,
+        TypedQuery<CapsuleSummaryDto> query
+    ) {
+        query.setParameter("mbr", mbr);
+        query.setParameter("memberId", memberId);
+
+        if (capsuleType != CapsuleType.ALL) {
+            query.setParameter("capsuleType", capsuleType);
+        }
     }
 
     public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryByMemberIdAndCapsuleId(
@@ -130,61 +132,42 @@ public class CapsuleQueryRepository {
         Long memberId,
         Long capsuleId
     ) {
-        List<SecretCapsuleDetailDto> detailDtoList = jpaQueryFactory
+        SecretCapsuleDetailDto detailDto = jpaQueryFactory
             .select(
-                capsule.id,
-                capsuleSkin.imageUrl,
-                capsule.dueDate,
-                member.nickname,
-                member.profileUrl,
-                capsule.createdAt,
-                capsule.address.fullRoadAddressName,
-                capsule.title,
-                capsule.content,
-                image.imageUrl,
-                video.videoUrl,
-                capsule.isOpened,
-                capsule.type
+                Projections.constructor(
+                    SecretCapsuleDetailDto.class,
+                    capsule.id,
+                    capsuleSkin.imageUrl,
+                    capsule.dueDate,
+                    member.nickname,
+                    member.profileUrl,
+                    capsule.createdAt,
+                    capsule.address.fullRoadAddressName,
+                    capsule.title,
+                    capsule.content,
+                    groupConcatDistinct(image.imageUrl),
+                    groupConcatDistinct(video.videoUrl),
+                    capsule.isOpened,
+                    capsule.type
+                )
             )
             .from(capsule)
             .join(member).on(capsule.member.id.eq(member.id))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
-            .where(capsule.id.eq(capsuleId).and(capsule.member.id.eq(memberId))
-                .and(capsule.type.eq(CapsuleType.SECRET)))
-            .transform(
-                transformSecretCapsuleDetailDto()
-            );
+            .where(
+                capsule.id.eq(capsuleId)
+                    .and(capsule.member.id.eq(memberId))
+                    .and(capsule.type.eq(CapsuleType.SECRET))
+            )
+            .fetchFirst();
 
-        if (detailDtoList.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.ofNullable(detailDtoList.get(0));
+        return Optional.ofNullable(detailDto);
     }
 
-    private ResultTransformer<List<SecretCapsuleDetailDto>> transformSecretCapsuleDetailDto() {
-        return groupBy(capsule.id).list(
-            Projections.constructor(
-                SecretCapsuleDetailDto.class,
-                capsule.id,
-                capsuleSkin.imageUrl,
-                capsule.dueDate,
-                member.nickname,
-                member.profileUrl,
-                capsule.createdAt,
-                capsule.address.fullRoadAddressName,
-                capsule.title,
-                capsule.content,
-                list(
-                    Projections.constructor(String.class, image.imageUrl).skipNulls()),
-                list(
-                    Projections.constructor(String.class, video.videoUrl).skipNulls()),
-                capsule.isOpened,
-                capsule.type
-            )
-        );
+    private StringExpression groupConcatDistinct(StringExpression expression) {
+        return Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", expression);
     }
 
     public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
