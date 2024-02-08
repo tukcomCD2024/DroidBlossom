@@ -21,12 +21,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.data.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.data.secret_c.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
 
 @Repository
 @RequiredArgsConstructor

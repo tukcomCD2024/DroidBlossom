@@ -3,8 +3,8 @@ package site.timecapsulearchive.core.domain.capsule.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.timecapsulearchive.core.domain.capsule.data.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
 import site.timecapsulearchive.core.infra.s3.service.S3UrlGenerator;
 
