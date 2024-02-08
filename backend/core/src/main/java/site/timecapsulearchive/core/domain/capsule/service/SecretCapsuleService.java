@@ -4,15 +4,18 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.mapper.ImageMapper;
+import site.timecapsulearchive.core.domain.capsule.mapper.VideoMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
@@ -23,25 +26,29 @@ import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.service.MemberService;
-import site.timecapsulearchive.core.global.geography.GeoTransformManager;
+import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.s3.data.dto.S3PreSignedUrlDto;
 import site.timecapsulearchive.core.infra.s3.data.request.S3PreSignedUrlRequestDto;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SecretCapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
-    private final MemberService memberService;
-    private final ImageService imageService;
-    private final VideoService videoService;
-    private final GeoTransformManager geoTransformManager;
-    private final CapsuleMapper capsuleMapper;
+    private final MemberRepository memberRepository;
+    private final ImageQueryRepository imageQueryRepository;
+    private final VideoQueryRepository videoQueryRepository;
+
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
+
+    private final CapsuleMapper capsuleMapper;
+    private final ImageMapper imageMapper;
+    private final VideoMapper videoMapper;
 
     /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
@@ -73,8 +80,8 @@ public class SecretCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        return capsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(memberId,
-                capsuleId)
+        return capsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
+                memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
     }
 
@@ -90,8 +97,7 @@ public class SecretCapsuleService {
         final Long capsuleId
     ) {
         final SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
-                memberId,
-                capsuleId)
+                memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(dto)) {
@@ -126,69 +132,34 @@ public class SecretCapsuleService {
      * @param memberId 캡슐을 생성할 멤버 아이디
      * @param dto      캡슐 생성 요청 포맷
      */
+    @Transactional
     public void saveCapsule(final Long memberId, final SecretCapsuleCreateRequestDto dto) {
-        final Member findMember = memberService.findMemberByMemberId(memberId);
+        final Member foundMember = memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
 
-        final CapsuleSkin capsuleSkin = capsuleSkinRepository
-            .findById(dto.capsuleSkinId())
+        final CapsuleSkin foundCapsuleSkin = capsuleSkinRepository
+            .findCapsuleSkinById(dto.capsuleSkinId())
             .orElseThrow(CapsuleSkinNotFoundException::new);
 
-        final Point point = geoTransformManager.changePoint4326To3857(
-            dto.latitude(), dto.longitude());
-
-        final Capsule capsule = capsuleMapper.requestDtoToEntity(
-            dto, point, findMember, capsuleSkin
-        );
-
-        if (isNotTimeCapsule(capsule)) {
-            capsule.open();
-        }
+        final Capsule capsule = capsuleMapper.requestDtoToEntity(dto, foundMember,
+            foundCapsuleSkin);
 
         capsuleRepository.save(capsule);
 
-        saveImage(dto, capsule, findMember);
-        saveVideo(dto, capsule, findMember);
-    }
+        if (isNotEmpty(dto.imageNames())) {
+            imageQueryRepository.bulkSave(
+                imageMapper.toEntity(capsule, foundMember, dto.directory(), dto.imageNames())
+            );
+        }
 
-    private boolean isNotTimeCapsule(final Capsule capsule) {
-        return capsule.getDueDate() == null;
-    }
-
-    private void saveImage(
-        final SecretCapsuleCreateRequestDto dto,
-        final Capsule capsule,
-        final Member findMember
-    ) {
-        if (isImagesNotEmpty(dto)) {
-            imageService.saveImage(MediaSaveDto.of(
-                capsule,
-                findMember,
-                dto.directory(),
-                dto.imageNames()
-            ));
+        if (isNotEmpty(dto.videoNames())) {
+            videoQueryRepository.bulkSave(
+                videoMapper.toEntity(capsule, foundMember, dto.directory(), dto.videoNames())
+            );
         }
     }
 
-    private boolean isImagesNotEmpty(final SecretCapsuleCreateRequestDto dto) {
-        return dto.imageNames() != null && !dto.imageNames().isEmpty();
-    }
-
-    private void saveVideo(
-        final SecretCapsuleCreateRequestDto dto,
-        final Capsule capsule,
-        final Member findMember
-    ) {
-        if (isVideosNotEmpty(dto)) {
-            videoService.saveVideo(MediaSaveDto.of(
-                capsule,
-                findMember,
-                dto.directory(),
-                dto.videoNames()
-            ));
-        }
-    }
-
-    private boolean isVideosNotEmpty(final SecretCapsuleCreateRequestDto dto) {
-        return dto.videoNames() != null && !dto.videoNames().isEmpty();
+    private boolean isNotEmpty(List<String> fileNames) {
+        return !fileNames.isEmpty();
     }
 }
