@@ -12,11 +12,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.data.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.data.secret_c.reqeust.SecretCapsuleUpdateRequest;
@@ -27,37 +24,6 @@ import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface SecretCapsuleApi {
-
-    @Operation(
-        summary = "비밀 캡슐 생성",
-        description = "사용자만 볼 수 있는 비밀 캡슐을 생성한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"secret capsule"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "좌표변환을 할 수 없을 때 발생하는 예외, 입력좌표 확인 요망",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "캡슐 스킨을 찾을 수 없을 경우 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        )
-    })
-    @PostMapping(
-        value = "/capsules",
-        consumes = {"application/json"}
-    )
-    ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        Long memberId,
-        SecretCapsuleCreateRequest request
-    );
 
     @Operation(
         summary = "내 비밀 캡슐 목록 조회",
@@ -71,10 +37,6 @@ public interface SecretCapsuleApi {
             description = "처리 완료"
         )
     })
-    @GetMapping(
-        value = "/capsules",
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<MySecretCapsulePageResponse>> getMySecretCapsules(
         Long memberId,
 
@@ -102,10 +64,6 @@ public interface SecretCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @GetMapping(
-        value = "/capsules/{capsule_id}/detail",
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
         Long memberId,
 
@@ -130,15 +88,38 @@ public interface SecretCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @GetMapping(
-        value = "/capsules/{capsule_id}/summary",
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
         @PathVariable("capsule_id") Long capsuleId
+    );
+
+    @Operation(
+        summary = "비밀 캡슐 생성",
+        description = "사용자만 볼 수 있는 비밀 캡슐을 생성한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"secret capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "202",
+            description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "좌표변환을 할 수 없을 때 발생하는 예외, 입력좌표 확인 요망",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "캡슐 스킨을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> createSecretCapsule(
+        Long memberId,
+        SecretCapsuleCreateRequest request
     );
 
     @Operation(
@@ -153,10 +134,6 @@ public interface SecretCapsuleApi {
             description = "처리 완료"
         )
     })
-    @PatchMapping(
-        value = "/capsules/{capsule_id}",
-        consumes = {"multipart/form-data"}
-    )
     ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
         @PathVariable("capsule_id") Long capsuleId,

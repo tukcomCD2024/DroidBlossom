@@ -4,7 +4,11 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,18 +27,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     private final CapsuleSkinService capsuleSkinService;
 
-    @Override
-    public ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
-        @ModelAttribute CapsuleSkinCreateRequest request
-    ) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(Long capsuleSkinId) {
-        return null;
-    }
-
+    @GetMapping(value = "/search", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkin(
         @RequestParam(value = "capsule_skin_name") Long capsuleSkinName,
@@ -44,6 +37,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         return null;
     }
 
+    @GetMapping(produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleSkinsPageResponse>> getCapsuleSkins(
         @AuthenticationPrincipal final Long memberId,
@@ -62,8 +56,23 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         );
     }
 
+    @PostMapping(consumes = {"multipart/form-data"})
+    @Override
+    public ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
+        @ModelAttribute CapsuleSkinCreateRequest request
+    ) {
+        return null;
+    }
+
+    @PatchMapping(value = "/{capsule_skin_id}", consumes = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<String>> updateCapsuleSkin(Long capsuleSkinId) {
+        return null;
+    }
+
+    @DeleteMapping(value = "/{capsule_skin_id}")
+    @Override
+    public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(Long capsuleSkinId) {
         return null;
     }
 }

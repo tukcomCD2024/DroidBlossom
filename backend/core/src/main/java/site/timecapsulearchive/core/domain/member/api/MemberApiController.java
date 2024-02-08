@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +25,7 @@ public class MemberApiController implements MemberApi {
 
     private final MemberService memberService;
 
+    @GetMapping(produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(
         @AuthenticationPrincipal Long memberId
@@ -34,11 +38,11 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @Override
-    public ResponseEntity<Void> updateMemberById(MemberDetailUpdateRequest request) {
-        return null;
-    }
-
+    @PostMapping(
+        value = "/status",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(
         @Valid @RequestBody final CheckStatusRequest request
@@ -52,5 +56,11 @@ public class MemberApiController implements MemberApi {
                 )
             )
         );
+    }
+
+    @Override
+    @PatchMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<Void> updateMemberById(MemberDetailUpdateRequest request) {
+        return null;
     }
 }

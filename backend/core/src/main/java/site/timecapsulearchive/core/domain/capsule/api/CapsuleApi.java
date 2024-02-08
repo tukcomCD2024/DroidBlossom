@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.data.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.data.response.CapsuleOpenedResponse;
@@ -36,10 +34,6 @@ public interface CapsuleApi {
             description = "처리 완료"
         )
     })
-    @GetMapping(
-        value = "/images",
-        produces = {"application/json"}
-    )
     ResponseEntity<ImagesPageResponse> findImages(
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
         @NotNull @Valid @RequestParam(value = "size") Long size,
@@ -64,10 +58,6 @@ public interface CapsuleApi {
             description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
-    @GetMapping(
-        value = "/nearby",
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
         Long memberId,
 
@@ -100,10 +90,6 @@ public interface CapsuleApi {
             description = "카카오 맵 API 주소 요청에 실패 했을 경우 발생한다."
         )
     })
-    @GetMapping(
-        value = "/full-address",
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
         @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
         double latitude,
@@ -129,10 +115,6 @@ public interface CapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PatchMapping(
-        value = "/{capsule_id}/opened",
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
         Long memberId,
 

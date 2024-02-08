@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.domain.capsule.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,11 +26,13 @@ public class CapsuleApiController implements CapsuleApi {
 
     private final CapsuleService capsuleService;
 
+    @GetMapping(value = "/images", produces = {"application/json"})
     @Override
     public ResponseEntity<ImagesPageResponse> findImages(Long size, Long capsuleId) {
         return null;
     }
 
+    @GetMapping(value = "/nearby", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
         @AuthenticationPrincipal Long memberId,
@@ -49,6 +53,7 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
+    @GetMapping(value = "/full-address", produces = {"application/json"})
     public ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
         @RequestParam(value = "latitude") double latitude,
         @RequestParam(value = "longitude") double longitude
@@ -61,6 +66,7 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
+    @PatchMapping(value = "/{capsule_id}/opened", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
         @AuthenticationPrincipal Long memberId,

@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,8 @@ public class AuthApiController implements AuthApi {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
+
+    @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
     @Override
     public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request) {
         String baseUrl = request.getRequestURL().toString();
@@ -49,6 +53,7 @@ public class AuthApiController implements AuthApi {
         return ResponseEntity.ok(OAuth2UriResponse.from(kakaoLoginUrl));
     }
 
+    @GetMapping(value = "/login/url/google", produces = {"application/json"})
     @Override
     public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request) {
         String baseUrl = request.getRequestURL().toString();
@@ -60,16 +65,23 @@ public class AuthApiController implements AuthApi {
         return ResponseEntity.ok(OAuth2UriResponse.from(googleLoginUrl));
     }
 
+    @GetMapping(value = "/login/oauth2/code/kakao", produces = {"application/json"})
     @Override
     public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao() {
         throw new UnsupportedOperationException();
     }
 
+    @GetMapping(value = "/login/oauth2/code/google", produces = {"application/json"})
     @Override
     public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle() {
         throw new UnsupportedOperationException();
     }
 
+    @PostMapping(
+        value = "/temporary-token/re-issue",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
         @Valid @RequestBody final TemporaryTokenReIssueRequest request) {
@@ -84,6 +96,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/token/re-issue",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(
         @Valid @RequestBody final TokenReIssueRequest request
@@ -96,6 +113,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/sign-up",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
         @Valid @RequestBody final SignUpRequest request
@@ -110,6 +132,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/sign-in",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
         @Valid @RequestBody final SignInRequest request) {
@@ -124,6 +151,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/verification/send-message",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<VerificationMessageSendResponse>> sendVerificationMessage(
         @AuthenticationPrincipal final Long memberId,
@@ -144,6 +176,11 @@ public class AuthApiController implements AuthApi {
             );
     }
 
+    @PostMapping(
+        value = "/verification/valid-message",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> validVerificationMessage(
         @AuthenticationPrincipal final Long memberId,
