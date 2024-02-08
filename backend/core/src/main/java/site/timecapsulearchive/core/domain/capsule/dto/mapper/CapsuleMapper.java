@@ -152,7 +152,8 @@ public class CapsuleMapper {
             .build();
     }
 
-    public MySecretCapsulePageResponse capsuleDetailSliceToResponse(List<MySecreteCapsuleDto> content,
+    public MySecretCapsulePageResponse capsuleDetailSliceToResponse(
+        List<MySecreteCapsuleDto> content,
         boolean hasNext) {
         List<MySecreteCapsuleResponse> responses = content.stream()
             .map(this::mySecreteCapsuleDtoToResponse)
