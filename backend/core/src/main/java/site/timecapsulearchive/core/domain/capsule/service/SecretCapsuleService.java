@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.domain.capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
