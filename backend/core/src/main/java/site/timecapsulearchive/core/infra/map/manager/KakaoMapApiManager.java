@@ -8,11 +8,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import site.timecapsulearchive.core.domain.capsule.entity.Address;
-import site.timecapsulearchive.core.domain.capsule.mapper.AddressMapper;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.map.config.KakaoMapProperties;
+import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 import site.timecapsulearchive.core.infra.map.data.dto.Document;
+import site.timecapsulearchive.core.infra.map.data.mapper.AddressMapper;
 import site.timecapsulearchive.core.infra.map.data.response.KakaoMapApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
@@ -29,7 +29,7 @@ public class KakaoMapApiManager implements MapApiManager {
     private final RestTemplate restTemplate;
     private final AddressMapper addressMapper;
 
-    public Address reverseGeoCoding(final Double longitude, final Double latitude) {
+    public AddressData reverseGeoCoding(final Double longitude, final Double latitude) {
         final URI uri = getKakaoMapApiUrl(longitude, latitude);
 
         final HttpEntity<Void> entity = getHttpEntity();
@@ -50,7 +50,7 @@ public class KakaoMapApiManager implements MapApiManager {
             return addressMapper.addressDtoToAddress(document.addressDto());
         }
 
-        return addressMapper.roadAddressToAddress(document.roadAddressDto());
+        return addressMapper.roadAddressToData(document.roadAddressDto());
     }
 
     private URI getKakaoMapApiUrl(final Double longitude, final Double latitude) {

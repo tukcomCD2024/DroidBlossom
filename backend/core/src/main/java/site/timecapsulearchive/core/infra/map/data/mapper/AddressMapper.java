@@ -1,15 +1,15 @@
-package site.timecapsulearchive.core.domain.capsule.mapper;
+package site.timecapsulearchive.core.infra.map.data.mapper;
 
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.domain.capsule.entity.Address;
+import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressDto;
 import site.timecapsulearchive.core.infra.map.data.dto.RoadAddressDto;
 
 @Component
 public class AddressMapper {
 
-    public Address roadAddressToAddress(final RoadAddressDto dto) {
-        return Address.builder()
+    public AddressData addressDtoToAddress(final AddressDto dto) {
+        return AddressData.builder()
             .fullRoadAddressName(dto.addressName())
             .province(dto.region1depthName())
             .city(dto.region2depthName())
@@ -22,8 +22,8 @@ public class AddressMapper {
             .build();
     }
 
-    public Address addressDtoToAddress(final AddressDto dto) {
-        return Address.builder()
+    public AddressData roadAddressToData(final RoadAddressDto dto) {
+        return AddressData.builder()
             .fullRoadAddressName(dto.addressName())
             .province(dto.region1depthName())
             .city(dto.region2depthName())

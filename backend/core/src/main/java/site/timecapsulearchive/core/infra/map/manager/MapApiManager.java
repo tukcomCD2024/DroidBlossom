@@ -1,6 +1,6 @@
 package site.timecapsulearchive.core.infra.map.manager;
 
-import site.timecapsulearchive.core.domain.capsule.entity.Address;
+import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 public interface MapApiManager {
 
@@ -11,5 +11,5 @@ public interface MapApiManager {
      * @param latitude  위도
      * @return 위도와 경도로부터 반환된 주소
      */
-    Address reverseGeoCoding(Double longitude, Double latitude);
+    AddressData reverseGeoCoding(Double longitude, Double latitude);
 }

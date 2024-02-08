@@ -52,20 +52,6 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         );
     }
 
-    @GetMapping(value = "/capsules/{capsule_id}/detail", produces = {"application/json"})
-    @Override
-    public ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
-        @AuthenticationPrincipal final Long memberId,
-        @PathVariable("capsule_id") final Long capsuleId
-    ) {
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                secretCapsuleService.findSecretCapsuleDetailById(memberId, capsuleId)
-            )
-        );
-    }
-
     @GetMapping(value = "/capsules/{capsule_id}/summary", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
@@ -80,6 +66,20 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 capsuleMapper.secretCapsuleSummaryDtoToResponse(dto)
+            )
+        );
+    }
+
+    @GetMapping(value = "/capsules/{capsule_id}/detail", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                secretCapsuleService.findSecretCapsuleDetailById(memberId, capsuleId)
             )
         );
     }

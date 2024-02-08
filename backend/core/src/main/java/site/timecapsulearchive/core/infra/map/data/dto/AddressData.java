@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto;
+package site.timecapsulearchive.core.infra.map.data.dto;
 
 import lombok.Builder;
 

@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.AddressData;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 import site.timecapsulearchive.core.global.common.valid.annotation.Video;
+import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Schema(description = "캡슐 생성 포맷")
 public record SecretCapsuleCreateRequest(

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
@@ -53,18 +52,6 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    @GetMapping(value = "/full-address", produces = {"application/json"})
-    public ResponseEntity<ApiSpec<AddressData>> getAddressByCoordinate(
-        @RequestParam(value = "latitude") final double latitude,
-        @RequestParam(value = "longitude") final double longitude
-    ) {
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                capsuleService.findFullAddressByCoordinate(latitude, longitude)
-            )
-        );
-    }
 
     @PatchMapping(value = "/{capsule_id}/opened", produces = {"application/json"})
     @Override

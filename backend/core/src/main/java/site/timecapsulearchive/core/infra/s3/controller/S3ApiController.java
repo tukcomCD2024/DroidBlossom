@@ -18,7 +18,7 @@ import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/file")
+@RequestMapping("/s3")
 public class S3ApiController implements S3Api {
 
     private final S3PreSignedUrlManager s3Service;

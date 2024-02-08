@@ -44,80 +44,6 @@ public class SecretCapsuleService {
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     /**
-     * 멤버 아이디와 캡슐 생성 포맷을 받아서 캡슐을 생성한다.
-     *
-     * @param memberId 캡슐을 생성할 멤버 아이디
-     * @param dto      캡슐 생성 요청 포맷
-     */
-    public void saveCapsule(final Long memberId, final SecretCapsuleCreateRequestDto dto) {
-        final Member findMember = memberService.findMemberByMemberId(memberId);
-
-        final CapsuleSkin capsuleSkin = capsuleSkinRepository
-            .findById(dto.capsuleSkinId())
-            .orElseThrow(CapsuleSkinNotFoundException::new);
-
-        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
-            dto.longitude());
-
-        final Capsule capsule = capsuleMapper.requestDtoToEntity(
-            dto, point,
-            findMember,
-            capsuleSkin
-        );
-
-        if (isNotTimeCapsule(capsule)) {
-            capsule.open();
-        }
-
-        capsuleRepository.save(capsule);
-
-        saveImage(dto, capsule, findMember);
-        saveVideo(dto, capsule, findMember);
-    }
-
-    private boolean isNotTimeCapsule(final Capsule capsule) {
-        return capsule.getDueDate() == null;
-    }
-
-    private void saveImage(
-        final SecretCapsuleCreateRequestDto dto,
-        final Capsule capsule,
-        final Member findMember
-    ) {
-        if (isImagesNotEmpty(dto)) {
-            imageService.saveImage(MediaSaveDto.of(
-                capsule,
-                findMember,
-                dto.directory(),
-                dto.imageNames()
-            ));
-        }
-    }
-
-    private boolean isImagesNotEmpty(final SecretCapsuleCreateRequestDto dto) {
-        return dto.imageNames() != null && !dto.imageNames().isEmpty();
-    }
-
-    private void saveVideo(
-        final SecretCapsuleCreateRequestDto dto,
-        final Capsule capsule,
-        final Member findMember
-    ) {
-        if (isVideosNotEmpty(dto)) {
-            videoService.saveVideo(MediaSaveDto.of(
-                capsule,
-                findMember,
-                dto.directory(),
-                dto.videoNames()
-            ));
-        }
-    }
-
-    private boolean isVideosNotEmpty(final SecretCapsuleCreateRequestDto dto) {
-        return dto.videoNames() != null && !dto.videoNames().isEmpty();
-    }
-
-    /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
      *
      * @param memberId  캡슐을 생성할 멤버 아이디
@@ -192,5 +118,77 @@ public class SecretCapsuleService {
         }
 
         return !dto.isOpened() || dto.dueDate().isAfter(ZonedDateTime.now(ZoneOffset.UTC));
+    }
+
+    /**
+     * 멤버 아이디와 캡슐 생성 포맷을 받아서 캡슐을 생성한다.
+     *
+     * @param memberId 캡슐을 생성할 멤버 아이디
+     * @param dto      캡슐 생성 요청 포맷
+     */
+    public void saveCapsule(final Long memberId, final SecretCapsuleCreateRequestDto dto) {
+        final Member findMember = memberService.findMemberByMemberId(memberId);
+
+        final CapsuleSkin capsuleSkin = capsuleSkinRepository
+            .findById(dto.capsuleSkinId())
+            .orElseThrow(CapsuleSkinNotFoundException::new);
+
+        final Point point = geoTransformManager.changePoint4326To3857(
+            dto.latitude(), dto.longitude());
+
+        final Capsule capsule = capsuleMapper.requestDtoToEntity(
+            dto, point, findMember, capsuleSkin
+        );
+
+        if (isNotTimeCapsule(capsule)) {
+            capsule.open();
+        }
+
+        capsuleRepository.save(capsule);
+
+        saveImage(dto, capsule, findMember);
+        saveVideo(dto, capsule, findMember);
+    }
+
+    private boolean isNotTimeCapsule(final Capsule capsule) {
+        return capsule.getDueDate() == null;
+    }
+
+    private void saveImage(
+        final SecretCapsuleCreateRequestDto dto,
+        final Capsule capsule,
+        final Member findMember
+    ) {
+        if (isImagesNotEmpty(dto)) {
+            imageService.saveImage(MediaSaveDto.of(
+                capsule,
+                findMember,
+                dto.directory(),
+                dto.imageNames()
+            ));
+        }
+    }
+
+    private boolean isImagesNotEmpty(final SecretCapsuleCreateRequestDto dto) {
+        return dto.imageNames() != null && !dto.imageNames().isEmpty();
+    }
+
+    private void saveVideo(
+        final SecretCapsuleCreateRequestDto dto,
+        final Capsule capsule,
+        final Member findMember
+    ) {
+        if (isVideosNotEmpty(dto)) {
+            videoService.saveVideo(MediaSaveDto.of(
+                capsule,
+                findMember,
+                dto.directory(),
+                dto.videoNames()
+            ));
+        }
+    }
+
+    private boolean isVideosNotEmpty(final SecretCapsuleCreateRequestDto dto) {
+        return dto.videoNames() != null && !dto.videoNames().isEmpty();
     }
 }

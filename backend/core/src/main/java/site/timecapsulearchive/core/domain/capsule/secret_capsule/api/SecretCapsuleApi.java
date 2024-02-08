@@ -43,30 +43,6 @@ public interface SecretCapsuleApi {
     );
 
     @Operation(
-        summary = "비밀 캡슐 상세 조회",
-        description = "사용자만 볼 수 있는 비밀 캡슐의 내용을 상세 조회한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"secret capsule"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        )
-    })
-    ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
-        Long memberId,
-
-        @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        Long capsuleId
-    );
-
-    @Operation(
         summary = "비밀 캡슐 요약 조회",
         description = "사용자만 볼 수 있는 비밀 캡슐의 내용을 요약 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
@@ -84,6 +60,30 @@ public interface SecretCapsuleApi {
         )
     })
     ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
+        Long capsuleId
+    );
+
+    @Operation(
+        summary = "비밀 캡슐 상세 조회",
+        description = "사용자만 볼 수 있는 비밀 캡슐의 내용을 상세 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"secret capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)

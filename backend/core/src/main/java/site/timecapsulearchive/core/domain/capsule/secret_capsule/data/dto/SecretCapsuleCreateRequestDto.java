@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.Builder;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.AddressData;
+import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Builder
 public record SecretCapsuleCreateRequestDto(

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
@@ -24,6 +23,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
+import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Component
 @RequiredArgsConstructor
@@ -175,20 +175,6 @@ public class CapsuleMapper {
             .title(dto.title())
             .isOpened(dto.isOpened())
             .type(dto.type())
-            .build();
-    }
-
-    public AddressData addressEntityToData(final Address address) {
-        return AddressData.builder()
-            .fullRoadAddressName(address.getFullRoadAddressName())
-            .province(address.getProvince())
-            .city(address.getCity())
-            .subDistinct(address.getSubDistinct())
-            .roadName(address.getRoadName())
-            .mainBuildingNumber(address.getMainBuildingNumber())
-            .subBuildingNumber(address.getSubBuildingNumber())
-            .buildingName(address.getBuildingName())
-            .zipCode(address.getZipCode())
             .build();
     }
 }

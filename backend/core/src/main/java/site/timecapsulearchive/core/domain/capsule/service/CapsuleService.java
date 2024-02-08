@@ -5,11 +5,9 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeRequestDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
@@ -56,19 +54,6 @@ public class CapsuleService {
                 .map(capsuleMapper::capsuleSummaryDtoToResponse)
                 .toList()
         );
-    }
-
-    /**
-     * 좌표를 통해 주소를 반환한다.
-     *
-     * @param latitude  위도
-     * @param longitude 경도
-     * @return 위도와 경도 데이터로 카카오 맵 주소룰 번환하다.
-     */
-    public AddressData findFullAddressByCoordinate(final double latitude, final double longitude) {
-        final Address address = mapApiManager.reverseGeoCoding(longitude, latitude);
-
-        return capsuleMapper.addressEntityToData(address);
     }
 
 
