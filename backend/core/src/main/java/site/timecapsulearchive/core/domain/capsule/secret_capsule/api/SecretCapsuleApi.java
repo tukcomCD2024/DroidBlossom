@@ -130,8 +130,9 @@ public interface SecretCapsuleApi {
         )
     })
     ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
+        Long memberId,
+        SecretCapsuleUpdateRequest request,
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        Long capsuleId,
-        SecretCapsuleUpdateRequest request
+        Long capsuleId
     );
 }

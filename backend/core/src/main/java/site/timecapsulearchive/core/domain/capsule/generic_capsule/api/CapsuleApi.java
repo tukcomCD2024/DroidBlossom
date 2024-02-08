@@ -31,7 +31,7 @@ public interface CapsuleApi {
             description = "처리 완료"
         )
     })
-    ResponseEntity<ImagesPageResponse> findImages(
+    ResponseEntity<ImagesPageResponse> getImages(
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
         Long size,
 
@@ -55,7 +55,7 @@ public interface CapsuleApi {
             description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
-    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
+    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)

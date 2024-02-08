@@ -28,7 +28,7 @@ public interface CapsuleSkinApi {
             description = "처리 완료"
         )
     })
-    ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkin(
+    ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkins(
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 스킨 이름", required = true)
         Long capsuleSkinName,
 

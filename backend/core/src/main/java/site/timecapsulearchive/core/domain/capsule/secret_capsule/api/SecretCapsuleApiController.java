@@ -104,8 +104,9 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @PatchMapping(value = "/capsules/{capsule_id}", consumes = {"multipart/form-data"})
     @Override
     public ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
-        @AuthenticationPrincipal Long capsuleId,
-        @ModelAttribute SecretCapsuleUpdateRequest request
+        @AuthenticationPrincipal Long memberId,
+        @ModelAttribute SecretCapsuleUpdateRequest request,
+        @PathVariable("capsule_id") Long capsuleId
     ) {
         return null;
     }

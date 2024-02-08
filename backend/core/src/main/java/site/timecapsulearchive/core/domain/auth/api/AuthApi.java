@@ -65,7 +65,7 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao();
+    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByKakao();
 
 
     @Operation(
@@ -79,7 +79,7 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle();
+    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByGoogle();
 
     @Operation(
         summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 아이디로 회원가입",

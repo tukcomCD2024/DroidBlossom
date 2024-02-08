@@ -67,13 +67,13 @@ public class AuthApiController implements AuthApi {
 
     @GetMapping(value = "/login/oauth2/code/kakao", produces = {"application/json"})
     @Override
-    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao() {
+    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByKakao() {
         throw new UnsupportedOperationException();
     }
 
     @GetMapping(value = "/login/oauth2/code/google", produces = {"application/json"})
     @Override
-    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle() {
+    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByGoogle() {
         throw new UnsupportedOperationException();
     }
 

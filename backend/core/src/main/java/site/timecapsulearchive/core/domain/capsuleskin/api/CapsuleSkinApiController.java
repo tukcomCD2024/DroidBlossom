@@ -30,7 +30,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     @GetMapping(value = "/search", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkin(
+    public ResponseEntity<ApiSpec<CapsuleSkinSearchPageResponse>> searchCapsuleSkins(
         @RequestParam(value = "capsule_skin_name") Long capsuleSkinName,
         @RequestParam(value = "size") Long size,
         @RequestParam(value = "capsule_skin_id") Long capsuleSkinId

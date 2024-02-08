@@ -44,7 +44,7 @@ public class MemberApiController implements MemberApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(
+    public ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(
         @Valid @RequestBody final CheckStatusRequest request
     ) {
         return ResponseEntity.ok(

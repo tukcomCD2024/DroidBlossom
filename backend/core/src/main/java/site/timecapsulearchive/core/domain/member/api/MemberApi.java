@@ -47,7 +47,7 @@ public interface MemberApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<MemberStatusResponse>> checkStatus(CheckStatusRequest request);
+    ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(CheckStatusRequest request);
 
     @Operation(
         summary = "회원 수정",

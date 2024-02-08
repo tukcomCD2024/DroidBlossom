@@ -28,13 +28,13 @@ public class CapsuleApiController implements CapsuleApi {
 
     @GetMapping(value = "/images", produces = {"application/json"})
     @Override
-    public ResponseEntity<ImagesPageResponse> findImages(Long size, Long capsuleId) {
+    public ResponseEntity<ImagesPageResponse> getImages(Long size, Long capsuleId) {
         return null;
     }
 
     @GetMapping(value = "/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearByCapsules(
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
         @AuthenticationPrincipal Long memberId,
         @RequestParam(value = "latitude") double latitude,
         @RequestParam(value = "longitude") double longitude,
