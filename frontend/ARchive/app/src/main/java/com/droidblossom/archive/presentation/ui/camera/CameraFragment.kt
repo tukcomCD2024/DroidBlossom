@@ -41,32 +41,34 @@ class CameraFragment :
                 viewModel.capsuleList.collect { capsuleList ->
                     binding.sceneView.onSessionUpdated = { session, frame ->
                         if (anchorNode == null) {
-                            frame.getUpdatedPlanes()
-                                .firstOrNull() { it.type == Plane.Type.HORIZONTAL_UPWARD_FACING }
-                                ?.let { plane ->
-                                    Log.d("CameraFragmentAR", "earth setting start")
-                                    val earth = session.earth
-                                    if (earth == null) {
-                                        Log.d("CameraFragmentAR", "earth is null")
-                                        return@let
-                                    } else {
-                                        Log.d(
-                                            "CameraFragmentAR",
-                                            "earth.trackingState = ${earth.cameraGeospatialPose.latitude}"
-                                        )
-                                        if (earth.trackingState == TrackingState.TRACKING) {
-                                            capsuleList.forEach { capsule ->
-                                                val latitude = capsule.latitude
-                                                val longitude = capsule.longitude
-                                                val altitude = earth.cameraGeospatialPose.altitude
+                            Log.d("CameraFragmentAR", "earth setting start")
+                            val earth = session.earth
+                            if (earth == null) {
+                                Log.d("CameraFragmentAR", "earth is null")
+                            } else {
+                                Log.d(
+                                    "CameraFragmentAR",
+                                    "earth.trackingState = ${earth.cameraGeospatialPose.latitude}"
+                                )
+                                if (earth.trackingState == TrackingState.TRACKING) {
+                                    capsuleList.forEach { capsule ->
+                                        val latitude = capsule.latitude
+                                        val longitude = capsule.longitude
+                                        val altitude = earth.cameraGeospatialPose.altitude
 
-                                                // 앵커 생성 및 노드 추가
-                                                val earthAnchor = earth.createAnchor(latitude,longitude, altitude, 0f, 0f, 0f, 0f)
-                                                addAnchorNode(earthAnchor)
-                                            }
-                                        }
+                                        val earthAnchor = earth.createAnchor(
+                                            latitude,
+                                            longitude,
+                                            altitude,
+                                            0f,
+                                            0f,
+                                            0f,
+                                            0f
+                                        )
+                                        addAnchorNode(earthAnchor)
                                     }
                                 }
+                            }
                         }
 
                     }
@@ -96,37 +98,32 @@ class CameraFragment :
         with(binding) {
             sceneView.configureSession { session, config ->
                 config.geospatialMode = Config.GeospatialMode.ENABLED
+                config.planeFindingMode = Config.PlaneFindingMode.DISABLED
             }
         }
     }
 
     private fun addAnchorNode(anchor: Anchor) {
-        Log.d("CameraFragmentAR", "addAnchorNode added ")
-        binding.sceneView.addChildNode(
-            AnchorNode(binding.sceneView.engine, anchor)
-                .apply {
-                    lifecycleScope.launch {
-                        binding.sceneView.modelLoader.loadModelInstance(
-                            "https://sceneview.github.io/assets/models/DamagedHelmet.glb"
-                        )?.let { modelInstance ->
+        Log.d("CameraFragmentAR", "addAnchorNode added")
+        val anchorNode = AnchorNode(binding.sceneView.engine, anchor)
 
-                            addChildNode(
-
-                                node =
-                                ModelNode(
-                                    modelInstance = modelInstance,
-                                )
-                                    .apply {
-                                        playAnimation(0)
-                                    }
-                            ).apply {
-                            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                binding.sceneView.modelLoader.loadModelInstance("https://sceneview.github.io/assets/models/DamagedHelmet.glb").let { modelInstance ->
+                    modelInstance?.let {
+                        val modelNode = ModelNode(modelInstance = it).apply {
+                            playAnimation(0)
                         }
+                        anchorNode.addChildNode(modelNode)
                     }
-                    anchorNode = this
                 }
-        )
+            }
+        }
+
+        binding.sceneView.addChildNode(anchorNode)
+        this.anchorNode = anchorNode
     }
+
 
     private fun createSession() {
         session = Session(requireContext())
