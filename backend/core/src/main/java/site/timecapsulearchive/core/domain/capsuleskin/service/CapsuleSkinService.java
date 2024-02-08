@@ -4,9 +4,9 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinSummaryDto;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.mapper.CapsuleSkinMapper;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.response.CapsuleSkinsPageResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
+import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
 
 @Service

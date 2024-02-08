@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.friend.dto.reqeust.SearchFriendsRequest;
-import site.timecapsulearchive.core.domain.friend.dto.response.FriendsPageResponse;
-import site.timecapsulearchive.core.domain.friend.dto.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendsPageResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 
 public interface FriendApi {
 

@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.capsule.dto.public_c.reqeust.PublicCapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.dto.public_c.reqeust.PublicCapsuleUpdateRequest;
-import site.timecapsulearchive.core.domain.capsule.dto.public_c.response.PublicCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.public_c.response.PublicCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.public_c.response.PublicCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.data.public_c.reqeust.PublicCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.data.public_c.reqeust.PublicCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.data.public_c.response.PublicCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.data.public_c.response.PublicCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.data.public_c.response.PublicCapsuleSummaryResponse;
 
 public interface PublicCapsuleApi {
 

@@ -10,7 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.sms.config.AligoSmsProperties;
-import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
+import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 @Service

@@ -8,12 +8,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import site.timecapsulearchive.core.domain.capsule.dto.mapper.AddressMapper;
+import site.timecapsulearchive.core.domain.capsule.data.mapper.AddressMapper;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.map.config.KakaoMapProperties;
-import site.timecapsulearchive.core.infra.map.dto.Document;
-import site.timecapsulearchive.core.infra.map.dto.KakaoMapApiResponse;
+import site.timecapsulearchive.core.infra.map.data.dto.Document;
+import site.timecapsulearchive.core.infra.map.data.response.KakaoMapApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 @Service

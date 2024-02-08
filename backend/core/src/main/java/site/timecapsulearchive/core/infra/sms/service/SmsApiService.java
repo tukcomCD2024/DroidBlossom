@@ -1,6 +1,6 @@
 package site.timecapsulearchive.core.infra.sms.service;
 
-import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
+import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 public interface SmsApiService {

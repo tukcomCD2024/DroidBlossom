@@ -7,14 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import site.timecapsulearchive.core.domain.capsule.dto.MediaSaveDto;
-import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecretCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.data.dto.MediaSaveDto;
+import site.timecapsulearchive.core.domain.capsule.data.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.MySecreteCapsuleDto;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.response.MySecretCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
@@ -25,8 +25,8 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.geography.GeoTransformer;
-import site.timecapsulearchive.core.infra.s3.dto.S3PreSignedUrlDto;
-import site.timecapsulearchive.core.infra.s3.dto.request.S3PreSignedUrlRequestDto;
+import site.timecapsulearchive.core.infra.s3.data.dto.S3PreSignedUrlDto;
+import site.timecapsulearchive.core.infra.s3.data.request.S3PreSignedUrlRequestDto;
 import site.timecapsulearchive.core.infra.s3.service.S3PreSignedUrlManager;
 
 @Service

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import site.timecapsulearchive.core.domain.member.dto.reqeust.CheckStatusRequest;
-import site.timecapsulearchive.core.domain.member.dto.reqeust.MemberDetailUpdateRequest;
-import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
-import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
+import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.MemberDetailUpdateRequest;
+import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 

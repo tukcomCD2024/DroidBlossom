@@ -21,11 +21,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.data.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.MySecreteCapsuleDto;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.data.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Repository
@@ -61,7 +61,7 @@ public class CapsuleQueryRepository {
         CapsuleType capsuleType
     ) {
         String queryString = """
-            select new site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto(
+            select new site.timecapsulearchive.core.domain.capsule.data.CapsuleSummaryDto(
                 c.id,
                 c.point,
                 m.nickname,
