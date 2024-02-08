@@ -2,17 +2,18 @@ package site.timecapsulearchive.core.domain.capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsule.dto.MediaSaveDto;
 import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.response.MyCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.MySecretCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.dto.secret_c.response.SecretCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
@@ -115,7 +116,7 @@ public class SecretCapsuleService {
      * @param createdAt 마지막 캡슐 생성 날짜
      * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
-    public MyCapsulePageResponse findSecretCapsuleListByMemberId(
+    public MySecretCapsulePageResponse findSecretCapsuleListByMemberId(
         Long memberId,
         int size,
         ZonedDateTime createdAt
@@ -163,7 +164,10 @@ public class SecretCapsuleService {
         }
 
         S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
-            S3PreSignedUrlRequestDto.forGet(dto.images(), dto.videos())
+            S3PreSignedUrlRequestDto.forGet(
+                List.of(dto.images().split(",")),
+                List.of(dto.videos().split(","))
+            )
         );
 
         return capsuleMapper.secretCapsuleDetailDtoToResponse(
