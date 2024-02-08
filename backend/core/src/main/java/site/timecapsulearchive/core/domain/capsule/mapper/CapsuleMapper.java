@@ -51,10 +51,12 @@ public class CapsuleMapper {
 
     public Capsule requestDtoToEntity(
         final SecretCapsuleCreateRequestDto dto,
-        final Point point,
         final Member member,
         final CapsuleSkin capsuleSkin
     ) {
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
+
         return Capsule.builder()
             .title(dto.title())
             .content(dto.content())
@@ -64,6 +66,7 @@ public class CapsuleMapper {
             .member(member)
             .dueDate(dto.dueDate())
             .capsuleSkin(capsuleSkin)
+            .isOpened(dto.dueDate() != null)
             .build();
     }
 

@@ -15,14 +15,12 @@ import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
-import site.timecapsulearchive.core.infra.map.manager.MapApiManager;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CapsuleService {
 
-    private final MapApiManager mapApiManager;
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final GeoTransformManager geoTransformManager;
