@@ -8,13 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.data.secret_c.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.data.secret_c.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.data.secret_c.response.MySecretCapsulePageResponse;
@@ -41,10 +36,10 @@ public interface SecretCapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
-        @NotNull @Valid @RequestParam(value = "size") int size,
+        int size,
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 생성 시간", required = true)
-        @NotNull @Valid @RequestParam(value = "createdAt") ZonedDateTime createdAt
+        ZonedDateTime createdAt
     );
 
     @Operation(
@@ -68,7 +63,7 @@ public interface SecretCapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        @PathVariable("capsule_id") Long capsuleId
+        Long capsuleId
     );
 
     @Operation(
@@ -92,7 +87,7 @@ public interface SecretCapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        @PathVariable("capsule_id") Long capsuleId
+        Long capsuleId
     );
 
     @Operation(
@@ -136,8 +131,7 @@ public interface SecretCapsuleApi {
     })
     ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
-        @PathVariable("capsule_id") Long capsuleId,
-
-        @ModelAttribute SecretCapsuleUpdateRequest request
+        Long capsuleId,
+        SecretCapsuleUpdateRequest request
     );
 }

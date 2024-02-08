@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSummaryResponse;
@@ -91,7 +90,7 @@ public interface CapsuleSkinApi {
     })
     ResponseEntity<ApiSpec<String>> updateCapsuleSkin(
         @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
-        @PathVariable("capsule_skin_id") Long capsuleSkinId
+        Long capsuleSkinId
     );
 
     @Operation(
@@ -108,6 +107,6 @@ public interface CapsuleSkinApi {
     })
     ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(
         @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
-        @PathVariable("capsule_skin_id") Long capsuleSkinId
+        Long capsuleSkinId
     );
 }

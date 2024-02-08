@@ -1,12 +1,12 @@
 package site.timecapsulearchive.core.domain.capsule.api.secret_c;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +56,8 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
         @AuthenticationPrincipal Long memberId,
-        @NotNull @PathVariable("capsule_id") Long capsuleId) {
+        @PathVariable("capsule_id") Long capsuleId
+    ) {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
@@ -102,8 +103,10 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     @PatchMapping(value = "/capsules/{capsule_id}", consumes = {"multipart/form-data"})
     @Override
-    public ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(Long capsuleId,
-        SecretCapsuleUpdateRequest request) {
+    public ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
+        @AuthenticationPrincipal Long capsuleId,
+        @ModelAttribute SecretCapsuleUpdateRequest request
+    ) {
         return null;
     }
 }

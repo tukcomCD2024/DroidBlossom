@@ -32,7 +32,7 @@ public class S3ApiController implements S3Api {
     @Override
     public ResponseEntity<ApiSpec<S3PreSignedUrlResponse>> getS3PreSignedUrl(
         @AuthenticationPrincipal final Long memberId,
-        @RequestBody @Valid final S3PreSignedUrlRequest request
+        @Valid @RequestBody final S3PreSignedUrlRequest request
     ) {
         S3PreSignedUrlDto dto = s3Service.getS3PreSignedUrlsForPut(
             memberId,

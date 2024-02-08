@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.data.dto.AddressData;
 import site.timecapsulearchive.core.domain.capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.data.response.ImagesPageResponse;
@@ -35,11 +32,11 @@ public interface CapsuleApi {
         )
     })
     ResponseEntity<ImagesPageResponse> findImages(
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "size") Long size,
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        Long size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 이미지 아이디", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "capsule_id") Long capsuleId
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 이미지 아이디", required = true)
+        Long capsuleId
     );
 
     @Operation(

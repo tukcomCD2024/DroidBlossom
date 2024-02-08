@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,13 +67,17 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     @PatchMapping(value = "/{capsule_skin_id}", consumes = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<String>> updateCapsuleSkin(Long capsuleSkinId) {
+    public ResponseEntity<ApiSpec<String>> updateCapsuleSkin(
+        @PathVariable(name = "capsule_skin_id") Long capsuleSkinId
+    ) {
         return null;
     }
 
     @DeleteMapping(value = "/{capsule_skin_id}")
     @Override
-    public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(Long capsuleSkinId) {
+    public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(
+        @PathVariable(name = "capsule_skin_id") Long capsuleSkinId
+    ) {
         return null;
     }
 }
