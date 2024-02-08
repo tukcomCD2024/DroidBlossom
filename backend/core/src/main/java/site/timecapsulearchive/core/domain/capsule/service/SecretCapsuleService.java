@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
@@ -163,7 +164,10 @@ public class SecretCapsuleService {
         }
 
         S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
-            S3PreSignedUrlRequestDto.forGet(dto.images(), dto.videos())
+            S3PreSignedUrlRequestDto.forGet(
+                Arrays.stream(dto.images().split(",")).toList(),
+                Arrays.stream(dto.videos().split(",")).toList()
+            )
         );
 
         return capsuleMapper.secretCapsuleDetailDtoToResponse(
