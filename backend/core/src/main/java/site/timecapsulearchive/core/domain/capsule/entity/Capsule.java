@@ -87,7 +87,6 @@ public class Capsule extends BaseEntity {
         String title,
         String content,
         CapsuleType type,
-        Boolean isOpened,
         Address address,
         Point point,
         Member member,
@@ -98,16 +97,11 @@ public class Capsule extends BaseEntity {
         this.content = content;
         this.point = point;
         this.type = type;
-        this.isOpened = isOpened;
+        this.isOpened = Boolean.FALSE;
         this.address = address;
-        this.groupCapsuleOpens = Collections.emptyList();
         this.group = null;
         this.member = member;
         this.capsuleSkin = capsuleSkin;
-    }
-
-    public void open() {
-        this.isOpened = true;
     }
 
     public boolean isNotCapsuleOpened() {

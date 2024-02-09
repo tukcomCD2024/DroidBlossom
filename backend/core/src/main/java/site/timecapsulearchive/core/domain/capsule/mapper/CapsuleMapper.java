@@ -66,7 +66,6 @@ public class CapsuleMapper {
             .member(member)
             .dueDate(dto.dueDate())
             .capsuleSkin(capsuleSkin)
-            .isOpened(dto.dueDate() != null)
             .build();
     }
 
