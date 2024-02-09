@@ -160,6 +160,6 @@ public class SecretCapsuleService {
     }
 
     private boolean isNotEmpty(List<String> fileNames) {
-        return !fileNames.isEmpty();
+        return fileNames != null && !fileNames.isEmpty();
     }
 }
