@@ -3,12 +3,12 @@ package site.timecapsulearchive.core.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.member.dto.MemberDetailResponseDto;
-import site.timecapsulearchive.core.domain.member.dto.SignUpRequestDto;
-import site.timecapsulearchive.core.domain.member.dto.VerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
-import site.timecapsulearchive.core.domain.member.dto.response.MemberDetailResponse;
-import site.timecapsulearchive.core.domain.member.dto.response.MemberStatusResponse;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
+import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
+import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
+import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
@@ -30,10 +30,10 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public Long createMember(SignUpRequestDto dto) {
-        Member member = memberMapper.signUpRequestDtoToEntity(dto);
+    public Long createMember(final SignUpRequestDto dto) {
+        final Member member = memberMapper.signUpRequestDtoToEntity(dto);
 
-        Member savedMember = memberRepository.save(member);
+        final Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();
     }
@@ -62,8 +62,9 @@ public class MemberService {
         return MemberStatusResponse.from(isVerified);
     }
 
-    public Member findMemberByMemberId(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    public Member findMemberByMemberId(final Long memberId) {
+        return memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     /**
@@ -89,7 +90,7 @@ public class MemberService {
         return dto.memberId();
     }
 
-    private boolean isNotVerified(VerifiedCheckDto dto) {
+    private boolean isNotVerified(final VerifiedCheckDto dto) {
         return !dto.isVerified();
     }
 
@@ -105,7 +106,7 @@ public class MemberService {
         final String authId,
         final SocialType socialType
     ) throws AlreadyVerifiedException {
-        VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
+        final VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -116,15 +117,16 @@ public class MemberService {
         return dto.memberId();
     }
 
-    private boolean isVerified(VerifiedCheckDto dto) {
+    private boolean isVerified(final VerifiedCheckDto dto) {
         return dto.isVerified();
     }
 
-    public MemberDetailResponse findMemberDetailById(Long memberId) {
-        MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailById(memberId)
+    public MemberDetailResponse findMemberDetailById(final Long memberId) {
+        final MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailResponseDtoById(
+                memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
+        final String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
 
         return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }

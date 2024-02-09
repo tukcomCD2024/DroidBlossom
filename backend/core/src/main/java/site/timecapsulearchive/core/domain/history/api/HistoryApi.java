@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.history.dto.reqeust.HistoryCreateRequest;
-import site.timecapsulearchive.core.domain.history.dto.response.HistoriesPageResponse;
-import site.timecapsulearchive.core.domain.history.dto.response.HistoryDetailResponse;
-import site.timecapsulearchive.core.domain.history.dto.response.HistorySummaryResponse;
+import site.timecapsulearchive.core.domain.history.data.reqeust.HistoryCreateRequest;
+import site.timecapsulearchive.core.domain.history.data.response.HistoriesPageResponse;
+import site.timecapsulearchive.core.domain.history.data.response.HistoryDetailResponse;
+import site.timecapsulearchive.core.domain.history.data.response.HistorySummaryResponse;
 
 public interface HistoryApi {
 

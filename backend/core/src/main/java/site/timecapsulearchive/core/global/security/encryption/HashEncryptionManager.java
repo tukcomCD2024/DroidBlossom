@@ -14,7 +14,7 @@ public class HashEncryptionManager {
 
     private final HashProperties hashProperties;
 
-    public byte[] encrypt(byte[] plaintText) {
+    public byte[] encrypt(final byte[] plaintText) {
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance(HASH_ALGORITHM);

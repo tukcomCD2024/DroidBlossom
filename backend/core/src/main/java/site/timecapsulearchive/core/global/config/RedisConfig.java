@@ -10,7 +10,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import site.timecapsulearchive.core.domain.auth.dto.MemberInfo;
+import site.timecapsulearchive.core.domain.auth.data.dto.MemberInfo;
 
 @Configuration
 @EnableTransactionManagement
@@ -18,8 +18,9 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, MemberInfo> memberInfoRedisTemplate(
-        RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, MemberInfo> template = new RedisTemplate<>();
+        final RedisConnectionFactory connectionFactory
+    ) {
+        final RedisTemplate<String, MemberInfo> template = new RedisTemplate<>();
 
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new Jackson2JsonRedisSerializer<>(MemberInfo.class));
@@ -32,7 +33,8 @@ public class RedisConfig {
 
     @Bean
     public PlatformTransactionManager transactionManager(
-        EntityManagerFactory entityManagerFactory) {
+        final EntityManagerFactory entityManagerFactory
+    ) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 }

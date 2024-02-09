@@ -5,10 +5,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
-import site.timecapsulearchive.core.infra.s3.dto.request.S3PreSignedUrlRequest;
-import site.timecapsulearchive.core.infra.s3.dto.response.S3PreSignedUrlResponse;
+import site.timecapsulearchive.core.infra.s3.data.request.S3PreSignedUrlRequest;
+import site.timecapsulearchive.core.infra.s3.data.response.S3PreSignedUrlResponse;
 
 public interface S3Api {
 
@@ -24,11 +23,6 @@ public interface S3Api {
             description = "s3업로드에 필요한 주소 반환"
         )
     })
-    @PostMapping(
-        value = "/upload-url",
-        consumes = {"application/json"},
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<S3PreSignedUrlResponse>> getS3PreSignedUrl(
         Long memberId,
         S3PreSignedUrlRequest request

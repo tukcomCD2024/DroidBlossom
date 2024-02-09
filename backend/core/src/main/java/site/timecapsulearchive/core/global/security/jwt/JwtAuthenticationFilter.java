@@ -33,21 +33,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
+        final HttpServletRequest request,
+        final HttpServletResponse response,
+        final FilterChain filterChain
     ) throws ServletException, IOException {
         if (notRequiresAuthentication(request)) {
             filterChain.doFilter(request, response);
         } else {
-            String accessToken = extractAccessToken(request);
+            final String accessToken = extractAccessToken(request);
 
             try {
                 if (accessToken.isBlank()) {
                     throw new InvalidTokenException();
                 }
 
-                Authentication authenticationResult = attemptAuthentication(accessToken);
+                final Authentication authenticationResult = attemptAuthentication(accessToken);
 
                 successfulAuthentication(authenticationResult);
 
@@ -61,13 +61,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private boolean notRequiresAuthentication(HttpServletRequest request) {
+    private boolean notRequiresAuthentication(final HttpServletRequest request) {
         return notRequireAuthenticationMatcher.matches(request);
     }
 
 
-    private String extractAccessToken(HttpServletRequest request) {
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+    private String extractAccessToken(final HttpServletRequest request) {
+        final String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (isNotValidFormat(token)) {
             return "";
@@ -76,29 +76,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return token.substring(PREFIX_LENGTH);
     }
 
-    private boolean isNotValidFormat(String token) {
+    private boolean isNotValidFormat(final String token) {
         return !StringUtils.hasText(token) || !token.startsWith(TOKEN_TYPE);
     }
 
-    private Authentication attemptAuthentication(String accessToken) {
-        Authentication authentication = JwtAuthenticationToken.unauthenticated(accessToken);
+    private Authentication attemptAuthentication(final String accessToken) {
+        final Authentication authentication = JwtAuthenticationToken.unauthenticated(accessToken);
 
         return authenticationManager.authenticate(authentication);
     }
 
-    private void successfulAuthentication(Authentication authResult) {
+    private void successfulAuthentication(final Authentication authResult) {
         SecurityContextHolder.getContext()
             .setAuthentication(authResult);
     }
 
     private void unsuccessfulAuthentication(
-        HttpServletResponse response,
-        InvalidTokenException exception
+        final HttpServletResponse response,
+        final InvalidTokenException exception
     ) throws IOException {
         log.info("액세스 토큰 인증 실패", exception);
         SecurityContextHolder.clearContext();
 
-        ErrorResponse errorResponse = ErrorResponse.create(
+        final ErrorResponse errorResponse = ErrorResponse.create(
             ErrorCode.AUTHENTICATION_ERROR
         );
 

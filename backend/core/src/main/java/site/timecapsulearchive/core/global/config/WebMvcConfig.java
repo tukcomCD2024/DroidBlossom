@@ -15,13 +15,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final ApiLimitCheckInterceptor apiLimitCheckInterceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(apiLimitCheckInterceptor)
             .addPathPatterns("/auth/verification/send-message");
     }
 
     @Override
-    public void addFormatters(FormatterRegistry registry) {
+    public void addFormatters(final FormatterRegistry registry) {
         registry.addConverter(new ZonedDateTimeConverter());
     }
 }

@@ -18,9 +18,9 @@ public class JwtDsl extends AbstractHttpConfigurer<JwtDsl, HttpSecurity> {
     private final RequestMatcher notRequireAuthenticationMatcher;
 
     public static JwtDsl jwtDsl(
-        AuthenticationProvider authenticationProvider,
-        ObjectMapper objectMapper,
-        RequestMatcher requestMatcher
+        final AuthenticationProvider authenticationProvider,
+        final ObjectMapper objectMapper,
+        final RequestMatcher requestMatcher
     ) {
         return new JwtDsl(
             authenticationProvider,
@@ -40,7 +40,8 @@ public class JwtDsl extends AbstractHttpConfigurer<JwtDsl, HttpSecurity> {
     }
 
     private JwtAuthenticationFilter jwtAuthenticationFilter(
-        AuthenticationManager authenticationManager) {
+        final AuthenticationManager authenticationManager
+    ) {
         return new JwtAuthenticationFilter(
             authenticationManager,
             objectMapper,

@@ -12,13 +12,11 @@ public final class MakeRandomNickNameUtil {
     private MakeRandomNickNameUtil() {
     }
 
-
     public static String makeRandomNickName() {
-        List<String> nick = new ArrayList<>(RandomNickName.NICK.getValue());
-        List<String> name = new ArrayList<>(RandomNickName.NAME.getValue());
+        final List<String> nick = new ArrayList<>(RandomNickName.NICK.getValue());
+        final List<String> name = new ArrayList<>(RandomNickName.NAME.getValue());
 
-        // 0 ~ 999
-        String uniqueNumber = String.valueOf(System.currentTimeMillis() % DIVIDED_UNIT);
+        final String uniqueNumber = String.valueOf(System.currentTimeMillis() % DIVIDED_UNIT);
 
         return nick.get(randomNumber()) + name.get(randomNumber()) + uniqueNumber;
     }

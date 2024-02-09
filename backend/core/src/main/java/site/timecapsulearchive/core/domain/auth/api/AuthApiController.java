@@ -5,22 +5,24 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.TemporaryTokenReIssueRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.dto.response.OAuth2UriResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
+import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.TemporaryTokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.TokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
+import site.timecapsulearchive.core.domain.auth.data.response.OAuth2UriResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
-import site.timecapsulearchive.core.domain.auth.service.TokenService;
-import site.timecapsulearchive.core.domain.member.dto.mapper.MemberMapper;
+import site.timecapsulearchive.core.domain.auth.service.TokenManager;
+import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -33,15 +35,17 @@ public class AuthApiController implements AuthApi {
     private static final String KAKAO_AUTHORIZATION_ENDPOINT = "/auth/login/kakao";
     private static final String GOOGLE_AUTHORIZATION_ENDPOINT = "/auth/login/google";
 
-    private final TokenService tokenService;
+    private final TokenManager tokenService;
     private final MessageVerificationService messageVerificationService;
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
+
+    @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
     @Override
-    public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request) {
-        String baseUrl = request.getRequestURL().toString();
-        String kakaoLoginUrl = baseUrl.replace(
+    public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(final HttpServletRequest request) {
+        final String baseUrl = request.getRequestURL().toString();
+        final String kakaoLoginUrl = baseUrl.replace(
             request.getRequestURI(),
             request.getContextPath() + KAKAO_AUTHORIZATION_ENDPOINT
         );
@@ -49,10 +53,11 @@ public class AuthApiController implements AuthApi {
         return ResponseEntity.ok(OAuth2UriResponse.from(kakaoLoginUrl));
     }
 
+    @GetMapping(value = "/login/url/google", produces = {"application/json"})
     @Override
-    public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request) {
-        String baseUrl = request.getRequestURL().toString();
-        String googleLoginUrl = baseUrl.replace(
+    public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(final HttpServletRequest request) {
+        final String baseUrl = request.getRequestURL().toString();
+        final String googleLoginUrl = baseUrl.replace(
             request.getRequestURI(),
             request.getContextPath() + GOOGLE_AUTHORIZATION_ENDPOINT
         );
@@ -60,21 +65,30 @@ public class AuthApiController implements AuthApi {
         return ResponseEntity.ok(OAuth2UriResponse.from(googleLoginUrl));
     }
 
+    @GetMapping(value = "/login/oauth2/code/kakao", produces = {"application/json"})
     @Override
-    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao() {
+    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByKakao() {
         throw new UnsupportedOperationException();
     }
 
+    @GetMapping(value = "/login/oauth2/code/google", produces = {"application/json"})
     @Override
-    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle() {
+    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByGoogle() {
         throw new UnsupportedOperationException();
     }
 
+    @PostMapping(
+        value = "/temporary-token/re-issue",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
-        @Valid @RequestBody final TemporaryTokenReIssueRequest request) {
-        Long id = memberService.findNotVerifiedMemberIdByAuthIdAndSocialType(
-            request.authId(), request.socialType());
+        @Valid @RequestBody final TemporaryTokenReIssueRequest request
+    ) {
+        final Long id = memberService.findNotVerifiedMemberIdByAuthIdAndSocialType(
+            request.authId(), request.socialType()
+        );
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -84,6 +98,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/token/re-issue",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(
         @Valid @RequestBody final TokenReIssueRequest request
@@ -96,11 +115,16 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/sign-up",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
         @Valid @RequestBody final SignUpRequest request
     ) {
-        Long id = memberService.createMember(memberMapper.signUpRequestToDto(request));
+        final Long id = memberService.createMember(memberMapper.signUpRequestToDto(request));
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -110,11 +134,16 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/sign-in",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
         @Valid @RequestBody final SignInRequest request) {
-        Long memberId = memberService.findVerifiedMemberIdByAuthIdAndSocialType(request.authId(),
-            request.socialType());
+        final Long memberId = memberService.findVerifiedMemberIdByAuthIdAndSocialType(
+            request.authId(), request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -124,6 +153,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/verification/send-message",
+        consumes = {"application/json"},
+        produces = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<VerificationMessageSendResponse>> sendVerificationMessage(
         @AuthenticationPrincipal final Long memberId,
@@ -144,12 +178,17 @@ public class AuthApiController implements AuthApi {
             );
     }
 
+    @PostMapping(
+        value = "/verification/valid-message",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> validVerificationMessage(
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationNumberValidRequest request
     ) {
-        TokenResponse response = messageVerificationService.validVerificationMessage(
+        final TokenResponse response = messageVerificationService.validVerificationMessage(
             memberId,
             request.certificationNumber(),
             request.receiver()

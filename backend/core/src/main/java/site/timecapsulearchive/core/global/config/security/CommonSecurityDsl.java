@@ -12,7 +12,7 @@ public class CommonSecurityDsl extends AbstractHttpConfigurer<CommonSecurityDsl,
     }
 
     @Override
-    public void init(HttpSecurity http) throws Exception {
+    public void init(final HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)

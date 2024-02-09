@@ -18,11 +18,11 @@ public class ImageQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void bulkSave(List<Image> images) {
+    public void bulkSave(final List<Image> images) {
         batchInsert(images);
     }
 
-    private void batchInsert(List<Image> images) {
+    private void batchInsert(final List<Image> images) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO image (
@@ -32,8 +32,8 @@ public class ImageQueryRepository {
             new BatchPreparedStatementSetter() {
 
                 @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    Image image = images.get(i);
+                public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                    final Image image = images.get(i);
                     ps.setNull(1, Types.BIGINT);
                     ps.setString(2, image.getImageUrl());
                     ps.setLong(3, image.getMember().getId());

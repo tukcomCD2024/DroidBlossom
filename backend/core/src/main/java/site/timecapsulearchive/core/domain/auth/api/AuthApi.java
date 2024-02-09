@@ -8,18 +8,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import site.timecapsulearchive.core.domain.auth.dto.request.SignInRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.SignUpRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.TemporaryTokenReIssueRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.TokenReIssueRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.VerificationMessageSendRequest;
-import site.timecapsulearchive.core.domain.auth.dto.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.dto.response.OAuth2UriResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.TemporaryTokenResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
+import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.TemporaryTokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.TokenReIssueRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
+import site.timecapsulearchive.core.domain.auth.data.response.OAuth2UriResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
@@ -38,10 +36,6 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        value = "/login/url/kakao",
-        produces = {"application/json"}
-    )
     ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request);
 
 
@@ -58,10 +52,6 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        value = "/login/url/google",
-        produces = {"application/json"}
-    )
     ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request);
 
     @Operation(
@@ -75,11 +65,7 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        value = "/login/oauth2/code/kakao",
-        produces = {"application/json"}
-    )
-    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByKakao();
+    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByKakao();
 
 
     @Operation(
@@ -93,11 +79,7 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        value = "/login/oauth2/code/google",
-        produces = {"application/json"}
-    )
-    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenResponseByGoogle();
+    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByGoogle();
 
     @Operation(
         summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 아이디로 회원가입",
@@ -114,11 +96,6 @@ public interface AuthApi {
             description = "ok"
         )
     })
-    @PostMapping(
-        value = "/sign-up",
-        consumes = {"application/json"},
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(SignUpRequest request);
 
     @Operation(
@@ -152,11 +129,6 @@ public interface AuthApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping(
-        value = "/sign-in",
-        consumes = {"application/json"},
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(SignInRequest request);
 
     @Operation(
@@ -186,11 +158,6 @@ public interface AuthApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping(
-        value = "/temporary-token/re-issue",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
     ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
         TemporaryTokenReIssueRequest request);
 
@@ -217,11 +184,6 @@ public interface AuthApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping(
-        value = "/token/re-issue",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
     ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(TokenReIssueRequest request);
 
 
@@ -254,11 +216,6 @@ public interface AuthApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping(
-        value = "/verification/send-message",
-        consumes = {"application/json"},
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<VerificationMessageSendResponse>> sendVerificationMessage(
         Long memberId,
         VerificationMessageSendRequest request
@@ -292,11 +249,6 @@ public interface AuthApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping(
-        value = "/verification/valid-message",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
     ResponseEntity<ApiSpec<TokenResponse>> validVerificationMessage(
         Long memberId,
         VerificationNumberValidRequest request

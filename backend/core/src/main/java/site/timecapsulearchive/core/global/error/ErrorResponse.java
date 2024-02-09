@@ -52,7 +52,7 @@ public record ErrorResponse(
         String reason
     ) {
 
-        public static Error parameter(String parameterName) {
+        public static Error parameter(final String parameterName) {
             return new Error(parameterName, null, "필수 입력 파라미터를 포함하지 않았습니다.");
         }
 

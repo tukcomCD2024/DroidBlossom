@@ -21,9 +21,9 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(
-        SocialType socialType,
-        String userNameAttributeName,
-        Map<String, Object> attributes
+        final SocialType socialType,
+        final String userNameAttributeName,
+        final Map<String, Object> attributes
     ) {
         if (socialType == SocialType.KAKAO) {
             return ofKakao(userNameAttributeName, attributes);
@@ -33,10 +33,10 @@ public class OAuthAttributes {
     }
 
     private static OAuthAttributes ofKakao(
-        String userNameAttributeName,
-        Map<String, Object> attributes
+        final String userNameAttributeName,
+        final Map<String, Object> attributes
     ) {
-        Long authId = (Long) attributes.get(userNameAttributeName);
+        final Long authId = (Long) attributes.get(userNameAttributeName);
 
         return OAuthAttributes.builder()
             .authId(String.valueOf(authId))
@@ -45,8 +45,8 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes ofGoogle(
-        String userNameAttributeName,
-        Map<String, Object> attributes
+        final String userNameAttributeName,
+        final Map<String, Object> attributes
     ) {
         return OAuthAttributes.builder()
             .authId((String) attributes.get(userNameAttributeName))

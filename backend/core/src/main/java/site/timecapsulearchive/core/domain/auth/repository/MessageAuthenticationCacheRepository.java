@@ -19,7 +19,7 @@ public class MessageAuthenticationCacheRepository {
         redisTemplate.opsForValue().set(PREFIX + memberId, code, MINUTE, TimeUnit.MINUTES);
     }
 
-    public Optional<String> get(final Long memberId) {
+    public Optional<String> findMessageAuthenticationCodeByMemberId(final Long memberId) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + memberId));
     }
 }

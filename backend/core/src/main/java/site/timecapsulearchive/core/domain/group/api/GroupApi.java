@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.group.dto.reqeust.GroupCreateRequest;
-import site.timecapsulearchive.core.domain.group.dto.reqeust.GroupUpdateRequest;
-import site.timecapsulearchive.core.domain.group.dto.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.dto.response.GroupSummaryResponse;
-import site.timecapsulearchive.core.domain.group.dto.response.GroupsPageResponse;
+import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
+import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
+import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupSummaryResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupsPageResponse;
 
 public interface GroupApi {
 

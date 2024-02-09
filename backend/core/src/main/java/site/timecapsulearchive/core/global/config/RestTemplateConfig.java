@@ -31,7 +31,7 @@ public class RestTemplateConfig {
     private static final int KEEP_ALIVE_SECONDS = 30;
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    public RestTemplate restTemplate(final RestTemplateBuilder builder) {
         return builder
             .messageConverters(formHttpConverter(), mappingJackson2HttpMessageConverter())
             .requestFactory(this::clientHttpRequestFactory)
@@ -39,7 +39,7 @@ public class RestTemplateConfig {
     }
 
     private FormHttpMessageConverter formHttpConverter() {
-        FormHttpMessageConverter formConverter = new FormHttpMessageConverter();
+        final FormHttpMessageConverter formConverter = new FormHttpMessageConverter();
 
         formConverter.addPartConverter(new ByteArrayHttpMessageConverter());
         formConverter.setMultipartCharset(StandardCharsets.UTF_8);
@@ -49,7 +49,7 @@ public class RestTemplateConfig {
     }
 
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        final MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
 
         jsonConverter.setSupportedMediaTypes(
             List.of(MediaType.TEXT_HTML, MediaType.APPLICATION_JSON_UTF8));
@@ -57,7 +57,7 @@ public class RestTemplateConfig {
     }
 
     private ClientHttpRequestFactory clientHttpRequestFactory() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setConnectTimeout(CONNECTION_TIMEOUT);
         factory.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT);
         factory.setHttpClient(httpClient());

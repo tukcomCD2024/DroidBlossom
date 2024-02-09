@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.auth.dto.MemberInfo;
+import site.timecapsulearchive.core.domain.auth.data.dto.MemberInfo;
 
 @Repository
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class MemberInfoCacheRepository {
      * @param infoKey 캐시에 저장된 키, UUID string
      * @return {@code Optional<MemberInfo>} 사용자 정보
      */
-    public Optional<MemberInfo> getMemberInfo(final String infoKey) {
+    public Optional<MemberInfo> findMemberInfoByInfoKey(final String infoKey) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + infoKey));
     }
 

@@ -10,7 +10,7 @@ public class PhoneValidator implements ConstraintValidator<Phone, String> {
     private static final String PHONE_REGEX = "^\\d{11}$";
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
         if (value == null || value.isBlank()) {
             return false;
         }

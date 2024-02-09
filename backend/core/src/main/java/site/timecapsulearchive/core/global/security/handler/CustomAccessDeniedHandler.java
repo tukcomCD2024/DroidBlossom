@@ -20,12 +20,12 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        AccessDeniedException accessDeniedException
+        final HttpServletRequest request,
+        final HttpServletResponse response,
+        final AccessDeniedException accessDeniedException
     ) throws IOException {
 
-        ErrorResponse errorResponse = ErrorResponse.create(
+        final ErrorResponse errorResponse = ErrorResponse.create(
             ErrorCode.AUTHORIZATION_ERROR
         );
 
