@@ -13,7 +13,7 @@ import site.timecapsulearchive.core.infra.map.manager.KakaoMapApiManager;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/s3")
+@RequestMapping("/map")
 public class KakaoMapApiController implements KakaoMapApi {
 
     private final KakaoMapApiManager kakaoMapApiManager;
