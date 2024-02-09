@@ -16,7 +16,7 @@ public interface KakaoMapApi {
         summary = "좌표에 따른 전체 주소 반환",
         description = "위도와 경도 요청시 전체 주소를 반환해 준다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"capsule"}
+        tags = {"map"}
     )
     @ApiResponses(value = {
         @ApiResponse(
