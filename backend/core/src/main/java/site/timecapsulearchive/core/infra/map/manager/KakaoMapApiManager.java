@@ -63,8 +63,7 @@ public class KakaoMapApiManager implements MapApiManager {
     }
 
     private boolean isError(final KakaoMapApiResponse response) {
-        return response == null ||
-            response.documents() == null;
+        return response == null || response.documents() == null || response.documents().isEmpty();
     }
 
     private HttpEntity<Void> getHttpEntity() {
