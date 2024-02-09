@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -36,6 +37,8 @@ import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SecretCapsuleService {
+
+    private static final String DELIMITER = ",";
 
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
@@ -106,8 +109,8 @@ public class SecretCapsuleService {
 
         final S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
             S3PreSignedUrlRequestDto.forGet(
-                List.of(dto.images().split(",")),
-                List.of(dto.videos().split(","))
+                splitFileNames(dto.images()),
+                splitFileNames(dto.videos())
             )
         );
 
@@ -116,6 +119,14 @@ public class SecretCapsuleService {
             s3UrlsForGet.preSignedImageUrls(),
             s3UrlsForGet.preSignedVideoUrls()
         );
+    }
+
+    private List<String> splitFileNames(String fileNames) {
+        if (fileNames == null) {
+            return Collections.emptyList();
+        }
+
+        return List.of(fileNames.split(DELIMITER));
     }
 
     private boolean capsuleNotOpened(final SecretCapsuleDetailDto dto) {
@@ -163,3 +174,4 @@ public class SecretCapsuleService {
         return fileNames != null && !fileNames.isEmpty();
     }
 }
+
