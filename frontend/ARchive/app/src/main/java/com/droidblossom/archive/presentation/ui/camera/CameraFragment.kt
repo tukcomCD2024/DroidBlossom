@@ -10,7 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
+import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
@@ -36,6 +38,20 @@ class CameraFragment :
     private lateinit var config: Config
 
     override fun observeData() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.cameraEvents.collect{ event ->
+                    when(event){
+                        is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
+                            val sheet = CapsulePreviewDialogFragment.newInstance(event.capsuleId, event.capsuleType)
+                            sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+                        }
+                    }
+                }
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
@@ -65,7 +81,7 @@ class CameraFragment :
                                             0f,
                                             0f
                                         )
-                                        addAnchorNode(earthAnchor)
+                                        addAnchorNode(earthAnchor,capsule)
                                     }
                                 }
                             }
@@ -103,7 +119,7 @@ class CameraFragment :
         }
     }
 
-    private fun addAnchorNode(anchor: Anchor) {
+    private fun addAnchorNode(anchor: Anchor, capsule : CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
         val anchorNode = AnchorNode(binding.sceneView.engine, anchor)
 
@@ -113,6 +129,10 @@ class CameraFragment :
                     modelInstance?.let {
                         val modelNode = ModelNode(modelInstance = it).apply {
                             playAnimation(0)
+                            onSingleTapConfirmed = {
+                                viewModel.cameraEvent(CameraViewModel.CameraEvent.ShowCapsulePreviewDialog(capsule.id.toString(), capsule.capsuleType.toString()))
+                                true
+                            }
                         }
                         anchorNode.addChildNode(modelNode)
                     }

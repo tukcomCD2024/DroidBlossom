@@ -193,4 +193,16 @@ class CapsulePreviewDialogFragment :
         }
         animator.start()
     }
+
+    companion object {
+        fun newInstance(capsuleId: String, capsuleType: String): CapsulePreviewDialogFragment {
+            val args = Bundle().apply {
+                putString("capsule_id", capsuleId)
+                putString("capsule_type", capsuleType)
+            }
+            return CapsulePreviewDialogFragment().apply {
+                arguments = args
+            }
+        }
+    }
 }
