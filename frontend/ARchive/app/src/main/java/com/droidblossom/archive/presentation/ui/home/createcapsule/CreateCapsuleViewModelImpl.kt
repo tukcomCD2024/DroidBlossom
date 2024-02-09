@@ -292,10 +292,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
                     secretCapsuleCreateUseCase(
                         SecretCapsuleCreateRequest(
-                            capsuleSkinId = 4,
+                            capsuleSkinId = 1,
                             content = capsuleContent.value,
-                            directory = imageNames.takeUnless { it.isEmpty() }?.let { S3DIRECTORY }
-                                ?: "",
+                            directory = S3DIRECTORY,
                             dueDate = dueTime.value,
                             imageNames = imageNames,
                             videoNames = videoNames,

@@ -102,7 +102,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             }
 
             val endTimeCalendar = Calendar.getInstance().apply {
-                time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
+                if (dueDate.isBlank()) {
+                    time = startTimeCalendar.time
+                }else{
+                    time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid createdAt format")
+                }
             }
             _startTime.emit(startTimeCalendar)
             _endTime.emit(endTimeCalendar)
@@ -187,7 +191,6 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             patchCapsuleOpenedUseCase(capsuleId).collect{result ->
                 result.onSuccess {
-                    Log.d("개봉", " 개봉 성공 코드 : $it")
                     if(it.result == "캡슐을 열 수 없습니다."){
                         capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
                     }else{
