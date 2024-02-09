@@ -1,8 +1,12 @@
 package com.droidblossom.archive.util
 
+import android.content.Intent
+import android.util.Log
+import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.domain.model.auth.TokenReIssue
+import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import dagger.Lazy
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -27,13 +31,14 @@ class TokenAuthenticator @Inject constructor(
 
             return if (fetchUpdateToken()) {
                 val newToken = runBlocking { ds.fetchAccessToken() }
-                // UnAuthorized 예외가 발생한 요청을 복제하여 다시 요청합니다.
                 response.request.newBuilder().apply {
                     removeHeader("Authorization")
                     addHeader("Authorization", "Bearer $newToken")
                 }.build()
             } else {
                 // 로그인으로 보내기
+                runBlocking { ds.resetTokenData() }
+                redirectToLogin()
                 null
             }
         }
@@ -57,5 +62,12 @@ class TokenAuthenticator @Inject constructor(
             // 예외 처리
         }
         return@runBlocking false
+    }
+
+    private fun redirectToLogin(){
+        Log.d("토큰", "리다이렉션")
+        val intent = Intent(ARchiveApplication.getContext(), AuthActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        ARchiveApplication.getContext().startActivity(intent)
     }
 }

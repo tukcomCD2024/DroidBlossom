@@ -53,6 +53,8 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         private lateinit var networkConnectionChecker: NetworkStatusChecker
         fun isOnline() = networkConnectionChecker.isOnline()
 
+        fun getContext() : Context = context
+
     }
 
 //    private fun getHashKey() {
