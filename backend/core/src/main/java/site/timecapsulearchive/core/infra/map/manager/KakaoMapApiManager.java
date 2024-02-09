@@ -29,8 +29,8 @@ public class KakaoMapApiManager implements MapApiManager {
     private final RestTemplate restTemplate;
     private final AddressMapper addressMapper;
 
-    public AddressData reverseGeoCoding(final Double longitude, final Double latitude) {
-        final URI uri = getKakaoMapApiUrl(longitude, latitude);
+    public AddressData reverseGeoCoding(final Double latitude, final Double longitude) {
+        final URI uri = getKakaoMapApiUrl(latitude, longitude);
 
         final HttpEntity<Void> entity = getHttpEntity();
 
@@ -53,11 +53,11 @@ public class KakaoMapApiManager implements MapApiManager {
         return addressMapper.roadAddressToData(document.roadAddressDto());
     }
 
-    private URI getKakaoMapApiUrl(final Double longitude, final Double latitude) {
+    private URI getKakaoMapApiUrl(final Double latitude, final Double longitude) {
         return UriComponentsBuilder.fromHttpUrl(URL)
             .path(PATH)
-            .queryParam(LONGITUDE, longitude)
             .queryParam(LATITUDE, latitude)
+            .queryParam(LONGITUDE, longitude)
             .build()
             .toUri();
     }
