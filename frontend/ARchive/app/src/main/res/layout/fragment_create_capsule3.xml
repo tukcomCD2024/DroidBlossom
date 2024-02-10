@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin"
             android:paddingBottom="16dp"
-            android:text="나의 추억을 기록해 보세요."
+            android:text="추억을 기록해 보세요."
             android:textAppearance="@style/TextAppearance.App.h2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,14 +54,23 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true">
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/corner_radius_30"
+                        android:backgroundTint="@color/main_bg_1"
+                        app:layout_constraintBottom_toBottomOf="@id/capsuleBtn"
+                        app:layout_constraintEnd_toEndOf="@id/timeCapsuleBtn"
+                        app:layout_constraintStart_toStartOf="@id/capsuleBtn"
+                        app:layout_constraintTop_toTopOf="@id/capsuleBtn" />
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleBtn"
                         android:layout_width="0dp"
-                        android:layout_height="56dp"
+                        android:layout_height="60dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="44dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/corner_radius_8"
+                        android:layout_marginTop="24dp"
+                        android:background="@drawable/corner_radius_30"
                         android:backgroundTint="@{vm.isSelectTimeCapsule ? @color/main_bg_1 : @color/main_1}"
                         android:gravity="center"
                         android:onClick="@{()->vm.selectCapsule()}"
@@ -76,177 +85,200 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/timeCapsuleBtn"
                         android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="44dp"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="16dp"
-                        android:background="@drawable/corner_radius_8"
+                        android:background="@drawable/corner_radius_30"
                         android:backgroundTint="@{vm.isSelectTimeCapsule ? @color/main_1 : @color/main_bg_1}"
                         android:gravity="center"
                         android:onClick="@{()->vm.selectTimeCapsule()}"
-                        android:text="타임 캡슐"
+                        android:text="타임캡슐"
                         android:textAppearance="@style/TextAppearance.App.button"
                         android:textColor="@{vm.isSelectTimeCapsule? @color/white: @color/main_2}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/capsuleBtn"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/placeSettingT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="장소설정"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        app:layout_constraintBottom_toBottomOf="@id/placeSettingBtn"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/placeSettingBtn" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/placeT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="6dp"
-                        android:ellipsize="middle"
-                        android:maxWidth="250dp"
-                        android:maxLines="1"
-                        android:text="@{vm.capsuleLocationName}"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        android:textColor="@color/gray_600"
-                        app:layout_constraintBottom_toBottomOf="@id/placeSettingBtn"
-                        app:layout_constraintEnd_toStartOf="@id/placeSettingBtn"
-                        app:layout_constraintTop_toTopOf="@id/placeSettingBtn"
-                        tools:text="강남역 11번 출구, 강남역 11번 출구, 강남역 11번 출구" />
-
-                    <ImageView
-                        android:id="@+id/placeSettingBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_arrow_right_24"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/timeCapsuleBtn" />
-
-                    <TextView
-                        android:id="@+id/timeSettingT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="시간추가"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@id/timeSettingBtn"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/timeSettingBtn" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/timeT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="6dp"
-                        android:ellipsize="middle"
-                        android:maxWidth="250dp"
-                        android:maxLines="1"
-                        android:onClick="@{()->vm.moveLocation()}"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        android:textColor="@color/gray_600"
-                        android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@id/timeSettingBtn"
-                        app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
-                        app:layout_constraintTop_toTopOf="@id/timeSettingBtn"
-                        tools:text="2025.01.05" />
-
-                    <ImageView
-                        android:id="@+id/timeSettingBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginEnd="16dp"
-                        android:onClick="@{()->vm.moveDate()}"
-                        android:src="@drawable/ic_plus_main_24"
-                        android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/placeSettingBtn"
-                        app:layout_goneMarginTop="16dp" />
-
-                    <View
-                        android:id="@+id/line"
                         android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/main_4"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/corner_radius_16"
+                        android:backgroundTint="@color/main_2"
+                        android:ellipsize="middle"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:paddingHorizontal="12dp"
+                        android:text="@{vm.capsuleLocationName}"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        android:textColor="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toEndOf="@id/timeCV"
+                        app:layout_constraintTop_toBottomOf="@+id/capsuleTitleEditT"
+                        tools:text="강남역 11번 출구" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/timeCV"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="12dp"
+                        android:backgroundTint="@color/main_2"
+                        android:onClick="@{()->vm.moveDate()}"
+                        android:visibility="@{vm.isSelectTimeCapsule ? View.VISIBLE : View.GONE}"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintBottom_toBottomOf="@id/placeT"
+                        app:layout_constraintEnd_toStartOf="@id/placeT"
+                        app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/timeSettingBtn" />
+                        app:layout_constraintTop_toTopOf="@id/placeT">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/timeT"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginEnd="4dp"
+                                android:ellipsize="middle"
+                                android:maxLines="1"
+                                android:textAppearance="@style/TextAppearance.App.caption2"
+                                android:textColor="@color/white"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="2025.01.05" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/timeSettingBtn"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="16dp"
+                                android:background="@drawable/corner_radius_12"
+                                android:backgroundTint="@color/main_bg_1"
+                                android:src="@drawable/ic_arrow_right_24"
+                                app:layout_constraintBottom_toBottomOf="@id/timeT"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/timeT" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/capsuleTitleEditT"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="24dp"
-                        android:background="@android:color/transparent"
+                        android:layout_marginTop="32dp"
+                        android:background="@drawable/corner_radius_16"
+                        android:backgroundTint="@color/main_bg_1"
+                        android:gravity="center"
                         android:hint="캡슐 이름을 작성하세요."
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="16dp"
                         android:text="@={vm.capsuleTitle}"
-                        android:textAppearance="@style/TextAppearance.App.h2"
+                        android:textAppearance="@style/TextAppearance.App.h4"
+                        android:textColorHint="@color/main_3"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/line" />
+                        app:layout_constraintTop_toBottomOf="@id/capsuleBtn" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/capsuleContentEditT"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="24dp"
-                        android:background="@android:color/transparent"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/corner_radius_16"
+                        android:backgroundTint="@color/main_bg_1"
                         android:gravity="top"
                         android:hint="캡슐 내용을 작성하세요."
-                        android:minLines="2"
+                        android:minHeight="180dp"
+                        android:padding="24dp"
                         android:text="@={vm.capsuleContent}"
                         android:textAppearance="@style/TextAppearance.App.body2"
+                        android:textColorHint="@color/main_3"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/capsuleTitleEditT" />
+                        app:layout_constraintTop_toBottomOf="@id/placeT" />
 
-                    <TextView
-                        android:id="@+id/imageUpload"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:text="사진 업로드"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT" />
-
-
-                    <ImageView
-                        android:id="@+id/imageAddBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/imageCV"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="@color/main_2"
                         android:onClick="@{()->vm.moveImgUpLoad()}"
-                        android:src="@drawable/ic_plus_main_24"
                         android:visibility="@{vm.imgUris.size() > 1 ? View.GONE : View.VISIBLE  }"
-                        app:layout_constraintBottom_toBottomOf="@id/imageUpload"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/imageUpload"
-                        app:layout_goneMarginTop="16dp" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/imageT"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="28dp"
+                                android:layout_marginEnd="4dp"
+                                android:ellipsize="middle"
+                                android:maxLines="1"
+                                android:text="사진 업로드"
+                                android:textAppearance="@style/TextAppearance.App.body2"
+                                android:textColor="@color/white"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/imagePlusBtn"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="18dp"
+                                android:background="@drawable/corner_radius_12"
+                                android:backgroundTint="@color/main_bg_1"
+                                android:src="@drawable/ic_arrow_right_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/recycleView"
                         android:layout_width="0dp"
-                        android:layout_height="360dp"
+                        android:layout_height="0dp"
                         android:layout_marginTop="16dp"
                         android:clipChildren="false"
                         android:clipToPadding="false"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
+                        android:visibility="@{vm.imgUris.size() > 1 ? View.VISIBLE : View.GONE  }"
+                        app:layout_constraintDimensionRatio="w,1:1"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/imageUpload" />
+                        app:layout_constraintTop_toBottomOf="@id/imageCV" />
 
                     <View
                         android:layout_width="0dp"
