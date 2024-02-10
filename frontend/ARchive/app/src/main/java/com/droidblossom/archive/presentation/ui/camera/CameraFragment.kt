@@ -47,6 +47,8 @@ class CameraFragment :
                             val sheet = CapsulePreviewDialogFragment.newInstance(event.capsuleId, event.capsuleType)
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
+
+                        else -> {}
                     }
                 }
             }
@@ -131,7 +133,7 @@ class CameraFragment :
                             playAnimation(0)
                             onSingleTapConfirmed = {
                                 viewModel.cameraEvent(CameraViewModel.CameraEvent.ShowCapsulePreviewDialog(capsule.id.toString(), capsule.capsuleType.toString()))
-                                true
+                                false
                             }
                         }
                         anchorNode.addChildNode(modelNode)
