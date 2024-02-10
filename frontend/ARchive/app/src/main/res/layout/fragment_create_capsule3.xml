@@ -226,7 +226,8 @@
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT">
+                        app:layout_constraintTop_toBottomOf="@id/capsuleContentEditT"
+                        app:layout_goneMarginTop="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -263,12 +264,11 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.cardview.widget.CardView>
 
-
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/recycleView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="12dp"
                         android:clipChildren="false"
                         android:clipToPadding="false"
                         android:paddingStart="16dp"
@@ -278,12 +278,14 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/imageCV" />
+                        app:layout_constraintTop_toBottomOf="@id/imageCV"
+                        app:layout_goneMarginTop="0dp"/>
 
                     <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                         android:id="@+id/indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="@{vm.imgUris.size() > 1 ? View.VISIBLE : View.GONE  }"
                         app:dotsColor="@color/main_1"
                         app:dotsCornerRadius="2dp"
                         app:dotsSize="4dp"
@@ -291,16 +293,96 @@
                         app:dotsStrokeColor="@color/main_bg_1"
                         app:layout_constraintEnd_toEndOf="@id/recycleView"
                         app:layout_constraintStart_toStartOf="@id/recycleView"
-                        app:layout_constraintTop_toBottomOf="@id/recycleView" />
+                        app:layout_constraintTop_toBottomOf="@id/recycleView"
+                        app:layout_goneMarginTop="0dp" />
 
-
-                    <View
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/videoCV"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_height="56dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="@color/main_2"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/recycleView" />
+                        app:layout_constraintTop_toBottomOf="@id/indicator">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/videoT"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="28dp"
+                                android:layout_marginEnd="4dp"
+                                android:ellipsize="middle"
+                                android:maxLines="1"
+                                android:text="동영상 업로드"
+                                android:textAppearance="@style/TextAppearance.App.body2"
+                                android:textColor="@color/white"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/videoPlusBtn"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="18dp"
+                                android:background="@drawable/corner_radius_12"
+                                android:backgroundTint="@color/main_bg_1"
+                                android:src="@drawable/ic_plus_main_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginHorizontal="16dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/videoCV"
+                        app:strokeColor="@color/main_bg_1"
+                        app:strokeWidth="8dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/videoImg"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_margin="4dp"
+                                android:background="@drawable/corner_radius_16_stroke_2"
+                                android:backgroundTint="@color/main_bg_1"
+                                android:scaleType="centerCrop"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="w,1:1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:visibility="gone"/>
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
