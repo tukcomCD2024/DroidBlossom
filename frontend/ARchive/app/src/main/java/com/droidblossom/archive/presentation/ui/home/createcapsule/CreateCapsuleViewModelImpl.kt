@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
@@ -123,6 +124,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _imgUris = MutableStateFlow(listOf<Dummy>(Dummy(null, true)))
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
+
+    private val _videoUri = MutableStateFlow(listOf<Uri>())
+    override val videoUri: StateFlow<List<Uri>>
+        get() = _videoUri
 
     private val _imageFiles = MutableStateFlow<List<File>>(emptyList())
     override val imageFiles: StateFlow<List<File>> = _imageFiles
@@ -374,6 +379,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun moveVideoUpLoad() {
+        viewModelScope.launch {
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad)
+        }
+    }
+
     override fun selectTimeCapsule() {
         viewModelScope.launch { _isSelectTimeCapsule.emit(true) }
     }
@@ -401,6 +412,18 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             list + listOf(Dummy(null, true))
         } else list
         viewModelScope.launch { _imgUris.emit(submitList) }
+    }
+
+    override fun deleteVideoUrl() {
+        viewModelScope.launch {
+            _videoUri.value = listOf()
+        }
+    }
+
+    override fun addVideoUrl(uri: Uri) {
+        viewModelScope.launch {
+            _videoUri.value = listOf(uri)
+        }
     }
 
     override fun getUploadUrls(getS3UrlData: S3UrlRequest) {
