@@ -279,7 +279,7 @@
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/imageCV"
-                        app:layout_goneMarginTop="0dp"/>
+                        app:layout_goneMarginTop="0dp" />
 
                     <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                         android:id="@+id/indicator"
@@ -303,6 +303,8 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
                         android:backgroundTint="@color/main_2"
+                        android:onClick="@{()->vm.moveVideoUpLoad()}"
+                        android:visibility="@{vm.videoUri.size() ==0 ?View.VISIBLE : View.GONE}"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -345,12 +347,12 @@
                     </androidx.cardview.widget.CardView>
 
 
-
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
+                        android:visibility="@{vm.videoUri.size() ==0 ?View.GONE : View.VISIBLE}"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
                         android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="12dp"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -375,13 +377,20 @@
                                 app:layout_constraintDimensionRatio="w,1:1"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:visibility="gone"/>
+                                app:layout_constraintTop_toTopOf="parent" />
 
+                            <androidx.appcompat.widget.AppCompatImageView
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:src="@drawable/baseline_play_arrow_24"
+                                android:background="@drawable/corner_radius_30"
+                                android:backgroundTint="@color/main_alpha85" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
                     </com.google.android.material.card.MaterialCardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,6 +33,22 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
         .into(this)
 }
 
+@BindingAdapter(value = ["bind:VideoUri", "bind:placeholder"], requireAll = false)
+fun CircleImageView.setThumbUrI(VideoUri: String?, placeholder: Drawable?) {
+    if (VideoUri != null) {
+        Glide.with(context)
+            .load(VideoUri)
+            .thumbnail(0.1f)
+            .apply {
+                if (placeholder != null) {
+                    placeholder(placeholder)
+                }
+            }
+            .into(this)
+    }
+}
+
+
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
     if (imageUrl != null) {

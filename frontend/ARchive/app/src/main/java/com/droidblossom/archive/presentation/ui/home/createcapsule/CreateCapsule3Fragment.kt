@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule3Binding
 import com.droidblossom.archive.domain.model.common.Dummy
@@ -16,7 +17,9 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
 import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
 import com.droidblossom.archive.util.FileUtils
+import com.droidblossom.archive.util.FileUtils.getWebVideoThumbnail
 import com.droidblossom.archive.util.LocationUtil
+import com.droidblossom.archive.util.setThumbUrI
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kakao.sdk.common.util.Utility
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,6 +62,16 @@ class CreateCapsule3Fragment :
             }
         }
 
+    private val pickVideo =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia())
+        { uri ->
+            if (uri != null) {
+                viewModel.addVideoUrl(uri)
+            } else {
+                Log.d("포토", "No Media selected")
+            }
+        }
+
 
     private val imgVPA by lazy {
         ImageRVA(
@@ -75,7 +88,7 @@ class CreateCapsule3Fragment :
         initView()
     }
 
-    private fun initRVA(){
+    private fun initRVA() {
         binding.recycleView.adapter = imgVPA
         binding.recycleView.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.recycleView)
@@ -109,6 +122,10 @@ class CreateCapsule3Fragment :
                     viewModel.moveFinish()
                 }
             }
+
+            videoImg.setOnClickListener {
+                viewModel.deleteVideoUrl()
+            }
         }
     }
 
@@ -136,7 +153,7 @@ class CreateCapsule3Fragment :
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickImgUpLoad -> {
-                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickLocation -> {
@@ -149,6 +166,10 @@ class CreateCapsule3Fragment :
 
                         is CreateCapsuleViewModel.Create3Event.ShowToastMessage -> {
                             showToastMessage(it.message)
+                        }
+
+                        CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {
+                            pickVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
                         }
                     }
                 }
@@ -167,6 +188,20 @@ class CreateCapsule3Fragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleDueDate.collect {
                     binding.timeT.text = it
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.videoUri.collect {
+                    if (it.isNotEmpty()){
+                        Glide.with(requireContext())
+                            .load(it.first())
+                            .thumbnail(0.1f)
+                            .placeholder(R.drawable.sample_skin)
+                            .into(binding.videoImg)
+                    }
                 }
             }
         }
