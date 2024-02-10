@@ -59,6 +59,7 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
     private fun initRVA(){
         binding.postImgVP.adapter = imageVP
         binding.postImgVP.offscreenPageLimit = 3
+        binding.indicator.attachTo(binding.postImgVP)
         //binding.indicator.setViewPager(binding.postImgVP as ViewPager)
     }
 

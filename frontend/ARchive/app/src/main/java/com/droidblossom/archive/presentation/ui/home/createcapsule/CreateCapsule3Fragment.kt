@@ -17,6 +17,7 @@ import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.Image
 import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
 import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.LocationUtil
+import com.google.android.material.tabs.TabLayoutMediator
 import com.kakao.sdk.common.util.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -77,6 +78,7 @@ class CreateCapsule3Fragment :
     private fun initRVA(){
         binding.recycleView.adapter = imgVPA
         binding.recycleView.offscreenPageLimit = 3
+        binding.indicator.attachTo(binding.recycleView)
 //        val locationUtil = LocationUtil(requireContext())
 //        locationUtil.getCurrentLocation { latitude, longitude ->
 //            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
