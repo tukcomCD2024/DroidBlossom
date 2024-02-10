@@ -125,8 +125,8 @@ dependencies {
     //circleImageView : https://github.com/hdodenhof/CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    //circleIndicator : https://github.com/ongakuer/CircleIndicator
-    implementation 'me.relex:circleindicator:2.1.6'
+    //indicator : https://github.com/tommybuonomo/dotsindicator?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=7127
+    implementation "com.tbuonomo:dotsindicator:5.0"
 
     // SMS Retriever API
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
