@@ -24,11 +24,11 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
                 }
                 binding.postImg.setImageResource(R.color.Transparency)
                 binding.plusImg.isVisible = true
-                binding.plusT.isVisible = true
+                binding.plusV.isVisible = true
             } else {
                 binding.postImg.setImageURI(data.string)
                 binding.plusImg.isGone = true
-                binding.plusT.isGone = true
+                binding.plusV.isGone = true
                 binding.root.setOnClickListener {
                     removeItem(position)
                 }

@@ -17,6 +17,7 @@ import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModelImpl.Companion.S3DIRECTORY
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
@@ -187,12 +188,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-//            if (_skins.value.find { it.isClicked } == null) {
-//                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
-//            } else {
+            if (_skins.value.find { it.isClicked } == null) {
+                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
+            } else {
                 _skinId.emit(_skins.value.find { it.isClicked }!!.id)
                 _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
-//            }
+            }
         }
     }
 

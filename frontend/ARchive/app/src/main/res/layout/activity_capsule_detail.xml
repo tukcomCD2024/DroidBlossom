@@ -146,10 +146,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinImg" />
 
-                <me.relex.circleindicator.CircleIndicator
+                <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                     android:id="@+id/indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:dotsColor="@color/main_bg_1"
+                    app:dotsCornerRadius="2dp"
+                    app:dotsSize="4dp"
+                    app:dotsSpacing="2dp"
+                    app:dotsStrokeColor="@color/main_1"
                     app:layout_constraintEnd_toEndOf="@id/postImgVP"
                     app:layout_constraintStart_toStartOf="@id/postImgVP"
                     app:layout_constraintTop_toBottomOf="@id/postImgVP" />
