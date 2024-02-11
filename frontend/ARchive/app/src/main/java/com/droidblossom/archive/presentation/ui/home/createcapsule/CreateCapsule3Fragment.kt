@@ -106,19 +106,29 @@ class CreateCapsule3Fragment :
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
-                    val fileDeferreds = viewModel.imgUris.value.mapIndexedNotNull { index, uri ->
-                        uri.string?.let { uriString ->
+                    val imageFilesDeferred = async {
+                        viewModel.imgUris.value.mapIndexed { index, uri ->
                             async {
-                                FileUtils.convertUriToJpegFile(
-                                    requireContext(),
-                                    uriString,
-                                    "${currentTime}_$index"
-                                )
+                                uri.string?.let { uriString ->
+                                    FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
+                                }
                             }
-                        }
+                        }.awaitAll().orEmpty().filterNotNull()
                     }
-                    val fileList = fileDeferreds.awaitAll().filterNotNull()
-                    viewModel.makeFiles(fileList)
+
+                    val videoFilesDeferred = async {
+                        viewModel.videoUri.value.mapIndexed { index, uri ->
+                            async {
+                                uri.let { uriString ->
+                                    FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
+                                }
+                            }
+                        }.awaitAll().orEmpty().filterNotNull()
+                    }
+
+                    val imageFiles = imageFilesDeferred.await()
+                    val videoFiles = videoFilesDeferred.await()
+                    viewModel.setFiles(imageFiles,videoFiles)
                     viewModel.moveFinish()
                 }
             }
