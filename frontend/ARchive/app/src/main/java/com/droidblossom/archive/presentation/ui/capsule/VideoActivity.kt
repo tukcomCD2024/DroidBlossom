@@ -42,7 +42,11 @@ class VideoActivity : AppCompatActivity() {
             exoPlayer.play()
         }
     }
-    
+
+    override fun onDestroy() {
+        super.onDestroy()
+        exoPlayer.release()
+    }
 
     companion object {
         const val VIDEO = "video"
