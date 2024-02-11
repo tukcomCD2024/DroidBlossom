@@ -9,7 +9,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.droidblossom.archive.databinding.ActivityVideoBinding
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity.Companion.CREATE_CAPSULE
 
 
 class VideoActivity : AppCompatActivity() {
@@ -24,26 +23,33 @@ class VideoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initializePlayer()
+        playVideo()
     }
 
 
     private fun initializePlayer() {
         exoPlayer = ExoPlayer.Builder(this).build()
         playerView = binding.playerView
-        playerView.player = exoPlayer
-
-        val mediaItem = MediaItem.fromUri((Uri.parse(intent.getStringExtra(VIDEO))))
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.prepare()
-        exoPlayer.play()
+        binding.playerView.player = exoPlayer
     }
+
+    private fun playVideo(){
+        val videoUrl = intent.getStringExtra(VIDEO)
+        if (videoUrl != null) {
+            val mediaItem = MediaItem.fromUri(Uri.parse(videoUrl))
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.play()
+        }
+    }
+    
 
     companion object {
         const val VIDEO = "video"
 
         fun newIntent(context: Context, videoUrl : String) =
             Intent(context, VideoActivity::class.java).apply {
-                putExtra(CREATE_CAPSULE, videoUrl)
+                putExtra(VIDEO, videoUrl)
             }
     }
 }

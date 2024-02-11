@@ -61,9 +61,9 @@ class CapsuleDetailActivity :
         binding.closeBtn.setOnClickListener {
             finish()
         }
-        binding.videoImg.setOnClickListener {
+        binding.videoCV.setOnClickListener {
             startActivity(
-                VideoActivity.newIntent(this, viewModel.capsuleDetail.value.videoUrls?.get(0) ?: "")
+                VideoActivity.newIntent(this, viewModel.capsuleDetail.value.videoUrls!![0])
             )
         }
     }
