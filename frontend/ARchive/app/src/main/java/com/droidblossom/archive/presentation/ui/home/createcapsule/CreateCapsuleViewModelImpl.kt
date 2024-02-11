@@ -28,6 +28,7 @@ import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -323,8 +324,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun makeFiles(files: List<File>) {
-        _imageFiles.value = files
+    override fun setFiles(imageFiles: List<File>, videoFiles: List<File>) {
+        _imageFiles.value = imageFiles
+        _videoFiles.value = videoFiles
     }
 
     override fun moveLocation() {
@@ -431,7 +433,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             s3UrlsGetUseCase(getS3UrlData.toDto()).collect { result ->
                 result.onSuccess {
                     Log.d("getUploadUrls", "$it")
-                    uploadFilesToS3(imageFiles.value, it.preSignedImageUrls, it.preSignedVideoUrls)
+                    uploadFilesToS3(imageFiles.value, videoFiles.value, it.preSignedImageUrls, it.preSignedVideoUrls)
                 }.onFail {
                     Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
@@ -440,20 +442,34 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     private fun uploadFilesToS3(
-        files: List<File>,
+        imageFiles: List<File>,
+        videoFiles: List<File>,
         preSignedImageUrls: List<String>,
         preSignedVideoUrls: List<String>
     ) {
         viewModelScope.launch {
-            val uploadJobs = files.zip(preSignedImageUrls).map { (file, url) ->
-                launch(Dispatchers.IO) {
-                    try {
-                        Log.d("uploadFilesToS3", "uploadFilesToS3 함수 스코프")
+            val uploadJobs = mutableListOf<Job>()
 
-                        s3Util.uploadImageWithPresignedUrl(file, url)
-                        Log.d("uploadFilesToS3", "File ${file.name} uploaded successfully")
+            imageFiles.zip(preSignedImageUrls).forEach { (imageFile, url) ->
+                uploadJobs += launch(Dispatchers.IO) {
+                    try {
+                        Log.d("uploadFilesToS3", "Uploading image file: ${imageFile.name}")
+                        s3Util.uploadImageWithPresignedUrl(imageFile, url)
+                        Log.d("uploadFilesToS3", "Image file ${imageFile.name} uploaded successfully")
                     } catch (e: Exception) {
-                        Log.e("uploadFilesToS3", "Failed to upload ${file.name}: ${e.message}")
+                        Log.e("uploadFilesToS3", "Failed to upload image file ${imageFile.name}: ${e.message}")
+                    }
+                }
+            }
+
+            videoFiles.zip(preSignedVideoUrls).forEach { (videoFile, url) ->
+                uploadJobs += launch(Dispatchers.IO) {
+                    try {
+                        Log.d("uploadFilesToS3", "Uploading video file: ${videoFile.name}")
+                        s3Util.uploadVideoWithPresignedUrl(videoFile, url)
+                        Log.d("uploadFilesToS3", "Video file ${videoFile.name} uploaded successfully")
+                    } catch (e: Exception) {
+                        Log.e("uploadFilesToS3", "Failed to upload video file ${videoFile.name}: ${e.message}")
                     }
                 }
             }
