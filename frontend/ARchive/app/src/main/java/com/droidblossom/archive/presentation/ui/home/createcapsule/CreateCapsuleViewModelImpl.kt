@@ -298,7 +298,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
                     secretCapsuleCreateUseCase(
                         SecretCapsuleCreateRequest(
-                            capsuleSkinId = 1,
+                            capsuleSkinId = skinId.value,
                             content = capsuleContent.value,
                             directory = S3DIRECTORY,
                             dueDate = dueTime.value,

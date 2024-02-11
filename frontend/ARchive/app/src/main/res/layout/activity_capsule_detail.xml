@@ -132,11 +132,63 @@
                     bind:baseImg="@{@drawable/sample_skin}"
                     bind:url="@{vm.capsuleDetail.capsuleSkinUrl}" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/videoCV"
+                    android:layout_width="0dp"
+                    android:visibility="@{vm.capsuleDetail.videoUrls.size() ==0 ?View.GONE : View.VISIBLE}"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/skinImg"
+                    app:strokeColor="@color/main_bg_1"
+                    app:strokeWidth="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/videoImg"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="4dp"
+                            android:background="@drawable/corner_radius_16_stroke_2"
+                            android:backgroundTint="@color/main_bg_1"
+                            android:scaleType="centerCrop"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="w,1:1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="24dp"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:text="Video"
+                            android:textAppearance="@style/TextAppearance.App.h1"
+                            android:background="@drawable/corner_radius_30"
+                            android:backgroundTint="@color/main_alpha85" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/postImgVP"
                     android:layout_width="0dp"
                     android:layout_height="360dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="12dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingStart="16dp"
@@ -144,7 +196,7 @@
                     android:visibility="@{vm.capsuleDetail.imageUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/skinImg" />
+                    app:layout_constraintTop_toBottomOf="@id/videoCV" />
 
                 <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                     android:id="@+id/indicator"
