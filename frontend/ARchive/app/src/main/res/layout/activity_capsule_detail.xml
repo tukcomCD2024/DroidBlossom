@@ -137,13 +137,13 @@
                     android:layout_width="0dp"
                     android:visibility="@{vm.capsuleDetail.videoUrls.size() ==0 ?View.GONE : View.VISIBLE}"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="12dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/skinImg"
+                    app:layout_constraintTop_toBottomOf="@id/indicator"
                     app:strokeColor="@color/main_bg_1"
                     app:strokeWidth="8dp">
 
@@ -163,9 +163,10 @@
                             app:layout_constraintDimensionRatio="w,1:1"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="1.0" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatImageView
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -173,9 +174,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="24dp"
-                            android:gravity="center"
-                            android:textColor="@color/white"
-                            android:text="Video"
+                            android:src="@drawable/baseline_play_arrow_24"
                             android:textAppearance="@style/TextAppearance.App.h1"
                             android:background="@drawable/corner_radius_30"
                             android:backgroundTint="@color/main_alpha85" />
@@ -196,17 +195,18 @@
                     android:visibility="@{vm.capsuleDetail.imageUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/videoCV" />
+                    app:layout_constraintTop_toBottomOf="@id/skinImg" />
 
                 <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                     android:id="@+id/indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:dotsColor="@color/main_bg_1"
+                    app:dotsColor="@color/main_1"
                     app:dotsCornerRadius="2dp"
                     app:dotsSize="4dp"
+                    android:layout_marginTop="8dp"
                     app:dotsSpacing="2dp"
-                    app:dotsStrokeColor="@color/main_1"
+                    app:dotsStrokeColor="@color/main_bg_1"
                     app:layout_constraintEnd_toEndOf="@id/postImgVP"
                     app:layout_constraintStart_toStartOf="@id/postImgVP"
                     app:layout_constraintTop_toBottomOf="@id/postImgVP" />
@@ -221,7 +221,7 @@
                     android:textAppearance="@style/TextAppearance.App.body2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/indicator"
+                    app:layout_constraintTop_toBottomOf="@id/videoCV"
                     tools:text="@{vm.capsuleDetail.content}" />
 
                 <androidx.appcompat.widget.AppCompatTextView
