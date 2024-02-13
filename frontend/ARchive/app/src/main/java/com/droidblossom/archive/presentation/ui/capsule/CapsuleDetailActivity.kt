@@ -26,7 +26,9 @@ class CapsuleDetailActivity :
     override val viewModel: CapsuleDetailViewModelImpl by viewModels()
 
     private val imageVP by lazy {
-        ImageUrlRVA {}
+        ImageUrlRVA { position , list ->
+            startActivity(ImagesActivity.newIntent(this, list.map { it.url }.toTypedArray() , position))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
