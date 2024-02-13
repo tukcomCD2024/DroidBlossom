@@ -19,10 +19,15 @@ import com.google.ar.core.Config
 import com.google.ar.core.Plane
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
+import com.google.ar.sceneform.rendering.ViewAttachmentManager
+import com.google.ar.sceneform.rendering.ViewRenderable
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.node.AnchorNode
+import io.github.sceneview.math.Position
+import io.github.sceneview.math.Scale
 import io.github.sceneview.node.ModelNode
+import io.github.sceneview.node.ViewNode
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -36,6 +41,7 @@ class CameraFragment :
     private var anchorNode: AnchorNode? = null
     private lateinit var session: Session
     private lateinit var config: Config
+    private lateinit var  viewAttachmentManager : ViewAttachmentManager
 
     override fun observeData() {
 
@@ -83,7 +89,7 @@ class CameraFragment :
                                             0f,
                                             0f
                                         )
-                                        addAnchorNode(earthAnchor,capsule)
+                                        addAnchorNode(earthAnchor, capsule)
                                     }
                                 }
                             }
@@ -106,7 +112,10 @@ class CameraFragment :
         locationUtil.getCurrentLocation { latitude, longitude ->
             viewModel.getCapsules(latitude = latitude, longitude = longitude)
         }
-
+        viewAttachmentManager = ViewAttachmentManager(
+            binding.sceneView.context,
+            binding.sceneView
+        )
         initView()
         createSession()
 
@@ -119,39 +128,47 @@ class CameraFragment :
                 config.planeFindingMode = Config.PlaneFindingMode.DISABLED
             }
         }
+
     }
 
     private fun addAnchorNode(anchor: Anchor, capsule : CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
-        val anchorNode = AnchorNode(binding.sceneView.engine, anchor)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                binding.sceneView.modelLoader.loadModelInstance("https://sceneview.github.io/assets/models/DamagedHelmet.glb").let { modelInstance ->
-                    modelInstance?.let {
-                        val modelNode = ModelNode(modelInstance = it).apply {
-                            playAnimation(0)
-                            onSingleTapConfirmed = {
-                                viewModel.cameraEvent(CameraViewModel.CameraEvent.ShowCapsulePreviewDialog(capsule.id.toString(), capsule.capsuleType.toString()))
-                                false
-                            }
+        val arContentNode =
+            binding.sceneView.let { scenview ->
+                viewAttachmentManager.let { attachManager ->
+                    ARContentNode(scenview, attachManager,viewModel, capsule,onLoaded = { viewNode ->
+                        binding.sceneView.engine.let {
+                            AnchorNode(it, anchor)
+                                .apply {
+                                    isEditable = true
+                                    lifecycleScope.launch {
+                                        addChildNode(viewNode)
+                                    }
+                                    anchorNode = this
+                                }
+                        }.let {
+                            binding.sceneView.addChildNode(it)
                         }
-                        anchorNode.addChildNode(modelNode)
-                    }
+                    })
                 }
             }
-        }
-
-        binding.sceneView.addChildNode(anchorNode)
-        this.anchorNode = anchorNode
     }
-
 
     private fun createSession() {
         session = Session(requireContext())
         config = Config(session)
         config.geospatialMode = Config.GeospatialMode.ENABLED
         session.configure(config)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewAttachmentManager.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewAttachmentManager.onPause()
     }
 
     companion object {
