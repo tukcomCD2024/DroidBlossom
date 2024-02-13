@@ -19,4 +19,6 @@
     <dimen name="text_caption3">12sp</dimen>
     <dimen name="text_caption4">12sp</dimen>
 
+    <dimen name="time_capsule_create_h">82dp</dimen>
+    <dimen name="capsule_create_h">56dp</dimen>
 </resources>

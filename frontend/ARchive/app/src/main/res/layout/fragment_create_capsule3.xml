@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -103,15 +104,15 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/placeT"
                         android:layout_width="0dp"
-                        android:layout_height="56dp"
+                        android:layout_height="82dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/corner_radius_16"
                         android:backgroundTint="@color/main_2"
-                        android:ellipsize="middle"
+                        android:ellipsize="end"
                         android:gravity="center"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:paddingHorizontal="12dp"
                         android:text="@{vm.capsuleLocationName}"
                         android:textAppearance="@style/TextAppearance.App.caption2"
@@ -120,12 +121,13 @@
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toEndOf="@id/timeCV"
                         app:layout_constraintTop_toBottomOf="@+id/capsuleTitleEditT"
+                        bind:layout_height_bind="@{vm.isSelectTimeCapsule() ? @dimen/time_capsule_create_h : @dimen/capsule_create_h}"
                         tools:text="강남역 11번 출구" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/timeCV"
                         android:layout_width="0dp"
-                        android:layout_height="56dp"
+                        android:layout_height="82dp"
                         android:layout_marginStart="12dp"
                         android:backgroundTint="@color/main_2"
                         android:onClick="@{()->vm.moveDate()}"
@@ -146,29 +148,30 @@
                                 android:id="@+id/timeT"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:layout_marginEnd="4dp"
+                                android:layout_marginStart="24dp"
+                                android:layout_marginEnd="24dp"
                                 android:ellipsize="middle"
-                                android:maxLines="1"
+                                android:lineSpacingExtra="8dp"
+                                android:maxLines="2"
                                 android:textAppearance="@style/TextAppearance.App.caption2"
                                 android:textColor="@color/white"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:text="2025.01.05" />
+                                tools:text="2025.01.05\n 22:33" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/timeSettingBtn"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
+                                android:layout_marginTop="16dp"
                                 android:layout_marginEnd="16dp"
                                 android:background="@drawable/corner_radius_12"
                                 android:backgroundTint="@color/main_bg_1"
                                 android:src="@drawable/ic_arrow_right_24"
-                                app:layout_constraintBottom_toBottomOf="@id/timeT"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/timeT" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -349,10 +352,10 @@
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:visibility="@{vm.videoUri.size() ==0 ?View.GONE : View.VISIBLE}"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
+                        android:visibility="@{vm.videoUri.size() ==0 ?View.GONE : View.VISIBLE}"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -380,19 +383,19 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <androidx.appcompat.widget.AppCompatTextView
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:padding="24dp"
+                                android:background="@drawable/corner_radius_30"
+                                android:backgroundTint="@color/main_alpha85"
                                 android:gravity="center"
-                                android:textColor="@color/white"
+                                android:padding="24dp"
                                 android:text="Video"
                                 android:textAppearance="@style/TextAppearance.App.h1"
-                                android:background="@drawable/corner_radius_30"
-                                android:backgroundTint="@color/main_alpha85" />
+                                android:textColor="@color/white"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.google.android.material.card.MaterialCardView>
