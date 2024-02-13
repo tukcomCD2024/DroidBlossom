@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
@@ -62,6 +63,13 @@ class MyPageFragment :
         binding.vm = viewModel
         viewModel.getMe()
         viewModel.getSecretCapsulePage()
+
+        parentFragmentManager.setFragmentResultListener("capsuleState", viewLifecycleOwner) { key, bundle ->
+            val capsuleId = bundle.getLong("capsuleId")
+            val capsuleOpenState = bundle.getBoolean("isOpened")
+            viewModel.updateCapsuleOpenState(capsuleId,capsuleOpenState)
+        }
+
         initRVA()
 
         binding.settingBtn.setOnClickListener {
