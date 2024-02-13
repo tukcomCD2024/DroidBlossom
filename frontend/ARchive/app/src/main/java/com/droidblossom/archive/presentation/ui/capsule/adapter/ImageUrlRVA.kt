@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemImageBinding
 import com.droidblossom.archive.domain.model.common.ImageUrl
 
-class ImageUrlRVA(val onClick: () -> Unit) :
+class ImageUrlRVA(val onClick: (Int , List<ImageUrl>) -> Unit) :
     ListAdapter<ImageUrl, ImageUrlRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -16,6 +16,9 @@ class ImageUrlRVA(val onClick: () -> Unit) :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ImageUrl) {
             binding.item =data
+            binding.root.setOnClickListener {
+                onClick(absoluteAdapterPosition, currentList)
+            }
         }
     }
 
