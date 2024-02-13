@@ -19,6 +19,8 @@ interface MyPageViewModel {
     fun getSecretCapsulePage()
     fun clearCapsules()
 
+    fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean)
+
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
     }

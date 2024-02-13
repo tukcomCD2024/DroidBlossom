@@ -90,4 +90,17 @@ class MyPageViewModelImpl @Inject constructor(
             getSecretCapsulePage()
         }
     }
+
+    override fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean) {
+        val updatedCapsules = _myCapsules.value.map { capsule ->
+            if (capsule.capsuleId == capsuleId) {
+                capsule.copy(isOpened = isOpened)
+            } else {
+                capsule
+            }
+        }
+        viewModelScope.launch {
+            _myCapsules.emit(updatedCapsules)
+        }
+    }
 }
