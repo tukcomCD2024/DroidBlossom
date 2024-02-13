@@ -177,11 +177,9 @@ class CameraFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             viewAttachmentManager.onPause()
-            session.pause()
             stopCamera()
         } else {
             viewAttachmentManager.onResume()
-            session.resume()
         }
         super.onHiddenChanged(hidden)
     }
