@@ -164,16 +164,6 @@ class CameraFragment :
         session.configure(config)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewAttachmentManager.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewAttachmentManager.onPause()
-    }
-
     private fun stopCamera() {
         try {
             val camera = Camera.open()
@@ -183,6 +173,7 @@ class CameraFragment :
             e.printStackTrace()
         }
     }
+
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             viewAttachmentManager.onPause()
