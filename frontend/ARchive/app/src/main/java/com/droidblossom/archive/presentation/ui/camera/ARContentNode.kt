@@ -1,8 +1,9 @@
 package com.droidblossom.archive.presentation.ui.camera
 
-import android.util.Log
 import com.droidblossom.archive.R
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.FragmentManagerProvider
 import com.google.ar.sceneform.rendering.ViewAttachmentManager
 import com.google.ar.sceneform.rendering.ViewRenderable
 import io.github.sceneview.ar.ARSceneView
@@ -11,7 +12,7 @@ import io.github.sceneview.node.ViewNode
 class ARContentNode(
     val arscene: ARSceneView,
     val viewAttManager: ViewAttachmentManager,
-    val viewModel : CameraViewModel,
+    val fragmentManagerProvider: FragmentManagerProvider,
     val capsule : CapsuleMarker,
     val onLoaded: (node: ViewNode) -> Unit
 ) {
@@ -34,7 +35,8 @@ class ARContentNode(
                         isEditable = true
                     }
                     onSingleTapConfirmed = {
-                        viewModel.cameraEvent(CameraViewModel.CameraEvent.ShowCapsulePreviewDialog(capsule.id.toString(), capsule.capsuleType.toString()))
+                        val sheet = CapsulePreviewDialogFragment.newInstance(capsule.id.toString(), capsule.capsuleType.toString())
+                        sheet.show(fragmentManagerProvider.provideFragmentManager(), "CapsulePreviewDialog")
                         false
                     }
                 }
