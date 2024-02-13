@@ -3,6 +3,7 @@ package com.droidblossom.archive.util
 import android.app.Activity
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -11,8 +12,35 @@ class PermissionsUtil(private val activity: Activity) {
         const val REQUEST_LOCATION_PERMISSION = 101
         const val REQUEST_CAMERA_PERMISSION = 102
         const val REQUEST_CONTACTS_PERMISSION = 103
-        const val REQUEST_GALLERY_PERMISSION = 104
+        const val POST_NOTIFICATIONS = 104
+        const val REQUEST_ALL_PERMISSIONS = 105
     }
+
+    fun requestAllPermissions() {
+        val permissions = mutableListOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_CONTACTS
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        requestPermissions(permissions.toTypedArray(), REQUEST_ALL_PERMISSIONS)
+    }
+
+    fun areEssentialPermissionsGranted(): Boolean {
+        val essentialPermissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        )
+
+        return essentialPermissions.all { permission ->
+            ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
 
     fun requestLocationPermissions() {
         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
@@ -31,9 +59,6 @@ class PermissionsUtil(private val activity: Activity) {
         requestPermission(Manifest.permission.READ_CONTACTS, REQUEST_CONTACTS_PERMISSION)
     }
 
-    fun requestGalleryPermission() {
-        requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GALLERY_PERMISSION)
-    }
 
     private fun requestPermissions(permissions: Array<String>, requestCode: Int) {
         val shouldProvideRationale = permissions.any { ActivityCompat.shouldShowRequestPermissionRationale(activity, it) }
