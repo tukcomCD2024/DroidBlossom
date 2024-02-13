@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.camera
 
 import android.Manifest
+import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -36,19 +37,23 @@ class CameraFragment :
     private var anchorNode: AnchorNode? = null
     private lateinit var session: Session
     private lateinit var config: Config
-    private lateinit var  viewAttachmentManager : ViewAttachmentManager
+    private lateinit var viewAttachmentManager: ViewAttachmentManager
 
     override fun provideFragmentManager(): FragmentManager {
         return parentFragmentManager
     }
+
     override fun observeData() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.cameraEvents.collect{ event ->
-                    when(event){
+                viewModel.cameraEvents.collect { event ->
+                    when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment.newInstance(event.capsuleId, event.capsuleType)
+                            val sheet = CapsulePreviewDialogFragment.newInstance(
+                                event.capsuleId,
+                                event.capsuleType
+                            )
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
 
@@ -129,12 +134,12 @@ class CameraFragment :
 
     }
 
-    private fun addAnchorNode(anchor: Anchor, capsule : CapsuleMarker) {
+    private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
         val arContentNode =
             binding.sceneView.let { scenview ->
                 viewAttachmentManager.let { attachManager ->
-                    ARContentNode(scenview, attachManager,this, capsule,onLoaded = { viewNode ->
+                    ARContentNode(scenview, attachManager, this, capsule, onLoaded = { viewNode ->
                         binding.sceneView.engine.let {
                             AnchorNode(it, anchor)
                                 .apply {
@@ -167,6 +172,27 @@ class CameraFragment :
     override fun onPause() {
         super.onPause()
         viewAttachmentManager.onPause()
+    }
+
+    private fun stopCamera() {
+        try {
+            val camera = Camera.open()
+            camera.release()
+        } catch (e: Exception) {
+            // 오류 처리
+            e.printStackTrace()
+        }
+    }
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            viewAttachmentManager.onPause()
+            session.pause()
+            stopCamera()
+        } else {
+            viewAttachmentManager.onResume()
+            session.resume()
+        }
+        super.onHiddenChanged(hidden)
     }
 
     companion object {
