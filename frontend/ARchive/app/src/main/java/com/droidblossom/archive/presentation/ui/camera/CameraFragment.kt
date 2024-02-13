@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,27 +14,21 @@ import com.droidblossom.archive.databinding.FragmentCameraBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
 import com.google.ar.core.Config
-import com.google.ar.core.Plane
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.rendering.ViewAttachmentManager
-import com.google.ar.sceneform.rendering.ViewRenderable
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.sceneview.ar.arcore.getUpdatedPlanes
 import io.github.sceneview.ar.node.AnchorNode
-import io.github.sceneview.math.Position
-import io.github.sceneview.math.Scale
-import io.github.sceneview.node.ModelNode
-import io.github.sceneview.node.ViewNode
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
 class CameraFragment :
-    BaseFragment<CameraViewModelImpl, FragmentCameraBinding>(R.layout.fragment_camera) {
+    BaseFragment<CameraViewModelImpl, FragmentCameraBinding>(R.layout.fragment_camera),
+    FragmentManagerProvider {
 
     override val viewModel: CameraViewModelImpl by viewModels<CameraViewModelImpl>()
 
@@ -43,6 +38,9 @@ class CameraFragment :
     private lateinit var config: Config
     private lateinit var  viewAttachmentManager : ViewAttachmentManager
 
+    override fun provideFragmentManager(): FragmentManager {
+        return parentFragmentManager
+    }
     override fun observeData() {
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -136,7 +134,7 @@ class CameraFragment :
         val arContentNode =
             binding.sceneView.let { scenview ->
                 viewAttachmentManager.let { attachManager ->
-                    ARContentNode(scenview, attachManager,viewModel, capsule,onLoaded = { viewNode ->
+                    ARContentNode(scenview, attachManager,this, capsule,onLoaded = { viewNode ->
                         binding.sceneView.engine.let {
                             AnchorNode(it, anchor)
                                 .apply {
