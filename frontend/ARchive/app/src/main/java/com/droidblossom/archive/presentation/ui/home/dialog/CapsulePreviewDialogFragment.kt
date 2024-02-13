@@ -3,12 +3,14 @@ package com.droidblossom.archive.presentation.ui.home.dialog
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -192,6 +194,15 @@ class CapsulePreviewDialogFragment :
             })
         }
         animator.start()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val capsuleState = Bundle().apply {
+            putLong("capsuleId", capsuleId.toLong())
+            putBoolean("isOpened", viewModel.capsuleOpenState.value)
+        }
+        setFragmentResult("capsuleState", capsuleState)
     }
 
     companion object {
