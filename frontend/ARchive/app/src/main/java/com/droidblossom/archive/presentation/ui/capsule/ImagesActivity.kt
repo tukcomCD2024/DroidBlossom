@@ -41,7 +41,8 @@ class ImagesActivity : AppCompatActivity() {
         binding.backBtn.setOnClickListener {
             finish()
         }
-        binding.currentT.text = intent.getIntExtra(CURRENT,1).toString()
+        binding.currentT.text = "${intent.getIntExtra(CURRENT,1)+1}/"
+        binding.vp.currentItem = intent.getIntExtra(CURRENT,0)
         binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             @SuppressLint("SetTextI18n")
             override fun onPageSelected(position: Int) {
