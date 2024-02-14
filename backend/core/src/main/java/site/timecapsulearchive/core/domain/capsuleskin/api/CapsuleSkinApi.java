@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSummaryResponse;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinStatusResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
@@ -63,7 +63,7 @@ public interface CapsuleSkinApi {
 
     @Operation(
         summary = "캡슐 스킨 생성",
-        description = "정해진 포맷으로 캡슐 스킨을 생성한다.",
+        description = "정해진 포맷으로 캡슐 스킨을 생성 요청을 보넨다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"capsule skin"}
     )
@@ -73,7 +73,8 @@ public interface CapsuleSkinApi {
             description = "처리 시작"
         )
     })
-    ResponseEntity<ApiSpec<CapsuleSkinSummaryResponse>> createCapsuleSkin(
+    ResponseEntity<ApiSpec<CapsuleSkinStatusResponse>> createCapsuleSkin(
+        Long memberId,
         CapsuleSkinCreateRequest request);
 
     @Operation(
