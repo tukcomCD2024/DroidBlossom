@@ -20,7 +20,7 @@ class ARContentNode(
     val fragmentManagerProvider: FragmentManagerProvider,
     val capsule: CapsuleMarker,
     val layoutInflater: LayoutInflater,
-    val contenxt: Context,
+    val context: Context,
     val onLoaded: (node: ViewNode) -> Unit
 ) {
 
@@ -33,7 +33,7 @@ class ARContentNode(
         //스킨 이미지 추가
         val capsuleSkin = ItemCapsuleSkinBinding.inflate(layoutInflater)
 
-        Glide.with(contenxt)
+        Glide.with(context)
             .load(R.drawable.base_gif)
             .placeholder(R.drawable.base_use_img)
             .into(capsuleSkin.capsuleSkin)
