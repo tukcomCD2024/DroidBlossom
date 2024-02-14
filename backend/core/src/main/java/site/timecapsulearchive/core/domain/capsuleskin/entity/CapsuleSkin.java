@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -29,16 +30,21 @@ public class CapsuleSkin extends BaseEntity {
     @Column(name = "skin_name", nullable = false)
     private String skinName;
 
-    @Column(name = "size", nullable = false)
-    private Long size;
-
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "motion_name", nullable = false)
+    @Column(name = "motion_name")
     private String motionName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Builder
+    private CapsuleSkin(String skinName, String imageUrl, String motionName, Member member) {
+        this.skinName = skinName;
+        this.imageUrl = imageUrl;
+        this.motionName = motionName;
+        this.member = member;
+    }
 }
