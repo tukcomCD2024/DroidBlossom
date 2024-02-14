@@ -12,12 +12,15 @@ interface MyPageViewModel {
 
     val myInfo : StateFlow<MemberDetail>
     val myCapsules : StateFlow<List<MyCapsule>>
+    val myCapsulesUI : StateFlow<List<MyCapsule>>
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
 
     fun getMe()
     fun getSecretCapsulePage()
     fun clearCapsules()
+
+    fun updateMyCapsulesUI()
 
     fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean)
 

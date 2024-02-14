@@ -41,6 +41,10 @@ class MyPageViewModelImpl @Inject constructor(
     override val myCapsules: StateFlow<List<MyCapsule>>
         get() = _myCapsules
 
+    private val _myCapsulesUI = MutableStateFlow(listOf<MyCapsule>())
+    override val myCapsulesUI: StateFlow<List<MyCapsule>>
+        get() = _myCapsulesUI
+
     private val _hasNextPage = MutableStateFlow(true)
     override val hasNextPage: StateFlow<Boolean>
         get() = _hasNextPage
@@ -74,11 +78,18 @@ class MyPageViewModelImpl @Inject constructor(
                         _hasNextPage.value = it.hasNext
                         _myCapsules.emit(myCapsules.value + it.capsules)
                         _lastCreatedTime.value = _myCapsules.value.last().createdDate
+                        updateMyCapsulesUI()
                     }.onFail {
                         _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
                 }
             }
+        }
+    }
+
+    override fun updateMyCapsulesUI() {
+        viewModelScope.launch {
+            _myCapsulesUI.emit(myCapsules.value)
         }
     }
 
@@ -92,7 +103,7 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     override fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean) {
-        val updatedCapsules = _myCapsules.value.map { capsule ->
+        val updatedCapsules = _myCapsulesUI.value.map { capsule ->
             if (capsule.capsuleId == capsuleId) {
                 capsule.copy(isOpened = isOpened)
             } else {
@@ -100,7 +111,7 @@ class MyPageViewModelImpl @Inject constructor(
             }
         }
         viewModelScope.launch {
-            _myCapsules.emit(updatedCapsules)
+            _myCapsulesUI.emit(updatedCapsules)
         }
     }
 }
