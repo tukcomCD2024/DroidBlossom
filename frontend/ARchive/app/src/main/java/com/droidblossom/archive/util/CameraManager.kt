@@ -1,7 +1,6 @@
 package com.droidblossom.archive.util
 
 import android.hardware.Camera
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,7 +20,6 @@ object CameraManager {
 
     suspend fun releaseCamera() = withContext(Dispatchers.IO) {
         camera?.apply {
-            stopPreview()
             release()
             camera = null
         }
