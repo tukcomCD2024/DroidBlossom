@@ -12,6 +12,10 @@ import com.droidblossom.archive.util.NetworkStatusChecker
 import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 @HiltAndroidApp
@@ -22,6 +26,8 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         networkConnectionChecker = NetworkStatusChecker(context)
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
+        dummyCoroutines()
+
 
         // 키 값 알아내기
 //        AppSignatureHelper(this@ARchiveApplication).apply {
@@ -29,6 +35,19 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
 //        }
 //        getHashKey()
         // Kakao Sdk 초기화
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun dummyCoroutines(){
+        GlobalScope.launch(Dispatchers.Default) {
+
+            GlobalScope.launch(Dispatchers.IO) {}
+
+            GlobalScope.launch(Dispatchers.Main) {}
+
+            GlobalScope.launch(Dispatchers.Unconfined) {}
+
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {
