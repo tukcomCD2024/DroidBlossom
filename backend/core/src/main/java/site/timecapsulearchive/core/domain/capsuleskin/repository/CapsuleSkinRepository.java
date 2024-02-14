@@ -7,5 +7,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 public interface CapsuleSkinRepository extends Repository<CapsuleSkin, Long> {
 
     Optional<CapsuleSkin> save(CapsuleSkin capsuleSkin);
+
     Optional<CapsuleSkin> findCapsuleSkinById(Long capsuleSkinId);
 }

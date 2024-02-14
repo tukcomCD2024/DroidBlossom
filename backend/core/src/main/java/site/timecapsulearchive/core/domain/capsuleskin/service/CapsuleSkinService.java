@@ -51,7 +51,7 @@ public class CapsuleSkinService {
         Member foundMember = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        if (isNotExistMotionName(dto)) {
+        if (isNotExistMotionNameAndRetarget(dto)) {
             CapsuleSkin capsuleSkin = capsuleSkinMapper.createDtoToEntity(dto, foundMember);
 
             capsuleSkinRepository.save(capsuleSkin);
@@ -66,7 +66,7 @@ public class CapsuleSkinService {
         return CapsuleSkinStatusResponse.sendMessage();
     }
 
-    private boolean isNotExistMotionName(CapsuleSkinCreateDto dto) {
-        return dto.motionName() == null || dto.motionName().isEmpty();
+    private boolean isNotExistMotionNameAndRetarget(CapsuleSkinCreateDto dto) {
+        return dto.motionName() == null && dto.retarget() == null;
     }
 }
