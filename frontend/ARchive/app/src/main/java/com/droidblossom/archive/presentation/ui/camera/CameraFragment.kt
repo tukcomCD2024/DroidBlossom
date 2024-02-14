@@ -1,7 +1,6 @@
 package com.droidblossom.archive.presentation.ui.camera
 
 import android.Manifest
-import android.hardware.Camera
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,14 +9,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
-import com.droidblossom.archive.databinding.ItemCapsuleSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
-import com.droidblossom.archive.util.CameraManager
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
@@ -171,21 +167,16 @@ class CameraFragment :
     override fun onResume() {
         super.onResume()
         viewAttachmentManager.onResume()
-        CameraManager.getCameraInstance()
     }
-
 
     override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
         if (hidden) {
             viewAttachmentManager.onPause()
-            CameraManager.releaseCamera()
         } else {
             viewAttachmentManager.onResume()
-            CameraManager.getCameraInstance()
         }
-        super.onHiddenChanged(hidden)
     }
-
 
     companion object {
 
