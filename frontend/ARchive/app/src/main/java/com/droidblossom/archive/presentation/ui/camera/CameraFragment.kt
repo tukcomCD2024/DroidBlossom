@@ -14,6 +14,7 @@ import com.droidblossom.archive.databinding.FragmentCameraBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.CameraManager
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
@@ -173,6 +174,10 @@ class CameraFragment :
         super.onHiddenChanged(hidden)
         if (hidden) {
             viewAttachmentManager.onPause()
+            lifecycleScope.launch {
+                CameraManager.getCameraInstance()
+                CameraManager.releaseCamera()
+            }
         } else {
             viewAttachmentManager.onResume()
         }

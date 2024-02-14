@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
@@ -13,9 +12,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
-import com.droidblossom.archive.util.CameraManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activity_main) {
@@ -39,10 +36,6 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
-            lifecycleScope.launch {
-                CameraManager.getCameraInstance()
-                CameraManager.releaseCamera()
-            }
             when (it.itemId) {
                 R.id.menuHome -> {
                     showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
