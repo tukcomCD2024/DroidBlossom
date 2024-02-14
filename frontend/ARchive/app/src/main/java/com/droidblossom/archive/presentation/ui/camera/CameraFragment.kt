@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,7 +15,6 @@ import com.droidblossom.archive.databinding.FragmentCameraBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
-import com.droidblossom.archive.util.CameraManager
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
@@ -23,6 +23,7 @@ import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.rendering.ViewAttachmentManager
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.node.AnchorNode
 import kotlinx.coroutines.launch
 
@@ -34,6 +35,7 @@ class CameraFragment :
     override val viewModel: CameraViewModelImpl by viewModels<CameraViewModelImpl>()
 
     // private val capsules: MutableList<CapsuleMarker> = mutableListOf()
+    lateinit var arSceneView: ARSceneView
     private var anchorNode: AnchorNode? = null
     private lateinit var session: Session
     private lateinit var config: Config
@@ -44,7 +46,6 @@ class CameraFragment :
     }
 
     override fun observeData() {
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.cameraEvents.collect { event ->
@@ -115,23 +116,21 @@ class CameraFragment :
         locationUtil.getCurrentLocation { latitude, longitude ->
             viewModel.getCapsules(latitude = latitude, longitude = longitude)
         }
+        arSceneView = binding.sceneView
+
         viewAttachmentManager = ViewAttachmentManager(
-            binding.sceneView.context,
-            binding.sceneView
+            arSceneView.context,
+            arSceneView
         )
         initView()
         createSession()
-
     }
 
     private fun initView() {
-        with(binding) {
-            sceneView.configureSession { session, config ->
-                config.geospatialMode = Config.GeospatialMode.ENABLED
-                config.planeFindingMode = Config.PlaneFindingMode.DISABLED
-            }
+        arSceneView.configureSession { session, config ->
+            config.geospatialMode = Config.GeospatialMode.ENABLED
+            config.planeFindingMode = Config.PlaneFindingMode.DISABLED
         }
-
     }
 
 
@@ -140,20 +139,27 @@ class CameraFragment :
         val arContentNode =
             binding.sceneView.let { scenview ->
                 viewAttachmentManager.let { attachManager ->
-                    ARContentNode(scenview, attachManager, this, capsule,layoutInflater, requireContext() ,onLoaded = { viewNode ->
-                        binding.sceneView.engine.let {
-                            AnchorNode(it, anchor)
-                                .apply {
-                                    isEditable = true
-                                    lifecycleScope.launch {
-                                        addChildNode(viewNode)
+                    ARContentNode(
+                        scenview,
+                        attachManager,
+                        this,
+                        capsule,
+                        layoutInflater,
+                        requireContext(),
+                        onLoaded = { viewNode ->
+                            binding.sceneView.engine.let {
+                                AnchorNode(it, anchor)
+                                    .apply {
+                                        isEditable = true
+                                        lifecycleScope.launch {
+                                            addChildNode(viewNode)
+                                        }
+                                        anchorNode = this
                                     }
-                                    anchorNode = this
-                                }
-                        }.let {
-                            binding.sceneView.addChildNode(it)
-                        }
-                    })
+                            }.let {
+                                binding.sceneView.addChildNode(it)
+                            }
+                        })
                 }
             }
     }
@@ -174,12 +180,6 @@ class CameraFragment :
         super.onHiddenChanged(hidden)
         if (hidden) {
             viewAttachmentManager.onPause()
-            lifecycleScope.launch {
-                CameraManager.getCameraInstance()
-                CameraManager.releaseCamera()
-            }
-        } else {
-            viewAttachmentManager.onResume()
         }
     }
 
