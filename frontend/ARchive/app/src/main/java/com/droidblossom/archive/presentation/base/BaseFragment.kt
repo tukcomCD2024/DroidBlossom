@@ -53,5 +53,6 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
         if (fetchJob.isActive) {
             fetchJob.cancel()
         }
+        _binding = null
     }
 }
