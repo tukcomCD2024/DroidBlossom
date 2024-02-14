@@ -17,6 +17,7 @@ import com.droidblossom.archive.databinding.ItemCapsuleSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.CameraManager
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
@@ -167,25 +168,24 @@ class CameraFragment :
         session.configure(config)
     }
 
-    private fun stopCamera() {
-        try {
-            val camera = Camera.open()
-            camera.release()
-        } catch (e: Exception) {
-            // 오류 처리
-            e.printStackTrace()
-        }
+    override fun onResume() {
+        super.onResume()
+        viewAttachmentManager.onResume()
+        CameraManager.getCameraInstance()
     }
+
 
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             viewAttachmentManager.onPause()
-            stopCamera()
+            CameraManager.releaseCamera()
         } else {
             viewAttachmentManager.onResume()
+            CameraManager.getCameraInstance()
         }
         super.onHiddenChanged(hidden)
     }
+
 
     companion object {
 
