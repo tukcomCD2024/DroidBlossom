@@ -46,7 +46,8 @@ public class CapsuleSkinMapper {
             request.skinName(),
             request.imageUrl(),
             request.directory(),
-            request.motionName()
+            request.motionName(),
+            request.retarget()
         );
     }
 
@@ -55,7 +56,6 @@ public class CapsuleSkinMapper {
             .skinName(dto.skinName())
             .imageUrl(
                 s3UrlGenerator.generateFileName(member.getId(), dto.directory(), dto.imageUrl()))
-            .motionName(dto.motionName())
             .member(member)
             .build();
     }
@@ -69,8 +69,9 @@ public class CapsuleSkinMapper {
             .memberId(memberId)
             .memberName(memberName)
             .skinName(dto.skinName())
-            .imageUrl(dto.imageUrl())
+            .imageUrl(s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl()))
             .motionName(dto.motionName())
+            .retarget(dto.retarget())
             .build();
     }
 }

@@ -2,6 +2,9 @@ package site.timecapsulearchive.core.domain.capsuleskin.data.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.lang.Nullable;
+import site.timecapsulearchive.core.domain.capsuleskin.entity.Motion;
+import site.timecapsulearchive.core.domain.capsuleskin.entity.Retarget;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 
 @Schema(description = "캡슐 스킨 생성 포맷")
@@ -19,8 +22,13 @@ public record CapsuleSkinCreateRequest(
     @NotBlank(message = "디렉토리는 필수입니다.")
     String directory,
 
+    @Nullable
     @Schema(description = "캡슐 스킨 모션 이름")
-    String motionName
+    Motion motionName,
+
+    @Nullable
+    @Schema(description = "캡슐 스킨 구조")
+    Retarget retarget
 ) {
 
 }
