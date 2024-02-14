@@ -13,6 +13,7 @@ import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -78,7 +80,6 @@ class MyPageViewModelImpl @Inject constructor(
                         _hasNextPage.value = it.hasNext
                         _myCapsules.emit(myCapsules.value + it.capsules)
                         _lastCreatedTime.value = _myCapsules.value.last().createdDate
-                        updateMyCapsulesUI()
                     }.onFail {
                         _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
@@ -103,15 +104,17 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     override fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean) {
-        val updatedCapsules = _myCapsulesUI.value.map { capsule ->
-            if (capsule.capsuleId == capsuleId) {
-                capsule.copy(isOpened = isOpened)
-            } else {
-                capsule
-            }
-        }
         viewModelScope.launch {
-            _myCapsulesUI.emit(updatedCapsules)
+            val updatedCapsules = withContext(Dispatchers.Default) {
+                _myCapsules.value.map { capsule ->
+                    if (capsule.capsuleId == capsuleId) {
+                        capsule.copy(isOpened = isOpened)
+                    } else {
+                        capsule
+                    }
+                }
+            }
+            _myCapsules.emit(updatedCapsules)
         }
     }
 }
