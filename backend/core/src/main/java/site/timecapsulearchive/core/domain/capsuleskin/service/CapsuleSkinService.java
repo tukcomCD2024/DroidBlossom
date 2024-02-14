@@ -17,7 +17,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.config.RabbitmqConfig;
+import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqConfig;
 
 @Service
 @RequiredArgsConstructor

@@ -1,14 +1,15 @@
-package site.timecapsulearchive.core.global.config;
+package site.timecapsulearchive.core.global.config.rabbitmq;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler.DefaultExceptionStrategy;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +18,15 @@ import org.springframework.util.ErrorHandler;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class RabbitmqConfig {
 
 
-    private static final String CAPSULE_SKIN_QUEUE_NAME = "capsuleSkin.queue";
     public static final String CAPSULE_SKIN_EXCHANGE_NAME = "capsuleSkin.exchange";
+    private static final String CAPSULE_SKIN_QUEUE_NAME = "capsuleSkin.queue";
     private static final String ROUTING_KEY = "capsuleSkin.#";
+
+    private final RabbitmqProperties rabbitmqProperties;
 
     @Bean
     public Queue queue() {
@@ -43,11 +47,24 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(CAPSULE_SKIN_QUEUE_NAME);
-        return container;
+    public RabbitTemplate rabbitTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        rabbitTemplate.setReplyErrorHandler(errorHandler());
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public CachingConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+
+        connectionFactory.setHost(rabbitmqProperties.host());
+        connectionFactory.setPort(rabbitmqProperties.port());
+        connectionFactory.setUsername(rabbitmqProperties.userName());
+        connectionFactory.setPassword(rabbitmqProperties.password());
+        connectionFactory.setVirtualHost(rabbitmqProperties.virtualHost());
+
+        return connectionFactory;
     }
 
     @Bean
@@ -58,6 +75,14 @@ public class RabbitmqConfig {
     @Bean
     public ErrorHandler errorHandler() {
         return new ConditionalRejectingErrorHandler(new MyFatalExceptionStrategy());
+    }
+
+    public String getCapsuleSkinExchangeName() {
+        return CAPSULE_SKIN_EXCHANGE_NAME;
+    }
+
+    public String getRoutingKey() {
+        return ROUTING_KEY;
     }
 
     public static class MyFatalExceptionStrategy extends DefaultExceptionStrategy {
@@ -72,13 +97,5 @@ public class RabbitmqConfig {
             return super.isFatal(throwable);
         }
 
-    }
-
-    public String getCapsuleSkinExchangeName() {
-        return CAPSULE_SKIN_EXCHANGE_NAME;
-    }
-
-    public String getRoutingKey() {
-        return ROUTING_KEY;
     }
 }
