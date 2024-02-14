@@ -183,6 +183,11 @@ class CameraFragment :
             arSceneView.session?.pause()
         } else {
             arSceneView.session?.resume()
+            viewAttachmentManager.onResume()
+            val locationUtil = LocationUtil(requireContext())
+            locationUtil.getCurrentLocation { latitude, longitude ->
+                viewModel.getCapsules(latitude = latitude, longitude = longitude)
+            }
         }
     }
 
