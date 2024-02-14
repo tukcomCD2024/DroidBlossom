@@ -67,7 +67,7 @@ class CameraFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
-                    binding.sceneView.onSessionUpdated = { session, frame ->
+                    arSceneView.onSessionUpdated = { session, frame ->
                         if (anchorNode == null) {
                             Log.d("CameraFragmentAR", "earth setting start")
                             val earth = session.earth
@@ -137,7 +137,7 @@ class CameraFragment :
     private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
         val arContentNode =
-            binding.sceneView.let { scenview ->
+            arSceneView.let { scenview ->
                 viewAttachmentManager.let { attachManager ->
                     ARContentNode(
                         scenview,
@@ -147,7 +147,7 @@ class CameraFragment :
                         layoutInflater,
                         requireContext(),
                         onLoaded = { viewNode ->
-                            binding.sceneView.engine.let {
+                            arSceneView.engine.let {
                                 AnchorNode(it, anchor)
                                     .apply {
                                         isEditable = true
@@ -157,7 +157,7 @@ class CameraFragment :
                                         anchorNode = this
                                     }
                             }.let {
-                                binding.sceneView.addChildNode(it)
+                                arSceneView.addChildNode(it)
                             }
                         })
                 }
