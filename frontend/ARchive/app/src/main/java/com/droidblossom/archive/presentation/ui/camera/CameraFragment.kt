@@ -10,8 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
+import com.droidblossom.archive.databinding.ItemCapsuleSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
@@ -134,12 +136,13 @@ class CameraFragment :
 
     }
 
+
     private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
         val arContentNode =
             binding.sceneView.let { scenview ->
                 viewAttachmentManager.let { attachManager ->
-                    ARContentNode(scenview, attachManager, this, capsule, onLoaded = { viewNode ->
+                    ARContentNode(scenview, attachManager, this, capsule,layoutInflater, requireContext() ,onLoaded = { viewNode ->
                         binding.sceneView.engine.let {
                             AnchorNode(it, anchor)
                                 .apply {
