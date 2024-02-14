@@ -180,6 +180,9 @@ class CameraFragment :
         super.onHiddenChanged(hidden)
         if (hidden) {
             viewAttachmentManager.onPause()
+            arSceneView.session?.pause()
+        } else {
+            arSceneView.session?.resume()
         }
     }
 
