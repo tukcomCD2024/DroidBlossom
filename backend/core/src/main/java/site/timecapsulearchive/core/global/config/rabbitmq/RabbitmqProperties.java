@@ -2,7 +2,7 @@ package site.timecapsulearchive.core.global.config.rabbitmq;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "rabbitmq")
+@ConfigurationProperties(prefix = "spring.rabbitmq")
 public record RabbitmqProperties(
     String host,
     int port,
