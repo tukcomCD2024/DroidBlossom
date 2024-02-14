@@ -88,7 +88,7 @@ class CapsuleDetailActivity :
                         Glide.with(applicationContext)
                             .load(it.videoUrls.first())
                             .thumbnail(0.1f)
-                            .placeholder(R.drawable.sample_skin)
+                            .placeholder(R.drawable.app_symbol)
                             .into(binding.videoImg)
                     }
                 }

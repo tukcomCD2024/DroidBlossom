@@ -35,7 +35,9 @@ class ARContentNode(
 
         Glide.with(context)
             .load(R.drawable.base_gif)
-            .placeholder(R.drawable.base_use_img)
+            .placeholder(R.drawable.app_symbol)
+            .error(R.drawable.app_symbol)
+            .fallback(R.drawable.app_symbol)
             .into(capsuleSkin.capsuleSkin)
 
         ViewRenderable.builder()

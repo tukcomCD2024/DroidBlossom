@@ -209,7 +209,7 @@ class CreateCapsule3Fragment :
                         Glide.with(requireContext())
                             .load(it.first())
                             .thumbnail(0.1f)
-                            .placeholder(R.drawable.sample_skin)
+                            .placeholder(R.drawable.app_symbol)
                             .into(binding.videoImg)
                     }
                 }

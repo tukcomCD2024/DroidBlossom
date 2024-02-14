@@ -22,7 +22,7 @@
             android:layout_height="0dp"
             android:scaleType="centerInside"
             bind:url="@{item.url}"
-            bind:baseImg="@{@drawable/base_use_img}"
+            bind:baseImg="@{@drawable/app_symbol}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
