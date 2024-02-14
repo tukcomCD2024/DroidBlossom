@@ -100,7 +100,7 @@ class MyPageFragment :
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.myCapsules.collect { capsule ->
+                viewModel.myCapsulesUI.collect { capsule ->
                     myCapsuleRVA.submitList(capsule)
                 }
             }
