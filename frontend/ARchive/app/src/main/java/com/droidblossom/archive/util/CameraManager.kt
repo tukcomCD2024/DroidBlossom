@@ -11,7 +11,6 @@ object CameraManager {
         if (camera == null) {
             try {
                 camera = Camera.open()
-                Log.d("카메라","카메라 오픈")
             } catch (e: Exception) {
             }
         }
@@ -22,7 +21,6 @@ object CameraManager {
         camera?.apply {
             stopPreview()
             release()
-            Log.d("카메라","카메라 오프")
             camera = null
         }
     }
