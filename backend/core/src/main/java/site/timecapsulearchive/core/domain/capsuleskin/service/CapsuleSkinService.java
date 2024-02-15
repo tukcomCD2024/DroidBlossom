@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsuleskin.service;
 
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
@@ -13,11 +12,11 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
+import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinMessageRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqConfig;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +24,9 @@ public class CapsuleSkinService {
 
     private final CapsuleSkinRepository capsuleSkinRepository;
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
+    private final CapsuleSkinMessageRepository capsuleSkinMessageRepository;
     private final MemberRepository memberRepository;
     private final CapsuleSkinMapper capsuleSkinMapper;
-    private final RabbitmqConfig rabbitmqConfig;
-    private final RabbitTemplate rabbitTemplate;
 
     public CapsuleSkinsSliceResponse findCapsuleSkinSliceByCreatedAtAndMemberId(
         final Long memberId,
@@ -58,11 +56,7 @@ public class CapsuleSkinService {
             return CapsuleSkinStatusResponse.success();
         }
 
-        rabbitTemplate.convertAndSend(
-            rabbitmqConfig.getCapsuleSkinExchangeName(),
-            rabbitmqConfig.getRoutingKey(),
-            capsuleSkinMapper.createDtoToMessageDto(memberId, foundMember.getNickname(), dto)
-        );
+        capsuleSkinMessageRepository.sendSkinCreateMessage(memberId, foundMember.getNickname(), dto);
         return CapsuleSkinStatusResponse.sendMessage();
     }
 
