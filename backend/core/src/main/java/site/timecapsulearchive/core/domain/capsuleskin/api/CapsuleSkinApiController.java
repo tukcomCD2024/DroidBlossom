@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.domain.capsuleskin.api;
 
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,22 +65,12 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         @AuthenticationPrincipal final Long memberId,
         @RequestBody final CapsuleSkinCreateRequest request
     ) {
-        CapsuleSkinStatusResponse response = capsuleSkinService.sendCapsuleSkinCreateMessage(
-            memberId, capsuleSkinMapper.createRequestToDto(request));
-
-        if (response.status().equals(HttpStatus.ACCEPTED)) {
-            return ResponseEntity.accepted().body(
-                ApiSpec.success(
-                    SuccessCode.SUCCESS,
-                    response
-                )
-            );
-        }
-
-        return ResponseEntity.ok(
+        return ResponseEntity.accepted().body(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                response
+                capsuleSkinService.sendCapsuleSkinCreateMessage(
+                    memberId, capsuleSkinMapper.createRequestToDto(request)
+                )
             )
         );
     }
