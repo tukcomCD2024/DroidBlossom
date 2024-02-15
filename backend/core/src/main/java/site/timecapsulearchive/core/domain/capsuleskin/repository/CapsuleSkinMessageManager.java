@@ -9,7 +9,7 @@ import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqConfig;
 
 @Repository
 @RequiredArgsConstructor
-public class CapsuleSkinMessageRepository {
+public class CapsuleSkinMessageManager {
 
     private final RabbitmqConfig rabbitmqConfig;
     private final RabbitTemplate rabbitTemplate;

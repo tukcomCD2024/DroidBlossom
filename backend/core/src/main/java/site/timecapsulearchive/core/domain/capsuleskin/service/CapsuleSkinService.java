@@ -12,7 +12,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
-import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinMessageRepository;
+import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinMessageManager;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
@@ -24,7 +24,7 @@ public class CapsuleSkinService {
 
     private final CapsuleSkinRepository capsuleSkinRepository;
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
-    private final CapsuleSkinMessageRepository capsuleSkinMessageRepository;
+    private final CapsuleSkinMessageManager capsuleSkinMessageManager;
     private final MemberRepository memberRepository;
     private final CapsuleSkinMapper capsuleSkinMapper;
 
@@ -56,7 +56,7 @@ public class CapsuleSkinService {
             return CapsuleSkinStatusResponse.success();
         }
 
-        capsuleSkinMessageRepository.sendSkinCreateMessage(memberId, foundMember.getNickname(), dto);
+        capsuleSkinMessageManager.sendSkinCreateMessage(memberId, foundMember.getNickname(), dto);
         return CapsuleSkinStatusResponse.sendMessage();
     }
 
