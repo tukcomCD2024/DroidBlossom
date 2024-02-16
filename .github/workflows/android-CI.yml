@@ -19,11 +19,19 @@ jobs:
 
     - name: Create local.properties
       run: |
-        echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-        echo "${{ secrets.LOCAL_PROPERTIES }}" >> local.properties
-
-    - name: Create google-services.json
-      run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > app/google-services.json
+        echo "naver_client_id=${{ secrets.NAVER_CLIENT_ID }}" >> local.properties
+        echo "kakao_native_app_key=\"${{ secrets.KAKAO_NATIVE_APP_KEY }}\"" >> local.properties
+        echo "kakao_native_app_key_no_quotes=${{ secrets.KAKAO_NATIVE_APP_KEY_NO_QUOTES }}" >> local.properties
+        echo "google_login_client_id=\"${{ secrets.GOOGLE_LOGIN_CLIENT_ID }}\"" >> local.properties
+        echo "base_url=\"${{ secrets.BASE_URL }}\"" >> local.properties
+        echo "re_issue_token=\"${{ secrets.RE_ISSUE_TOKEN }}\"" >> local.properties
+        echo "s3_access_key=\"${{ secrets.S3_ACCESS_KEY }}\"" >> local.properties
+        echo "s3_secret_key=\"${{ secrets.S3_SECRET_KEY }}\"" >> local.properties
+        echo "s3_region=\"${{ secrets.S3_REGION }}\"" >> local.properties
+        echo "s3_bucket=\"${{ secrets.S3_BUCKET }}\"" >> local.properties
+        echo "kakao_rest_api_key=\"${{ secrets.KAKAO_REST_API_KEY }}\"" >> local.properties
+        echo "kakao_url=\"${{ secrets.KAKAO_URL }}\"" >> local.properties
+        echo "google_api_key=\"${{ secrets.GOOGLE_API_KEY }}\"" >> local.properties
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
