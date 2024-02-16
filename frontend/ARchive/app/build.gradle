@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 Properties properties = new Properties()
@@ -167,6 +168,11 @@ dependencies {
 
     //이미지 확대 : https://github.com/Baseflow/PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 }
 kapt {
     correctErrorTypes true
