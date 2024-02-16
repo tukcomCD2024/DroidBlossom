@@ -31,7 +31,7 @@ jobs:
         echo "s3_bucket=\"${{ secrets.S3_BUCKET }}\"" >> local.properties
         echo "kakao_rest_api_key=\"${{ secrets.KAKAO_REST_API_KEY }}\"" >> local.properties
         echo "kakao_url=\"${{ secrets.KAKAO_URL }}\"" >> local.properties
-        echo "google_api_key=\"${{ secrets.GOOGLE_API_KEY }}\"" >> local.properties
+        echo "google_api_key=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
