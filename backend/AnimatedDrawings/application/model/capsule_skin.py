@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
-from model.base import Base
-from model.member import Member
+from application.model.base import Base
+from application.model.member import Member
 from sqlalchemy import String, ForeignKey, func
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
