@@ -17,7 +17,7 @@ class QueueConfig(RootConfig):
 
     @property
     def queue_name(self) -> str:
-        return self._queue_username
+        return 'q.animation'
 
     @property
     def queue_host(self) -> str:
