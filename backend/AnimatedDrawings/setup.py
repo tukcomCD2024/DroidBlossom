@@ -31,7 +31,12 @@ setup(
         'Werkzeug==2.3.6',
         'gunicorn==21.0.1',
         'amqp==5.1.1',
-        'redis==4.6.0'
+        'boto3==1.34.38',
+        'botocore==1.34.38',
+        'pika==1.3.2',
+        'PyMySQL==1.1.0',
+        'mysql-connector-python==8.3.0',
+        'SQLAlchemy==2.0.25'
     ],
     packages=find_packages(),
 )
