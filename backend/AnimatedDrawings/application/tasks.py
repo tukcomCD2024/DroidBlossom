@@ -1,3 +1,6 @@
+import pathlib
+import shutil
+
 import requests
 from celery import Celery
 from kombu import Queue
@@ -6,12 +9,12 @@ from sqlalchemy.orm import Session
 
 from application.config.database_config import DatabaseConfig
 from application.config.queue_config import QueueConfig
-from examples.annotations_to_animation import annotations_to_animation
-from examples.image_to_annotations import image_to_annotations
+from application.config.s3_config import S3Config
 from application.handler import LogErrorsTask
 from application.model.capsule_skin import CapsuleSkin
-from application.config.s3_config import S3Config
 from application.s3.s3_connection import get_object_wrapper
+from examples.annotations_to_animation import annotations_to_animation
+from examples.image_to_annotations import image_to_annotations
 
 queue_config = QueueConfig()
 celery = Celery('tasks',
@@ -38,6 +41,8 @@ def make_animation(input_data: dict) -> None:
 
     upload_gif_to_s3(output_directory)
 
+    clear_resource(output_directory)
+
 
 def image_to_animation(img_bytes: bytes, input_data: dict) -> str:
     output_directory = "capsule_skin/" + input_data['memberId']
@@ -59,6 +64,11 @@ def upload_gif_to_s3(output: str) -> None:
 def read_animation_result(output: str) -> bytes:
     with open(output, "rb") as image:
         return bytearray(image.read())
+
+
+def clear_resource(output_directory):
+    if pathlib.Path.is_dir(output_directory):
+        shutil.rmtree(output_directory)
 
 
 @celery.task(base=LogErrorsTask)
