@@ -8,8 +8,8 @@ s3_config = S3Config()
 
 
 def s3_resource():
-    return boto3.resource('s3', aws_access_key_id=s3_config.access_key(),
-                          aws_secret_access_key=s3_config.secret_key(),
+    return boto3.resource('s3', aws_access_key_id=s3_config.access_key,
+                          aws_secret_access_key=s3_config.secret_key,
                           config=Config(signature_version='s3v4'))
 
 
