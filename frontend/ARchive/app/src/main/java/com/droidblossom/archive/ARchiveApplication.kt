@@ -3,13 +3,12 @@ package com.droidblossom.archive
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.droidblossom.archive.util.DataStoreUtils
+import com.droidblossom.archive.util.ExceptionHandler
 import com.droidblossom.archive.util.NetworkStatusChecker
-import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -25,9 +24,8 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         context = applicationContext
         networkConnectionChecker = NetworkStatusChecker(context)
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
-
+        setCrashHandler()
         dummyCoroutines()
-
 
         // 키 값 알아내기
 //        AppSignatureHelper(this@ARchiveApplication).apply {
@@ -48,6 +46,16 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
             GlobalScope.launch(Dispatchers.Unconfined) {}
 
         }
+    }
+
+    private fun setCrashHandler() {
+        val crashlyticsExceptionHandler = Thread.getDefaultUncaughtExceptionHandler() ?: return
+        Thread.setDefaultUncaughtExceptionHandler(
+            ExceptionHandler(
+                this,
+                crashlyticsExceptionHandler
+            )
+        )
     }
 
     override fun onStop(owner: LifecycleOwner) {
