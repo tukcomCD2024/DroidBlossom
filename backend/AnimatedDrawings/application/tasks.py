@@ -1,3 +1,4 @@
+import os.path
 import pathlib
 import shutil
 
@@ -19,7 +20,7 @@ from examples.image_to_annotations import image_to_annotations
 queue_config = QueueConfig()
 celery = Celery('tasks',
                 broker=queue_config.get_queue_url(),
-                include=['tasks'])
+                include=['application.tasks'])
 
 celery.conf.result_expires = 300
 celery.conf.task_queues = (
@@ -45,7 +46,7 @@ def make_animation(input_data: dict) -> None:
 
 
 def image_to_animation(img_bytes: bytes, input_data: dict) -> str:
-    output_directory = "capsule_skin/" + input_data['memberId']
+    output_directory = 'capsuleSkin/' + input_data['memberId']
     image_to_annotations(img_bytes, output_directory)
     annotations_to_animation(output_directory, input_data['motionName'],
                              input_data['retarget'])
@@ -53,21 +54,21 @@ def image_to_animation(img_bytes: bytes, input_data: dict) -> str:
 
 
 def upload_gif_to_s3(output: str) -> None:
-    result_path = output + "/video.gif"
+    result_path = output + '/video.gif'
 
     gif_bytes = read_animation_result(result_path)
 
-    output_wrapper = get_object_wrapper(s3_config.s3_bucket_name(), result_path)
+    output_wrapper = get_object_wrapper(s3_config.s3_bucket_name, result_path)
     output_wrapper.put(gif_bytes)
 
 
 def read_animation_result(output: str) -> bytes:
-    with open(output, "rb") as image:
+    with open(output, 'rb') as image:
         return bytearray(image.read())
 
 
 def clear_resource(output_directory):
-    if pathlib.Path.is_dir(output_directory):
+    if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
 
 
