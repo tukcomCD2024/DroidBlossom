@@ -73,6 +73,7 @@ class MyPageFragment :
         initRVA()
 
         binding.settingBtn.setOnClickListener {
+            throw RuntimeException("Test Crash")
         }
     }
 

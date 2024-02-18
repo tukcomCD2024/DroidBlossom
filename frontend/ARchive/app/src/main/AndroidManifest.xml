@@ -6,10 +6,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" /> <!-- Sceneform requires OpenGL ES 3.0 or later. -->
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
-        android:minSdkVersion="33"/>
+        android:minSdkVersion="33" />
+
     <uses-feature
         android:glEsVersion="0x00030000"
         android:required="true" /> <!-- Indicates that app requires ARCore ("AR Required"). Ensures the app is visible only in the Google Play Store on devices that support ARCore. For "AR Optional" apps remove this line. -->
@@ -32,8 +33,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.ui.ErrorActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.ui.permission.PermissionActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".presentation.ui.capsule.ImagesActivity"
             android:exported="false" />
@@ -95,7 +99,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <meta-data
@@ -104,8 +107,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GOOGLE_APP_KEY}" />
-
-
 
         <service
             android:name="com.google.android.gms.metadata.ModuleDependencies"
@@ -120,7 +121,6 @@
                 android:name="photopicker_activity:0:required"
                 android:value="" />
         </service>
-
         <service
             android:name=".util.MyFirebaseMessagingService"
             android:enabled="true"
