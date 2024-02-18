@@ -13,19 +13,6 @@ class ObjectWrapper:
         self.object = s3_object
         self.key = self.object.key
 
-    def get(self):
-        """
-        Gets the object.
-
-        :return: The object data in bytes.
-        """
-        try:
-            body = self.object.get()["Body"].read()
-        except ClientError:
-            raise
-        else:
-            return body
-
     def put(self, data):
         """
         Upload data to the object.
