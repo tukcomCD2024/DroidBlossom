@@ -74,7 +74,7 @@ class SkinMakeViewModelImpl @Inject constructor(
             val skinImgName: List<String> = listOf(skinImgFile.value!!.name)
             val empty = emptyList<String>()
             val getS3UrlData =
-                S3UrlRequest(CreateCapsuleViewModelImpl.S3DIRECTORY, skinImgName, empty)
+                S3UrlRequest(S3DIRECTORY, skinImgName, empty)
             getUploadUrls(getS3UrlData)
 
             capsuleSkinsMakeUseCase(
