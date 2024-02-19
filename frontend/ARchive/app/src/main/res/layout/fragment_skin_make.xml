@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel" />
@@ -54,6 +55,7 @@
                     android:ellipsize="end"
                     android:gravity="center_horizontal"
                     android:hint="@string/skinMakeHint"
+                    android:text="@={vm.skinName}"
                     android:maxLines="1"
                     android:paddingVertical="0dp"
                     android:textAppearance="@style/TextAppearance.App.h2"
@@ -102,7 +104,7 @@
                         app:layout_constraintStart_toEndOf="@id/guide_left"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/skin_upload_img"
-                        bind:imageUrl="@{vm.imgUri}"
+                        bind:imageUrl="@{vm.skinImgUri}"
                         bind:placeholder="@{@drawable/skin_upload_img}"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,6 +117,7 @@
                     android:drawableEnd="@drawable/ic_plus_24"
                     android:drawableTint="@color/main_1"
                     android:text="@string/addMotion"
+                    android:onClick="@{() -> vm.selectAddMotion()}"
                     android:textAppearance="@style/TextAppearance.App.body1"
                     app:layout_constraintEnd_toEndOf="@id/skinImageLayout"
                     app:layout_constraintStart_toStartOf="@id/skinImageLayout"
@@ -126,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:orientation="vertical"
-                    android:visibility="visible"
+                    android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
