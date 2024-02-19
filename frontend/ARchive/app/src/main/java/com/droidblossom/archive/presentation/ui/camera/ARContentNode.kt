@@ -34,7 +34,7 @@ class ARContentNode(
         val capsuleSkin = ItemCapsuleSkinBinding.inflate(layoutInflater)
 
         Glide.with(context)
-            .load("https://blog.kakaocdn.net/dn/dq8OFz/btq4AuchShs/PqmCKZK20PEYKtUssYe0U0/img.gif")
+            .load(capsule.skinUrl)
             .placeholder(R.drawable.app_symbol)
             .error(R.drawable.app_symbol)
             .fallback(R.drawable.app_symbol)
