@@ -2,12 +2,12 @@ package site.timecapsulearchive.core.domain.capsuleskin.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
 import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqConfig;
 
-@Repository
+@Component
 @RequiredArgsConstructor
 public class CapsuleSkinMessageManager {
 
