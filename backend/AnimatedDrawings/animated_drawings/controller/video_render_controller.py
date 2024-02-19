@@ -14,7 +14,6 @@ import numpy as np
 import numpy.typing as npt
 import cv2
 from OpenGL import GL
-from tqdm import tqdm
 
 from animated_drawings.controller.controller import Controller
 from animated_drawings.model.scene import Scene
@@ -49,8 +48,6 @@ class VideoRenderController(Controller):
         self.video_writer: VideoWriter = VideoWriter.create_video_writer(self)
 
         self.frame_data = np.empty([self.video_height, self.video_width, 4], dtype='uint8')  # 4 for RGBA
-
-        self.progress_bar = tqdm(total=self.frames_left_to_render)
 
     def _set_frames_left_to_render_and_delta_t(self) -> None:
         """
@@ -104,7 +101,6 @@ class VideoRenderController(Controller):
         # update our counts and progress_bar
         self.frames_left_to_render -= 1
         self.frames_rendered += 1
-        self.progress_bar.update(1)
 
     def _cleanup_after_run_loop(self) -> None:
         logging.info(f'Rendered {self.frames_rendered} frames in {time.time()-self.run_loop_start_time} seconds.')
