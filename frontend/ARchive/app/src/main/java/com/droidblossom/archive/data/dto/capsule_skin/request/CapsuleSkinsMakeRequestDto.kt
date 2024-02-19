@@ -4,6 +4,6 @@ data class CapsuleSkinsMakeRequestDto (
     val skinName : String,
     val imageUrl : String,
     val directory : String,
-    val motionName : String,
-    val retarget : String
+    val motionName : String?,
+    val retarget : String?
 )

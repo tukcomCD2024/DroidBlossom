@@ -7,17 +7,17 @@ import com.droidblossom.archive.util.Retarget
 import java.io.File
 
 data class CapsuleSkinsMakeRequest(
-    val skinName : String,
-    val imageUrl : String,
-    val directory : String,
-    val motionName : Motion,
-    val retarget : Retarget
-){
-    fun toDto()= CapsuleSkinsMakeRequestDto(
-        skinName = this.skinName,
-        imageUrl = this.imageUrl,
-        directory = this.directory,
-        motionName = this.motionName.toString(),
-        retarget = this.retarget.toString()
+    val skinName: String,
+    val imageUrl: String,
+    val directory: String,
+    val motionName: Motion?,
+    val retarget: Retarget?
+) {
+    fun toDto() = CapsuleSkinsMakeRequestDto(
+        skinName = skinName,
+        imageUrl = imageUrl,
+        directory = directory,
+        motionName = motionName?.toString(),
+        retarget = retarget?.toString()
     )
 }
