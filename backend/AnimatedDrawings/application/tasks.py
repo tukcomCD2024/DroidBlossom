@@ -24,8 +24,8 @@ celery = Celery('tasks',
 
 celery.conf.result_expires = 300
 celery.conf.task_queues = (
-    Queue('q.animation_tasks'),
-    Queue('q.success_tasks'),
+    Queue('makeAnimationTask.queue'),
+    Queue('saveCapsuleSkinTasks.queue'),
 )
 
 database_config = DatabaseConfig()

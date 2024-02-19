@@ -20,8 +20,8 @@ class AnimationQueueController:
         self.queue_config = QueueConfig()
         self.require_keys = ['memberId', 'memberName', 'skinName', 'imageUrl',
                              'retarget', 'motionName']
-        self.celery_work_queue_name = 'q.animation_tasks'
-        self.celery_success_queue_name = 'q.success_tasks'
+        self.celery_work_queue_name = 'makeAnimationTask.queue'
+        self.celery_success_queue_name = 'saveCapsuleSkinTasks.queue'
 
     def run(self):
         # rabbitmq 채널 연결

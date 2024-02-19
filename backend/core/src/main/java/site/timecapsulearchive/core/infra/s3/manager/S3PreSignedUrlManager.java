@@ -134,4 +134,8 @@ public class S3PreSignedUrlManager {
             getObjectPresignRequest);
         return String.valueOf(presignedGetObjectRequest.url());
     }
+
+    public String getS3PreSignedUrlForGet(final String fileName) {
+        return createS3PreSignedUrlForGet(fileName);
+    }
 }
