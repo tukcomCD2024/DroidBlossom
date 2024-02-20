@@ -5,7 +5,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 public record MySecreteCapsuleDto(
     Long capsuleId,
-    String SkinUrl,
+    String skinUrl,
     ZonedDateTime dueDate,
     ZonedDateTime createdAt,
     String title,
