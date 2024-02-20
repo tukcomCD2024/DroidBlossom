@@ -52,6 +52,33 @@ class CreateCapsule3Fragment :
             }
         }
 
+    private val pickMultipleImageAndVideo =
+        registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(5)
+        ) { uris ->
+            if (uris.isNotEmpty()) {
+                uris.forEach { uri ->
+                    val mimeType = activity?.contentResolver?.getType(uri)
+                    when {
+                        mimeType?.startsWith("image/") == true -> {
+                            Log.d("MediaType", "Image URI: $uri")
+                            // 여기서 viewModel.addImgUris() 또는 다른 처리를 수행
+                        }
+                        mimeType?.startsWith("video/") == true -> {
+                            Log.d("MediaType", "Video URI: $uri")
+                            // 여기서 viewModel.addImgUris() 또는 다른 처리를 수행
+                        }
+                        else -> {
+                            // 알 수 없는 미디어 타입
+                            Log.d("MediaType", "Unknown media type: $uri")
+                        }
+                    }
+                }
+            } else {
+                Log.d("Photo", "No media selected")
+            }
+        }
+
     private val pickSingle =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
         { uri ->
@@ -164,6 +191,7 @@ class CreateCapsule3Fragment :
 
                         CreateCapsuleViewModel.Create3Event.ClickImgUpLoad -> {
                             pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            //pickMultipleImageAndVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickLocation -> {
