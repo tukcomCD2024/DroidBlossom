@@ -46,13 +46,7 @@ class MyPageFragment :
                 )
             },
             { id, type ->
-                val args = Bundle().apply {
-                    putString("capsule_id", id.toString())
-                    putString("capsule_type", type.toString())
-                }
-                val sheet = CapsulePreviewDialogFragment().apply {
-                    arguments = args
-                }
+                val sheet = CapsulePreviewDialogFragment.newInstance(id.toString(), type.toString(), false)
                 sheet.show(parentFragmentManager, "CapsulePreviewDialog")
             },
         )

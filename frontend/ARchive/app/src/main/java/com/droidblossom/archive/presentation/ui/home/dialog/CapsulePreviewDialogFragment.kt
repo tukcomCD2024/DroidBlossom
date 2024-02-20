@@ -206,10 +206,11 @@ class CapsulePreviewDialogFragment :
     }
 
     companion object {
-        fun newInstance(capsuleId: String, capsuleType: String): CapsulePreviewDialogFragment {
+        fun newInstance(capsuleId: String, capsuleType: String, calledFromCamera : Boolean): CapsulePreviewDialogFragment {
             val args = Bundle().apply {
                 putString("capsule_id", capsuleId)
                 putString("capsule_type", capsuleType)
+                putBoolean("called_from_camera", calledFromCamera)
             }
             return CapsulePreviewDialogFragment().apply {
                 arguments = args
