@@ -199,38 +199,24 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
-    override fun openCapsule(capsuleId : Long){
+    override fun openCapsule(capsuleId: Long) {
+        if (timeCapsule.value && !calledFromCamera.value) {
+            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("타임캡슐 첫 오픈 시에는 시간, 위치 제약 있습니다."))
+            return
+        }
 
-        if (timeCapsule.value){
-            if (calledFromCamera.value){
-                viewModelScope.launch {
-                    patchCapsuleOpenedUseCase(capsuleId).collect{result ->
-                        result.onSuccess {
-                            if(it.result == "캡슐을 열 수 없습니다."){
-                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
-                            }else{
-                                _capsuleOpenState.emit(true)
-                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
-                            }
-                        }.onFail {
-                            Log.d("개봉", " 개봉 실패 코드 : $it")
-                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
-                        }
-                    }
-                }
-            }else{
-                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("타임캡슐 첫 오픈 시에는 시간, 위치 제약 있습니다."))
-            }
-        }else{
-            viewModelScope.launch {
-                patchCapsuleOpenedUseCase(capsuleId).collect{result ->
-                    result.onSuccess {
+        viewModelScope.launch {
+            patchCapsuleOpenedUseCase(capsuleId).collect { result ->
+                result.onSuccess {
+                    if (it.result == "캡슐을 열 수 없습니다.") {
+                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
+                    } else {
                         _capsuleOpenState.emit(true)
                         capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
-                    }.onFail {
-                        Log.d("개봉", " 개봉 실패 코드 : $it")
-                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
                     }
+                }.onFail {
+                    Log.d("개봉", " 개봉 실패 코드 : $it")
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
                 }
             }
         }
