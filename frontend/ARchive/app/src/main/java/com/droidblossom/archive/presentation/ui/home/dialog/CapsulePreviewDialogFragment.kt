@@ -39,6 +39,7 @@ class CapsulePreviewDialogFragment :
         arguments?.getString("capsule_type")
             ?.let { CapsuleTypeUtils.stringToEnum(it) }
     }
+
     override fun onStart() {
         super.onStart()
         val dialog = dialog
@@ -82,6 +83,9 @@ class CapsulePreviewDialogFragment :
 
             }
         }
+
+        val calledFromCamera = arguments?.getBoolean("called_from_camera") ?: false
+        viewModel.setCalledFromCamera(calledFromCamera)
 
         initObserver()
         initView()
