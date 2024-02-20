@@ -122,7 +122,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val isSelectTimeCapsule: StateFlow<Boolean>
         get() = _isSelectTimeCapsule
 
-    private val _imgUris = MutableStateFlow(listOf<Dummy>(Dummy(null, true)))
+    private val _imgUris = MutableStateFlow(listOf<Dummy>(Dummy(null, null, true)))
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
 
@@ -411,7 +411,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     override fun submitUris(list: List<Dummy>) {
         val submitList = if (list.none { it.last }) {
-            list + listOf(Dummy(null, true))
+            list + listOf(Dummy(null, null, true))
         } else list
         viewModelScope.launch { _imgUris.emit(submitList) }
     }

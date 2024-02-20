@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule3Binding
+import com.droidblossom.archive.domain.model.common.ContentType
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
@@ -46,7 +47,7 @@ class CreateCapsule3Fragment :
             ActivityResultContracts.PickMultipleVisualMedia(5)
         ) { uris ->
             if (uris.isNotEmpty()) {
-                viewModel.addImgUris(uris.map { Dummy(it, false) })
+                viewModel.addImgUris(uris.map { Dummy(it, null, false) })
             } else {
                 Log.d("포토", "No media selected")
             }
@@ -57,23 +58,24 @@ class CreateCapsule3Fragment :
             ActivityResultContracts.PickMultipleVisualMedia(5)
         ) { uris ->
             if (uris.isNotEmpty()) {
+                val dummyList = mutableListOf<Dummy>()
                 uris.forEach { uri ->
                     val mimeType = activity?.contentResolver?.getType(uri)
                     when {
                         mimeType?.startsWith("image/") == true -> {
                             Log.d("MediaType", "Image URI: $uri")
-                            // 여기서 viewModel.addImgUris() 또는 다른 처리를 수행
+                            dummyList.add(Dummy(uri, ContentType.IMAGE, false))
                         }
                         mimeType?.startsWith("video/") == true -> {
                             Log.d("MediaType", "Video URI: $uri")
-                            // 여기서 viewModel.addImgUris() 또는 다른 처리를 수행
+                            dummyList.add(Dummy(uri, ContentType.VIDEO, false))
                         }
                         else -> {
-                            // 알 수 없는 미디어 타입
                             Log.d("MediaType", "Unknown media type: $uri")
                         }
                     }
                 }
+                //viewModel.addUris(dummyList)
             } else {
                 Log.d("Photo", "No media selected")
             }
@@ -83,7 +85,7 @@ class CreateCapsule3Fragment :
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
         { uri ->
             if (uri != null) {
-                viewModel.addImgUris(listOf(Dummy(uri, false)))
+                viewModel.addImgUris(listOf(Dummy(uri, ContentType.IMAGE,false)))
             } else {
                 Log.d("포토", "No Media selected")
             }
