@@ -1,9 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from application.model.base import Base
 from sqlalchemy import func
 from sqlalchemy.orm import mapped_column, Mapped
+
+from application.model.base import Base
 
 
 class Member(Base):

@@ -1,4 +1,5 @@
 import logging
+
 from botocore.exceptions import ClientError
 
 
@@ -26,8 +27,9 @@ class ObjectWrapper:
             try:
                 put_data = open(data, "rb")
             except IOError:
-                logging.exception("Expected file name or binary data, got '%s'.",
-                                 data)
+                logging.exception(
+                    "Expected file name or binary data, got '%s'.",
+                    data)
                 raise
 
         try:
