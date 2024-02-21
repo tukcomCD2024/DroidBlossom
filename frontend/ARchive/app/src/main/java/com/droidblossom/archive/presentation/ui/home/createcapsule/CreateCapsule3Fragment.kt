@@ -126,8 +126,8 @@ class CreateCapsule3Fragment :
     }
 
     private fun initRVA() {
-        //binding.recycleView.adapter = imgVPA
-        binding.recycleView.adapter = contentVPA
+        binding.recycleView.adapter = imgVPA
+//        binding.recycleView.adapter = contentVPA
         binding.recycleView.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.recycleView)
 //        val locationUtil = LocationUtil(requireContext())
