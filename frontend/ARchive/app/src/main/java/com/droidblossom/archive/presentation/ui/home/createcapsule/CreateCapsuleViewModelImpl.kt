@@ -27,8 +27,11 @@ import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -293,38 +296,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             if (imageNames.isNotEmpty() || videoNames.isNotEmpty()) {
                 val getS3UrlData = S3UrlRequest(S3DIRECTORY, imageNames, videoNames)
                 getUploadUrls(getS3UrlData)
+            }else{
+                createCapsule()
             }
 
-            when (capsuleTypeCreateIs.value) {
-                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
-
-                }
-
-                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-                    secretCapsuleCreateUseCase(
-                        SecretCapsuleCreateRequest(
-                            capsuleSkinId = skinId.value,
-                            content = capsuleContent.value,
-                            directory = S3DIRECTORY,
-                            dueDate = dueTime.value,
-                            imageNames = imageNames,
-                            videoNames = videoNames,
-                            addressData = address.value,
-                            latitude = capsuleLatitude.value,
-                            longitude = capsuleLongitude.value,
-                            title = capsuleTitle.value,
-                        )
-                    ).collect { result ->
-                        _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
-                        Log.d("캡슐생성", "${result}")
-                    }
-                }
-
-                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
-
-                }
-            }
-            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
         }
     }
 
@@ -469,34 +444,81 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         preSignedVideoUrls: List<String>
     ) {
         viewModelScope.launch {
-            val uploadJobs = mutableListOf<Job>()
+            val uploadResults = mutableListOf<Deferred<Boolean>>()
 
             imageFiles.zip(preSignedImageUrls).forEach { (imageFile, url) ->
-                uploadJobs += launch(Dispatchers.IO) {
+                val uploadJob = async(Dispatchers.IO) {
                     try {
-                        Log.d("uploadFilesToS3", "Uploading image file: ${imageFile.name}")
                         s3Util.uploadImageWithPresignedUrl(imageFile, url)
                         Log.d("uploadFilesToS3", "Image file ${imageFile.name} uploaded successfully")
+                        true
                     } catch (e: Exception) {
                         Log.e("uploadFilesToS3", "Failed to upload image file ${imageFile.name}: ${e.message}")
+                        false
                     }
                 }
+                uploadResults.add(uploadJob)
             }
 
+            // 비디오 파일 업로드
             videoFiles.zip(preSignedVideoUrls).forEach { (videoFile, url) ->
-                uploadJobs += launch(Dispatchers.IO) {
+                val uploadJob = async(Dispatchers.IO) {
                     try {
-                        Log.d("uploadFilesToS3", "Uploading video file: ${videoFile.name}")
                         s3Util.uploadVideoWithPresignedUrl(videoFile, url)
                         Log.d("uploadFilesToS3", "Video file ${videoFile.name} uploaded successfully")
+                        true
                     } catch (e: Exception) {
                         Log.e("uploadFilesToS3", "Failed to upload video file ${videoFile.name}: ${e.message}")
+                        false
                     }
                 }
+                uploadResults.add(uploadJob)
             }
 
-            uploadJobs.joinAll()
-            Log.d("uploadFilesToS3", "All files uploaded successfully")
+            val allUploadsSuccessful = uploadResults.awaitAll().all { it }
+
+            if (allUploadsSuccessful) {
+                Log.d("uploadFilesToS3", "All files uploaded successfully")
+                createCapsule()
+            } else {
+                Log.e("uploadFilesToS3", "One or more file uploads failed")
+
+            }
+        }
+    }
+
+    private fun createCapsule(){
+        viewModelScope.launch {
+            when (capsuleTypeCreateIs.value) {
+                CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
+
+                }
+
+                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
+                    secretCapsuleCreateUseCase(
+                        SecretCapsuleCreateRequest(
+                            capsuleSkinId = skinId.value,
+                            content = capsuleContent.value,
+                            directory = S3DIRECTORY,
+                            dueDate = dueTime.value,
+                            imageNames = imageNames,
+                            videoNames = videoNames,
+                            addressData = address.value,
+                            latitude = capsuleLatitude.value,
+                            longitude = capsuleLongitude.value,
+                            title = capsuleTitle.value,
+                        )
+                    ).collect { result ->
+                        _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                        Log.d("캡슐생성", "${result}")
+                    }
+                }
+
+                CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
+
+                }
+            }
+            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
         }
     }
 
