@@ -136,26 +136,26 @@ class CreateCapsule3Fragment :
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
-//                    val imageFilesDeferred = async {
-//                        viewModel.imgUris.value.mapIndexed { index, uri ->
-//                            async {
-//                                uri.string?.let { uriString ->
-//                                    FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
-//                                }
-//                            }
-//                        }.awaitAll().orEmpty().filterNotNull()
-//                    }
-//
-//                    val videoFilesDeferred = async {
-//                        viewModel.videoUri.value.mapIndexed { index, uri ->
-//                            async {
-//                                uri.let { uriString ->
-//                                    FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
-//                                }
-//                            }
-//                        }.awaitAll().orEmpty().filterNotNull()
-//                    }
+                    val imageFilesDeferred = async {
+                        viewModel.imgUris.value.mapIndexed { index, uri ->
+                            async {
+                                uri.string?.let { uriString ->
+                                    FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
+                                }
+                            }
+                        }.awaitAll().orEmpty().filterNotNull()
+                    }
 
+                    val videoFilesDeferred = async {
+                        viewModel.videoUri.value.mapIndexed { index, uri ->
+                            async {
+                                uri.let { uriString ->
+                                    FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
+                                }
+                            }
+                       }.awaitAll().orEmpty().filterNotNull()
+                    }
+                    /*
                     val contentFilesDeferred = async {
                         viewModel.contentUris.value.mapIndexed { index, dummy ->
                             async {
@@ -178,11 +178,11 @@ class CreateCapsule3Fragment :
                     val videoFiles = contentFiles.filter { file ->
                         file.name.startsWith("VID_")
                     }
-
-//                    val imageFiles = imageFilesDeferred.await()
-//                    val videoFiles = videoFilesDeferred.await()
-//                    viewModel.setFiles(imageFiles,videoFiles)
-//                    viewModel.moveFinish()
+                    */
+                    val imageFiles = imageFilesDeferred.await()
+                    val videoFiles = videoFilesDeferred.await()
+                    viewModel.setFiles(imageFiles,videoFiles)
+                    viewModel.moveFinish()
                 }
             }
 
