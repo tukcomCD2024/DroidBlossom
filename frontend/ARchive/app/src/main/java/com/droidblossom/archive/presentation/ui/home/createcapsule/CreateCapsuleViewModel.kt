@@ -39,6 +39,7 @@ interface CreateCapsuleViewModel {
     val capsuleImgUrls: StateFlow<List<String>>
     val isSelectTimeCapsule : StateFlow<Boolean>
     val imgUris : StateFlow<List<Dummy>>
+    val contentUris : StateFlow<List<Dummy>>
     val videoUri : StateFlow<List<Uri>>
     val imageFiles: StateFlow<List<File>>
     val videoFiles: StateFlow<List<File>>
@@ -73,8 +74,10 @@ interface CreateCapsuleViewModel {
     fun moveVideoUpLoad()
     fun selectTimeCapsule()
     fun selectCapsule()
+    fun addContentUris(list: List<Dummy>)
     fun addImgUris(list: List<Dummy>)
     fun submitUris(list:List<Dummy>)
+    fun submitContentUris(list: List<Dummy>)
     fun deleteVideoUrl()
     fun addVideoUrl(uri : Uri)
     fun coordToAddress(latitude: Double, longitude: Double)

@@ -126,6 +126,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     override val imgUris: StateFlow<List<Dummy>>
         get() = _imgUris
 
+    private val _contentUris = MutableStateFlow(listOf<Dummy>(Dummy(null, null, true)))
+    override val contentUris: StateFlow<List<Dummy>>
+        get() = _contentUris
+
     private val _videoUri = MutableStateFlow(listOf<Uri>())
     override val videoUri: StateFlow<List<Uri>>
         get() = _videoUri
@@ -409,11 +413,28 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
+    override fun addContentUris(list: List<Dummy>){
+        val submitList = list + contentUris.value
+        if (submitList.size > 5) {
+            val listSize5 = submitList.slice(0..4)
+            viewModelScope.launch { _contentUris.emit(listSize5) }
+        } else {
+            viewModelScope.launch { _contentUris.emit(submitList) }
+        }
+    }
+
     override fun submitUris(list: List<Dummy>) {
         val submitList = if (list.none { it.last }) {
             list + listOf(Dummy(null, null, true))
         } else list
         viewModelScope.launch { _imgUris.emit(submitList) }
+    }
+
+    override fun submitContentUris(list: List<Dummy>) {
+        val submitList = if (list.none { it.last }) {
+            list + listOf(Dummy(null, null, true))
+        } else list
+        viewModelScope.launch { _contentUris.emit(submitList) }
     }
 
     override fun deleteVideoUrl() {

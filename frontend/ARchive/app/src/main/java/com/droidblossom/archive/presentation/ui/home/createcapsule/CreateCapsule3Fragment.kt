@@ -30,6 +30,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -75,7 +76,7 @@ class CreateCapsule3Fragment :
                         }
                     }
                 }
-                //viewModel.addUris(dummyList)
+                viewModel.addContentUris(dummyList)
             } else {
                 Log.d("Photo", "No media selected")
             }
@@ -109,6 +110,13 @@ class CreateCapsule3Fragment :
         )
     }
 
+    private val contentVPA by lazy {
+        ImageRVA(
+            { viewModel.moveSingleImgUpLoad() },
+            { viewModel.submitContentUris(it) }
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
@@ -118,7 +126,8 @@ class CreateCapsule3Fragment :
     }
 
     private fun initRVA() {
-        binding.recycleView.adapter = imgVPA
+        //binding.recycleView.adapter = imgVPA
+        binding.recycleView.adapter = contentVPA
         binding.recycleView.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.recycleView)
 //        val locationUtil = LocationUtil(requireContext())
@@ -220,6 +229,14 @@ class CreateCapsule3Fragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.imgUris.collect {
                     imgVPA.submitList(it)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.contentUris.collect {
+                    contentVPA.submitList(it)
                 }
             }
         }
