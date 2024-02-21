@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
@@ -21,10 +21,9 @@ import org.springframework.util.ErrorHandler;
 @RequiredArgsConstructor
 public class RabbitmqConfig {
 
-
-    public static final String CAPSULE_SKIN_EXCHANGE_NAME = "capsuleSkin.exchange";
+    private static final String CAPSULE_SKIN_EXCHANGE_NAME = "capsuleSkin.exchange";
     private static final String CAPSULE_SKIN_QUEUE_NAME = "capsuleSkin.queue";
-    private static final String ROUTING_KEY = "capsuleSkin.#";
+    private static final String ROUTING_KEY = "";
 
     private final RabbitmqProperties rabbitmqProperties;
 
@@ -34,8 +33,8 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(CAPSULE_SKIN_EXCHANGE_NAME);
+    public DirectExchange exchange() {
+        return new DirectExchange(CAPSULE_SKIN_EXCHANGE_NAME);
     }
 
     @Bean
@@ -43,7 +42,7 @@ public class RabbitmqConfig {
         return BindingBuilder
             .bind(queue())
             .to(exchange())
-            .with(ROUTING_KEY);
+            .withQueueName();
     }
 
     @Bean
