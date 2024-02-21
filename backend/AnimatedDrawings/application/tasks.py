@@ -74,7 +74,7 @@ def clear_resource(output_directory):
 @celery.task(base=LogErrorsTask)
 def save_capsule_skin(_, input_data: dict) -> None:
     capsule_skin = CapsuleSkin(skin_name=input_data['skinName'],
-                               image_url='/capsuleSkin/%s/%s' % (
+                               image_url='capsuleSkin/%s/%s' % (
                                    input_data['memberId'], 'video.gif'),
                                motion_name=input_data['motionName'],
                                retarget=input_data['retarget'],
