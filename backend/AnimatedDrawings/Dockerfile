@@ -23,7 +23,7 @@ RUN apt-get install -y libosmesa6-dev freeglut3-dev &&  \
     apt-get install -y libglfw3-dev libgles2-mesa-dev &&  \
     apt-get install -y libosmesa6
 
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /app/application
 
