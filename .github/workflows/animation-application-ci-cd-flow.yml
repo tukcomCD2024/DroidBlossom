@@ -1,0 +1,90 @@
+name: animation-application-ci/cd
+
+on:
+  push:
+    branches:
+      - develop_back_animation
+      - 'hotfix/[0-9a-zA-z]+-B-animation-#[0-9a-zA-z]+'
+
+jobs:
+  deploy-animation:
+    name: animation application deploy
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/AnimatedDrawings
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: move yaml files
+        run: |
+          mkdir -p ./config/yaml
+          cp -r ../core/src/main/resources/config ./application/config/yaml
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_ECR_ANIMATED_DRAWINGS_NAME }}
+          tags: |
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/AnimatedDrawings
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          provenance: false
+
+      - name: Get Github action IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_EC2_ANIMATED_DRAWINGS_SG_ID }} --group-name ${{secrets.AWS_EC2_ANIMATED_DRAWINGS_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - name: Connect ec2 and Run Docker Container
+        uses: appleboy/ssh-action@v0.1.6
+        env:
+          AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        with:
+          host: ${{ secrets.SSH_ANIMATED_DRAWINGS_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_CORE_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker ps -q --filter "name=animated_drawings" | xargs -r docker stop
+            docker ps -aq --filter "name=animated_drawings" | xargs -r docker rm
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            docker pull ${{ steps.meta.outputs.tags }}
+            docker image prune -f
+            docker run -d -p 5555:5555 --name animated_drawings -e ENVIRONMENT='dev' ${{ steps.meta.outputs.tags }}
+
+      - name: Remove Github Actions IP from security group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_ANIMATED_DRAWINGS_SG_ID }} --group-name ${{secrets.AWS_EC2_ANIMATED_DRAWINGS_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
