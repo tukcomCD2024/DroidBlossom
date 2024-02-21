@@ -3,8 +3,7 @@ import os
 import yaml
 
 environment = os.environ.get('ENVIRONMENT', 'local')
-APPLICATION_YAML_PATH = (
-    f'../../../backend/core/src/main/resources/config/application-{environment}.yml')
+APPLICATION_YAML_PATH = f'config/yaml/application-{environment}.yml'
 
 
 class RootConfig:
