@@ -36,7 +36,8 @@ setup(
         'pika==1.3.2',
         'PyMySQL==1.1.0',
         'mysql-connector-python==8.3.0',
-        'SQLAlchemy==2.0.25'
+        'SQLAlchemy==2.0.25',
+        'flower==2.0.1'
     ],
     packages=find_packages(),
 )
