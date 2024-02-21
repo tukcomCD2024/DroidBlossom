@@ -18,20 +18,12 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
 import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
 import com.droidblossom.archive.util.FileUtils
-import com.droidblossom.archive.util.FileUtils.getWebVideoThumbnail
-import com.droidblossom.archive.util.LocationUtil
-import com.droidblossom.archive.util.setThumbUrI
-import com.google.android.material.tabs.TabLayoutMediator
-import com.kakao.sdk.common.util.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -48,7 +40,7 @@ class CreateCapsule3Fragment :
             ActivityResultContracts.PickMultipleVisualMedia(5)
         ) { uris ->
             if (uris.isNotEmpty()) {
-                viewModel.addImgUris(uris.map { Dummy(it, null, false) })
+                viewModel.addImgUris(uris.map { Dummy(it, ContentType.IMAGE, false) })
             } else {
                 Log.d("포토", "No media selected")
             }
@@ -144,30 +136,53 @@ class CreateCapsule3Fragment :
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
-                    val imageFilesDeferred = async {
-                        viewModel.imgUris.value.mapIndexed { index, uri ->
+//                    val imageFilesDeferred = async {
+//                        viewModel.imgUris.value.mapIndexed { index, uri ->
+//                            async {
+//                                uri.string?.let { uriString ->
+//                                    FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
+//                                }
+//                            }
+//                        }.awaitAll().orEmpty().filterNotNull()
+//                    }
+//
+//                    val videoFilesDeferred = async {
+//                        viewModel.videoUri.value.mapIndexed { index, uri ->
+//                            async {
+//                                uri.let { uriString ->
+//                                    FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
+//                                }
+//                            }
+//                        }.awaitAll().orEmpty().filterNotNull()
+//                    }
+
+                    val contentFilesDeferred = async {
+                        viewModel.contentUris.value.mapIndexed { index, dummy ->
                             async {
-                                uri.string?.let { uriString ->
-                                    FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
+                                dummy.string?.let { uriString ->
+                                    when (dummy.contentType) {
+                                        ContentType.IMAGE -> FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
+                                        ContentType.VIDEO -> FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
+                                        else -> null
+                                    }
                                 }
                             }
-                        }.awaitAll().orEmpty().filterNotNull()
+                        }.awaitAll().filterNotNull()
                     }
 
-                    val videoFilesDeferred = async {
-                        viewModel.videoUri.value.mapIndexed { index, uri ->
-                            async {
-                                uri.let { uriString ->
-                                    FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
-                                }
-                            }
-                        }.awaitAll().orEmpty().filterNotNull()
+                    val contentFiles = contentFilesDeferred.await()
+
+                    val imageFiles = contentFiles.filter { file ->
+                        file.name.startsWith("IMG_")
+                    }
+                    val videoFiles = contentFiles.filter { file ->
+                        file.name.startsWith("VID_")
                     }
 
-                    val imageFiles = imageFilesDeferred.await()
-                    val videoFiles = videoFilesDeferred.await()
-                    viewModel.setFiles(imageFiles,videoFiles)
-                    viewModel.moveFinish()
+//                    val imageFiles = imageFilesDeferred.await()
+//                    val videoFiles = videoFilesDeferred.await()
+//                    viewModel.setFiles(imageFiles,videoFiles)
+//                    viewModel.moveFinish()
                 }
             }
 
@@ -202,7 +217,7 @@ class CreateCapsule3Fragment :
 
                         CreateCapsuleViewModel.Create3Event.ClickImgUpLoad -> {
                             pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            //pickMultipleImageAndVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+//                            pickMultipleImageAndVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickLocation -> {
