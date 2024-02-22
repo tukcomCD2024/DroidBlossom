@@ -7,44 +7,86 @@
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/temporaryMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="일시적인 오류입니다."
-            android:textAppearance="@style/TextAppearance.App.h1" />
+            android:textAppearance="@style/TextAppearance.App.h1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.35" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/restartMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/temporaryMessageTextView"
             android:text="새로고침을 눌러 페이지를 다시 불러올 수 있습니다."
             android:textAppearance="@style/TextAppearance.App.body1" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_reload"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/rectangle_solid_corner_30dp"
             android:backgroundTint="@color/main_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/restartMessageTextView"
             android:text="새로고침"
             android:textAppearance="@style/TextAppearance.App.caption1"
             android:textColor="@color/white" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_error_log"
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp">
 
-    </LinearLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/repeatMessageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="같은 문제가 반복되시나요?"
+                app:layout_constraintEnd_toStartOf="@id/inquireBtn"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/inquireBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="문의하기"
+                app:layout_constraintStart_toEndOf="@id/repeatMessageTextView"
+                android:textAppearance="@style/TextAppearance.App.caption1"
+                android:background="@drawable/rectangle_solid_corner_main2_30dp"
+                android:textColor="@color/main_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
