@@ -1,5 +1,6 @@
 import json
 import logging
+import uuid
 from _xxsubinterpreters import ChannelClosedError
 from json.decoder import JSONDecodeError
 
@@ -61,10 +62,12 @@ class AnimationQueueController:
         try:
             json_object = self.parse_json(body)
 
+            filename = '%s.gif' % uuid.uuid4()
+
             chain(
-                make_animation.s(json_object).set(
+                make_animation.s(json_object, filename).set(
                     queue=self.celery_work_queue_name),
-                save_capsule_skin.s(json_object).set(
+                save_capsule_skin.s(json_object, filename).set(
                     queue=self.celery_success_queue_name)
             ).apply_async(
                 ignore_result=True

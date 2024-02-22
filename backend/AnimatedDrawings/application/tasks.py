@@ -37,12 +37,12 @@ s3_config = S3Config()
 
 
 @celery.task(base=LogErrorsTask)
-def make_animation(input_data: dict) -> None:
+def make_animation(input_data: dict, filename: str) -> None:
     img_bytes = requests.get(input_data['imageUrl']).content
 
     output_directory = image_to_animation(img_bytes, input_data)
 
-    upload_gif_to_s3(output_directory)
+    upload_gif_to_s3(output_directory, filename)
 
     clear_resource(output_directory)
 
@@ -64,12 +64,10 @@ def create_directory(output_directory: str) -> Path:
     return result
 
 
-def upload_gif_to_s3(output: str) -> None:
-    result_path = output + '/video.gif'
+def upload_gif_to_s3(output: str, filename: str) -> None:
+    gif_bytes = read_animation_result(output + '/video.gif')
 
-    gif_bytes = read_animation_result(result_path)
-
-    output_wrapper = get_object_wrapper(s3_config.s3_bucket_name, result_path)
+    output_wrapper = get_object_wrapper(s3_config.s3_bucket_name, output + filename)
     output_wrapper.put(gif_bytes)
 
 
@@ -84,10 +82,10 @@ def clear_resource(output_directory: str) -> None:
 
 
 @celery.task(base=LogErrorsTask)
-def save_capsule_skin(_, input_data: dict) -> None:
+def save_capsule_skin(_, input_data: dict, filename: str) -> None:
     capsule_skin = CapsuleSkin(skin_name=input_data['skinName'],
                                image_url='capsuleSkin/%s/%s' % (
-                                   input_data['memberId'], 'video.gif'),
+                                   input_data['memberId'], filename),
                                motion_name=Motion(input_data['motionName']).name,
                                retarget=Retarget(input_data['retarget']).name,
                                member_id=input_data['memberId'])
