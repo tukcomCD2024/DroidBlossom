@@ -77,24 +77,6 @@ class SkinMakeViewModelImpl @Inject constructor(
                 S3UrlRequest(S3DIRECTORY, skinImgName, empty)
             getUploadUrls(getS3UrlData)
 
-            capsuleSkinsMakeUseCase(
-                CapsuleSkinsMakeRequest(
-                    skinName.value,
-                    skinImgFile.value!!.name,
-                    S3DIRECTORY,
-                    null,
-                    null
-                ).toDto()
-            ).collect{ result ->
-                result.onSuccess {
-                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("캡슐 만드는데 소요시간이 있습니다.\n만들어지면 알림이 옵니다."))
-                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
-                    Log.d("스킨 생성", "생성 성공")
-                }.onFail {
-                    Log.d("스킨 생성", "생성 실패")
-                }
-            }
-
         }
     }
 
@@ -116,24 +98,44 @@ class SkinMakeViewModelImpl @Inject constructor(
         preSignedImageUrls: String,
     ) {
         viewModelScope.launch {
+            var uploadSuccess = false
 
             withContext(Dispatchers.IO) {
                 try {
-                    Log.d("uploadFilesToS3", "Uploading image file: ${skinImgFiles.name}")
                     s3Util.uploadImageWithPresignedUrl(skinImgFiles, preSignedImageUrls)
-                    Log.d(
-                        "uploadFilesToS3",
-                        "Image file ${skinImgFiles.name} uploaded successfully"
-                    )
+                    uploadSuccess = true
                 } catch (e: Exception) {
-                    Log.e(
-                        "uploadFilesToS3",
-                        "Failed to upload image file ${skinImgFiles.name}: ${e.message}"
-                    )
+                    uploadSuccess = false
                 }
             }
 
-            Log.d("uploadFilesToS3", "All files uploaded successfully")
+            if (uploadSuccess) {
+                submitSkin()
+            } else {
+
+            }
+        }
+    }
+
+    private fun submitSkin(){
+        viewModelScope.launch {
+            capsuleSkinsMakeUseCase(
+                CapsuleSkinsMakeRequest(
+                    skinName.value,
+                    skinImgFile.value!!.name,
+                    S3DIRECTORY,
+                    null,
+                    null
+                ).toDto()
+            ).collect{ result ->
+                result.onSuccess {
+                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("캡슐 만드는데 소요시간이 있습니다.\n만들어지면 알림이 옵니다."))
+                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
+                    Log.d("스킨 생성", "생성 성공")
+                }.onFail {
+                    Log.d("스킨 생성", "생성 실패")
+                }
+            }
         }
     }
 }

@@ -3,10 +3,12 @@ package com.droidblossom.archive
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.util.Log
+import android.content.Intent
+import android.os.Process
 import androidx.annotation.StringRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.droidblossom.archive.presentation.ui.ErrorActivity
 import com.droidblossom.archive.util.ExceptionHandler
 import com.droidblossom.archive.util.NetworkStatusChecker
 import com.kakao.sdk.common.KakaoSdk
@@ -15,6 +17,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 
 @HiltAndroidApp
@@ -24,7 +27,8 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         context = applicationContext
         networkConnectionChecker = NetworkStatusChecker(context)
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
-        setCrashHandler()
+        //setCrashHandler()
+        Thread.setDefaultUncaughtExceptionHandler { _, _ -> caughtException() }
         dummyCoroutines()
 
         // 키 값 알아내기
@@ -56,6 +60,19 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
                 crashlyticsExceptionHandler
             )
         )
+    }
+
+    private fun caughtException(){
+        startErrorActivity()
+        Process.killProcess(Process.myPid())
+        exitProcess(-1)
+    }
+
+    private fun startErrorActivity(){
+        val intent = Intent(this, ErrorActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
     }
 
     override fun onStop(owner: LifecycleOwner) {
