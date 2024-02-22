@@ -78,7 +78,21 @@ class CreateCapsule3Fragment :
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
         { uri ->
             if (uri != null) {
-                viewModel.addImgUris(listOf(Dummy(uri, ContentType.IMAGE,false)))
+
+                val mimeType = activity?.contentResolver?.getType(uri)
+                when {
+                    mimeType?.startsWith("image/") == true -> {
+                        Log.d("MediaType", "Image URI: $uri")
+                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.IMAGE,false)))
+                    }
+                    mimeType?.startsWith("video/") == true -> {
+                        Log.d("MediaType", "Video URI: $uri")
+                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.VIDEO,false)))
+                    }
+                    else -> {
+                        Log.d("MediaType", "Unknown media type: $uri")
+                    }
+                }
             } else {
                 Log.d("포토", "No Media selected")
             }
@@ -118,8 +132,8 @@ class CreateCapsule3Fragment :
     }
 
     private fun initRVA() {
-        binding.recycleView.adapter = imgVPA
-//        binding.recycleView.adapter = contentVPA
+//        binding.recycleView.adapter = imgVPA
+        binding.recycleView.adapter = contentVPA
         binding.recycleView.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.recycleView)
 //        val locationUtil = LocationUtil(requireContext())
@@ -136,6 +150,7 @@ class CreateCapsule3Fragment :
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
+                    /*
                     val imageFilesDeferred = async {
                         viewModel.imgUris.value.mapIndexed { index, uri ->
                             async {
@@ -155,7 +170,7 @@ class CreateCapsule3Fragment :
                             }
                        }.awaitAll().orEmpty().filterNotNull()
                     }
-                    /*
+                    */
                     val contentFilesDeferred = async {
                         viewModel.contentUris.value.mapIndexed { index, dummy ->
                             async {
@@ -178,9 +193,8 @@ class CreateCapsule3Fragment :
                     val videoFiles = contentFiles.filter { file ->
                         file.name.startsWith("VID_")
                     }
-                    */
-                    val imageFiles = imageFilesDeferred.await()
-                    val videoFiles = videoFilesDeferred.await()
+//                    val imageFiles = imageFilesDeferred.await()
+//                    val videoFiles = videoFilesDeferred.await()
                     viewModel.setFiles(imageFiles,videoFiles)
                     viewModel.moveFinish()
                 }
@@ -216,8 +230,8 @@ class CreateCapsule3Fragment :
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickImgUpLoad -> {
-                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-//                            pickMultipleImageAndVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+//                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            pickMultipleImageAndVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickLocation -> {
@@ -225,7 +239,7 @@ class CreateCapsule3Fragment :
                         }
 
                         CreateCapsuleViewModel.Create3Event.CLickSingleImgUpLoad -> {
-                            pickSingle.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            pickSingle.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
                         }
 
                         is CreateCapsuleViewModel.Create3Event.ShowToastMessage -> {
