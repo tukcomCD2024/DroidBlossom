@@ -1,7 +1,7 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-
+import base64
 import sys
 import requests
 import cv2
@@ -18,7 +18,7 @@ from application.config.torchserve_config import TorchserveConfig
 config = TorchserveConfig()
 
 
-def image_to_annotations(file: bytes, outdir: Path) -> None:
+def image_to_annotations(img_bytes: bytes, outdir: Path) -> None:
     """
     Given the RGB image located at img_fn, runs detection, segmentation, and pose estimation for drawn character within it.
     Crops the image and saves texture, mask, and character config files necessary for animation. Writes to out_dir.
@@ -29,7 +29,8 @@ def image_to_annotations(file: bytes, outdir: Path) -> None:
     """
 
     # read image
-    arr = np.frombuffer(file, np.uint8)
+    jpg_original = base64.b64decode(img_bytes)
+    arr = np.frombuffer(jpg_original, np.uint8)
     img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
 
     # copy the original image into the output_dir
