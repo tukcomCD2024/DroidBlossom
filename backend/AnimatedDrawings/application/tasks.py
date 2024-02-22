@@ -12,6 +12,8 @@ from application.config.queue_config import QueueConfig
 from application.config.s3_config import S3Config
 from application.handler import LogErrorsTask
 from application.model.capsule_skin import CapsuleSkin
+from application.model.motion import Motion
+from application.model.retarget import Retarget
 from application.s3.s3_connection import get_object_wrapper
 from examples.annotations_to_animation import annotations_to_animation
 from examples.image_to_annotations import image_to_annotations
@@ -76,8 +78,8 @@ def save_capsule_skin(_, input_data: dict) -> None:
     capsule_skin = CapsuleSkin(skin_name=input_data['skinName'],
                                image_url='capsuleSkin/%s/%s' % (
                                    input_data['memberId'], 'video.gif'),
-                               motion_name=input_data['motionName'],
-                               retarget=input_data['retarget'],
+                               motion_name=Motion(input_data['motionName']).name,
+                               retarget=Retarget(input_data['retarget']).name,
                                member_id=input_data['memberId'])
 
     with Session(engine) as session:
