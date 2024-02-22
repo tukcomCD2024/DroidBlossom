@@ -18,7 +18,7 @@ from application.config.torchserve_config import TorchserveConfig
 config = TorchserveConfig()
 
 
-def image_to_annotations(file: bytes, out_dir: str) -> None:
+def image_to_annotations(file: bytes, outdir: Path) -> None:
     """
     Given the RGB image located at img_fn, runs detection, segmentation, and pose estimation for drawn character within it.
     Crops the image and saves texture, mask, and character config files necessary for animation. Writes to out_dir.
@@ -27,10 +27,6 @@ def image_to_annotations(file: bytes, out_dir: str) -> None:
         img_fn: path to RGB image
         out_dir: directory where outputs will be saved
     """
-
-    # create output directory
-    outdir = Path(out_dir)
-    outdir.mkdir(exist_ok=True)
 
     # read image
     arr = np.frombuffer(file, np.uint8)

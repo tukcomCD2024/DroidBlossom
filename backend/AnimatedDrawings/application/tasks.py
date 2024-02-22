@@ -1,5 +1,6 @@
 import os.path
 import shutil
+from pathlib import Path
 
 import requests
 from celery import Celery
@@ -48,10 +49,19 @@ def make_animation(input_data: dict) -> None:
 
 def image_to_animation(img_bytes: bytes, input_data: dict) -> str:
     output_directory = 'capsuleSkin/' + input_data['memberId']
-    image_to_annotations(img_bytes, output_directory)
+
+    output_path = create_directory(output_directory)
+
+    image_to_annotations(img_bytes, output_path)
     annotations_to_animation(output_directory, input_data['motionName'],
                              input_data['retarget'])
     return output_directory
+
+
+def create_directory(output_directory: str) -> Path:
+    result = Path(output_directory)
+    result.mkdir(exist_ok=True)
+    return result
 
 
 def upload_gif_to_s3(output: str) -> None:
@@ -68,7 +78,7 @@ def read_animation_result(output: str) -> bytes:
         return bytearray(image.read())
 
 
-def clear_resource(output_directory):
+def clear_resource(output_directory: str) -> None:
     if os.path.exists(output_directory):
         shutil.rmtree(output_directory)
 
