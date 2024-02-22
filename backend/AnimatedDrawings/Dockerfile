@@ -14,17 +14,15 @@ SHELL ["conda", "run", "-n", "animated_drawings", "/bin/bash", "-c"]
 # Install gcc and python3-dev
 RUN apt-get update && apt-get install -y gcc python3-dev supervisor
 
-# Install psutil
-RUN pip install -e .
-
-RUN apt-get update && apt-get install -y g++ default-jdk
-
 RUN apt-get install -y libosmesa6-dev freeglut3-dev &&  \
     apt-get install -y libglfw3-dev libgles2-mesa-dev &&  \
     apt-get install -y libosmesa6
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
+# Install psutil
+RUN pip install -e .
 
 WORKDIR /app/application
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
