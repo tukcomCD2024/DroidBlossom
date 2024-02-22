@@ -67,7 +67,7 @@ def create_directory(output_directory: str) -> Path:
 def upload_gif_to_s3(output: str, filename: str) -> None:
     gif_bytes = read_animation_result(output + '/video.gif')
 
-    output_wrapper = get_object_wrapper(s3_config.s3_bucket_name, output + filename)
+    output_wrapper = get_object_wrapper(s3_config.s3_bucket_name, '%s/%s' % (output, filename))
     output_wrapper.put(gif_bytes)
 
 
