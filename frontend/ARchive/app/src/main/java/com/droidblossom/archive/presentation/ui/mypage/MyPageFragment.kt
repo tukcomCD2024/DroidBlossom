@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -69,6 +70,10 @@ class MyPageFragment :
         binding.settingBtn.setOnClickListener {
             throw RuntimeException("Test Crash")
         }
+
+        val layoutParams = binding.profileImg.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.profileImg.layoutParams = layoutParams
     }
 
     private fun initRVA() {
