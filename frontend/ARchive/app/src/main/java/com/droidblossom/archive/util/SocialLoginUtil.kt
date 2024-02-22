@@ -65,6 +65,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e("카카오", "사용자 정보 요청 실패", error)
+                callback.onLoginFailure(error)
             } else if (user != null) {
                 val authId = user.id.toString()
                 val email = user.kakaoAccount?.email ?: ""
@@ -93,9 +94,8 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
             callback.onLoginSuccess(CheckStatus(authId,AuthViewModel.Social.GOOGLE),SignUp(authId, email, profileUrl, AuthViewModel.Social.GOOGLE))
             googleSignOut()
         } catch (e: ApiException) {
-            //Log.w("구글", "signInResult:failed code=" + e.statusCode)
+            Log.e("구글", "구글 에러 : $e")
             callback.onLoginFailure(e)
-            Log.d("후후후", "구글 에러 : ${e}")
         }
     }
 }

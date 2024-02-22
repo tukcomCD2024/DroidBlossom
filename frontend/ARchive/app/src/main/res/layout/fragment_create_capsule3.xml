@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/main_bg_1"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -56,10 +56,11 @@
                     android:focusableInTouchMode="true">
 
                     <View
+                        android:id="@+id/typeView"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:background="@drawable/corner_radius_30"
-                        android:backgroundTint="@color/main_bg_1"
+                        android:backgroundTint="@color/white"
                         app:layout_constraintBottom_toBottomOf="@id/capsuleBtn"
                         app:layout_constraintEnd_toEndOf="@id/timeCapsuleBtn"
                         app:layout_constraintStart_toStartOf="@id/capsuleBtn"
@@ -185,14 +186,14 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="32dp"
                         android:background="@drawable/corner_radius_16"
-                        android:backgroundTint="@color/main_bg_1"
+                        android:backgroundTint="@color/white"
                         android:gravity="center"
                         android:hint="캡슐 이름을 작성하세요."
                         android:paddingHorizontal="24dp"
                         android:paddingVertical="16dp"
                         android:text="@={vm.capsuleTitle}"
                         android:textAppearance="@style/TextAppearance.App.h4"
-                        android:textColorHint="@color/main_3"
+                        android:textColorHint="@color/gray_600"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/capsuleBtn" />
@@ -204,14 +205,14 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/corner_radius_16"
-                        android:backgroundTint="@color/main_bg_1"
+                        android:backgroundTint="@color/white"
                         android:gravity="top"
                         android:hint="캡슐 내용을 작성하세요."
                         android:minHeight="180dp"
                         android:padding="24dp"
                         android:text="@={vm.capsuleContent}"
                         android:textAppearance="@style/TextAppearance.App.body2"
-                        android:textColorHint="@color/main_3"
+                        android:textColorHint="@color/gray_600"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/placeT" />
@@ -222,7 +223,7 @@
                         android:layout_height="56dp"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
-                        android:backgroundTint="@color/main_2"
+                        android:backgroundTint="@color/white"
                         android:onClick="@{()->vm.moveImgUpLoad()}"
                         android:visibility="@{vm.contentUris.size() > 1 ? View.GONE : View.VISIBLE  }"
                         app:cardCornerRadius="16dp"
@@ -246,7 +247,7 @@
                                 android:maxLines="1"
                                 android:text="사진 업로드"
                                 android:textAppearance="@style/TextAppearance.App.body2"
-                                android:textColor="@color/white"
+                                android:textColor="@color/main_1"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -257,8 +258,9 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="18dp"
                                 android:background="@drawable/corner_radius_12"
-                                android:backgroundTint="@color/main_bg_1"
+                                android:backgroundTint="@color/main_2"
                                 android:src="@drawable/ic_plus_main_24"
+                                android:tint="@color/white"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
