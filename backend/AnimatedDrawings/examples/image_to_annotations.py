@@ -1,7 +1,7 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-import base64
+
 import sys
 import requests
 import cv2
@@ -29,12 +29,11 @@ def image_to_annotations(img_bytes: bytes, outdir: Path) -> None:
     """
 
     # read image
-    jpg_original = base64.b64decode(img_bytes)
-    arr = np.frombuffer(jpg_original, np.uint8)
+    arr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
 
     # copy the original image into the output_dir
-    cv2.imwrite(str(outdir/'image.png'), img)
+    cv2.imwrite(str(outdir/'image.jpeg'), img)
 
     # ensure it's rgb
     if len(img.shape) != 3:
