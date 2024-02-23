@@ -21,7 +21,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/main_bg_1"
+            app:strokeColor="@color/main_4"
             app:strokeWidth="8dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +34,7 @@
                     android:layout_height="0dp"
                     android:layout_margin="4dp"
                     android:background="@drawable/corner_radius_16_stroke_2"
-                    android:backgroundTint="@color/main_bg_1"
+                    android:backgroundTint="@color/white"
                     android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="w,1:1"
@@ -47,7 +47,7 @@
                     android:layout_width="112dp"
                     android:layout_height="60dp"
                     android:background="@drawable/corner_radius_30"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@color/main_4"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +62,22 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/main_3" />
+                    app:tint="@color/white" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/currentImgT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/corner_radius_12"
+                    android:backgroundTint="@color/main_dark_alpha50"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:textAppearance="@style/TextAppearance.App.caption4"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/videoT"
@@ -75,6 +90,7 @@
                     android:text="Video"
                     android:textAppearance="@style/TextAppearance.App.h1"
                     android:textColor="@color/white"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

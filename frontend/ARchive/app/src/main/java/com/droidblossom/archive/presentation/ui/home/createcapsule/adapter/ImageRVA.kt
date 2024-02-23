@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemPostImageBinding
 import com.droidblossom.archive.domain.model.common.ContentType
@@ -24,6 +25,7 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
         private val binding: ItemPostImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Dummy) {
+            //binding.currentImgT.text = String.format(ARchiveApplication.getString(R.string.imgCount),absoluteAdapterPosition+1 ,currentList.count { !it.last })
             if (data.last) {
                 binding.root.setOnClickListener {
                     onClick()
@@ -41,6 +43,7 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
                         binding.plusImg.isGone = true
                         binding.plusV.isGone = true
                         binding.videoT.isGone = true
+                        //binding.currentImgT.isVisible =true
                     }
                     ContentType.VIDEO -> {
                         data.string?.let { _ ->
@@ -53,10 +56,10 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
                         binding.plusImg.isGone = true
                         binding.plusV.isGone = true
                         binding.videoT.isVisible = true
+                        //binding.currentImgT.isVisible =true
                     }
                     else -> {
                         // 다른 콘텐츠 타입에 대한 처리
-                        binding.videoT.isGone = true
                     }
                 }
                 binding.root.setOnClickListener {
