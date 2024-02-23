@@ -149,6 +149,12 @@ class CreateCapsule3Fragment :
 
     private fun initView() {
         with(binding) {
+            capsuleTitleEditT.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus){
+                    viewModel.closeTimeSetting()
+                }
+            }
+
             nextBtn.setOnClickListener {
 
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())

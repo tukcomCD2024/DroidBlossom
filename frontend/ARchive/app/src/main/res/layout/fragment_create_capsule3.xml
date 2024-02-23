@@ -214,6 +214,7 @@
                         android:layout_height="44dp"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="16dp"
+                        android:onClick="@{()-> vm.isSelectTimeCapsule() ? vm.openTimeSetting() : null}"
                         android:background="@drawable/corner_radius_22"
                         android:backgroundTint="@{vm.isSelectTimeCapsule() ?@color/main_2 : @color/main_4}"
                         android:visibility="@{vm.isOpenTimeSetting() ? View.GONE:View.VISIBLE}"
@@ -238,7 +239,7 @@
                             android:layout_marginStart="4dp"
                             android:text="@{vm.isSelectTimeCapsule() ? `캡슐 오픈 조건 설정`: vm.capsuleLocationName}"
                             android:textAppearance="@style/TextAppearance.App.caption2"
-                            android:textColor="@color/black"
+                            android:textColor="@{vm.isSelectTimeCapsule() ? @color/white : @color/black}"
                             app:layout_constraintBottom_toBottomOf="@id/locationImg"
                             app:layout_constraintStart_toEndOf="@id/locationImg"
                             app:layout_constraintTop_toTopOf="@id/locationImg"
@@ -268,6 +269,8 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="16dp"
                         app:cardCornerRadius="16dp"
+                        android:visibility="@{vm.isOpenTimeSetting() ? View.VISIBLE : View.GONE}"
+                        android:onClick="@{()->vm.moveDate()}"
                         app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -292,6 +295,57 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/settingLocationT"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="18dp"
+                                android:layout_marginEnd="10dp"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:text="@{vm.capsuleLocationName}"
+                                android:textAlignment="textStart"
+                                android:textAppearance="@style/TextAppearance.App.caption2"
+                                android:textColor="@color/white"
+                                app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
+                                app:layout_constraintStart_toStartOf="parent"
+                                tools:text="서울역"
+                                app:layout_constraintTop_toBottomOf="@id/capsuleSettingTitle" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/timeT"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="10dp"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:layout_marginBottom="12dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:textAlignment="textStart"
+                                android:textAppearance="@style/TextAppearance.App.caption2"
+                                android:textColor="@color/white"
+                                app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
+                                app:layout_constraintStart_toStartOf="parent"
+                                tools:text="2023.01.01 01:01"
+                                app:layout_constraintTop_toBottomOf="@id/settingLocationT" />
+
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/timeSettingBtn"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginBottom="18dp"
+                                android:layout_marginEnd="16dp"
+                                android:background="@drawable/corner_radius_12"
+                                android:backgroundTint="@color/main_bg_1"
+                                android:src="@drawable/ic_arrow_right_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"/>
+
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -336,42 +390,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@id/placeT">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/timeT"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="24dp"
-                                android:layout_marginEnd="24dp"
-                                android:ellipsize="middle"
-                                android:lineSpacingExtra="8dp"
-                                android:maxLines="2"
-                                android:textAppearance="@style/TextAppearance.App.caption2"
-                                android:textColor="@color/white"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@id/timeSettingBtn"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="2025.01.05\n 22:33" />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/timeSettingBtn"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginEnd="16dp"
-                                android:background="@drawable/corner_radius_12"
-                                android:backgroundTint="@color/main_bg_1"
-                                android:src="@drawable/ic_arrow_right_24"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </androidx.cardview.widget.CardView>
+                      </androidx.cardview.widget.CardView>
 
 
                     <androidx.appcompat.widget.AppCompatEditText

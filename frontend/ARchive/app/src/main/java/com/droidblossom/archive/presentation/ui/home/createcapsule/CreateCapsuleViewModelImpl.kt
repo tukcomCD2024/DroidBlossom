@@ -316,6 +316,14 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         _videoFiles.value = videoFiles
     }
 
+    override fun closeTimeSetting() {
+        _isOpenTimeSetting.value = false
+    }
+
+    override fun openTimeSetting() {
+        _isOpenTimeSetting.value = true
+    }
+
     override fun moveLocation() {
         viewModelScope.launch {
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickLocation)
@@ -378,6 +386,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch {
             _isSelectTimeCapsule.emit(true)
             _isNotSelectCapsule.emit(false)
+            _isOpenTimeSetting.emit(true)
         }
     }
 
@@ -386,6 +395,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             _isSelectTimeCapsule.emit(false)
             _dueTime.emit("")
             capsuleDueDate.emit("")
+            _isOpenTimeSetting.emit(false)
         }
     }
 

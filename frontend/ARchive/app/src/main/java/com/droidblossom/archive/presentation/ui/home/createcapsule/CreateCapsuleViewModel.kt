@@ -87,6 +87,8 @@ interface CreateCapsuleViewModel {
     fun getUploadUrls(getS3UrlData : S3UrlRequest)
 
     fun setFiles(imageFiles: List<File>, videoFiles: List<File>)
+    fun closeTimeSetting()
+    fun openTimeSetting()
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
