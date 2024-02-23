@@ -547,8 +547,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                             title = capsuleTitle.value,
                         )
                     ).collect { result ->
-                        _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
-                        Log.d("캡슐생성", "${result}")
+                        result.onSuccess {
+                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                            Log.d("캡슐생성", "$it")
+                        }.onFail {
+                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성 실패했습니다.."))
+                        }
                     }
                 }
 
