@@ -147,6 +147,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _videoFiles = MutableStateFlow<List<File>>(emptyList())
     override val videoFiles: StateFlow<List<File>> = _videoFiles
 
+    private val _isOpenTimeSetting = MutableStateFlow(false)
+    override val isOpenTimeSetting: StateFlow<Boolean>
+        get() = _isOpenTimeSetting
+
     //dateDialog
     override val year = MutableStateFlow<Int>(DateUtils.getCurrentYear())
     override val month: MutableStateFlow<Int> = MutableStateFlow<Int>(DateUtils.getCurrentMonth())

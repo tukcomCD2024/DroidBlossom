@@ -44,6 +44,7 @@ interface CreateCapsuleViewModel {
     val videoUri : StateFlow<List<Uri>>
     val imageFiles: StateFlow<List<File>>
     val videoFiles: StateFlow<List<File>>
+    val isOpenTimeSetting : StateFlow<Boolean>
 
     //DatePicker
     val year : MutableStateFlow<Int>
