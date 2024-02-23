@@ -24,6 +24,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class CapsuleMapper {
     private static final ZoneId ASIA_SEOUL = ZoneId.of("Asia/Seoul");
 
     private final GeoTransformManager geoTransformManager;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
         final SecretCapsuleCreateRequest request) {
@@ -91,7 +93,7 @@ public class CapsuleMapper {
             .latitude(point.getX())
             .longitude(point.getY())
             .nickname(dto.nickname())
-            .capsuleSkinUrl(dto.skinUrl())
+            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.skinUrl()))
             .title(dto.title())
             .dueDate(checkNullable(dto.dueDate()))
             .capsuleType(dto.capsuleType())
@@ -110,7 +112,7 @@ public class CapsuleMapper {
         return SecretCapsuleSummaryResponse.builder()
             .nickname(dto.nickname())
             .profileUrl(dto.profileUrl())
-            .skinUrl(dto.skinUrl())
+            .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.skinUrl()))
             .title(dto.title())
             .dueDate(checkNullable(dto.dueDate()))
             .address(dto.address())
@@ -126,7 +128,7 @@ public class CapsuleMapper {
         final List<String> videoUrls
     ) {
         return SecretCapsuleDetailResponse.builder()
-            .capsuleSkinUrl(dto.capsuleSkinUrl())
+            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
             .dueDate(checkNullable(dto.dueDate()))
             .nickname(dto.nickname())
             .profileUrl(dto.profileUrl())
@@ -144,7 +146,7 @@ public class CapsuleMapper {
     public SecretCapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
         final SecretCapsuleDetailDto dto) {
         return SecretCapsuleDetailResponse.builder()
-            .capsuleSkinUrl(dto.capsuleSkinUrl())
+            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
             .dueDate(checkNullable(dto.dueDate()))
             .nickname(dto.nickname())
             .address(dto.address())
@@ -171,7 +173,7 @@ public class CapsuleMapper {
     private MySecreteCapsuleResponse mySecreteCapsuleDtoToResponse(final MySecreteCapsuleDto dto) {
         return MySecreteCapsuleResponse.builder()
             .capsuleId(dto.capsuleId())
-            .SkinUrl(dto.SkinUrl())
+            .SkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.skinUrl()))
             .dueDate(dto.dueDate())
             .createdAt(dto.createdAt())
             .title(dto.title())

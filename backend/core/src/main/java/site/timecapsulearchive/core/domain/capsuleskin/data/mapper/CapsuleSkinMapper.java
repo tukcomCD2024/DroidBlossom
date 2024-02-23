@@ -37,7 +37,7 @@ public class CapsuleSkinMapper {
         final CapsuleSkinSummaryDto skin) {
         return CapsuleSkinSummaryResponse.builder()
             .id(skin.id())
-            .skinUrl(skin.skinUrl())
+            .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(skin.skinUrl()))
             .name(skin.name())
             .createdAt(skin.createdAt())
             .build();
