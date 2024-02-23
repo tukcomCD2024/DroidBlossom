@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
-import site.timecapsulearchive.core.domain.member.data.reqeust.MemberDetailUpdateRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
@@ -70,5 +71,16 @@ public class MemberApiController implements MemberApi {
         return ResponseEntity.ok(
             ApiSpec.empty(SuccessCode.SUCCESS)
         );
+    }
+
+    @Override
+    @PatchMapping(value = "/notification_enabled")
+    public ResponseEntity<ApiSpec<String>> updateMemberNotificationEnabled(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestBody final UpdateNotificationEnabledRequest request
+    ) {
+        memberService.updateMemberNotificationEnabled(memberId, request.notificationEnabled());
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 }

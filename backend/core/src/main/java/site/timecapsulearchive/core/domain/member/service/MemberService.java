@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
@@ -18,6 +19,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberQueryReposito
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor

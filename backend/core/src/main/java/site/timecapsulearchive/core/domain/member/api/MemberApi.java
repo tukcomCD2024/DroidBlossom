@@ -8,7 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
-import site.timecapsulearchive.core.domain.member.data.reqeust.MemberDetailUpdateRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -58,7 +59,37 @@ public interface MemberApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
-        )
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
     })
-    ResponseEntity<Void> updateMemberById(@ModelAttribute MemberDetailUpdateRequest request);
+    ResponseEntity<ApiSpec<String>> updateMemberFCMToken(
+        Long memberId,
+        UpdateFCMTokenRequest request
+    );
+
+    @Operation(
+        summary = "회원 수정",
+        description = "회원의 상세 정보를 수정한다.",
+        security = {@SecurityRequirement(name = "member")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<String>> updateMemberNotificationEnabled(
+        Long memberId,
+        UpdateNotificationEnabledRequest updateNotificationEnalbedRequest
+    );
 }
