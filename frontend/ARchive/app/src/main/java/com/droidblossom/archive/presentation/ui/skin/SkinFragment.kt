@@ -41,7 +41,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         viewModel.getSkinList()
         initRVA()
         initSearchEdit()
-        binding.fab.setOnClickListener {
+        binding.createCapsuleLayout.setOnClickListener {
             SkinMakeActivity.goSkinMake(requireContext())
         }
 

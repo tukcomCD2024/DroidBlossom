@@ -123,26 +123,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                style="@style/Widget.MyApp.FloatingActionButton.Material2"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="22dp"
-                android:background="@color/white"
-                android:backgroundTint="@color/white"
-                android:foreground="@drawable/ic_plus_40"
-                android:foregroundGravity="center"
-                android:foregroundTint="@color/main_1"
-                app:borderWidth="0dp"
-                app:elevation="1dp"
-                app:layout_constraintBottom_toTopOf="@id/place"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:rippleColor="@color/white" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/skinRV"
                 android:layout_width="0dp"
@@ -156,6 +136,62 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="140dp"
+                android:layout_height="44dp"
+                android:backgroundTint="#B21B3AC4"
+                android:background="@drawable/rectangle_solid_corner_30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/place"
+                app:cardCornerRadius="22dp"
+                android:elevation="2dp"
+                android:layout_marginBottom="40dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/createCapsuleLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="스킨 만들기"
+                        android:textAppearance="@style/TextAppearance.App.caption1"
+                        android:textColor="@color/white"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/createCapsuleCardView"
+                        android:layout_marginEnd="10dp"/>
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/createCapsuleCardView"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        android:layout_marginVertical="6dp"
+                        android:layout_marginEnd="6dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:backgroundTint="@color/main_bg_1"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/capsuleTypeImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_plus_24_blue" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <View
                 android:id="@+id/place"
