@@ -64,7 +64,7 @@ public class MemberApiController implements MemberApi {
     @PatchMapping(value = "/fcm_token")
     public ResponseEntity<ApiSpec<String>> updateMemberFCMToken(
         @AuthenticationPrincipal final Long memberId,
-        @RequestBody final UpdateFCMTokenRequest request
+        @Valid @RequestBody final UpdateFCMTokenRequest request
     ) {
         memberService.updateMemberFCMToken(memberId, request.fcmToken());
 
@@ -77,7 +77,7 @@ public class MemberApiController implements MemberApi {
     @PatchMapping(value = "/notification_enabled")
     public ResponseEntity<ApiSpec<String>> updateMemberNotificationEnabled(
         @AuthenticationPrincipal final Long memberId,
-        @RequestBody final UpdateNotificationEnabledRequest request
+        @Valid @RequestBody final UpdateNotificationEnabledRequest request
     ) {
         memberService.updateMemberNotificationEnabled(memberId, request.notificationEnabled());
 

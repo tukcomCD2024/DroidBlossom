@@ -72,8 +72,8 @@ public interface MemberApi {
     );
 
     @Operation(
-        summary = "회원 수정",
-        description = "회원의 상세 정보를 수정한다.",
+        summary = "회원 알림 수신 상태 수정",
+        description = "회원의 알림 수신 상태를 수정한다.",
         security = {@SecurityRequirement(name = "member")},
         tags = {"member"}
     )
@@ -90,6 +90,6 @@ public interface MemberApi {
     })
     ResponseEntity<ApiSpec<String>> updateMemberNotificationEnabled(
         Long memberId,
-        UpdateNotificationEnabledRequest updateNotificationEnalbedRequest
+        UpdateNotificationEnabledRequest updateNotificationEnabledRequest
     );
 }

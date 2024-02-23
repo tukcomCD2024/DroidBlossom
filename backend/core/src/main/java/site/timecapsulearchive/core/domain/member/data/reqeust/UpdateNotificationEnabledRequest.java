@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record UpdateNotificationEnabledRequest(
 
     @Schema(description = "알림 수신 유무")
-    @NotNull
+    @NotNull(message = "알림 상태는 필수 입니다.")
     Boolean notificationEnabled
 ) {
 
