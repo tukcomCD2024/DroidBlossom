@@ -37,6 +37,10 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         binding.fab.setOnClickListener {
             SkinMakeActivity.goSkinMake(requireContext())
         }
+
+        val layoutParams = binding.viewHeaderTitle.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.viewHeaderTitle.layoutParams = layoutParams
     }
 
     private fun initRVA() {

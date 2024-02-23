@@ -5,6 +5,7 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toPointF
@@ -56,6 +57,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         locationUtil = LocationUtil(requireContext())
         initView()
         initMap()
+
+        val layoutParams = binding.notificationBtn.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.notificationBtn.layoutParams = layoutParams
     }
 
     private fun initView() {
@@ -87,6 +92,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     )
                 }
             }
+
+
         }
     }
 
