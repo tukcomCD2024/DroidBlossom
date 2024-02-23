@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule3Binding
 import com.droidblossom.archive.domain.model.common.ContentType
@@ -33,18 +32,6 @@ class CreateCapsule3Fragment :
     BaseFragment<CreateCapsuleViewModelImpl, FragmentCreateCapsule3Binding>(R.layout.fragment_create_capsule3) {
 
     override val viewModel: CreateCapsuleViewModelImpl by activityViewModels()
-
-
-    private val pickMultiple =
-        registerForActivityResult(
-            ActivityResultContracts.PickMultipleVisualMedia(5)
-        ) { uris ->
-            if (uris.isNotEmpty()) {
-                viewModel.addImgUris(uris.map { Dummy(it, ContentType.IMAGE, false) })
-            } else {
-                Log.d("포토", "No media selected")
-            }
-        }
 
     private val pickMultipleImageAndVideo =
         registerForActivityResult(
@@ -102,24 +89,6 @@ class CreateCapsule3Fragment :
             }
         }
 
-    private val pickVideo =
-        registerForActivityResult(ActivityResultContracts.PickVisualMedia())
-        { uri ->
-            if (uri != null) {
-                viewModel.addVideoUrl(uri)
-            } else {
-                Log.d("포토", "No Media selected")
-            }
-        }
-
-
-    private val imgVPA by lazy {
-        ImageRVA(
-            { viewModel.moveSingleImgUpLoad() },
-            { viewModel.submitUris(it) }
-        )
-    }
-
     private val contentVPA by lazy {
         ImageRVA(
             { viewModel.moveSingleImgUpLoad() },
@@ -136,21 +105,15 @@ class CreateCapsule3Fragment :
     }
 
     private fun initRVA() {
-//        binding.recycleView.adapter = imgVPA
         binding.recycleView.adapter = contentVPA
         binding.recycleView.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.recycleView)
-//        val locationUtil = LocationUtil(requireContext())
-//        locationUtil.getCurrentLocation { latitude, longitude ->
-//            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
-//            viewModel.coordToAddress(latitude = latitude, longitude = longitude)
-//        }
     }
 
     private fun initView() {
         with(binding) {
             capsuleTitleEditT.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus){
+                if (hasFocus) {
                     viewModel.closeTimeSetting()
                 }
             }
@@ -160,27 +123,7 @@ class CreateCapsule3Fragment :
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
-                    /*
-                    val imageFilesDeferred = async {
-                        viewModel.imgUris.value.mapIndexed { index, uri ->
-                            async {
-                                uri.string?.let { uriString ->
-                                    FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
-                                }
-                            }
-                        }.awaitAll().orEmpty().filterNotNull()
-                    }
 
-                    val videoFilesDeferred = async {
-                        viewModel.videoUri.value.mapIndexed { index, uri ->
-                            async {
-                                uri.let { uriString ->
-                                    FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
-                                }
-                            }
-                       }.awaitAll().orEmpty().filterNotNull()
-                    }
-                    */
                     val contentFilesDeferred = async {
                         viewModel.contentUris.value.mapIndexed { index, dummy ->
                             async {
@@ -213,16 +156,12 @@ class CreateCapsule3Fragment :
                     val videoFiles = contentFiles.filter { file ->
                         file.name.startsWith("VID_")
                     }
-//                    val imageFiles = imageFilesDeferred.await()
-//                    val videoFiles = videoFilesDeferred.await()
                     viewModel.setFiles(imageFiles, videoFiles)
                     viewModel.moveFinish()
                 }
             }
 
-//            videoImg.setOnClickListener {
-//                viewModel.deleteVideoUrl()
-//            }
+
         }
     }
 
@@ -270,18 +209,8 @@ class CreateCapsule3Fragment :
                             showToastMessage(it.message)
                         }
 
-                        CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {
-                            pickVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
-                        }
+                        CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {}
                     }
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.imgUris.collect {
-                    imgVPA.submitList(it)
                 }
             }
         }
@@ -302,17 +231,5 @@ class CreateCapsule3Fragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.videoUri.collect {
-//                    if (it.isNotEmpty()){
-//                        Glide.with(requireContext())
-//                            .load(it.first())
-//                            .thumbnail(0.1f)
-//                            .placeholder(R.drawable.app_symbol)
-//                            .into(binding.videoImg)
-                }
-            }
-        }
     }
 }

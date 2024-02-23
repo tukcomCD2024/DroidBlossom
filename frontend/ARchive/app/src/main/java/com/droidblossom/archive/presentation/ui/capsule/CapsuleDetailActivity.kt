@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.capsule
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Lifecycle
@@ -40,6 +41,10 @@ class CapsuleDetailActivity :
     }
 
     private fun initDetail() {
+        val layoutParams = binding.capsuleTypeT.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.capsuleTypeT.layoutParams = layoutParams
+
         val type = intent.intentSerializable(CAPSULE_TYPE, HomeFragment.CapsuleType::class.java)
         val capsuleInd = intent.getLongExtra(CAPSULE_ID, 0)
         when (type) {

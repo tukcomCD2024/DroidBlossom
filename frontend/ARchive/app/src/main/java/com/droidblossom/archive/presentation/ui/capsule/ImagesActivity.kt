@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.viewpager2.widget.ViewPager2
 import com.droidblossom.archive.R
@@ -14,6 +15,7 @@ import com.droidblossom.archive.domain.model.common.ImageUrl
 import com.droidblossom.archive.presentation.ui.capsule.VideoActivity.Companion.VIDEO
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageDetailRVA
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageUrlRVA
+import com.droidblossom.archive.util.getStatusBarHeight
 
 class ImagesActivity : AppCompatActivity() {
     lateinit var binding: ActivityImagesBinding
@@ -27,7 +29,12 @@ class ImagesActivity : AppCompatActivity() {
         binding = ActivityImagesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initView()
         initVP()
+    }
+
+    private fun initView(){
+
     }
 
     private fun initVP(){
