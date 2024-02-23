@@ -39,6 +39,10 @@ class SkinViewModelImpl @Inject constructor(
     override val hasNextSkins: StateFlow<Boolean>
         get() = _hasNextSkins
 
+    private val _isSearchOpen = MutableStateFlow(false)
+    override val isSearchOpen: StateFlow<Boolean>
+        get() = _isSearchOpen
+
 
     override fun getSkinList() {
         viewModelScope.launch {
@@ -65,6 +69,18 @@ class SkinViewModelImpl @Inject constructor(
     override fun goSkinMake() {
         viewModelScope.launch {
             _skinEvents.emit(SkinViewModel.SkinEvent.ToSkinMake)
+        }
+    }
+
+    override fun openSearchSkin() {
+        viewModelScope.launch {
+            _isSearchOpen.emit(true)
+        }
+    }
+
+    override fun closeSearchSkin() {
+        viewModelScope.launch {
+            _isSearchOpen.emit(false)
         }
     }
 }
