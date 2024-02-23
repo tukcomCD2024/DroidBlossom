@@ -59,10 +59,12 @@ class CreateCapsule3Fragment :
                             Log.d("MediaType", "Image URI: $uri")
                             dummyList.add(Dummy(uri, ContentType.IMAGE, false))
                         }
+
                         mimeType?.startsWith("video/") == true -> {
                             Log.d("MediaType", "Video URI: $uri")
                             dummyList.add(Dummy(uri, ContentType.VIDEO, false))
                         }
+
                         else -> {
                             Log.d("MediaType", "Unknown media type: $uri")
                         }
@@ -83,12 +85,14 @@ class CreateCapsule3Fragment :
                 when {
                     mimeType?.startsWith("image/") == true -> {
                         Log.d("MediaType", "Image URI: $uri")
-                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.IMAGE,false)))
+                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.IMAGE, false)))
                     }
+
                     mimeType?.startsWith("video/") == true -> {
                         Log.d("MediaType", "Video URI: $uri")
-                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.VIDEO,false)))
+                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.VIDEO, false)))
                     }
+
                     else -> {
                         Log.d("MediaType", "Unknown media type: $uri")
                     }
@@ -176,8 +180,18 @@ class CreateCapsule3Fragment :
                             async {
                                 dummy.string?.let { uriString ->
                                     when (dummy.contentType) {
-                                        ContentType.IMAGE -> FileUtils.convertUriToJpegFile(requireContext(), uriString, "IMG_${currentTime}_$index")
-                                        ContentType.VIDEO -> FileUtils.convertUriToVideoFile(requireContext(), uriString, "VID_${currentTime}_$index")
+                                        ContentType.IMAGE -> FileUtils.convertUriToJpegFile(
+                                            requireContext(),
+                                            uriString,
+                                            "IMG_${currentTime}_$index"
+                                        )
+
+                                        ContentType.VIDEO -> FileUtils.convertUriToVideoFile(
+                                            requireContext(),
+                                            uriString,
+                                            "VID_${currentTime}_$index"
+                                        )
+
                                         else -> null
                                     }
                                 }
@@ -195,14 +209,14 @@ class CreateCapsule3Fragment :
                     }
 //                    val imageFiles = imageFilesDeferred.await()
 //                    val videoFiles = videoFilesDeferred.await()
-                    viewModel.setFiles(imageFiles,videoFiles)
+                    viewModel.setFiles(imageFiles, videoFiles)
                     viewModel.moveFinish()
                 }
             }
 
-            videoImg.setOnClickListener {
-                viewModel.deleteVideoUrl()
-            }
+//            videoImg.setOnClickListener {
+//                viewModel.deleteVideoUrl()
+//            }
         }
     }
 
@@ -231,7 +245,11 @@ class CreateCapsule3Fragment :
 
                         CreateCapsuleViewModel.Create3Event.ClickImgUpLoad -> {
 //                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            pickMultipleImageAndVideo.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+                            pickMultipleImageAndVideo.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageAndVideo
+                                )
+                            )
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickLocation -> {
@@ -281,13 +299,12 @@ class CreateCapsule3Fragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.videoUri.collect {
-                    if (it.isNotEmpty()){
-                        Glide.with(requireContext())
-                            .load(it.first())
-                            .thumbnail(0.1f)
-                            .placeholder(R.drawable.app_symbol)
-                            .into(binding.videoImg)
-                    }
+//                    if (it.isNotEmpty()){
+//                        Glide.with(requireContext())
+//                            .load(it.first())
+//                            .thumbnail(0.1f)
+//                            .placeholder(R.drawable.app_symbol)
+//                            .into(binding.videoImg)
                 }
             }
         }

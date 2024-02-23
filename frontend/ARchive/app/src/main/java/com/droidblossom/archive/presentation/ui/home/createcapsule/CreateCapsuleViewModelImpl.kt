@@ -97,7 +97,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     //create3
     private val _isNotSelectCapsule = MutableStateFlow(true)
-    override val isNotSelectCapsule: MutableStateFlow<Boolean>
+    override val isNotSelectCapsule: StateFlow<Boolean>
         get() = _isNotSelectCapsule
 
     private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
@@ -205,12 +205,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-            if (_skins.value.find { it.isClicked } == null) {
-                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
-            } else {
-                _skinId.emit(_skins.value.find { it.isClicked }!!.id)
+//            if (_skins.value.find { it.isClicked } == null) {
+//                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
+//            } else {
+//                _skinId.emit(_skins.value.find { it.isClicked }!!.id)
                 _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
-            }
+//            }
         }
     }
 
@@ -371,7 +371,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     override fun selectTimeCapsule() {
-        viewModelScope.launch { _isSelectTimeCapsule.emit(true) }
+        viewModelScope.launch {
+            _isSelectTimeCapsule.emit(true)
+            _isNotSelectCapsule.emit(false)
+        }
     }
 
     override fun selectCapsule() {

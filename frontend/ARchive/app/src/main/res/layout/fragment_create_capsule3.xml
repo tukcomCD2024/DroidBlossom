@@ -20,16 +20,6 @@
         android:focusable="true"
         android:focusableInTouchMode="true">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/titleT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:paddingBottom="16dp"
-            android:text="추억을 기록해 보세요."
-            android:textAppearance="@style/TextAppearance.App.h2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -38,13 +28,13 @@
             app:layout_constraintBottom_toTopOf="@id/nextBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleT">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:foregroundGravity="top"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -53,26 +43,145 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="true"
-                    android:focusableInTouchMode="true">
+                    android:focusableInTouchMode="true"
+                    android:foregroundGravity="top">
 
-                    <View
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/typeView"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
-                        bind:layout_height_bind="@{vm.isNotSelectCapsule() ? @dimen/capsule_first_type_h : @dimen/capsule_type_h}"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="24dp"
                         android:background="@drawable/corner_radius_30"
                         android:backgroundTint="@color/white"
-                        app:layout_constraintBottom_toBottomOf="@id/capsuleBtn"
-                        app:layout_constraintEnd_toEndOf="@id/timeCapsuleBtn"
-                        app:layout_constraintStart_toStartOf="@id/capsuleBtn"
-                        app:layout_constraintTop_toTopOf="@id/capsuleBtn" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        bind:layout_height_bind="@{vm.isNotSelectCapsule() ? @dimen/capsule_first_type_h : @dimen/capsule_type_h}" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/notSelectCapsuleLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="104dp"
+                        android:background="@drawable/corner_radius_30"
+                        android:backgroundTint="@color/main_1"
+                        android:elevation="1dp"
+                        android:visibility="@{vm.isNotSelectCapsule() ? View.VISIBLE : View.GONE }"
+                        app:layout_constraintBottom_toBottomOf="@id/typeView"
+                        app:layout_constraintEnd_toStartOf="@id/notSelectTimeCapsuleLayout"
+                        app:layout_constraintStart_toStartOf="@id/typeView"
+                        app:layout_constraintTop_toTopOf="@id/typeView"
+                        bind:layout_height_bind="@{vm.isNotSelectCapsule() ? @dimen/capsule_first_type_h : @dimen/capsule_type_h}">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/notSelectCapsuleImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_capsule_54"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/notSelectCapsuleTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="10dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:text="캡슐"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/TextAppearance.App.body2"
+                            android:textColor="@color/white"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/notSelectCapsuleImg"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/notSelectCapsuleT"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="10dp"
+                            android:ellipsize="end"
+                            android:lines="2"
+                            android:text="언제 어디서든\n오픈 가능"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/TextAppearance.App.caption4"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="@id/notSelectCapsuleTitle"
+                            app:layout_constraintTop_toBottomOf="@id/notSelectCapsuleTitle" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/notSelectTimeCapsuleLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="104dp"
+                        android:background="@drawable/corner_radius_30"
+                        android:elevation="1dp"
+                        android:onClick="@{()->vm.selectTimeCapsule()}"
+                        android:visibility="@{vm.isNotSelectCapsule() ? View.VISIBLE : View.GONE }"
+                        app:layout_constraintBottom_toBottomOf="@id/typeView"
+                        app:layout_constraintEnd_toEndOf="@id/typeView"
+                        app:layout_constraintStart_toEndOf="@id/notSelectCapsuleLayout"
+                        app:layout_constraintTop_toTopOf="@id/typeView"
+                        bind:layout_height_bind="@{vm.isNotSelectCapsule() ? @dimen/capsule_first_type_h : @dimen/capsule_type_h}">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/notSelectTimeCapsuleImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:src="@drawable/ic_time_capsule_54"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/notSelectTimeCapsuleTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="10dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:text="타임 캡슐"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/TextAppearance.App.body2"
+                            android:textColor="@color/black"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/notSelectTimeCapsuleImg"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/notSelectTimeCapsuleT"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="10dp"
+                            android:ellipsize="end"
+                            android:lines="2"
+                            android:text="시간, 장소\n제약"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/TextAppearance.App.caption4"
+                            android:textColor="@color/gray_600"
+                            app:layout_constraintStart_toStartOf="@id/notSelectTimeCapsuleTitle"
+                            app:layout_constraintTop_toBottomOf="@id/notSelectTimeCapsuleTitle" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleBtn"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="24dp"
                         android:background="@drawable/corner_radius_30"
                         android:backgroundTint="@{vm.isSelectTimeCapsule ? @color/white : @color/main_1}"
                         android:gravity="center"
@@ -82,14 +191,13 @@
                         android:textColor="@{vm.isSelectTimeCapsule? @color/main_2: @color/white}"
                         app:layout_constraintEnd_toStartOf="@id/timeCapsuleBtn"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/typeView"
                         tools:textColor="@color/main_2" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/timeCapsuleBtn"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
-                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/corner_radius_30"
                         android:backgroundTint="@{vm.isSelectTimeCapsule ? @color/main_1 : @color/white}"
@@ -100,7 +208,7 @@
                         android:textColor="@{vm.isSelectTimeCapsule? @color/white: @color/main_2}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/capsuleBtn"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/typeView" />
 
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -197,7 +305,7 @@
                         android:textColorHint="@color/gray_600"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/capsuleBtn" />
+                        app:layout_constraintTop_toBottomOf="@id/typeView" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/capsuleContentEditT"
@@ -302,106 +410,6 @@
                         app:layout_constraintTop_toBottomOf="@id/recycleView"
                         app:layout_goneMarginTop="0dp" />
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/videoCV"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="12dp"
-                        android:backgroundTint="@color/main_2"
-                        android:onClick="@{()->vm.moveVideoUpLoad()}"
-                        android:visibility="@{vm.videoUri.size() ==0 ?View.VISIBLE : View.GONE}"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/indicator">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/videoT"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="28dp"
-                                android:layout_marginEnd="4dp"
-                                android:ellipsize="middle"
-                                android:maxLines="1"
-                                android:text="동영상 업로드"
-                                android:textAppearance="@style/TextAppearance.App.body2"
-                                android:textColor="@color/white"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/videoPlusBtn"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginEnd="18dp"
-                                android:background="@drawable/corner_radius_12"
-                                android:backgroundTint="@color/main_bg_1"
-                                android:src="@drawable/ic_plus_main_24"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </androidx.cardview.widget.CardView>
-
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="12dp"
-                        android:visibility="@{vm.videoUri.size() ==0 ?View.GONE : View.VISIBLE}"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/videoCV"
-                        app:strokeColor="@color/main_bg_1"
-                        app:strokeWidth="8dp">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/videoImg"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_margin="4dp"
-                                android:background="@drawable/corner_radius_16_stroke_2"
-                                android:backgroundTint="@color/main_bg_1"
-                                android:scaleType="centerCrop"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintDimensionRatio="w,1:1"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/corner_radius_30"
-                                android:backgroundTint="@color/main_alpha85"
-                                android:gravity="center"
-                                android:padding="24dp"
-                                android:text="Video"
-                                android:textAppearance="@style/TextAppearance.App.h1"
-                                android:textColor="@color/white"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.google.android.material.card.MaterialCardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
