@@ -2,6 +2,7 @@ package com.droidblossom.archive.util
 
 import android.content.Intent
 import android.os.Build
+import android.view.ViewGroup
 import java.io.Serializable
 
 fun <T: Serializable> Intent.intentSerializable(key: String, clazz: Class<T>): T? {
@@ -10,4 +11,9 @@ fun <T: Serializable> Intent.intentSerializable(key: String, clazz: Class<T>): T
     } else {
         this.getSerializableExtra(key) as T?
     }
+}
+
+fun ViewGroup.getStatusBarHeight(): Int {
+    val resourceId = this.resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resourceId > 0) this.resources.getDimensionPixelSize(resourceId) else 0
 }

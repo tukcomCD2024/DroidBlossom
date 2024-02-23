@@ -209,12 +209,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     //create2
     override fun move2To3() {
         viewModelScope.launch {
-//            if (_skins.value.find { it.isClicked } == null) {
-//                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
-//            } else {
-//                _skinId.emit(_skins.value.find { it.isClicked }!!.id)
+            if (_skins.value.find { it.isClicked } == null) {
+                _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨은 필수입니다."))
+            } else {
+                _skinId.emit(_skins.value.find { it.isClicked }!!.id)
                 _create2Events.emit(CreateCapsuleViewModel.Create2Event.NavigateTo3)
-//            }
+            }
         }
     }
 
