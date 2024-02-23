@@ -48,7 +48,7 @@ class AnimationQueueController:
         self,
         channel: BlockingChannel,
         method: Basic.Deliver,
-        _header: BasicProperties,
+        header: BasicProperties,
         body: bytes,
     ) -> None:
         """
@@ -56,9 +56,10 @@ class AnimationQueueController:
         celery worker한테 animation 생성 작업을 실행한다
         :param channel: 큐와 연결된 채널
         :param method: 메시지의 상태
-        :param _header:
+        :param header: 기본 정보
         :param body: queue로부터 넘어온 데이터
         """
+        logging.info('큐 메시지 처리 시작 %s', header.message_id)
         try:
             json_object = self.parse_json(body)
 
