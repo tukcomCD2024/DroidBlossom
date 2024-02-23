@@ -130,4 +130,26 @@ public class MemberService {
 
         return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }
+
+    @Transactional
+    public void updateMemberFCMToken(final Long memberId, final String fcmToken) {
+        int updatedColumn = memberRepository.updateMemberFCMToken(memberId, fcmToken);
+
+        if (updatedColumn != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberNotificationEnabled(
+        final Long memberId,
+        final Boolean notificationEnabled
+    ) {
+        int updatedColumn = memberRepository.updateMemberNotificationEnabled(memberId,
+            notificationEnabled);
+
+        if (updatedColumn != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
 }

@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.MemberDetailUpdateRequest;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
@@ -50,9 +49,9 @@ public interface MemberApi {
     ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(CheckStatusRequest request);
 
     @Operation(
-        summary = "회원 수정",
-        description = "회원의 상세 정보를 수정한다.",
-        security = {@SecurityRequirement(name = "user_token")},
+        summary = "회원 FCM 토큰 수정",
+        description = "회원의 FCM 토큰을 수정한다.",
+        security = {@SecurityRequirement(name = "member")},
         tags = {"member"}
     )
     @ApiResponses(value = {
