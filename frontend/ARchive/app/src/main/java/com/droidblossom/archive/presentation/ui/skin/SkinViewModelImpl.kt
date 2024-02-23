@@ -72,6 +72,12 @@ class SkinViewModelImpl @Inject constructor(
         }
     }
 
+    override fun searchSkin() {
+        viewModelScope.launch {
+            //스킨 검색 API
+        }
+    }
+
     override fun openSearchSkin() {
         viewModelScope.launch {
             _isSearchOpen.emit(true)
