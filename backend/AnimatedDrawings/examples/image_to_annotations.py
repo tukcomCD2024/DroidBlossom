@@ -13,8 +13,12 @@ from pathlib import Path
 import yaml
 import logging
 
+from application.config.torchserve_config import TorchserveConfig
 
-def image_to_annotations(file: bytes, out_dir: str) -> None:
+config = TorchserveConfig()
+
+
+def image_to_annotations(img_bytes: bytes, outdir: Path) -> None:
     """
     Given the RGB image located at img_fn, runs detection, segmentation, and pose estimation for drawn character within it.
     Crops the image and saves texture, mask, and character config files necessary for animation. Writes to out_dir.
@@ -24,16 +28,12 @@ def image_to_annotations(file: bytes, out_dir: str) -> None:
         out_dir: directory where outputs will be saved
     """
 
-    # create output directory
-    outdir = Path(out_dir)
-    outdir.mkdir(exist_ok=True)
-
     # read image
-    arr = np.frombuffer(file, np.uint8)
+    arr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
 
     # copy the original image into the output_dir
-    cv2.imwrite(str(outdir/'image.png'), img)
+    cv2.imwrite(str(outdir/'image.jpeg'), img)
 
     # ensure it's rgb
     if len(img.shape) != 3:
@@ -49,7 +49,7 @@ def image_to_annotations(file: bytes, out_dir: str) -> None:
     # convert to bytes and send to torchserve
     img_b = cv2.imencode('.png', img)[1].tobytes()
     request_data = {'data': img_b}
-    resp = requests.post("http://localhost:8080/predictions/drawn_humanoid_detector", files=request_data, verify=False)
+    resp = requests.post("http://%s:8080/predictions/drawn_humanoid_detector" % config.torchserve_host, files=request_data, verify=False)
     if resp is None or resp.status_code >= 300:
         raise Exception(f"Failed to get bounding box, please check if the 'docker_torchserve' is running and healthy, resp: {resp}")
 
@@ -93,7 +93,7 @@ def image_to_annotations(file: bytes, out_dir: str) -> None:
 
     # send cropped image to pose estimator
     data_file = {'data': cv2.imencode('.png', cropped)[1].tobytes()}
-    resp = requests.post("http://localhost:8080/predictions/drawn_humanoid_pose_estimator", files=data_file, verify=False)
+    resp = requests.post("http://%s:8080/predictions/drawn_humanoid_pose_estimator" % config.torchserve_host, files=data_file, verify=False)
     if resp is None or resp.status_code >= 300:
         raise Exception(f"Failed to get skeletons, please check if the 'docker_torchserve' is running and healthy, resp: {resp}")
 

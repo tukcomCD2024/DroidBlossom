@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from application.model.base import Base
 from sqlalchemy import String, Text, Integer, DateTime
 from sqlalchemy.orm import mapped_column, Mapped
+
+from application.model.base import Base
 
 
 class FailedTask(Base):

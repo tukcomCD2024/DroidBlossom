@@ -18,11 +18,11 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # install python dependencies
-RUN pip install openmim
-RUN pip install torch==2.0.0
+RUN pip install openmim==0.3.9
+RUN pip install torch==2.1.2
 RUN pip install mmcv-full==1.7.0
 RUN pip install mmdet==2.27.0
-RUN pip install torchserve
+RUN pip install torchserve==0.9.0
 
 # bugfix for xtcocoapi, an mmpose dependency
 RUN git clone https://github.com/hjessmith/xtcocoapi-bugfix.git
