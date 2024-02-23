@@ -29,6 +29,7 @@ interface CreateCapsuleViewModel {
     val hasNextSkins : StateFlow<Boolean>
 
     //Create3
+    val isNotSelectCapsule : MutableStateFlow<Boolean>
     val create3Events: SharedFlow<Create3Event>
     val capsuleTitle: MutableStateFlow<String>
     val capsuleContent: MutableStateFlow<String>

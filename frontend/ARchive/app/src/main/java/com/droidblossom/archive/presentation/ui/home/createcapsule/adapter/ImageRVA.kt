@@ -40,6 +40,7 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
                         }
                         binding.plusImg.isGone = true
                         binding.plusV.isGone = true
+                        binding.videoT.isGone = true
                     }
                     ContentType.VIDEO -> {
                         data.string?.let { _ ->
@@ -51,9 +52,11 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
                         }
                         binding.plusImg.isGone = true
                         binding.plusV.isGone = true
+                        binding.videoT.isVisible = true
                     }
                     else -> {
                         // 다른 콘텐츠 타입에 대한 처리
+                        binding.videoT.isGone = true
                     }
                 }
                 binding.root.setOnClickListener {

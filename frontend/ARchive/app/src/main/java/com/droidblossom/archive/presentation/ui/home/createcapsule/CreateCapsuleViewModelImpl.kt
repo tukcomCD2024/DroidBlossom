@@ -96,6 +96,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
 
     //create3
+    private val _isNotSelectCapsule = MutableStateFlow(true)
+    override val isNotSelectCapsule: MutableStateFlow<Boolean>
+        get() = _isNotSelectCapsule
+
     private val _create3Events = MutableSharedFlow<CreateCapsuleViewModel.Create3Event>()
     override val create3Events: SharedFlow<CreateCapsuleViewModel.Create3Event>
         get() = _create3Events.asSharedFlow()
@@ -121,7 +125,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _capsuleImgUrls = MutableStateFlow(listOf<String>())
     override val capsuleImgUrls: StateFlow<List<String>>
         get() = _capsuleImgUrls
-    private val _isSelectTimeCapsule = MutableStateFlow(true)
+    private val _isSelectTimeCapsule = MutableStateFlow(false)
     override val isSelectTimeCapsule: StateFlow<Boolean>
         get() = _isSelectTimeCapsule
 
@@ -268,7 +272,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("타임캡슐은 시간, 제목, 내용이 필수 입니다."))
                 return@launch
             }
-            if (!isSelectTimeCapsule.value &&  (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty())){
+            if (!isSelectTimeCapsule.value && (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty())) {
                 _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐은 제목, 내용이 필수 입니다."))
                 return@launch
             }
@@ -296,7 +300,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             if (imageNames.isNotEmpty() || videoNames.isNotEmpty()) {
                 val getS3UrlData = S3UrlRequest(S3DIRECTORY, imageNames, videoNames)
                 getUploadUrls(getS3UrlData)
-            }else{
+            } else {
                 createCapsule()
             }
 
@@ -388,7 +392,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun addContentUris(list: List<Dummy>){
+    override fun addContentUris(list: List<Dummy>) {
         val submitList = list + contentUris.value
         if (submitList.size > 5) {
             val listSize5 = submitList.slice(0..4)
@@ -429,7 +433,12 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             s3UrlsGetUseCase(getS3UrlData.toDto()).collect { result ->
                 result.onSuccess {
                     Log.d("getUploadUrls", "$it")
-                    uploadFilesToS3(imageFiles.value, videoFiles.value, it.preSignedImageUrls, it.preSignedVideoUrls)
+                    uploadFilesToS3(
+                        imageFiles.value,
+                        videoFiles.value,
+                        it.preSignedImageUrls,
+                        it.preSignedVideoUrls
+                    )
                 }.onFail {
                     Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
@@ -450,10 +459,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 val uploadJob = async(Dispatchers.IO) {
                     try {
                         s3Util.uploadImageWithPresignedUrl(imageFile, url)
-                        Log.d("uploadFilesToS3", "Image file ${imageFile.name} uploaded successfully")
+                        Log.d(
+                            "uploadFilesToS3",
+                            "Image file ${imageFile.name} uploaded successfully"
+                        )
                         true
                     } catch (e: Exception) {
-                        Log.e("uploadFilesToS3", "Failed to upload image file ${imageFile.name}: ${e.message}")
+                        Log.e(
+                            "uploadFilesToS3",
+                            "Failed to upload image file ${imageFile.name}: ${e.message}"
+                        )
                         false
                     }
                 }
@@ -465,10 +480,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 val uploadJob = async(Dispatchers.IO) {
                     try {
                         s3Util.uploadVideoWithPresignedUrl(videoFile, url)
-                        Log.d("uploadFilesToS3", "Video file ${videoFile.name} uploaded successfully")
+                        Log.d(
+                            "uploadFilesToS3",
+                            "Video file ${videoFile.name} uploaded successfully"
+                        )
                         true
                     } catch (e: Exception) {
-                        Log.e("uploadFilesToS3", "Failed to upload video file ${videoFile.name}: ${e.message}")
+                        Log.e(
+                            "uploadFilesToS3",
+                            "Failed to upload video file ${videoFile.name}: ${e.message}"
+                        )
                         false
                     }
                 }
@@ -487,7 +508,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    private fun createCapsule(){
+    private fun createCapsule() {
         viewModelScope.launch {
             when (capsuleTypeCreateIs.value) {
                 CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
