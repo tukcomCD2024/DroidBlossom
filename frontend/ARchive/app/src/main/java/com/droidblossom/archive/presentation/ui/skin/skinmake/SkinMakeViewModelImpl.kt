@@ -129,7 +129,6 @@ class SkinMakeViewModelImpl @Inject constructor(
                 ).toDto()
             ).collect{ result ->
                 result.onSuccess {
-                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("캡슐 만드는데 소요시간이 있습니다.\n만들어지면 알림이 옵니다."))
                     skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
                     Log.d("스킨 생성", "생성 성공")
                 }.onFail {
