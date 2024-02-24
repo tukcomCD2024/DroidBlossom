@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCapsuleDetailBinding
 import com.droidblossom.archive.domain.model.common.ContentType
