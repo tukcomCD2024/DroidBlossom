@@ -26,6 +26,9 @@ dependencies {
     //fcm
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
+    //s3
+    implementation 'software.amazon.awssdk:s3:2.21.46'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
