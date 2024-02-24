@@ -72,16 +72,25 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         //val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT)
         val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE)
 
+        // 서버에서 보낸 아이콘 이름 추출
+        val iconName = remoteMessage.data["icon"] // 서버에서 "icon" 키로 아이콘 이름을 보냈다고 가정
+        // 리소스 ID 찾기
+        val iconResId = resources.getIdentifier(iconName, "drawable", packageName)
 
         // 알림에 대한 UI 정보, 작업
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setPriority(NotificationCompat.PRIORITY_HIGH) // 중요도 (HIGH: 상단바 표시 가능)
-            .setSmallIcon(R.drawable.app_symbol) // 아이콘 설정
-            .setContentTitle(remoteMessage.data["title"].toString()) // 제목
-            .setContentText(remoteMessage.data["body"].toString()) // 메시지 내용
-            .setAutoCancel(true) // 알람클릭시 삭제여부
-            .setSound(soundUri)  // 알림 소리
-            .setContentIntent(pendingIntent) // 알림 실행 시 Intent
+        val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
+            setPriority(NotificationCompat.PRIORITY_HIGH) // 중요도 (HIGH: 상단바 표시 가능)
+            if (iconResId != 0) {
+                setSmallIcon(iconResId) // 서버에서 받은 아이콘 이름으로 리소스 ID 찾아 설정
+            } else {
+                setSmallIcon(R.drawable.app_symbol) // 기본 아이콘
+            }
+            setContentTitle(remoteMessage.data["title"].toString()) // 제목
+            setContentText(remoteMessage.data["body"].toString()) // 메시지 내용
+            setAutoCancel(true) // 알람클릭시 삭제여부
+            setSound(soundUri)  // 알림 소리
+            setContentIntent(pendingIntent) // 알림 실행 시 Intent
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
