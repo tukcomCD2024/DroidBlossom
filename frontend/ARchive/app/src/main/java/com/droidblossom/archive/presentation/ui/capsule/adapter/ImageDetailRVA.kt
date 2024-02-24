@@ -17,7 +17,6 @@ class ImageDetailRVA() :
         fun bind(data: ContentUrl) {
             binding.item = data
         }
-
     }
 
 

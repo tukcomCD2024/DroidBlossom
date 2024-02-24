@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemImageBinding
 import com.droidblossom.archive.domain.model.common.ContentType
@@ -23,6 +24,8 @@ class ImageUrlRVA(val onClick: (Int, List<ContentUrl>) -> Unit, val onVideoClick
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ContentUrl) {
             binding.item = data
+            binding.currentImgT.text = String.format(ARchiveApplication.getString(R.string.imgCount),absoluteAdapterPosition+1 ,currentList.size)
+
             if (data.contentType == ContentType.IMAGE) {
                 binding.playBtn.isGone = true
                 binding.root.setOnClickListener {
