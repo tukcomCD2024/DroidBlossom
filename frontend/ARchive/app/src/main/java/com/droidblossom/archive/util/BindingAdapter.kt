@@ -15,6 +15,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.droidblossom.archive.R
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -121,4 +122,20 @@ fun setLayoutHeight(view: View, height: Float) {
     val layoutParams: ViewGroup.LayoutParams = view.layoutParams
     layoutParams.height = height.toInt()
     view.layoutParams = layoutParams
+}
+
+@BindingAdapter("bind:setCapsuleType2Img")
+fun ImageView.setCapsuleType2Img(type: String?){
+    when(type) {
+        "SECRET" -> {
+            this.setImageResource(R.drawable.ic_secret_marker_24)
+        }
+        "PUBLIC" -> {
+
+        }
+        "GROUP" ->{
+
+        }
+        else -> {}
+    }
 }

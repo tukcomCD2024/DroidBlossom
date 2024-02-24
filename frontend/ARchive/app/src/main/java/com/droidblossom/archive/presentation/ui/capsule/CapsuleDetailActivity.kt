@@ -55,6 +55,7 @@ class CapsuleDetailActivity :
 
         val type = intent.intentSerializable(CAPSULE_TYPE, HomeFragment.CapsuleType::class.java)
         val capsuleInd = intent.getLongExtra(CAPSULE_ID, 0)
+
         when (type) {
             HomeFragment.CapsuleType.SECRET -> {
                 binding.capsuleTypeT.text = type.name
