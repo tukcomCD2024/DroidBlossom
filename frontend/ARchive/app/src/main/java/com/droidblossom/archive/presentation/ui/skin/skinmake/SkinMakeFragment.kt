@@ -76,12 +76,12 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
     private fun initView(){
 
         with(binding){
-            skinImageLayout.setOnClickListener {
+            skinImageCardView.setOnClickListener {
                 picMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
 
             closeBtn.setOnClickListener {
-                MainActivity.goMain(requireContext())
+                activity?.finish()
             }
 
             completeBtn.setOnClickListener {
