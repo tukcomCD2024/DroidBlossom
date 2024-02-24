@@ -1,7 +1,7 @@
 CREATE TABLE notification_category (
     notification_category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    categoryName VARCHAR(255) NOT NULL,
-    categoryDescription VARCHAR(255) NOT NULL,
+    category_name VARCHAR(255) NOT NULL,
+    category_description VARCHAR(255) NOT NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
