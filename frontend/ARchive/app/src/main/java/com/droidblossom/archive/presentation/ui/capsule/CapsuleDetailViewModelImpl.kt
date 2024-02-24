@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.capsule
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.common.ContentType
+import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleDetail
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleDetailUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -36,7 +38,7 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 result.onSuccess { detail ->
                     Log.d("디테일","${detail}")
                     _capsuleDetail.emit(detail)
-                }.onFail {
+                     }.onFail {
                     Log.d("디테일","${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }

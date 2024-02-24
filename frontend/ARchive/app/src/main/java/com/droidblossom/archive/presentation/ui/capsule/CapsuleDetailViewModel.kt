@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.capsule
 
+import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleDetail
 import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
 import kotlinx.coroutines.flow.SharedFlow
