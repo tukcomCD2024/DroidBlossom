@@ -94,6 +94,22 @@ fun CardView.animateFAB(y : Float){
     ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
 }
 
+@BindingAdapter("bind:displayCreationDateTimeFormatted")
+fun TextView.setFormattedDateTime(dateString: String) {
+    dateString.let {
+        try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = parser.parse(dateString)
+
+            val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
+            val formattedDate = date?.let { formatter.format(it) }
+            this.text = formattedDate
+        } catch (e: Exception) {
+            this.text = "날짜 형식 오류"
+        }
+    }
+}
+
 @BindingAdapter("bind:displayCreationDateFormatted")
 fun TextView.setFormattedDate(dateString: String) {
     dateString.let {
@@ -131,10 +147,10 @@ fun ImageView.setCapsuleType2Img(type: String?){
             this.setImageResource(R.drawable.ic_secret_marker_24)
         }
         "PUBLIC" -> {
-
+            this.setImageResource(R.drawable.ic_public_marker_24)
         }
         "GROUP" ->{
-
+            this.setImageResource(R.drawable.ic_group_marker_24)
         }
         else -> {}
     }
