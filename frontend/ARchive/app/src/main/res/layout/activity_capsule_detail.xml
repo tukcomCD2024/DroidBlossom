@@ -193,7 +193,7 @@
                     android:clipToPadding="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:visibility="@{vm.capsuleDetail.imageUrls.size() != 0 ?View.VISIBLE :View.GONE}"
+                    android:visibility="@{vm.capsuleDetail.imageUrls.size() + vm.capsuleDetail.videoUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinImg" />
@@ -207,6 +207,7 @@
                     app:dotsSize="4dp"
                     android:layout_marginTop="8dp"
                     app:dotsSpacing="2dp"
+                    android:visibility="@{vm.capsuleDetail.imageUrls.size() + vm.capsuleDetail.videoUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:dotsStrokeColor="@color/main_bg_1"
                     app:layout_constraintEnd_toEndOf="@id/postImgVP"
                     app:layout_constraintStart_toStartOf="@id/postImgVP"
