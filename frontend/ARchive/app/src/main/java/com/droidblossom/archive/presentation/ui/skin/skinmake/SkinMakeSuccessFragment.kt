@@ -12,9 +12,11 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinMakeSuccessBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SkinMakeSuccessFragment : BaseFragment<SkinMakeViewModelImpl,FragmentSkinMakeSuccessBinding>(R.layout.fragment_skin_make_success) {
 
     lateinit var navController: NavController
