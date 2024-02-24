@@ -49,26 +49,23 @@ class CapsuleDetailActivity :
     }
 
     private fun initDetail() {
-        val layoutParams = binding.capsuleTypeT.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.capsuleTypeT.layoutParams = layoutParams
+        binding.closeBtn.layoutParams = layoutParams
 
         val type = intent.intentSerializable(CAPSULE_TYPE, HomeFragment.CapsuleType::class.java)
         val capsuleInd = intent.getLongExtra(CAPSULE_ID, 0)
 
         when (type) {
             HomeFragment.CapsuleType.SECRET -> {
-                binding.capsuleTypeT.text = type.name
                 viewModel.getSecretCapsuleDetail(capsuleInd)
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-                binding.capsuleTypeT.text = type.name
 
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-                binding.capsuleTypeT.text = type.name
 
             }
 
