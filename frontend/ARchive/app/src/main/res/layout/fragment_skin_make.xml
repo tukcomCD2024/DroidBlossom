@@ -2,7 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
         <import type="android.view.View" />
@@ -14,6 +15,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/main_bg_1"
         tools:context=".presentation.ui.skin.skinmake.SkinMakeFragment">
 
         <androidx.core.widget.NestedScrollView
@@ -51,95 +53,150 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="60dp"
-                    android:backgroundTint="@android:color/transparent"
+                    android:background="@drawable/corner_radius_16"
+                    android:backgroundTint="@color/white"
+                    android:gravity="center"
                     android:ellipsize="end"
-                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="16dp"
                     android:hint="@string/skinMakeHint"
                     android:text="@={vm.skinName}"
                     android:maxLines="1"
-                    android:paddingVertical="0dp"
                     android:textAppearance="@style/TextAppearance.App.h2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/skinImageLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="24dp"
-                    android:background="@drawable/rectangle_stroke_corner_8dp"
-                    android:scaleType="centerInside"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/skinImageCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_max="450dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinNameEditText"
                     app:layout_constraintWidth_max="450dp"
-                    app:srcCompat="@drawable/skin_upload_img">
+                    app:strokeColor="@color/main_4"
+                    android:layout_marginTop="@dimen/margin"
+                    app:strokeWidth="2dp">
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guide_left"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.20" />
+                        android:padding="@dimen/padding">
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guide_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.80" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/postImg"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="4dp"
+                            android:background="@drawable/corner_radius_16_stroke_2"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="centerCrop"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="w,1:1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            bind:imageUrl="@{vm.skinImgUri}"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/skinImageView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:scaleType="centerInside"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintDimensionRatio="1:1.2"
-                        app:layout_constraintEnd_toStartOf="@id/guide_right"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@id/guide_left"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/skin_upload_img"
-                        bind:imageUrl="@{vm.skinImgUri}"
-                        bind:placeholder="@{@drawable/skin_upload_img}"/>
+                        <View
+                            android:id="@+id/plusV"
+                            android:layout_width="112dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/corner_radius_30"
+                            android:backgroundTint="@color/main_4"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:visibility="@{vm.skinImgUri == null ? View.VISIBLE : View.GONE}"                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <ImageView
+                            android:id="@+id/plusImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_plus_main_40"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:visibility="@{vm.skinImgUri == null ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/white" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/skinMotionAddTextView"
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/skinMotionAddCardView"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:drawableEnd="@drawable/ic_plus_24"
-                    android:drawableTint="@color/main_1"
-                    android:text="@string/addMotion"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="@dimen/margin"
+                    android:backgroundTint="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     android:onClick="@{() -> vm.selectAddMotion()}"
-                    android:textAppearance="@style/TextAppearance.App.body1"
-                    app:layout_constraintEnd_toEndOf="@id/skinImageLayout"
-                    app:layout_constraintStart_toStartOf="@id/skinImageLayout"
-                    app:layout_constraintTop_toBottomOf="@id/skinImageLayout" />
+                    app:layout_constraintEnd_toEndOf="@id/skinImageCardView"
+                    app:layout_constraintStart_toStartOf="@id/skinImageCardView"
+                    app:layout_constraintTop_toBottomOf="@id/skinImageCardView">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/skinRV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:orientation="vertical"
-                    android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/skinMotionAddTextView" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/addMotionTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="28dp"
+                            android:layout_marginEnd="4dp"
+                            android:ellipsize="middle"
+                            android:maxLines="1"
+                            android:text="@string/addMotion"
+                            android:textAppearance="@style/TextAppearance.App.body2"
+                            android:textColor="@color/main_1"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imagePlusBtn"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="18dp"
+                            android:background="@drawable/corner_radius_12"
+                            android:backgroundTint="@color/main_2"
+                            android:tint="@color/white"
+                            bind:minus_plus="@{vm.addMotion}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/skinRV"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="36dp"
+                            android:orientation="vertical"
+                            android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/addMotionTextView" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/completeBtn"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="52dp"
                     android:background="@drawable/rectangle_solid_corner_8dp"
                     android:backgroundTint="@color/main_1"
                     android:text="@string/complete"
@@ -147,8 +204,7 @@
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/skinRV" />
-
+                    app:layout_constraintTop_toBottomOf="@id/skinMotionAddCardView" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

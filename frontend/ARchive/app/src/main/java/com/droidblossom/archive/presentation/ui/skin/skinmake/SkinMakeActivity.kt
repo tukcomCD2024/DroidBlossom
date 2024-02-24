@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivitySkinMakeBinding
@@ -21,6 +22,10 @@ class SkinMakeActivity : BaseActivity<SkinMakeViewModelImpl, ActivitySkinMakeBin
         super.onCreate(savedInstanceState)
 
         observeData()
+
+        val layoutParams = binding.naviHostFragment.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.naviHostFragment.layoutParams = layoutParams
     }
 
     companion object{
