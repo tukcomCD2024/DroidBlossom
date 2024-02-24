@@ -116,7 +116,7 @@
                         app:layout_constraintEnd_toStartOf="@id/capsuleLocationTextView"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView"
-                        bind:displayCreationDateFormatted="@{vm.capsuleDetail.createdDate}" />
+                        bind:displayCreationDateTimeNullFormatted="@{vm.capsuleDetail.dueDate}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleLocationTextView"
