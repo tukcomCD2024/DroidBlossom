@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.skin.skinmake
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
@@ -57,7 +58,7 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                             showToastMessage(it.message)
                         }
                         is SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake -> {
-                            requireActivity().finish()
+                            navController.navigate(R.id.action_skinMakeFragment_to_skinMakeSuccessFragment)
                         }
                     }
                 }
@@ -74,6 +75,10 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
     }
 
     private fun initView(){
+
+        val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.closeBtn.layoutParams = layoutParams
 
         with(binding){
             skinImageCardView.setOnClickListener {

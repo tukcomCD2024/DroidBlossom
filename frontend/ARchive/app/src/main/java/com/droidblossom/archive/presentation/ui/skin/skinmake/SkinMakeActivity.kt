@@ -23,9 +23,6 @@ class SkinMakeActivity : BaseActivity<SkinMakeViewModelImpl, ActivitySkinMakeBin
 
         observeData()
 
-        val layoutParams = binding.naviHostFragment.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.topMargin += getStatusBarHeight()
-        binding.naviHostFragment.layoutParams = layoutParams
     }
 
     companion object{
