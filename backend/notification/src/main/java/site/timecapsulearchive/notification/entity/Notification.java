@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.notification.global.entity.BaseEntity;
@@ -38,4 +39,14 @@ public class Notification extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_category_id", nullable = false)
     private NotificationCategory notificationCategory;
+
+    @Builder
+    private Notification(String title, String text, String imageUrl, Long memberId,
+        NotificationCategory notificationCategory) {
+        this.title = title;
+        this.text = text;
+        this.imageUrl = imageUrl;
+        this.memberId = memberId;
+        this.notificationCategory = notificationCategory;
+    }
 }
