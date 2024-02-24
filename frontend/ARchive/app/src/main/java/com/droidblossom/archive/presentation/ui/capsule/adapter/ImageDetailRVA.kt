@@ -6,16 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemDetailImageBinding
-import com.droidblossom.archive.databinding.ItemImageBinding
-import com.droidblossom.archive.domain.model.common.ImageUrl
+import com.droidblossom.archive.domain.model.common.ContentUrl
 
 class ImageDetailRVA() :
-    ListAdapter<ImageUrl, ImageDetailRVA.ItemViewHolder>(differ) {
+    ListAdapter<ContentUrl, ImageDetailRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemDetailImageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: ImageUrl) {
+        fun bind(data: ContentUrl) {
             binding.item = data
         }
 
@@ -40,12 +39,12 @@ class ImageDetailRVA() :
     }
 
     companion object {
-        val differ = object : DiffUtil.ItemCallback<ImageUrl>() {
-            override fun areItemsTheSame(oldItem: ImageUrl, newItem: ImageUrl): Boolean {
+        val differ = object : DiffUtil.ItemCallback<ContentUrl>() {
+            override fun areItemsTheSame(oldItem: ContentUrl, newItem: ContentUrl): Boolean {
                 return oldItem.url == newItem.url
             }
 
-            override fun areContentsTheSame(oldItem: ImageUrl, newItem: ImageUrl): Boolean {
+            override fun areContentsTheSame(oldItem: ContentUrl, newItem: ContentUrl): Boolean {
                 return oldItem == newItem
             }
         }

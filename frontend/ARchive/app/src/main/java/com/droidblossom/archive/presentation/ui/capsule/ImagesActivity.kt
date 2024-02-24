@@ -5,17 +5,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.viewpager2.widget.ViewPager2
-import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityImagesBinding
-import com.droidblossom.archive.databinding.ActivityVideoBinding
-import com.droidblossom.archive.domain.model.common.ImageUrl
-import com.droidblossom.archive.presentation.ui.capsule.VideoActivity.Companion.VIDEO
+import com.droidblossom.archive.domain.model.common.ContentType
+import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageDetailRVA
-import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageUrlRVA
-import com.droidblossom.archive.util.getStatusBarHeight
 
 class ImagesActivity : AppCompatActivity() {
     lateinit var binding: ActivityImagesBinding
@@ -41,7 +35,7 @@ class ImagesActivity : AppCompatActivity() {
         binding.vp.adapter = imageVP
 
         val images = (intent.getStringArrayExtra(IMAGES) ?: emptyArray()).map { uriString ->
-            ImageUrl(uriString)
+            ContentUrl(uriString, ContentType.IMAGE)
         }
         imageVP.submitList(images)
         binding.totalT.text = images.size.toString()
