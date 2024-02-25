@@ -31,6 +31,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     @Inject
     lateinit var fcmTokenUseCase: FcmTokenUseCase
+
     @Inject
     lateinit var dataStoreUtils: DataStoreUtils
 
@@ -48,19 +49,13 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            val currentFcmToken = MyFirebaseMessagingService().getFirebaseToken()
-            if(dataStoreUtils.fetchFcmToken() == currentFcmToken){
-                return@launch
-            }else{
-                dataStoreUtils.saveFcmToken(currentFcmToken)
-                fcmTokenUseCase(
-                    FcmTokenRequsetDto(currentFcmToken)
-                ).collect { result ->
-                    result.onSuccess {
-                        Log.d("FCM", "fcm patch 성공")
-                    }.onFail {
-                        Log.d("FCM", "fcm patch 실패")
-                    }
+            fcmTokenUseCase(
+                FcmTokenRequsetDto(MyFirebaseMessagingService().getFirebaseToken())
+            ).collect { result ->
+                result.onSuccess {
+                    Log.d("FCM", "fcm patch 성공")
+                }.onFail {
+                    Log.d("FCM", "fcm patch 실패")
                 }
             }
         }
