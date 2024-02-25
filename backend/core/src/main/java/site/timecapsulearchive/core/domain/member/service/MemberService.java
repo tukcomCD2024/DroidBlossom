@@ -1,13 +1,18 @@
 package site.timecapsulearchive.core.domain.member.service;
 
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -18,6 +23,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberQueryReposito
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -129,5 +135,41 @@ public class MemberService {
         final String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
 
         return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
+    }
+
+    @Transactional
+    public void updateMemberFCMToken(final Long memberId, final String fcmToken) {
+        int updatedColumn = memberRepository.updateMemberFCMToken(memberId, fcmToken);
+
+        if (updatedColumn != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberNotificationEnabled(
+        final Long memberId,
+        final Boolean notificationEnabled
+    ) {
+        int updatedColumn = memberRepository.updateMemberNotificationEnabled(memberId,
+            notificationEnabled);
+
+        if (updatedColumn != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    public MemberNotificationSliceResponse findNotificationSliceByMemberId(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        final Slice<MemberNotificationDto> notifications = memberQueryRepository.findNotificationSliceByMemberId(
+            memberId, size, createdAt);
+
+        return memberMapper.notificationSliceToResponse(
+            notifications.getContent(),
+            notifications.hasNext()
+        );
     }
 }

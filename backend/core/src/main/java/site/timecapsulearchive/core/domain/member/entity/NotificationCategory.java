@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.entity;
+package site.timecapsulearchive.core.domain.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.notification.global.entity.BaseEntity;
+import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
 @Getter

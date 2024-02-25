@@ -1,3 +1,6 @@
 [submodule "backend/core/src/main/resources/config"]
 	path = backend/core/src/main/resources/config
 	url = https://github.com/seokho-1116/DroidBlossom-config.git
+[submodule "backend/notification/src/main/resources/config"]
+	path = backend/notification/src/main/resources/config
+	url = https://github.com/seokho-1116/DroidBlossom-config-notification.git

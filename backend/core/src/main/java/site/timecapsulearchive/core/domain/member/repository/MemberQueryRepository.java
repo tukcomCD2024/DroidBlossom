@@ -1,13 +1,20 @@
 package site.timecapsulearchive.core.domain.member.repository;
 
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
+import static site.timecapsulearchive.core.domain.member.entity.QNotification.notification;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
@@ -61,5 +68,47 @@ public class MemberQueryRepository {
                 .where(member.id.eq(memberId))
                 .fetchOne()
         );
+    }
+
+    public Slice<MemberNotificationDto> findNotificationSliceByMemberId(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        final List<MemberNotificationDto> notifications = findMemberNotificationDtos(
+            memberId, size, createdAt);
+
+        final boolean hasNext = canMoreRead(size, notifications.size());
+        if (hasNext) {
+            notifications.remove(size);
+        }
+
+        return new SliceImpl<>(notifications, Pageable.ofSize(size), hasNext);
+    }
+
+    private List<MemberNotificationDto> findMemberNotificationDtos(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        return query
+            .select(
+                Projections.constructor(
+                    MemberNotificationDto.class,
+                    notification.title,
+                    notification.text,
+                    notification.createdAt,
+                    notification.imageUrl
+                )
+            )
+            .from(notification)
+            .where(notification.createdAt.lt(createdAt).and(notification.member.id.eq(memberId)))
+            .orderBy(notification.id.desc())
+            .limit(size + 1)
+            .fetch();
+    }
+
+    private boolean canMoreRead(final int size, final int notificationSize) {
+        return notificationSize > size;
     }
 }

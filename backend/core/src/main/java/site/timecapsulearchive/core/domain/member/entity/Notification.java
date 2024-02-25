@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.entity;
+package site.timecapsulearchive.core.domain.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,10 +10,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.notification.global.entity.BaseEntity;
+import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
 @Getter
@@ -35,20 +34,11 @@ public class Notification extends BaseEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "member_id")
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_category_id", nullable = false)
     private NotificationCategory notificationCategory;
-
-    @Builder
-    private Notification(String title, String text, String imageUrl, Long memberId,
-        NotificationCategory notificationCategory) {
-        this.title = title;
-        this.text = text;
-        this.imageUrl = imageUrl;
-        this.memberId = memberId;
-        this.notificationCategory = notificationCategory;
-    }
 }
