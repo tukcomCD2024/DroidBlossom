@@ -34,7 +34,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./backend/core
+        working-directory: ./backend/notification
 
     permissions:
       id-token: write
