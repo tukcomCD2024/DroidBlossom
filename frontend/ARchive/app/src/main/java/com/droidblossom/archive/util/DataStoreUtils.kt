@@ -15,6 +15,7 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("AccessToken")
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("RefreshToken")
+        private val FCM_TOKEN_KEY = stringPreferencesKey("FcmToken")
     }
 
     suspend fun saveAccessToken(accessToken: String) {
@@ -45,10 +46,25 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
         return EncryptionUtils.decrypt(iv, encryptedData)
     }
 
+    suspend fun saveFcmToken(fcmToken: String) {
+        val (iv, encryptedData) = EncryptionUtils.encrypt(fcmToken)
+        context.dataStore.edit { preferences ->
+            preferences[FCM_TOKEN_KEY] = encryptedData.toBase64() + ":" + iv.toBase64()
+        }
+    }
+
+    suspend fun fetchFcmToken(): String {
+        val preferences = context.dataStore.data.first()
+        val combined = preferences[FCM_TOKEN_KEY] ?: return ""
+        val (encryptedData, iv) = combined.split(":").map { it.fromBase64() }
+        return EncryptionUtils.decrypt(iv, encryptedData)
+    }
+
     suspend fun resetTokenData() {
         context.dataStore.edit { preferences ->
             preferences.remove(ACCESS_TOKEN_KEY)
             preferences.remove(REFRESH_TOKEN_KEY)
+            preferences.remove(FCM_TOKEN_KEY)
         }
     }
 }
