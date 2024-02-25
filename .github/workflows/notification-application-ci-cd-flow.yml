@@ -7,9 +7,8 @@ on:
       - 'hotfix/[0-9a-zA-z]+-B-notification-#[0-9a-zA-z]+'
 
 jobs:
-  deploy-core:
+  deploy-notification:
     name: notification application deploy
-    needs: formatting
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
