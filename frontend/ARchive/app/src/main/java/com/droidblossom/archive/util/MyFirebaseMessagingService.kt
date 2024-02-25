@@ -14,14 +14,21 @@ import com.droidblossom.archive.presentation.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private val TAG = "FirebaseService"
+
+    @Inject
+    lateinit var dataStoreUtils: DataStoreUtils
 
     override fun onNewToken(token: String) {
         Log.d(TAG, "new Token: $token")
@@ -37,7 +44,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
         if (remoteMessage.data.isNotEmpty()) {
-            sendNotification(remoteMessage)
+            CoroutineScope(Dispatchers.IO).launch {
+                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
+
+                if (notificationsEnabled) {
+                    sendNotification(remoteMessage)
+                } else {
+                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
+                }
+            }
         } else {
             Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
         }
@@ -84,19 +99,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE
         )
 
-        // 서버에서 보낸 아이콘 이름 추출
-        val iconName = remoteMessage.data["icon"] // 서버에서 "icon" 키로 아이콘 이름을 보냈다고 가정
-        // 리소스 ID 찾기
-        val iconResId = resources.getIdentifier(iconName, "drawable", packageName)
-
-        // 알림에 대한 UI 정보, 작업
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             setPriority(NotificationCompat.PRIORITY_HIGH) // 중요도 (HIGH: 상단바 표시 가능)
-            if (iconResId != 0) {
-                setSmallIcon(iconResId) // 서버에서 받은 아이콘 이름으로 리소스 ID 찾아 설정
-            } else {
-                setSmallIcon(R.drawable.app_symbol) // 기본 아이콘
-            }
+            setSmallIcon(R.drawable.app_symbol)
             setContentTitle(remoteMessage.data["title"].toString()) // 제목
             setContentText(remoteMessage.data["body"].toString()) // 메시지 내용
             setAutoCancel(true) // 알람클릭시 삭제여부
