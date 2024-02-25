@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
+import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberDetailUpdateRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
@@ -32,6 +33,12 @@ interface MemberService {
     suspend fun patchNotificationEnabled(
         @Body request : NotificationEnabledRequestDto
     ): Response<ResponseBody<String>>
+
+    @PATCH("me/fcm_token")
+    suspend fun patchFcmToken(
+        @Body request : FcmTokenRequsetDto
+    ): Response<ResponseBody<String>>
+
 
     @GET("health")
     suspend fun getTextApi() : Response<ResponseBody<HealthResponseDto>>
