@@ -175,6 +175,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-crashlytics'
+
+    // Event Bus : https://github.com/greenrobot/EventBus
+    implementation("org.greenrobot:eventbus:3.3.1")
 }
 kapt {
     correctErrorTypes true
