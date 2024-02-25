@@ -15,6 +15,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
+import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -30,6 +31,8 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     @Inject
     lateinit var fcmTokenUseCase: FcmTokenUseCase
+    @Inject
+    lateinit var dataStoreUtils: DataStoreUtils
 
     override val viewModel: Nothing? = null
     lateinit var viewBinding: ActivityMainBinding
@@ -45,13 +48,19 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            fcmTokenUseCase(
-                FcmTokenRequsetDto(MyFirebaseMessagingService().getFirebaseToken())
-            ).collect { result ->
-                result.onSuccess {
-                    Log.d("FCM", "fcm patch 성공")
-                }.onFail {
-                    Log.d("FCM", "fcm patch 실패")
+            val currentFcmToken = MyFirebaseMessagingService().getFirebaseToken()
+            if(dataStoreUtils.fetchFcmToken() == currentFcmToken){
+                return@launch
+            }else{
+                dataStoreUtils.saveFcmToken(currentFcmToken)
+                fcmTokenUseCase(
+                    FcmTokenRequsetDto(currentFcmToken)
+                ).collect { result ->
+                    result.onSuccess {
+                        Log.d("FCM", "fcm patch 성공")
+                    }.onFail {
+                        Log.d("FCM", "fcm patch 실패")
+                    }
                 }
             }
         }
