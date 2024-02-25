@@ -3,6 +3,7 @@ package com.droidblossom.archive.util
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -18,6 +19,7 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("AccessToken")
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("RefreshToken")
         private val FCM_TOKEN_KEY = stringPreferencesKey("FcmToken")
+        private val NOTIFICATIONS_ENABLED_KEY = booleanPreferencesKey("NotificationsEnabled")
     }
 
     suspend fun saveAccessToken(accessToken: String) {
@@ -67,6 +69,17 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
             preferences.remove(ACCESS_TOKEN_KEY)
             preferences.remove(REFRESH_TOKEN_KEY)
         }
+    }
+
+    suspend fun saveNotificationsEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[NOTIFICATIONS_ENABLED_KEY] = enabled
+        }
+    }
+
+    suspend fun fetchNotificationsEnabled(): Boolean {
+        val preferences = context.dataStore.data.first()
+        return preferences[NOTIFICATIONS_ENABLED_KEY] ?: true
     }
 }
 
