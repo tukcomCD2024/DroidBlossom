@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.repository
 
+import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.domain.model.auth.Health
@@ -14,6 +15,8 @@ interface MemberRepository {
     suspend fun postMemberStatus(request : MemberStatusRequestDto) : RetrofitResult<MemberStatus>
 
     suspend fun patchNotificationEnabled(request: NotificationEnabledRequestDto): RetrofitResult<String>
+
+    suspend fun patchFcmToken(request: FcmTokenRequsetDto): RetrofitResult<String>
 
     suspend fun getText() : RetrofitResult<Health>
 }

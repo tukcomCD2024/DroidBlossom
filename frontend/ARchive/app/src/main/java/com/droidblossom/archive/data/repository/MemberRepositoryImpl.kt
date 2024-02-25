@@ -3,6 +3,7 @@ package com.droidblossom.archive.data.repository
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
 import com.droidblossom.archive.data.dto.common.toModel
+import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
@@ -29,6 +30,10 @@ class MemberRepositoryImpl @Inject constructor(
 
     override suspend fun patchNotificationEnabled(request: NotificationEnabledRequestDto): RetrofitResult<String> {
         return apiHandler({api.patchNotificationEnabled(request)}){response : ResponseBody<String> -> response.result.toModel()}
+    }
+
+    override suspend fun patchFcmToken(request: FcmTokenRequsetDto): RetrofitResult<String> {
+        return apiHandler({api.patchFcmToken(request)}){response : ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun getText(): RetrofitResult<Health> {
