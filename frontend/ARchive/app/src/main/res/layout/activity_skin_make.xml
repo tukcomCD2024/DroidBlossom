@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.skin.skinmake.SkinMakeActivity">
+        tools:context=".presentation.ui.skin.skinmake.SkinMakeActivity"
+        android:background="@color/main_bg_1">
 
         <androidx.fragment.app.FragmentContainerView
             android:layout_width="0dp"
@@ -22,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_skin_make_graph" />
+            app:navGraph="@navigation/nav_skin_make_graph"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

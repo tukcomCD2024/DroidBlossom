@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/capsule_detail_background"
+        android:background="@color/main_bg_1"
         tools:context=".presentation.ui.capsule.CapsuleDetailActivity">
 
 
@@ -33,226 +33,244 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/closeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:paddingHorizontal="5dp"
-                    android:paddingVertical="12dp"
-                    android:text="닫기"
-                    android:textAppearance="@style/TextAppearance.App.body2"
+                    android:paddingBottom="12dp"
+                    android:src="@drawable/ic_close_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/capsuleTypeT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="그룹캡슐"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/gray_600"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/titleT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center"
-                    android:maxWidth="250dp"
-                    android:text="@{vm.capsuleDetail.title}"
-                    android:textAppearance="@style/TextAppearance.App.h1"
-                    android:textColor="@color/black"
-                    app:layout_constraintEnd_toEndOf="@id/capsuleTypeT"
-                    app:layout_constraintStart_toStartOf="@id/capsuleTypeT"
-                    app:layout_constraintTop_toBottomOf="@id/capsuleTypeT" />
-
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/main_bg_1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/titleT" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profileImg"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
+                    android:id="@+id/userProfileImg"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@color/main_4"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_overlay="true"
+                    app:civ_circle_background_color="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line" />
+                    app:layout_constraintTop_toTopOf="@id/capsuleTypeCardView"
+                    bind:imageUrl="@{vm.capsuleDetail.profileUrl}"
+                    bind:placeholder="@{@drawable/app_symbol}" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/capsuleTypeCardView"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginEnd="@dimen/margin"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/closeBtn">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/capsuleTypeImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        bind:setCapsuleType2Img="@{vm.capsuleDetail.capsuleType}" />
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/capsuleDetailLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/rectangle_solid_corner_20dp"
+                    android:backgroundTint="#B21B3AC4"
+                    android:paddingVertical="24dp"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/capsuleTypeCardView">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/capsuleTitleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{vm.capsuleDetail.title}"
+                        android:textAppearance="@style/TextAppearance.App.h2"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/capsuleOpenDateTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_group_chip"
+                        android:drawablePadding="@dimen/padding_small"
+                        android:textAppearance="@style/TextAppearance.App.caption4"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toStartOf="@id/capsuleLocationTextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView"
+                        bind:displayCreationDateTimeNullFormatted="@{vm.capsuleDetail.dueDate}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/capsuleLocationTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_group_chip"
+                        android:drawablePadding="@dimen/padding_small"
+                        android:text="@{vm.capsuleDetail.address}"
+                        android:textAppearance="@style/TextAppearance.App.caption4"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/capsuleOpenDateTextView"
+                        app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/skinLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/corner_radius_22"
+                    android:backgroundTint="@color/main_4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/capsuleDetailLayout">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/skinImg"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="4dp"
+                        android:scaleType="centerCrop"
+                        app:civ_circle_background_color="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        bind:baseImg="@{@drawable/sample_skin}"
+                        bind:url="@{vm.capsuleDetail.capsuleSkinUrl}"
+                        tools:src="@drawable/sample_skin" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/capsuleCreatedT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="캡슐 탄생일"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="@id/skinImg"
+                        app:layout_constraintStart_toEndOf="@id/skinImg"
+                        app:layout_constraintTop_toTopOf="@id/skinImg" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="20dp"
+                        android:gravity="end"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        app:layout_constraintBottom_toBottomOf="@id/skinImg"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/capsuleCreatedT"
+                        app:layout_constraintTop_toTopOf="@id/skinImg"
+                        bind:displayCreationDateTimeFormatted="@{vm.capsuleDetail.createdDate}"
+                        tools:text="2019" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/nameT"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginEnd="42dp"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@{vm.capsuleDetail.nickname}"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/profileImg"
-                    app:layout_constraintTop_toTopOf="@id/profileImg" />
+                    android:textAppearance="@style/TextAppearance.App.caption4"
+                    android:textColor="@color/gray_700"
+                    app:layout_constraintBottom_toBottomOf="@id/userProfileImg"
+                    app:layout_constraintEnd_toStartOf="@id/capsuleTypeCardView"
+                    app:layout_constraintStart_toEndOf="@id/userProfileImg"
+                    app:layout_constraintTop_toTopOf="@id/userProfileImg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/locationT"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@{vm.capsuleDetail.address}"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/gray_600"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/nameT"
-                    app:layout_constraintTop_toBottomOf="@id/nameT" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/skinImg"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_marginTop="16dp"
-                    android:scaleType="center"
-                    android:src="@drawable/sample_skin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/locationT"
-                    bind:baseImg="@{@drawable/sample_skin}"
-                    bind:url="@{vm.capsuleDetail.capsuleSkinUrl}" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/postImgVP"
                     android:layout_width="0dp"
                     android:layout_height="360dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:visibility="@{vm.capsuleDetail.imageUrls.size() != 0 ?View.VISIBLE :View.GONE}"
+                    android:visibility="@{vm.capsuleDetail.imageUrls.size() + vm.capsuleDetail.videoUrls.size() != 0 ?View.VISIBLE :View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/skinImg" />
+                    app:layout_constraintTop_toBottomOf="@id/skinLayout" />
 
-                <me.relex.circleindicator.CircleIndicator
+                <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                     android:id="@+id/indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="18dp"
+                    android:visibility="@{vm.capsuleDetail.imageUrls.size() + vm.capsuleDetail.videoUrls.size() != 0 ?View.VISIBLE :View.GONE}"
+                    app:dotsColor="@color/main_1"
+                    app:dotsCornerRadius="3dp"
+                    app:dotsSize="6dp"
+                    app:dotsSpacing="2dp"
+                    app:dotsStrokeColor="@color/main_bg_1"
+                    app:layout_constraintBottom_toBottomOf="@id/postImgVP"
                     app:layout_constraintEnd_toEndOf="@id/postImgVP"
-                    app:layout_constraintStart_toStartOf="@id/postImgVP"
-                    app:layout_constraintTop_toBottomOf="@id/postImgVP" />
+                    app:layout_constraintStart_toStartOf="@id/postImgVP" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/contentT"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/corner_radius_16"
+                    android:backgroundTint="@color/white"
+                    android:padding="24dp"
+                    android:text="@{vm.capsuleDetail.content}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/indicator"
-                    tools:text="@{vm.capsuleDetail.content}" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/createDateSettingT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:text="생성 날짜"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/gray_600"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/contentT" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/openDateSettingT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="4dp"
-                    android:text="오픈 날짜"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/gray_600"
-                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.GONE }"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/createDateSettingT" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/createDateT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="@id/createDateSettingT"
-                    app:layout_constraintStart_toEndOf="@id/createDateSettingT"
-                    app:layout_constraintTop_toTopOf="@id/createDateSettingT"
-                    bind:displayCreationDateFormatted="@{vm.capsuleDetail.createdDate}" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/openDateT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/black"
-                    android:visibility="@{vm.capsuleDetail.dueDate != null ? View.VISIBLE : View.GONE }"
-                    app:layout_constraintBottom_toBottomOf="@id/openDateSettingT"
-                    app:layout_constraintStart_toEndOf="@id/openDateSettingT"
-                    app:layout_constraintTop_toTopOf="@id/openDateSettingT"
-                    bind:displayCreationDateFormatted="@{vm.capsuleDetail.dueDate != null ? vm.capsuleDetail.dueDate : ``}" />
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/groupNumberT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:text="그룹원"
-                    android:textAppearance="@style/TextAppearance.App.caption2"
-                    android:textColor="@color/gray_600"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/openDateSettingT"
-                    tools:visibility="visible" />
+                    app:layout_constraintTop_toBottomOf="@id/postImgVP"
+                    tools:text="ddd" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/groupNumberRecycleView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/main_bg_2"
                     android:orientation="horizontal"
+                    android:paddingStart="8dp"
                     android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/groupNumberT"
+                    app:layout_constraintTop_toBottomOf="@id/contentT"
                     tools:listitem="@layout/item_group_number"
                     tools:visibility="visible" />
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/groupNumberRecycleView" />

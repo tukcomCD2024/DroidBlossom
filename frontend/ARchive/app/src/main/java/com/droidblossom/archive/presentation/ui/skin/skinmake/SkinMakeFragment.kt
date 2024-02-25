@@ -3,9 +3,13 @@ package com.droidblossom.archive.presentation.ui.skin.skinmake
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
@@ -14,9 +18,18 @@ import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
+import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
+import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
+import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
 import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,13 +42,29 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
         if (uri != null){
-            viewModel.imgUri.value = uri
+            viewModel.skinImgUri.value = uri
         }else{
             Log.d("포토", "No Media selected")
         }
     }
 
-    override fun observeData() {}
+    override fun observeData() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.skinMakeEvents.collect {
+                    when (it) {
+                        is SkinMakeViewModel.SkinMakeEvent.ShowToastMessage -> {
+                            showToastMessage(it.message)
+                        }
+                        is SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake -> {
+                            navController.navigate(R.id.action_skinMakeFragment_to_skinMakeSuccessFragment)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,32 +76,43 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     private fun initView(){
 
+        val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.closeBtn.layoutParams = layoutParams
+
         with(binding){
-            skinImageLayout.setOnClickListener {
+            skinImageCardView.setOnClickListener {
                 picMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
 
             closeBtn.setOnClickListener {
-                MainActivity.goMain(requireContext())
+                activity?.finish()
             }
 
             completeBtn.setOnClickListener {
-                val file = viewModel.imgUri.value?.let { uri ->
-                    FileUtils.convertUriToJpegFile(requireContext(),
-                        uri, "papa")
+
+                if (viewModel.skinName.value.isBlank()){
+                    viewModel.skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("스킨의 이름은 필수입니다."))
+                    return@setOnClickListener
                 }
 
-                val fileExtension = file?.name?.substringAfterLast('.', "")
+                if (viewModel.skinImgUri.value == null){
+                    viewModel.skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("스킨의 이미지는 필수입니다."))
+                    return@setOnClickListener
+                }else{
 
-                Log.d("티티", "File Extension: $fileExtension")
+                    val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                    val currentTime = dateFormat.format(Date())
 
-//                val locationUtil = LocationUtil(requireContext())
-//                locationUtil.getCurrentLocation { latitude, longitude ->
-//                    // 여기서 위도(latitude)와 경도(longitude)를 사용하여 필요한 작업 수행
-//                    Log.d("위치", "위도 : $latitude, 경도 : $longitude")
-//                }
-//                val data = S3UrlRequest("skinImage", listOf(FileName("image/jpeg","papa.jpeg")))
-//                viewModel.getUploadUrl(data,file!!)
+                    CoroutineScope(Dispatchers.IO).launch{
+                        val skinImgFilesDeferred = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        viewModel.setFile(skinImgFilesDeferred!!)
+
+                        viewModel.makeSkin()
+
+                    }
+
+                }
 
             }
 

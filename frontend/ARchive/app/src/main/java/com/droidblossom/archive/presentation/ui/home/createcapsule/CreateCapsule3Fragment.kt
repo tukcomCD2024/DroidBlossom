@@ -11,21 +11,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule3Binding
+import com.droidblossom.archive.domain.model.common.ContentType
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.ImageRVA
 import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
 import com.droidblossom.archive.util.FileUtils
-import com.droidblossom.archive.util.LocationUtil
-import com.kakao.sdk.common.util.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,15 +33,33 @@ class CreateCapsule3Fragment :
 
     override val viewModel: CreateCapsuleViewModelImpl by activityViewModels()
 
-
-    private val pickMultiple =
+    private val pickMultipleImageAndVideo =
         registerForActivityResult(
             ActivityResultContracts.PickMultipleVisualMedia(5)
         ) { uris ->
             if (uris.isNotEmpty()) {
-                viewModel.addImgUris(uris.map { Dummy(it, false) })
+                val dummyList = mutableListOf<Dummy>()
+                uris.forEach { uri ->
+                    val mimeType = activity?.contentResolver?.getType(uri)
+                    when {
+                        mimeType?.startsWith("image/") == true -> {
+                            Log.d("MediaType", "Image URI: $uri")
+                            dummyList.add(Dummy(uri, ContentType.IMAGE, false))
+                        }
+
+                        mimeType?.startsWith("video/") == true -> {
+                            Log.d("MediaType", "Video URI: $uri")
+                            dummyList.add(Dummy(uri, ContentType.VIDEO, false))
+                        }
+
+                        else -> {
+                            Log.d("MediaType", "Unknown media type: $uri")
+                        }
+                    }
+                }
+                viewModel.addContentUris(dummyList)
             } else {
-                Log.d("포토", "No media selected")
+                Log.d("Photo", "No media selected")
             }
         }
 
@@ -52,17 +67,32 @@ class CreateCapsule3Fragment :
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
         { uri ->
             if (uri != null) {
-                viewModel.addImgUris(listOf(Dummy(uri, false)))
+
+                val mimeType = activity?.contentResolver?.getType(uri)
+                when {
+                    mimeType?.startsWith("image/") == true -> {
+                        Log.d("MediaType", "Image URI: $uri")
+                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.IMAGE, false)))
+                    }
+
+                    mimeType?.startsWith("video/") == true -> {
+                        Log.d("MediaType", "Video URI: $uri")
+                        viewModel.addContentUris(listOf(Dummy(uri, ContentType.VIDEO, false)))
+                    }
+
+                    else -> {
+                        Log.d("MediaType", "Unknown media type: $uri")
+                    }
+                }
             } else {
                 Log.d("포토", "No Media selected")
             }
         }
 
-
-    private val imgVPA by lazy {
+    private val contentVPA by lazy {
         ImageRVA(
             { viewModel.moveSingleImgUpLoad() },
-            { viewModel.submitUris(it) }
+            { viewModel.submitContentUris(it) }
         )
     }
 
@@ -74,39 +104,64 @@ class CreateCapsule3Fragment :
         initView()
     }
 
-    private fun initRVA(){
-        binding.recycleView.adapter = imgVPA
+    private fun initRVA() {
+        binding.recycleView.adapter = contentVPA
         binding.recycleView.offscreenPageLimit = 3
-//        val locationUtil = LocationUtil(requireContext())
-//        locationUtil.getCurrentLocation { latitude, longitude ->
-//            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
-//            viewModel.coordToAddress(latitude = latitude, longitude = longitude)
-//        }
+        binding.indicator.attachTo(binding.recycleView)
     }
 
     private fun initView() {
         with(binding) {
+            capsuleTitleEditT.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    viewModel.closeTimeSetting()
+                }
+            }
+
             nextBtn.setOnClickListener {
 
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
-                    val fileDeferreds = viewModel.imgUris.value.mapIndexedNotNull { index, uri ->
-                        uri.string?.let { uriString ->
+
+                    val contentFilesDeferred = async {
+                        viewModel.contentUris.value.mapIndexed { index, dummy ->
                             async {
-                                FileUtils.convertUriToJpegFile(
-                                    requireContext(),
-                                    uriString,
-                                    "${currentTime}_$index"
-                                )
+                                dummy.string?.let { uriString ->
+                                    when (dummy.contentType) {
+                                        ContentType.IMAGE -> FileUtils.convertUriToJpegFile(
+                                            requireContext(),
+                                            uriString,
+                                            "IMG_${currentTime}_$index"
+                                        )
+
+                                        ContentType.VIDEO -> FileUtils.convertUriToVideoFile(
+                                            requireContext(),
+                                            uriString,
+                                            "VID_${currentTime}_$index"
+                                        )
+
+                                        else -> null
+                                    }
+                                }
                             }
-                        }
+                        }.awaitAll().filterNotNull()
                     }
-                    val fileList = fileDeferreds.awaitAll().filterNotNull()
-                    viewModel.makeFiles(fileList)
+
+                    val contentFiles = contentFilesDeferred.await()
+
+                    val imageFiles = contentFiles.filter { file ->
+                        file.name.startsWith("IMG_")
+                    }
+                    val videoFiles = contentFiles.filter { file ->
+                        file.name.startsWith("VID_")
+                    }
+                    viewModel.setFiles(imageFiles, videoFiles)
                     viewModel.moveFinish()
                 }
             }
+
+
         }
     }
 
@@ -134,7 +189,12 @@ class CreateCapsule3Fragment :
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickImgUpLoad -> {
-                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+//                            pickMultiple.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            pickMultipleImageAndVideo.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageAndVideo
+                                )
+                            )
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickLocation -> {
@@ -142,12 +202,14 @@ class CreateCapsule3Fragment :
                         }
 
                         CreateCapsuleViewModel.Create3Event.CLickSingleImgUpLoad -> {
-                            pickSingle.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            pickSingle.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
                         }
 
                         is CreateCapsuleViewModel.Create3Event.ShowToastMessage -> {
                             showToastMessage(it.message)
                         }
+
+                        CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {}
                     }
                 }
             }
@@ -155,8 +217,8 @@ class CreateCapsule3Fragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.imgUris.collect {
-                    imgVPA.submitList(it)
+                viewModel.contentUris.collect {
+                    contentVPA.submitList(it)
                 }
             }
         }
@@ -168,5 +230,6 @@ class CreateCapsule3Fragment :
                 }
             }
         }
+
     }
 }

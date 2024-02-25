@@ -23,6 +23,7 @@
 
 
     <color name="main_1_alpha20">#324263F7</color>
+    <color name="main_dark_alpha50">#801B3AC4</color>
     <color name="white_alpha70">#B3FFFFFF</color>
     <color name="white_alpha60">#99FFFFFF</color>
     <color name="main_alpha85">#D94263F7</color>

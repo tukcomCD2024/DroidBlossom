@@ -3,12 +3,14 @@ package com.droidblossom.archive.presentation.ui.home.dialog
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +39,7 @@ class CapsulePreviewDialogFragment :
         arguments?.getString("capsule_type")
             ?.let { CapsuleTypeUtils.stringToEnum(it) }
     }
+
     override fun onStart() {
         super.onStart()
         val dialog = dialog
@@ -80,6 +83,9 @@ class CapsulePreviewDialogFragment :
 
             }
         }
+
+        val calledFromCamera = arguments?.getBoolean("called_from_camera") ?: false
+        viewModel.setCalledFromCamera(calledFromCamera)
 
         initObserver()
         initView()
@@ -192,5 +198,27 @@ class CapsulePreviewDialogFragment :
             })
         }
         animator.start()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val capsuleState = Bundle().apply {
+            putLong("capsuleId", capsuleId.toLong())
+            putBoolean("isOpened", viewModel.capsuleOpenState.value)
+        }
+        setFragmentResult("capsuleState", capsuleState)
+    }
+
+    companion object {
+        fun newInstance(capsuleId: String, capsuleType: String, calledFromCamera : Boolean): CapsulePreviewDialogFragment {
+            val args = Bundle().apply {
+                putString("capsule_id", capsuleId)
+                putString("capsule_type", capsuleType)
+                putBoolean("called_from_camera", calledFromCamera)
+            }
+            return CapsulePreviewDialogFragment().apply {
+                arguments = args
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ data class SecretCapsuleCreateRequestDto(
     val capsuleSkinId: Long,
     val content: String,
     val directory: String,
-    val dueDate: String,
+    val dueDate: String?,
     val imageNames: List<String>?,
     val videoNames: List<String>?,
     val addressData: AddressDataDto,

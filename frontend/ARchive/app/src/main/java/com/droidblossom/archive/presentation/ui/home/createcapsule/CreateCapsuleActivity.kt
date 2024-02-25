@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -23,6 +24,13 @@ class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+       initView()
+    }
+
+    private fun initView(){
+        val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.closeBtn.layoutParams = layoutParams
 
         binding.closeBtn.setOnClickListener {
             finish()
@@ -41,6 +49,7 @@ class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityC
         viewModel.getSkinList()
 
     }
+
     companion object {
         const val CREATE_CAPSULE = "create_capsule"
 

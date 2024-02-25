@@ -5,18 +5,19 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.droidblossom.archive.R
 import de.hdodenhof.circleimageview.CircleImageView
-import retrofit2.http.Url
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -32,6 +33,22 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
         }
         .into(this)
 }
+
+@BindingAdapter(value = ["bind:VideoUri", "bind:placeholder"], requireAll = false)
+fun CircleImageView.setThumbUrI(VideoUri: String?, placeholder: Drawable?) {
+    if (VideoUri != null) {
+        Glide.with(context)
+            .load(VideoUri)
+            .thumbnail(0.1f)
+            .apply {
+                if (placeholder != null) {
+                    placeholder(placeholder)
+                }
+            }
+            .into(this)
+    }
+}
+
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
@@ -78,6 +95,40 @@ fun CardView.animateFAB(y : Float){
     ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
 }
 
+@BindingAdapter("bind:displayCreationDateTimeFormatted")
+fun TextView.setFormattedDateTime(dateString: String) {
+    dateString.let {
+        try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = parser.parse(dateString)
+
+            val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
+            val formattedDate = date?.let { formatter.format(it) }
+            this.text = formattedDate
+        } catch (e: Exception) {
+            this.text = "날짜 형식 오류"
+        }
+    }
+}
+
+@BindingAdapter("bind:displayCreationDateTimeNullFormatted")
+fun TextView.setFormattedDateTimeNull(dateString: String?) {
+    if (!dateString.isNullOrEmpty()){
+        try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = parser.parse(dateString)
+
+            val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
+            val formattedDate = date?.let { formatter.format(it) }
+            this.text = formattedDate
+        } catch (e: Exception) {
+            this.text = "날짜 형식 오류"
+        }
+    }else{
+        this.text = "일반 캡슐 입니다"
+    }
+}
+
 @BindingAdapter("bind:displayCreationDateFormatted")
 fun TextView.setFormattedDate(dateString: String) {
     dateString.let {
@@ -98,5 +149,38 @@ fun TextView.setFormattedDate(dateString: String) {
 fun ImageView.setImageResource(resource: Int?) {
     resource?.let {
         this.setImageResource(it)
+    }
+}
+
+@BindingAdapter("bind:minus_plus")
+fun ImageView.setMinusPlusImage(flag: Boolean) {
+    val resourceId = if (flag) {
+        R.drawable.ic_minus_24
+    } else {
+        R.drawable.ic_plus_main_24
+    }
+    this.setImageDrawable(ContextCompat.getDrawable(context, resourceId))
+}
+
+@BindingAdapter("bind:layout_height_bind")
+fun setLayoutHeight(view: View, height: Float) {
+    val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+    layoutParams.height = height.toInt()
+    view.layoutParams = layoutParams
+}
+
+@BindingAdapter("bind:setCapsuleType2Img")
+fun ImageView.setCapsuleType2Img(type: String?){
+    when(type) {
+        "SECRET" -> {
+            this.setImageResource(R.drawable.ic_secret_marker_24)
+        }
+        "PUBLIC" -> {
+            this.setImageResource(R.drawable.ic_public_marker_24)
+        }
+        "GROUP" ->{
+            this.setImageResource(R.drawable.ic_group_marker_24)
+        }
+        else -> {}
     }
 }

@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.skin.SkinViewModel" />
@@ -13,7 +15,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.skin.SkinFragment">
+        tools:context=".presentation.ui.skin.SkinFragment"
+        android:background="@color/main_bg_1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,56 +34,164 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.068" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/searchBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_solid_corner_20dp"
-                android:backgroundTint="@color/main_bg_1"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="10dp"
-                android:text="@string/search"
-                android:textAppearance="@style/TextAppearance.App.caption3"
-                android:textColor="@color/main_1"
+            <androidx.cardview.widget.CardView
+                android:visibility="@{vm.isSearchOpen ? View.VISIBLE  : View.GONE}"
+                android:id="@+id/searchOpenBtn"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintVertical_bias="0.0647" />
+                app:layout_constraintVertical_bias="0.0610">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/searchOpenBtnLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                style="@style/Widget.MyApp.FloatingActionButton.Material2"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="22dp"
-                android:background="@color/white"
-                android:backgroundTint="@color/white"
-                android:foreground="@drawable/ic_plus_40"
-                android:foregroundGravity="center"
-                android:foregroundTint="@color/main_1"
-                app:borderWidth="0dp"
-                app:elevation="1dp"
-                app:layout_constraintBottom_toTopOf="@id/place"
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/searchOpenEditT"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@null"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
+                        android:textAppearance="@style/TextAppearance.App.body2"
+                        android:ellipsize="start"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/searchOpenBtnT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="검색"
+                        android:paddingVertical="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:layout_marginEnd="5dp"
+                        android:textAppearance="@style/TextAppearance.App.caption1"
+                        android:textColor="@color/main_1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                tools:visibility="gone"
+                android:visibility="@{vm.isSearchOpen ? View.GONE  : View.VISIBLE}"
+                android:id="@+id/searchBtn"
+                android:layout_width="58dp"
+                android:layout_height="34dp"
+                android:onClick="@{()->vm.openSearchSkin()}"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="17dp"
+                app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:rippleColor="@color/white" />
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
+                app:layout_constraintVertical_bias="0.0610">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/searchBtnLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/searchBtnT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="검색"
+                        android:textAppearance="@style/TextAppearance.App.caption1"
+                        android:textColor="@color/main_1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/skinRV"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="16dp"
                 android:orientation="vertical"
                 android:visibility="visible"
+                android:layout_marginTop="100dp"
                 app:layout_constraintBottom_toTopOf="@id/place"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchBtn" />
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="140dp"
+                android:layout_height="44dp"
+                android:backgroundTint="#B21B3AC4"
+                android:background="@drawable/rectangle_solid_corner_30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/place"
+                app:cardCornerRadius="22dp"
+                android:elevation="2dp"
+                android:layout_marginBottom="40dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/createCapsuleLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="스킨 만들기"
+                        android:textAppearance="@style/TextAppearance.App.caption1"
+                        android:textColor="@color/white"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/createCapsuleCardView"
+                        android:layout_marginEnd="10dp"/>
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/createCapsuleCardView"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        android:layout_marginVertical="6dp"
+                        android:layout_marginEnd="6dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:backgroundTint="@color/main_bg_1"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/capsuleTypeImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_plus_24_blue" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <View
                 android:id="@+id/place"
