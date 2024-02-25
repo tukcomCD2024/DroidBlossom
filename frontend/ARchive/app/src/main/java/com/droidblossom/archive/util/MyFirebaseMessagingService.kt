@@ -14,6 +14,10 @@ import com.droidblossom.archive.presentation.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -32,9 +36,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message data : ${remoteMessage.data}")
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
-        if(remoteMessage.data.isNotEmpty()){
+        if (remoteMessage.data.isNotEmpty()) {
             sendNotification(remoteMessage)
-        }else {
+        } else {
             Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
         }
     }
@@ -47,7 +51,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val channelName = "ARchive"
         val channelDescription = "ARchive FCM 채널"
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -62,7 +67,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val intent = Intent(this, MainActivity::class.java)
         //각 key, value 추가
-        for(key in remoteMessage.data.keys){
+        for (key in remoteMessage.data.keys) {
             intent.putExtra(key, remoteMessage.data.getValue(key))
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Activity Stack 을 경로만 남김(A-B-C-D-B => A-B)
@@ -70,7 +75,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         //23.05.22 Android 최신버전 대응 (FLAG_MUTABLE, FLAG_IMMUTABLE)
         //PendingIntent.FLAG_MUTABLE은 PendingIntent의 내용을 변경할 수 있도록 허용, PendingIntent.FLAG_IMMUTABLE은 PendingIntent의 내용을 변경할 수 없음
         //val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT)
-        val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            uniId,
+            intent,
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE
+        )
 
         // 서버에서 보낸 아이콘 이름 추출
         val iconName = remoteMessage.data["icon"] // 서버에서 "icon" 키로 아이콘 이름을 보냈다고 가정
@@ -93,19 +103,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel =
+                NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
 
         notificationManager.notify(uniId, notificationBuilder.build())
     }
 
-    fun getFirebaseToken() {
-        //비동기 방식
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
-            Log.d(TAG, "token=${it}")
-        }
-
+    suspend fun getFirebaseToken(): String {
+        val tokenTask = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+                FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                    Log.d("FCM", "token=${it}")
+                }
+            }
+        return tokenTask.await()
     }
 }
 
