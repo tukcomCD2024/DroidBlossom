@@ -4,6 +4,7 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
 import com.droidblossom.archive.data.dto.member.request.MemberDetailUpdateRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
+import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import retrofit2.Response
@@ -26,6 +27,11 @@ interface MemberService {
 //    suspend fun patchMeApi(
 //        @Body request : MemberDetailUpdateRequestDto
 //    ): Response<ResponseBody<HealthResponseDto>>
+
+    @PATCH("me/notification_enabled")
+    suspend fun patchNotificationEnabled(
+        @Body request : NotificationEnabledRequestDto
+    ): Response<ResponseBody<String>>
 
     @GET("health")
     suspend fun getTextApi() : Response<ResponseBody<HealthResponseDto>>
