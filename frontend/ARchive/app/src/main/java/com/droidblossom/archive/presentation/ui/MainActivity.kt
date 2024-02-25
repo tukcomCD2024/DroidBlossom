@@ -41,13 +41,16 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
     override fun observeData() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         viewBinding = binding
         showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
 
+        initBottomNav()
+        initFCM()
+    }
 
+    private fun initFCM(){
         CoroutineScope(Dispatchers.IO).launch {
             fcmTokenUseCase(
                 FcmTokenRequsetDto(MyFirebaseMessagingService().getFirebaseToken())
@@ -59,8 +62,9 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
                 }
             }
         }
+    }
 
-
+    private fun initBottomNav(){
         binding.fab.setOnClickListener {
             showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
             binding.bottomNavigation.selectedItemId = R.id.menuCamera
