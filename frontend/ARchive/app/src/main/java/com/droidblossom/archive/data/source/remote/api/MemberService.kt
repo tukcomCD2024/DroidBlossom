@@ -8,11 +8,13 @@ import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
+import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface MemberService {
 
@@ -38,6 +40,12 @@ interface MemberService {
     suspend fun patchFcmToken(
         @Body request : FcmTokenRequsetDto
     ): Response<ResponseBody<String>>
+
+    @GET("me/notifications")
+    suspend fun getNotifications(
+        @Query("size") size : Int,
+        @Query("createdAt") createdAt : String
+    ): Response<ResponseBody<NotificationResponseDto>>
 
 
     @GET("health")
