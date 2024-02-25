@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.droidblossom.archive.R
+import com.droidblossom.archive.presentation.snack.CallSnackBar
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -20,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,6 +46,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
         if (remoteMessage.data.isNotEmpty()) {
+
+            EventBus.getDefault().post(CallSnackBar(remoteMessage.data["title"] ?: "Unknown title"))
+
             CoroutineScope(Dispatchers.IO).launch {
                 val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
 
