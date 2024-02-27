@@ -158,7 +158,10 @@ public class CapsuleQueryRepository {
             )
             .fetchFirst();
 
-        return Optional.ofNullable(detailDto);
+        if (detailDto.capsuleId() == null) {
+            return Optional.empty();
+        }
+        return Optional.of(detailDto);
     }
 
     private StringExpression groupConcatDistinct(final StringExpression expression) {
