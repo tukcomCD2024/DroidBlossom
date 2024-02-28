@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -45,6 +46,28 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message data : ${remoteMessage.data}")
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
+        val notification = remoteMessage.notification
+
+        if (notification != null) {
+            val title = notification.title ?: "Unknown title"
+            val body = notification.body ?: "Unknown body"
+
+            EventBus.getDefault().post(CallSnackBar(title))
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
+
+                if (notificationsEnabled) {
+                    sendNotification(remoteMessage)
+                } else {
+                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
+                }
+            }
+        } else {
+            Log.e(TAG, "알림 메시지가 아닙니다. 데이터 메시지입니다.")
+        }
+        /*
+        //FCM data 버전
         if (remoteMessage.data.isNotEmpty()) {
 
             EventBus.getDefault().post(CallSnackBar(remoteMessage.data["title"] ?: "Unknown title"))
@@ -61,6 +84,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         } else {
             Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
         }
+        */
     }
 
     /** 알림 생성 메서드 */
@@ -107,8 +131,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             priority = NotificationCompat.PRIORITY_HIGH // 중요도 (HIGH: 상단바 표시 가능)
             setSmallIcon(R.drawable.app_symbol)
-            setContentTitle(remoteMessage.data["title"].toString()) // 제목
-            setContentText(remoteMessage.data["body"].toString()) // 메시지 내용
+            setContentTitle(remoteMessage.notification?.title ?: "Unknown title") // 제목
+            setContentText(remoteMessage.notification?.body ?: "Unknown body") // 메시지 내용
             setAutoCancel(true) // 알람클릭시 삭제여부
             setSound(soundUri)  // 알림 소리
             setContentIntent(pendingIntent) // 알림 실행 시 Intent
