@@ -39,64 +39,31 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     /** 메시지 수신 메서드(포그라운드) */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
         Log.d(TAG, "From: " + remoteMessage.from)
 
-        //받은 remoteMessage의 값 출력해보기. 데이터메세지 / 알림메세지
         Log.d(TAG, "Message data : ${remoteMessage.data}")
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
-        val notification = remoteMessage.notification
-
-        if (notification != null) {
-            val title = notification.title ?: "Unknown title"
-            val body = notification.body ?: "Unknown body"
-
-            EventBus.getDefault().post(CallSnackBar(title))
-
-            CoroutineScope(Dispatchers.IO).launch {
-                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
-
-                if (notificationsEnabled) {
-                    sendNotification(remoteMessage)
-                } else {
-                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
-                }
-            }
-        } else {
-            Log.e(TAG, "알림 메시지가 아닙니다. 데이터 메시지입니다.")
+        when (remoteMessage.from) {
+            // 스킨 생성 알림 - 서버에서 아직 안나옴 : topic1
+            "894030886016" -> handle894030886016Notification(remoteMessage)
+            else -> handleDefaultNotification(remoteMessage)
         }
-        /*
-        //FCM data 버전
-        if (remoteMessage.data.isNotEmpty()) {
-
-            EventBus.getDefault().post(CallSnackBar(remoteMessage.data["title"] ?: "Unknown title"))
-
-            CoroutineScope(Dispatchers.IO).launch {
-                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
-
-                if (notificationsEnabled) {
-                    sendNotification(remoteMessage)
-                } else {
-                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
-                }
-            }
-        } else {
-            Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
-        }
-        */
     }
 
-    /** 알림 생성 메서드 */
-    private fun sendNotification(remoteMessage: RemoteMessage) {
+    private fun handle894030886016Notification(remoteMessage: RemoteMessage) {
+        sendNotification(remoteMessage, "ARchiveChannelId1", "894030886016")
+    }
 
-        //channel 설정
-        val channelId = "ARchiveChannelId"
-        val channelName = "ARchive"
-        val channelDescription = "ARchive FCM 채널"
+    private fun handleDefaultNotification(remoteMessage: RemoteMessage) {
+        sendNotification(remoteMessage, "ARchiveChannelId", "ARchive")
+    }
+
+    private fun sendNotification(remoteMessage: RemoteMessage, channelId: String, channelName: String) {
+        // channel 설정
+        val channelDescription = "$channelName FCM 채널"
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -106,21 +73,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // RequestCode, Id를 고유값으로 지정하여 알림이 개별 표시
         val uniId: Int = (System.currentTimeMillis() / 7).toInt()
 
-        // 일회용 PendingIntent : Intent 의 실행 권한을 외부의 어플리케이션에게 위임
-        val intent = Intent(this, MainActivity::class.java)
+        // 인텐트 설정
+        val intent = when (channelId) {
+            "894030886016" -> Intent(this, MainActivity::class.java)
+            else -> Intent(this, MainActivity::class.java)
+        }
 
-        //각 key, value 추가
+
         for (key in remoteMessage.data.keys) {
             intent.putExtra(key, remoteMessage.data.getValue(key))
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Activity Stack 을 경로만 남김(A-B-C-D-B => A-B)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        //23.05.22 Android 최신버전 대응 (FLAG_MUTABLE, FLAG_IMMUTABLE)
-        //PendingIntent.FLAG_MUTABLE은 PendingIntent의 내용을 변경할 수 있도록 허용, PendingIntent.FLAG_IMMUTABLE은 PendingIntent의 내용을 변경할 수 없음
-        //val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT)
+        // PendingIntent 설정
         val pendingIntent = PendingIntent.getActivity(
             this,
             uniId,
@@ -132,21 +99,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             priority = NotificationCompat.PRIORITY_HIGH // 중요도 (HIGH: 상단바 표시 가능)
             setSmallIcon(R.drawable.app_symbol)
             setContentTitle(remoteMessage.notification?.title ?: "Unknown title") // 제목
-            setContentText(remoteMessage.notification?.body ?: "Unknown body") // 메시지 내용
+            setContentText(remoteMessage.notification?.body ?: "Unknown body")
             setAutoCancel(true) // 알람클릭시 삭제여부
             setSound(soundUri)  // 알림 소리
             setContentIntent(pendingIntent) // 알림 실행 시 Intent
         }
 
+        // Android 최신버전 대응 (Android O 이상)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
 
+        // 알림 전송
         notificationManager.notify(uniId, notificationBuilder.build())
-    }
 
+        // 이벤트 버스를 통해 알림을 전달
+        EventBus.getDefault().post(CallSnackBar(remoteMessage.notification?.title ?: "Unknown title"))
+    }
     suspend fun getFirebaseToken(): String {
         val tokenTask = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
                 FirebaseMessaging.getInstance().token.addOnSuccessListener {
