@@ -105,7 +105,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
-            setPriority(NotificationCompat.PRIORITY_HIGH) // 중요도 (HIGH: 상단바 표시 가능)
+            priority = NotificationCompat.PRIORITY_HIGH // 중요도 (HIGH: 상단바 표시 가능)
             setSmallIcon(R.drawable.app_symbol)
             setContentTitle(remoteMessage.data["title"].toString()) // 제목
             setContentText(remoteMessage.data["body"].toString()) // 메시지 내용
