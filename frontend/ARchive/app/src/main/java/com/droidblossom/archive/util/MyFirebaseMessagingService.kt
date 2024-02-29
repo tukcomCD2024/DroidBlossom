@@ -44,8 +44,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         when (remoteMessage.from) {
             // 스킨 생성 알림 - 서버에서 아직 안나옴 : topic1
-            "894030886016" -> handle894030886016Notification(remoteMessage)
-            else -> handleDefaultNotification(remoteMessage)
+            "894030886016" -> {
+                handle894030886016Notification(remoteMessage)
+            }
+            else -> {
+                handleDefaultNotification(remoteMessage)
+            }
         }
     }
 

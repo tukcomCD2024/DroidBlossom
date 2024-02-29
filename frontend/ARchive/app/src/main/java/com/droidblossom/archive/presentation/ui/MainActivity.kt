@@ -123,9 +123,9 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
+    // 현재 포그라운드에서만 이동 됨 - 서버와 얘기해야함
     private fun handleIntent(intent: Intent) {
         val destination = intent.getStringExtra("fragmentDestination")
-        Log.d("어디로","어디로 가야하오 : $destination")
 
         when (destination) {
             MyFirebaseMessagingService.FragmentDestination.SKIN_FRAGMENT.name -> {
