@@ -59,6 +59,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         sendNotification(remoteMessage, "ARchiveChannelId", "ARchive")
     }
 
+    private fun createMainActivityIntent(data: Map<String, String>) : Intent{
+        val intent = Intent(this, MainActivity::class.java)
+        for ((key, value) in data) {
+            intent.putExtra(key, value)
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        return intent
+    }
+
     private fun sendNotification(remoteMessage: RemoteMessage, channelId: String, channelName: String) {
         // channel 설정
         val channelDescription = "$channelName FCM 채널"
@@ -77,15 +86,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // 인텐트 설정
         val intent = when (channelId) {
-            "894030886016" -> Intent(this, MainActivity::class.java)
-            else -> Intent(this, MainActivity::class.java)
+            "894030886016" -> createMainActivityIntent(remoteMessage.data)
+            else -> createMainActivityIntent(remoteMessage.data)
         }
 
-
-        for (key in remoteMessage.data.keys) {
-            intent.putExtra(key, remoteMessage.data.getValue(key))
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         // PendingIntent 설정
         val pendingIntent = PendingIntent.getActivity(
