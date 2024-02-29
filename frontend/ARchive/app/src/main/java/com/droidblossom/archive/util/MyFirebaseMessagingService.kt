@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -19,7 +18,6 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -59,20 +57,32 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         sendNotification(remoteMessage, "ARchiveChannelId", "ARchive")
     }
 
-    private fun createMainActivityIntent(data: Map<String, String>) : Intent{
+    private fun createMainActivityIntent(
+        data: Map<String, String>,
+        destination: FragmentDestination? = null
+    ): Intent {
         val intent = Intent(this, MainActivity::class.java)
-        for ((key, value) in data) {
+        data.forEach { (key, value) ->
             intent.putExtra(key, value)
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        destination?.let {
+            intent.putExtra("fragmentDestination", it.name)
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         return intent
     }
 
-    private fun sendNotification(remoteMessage: RemoteMessage, channelId: String, channelName: String) {
+    private fun sendNotification(
+        remoteMessage: RemoteMessage,
+        channelId: String,
+        channelName: String
+    ) {
         // channel 설정
         val channelDescription = "$channelName FCM 채널"
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -86,8 +96,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // 인텐트 설정
         val intent = when (channelId) {
-            "894030886016" -> createMainActivityIntent(remoteMessage.data)
-            else -> createMainActivityIntent(remoteMessage.data)
+            "894030886016" -> createMainActivityIntent(
+                remoteMessage.data,
+                FragmentDestination.SKIN_FRAGMENT
+            )
+
+            else -> createMainActivityIntent(remoteMessage.data, FragmentDestination.SKIN_FRAGMENT)
         }
 
 
@@ -96,7 +110,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             this,
             uniId,
             intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
@@ -111,7 +125,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Android 최신버전 대응 (Android O 이상)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            val channel =
+                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
 
@@ -119,15 +134,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(uniId, notificationBuilder.build())
 
         // 이벤트 버스를 통해 알림을 전달
-        EventBus.getDefault().post(CallSnackBar(remoteMessage.notification?.title ?: "Unknown title"))
+        EventBus.getDefault()
+            .post(CallSnackBar(remoteMessage.notification?.title ?: "Unknown title"))
     }
+
     suspend fun getFirebaseToken(): String {
         val tokenTask = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
-                FirebaseMessaging.getInstance().token.addOnSuccessListener {
-                    Log.d("FCM", "token=${it}")
-                }
+            FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                Log.d("FCM", "token=${it}")
             }
+        }
         return tokenTask.await()
+    }
+
+    enum class FragmentDestination {
+        SKIN_FRAGMENT,
     }
 }
 

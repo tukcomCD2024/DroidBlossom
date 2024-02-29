@@ -48,6 +48,15 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
         initBottomNav()
         initFCM()
+        handleIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            setIntent(it)
+            handleIntent(it)
+        }
     }
 
     private fun initFCM(){
@@ -114,6 +123,19 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
+    private fun handleIntent(intent: Intent) {
+        val destination = intent.getStringExtra("fragmentDestination")
+        Log.d("어디로","어디로 가야하오 : $destination")
+
+        when (destination) {
+            MyFirebaseMessagingService.FragmentDestination.SKIN_FRAGMENT.name -> {
+                showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
+            }
+            else -> {
+
+            }
+        }
+    }
     companion object {
         fun goMain(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
