@@ -20,6 +20,8 @@ import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 @RequiredArgsConstructor
 public class FCMManager {
 
+    private static final String CAPSULE_SKIN_TOPIC_NAME = "capsuleSkin";
+
     private final FCMProperties fcmProperties;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
@@ -47,6 +49,7 @@ public class FCMManager {
             FirebaseMessaging.getInstance()
                 .send(
                     Message.builder()
+                        .setTopic(CAPSULE_SKIN_TOPIC_NAME)
                         .setNotification(
                             Notification.builder()
                                 .setTitle(title)
