@@ -84,7 +84,8 @@
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask">
+        </activity>
         <activity
             android:name=".presentation.ui.auth.AuthActivity"
             android:screenOrientation="portrait"
