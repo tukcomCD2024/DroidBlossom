@@ -191,6 +191,12 @@ class AuthViewModelImpl @Inject constructor(
         return true
     }
 
+    override fun clearPhoneNumber(){
+        viewModelScope.launch {
+            _phoneNumber.emit("")
+        }
+    }
+
     override fun submitPhoneNumber(){
         // 임시토큰 헤더에 넣고 해야함.
         viewModelScope.launch {

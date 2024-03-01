@@ -47,6 +47,8 @@ interface AuthViewModel {
     fun setHash(hash : String)
     fun submitPhoneNumber()
 
+    fun clearPhoneNumber()
+
     // Certification
     fun initTimer()
     fun startTimer()
