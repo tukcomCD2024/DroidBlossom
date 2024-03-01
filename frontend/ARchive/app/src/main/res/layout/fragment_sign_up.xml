@@ -5,6 +5,7 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.auth.AuthViewModel" />
@@ -13,7 +14,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".SignUpFragment">
+        tools:context=".SignUpFragment"
+        android:background="@color/main_bg_1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,22 +34,57 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.068" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/phoneNumberEditText"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/main_1"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:maxLength="13"
-                android:text="@={vm.phoneNumber}"
+                android:layout_height="68dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintVertical_bias="0.1178"
-                bind:applyPhoneNumberFormatting="@{true}">
+                app:layout_constraintVertical_bias="0.1178">
 
-                <requestFocus />
-            </com.google.android.material.textfield.TextInputEditText>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="20dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneNumberEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:maxLength="13"
+                        android:fontFamily="@font/suit_medium"
+                        android:textColor="@color/black"
+                        android:textSize="26sp"
+                        android:text="@={vm.phoneNumber}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/clearBtn"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        bind:applyPhoneNumberFormatting="@{true}"
+                        tools:text="010-2226-4657">
+
+                        <requestFocus />
+                    </com.google.android.material.textfield.TextInputEditText>
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/clearBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_close_silver"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:visibility="@{vm.phoneNumber.isEmpty() ? View.GONE : View.VISIBLE}" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/confirmBtn"
