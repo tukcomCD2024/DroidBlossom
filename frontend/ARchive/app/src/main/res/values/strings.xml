@@ -11,7 +11,7 @@
     <string name="kakaoLogin">카카오 로그인</string>
     <string name="googleLogin">Google 로그인</string>
     <string name="confirmation">확인</string>
-    <string name="signUpMessage">ARchive에 오신 것을\n환영합니다!</string>
+    <string name="signUpMessage">ARchive에 오신 것을\n환영해요!</string>
     <string name="signUpConfirmation">가입완료</string>
     <string name="search">검색</string>
     <string name="skinMakeHint">스킨 이름을 작성하세요</string>
