@@ -65,7 +65,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/certificationNumberEditText_1"
-                    style="@style/TextAppearance.App.h3"
+                    style="@style/TextAppearance.App.h1.suit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nextFocusDown="@id/certificationNumberEditText_2"
@@ -101,7 +101,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/certificationNumberEditText_2"
-                    style="@style/TextAppearance.App.h3"
+                    style="@style/TextAppearance.App.h1.suit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_constraintWidth_max="100dp"
@@ -136,7 +136,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/certificationNumberEditText_3"
-                    style="@style/TextAppearance.App.h3"
+                    style="@style/TextAppearance.App.h1.suit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@{vm.certificationNumber3.isEmpty() ? @drawable/capsule : @drawable/white_background}"
@@ -169,7 +169,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/certificationNumberEditText_4"
-                    style="@style/TextAppearance.App.h3"
+                    style="@style/TextAppearance.App.h1.suit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:imeOptions="actionDone"

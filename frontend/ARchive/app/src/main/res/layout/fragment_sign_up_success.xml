@@ -10,7 +10,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.auth.SignUpSuccessFragment">
+        tools:context=".presentation.ui.auth.SignUpSuccessFragment"
+        android:background="@color/main_bg_1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -45,29 +46,18 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/signUpSuccessMessage"
-                style="@style/TextAppearance.App.h1"
+                android:textAppearance="@style/TextAppearance.App.h1.suit"
+                android:fontFamily="@font/suit_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/signUpMessage"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logoImg"
                 app:layout_constraintVertical_bias="0.1538" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/TextAppearance.App.h4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/signUpConfirmation"
-                android:textColor="@color/gray_600"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUpSuccessMessage"
-                app:layout_constraintVertical_bias="0.0655" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

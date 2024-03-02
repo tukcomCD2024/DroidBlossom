@@ -58,16 +58,15 @@
                         android:inputType="phone"
                         android:maxLines="1"
                         android:maxLength="13"
-                        android:fontFamily="@font/suit_medium"
+                        style="@style/TextAppearance.App.h1.suit"
                         android:textColor="@color/black"
-                        android:textSize="26sp"
                         android:text="@={vm.phoneNumber}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/clearBtn"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         bind:applyPhoneNumberFormatting="@{true}"
-                        tools:text="010-2226-4657">
+                        tools:text="010-0000-0000">
 
                         <requestFocus />
                     </com.google.android.material.textfield.TextInputEditText>
