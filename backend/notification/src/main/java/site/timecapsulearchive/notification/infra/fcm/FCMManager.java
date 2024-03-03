@@ -21,6 +21,9 @@ import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 public class FCMManager {
 
     private static final String CAPSULE_SKIN_TOPIC_NAME = "capsuleSkin";
+    private static final String TEXT_DATA_NAME = "text";
+    private static final String TITLE_DATA_NAME = "title";
+    private static final String IMAGE_DATA_NAME = "imageUrl";
 
     private final FCMProperties fcmProperties;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
@@ -50,13 +53,9 @@ public class FCMManager {
                 .send(
                     Message.builder()
                         .setTopic(CAPSULE_SKIN_TOPIC_NAME)
-                        .setNotification(
-                            Notification.builder()
-                                .setTitle(title)
-                                .setBody(text)
-                                .setImage(s3PreSignedUrlManager.createS3PreSignedUrlForGet(skinUrl))
-                                .build()
-                        )
+                        .putData(TITLE_DATA_NAME, title)
+                        .putData(TEXT_DATA_NAME, text)
+                        .putData(IMAGE_DATA_NAME, s3PreSignedUrlManager.createS3PreSignedUrlForGet(skinUrl))
                         .setToken(fcmToken)
                         .build()
                 );
