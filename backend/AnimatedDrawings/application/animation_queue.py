@@ -16,6 +16,8 @@ from application.task.make_animation import MakeAnimation
 from application.task.save_capsule_skin import SaveCapsuleSkin
 from application.task.send_notification import SendNotification
 
+logger = logging.getLogger('animation_queue_controller')
+
 
 class AnimationQueueController:
     def __init__(self):
@@ -44,7 +46,7 @@ class AnimationQueueController:
         try:
             channel.start_consuming()
         except ChannelClosedError as e:
-            logging.info("커넥션 연결 오류")
+            logger.info("커넥션 연결 오류")
             raise e
         finally:
             channel.close()
@@ -64,7 +66,7 @@ class AnimationQueueController:
         :param header: 기본 정보
         :param body: queue로부터 넘어온 데이터
         """
-        logging.info('큐 메시지 처리 시작 %s', header.message_id)
+        logger.info('큐 메시지 처리 시작 %s', header.message_id)
         try:
             json_object = self.parse_json(body)
 
@@ -88,7 +90,7 @@ class AnimationQueueController:
 
             channel.basic_ack(delivery_tag=method.delivery_tag)
         except Exception as e:
-            logging.exception('메시지 처리 오류', e)
+            logger.exception('메시지 처리 오류', e)
             channel.basic_reject(delivery_tag=method.delivery_tag,
                                  requeue=False)
 
@@ -114,7 +116,7 @@ class AnimationQueueController:
             return json_object
 
         except (JSONDecodeError, KeyError, TypeError) as e:
-            logging.exception('json 파싱 오류', e)
+            logger.exception('json 파싱 오류', e)
             raise e
 
 
