@@ -5,6 +5,7 @@
     <style name="Widget.MyApp.FloatingActionButton.Material2" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="android:elevation">0dp</item>
     </style>
+
     <style name="Widget.MyApp.BottomNavigationView.Material2" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="itemTextAppearanceActive">@style/TextAppearance.App.caption3</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.App.caption3</item>
@@ -79,8 +80,9 @@
     <style name="NumberPickerTextAppearance">
         <item name="colorControlNormal">@color/Transparency</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:textColorSecondary">@color/gray_400</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="android:textColorHint">@color/gray_400</item>
+        <item name="android:cacheColorHint">@color/gray_400</item>
+        <item name="fontFamily">@font/suit_medium</item>
         <item name="android:editTextColor">@color/main_1</item>
     </style>
 </resources>

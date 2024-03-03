@@ -460,7 +460,7 @@
                                 android:layout_marginEnd="4dp"
                                 android:ellipsize="middle"
                                 android:maxLines="1"
-                                android:text="사진＆동영상  업로드"
+                                android:text="사진＆동영상 업로드"
                                 android:textAppearance="@style/TextAppearance.App.body2"
                                 android:textColor="@color/main_1"
                                 app:layout_constraintBottom_toBottomOf="parent"
