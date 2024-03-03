@@ -144,13 +144,21 @@
             android:backgroundTint="@color/main_1"
             android:onClick="@{()->vm.move2To3()}"
             android:text="적용하기"
-            android:textAppearance="@style/TextAppearance.App.button"
+            android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/white"
             app:circularflow_radiusInDP="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <View
+            app:layout_constraintTop_toTopOf="@id/nextBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/main_bg_1_alpha20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
