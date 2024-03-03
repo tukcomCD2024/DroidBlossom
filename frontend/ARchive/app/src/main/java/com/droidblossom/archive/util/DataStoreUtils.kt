@@ -28,7 +28,7 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
             preferences[ACCESS_TOKEN_KEY] = encryptedData.toBase64() + ":" + iv.toBase64()
         }
     }
-
+     
     suspend fun fetchAccessToken(): String {
         val preferences = context.dataStore.data.first()
         val combined = preferences[ACCESS_TOKEN_KEY] ?: return ""

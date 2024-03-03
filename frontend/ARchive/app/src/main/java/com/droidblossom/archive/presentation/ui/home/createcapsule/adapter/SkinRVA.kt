@@ -17,12 +17,18 @@ class SkinRVA( val SkinFlow: (CapsuleSkinSummary) -> Unit) :
     inner class ItemViewHolder(
         private val binding: ItemSkinBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("NotifyDataSetChanged")
+
+        //@SuppressLint("NotifyDataSetChanged")
         fun bind(data: CapsuleSkinSummary) {
             binding.item = data
             binding.root.setOnClickListener {
+                notifyItemChanged(currentList.indexOf(
+                    currentList.find {
+                        it.isClicked
+                    }
+                ))
                 SkinFlow(data)
-                notifyDataSetChanged()
+                notifyItemChanged(currentList.indexOf(data))
             }
         }
     }

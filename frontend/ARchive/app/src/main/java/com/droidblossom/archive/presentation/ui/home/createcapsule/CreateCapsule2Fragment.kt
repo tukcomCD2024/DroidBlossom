@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
@@ -109,7 +110,9 @@ class CreateCapsule2Fragment :
 
     private fun initRVA(){
         binding.recycleView.adapter = skinRVA
-        binding.recycleView.itemAnimator = null
+        val defaultItemAnimator = DefaultItemAnimator()
+        defaultItemAnimator.changeDuration = 100
+        binding.recycleView.itemAnimator = defaultItemAnimator
         binding.recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
