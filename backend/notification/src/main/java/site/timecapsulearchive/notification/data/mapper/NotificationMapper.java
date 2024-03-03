@@ -13,6 +13,7 @@ public class NotificationMapper {
         CapsuleSkinNotificationSendRequest request) {
         return CapsuleSkinNotificationSendDto.builder()
             .memberId(request.memberId())
+            .status(request.status())
             .skinName(request.skinName())
             .title(request.title())
             .text(request.text())
