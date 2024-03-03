@@ -6,6 +6,7 @@
     <data>
 
         <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel" />
@@ -39,13 +40,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <NumberPicker
-                android:numbersTextColor="@color/gray_400"
                 android:id="@+id/yearPicker"
                 android:layout_width="90dp"
                 android:layout_height="0dp"
                 android:layout_marginVertical="24dp"
                 android:layout_marginStart="17dp"
                 android:descendantFocusability="blocksDescendants"
+                android:numbersTextColor="@color/gray_400"
                 android:theme="@style/NumberPickerTextAppearance"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/monthPicker"

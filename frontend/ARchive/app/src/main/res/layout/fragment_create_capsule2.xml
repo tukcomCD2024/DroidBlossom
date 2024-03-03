@@ -5,7 +5,8 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel" />
@@ -29,18 +30,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
-            android:visibility="@{vm.isSearchOpen ? View.VISIBLE  : View.GONE}"
             android:id="@+id/searchOpenBtn"
             android:layout_width="0dp"
             android:layout_height="42dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
+            android:visibility="@{vm.isSearchOpen ? View.VISIBLE  : View.GONE}"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="21dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleT">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,30 +51,30 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/searchOpenEditT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="8dp"
                     android:background="@null"
+                    android:ellipsize="start"
+                    android:imeOptions="actionDone"
                     android:lines="1"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:imeOptions="actionDone"
                     android:textAppearance="@style/TextAppearance.App.body2"
-                    android:ellipsize="start"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/searchOpenBtnT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="검색"
-                    android:paddingVertical="8dp"
-                    android:paddingHorizontal="16dp"
                     android:layout_marginEnd="5dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="검색"
                     android:textAppearance="@style/TextAppearance.App.caption1"
                     android:textColor="@color/main_1"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -84,19 +85,19 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            tools:visibility="gone"
-            android:visibility="@{vm.isSearchOpen ? View.GONE  : View.VISIBLE}"
             android:id="@+id/searchBtn"
             android:layout_width="58dp"
             android:layout_height="34dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             android:onClick="@{()->vm.openSearchSkin()}"
+            android:visibility="@{vm.isSearchOpen ? View.GONE  : View.VISIBLE}"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="17dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleT">
+            app:layout_constraintTop_toBottomOf="@id/titleT"
+            tools:visibility="gone">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/searchBtnLayout"
@@ -121,17 +122,17 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleView"
             android:layout_width="0dp"
-            tools:listitem="@layout/item_skin"
-            tools:itemCount="30"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
             android:layout_height="0dp"
-            android:layout_marginTop="100dp"
             android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="100dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleT" />
+            app:layout_constraintTop_toBottomOf="@id/titleT"
+            app:spanCount="3"
+            tools:itemCount="30"
+            tools:listitem="@layout/item_skin" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/nextBtn"
@@ -141,8 +142,8 @@
             android:layout_marginBottom="@dimen/margin"
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
-            android:text="적용하기"
             android:onClick="@{()->vm.move2To3()}"
+            android:text="적용하기"
             android:textAppearance="@style/TextAppearance.App.button"
             android:textColor="@color/white"
             app:circularflow_radiusInDP="20dp"
