@@ -59,16 +59,23 @@ object DateUtils {
     val dataServerString : String
         get() = getDateString("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 
-    fun getDateLong(format: String?): Long {
-        val simpleFormat = getSimpleDateFormat(format)
-        return simpleFormat.format(date).toLong()
-    }
+        fun String.toDateLong() = getSimpleDateFormat(this).format(date).toLong()
 
-    val dateLong: Long
-        get() = getDateLong("yyyyMMddHHmmss")
-    val dateLongS: Long
-        get() = getDateLong("yyyyMMddHHmmssSSS")
+        val dateLong: Long
+            get() = "yyyyMMddHHmmss".toDateLong()
+        val dateLongS: Long
+            get() = "yyyyMMddHHmmssSSS".toDateLong()
+    /*
+        fun getDateLong(format: String?): Long {
+            val simpleFormat = getSimpleDateFormat(format)
+            return simpleFormat.format(date).toLong()
+        }
 
+        val dateLong: Long
+            get() = getDateLong("yyyyMMddHHmmss")
+        val dateLongS: Long
+            get() = getDateLong("yyyyMMddHHmmssSSS")
+    */
     fun getDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int): Date {
         val cal = GregorianCalendar(timeZone, Locale.KOREAN)
         cal[year, month - 1, day, hour, minute] = second
