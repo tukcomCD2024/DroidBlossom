@@ -25,9 +25,6 @@ public class NotificationService {
 
     @Transactional
     public void sendCapsuleSkinAlarm(CapsuleSkinNotificationSendDto dto) {
-        String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        fcmManager.send(dto.title(), dto.text(), dto.skinUrl(), fcmToken);
-
         NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
             CategoryName.CAPSULE_SKIN);
 
@@ -35,5 +32,10 @@ public class NotificationService {
             notificationCategory);
 
         notificationRepository.save(notification);
+
+        String fcmToken = memberRepository.findFCMToken(dto.memberId());
+        if (!fcmToken.isBlank()) {
+            fcmManager.send(dto.title(), dto.text(), dto.skinUrl(), dto.status(), fcmToken);
+        }
     }
 }

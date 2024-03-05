@@ -6,13 +6,13 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import site.timecapsulearchive.notification.entity.CapsuleSkinCreationStatus;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendableException;
 import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 
@@ -20,7 +20,10 @@ import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 @RequiredArgsConstructor
 public class FCMManager {
 
-    private static final String CAPSULE_SKIN_TOPIC_NAME = "capsuleSkin";
+    private static final String CAPSULE_SKIN_TOPIC_NAME = "status";
+    private static final String TEXT_DATA_NAME = "text";
+    private static final String TITLE_DATA_NAME = "title";
+    private static final String IMAGE_DATA_NAME = "imageUrl";
 
     private final FCMProperties fcmProperties;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
@@ -43,20 +46,17 @@ public class FCMManager {
         String title,
         String text,
         String skinUrl,
+        CapsuleSkinCreationStatus status,
         String fcmToken
     ) {
         try {
             FirebaseMessaging.getInstance()
                 .send(
                     Message.builder()
-                        .setTopic(CAPSULE_SKIN_TOPIC_NAME)
-                        .setNotification(
-                            Notification.builder()
-                                .setTitle(title)
-                                .setBody(text)
-                                .setImage(s3PreSignedUrlManager.createS3PreSignedUrlForGet(skinUrl))
-                                .build()
-                        )
+                        .putData(CAPSULE_SKIN_TOPIC_NAME, status.toString())
+                        .putData(TITLE_DATA_NAME, title)
+                        .putData(TEXT_DATA_NAME, text)
+                        .putData(IMAGE_DATA_NAME, s3PreSignedUrlManager.createS3PreSignedUrlForGet(skinUrl))
                         .setToken(fcmToken)
                         .build()
                 );
