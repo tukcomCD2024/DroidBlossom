@@ -12,8 +12,11 @@ from pika.spec import Basic, BasicProperties
 from application.config.queue_config import QueueConfig
 from application.model.motion import Motion
 from application.model.retarget import Retarget
-from application.tasks import make_animation
-from application.tasks import save_capsule_skin
+from application.task.make_animation import MakeAnimation
+from application.task.save_capsule_skin import SaveCapsuleSkin
+from application.task.send_notification import SendNotification
+
+logger = logging.getLogger('animation_queue_controller')
 
 
 class AnimationQueueController:
@@ -21,8 +24,12 @@ class AnimationQueueController:
         self.queue_config = QueueConfig()
         self.require_keys = ['memberId', 'memberName', 'skinName', 'imageUrl',
                              'retarget', 'motionName']
-        self.celery_work_queue_name = 'makeAnimationTask.queue'
-        self.celery_success_queue_name = 'saveCapsuleSkinTasks.queue'
+        self.celery_work_queue_name = 'makeAnimation.queue'
+        self.celery_success_queue_name = 'saveCapsuleSkin.queue'
+        self.celery_send_notification_queue_name = 'sendNotification.queue'
+        self.make_animation_task = MakeAnimation()
+        self.save_capsule_skin_task = SaveCapsuleSkin()
+        self.send_notification_task = SendNotification()
 
     def run(self):
         # rabbitmq 채널 연결
@@ -39,7 +46,7 @@ class AnimationQueueController:
         try:
             channel.start_consuming()
         except ChannelClosedError as e:
-            logging.info("커넥션 연결 오류")
+            logger.info("커넥션 연결 오류")
             raise e
         finally:
             channel.close()
@@ -59,24 +66,31 @@ class AnimationQueueController:
         :param header: 기본 정보
         :param body: queue로부터 넘어온 데이터
         """
-        logging.info('큐 메시지 처리 시작 %s', header.message_id)
+        logger.info('큐 메시지 처리 시작 %s', header.message_id)
         try:
             json_object = self.parse_json(body)
 
             filename = '%s.gif' % uuid.uuid4()
 
             chain(
-                make_animation.s(json_object, filename).set(
-                    queue=self.celery_work_queue_name),
-                save_capsule_skin.s(json_object, filename).set(
-                    queue=self.celery_success_queue_name)
+                self.make_animation_task.s(input_data=json_object,
+                                           filename=filename)
+                .set(queue=self.celery_work_queue_name),
+
+                self.save_capsule_skin_task.s(input_data=json_object,
+                                              filename=filename)
+                .set(queue=self.celery_success_queue_name),
+
+                self.send_notification_task.s(input_data=json_object,
+                                              filename=filename)
+                .set(queue=self.celery_send_notification_queue_name)
             ).apply_async(
                 ignore_result=True
             )
 
             channel.basic_ack(delivery_tag=method.delivery_tag)
         except Exception as e:
-            logging.exception('메시지 처리 오류', e)
+            logger.exception('메시지 처리 오류', e)
             channel.basic_reject(delivery_tag=method.delivery_tag,
                                  requeue=False)
 
@@ -95,18 +109,15 @@ class AnimationQueueController:
             json_object['retarget'] = Retarget[json_object['retarget']].value
             json_object['motionName'] = Motion[json_object['motionName']].value
 
-            self.valid_json_object(json_object)
+            for key in self.require_keys:
+                if key not in json_object:
+                    raise KeyError
 
             return json_object
 
         except (JSONDecodeError, KeyError, TypeError) as e:
-            logging.exception('json 파싱 오류', e)
+            logger.exception('json 파싱 오류', e)
             raise e
-
-    def valid_json_object(self, json_object: dict) -> None:
-        for key in self.require_keys:
-            if key not in json_object:
-                raise KeyError
 
 
 if __name__ == '__main__':
