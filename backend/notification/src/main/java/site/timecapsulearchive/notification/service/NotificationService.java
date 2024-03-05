@@ -2,6 +2,7 @@ package site.timecapsulearchive.notification.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSendDto;
 import site.timecapsulearchive.notification.data.mapper.NotificationMapper;
 import site.timecapsulearchive.notification.entity.CategoryName;
@@ -22,6 +23,7 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final NotificationMapper notificationMapper;
 
+    @Transactional
     public void sendCapsuleSkinAlarm(CapsuleSkinNotificationSendDto dto) {
         NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
             CategoryName.CAPSULE_SKIN);
@@ -32,6 +34,8 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        fcmManager.send(dto.title(), dto.text(), dto.skinUrl(), fcmToken);
+        if (!fcmToken.isBlank()) {
+            fcmManager.send(dto.title(), dto.text(), dto.skinUrl(), dto.status(), fcmToken);
+        }
     }
 }
