@@ -3,10 +3,12 @@ package com.droidblossom.archive.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.exifinterface.media.ExifInterface
 import com.google.ar.core.dependencies.e
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -39,14 +41,8 @@ object FileUtils {
     }
 
     fun resizeBitmapFromUri(context: Context, uri: Uri, targetFilename: String): File? {
-        val originalFile = File(uri.path)
-        val originalFileSize = originalFile.length()
-
         val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-
-        val options = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeStream(inputStream, null, options)
         inputStream.close()
 
@@ -55,26 +51,48 @@ object FileUtils {
             sampleSize *= 2
         }
 
-        val resizeOptions = BitmapFactory.Options().apply {
-            inSampleSize = sampleSize
-        }
+        val resizeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
         val resizedInputStream = context.contentResolver.openInputStream(uri) ?: return null
-        val resizedBitmap = BitmapFactory.decodeStream(resizedInputStream, null, resizeOptions)
+        var resizedBitmap = BitmapFactory.decodeStream(resizedInputStream, null, resizeOptions)
         resizedInputStream.close()
 
+        val outputFile = File(context.cacheDir, "$targetFilename.jpeg")
+
         resizedBitmap?.let {
-            val outputFile = File(context.cacheDir, "$targetFilename.jpeg")
+            val rotation = getRotation(context, uri)
+            val rotatedBitmap = rotateBitmap(it, rotation)
+
             FileOutputStream(outputFile).use { out ->
-                it.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
             }
 
-//            val resizedFileSize = outputFile.length()
-//            Log.d("ResizeBitmap", "Resized file size: $resizedFileSize bytes")
-
-            return outputFile
+            // 이 부분을 추가하여 메모리를 관리합니다.
+            it.recycle() // 원본 비트맵 메모리 해제
+            rotatedBitmap.recycle() // 회전된 비트맵 메모리 해제
         }
 
-        return null
+        return outputFile.takeIf { it.exists() }
+    }
+
+    fun getRotation(context: Context, photoUri: Uri): Int {
+        val inputStream = context.contentResolver.openInputStream(photoUri) ?: return 0
+        val exifInterface = ExifInterface(inputStream)
+        val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        inputStream.close()
+
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+    }
+
+    fun rotateBitmap(bitmap: Bitmap, degrees: Int): Bitmap {
+        if (degrees == 0) return bitmap
+
+        val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     fun convertUriToVideoFile(context: Context, uri: Uri, targetFilename: String): File? {
