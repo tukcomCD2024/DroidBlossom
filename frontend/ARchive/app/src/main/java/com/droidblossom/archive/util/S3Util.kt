@@ -67,7 +67,7 @@ class S3Util @Inject constructor(private val context: Context) {
     }
 
     suspend fun uploadImageWithPresignedUrl(file: File, signedUrl: String) = withContext(Dispatchers.IO) {
-        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val requestBody = file.asRequestBody("image/png".toMediaTypeOrNull())
 
         val request = Request.Builder()
             .url(signedUrl)

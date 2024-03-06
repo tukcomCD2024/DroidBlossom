@@ -1,14 +1,18 @@
 package com.droidblossom.archive.util
 
+import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.ar.core.dependencies.e
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -56,19 +60,18 @@ object FileUtils {
         var resizedBitmap = BitmapFactory.decodeStream(resizedInputStream, null, resizeOptions)
         resizedInputStream.close()
 
-        val outputFile = File(context.cacheDir, "$targetFilename.jpeg")
+        val outputFile = File(context.cacheDir, "$targetFilename.png")
 
         resizedBitmap?.let {
             val rotation = getRotation(context, uri)
             val rotatedBitmap = rotateBitmap(it, rotation)
 
             FileOutputStream(outputFile).use { out ->
-                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
 
-            // 이 부분을 추가하여 메모리를 관리합니다.
-            it.recycle() // 원본 비트맵 메모리 해제
-            rotatedBitmap.recycle() // 회전된 비트맵 메모리 해제
+            it.recycle()
+            rotatedBitmap.recycle()
         }
 
         return outputFile.takeIf { it.exists() }
