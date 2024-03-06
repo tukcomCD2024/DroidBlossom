@@ -48,12 +48,12 @@ public class S3PreSignedUrlManager {
             getPreSignedImageUrls(
                 dto,
                 fileName -> createS3PreSignedUrlForPut(memberId, dto.directory(), fileName,
-                    IMAGE_CONTENT_TYPE)
+                    IMAGE_CONTENT_TYPE, bucketName)
             ),
             getPreSignedVideoUrls(
                 dto,
                 fileName -> createS3PreSignedUrlForPut(memberId, dto.directory(), fileName,
-                    VIDEO_CONTENT_TYPE)
+                    VIDEO_CONTENT_TYPE, temporaryBucketName)
             )
         );
     }
@@ -90,14 +90,15 @@ public class S3PreSignedUrlManager {
         final Long memberId,
         final String directory,
         final String fileName,
-        final String contentType
+        final String contentType,
+        final String bucketName
     ) {
         final String newFileName = s3UrlGenerator.generateFileName(memberId, directory, fileName);
 
         final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
             .signatureDuration(Duration.ofMinutes(PRE_SIGNED_URL_EXPIRATION_TIME))
             .putObjectRequest(builder -> builder
-                .bucket(temporaryBucketName)
+                .bucket(bucketName)
                 .key(newFileName)
                 .contentType(contentType)
                 .build()
