@@ -32,7 +32,49 @@ object FileUtils {
             }
         }
 
+//        val fileSize = outputFile.length()
+//        Log.d("ConvertUriToJpeg", "File size: $fileSize bytes")
+
         return if (outputFile.exists()) outputFile else null
+    }
+
+    fun resizeBitmapFromUri(context: Context, uri: Uri, targetFilename: String): File? {
+        val originalFile = File(uri.path)
+        val originalFileSize = originalFile.length()
+
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+
+        val options = BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        BitmapFactory.decodeStream(inputStream, null, options)
+        inputStream.close()
+
+        var sampleSize = 1
+        while (options.outWidth / sampleSize > 1024 || options.outHeight / sampleSize > 1024) {
+            sampleSize *= 2
+        }
+
+        val resizeOptions = BitmapFactory.Options().apply {
+            inSampleSize = sampleSize
+        }
+        val resizedInputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val resizedBitmap = BitmapFactory.decodeStream(resizedInputStream, null, resizeOptions)
+        resizedInputStream.close()
+
+        resizedBitmap?.let {
+            val outputFile = File(context.cacheDir, "$targetFilename.jpeg")
+            FileOutputStream(outputFile).use { out ->
+                it.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+
+//            val resizedFileSize = outputFile.length()
+//            Log.d("ResizeBitmap", "Resized file size: $resizedFileSize bytes")
+
+            return outputFile
+        }
+
+        return null
     }
 
     fun convertUriToVideoFile(context: Context, uri: Uri, targetFilename: String): File? {
