@@ -18,7 +18,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 public class S3PreSignedUrlManager {
 
     private static final long PRE_SIGNED_URL_EXPIRATION_TIME = 10;
-    private static final String IMAGE_CONTENT_TYPE = "image/jpeg";
+    private static final String IMAGE_CONTENT_TYPE = "image/png";
     private static final String VIDEO_CONTENT_TYPE = "video/mp4";
 
     private final S3UrlGenerator s3UrlGenerator;

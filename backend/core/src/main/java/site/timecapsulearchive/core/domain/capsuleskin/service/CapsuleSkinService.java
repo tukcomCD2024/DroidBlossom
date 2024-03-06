@@ -17,6 +17,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class CapsuleSkinService {
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
     private final CapsuleSkinMessageManager capsuleSkinMessageManager;
     private final MemberRepository memberRepository;
+    private final NotificationManager notificationManager;
     private final CapsuleSkinMapper capsuleSkinMapper;
 
     public CapsuleSkinsSliceResponse findCapsuleSkinSliceByCreatedAtAndMemberId(
@@ -53,6 +55,8 @@ public class CapsuleSkinService {
             CapsuleSkin capsuleSkin = capsuleSkinMapper.createDtoToEntity(dto, foundMember);
 
             capsuleSkinRepository.save(capsuleSkin);
+
+            notificationManager.sendCreatedSkinMessage(memberId, dto);
             return CapsuleSkinStatusResponse.success();
         }
 

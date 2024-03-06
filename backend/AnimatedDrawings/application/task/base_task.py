@@ -15,7 +15,7 @@ class LogErrorsTask(Task):
     retry_backoff = True
     retry_backoff_max = 700
     retry_jitter = False
-    notification_server_url = 'http://localhost:9090/api/notification/capsule_skin/send'
+    notification_server_url = 'https://notification.archive-timecapsule.kro.kr/api/notification/capsule_skin/send'
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.error('태스크 처리 실패 %s', task_id)
