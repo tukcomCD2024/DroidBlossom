@@ -42,7 +42,7 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
         if (uri != null){
-            viewModel.skinImgUri.value = FileUtils.resizeUri(requireContext(),uri,1024) ?: uri
+            viewModel.skinImgUri.value = uri
         }else{
             Log.d("포토", "No Media selected")
         }
@@ -105,9 +105,10 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                     val currentTime = dateFormat.format(Date())
 
                     CoroutineScope(Dispatchers.IO).launch{
-                        val skinImgFilesDeferred = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        //val skinImgFilesDeferred = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        //val skinImgFilesDeferredd = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        val skinImgFilesDeferred = FileUtils.resizeBitmapFromUri(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
                         viewModel.setFile(skinImgFilesDeferred!!)
-
                         viewModel.makeSkin()
 
                     }
