@@ -42,7 +42,7 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
         if (uri != null){
-            viewModel.skinImgUri.value = uri
+            viewModel.skinImgUri.value = FileUtils.resizeUri(requireContext(),uri,1024) ?: uri
         }else{
             Log.d("포토", "No Media selected")
         }
