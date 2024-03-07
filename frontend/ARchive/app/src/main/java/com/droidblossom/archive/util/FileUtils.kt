@@ -1,19 +1,16 @@
 package com.droidblossom.archive.util
 
-import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
-import com.arthenica.mobileffmpeg.FFmpeg
-import com.google.ar.core.dependencies.e
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -44,40 +41,39 @@ object FileUtils {
         return if (outputFile.exists()) outputFile else null
     }
 
-    fun resizeBitmapFromUri(context: Context, uri: Uri, targetFilename: String): File? {
-        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeStream(inputStream, null, options)
-        inputStream.close()
+    suspend fun resizeBitmapFromUri(context: Context, uri: Uri, targetFilename: String): File? = withContext(Dispatchers.IO) {
+        context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeStream(inputStream, null, options)
 
-        var sampleSize = 1
-        while (options.outWidth / sampleSize > 1024 || options.outHeight / sampleSize > 1024) {
-            sampleSize *= 2
-        }
-
-        val resizeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
-        val resizedInputStream = context.contentResolver.openInputStream(uri) ?: return null
-        var resizedBitmap = BitmapFactory.decodeStream(resizedInputStream, null, resizeOptions)
-        resizedInputStream.close()
-
-        val outputFile = File(context.cacheDir, "$targetFilename.png")
-
-        resizedBitmap?.let {
-            val rotation = getRotation(context, uri)
-            val rotatedBitmap = rotateBitmap(it, rotation)
-
-            FileOutputStream(outputFile).use { out ->
-                rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            var sampleSize = 1
+            while (options.outWidth / sampleSize > 1024 || options.outHeight / sampleSize > 1024) {
+                sampleSize *= 2
             }
 
-            it.recycle()
-            rotatedBitmap.recycle()
-        }
+            val resizeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+            val resizedBitmap = context.contentResolver.openInputStream(uri)?.use { resizedInputStream ->
+                BitmapFactory.decodeStream(resizedInputStream, null, resizeOptions)
+            }
 
-        return outputFile.takeIf { it.exists() }
+            val outputFile = File(context.cacheDir, "$targetFilename.png")
+            resizedBitmap?.let { bitmap ->
+                val rotation = getRotation(context, uri)
+                val rotatedBitmap = rotateBitmap(bitmap, rotation)
+
+                FileOutputStream(outputFile).use { out ->
+                    rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                }
+
+                bitmap.recycle()
+                rotatedBitmap.recycle()
+            }
+
+            return@withContext outputFile.takeIf { it.exists() }
+        }
     }
 
-    fun getRotation(context: Context, photoUri: Uri): Int {
+    private fun getRotation(context: Context, photoUri: Uri): Int {
         val inputStream = context.contentResolver.openInputStream(photoUri) ?: return 0
         val exifInterface = ExifInterface(inputStream)
         val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
@@ -91,30 +87,29 @@ object FileUtils {
         }
     }
 
-    fun rotateBitmap(bitmap: Bitmap, degrees: Int): Bitmap {
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Int): Bitmap {
         if (degrees == 0) return bitmap
 
         val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    fun convertUriToVideoFile(context: Context, uri: Uri, targetFilename: String): File? {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+    suspend fun convertUriToVideoFile(context: Context, uri: Uri, targetFilename: String): File? = withContext(Dispatchers.IO) {
         val outputFile = File(context.cacheDir, "$targetFilename.mp4")
 
-        inputStream?.use { input ->
-            FileOutputStream(outputFile).use { output ->
+        context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            FileOutputStream(outputFile).use { fileOutputStream ->
                 val buffer = ByteArray(8 * 1024) // 8KB buffer size
                 while (true) {
-                    val byteCount = input.read(buffer)
+                    val byteCount = inputStream.read(buffer)
                     if (byteCount < 0) break
-                    output.write(buffer, 0, byteCount)
+                    fileOutputStream.write(buffer, 0, byteCount)
                 }
-                output.flush()
+                fileOutputStream.flush()
             }
         }
 
-        return if (outputFile.exists()) outputFile else null
+        return@withContext if (outputFile.exists()) outputFile else null
     }
 
     fun getWebVideoThumbnail(uri: Uri): Bitmap? {
