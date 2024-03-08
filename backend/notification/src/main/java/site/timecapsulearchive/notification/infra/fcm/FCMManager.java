@@ -61,7 +61,7 @@ public class FCMManager {
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendableException("메시지를 보낼 수 없습니다.");
+            throw new MessageNotSendableException(e, e.getMessagingErrorCode().name());
         }
     }
 }
