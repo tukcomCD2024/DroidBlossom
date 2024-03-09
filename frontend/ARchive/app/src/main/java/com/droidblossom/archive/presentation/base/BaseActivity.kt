@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.droidblossom.archive.presentation.snack.CallSnackBar
+import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -40,9 +42,11 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun printId(event: CallSnackBar) {
+    fun printId(event: Intent) {
         // 스낵바 호출로 바꾸면 될듯?
-        showToastMessage(event.id)
+        binding.root.let { rootView ->
+            HomeSnackBarSmall(rootView).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
