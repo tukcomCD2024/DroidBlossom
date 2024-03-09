@@ -5,6 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -22,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
+import java.net.URL
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -91,69 +94,56 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         return intent
     }
 
-    private fun sendNotification(
-        remoteMessage: RemoteMessage,
-        channelId: String,
-        channelName: String
-    ) {
-        // channel 설정
-        val channelDescription = "$channelName FCM 채널"
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(channelId, channelName, importance).apply {
-                description = channelDescription
+    private fun sendNotification(remoteMessage: RemoteMessage, channelId: String, channelName: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val bigPicture: Bitmap? = try {
+                remoteMessage.data["imageUrl"]?.let { imageUrl ->
+                    val url = URL(imageUrl)
+                    BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
             }
-            notificationManager.createNotificationChannel(channel)
+
+            withContext(Dispatchers.Main) {
+                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val uniId: Int = (System.currentTimeMillis() / 7).toInt()
+
+                val intent = createMainActivityIntent(remoteMessage.data, FragmentDestination.SKIN_FRAGMENT)
+                val pendingIntent = PendingIntent.getActivity(
+                    this@MyFirebaseMessagingService,
+                    uniId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                )
+
+                val notificationBuilder = NotificationCompat.Builder(this@MyFirebaseMessagingService, channelId).apply {
+                    priority = NotificationCompat.PRIORITY_HIGH
+                    setSmallIcon(R.drawable.app_symbol)
+                    setContentTitle(remoteMessage.data["title"])
+                    setContentText(remoteMessage.data["text"])
+                    setAutoCancel(true)
+                    setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    setContentIntent(pendingIntent)
+
+                    bigPicture?.let {
+                        setStyle(NotificationCompat.BigPictureStyle().bigPicture(it))
+                    }
+                }
+
+                // Android 최신버전 대응 (Android O 이상)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel =
+                        NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+                    notificationManager.createNotificationChannel(channel)
+                }
+
+                notificationManager.notify(uniId, notificationBuilder.build())
+                EventBus.getDefault().post(intent)
+            }
         }
-
-        val uniId: Int = (System.currentTimeMillis() / 7).toInt()
-
-        // 인텐트 설정
-        val intent = when (channelId) {
-            FcmTopic.CAPSULE_SKIN.toString() -> createMainActivityIntent(
-                remoteMessage.data,
-                FragmentDestination.SKIN_FRAGMENT
-            )
-
-            else -> createMainActivityIntent(remoteMessage.data, FragmentDestination.SKIN_FRAGMENT)
-        }
-
-
-        // PendingIntent 설정
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            uniId,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
-
-        val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
-            priority = NotificationCompat.PRIORITY_HIGH // 중요도 (HIGH: 상단바 표시 가능)
-            setSmallIcon(R.drawable.app_symbol)
-            setContentTitle(remoteMessage.data["title"]) // 제목
-            setContentText(remoteMessage.data["text"])
-            setAutoCancel(true) // 알람클릭시 삭제여부
-            setSound(soundUri)  // 알림 소리
-            setContentIntent(pendingIntent) // 알림 실행 시 Intent
-        }
-
-        // Android 최신버전 대응 (Android O 이상)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        // 알림 전송
-        notificationManager.notify(uniId, notificationBuilder.build())
-
-        // 이벤트 버스를 통해 알림을 전달
-        EventBus.getDefault().post(intent)
     }
-
     suspend fun getFirebaseToken(): String {
         val tokenTask = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
             FirebaseMessaging.getInstance().token.addOnSuccessListener {
