@@ -4,6 +4,7 @@ import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_
 import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_VALUE_ERROR;
 import static site.timecapsulearchive.core.global.error.ErrorCode.INTERNAL_SERVER_ERROR;
 import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_NOT_FOUND_ERROR;
+import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR;
 
 import jakarta.transaction.TransactionalException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
@@ -84,6 +86,21 @@ public class GlobalExceptionHandler {
         final ErrorResponse errorResponse = ErrorResponse.parameter(
             REQUEST_PARAMETER_NOT_FOUND_ERROR,
             e.getParameterName());
+
+        return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
+        MethodArgumentTypeMismatchException e
+    ) {
+        log.warn(e.getMessage(), e);
+
+        final ErrorResponse errorResponse = ErrorResponse.type(
+            REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR,
+            e.getParameter().getParameterName()
+        );
 
         return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
             .body(errorResponse);

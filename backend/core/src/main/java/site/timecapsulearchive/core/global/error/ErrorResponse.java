@@ -45,12 +45,26 @@ public record ErrorResponse(
             List.of(Error.parameter(parameterName))
         );
     }
+    
+    public static ErrorResponse type(
+        final ErrorCode errorCode,
+        final String parameterName
+    ) {
+        return new ErrorResponse(
+            errorCode.getCode(),
+            errorCode.getMessage(),
+            List.of(Error.type(parameterName))
+        );
+    }
 
     public record Error(
         String field,
         String value,
         String reason
     ) {
+        public static Error type(final String parameterName) {
+            return new Error(parameterName, null, "입력 파라미터의 타입이 올바르지 않습니다.");
+        }
 
         public static Error parameter(final String parameterName) {
             return new Error(parameterName, null, "필수 입력 파라미터를 포함하지 않았습니다.");
