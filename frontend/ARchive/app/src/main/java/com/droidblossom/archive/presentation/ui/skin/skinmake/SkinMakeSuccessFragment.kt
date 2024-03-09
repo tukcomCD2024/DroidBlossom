@@ -34,7 +34,7 @@ class SkinMakeSuccessFragment : BaseFragment<SkinMakeViewModelImpl,FragmentSkinM
         initView()
 
         lifecycleScope.launch {
-            delay(2500)
+            delay(2000)
             activity?.finish()
         }
     }
