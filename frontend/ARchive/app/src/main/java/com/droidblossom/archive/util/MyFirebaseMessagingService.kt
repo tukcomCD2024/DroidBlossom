@@ -80,14 +80,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun createMainActivityIntent(
         data: Map<String, String>,
-        destination: FragmentDestination? = null
     ): Intent {
         val intent = Intent(this, MainActivity::class.java)
         data.forEach { (key, value) ->
             intent.putExtra(key, value)
         }
-        destination?.let {
-            intent.putExtra("fragmentDestination", it.name)
+        when(data["topic"]){
+            FcmTopic.CAPSULE_SKIN.name -> {
+                intent.putExtra("fragmentDestination", FragmentDestination.SKIN_FRAGMENT.name)
+            }
+            else -> {
+
+            }
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -110,7 +114,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val uniId: Int = (System.currentTimeMillis() / 7).toInt()
 
-                val intent = createMainActivityIntent(remoteMessage.data, FragmentDestination.SKIN_FRAGMENT)
+                val intent = createMainActivityIntent(remoteMessage.data)
                 val pendingIntent = PendingIntent.getActivity(
                     this@MyFirebaseMessagingService,
                     uniId,
@@ -154,7 +158,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     enum class FragmentDestination {
-        SKIN_FRAGMENT,
+        SKIN_FRAGMENT
     }
     enum class  FcmTopic{
         CAPSULE_SKIN
