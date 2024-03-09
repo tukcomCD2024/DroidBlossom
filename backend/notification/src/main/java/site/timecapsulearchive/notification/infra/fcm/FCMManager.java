@@ -12,7 +12,9 @@ import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.notification.entity.CapsuleSkinCreationStatus;
+import site.timecapsulearchive.notification.entity.NotificationStatus;
+import site.timecapsulearchive.notification.entity.CategoryName;
+import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendableException;
 import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 
@@ -20,7 +22,8 @@ import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 @RequiredArgsConstructor
 public class FCMManager {
 
-    private static final String CAPSULE_SKIN_TOPIC_NAME = "status";
+    private static final String TOPIC_DATA_NAME = "topic";
+    private static final String STATUS_DATA_NAME = "status";
     private static final String TEXT_DATA_NAME = "text";
     private static final String TITLE_DATA_NAME = "title";
     private static final String IMAGE_DATA_NAME = "imageUrl";
@@ -43,25 +46,24 @@ public class FCMManager {
     }
 
     public void send(
-        String title,
-        String text,
-        String skinUrl,
-        CapsuleSkinCreationStatus status,
+        Notification notification,
+        CategoryName categoryName,
         String fcmToken
     ) {
         try {
             FirebaseMessaging.getInstance()
                 .send(
                     Message.builder()
-                        .putData(CAPSULE_SKIN_TOPIC_NAME, status.toString())
-                        .putData(TITLE_DATA_NAME, title)
-                        .putData(TEXT_DATA_NAME, text)
-                        .putData(IMAGE_DATA_NAME, s3PreSignedUrlManager.createS3PreSignedUrlForGet(skinUrl))
+                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
+                        .putData(STATUS_DATA_NAME, String.valueOf(notification.getStatus()))
+                        .putData(TITLE_DATA_NAME, notification.getTitle())
+                        .putData(TEXT_DATA_NAME, notification.getText())
+                        .putData(IMAGE_DATA_NAME, s3PreSignedUrlManager.createS3PreSignedUrlForGet(notification.getImageUrl()))
                         .setToken(fcmToken)
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendableException(e, e.getMessagingErrorCode().name());
+            throw new MessageNotSendableException(e);
         }
     }
 }

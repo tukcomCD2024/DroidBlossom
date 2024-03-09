@@ -13,7 +13,7 @@ public class NotificationMapper {
             memberId,
             "SUCCESS_MAKE_CAPSULE_SKIN",
             dto.skinName(),
-            "캡슐, 스킨 생성이 완료되었습니다",
+            "캡슐 스킨 생성이 완료되었습니다",
             dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!",
             dto.imageUrl()
         );

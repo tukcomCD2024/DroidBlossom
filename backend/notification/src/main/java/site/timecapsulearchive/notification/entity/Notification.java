@@ -2,6 +2,8 @@ package site.timecapsulearchive.notification.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,13 +40,17 @@ public class Notification extends BaseEntity {
     @Column(name = "member_id")
     private Long memberId;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_category_id", nullable = false)
     private NotificationCategory notificationCategory;
 
     @Builder
     private Notification(String title, String text, String imageUrl, Long memberId,
-        NotificationCategory notificationCategory) {
+        NotificationStatus status, NotificationCategory notificationCategory) {
         this.title = title;
         this.text = text;
         this.imageUrl = imageUrl;

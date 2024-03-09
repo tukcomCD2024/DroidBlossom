@@ -2,7 +2,7 @@ package site.timecapsulearchive.notification.data.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import site.timecapsulearchive.notification.entity.CapsuleSkinCreationStatus;
+import site.timecapsulearchive.notification.entity.NotificationStatus;
 
 public record CapsuleSkinNotificationSendRequest(
 
@@ -10,7 +10,7 @@ public record CapsuleSkinNotificationSendRequest(
     Long memberId,
 
     @NotNull
-    CapsuleSkinCreationStatus status,
+    NotificationStatus status,
 
     @NotBlank
     String skinName,
