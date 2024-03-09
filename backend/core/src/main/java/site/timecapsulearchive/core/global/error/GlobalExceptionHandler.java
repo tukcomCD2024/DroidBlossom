@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleGlobalException(final Exception e) {
         log.error(e.getMessage(), e);
 
-        final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INTERNAL_SERVER_ERROR);
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR.getStatus())
             .body(errorResponse);
     }
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage(), e);
 
         final ErrorCode errorCode = e.getErrorCode();
-        final ErrorResponse errorResponse = ErrorResponse.create(errorCode);
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        final ErrorResponse response = ErrorResponse.create(INPUT_INVALID_VALUE_ERROR,
+        final ErrorResponse response = ErrorResponse.ofBindingResult(INPUT_INVALID_VALUE_ERROR,
             e.getBindingResult());
         return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
             .body(response);
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        final ErrorResponse response = ErrorResponse.create(INPUT_INVALID_TYPE_ERROR);
+        final ErrorResponse response = ErrorResponse.fromErrorCode(INPUT_INVALID_TYPE_ERROR);
         return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
             .body(response);
     }
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
         log.warn(e.getMessage(), e);
 
         final ErrorCode errorCode = e.getErrorCode();
-        final ErrorResponse response = ErrorResponse.create(errorCode);
+        final ErrorResponse response = ErrorResponse.fromErrorCode(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(response);
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        final ErrorResponse errorResponse = ErrorResponse.parameter(
+        final ErrorResponse errorResponse = ErrorResponse.fromParameter(
             REQUEST_PARAMETER_NOT_FOUND_ERROR,
             e.getParameterName());
 
@@ -96,10 +96,11 @@ public class GlobalExceptionHandler {
         MethodArgumentTypeMismatchException e
     ) {
         log.warn(e.getMessage(), e);
-
-        final ErrorResponse errorResponse = ErrorResponse.type(
+        
+        final ErrorResponse errorResponse = ErrorResponse.fromType(
             REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR,
-            e.getParameter().getParameterName()
+            e.getParameter().getParameterName(),
+            String.valueOf(e.getValue())
         );
 
         return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
@@ -113,7 +114,7 @@ public class GlobalExceptionHandler {
         log.warn(e.getMessage(), e);
 
         ErrorCode errorCode = INPUT_INVALID_VALUE_ERROR;
-        final ErrorResponse errorResponse = ErrorResponse.create(errorCode);
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);
@@ -124,7 +125,7 @@ public class GlobalExceptionHandler {
         log.warn(e.getMessage(), e);
 
         ErrorCode errorCode = INTERNAL_SERVER_ERROR;
-        final ErrorResponse errorResponse = ErrorResponse.create(errorCode);
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);
