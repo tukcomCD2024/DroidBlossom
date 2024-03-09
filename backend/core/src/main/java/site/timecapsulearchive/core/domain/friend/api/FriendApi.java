@@ -10,15 +10,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsPageResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface FriendApi {
 
@@ -36,8 +35,8 @@ public interface FriendApi {
     })
     @PostMapping(value = "/friends/accept-request")
     ResponseEntity<Void> acceptFriendRequest(
-        @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "friend_id") Long friendId
+        @Parameter(in = ParameterIn.QUERY, required = true)
+        @RequestParam(value = "friend_id") Long friendId
     );
 
 
@@ -49,14 +48,15 @@ public interface FriendApi {
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "204",
+            responseCode = "200",
             description = "처리 완료"
         )
     })
-    @DeleteMapping(value = "/friends/{friend_id}")
-    ResponseEntity<Void> deleteFriend(
+    ResponseEntity<ApiSpec<String>> deleteFriend(
+        Long memberId,
+
         @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema())
-        @PathVariable("friend_id") Long friendId
+        Long friendId
     );
 
 
