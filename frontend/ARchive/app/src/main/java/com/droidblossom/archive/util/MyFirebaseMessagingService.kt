@@ -18,6 +18,7 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -42,24 +43,37 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message data : ${remoteMessage.data}")
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
-        when (remoteMessage.from) {
-            // 스킨 생성 알림 - 서버에서 아직 안나옴 : topic1
-            "894030886016" -> {
-                handle894030886016Notification(remoteMessage)
+        if (remoteMessage.data.isNotEmpty()){
+            CoroutineScope(Dispatchers.IO).launch {
+                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
+
+                if (notificationsEnabled) {
+                    handleNotification(remoteMessage)
+                } else {
+                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
+                }
             }
-            else -> {
-                handleDefaultNotification(remoteMessage)
-            }
+        }else{
+            // 데이터 메시지 비어있음
+            Log.d(TAG, "메시지를 수신하지 못했습니다.")
         }
+
+
     }
 
-    private fun handle894030886016Notification(remoteMessage: RemoteMessage) {
-        sendNotification(remoteMessage, "ARchiveChannelId1", "894030886016")
+    private fun handleNotification(remoteMessage: RemoteMessage) {
+        var channelName = "공지사항"
+        when(remoteMessage.data["topic"]){
+
+            FcmTopic.CAPSULE_SKIN.toString() -> {
+                channelName = "캡슐 스킨 생성"
+            }
+            else -> {}
+
+        }
+        sendNotification(remoteMessage, FcmTopic.CAPSULE_SKIN.toString(), channelName)
     }
 
-    private fun handleDefaultNotification(remoteMessage: RemoteMessage) {
-        sendNotification(remoteMessage, "ARchiveChannelId", "ARchive")
-    }
 
     private fun createMainActivityIntent(
         data: Map<String, String>,
@@ -85,8 +99,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // channel 설정
         val channelDescription = "$channelName FCM 채널"
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -100,7 +113,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // 인텐트 설정
         val intent = when (channelId) {
-            "894030886016" -> createMainActivityIntent(
+            FcmTopic.CAPSULE_SKIN.toString() -> createMainActivityIntent(
                 remoteMessage.data,
                 FragmentDestination.SKIN_FRAGMENT
             )
@@ -120,8 +133,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
             priority = NotificationCompat.PRIORITY_HIGH // 중요도 (HIGH: 상단바 표시 가능)
             setSmallIcon(R.drawable.app_symbol)
-            setContentTitle(remoteMessage.notification?.title ?: "Unknown title") // 제목
-            setContentText(remoteMessage.notification?.body ?: "Unknown body")
+            setContentTitle(remoteMessage.data["title"]) // 제목
+            setContentText(remoteMessage.data["text"])
             setAutoCancel(true) // 알람클릭시 삭제여부
             setSound(soundUri)  // 알림 소리
             setContentIntent(pendingIntent) // 알림 실행 시 Intent
@@ -138,8 +151,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(uniId, notificationBuilder.build())
 
         // 이벤트 버스를 통해 알림을 전달
-        EventBus.getDefault()
-            .post(CallSnackBar(remoteMessage.notification?.title ?: "Unknown title"))
+        EventBus.getDefault().post(intent)
     }
 
     suspend fun getFirebaseToken(): String {
@@ -154,6 +166,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     enum class FragmentDestination {
         SKIN_FRAGMENT,
     }
+    enum class  FcmTopic{
+        CAPSULE_SKIN
+    }
+
 }
 
 /**
