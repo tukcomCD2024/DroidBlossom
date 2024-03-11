@@ -29,6 +29,7 @@ public class NotificationMapper {
             .text(dto.text())
             .imageUrl(dto.skinUrl())
             .notificationCategory(notificationCategory)
+            .status(dto.status())
             .build();
     }
 }
