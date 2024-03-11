@@ -35,7 +35,7 @@ public class NotificationService {
 
         String fcmToken = memberRepository.findFCMToken(dto.memberId());
         if (!fcmToken.isBlank()) {
-            fcmManager.send(notification, notificationCategory.getCategoryName(), fcmToken);
+            fcmManager.send(dto, notificationCategory.getCategoryName(), fcmToken);
         }
     }
 }
