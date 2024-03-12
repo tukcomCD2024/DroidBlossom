@@ -47,6 +47,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
         if (remoteMessage.data.isNotEmpty()){
+
+            EventBus.getDefault().post(remoteMessage.data)
             CoroutineScope(Dispatchers.IO).launch {
                 val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
 
@@ -144,7 +146,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
 
                 notificationManager.notify(uniId, notificationBuilder.build())
-                EventBus.getDefault().post(intent)
+
             }
         }
     }
