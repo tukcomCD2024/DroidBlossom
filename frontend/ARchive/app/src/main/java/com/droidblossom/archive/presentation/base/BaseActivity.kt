@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.base
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -42,8 +43,9 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun printId(event: Intent) {
+    fun printId(event: Map<String, String>) {
         // 스낵바 호출로 바꾸면 될듯?
+        Log.d("이베", "$event")
         binding.root.let { rootView ->
             HomeSnackBarSmall(rootView).show()
         }
