@@ -98,6 +98,6 @@ public class MemberApiController implements MemberApi {
                 SuccessCode.SUCCESS,
                 memberService.findNotificationSliceByMemberId(memberId, size, createdAt)
             )
-       );
+        );
     }
 }

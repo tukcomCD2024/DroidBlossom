@@ -8,7 +8,7 @@ public record CapsuleSkinStatusResponse(
 ) {
 
     public static CapsuleSkinStatusResponse success() {
-        return new CapsuleSkinStatusResponse(HttpStatus.OK ,"캡슐 스킨 생성 성공!");
+        return new CapsuleSkinStatusResponse(HttpStatus.OK, "캡슐 스킨 생성 성공!");
     }
 
     public static CapsuleSkinStatusResponse sendMessage() {

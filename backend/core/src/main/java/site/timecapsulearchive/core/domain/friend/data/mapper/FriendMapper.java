@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 @Component
 public class FriendMapper {
 
-    public FriendInvite friendReqToEntity(Member owner, Member friend) {
+    public FriendInvite friendReqToEntity(final Member owner, final Member friend) {
         return FriendInvite.builder()
             .friendStatus(FriendStatus.PENDING)
             .owner(owner)

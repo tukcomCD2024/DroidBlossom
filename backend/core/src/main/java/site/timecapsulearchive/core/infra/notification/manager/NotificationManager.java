@@ -23,7 +23,8 @@ public class NotificationManager {
     private final NotificationMapper notificationMapper;
 
     public void sendCreatedSkinMessage(final Long memberId, final CapsuleSkinCreateDto dto) {
-        final CreatedCapsuleSkinNotificationRequest request = notificationMapper.capsuleSkinDtoToMessage(memberId, dto);
+        final CreatedCapsuleSkinNotificationRequest request =
+            notificationMapper.capsuleSkinDtoToMessage(memberId, dto);
 
         try {
             final HttpHeaders headers = new HttpHeaders();
@@ -40,7 +41,8 @@ public class NotificationManager {
     }
 
     public void sendFriendReqMessage(final Long friendId, final String ownerNickname) {
-        final FriendReqNotificationRequest request = notificationMapper.friendReqToMessage(friendId, ownerNickname);
+        final FriendReqNotificationRequest request = notificationMapper.friendReqToMessage(friendId,
+            ownerNickname);
 
         try {
             final HttpHeaders headers = new HttpHeaders();
