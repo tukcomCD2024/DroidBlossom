@@ -115,6 +115,10 @@ public interface FriendApi {
         @ApiResponse(
             responseCode = "202",
             description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
     ResponseEntity<ApiSpec<FriendReqStatusResponse>> requestFriend(
