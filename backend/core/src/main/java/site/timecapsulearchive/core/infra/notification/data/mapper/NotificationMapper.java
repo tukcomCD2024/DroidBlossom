@@ -5,14 +5,12 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.CreatedCapsuleSkinNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendReqNotificationRequest;
-import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Component
 @RequiredArgsConstructor
 public class NotificationMapper {
 
-    private final S3PreSignedUrlManager s3PreSignedUrlManager;
     private final S3UrlGenerator s3UrlGenerator;
 
     public CreatedCapsuleSkinNotificationRequest capsuleSkinDtoToMessage(Long memberId,
@@ -23,9 +21,7 @@ public class NotificationMapper {
             .skinName(dto.skinName())
             .title("캡슐 스킨 생성 알림")
             .text(dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!")
-            .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(
-                s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.skinName())
-            ))
+            .skinUrl(s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.skinName()))
             .build();
     }
 
