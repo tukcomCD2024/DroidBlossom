@@ -21,6 +21,7 @@ public class NotificationManager {
 
     private final RestTemplate restTemplate;
     private final NotificationMapper notificationMapper;
+    private final NotificationUrl notificationUrl;
 
     public void sendCreatedSkinMessage(final Long memberId, final CapsuleSkinCreateDto dto) {
         final CreatedCapsuleSkinNotificationRequest request =
@@ -31,7 +32,7 @@ public class NotificationManager {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             restTemplate.postForEntity(
-                NotificationUrl.CAPSULE_SKIN_ALARM_URL.getUrl(),
+                notificationUrl.capsuleSkinAlarmUrl(),
                 new HttpEntity<>(request, headers),
                 Void.class
             );
@@ -49,7 +50,7 @@ public class NotificationManager {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             restTemplate.postForEntity(
-                NotificationUrl.FRIEND_REQ_ALARM_URL.getUrl(),
+               notificationUrl.friendReqAlarmUrl(),
                 new HttpEntity<>(request, headers),
                 Void.class
             );
