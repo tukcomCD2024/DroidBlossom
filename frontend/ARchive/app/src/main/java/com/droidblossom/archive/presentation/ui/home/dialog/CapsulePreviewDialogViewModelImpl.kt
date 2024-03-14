@@ -68,10 +68,21 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _capsuleTypeImage = MutableStateFlow(0)
     override val capsuleTypeImage: StateFlow<Int> = _capsuleTypeImage.asStateFlow()
 
+    private val _calledFromCamera = MutableStateFlow(false)
+    override val calledFromCamera: StateFlow<Boolean>
+        get() = _calledFromCamera
+
+    private val _timeCapsule = MutableStateFlow(false)
+    override val timeCapsule: StateFlow<Boolean> get() = _timeCapsule
+
     override fun capsulePreviewDialogEvent(event: CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent){
         viewModelScope.launch {
             _capsulePreviewDialogEvents.emit(event)
         }
+    }
+
+    override fun setCalledFromCamera(calledFromCamera : Boolean){
+        _calledFromCamera.value = calledFromCamera
     }
     fun getSecretCapsuleSummary(capsuleId: Int) {
         viewModelScope.launch {
@@ -102,8 +113,13 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             }
 
             val endTimeCalendar = Calendar.getInstance().apply {
-                time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid dueDate format")
+                if (dueDate.isBlank()) {
+                    time = startTimeCalendar.time
+                }else{
+                    time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid createdAt format")
+                }
             }
+            if (startTimeCalendar == endTimeCalendar) _timeCapsule.emit(false) else _timeCapsule.emit(true)
             _startTime.emit(startTimeCalendar)
             _endTime.emit(endTimeCalendar)
         }
@@ -183,14 +199,18 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
-    override fun openCapsule(capsuleId : Long){
+    override fun openCapsule(capsuleId: Long) {
+        if (timeCapsule.value && !calledFromCamera.value) {
+            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("타임캡슐 첫 오픈 시에는 시간, 위치 제약 있습니다."))
+            return
+        }
+
         viewModelScope.launch {
-            patchCapsuleOpenedUseCase(capsuleId).collect{result ->
+            patchCapsuleOpenedUseCase(capsuleId).collect { result ->
                 result.onSuccess {
-                    Log.d("개봉", " 개봉 성공 코드 : $it")
-                    if(it.result == "캡슐을 열 수 없습니다."){
+                    if (it.result == "캡슐을 열 수 없습니다.") {
                         capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
-                    }else{
+                    } else {
                         _capsuleOpenState.emit(true)
                         capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
                     }

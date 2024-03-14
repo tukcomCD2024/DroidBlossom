@@ -67,7 +67,7 @@ class S3Util @Inject constructor(private val context: Context) {
     }
 
     suspend fun uploadImageWithPresignedUrl(file: File, signedUrl: String) = withContext(Dispatchers.IO) {
-        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val requestBody = file.asRequestBody("image/png".toMediaTypeOrNull())
 
         val request = Request.Builder()
             .url(signedUrl)
@@ -78,14 +78,39 @@ class S3Util @Inject constructor(private val context: Context) {
             val response = OkHttpClient().newCall(request).execute()
 
             if (response.isSuccessful) {
-                Log.d("S3Upload", "File uploaded successfully: ${file.name}")
+                Log.d("S3Upload", "File(Image) uploaded successfully: ${file.name}")
             } else {
                 val errorBody = response.body?.string() ?: "No error details"
-                Log.e("S3Upload", "Failed to upload file: ${file.name}, Response: $errorBody")
-                throw IOException("Failed to upload file: ${file.name}, Response: $errorBody")
+                Log.e("S3Upload", "Failed to upload file(Image): ${file.name}, Response: $errorBody")
+                throw IOException("Failed to upload file(Image): ${file.name}, Response: $errorBody")
             }
         }catch (e:Exception){
-            Log.e("S3Upload", "File upload failed: ${file.name}", e)
+            Log.e("S3Upload", "File upload failed(Image): ${file.name}", e)
+
+        }
+
+    }
+
+    suspend fun uploadVideoWithPresignedUrl(file: File, signedUrl: String) = withContext(Dispatchers.IO) {
+        val requestBody = file.asRequestBody("video/mp4".toMediaTypeOrNull())
+
+        val request = Request.Builder()
+            .url(signedUrl)
+            .put(requestBody)
+            .build()
+
+        try {
+            val response = OkHttpClient().newCall(request).execute()
+
+            if (response.isSuccessful) {
+                Log.d("S3Upload", "File(Video) uploaded successfully: ${file.name}")
+            } else {
+                val errorBody = response.body?.string() ?: "No error details"
+                Log.e("S3Upload", "Failed to upload file(Video): ${file.name}, Response: $errorBody")
+                throw IOException("Failed to upload file(Video): ${file.name}, Response: $errorBody")
+            }
+        }catch (e:Exception){
+            Log.e("S3Upload", "File upload failed(Video): ${file.name}", e)
 
         }
 

@@ -19,6 +19,8 @@ interface CapsulePreviewDialogViewModel {
     val capsuleTypeImage: StateFlow<Int>
     val visibleTimeProgressBar: StateFlow<Boolean>
     val visibleOpenProgressBar: StateFlow<Boolean>
+    val calledFromCamera: StateFlow<Boolean>
+    val timeCapsule: StateFlow<Boolean>
 
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)
     fun calculateCapsuleOpenTime(createdAt: String, dueDate: String)
@@ -28,6 +30,8 @@ interface CapsulePreviewDialogViewModel {
 
     fun openCapsule(capsuleId : Long)
     fun setVisibleOpenProgressBar(visible: Boolean)
+
+    fun setCalledFromCamera(calledFromCamera : Boolean)
 
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()

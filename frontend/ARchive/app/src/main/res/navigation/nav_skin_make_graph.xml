@@ -8,6 +8,16 @@
     <fragment
         android:id="@+id/skinMakeFragment"
         android:name="com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeFragment"
-        android:label="SkinMakeFragment" />
+        android:label="SkinMakeFragment" >
+        <action
+            android:id="@+id/action_skinMakeFragment_to_skinMakeSuccessFragment"
+            app:destination="@id/skinMakeSuccessFragment"
+            app:popUpTo="@id/skinMakeFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/skinMakeSuccessFragment"
+        android:name="com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeSuccessFragment"
+        android:label="SkinMakeSuccessFragment" />
 
 </navigation>

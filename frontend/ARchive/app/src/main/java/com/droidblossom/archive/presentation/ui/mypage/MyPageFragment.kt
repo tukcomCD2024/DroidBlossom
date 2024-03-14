@@ -1,7 +1,9 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -45,13 +47,7 @@ class MyPageFragment :
                 )
             },
             { id, type ->
-                val args = Bundle().apply {
-                    putString("capsule_id", id.toString())
-                    putString("capsule_type", type.toString())
-                }
-                val sheet = CapsulePreviewDialogFragment().apply {
-                    arguments = args
-                }
+                val sheet = CapsulePreviewDialogFragment.newInstance(id.toString(), type.toString(), false)
                 sheet.show(parentFragmentManager, "CapsulePreviewDialog")
             },
         )
@@ -62,10 +58,22 @@ class MyPageFragment :
         binding.vm = viewModel
         viewModel.getMe()
         viewModel.getSecretCapsulePage()
+
+        parentFragmentManager.setFragmentResultListener("capsuleState", viewLifecycleOwner) { key, bundle ->
+            val capsuleId = bundle.getLong("capsuleId")
+            val capsuleOpenState = bundle.getBoolean("isOpened")
+            viewModel.updateCapsuleOpenState(capsuleId,capsuleOpenState)
+        }
+
         initRVA()
 
         binding.settingBtn.setOnClickListener {
+            throw RuntimeException("Test Crash")
         }
+
+        val layoutParams = binding.profileImg.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.profileImg.layoutParams = layoutParams
     }
 
     private fun initRVA() {
@@ -93,6 +101,15 @@ class MyPageFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsules.collect { capsule ->
+                    if (capsule.isNotEmpty()){
+                        viewModel.updateMyCapsulesUI()
+                    }
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.myCapsulesUI.collect { capsule ->
                     myCapsuleRVA.submitList(capsule)
                 }
             }

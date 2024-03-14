@@ -11,44 +11,37 @@
             type="com.droidblossom.archive.domain.model.common.CapsuleSkinSummary" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/capsuleImg"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/corner_radius_8"
-            android:backgroundTint="@color/main_bg_2"
-            android:clipToOutline="true"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@id/capsuleT"
-            app:layout_constraintDimensionRatio="w,1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            bind:baseImg="@{@drawable/sample_skin}"
-            bind:url="@{item.skinUrl}"
-            tools:ignore="UnusedAttribute"
-            tools:src="@drawable/sample_skin" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/capsuleT"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            android:text="@{item.name}"
-            android:textAppearance="@style/TextAppearance.App.body2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/capsuleImg" />
+            android:padding="12dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/capsuleImg"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/corner_radius_8"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="w,4:3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:baseImg="@{@drawable/sample_skin}"
+                bind:url="@{item.skinUrl}"
+                tools:ignore="UnusedAttribute"
+                tools:src="@drawable/sample_skin" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 </layout>

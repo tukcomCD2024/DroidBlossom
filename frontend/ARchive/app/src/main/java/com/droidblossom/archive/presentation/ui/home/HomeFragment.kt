@@ -5,6 +5,7 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toPointF
@@ -56,6 +57,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         locationUtil = LocationUtil(requireContext())
         initView()
         initMap()
+
+        val layoutParams = binding.notificationBtn.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.notificationBtn.layoutParams = layoutParams
     }
 
     private fun initView() {
@@ -87,6 +92,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     )
                 }
             }
+
+
         }
     }
 
@@ -116,13 +123,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     when (event) {
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val args = Bundle().apply {
-                                putString("capsule_id", event.capsuleId)
-                                putString("capsule_type", event.capsuleType)
-                            }
-                            val sheet = CapsulePreviewDialogFragment().apply {
-                                arguments = args
-                            }
+                            val sheet = CapsulePreviewDialogFragment.newInstance(event.capsuleId, event.capsuleType, false)
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
                     }
