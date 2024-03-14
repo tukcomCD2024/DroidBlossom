@@ -121,7 +121,7 @@ public interface FriendApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "친구 아이디", required = true, schema = @Schema())
-        @PathVariable("friend_id") Long friendId
+        Long friendId
     );
 
 
