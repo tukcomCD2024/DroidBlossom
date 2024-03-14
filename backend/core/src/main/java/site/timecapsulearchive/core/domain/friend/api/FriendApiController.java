@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.api;
 
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,10 +8,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendsPageResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -42,12 +44,27 @@ public class FriendApiController implements FriendApi {
     }
 
     @Override
-    public ResponseEntity<Void> denyFriendRequest(Long friendId) {
+    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                friendService.findFriendsSlice(memberId, size, createdAt)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendRequests(int size,
+        ZonedDateTime createdAt) {
         return null;
     }
 
     @Override
-    public ResponseEntity<FriendsPageResponse> findFriends(Long friendId, Long size) {
+    public ResponseEntity<Void> denyFriendRequest(Long friendId) {
         return null;
     }
 
