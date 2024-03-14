@@ -1,18 +1,22 @@
 package com.droidblossom.archive.presentation.base
 
+import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.droidblossom.archive.presentation.snack.CallSnackBar
+import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
 import kotlinx.coroutines.Job
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes val layoutResource :Int): AppCompatActivity() {
 
@@ -27,6 +31,24 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     protected fun getStatusBarHeight(): Int {
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+    }
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this);
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun printId(event: Map<String, String>) {
+        // 스낵바 호출로 바꾸면 될듯?
+        Log.d("이베", "$event")
+        binding.root.let { rootView ->
+            HomeSnackBarSmall(rootView).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

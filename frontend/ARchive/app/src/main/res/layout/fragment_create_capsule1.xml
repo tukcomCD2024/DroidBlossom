@@ -28,11 +28,10 @@
             android:id="@+id/recycleView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginTop="@dimen/margin"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_group"
-            app:layout_constraintBottom_toTopOf="@id/nextBtn"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleT" />
@@ -47,11 +46,20 @@
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
             android:text="선택"
-            android:textAppearance="@style/TextAppearance.App.button"
+            android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            app:layout_constraintTop_toBottomOf="@id/nextBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/main_bg_1_alpha20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

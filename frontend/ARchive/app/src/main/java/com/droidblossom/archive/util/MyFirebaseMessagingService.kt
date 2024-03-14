@@ -5,19 +5,35 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.droidblossom.archive.R
+import com.droidblossom.archive.presentation.snack.CallSnackBar
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import java.net.URL
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private val TAG = "FirebaseService"
+
+    @Inject
+    lateinit var dataStoreUtils: DataStoreUtils
 
     override fun onNewToken(token: String) {
         Log.d(TAG, "new Token: $token")
@@ -25,88 +41,131 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     /** 메시지 수신 메서드(포그라운드) */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
         Log.d(TAG, "From: " + remoteMessage.from)
 
-        //받은 remoteMessage의 값 출력해보기. 데이터메세지 / 알림메세지
         Log.d(TAG, "Message data : ${remoteMessage.data}")
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
-        if(remoteMessage.data.isNotEmpty()){
-            sendNotification(remoteMessage)
-        }else {
-            Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
+        if (remoteMessage.data.isNotEmpty()){
+
+            EventBus.getDefault().post(remoteMessage.data)
+            CoroutineScope(Dispatchers.IO).launch {
+                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
+
+                if (notificationsEnabled) {
+                    handleNotification(remoteMessage)
+                } else {
+                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
+                }
+            }
+        }else{
+            // 데이터 메시지 비어있음
+            Log.d(TAG, "메시지를 수신하지 못했습니다.")
         }
+
+
     }
 
-    /** 알림 생성 메서드 */
-    private fun sendNotification(remoteMessage: RemoteMessage) {
+    private fun handleNotification(remoteMessage: RemoteMessage) {
+        var channelName = "공지사항"
+        when(remoteMessage.data["topic"]){
 
-        //channel 설정
-        val channelId = "ARchiveChannelId"
-        val channelName = "ARchive"
-        val channelDescription = "ARchive FCM 채널"
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(channelId, channelName, importance).apply {
-                description = channelDescription
+            FcmTopic.CAPSULE_SKIN.toString() -> {
+                channelName = "캡슐 스킨 생성"
             }
-            notificationManager.createNotificationChannel(channel)
+            else -> {}
+
         }
+        sendNotification(remoteMessage, FcmTopic.CAPSULE_SKIN.toString(), channelName)
+    }
 
 
-        val uniId: Int = (System.currentTimeMillis() / 7).toInt()
-
+    private fun createMainActivityIntent(
+        data: Map<String, String>,
+    ): Intent {
         val intent = Intent(this, MainActivity::class.java)
-        //각 key, value 추가
-        for(key in remoteMessage.data.keys){
-            intent.putExtra(key, remoteMessage.data.getValue(key))
+        data.forEach { (key, value) ->
+            intent.putExtra(key, value)
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Activity Stack 을 경로만 남김(A-B-C-D-B => A-B)
-
-        //23.05.22 Android 최신버전 대응 (FLAG_MUTABLE, FLAG_IMMUTABLE)
-        //PendingIntent.FLAG_MUTABLE은 PendingIntent의 내용을 변경할 수 있도록 허용, PendingIntent.FLAG_IMMUTABLE은 PendingIntent의 내용을 변경할 수 없음
-        //val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT)
-        val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE)
-
-        // 서버에서 보낸 아이콘 이름 추출
-        val iconName = remoteMessage.data["icon"] // 서버에서 "icon" 키로 아이콘 이름을 보냈다고 가정
-        // 리소스 ID 찾기
-        val iconResId = resources.getIdentifier(iconName, "drawable", packageName)
-
-        // 알림에 대한 UI 정보, 작업
-        val notificationBuilder = NotificationCompat.Builder(this, channelId).apply {
-            setPriority(NotificationCompat.PRIORITY_HIGH) // 중요도 (HIGH: 상단바 표시 가능)
-            if (iconResId != 0) {
-                setSmallIcon(iconResId) // 서버에서 받은 아이콘 이름으로 리소스 ID 찾아 설정
-            } else {
-                setSmallIcon(R.drawable.app_symbol) // 기본 아이콘
+        when(data["topic"]){
+            FcmTopic.CAPSULE_SKIN.name -> {
+                intent.putExtra("fragmentDestination", FragmentDestination.SKIN_FRAGMENT.name)
             }
-            setContentTitle(remoteMessage.data["title"].toString()) // 제목
-            setContentText(remoteMessage.data["body"].toString()) // 메시지 내용
-            setAutoCancel(true) // 알람클릭시 삭제여부
-            setSound(soundUri)  // 알림 소리
-            setContentIntent(pendingIntent) // 알림 실행 시 Intent
+            else -> {
+
+            }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        notificationManager.notify(uniId, notificationBuilder.build())
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        return intent
     }
 
-    fun getFirebaseToken() {
-        //비동기 방식
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
-            Log.d(TAG, "token=${it}")
-        }
+    private fun sendNotification(remoteMessage: RemoteMessage, channelId: String, channelName: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val bigPicture: Bitmap? = try {
+                remoteMessage.data["imageUrl"]?.let { imageUrl ->
+                    val url = URL(imageUrl)
+                    BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
 
+            withContext(Dispatchers.Main) {
+                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val uniId: Int = (System.currentTimeMillis() / 7).toInt()
+
+                val intent = createMainActivityIntent(remoteMessage.data)
+                val pendingIntent = PendingIntent.getActivity(
+                    this@MyFirebaseMessagingService,
+                    uniId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                )
+
+                val notificationBuilder = NotificationCompat.Builder(this@MyFirebaseMessagingService, channelId).apply {
+                    priority = NotificationCompat.PRIORITY_HIGH
+                    setSmallIcon(R.drawable.app_symbol)
+                    setContentTitle(remoteMessage.data["title"])
+                    setContentText(remoteMessage.data["text"])
+                    setAutoCancel(true)
+                    setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    setContentIntent(pendingIntent)
+
+                    bigPicture?.let {
+                        setStyle(NotificationCompat.BigPictureStyle().bigPicture(it))
+                    }
+                }
+
+                // Android 최신버전 대응 (Android O 이상)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel =
+                        NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+                    notificationManager.createNotificationChannel(channel)
+                }
+
+                notificationManager.notify(uniId, notificationBuilder.build())
+
+            }
+        }
     }
+    suspend fun getFirebaseToken(): String {
+        val tokenTask = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+            FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                Log.d("FCM", "token=${it}")
+            }
+        }
+        return tokenTask.await()
+    }
+
+    enum class FragmentDestination {
+        SKIN_FRAGMENT
+    }
+    enum class  FcmTopic{
+        CAPSULE_SKIN
+    }
+
 }
 
 /**

@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.skin.skinmake.SkinMakeActivity"
-        android:background="@color/main_bg_1">
+        tools:context=".presentation.ui.skin.skinmake.SkinMakeActivity">
 
         <androidx.fragment.app.FragmentContainerView
             android:layout_width="0dp"

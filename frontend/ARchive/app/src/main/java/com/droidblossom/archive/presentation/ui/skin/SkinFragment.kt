@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.skin
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -87,6 +88,16 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.skins.collect { skins ->
+                    if (skins.isNotEmpty()){
+                        viewModel.updateMySkinsUI()
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.skinsUI.collect { skins ->
                     mySkinRVA.submitList(skins)
                 }
             }
@@ -111,8 +122,15 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         if (hidden) {
 
         } else {
+            viewModel.clearSkins()
             viewModel.closeSearchSkin()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.clearSkins()
+        viewModel.closeSearchSkin()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -164,6 +182,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
             imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
         }
     }
+
 
     companion object {
 

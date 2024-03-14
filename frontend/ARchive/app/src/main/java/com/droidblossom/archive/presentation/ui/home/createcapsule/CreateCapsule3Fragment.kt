@@ -129,7 +129,7 @@ class CreateCapsule3Fragment :
                             async {
                                 dummy.string?.let { uriString ->
                                     when (dummy.contentType) {
-                                        ContentType.IMAGE -> FileUtils.convertUriToJpegFile(
+                                        ContentType.IMAGE -> FileUtils.resizeBitmapFromUri(
                                             requireContext(),
                                             uriString,
                                             "IMG_${currentTime}_$index"

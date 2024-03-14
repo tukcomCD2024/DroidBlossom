@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:bind="http://schemas.android.com/tools">
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -19,32 +19,33 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:strokeColor="@{item.isClicked ? @color/main_2 : @color/white}"
+        app:cardElevation="0dp"
+        app:strokeColor="@{item.isClicked ? @color/main_2 : @color/main_bg_2}"
         app:strokeWidth="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:background="@color/white"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@{item.isClicked ? @color/white : @color/main_bg_2}"
+            >
 
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/skinImg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:alpha="@{item.isClicked ? 1.0F : 0.2F}"
                 android:background="@drawable/corner_radius_8"
                 android:clipToOutline="true"
+                android:alpha="@{item.isClicked ? 1.0F : 0.2F}"
                 android:padding="12dp"
                 android:scaleType="centerInside"
-                bind:baseImg="@{@drawable/sample_skin}"
-                bind:url="@{item.skinUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="w,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                bind:baseImg="@{@drawable/sample_skin}"
+                bind:url="@{item.skinUrl}"
                 tools:targetApi="s" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

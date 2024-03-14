@@ -105,9 +105,10 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                     val currentTime = dateFormat.format(Date())
 
                     CoroutineScope(Dispatchers.IO).launch{
-                        val skinImgFilesDeferred = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        //val skinImgFilesDeferred = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        //val skinImgFilesDeferredd = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        val skinImgFilesDeferred = FileUtils.resizeBitmapFromUri(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
                         viewModel.setFile(skinImgFilesDeferred!!)
-
                         viewModel.makeSkin()
 
                     }

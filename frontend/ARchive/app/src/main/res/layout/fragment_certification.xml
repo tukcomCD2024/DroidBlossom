@@ -13,7 +13,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".CertificationFragment">
+        tools:context=".CertificationFragment"
+        android:background="@color/main_bg_1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -44,102 +45,146 @@
                 android:layout_marginTop="12dp"
                 bind:displayRemainingTime="@{vm.remainTime}"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/certificationNumberEditText_1"
-                style="@style/TextAppearance.App.h3"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/certificationNumberLayout_1"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="5dp"
-                android:nextFocusDown="@id/certificationNumberEditText_2"
-                android:background="@{vm.certificationNumber1.isEmpty() ? @drawable/capsule : @drawable/white_background}"
-                android:gravity="center"
-                android:inputType="phone"
-                android:maxLength="1"
-                android:text="@={vm.certificationNumber1}"
-                android:textColor="@color/black"
+                app:cardCornerRadius="16dp"
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
+                app:strokeColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@id/certificationNumberEditText_2"
+                app:layout_constraintEnd_toStartOf="@id/certificationNumberLayout_2"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/remainTimeTextView"
-                app:layout_constraintVertical_bias="0.1433"
-                tools:text="1">
+                app:layout_constraintVertical_bias="0.1433">
 
-                <requestFocus />
-            </com.google.android.material.textfield.TextInputEditText>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/certificationNumberEditText_1"
+                    style="@style/TextAppearance.App.h1.suit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nextFocusDown="@id/certificationNumberEditText_2"
+                    android:background="@{vm.certificationNumber1.isEmpty() ? @drawable/capsule : @drawable/white_background}"
+                    android:gravity="center"
+                    android:inputType="phone"
+                    android:maxLength="1"
+                    android:fontFamily="@font/suit_medium"
+                    android:text="@={vm.certificationNumber1}"
+                    android:textColor="@color/black"
+                    tools:text="1">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/certificationNumberEditText_2"
-                style="@style/TextAppearance.App.h3"
+                    <requestFocus />
+                </com.google.android.material.textfield.TextInputEditText>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/certificationNumberLayout_2"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="5dp"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="@color/white"
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
-                android:nextFocusDown="@id/certificationNumberEditText_3"
-                android:background="@{vm.certificationNumber1.isEmpty() ? @drawable/capsule : @drawable/white_background}"
-                android:gravity="center"
-                android:inputType="phone"
-                android:text="@={vm.certificationNumber2}"
-                android:maxLength="1"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_1"
+                app:layout_constraintBottom_toBottomOf="@id/certificationNumberLayout_1"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@id/certificationNumberEditText_3"
+                app:layout_constraintEnd_toStartOf="@id/certificationNumberLayout_3"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/certificationNumberEditText_1"
-                app:layout_constraintTop_toTopOf="@id/certificationNumberEditText_1"
-                tools:text="2" />
+                app:layout_constraintStart_toEndOf="@+id/certificationNumberLayout_1"
+                app:layout_constraintTop_toTopOf="@id/certificationNumberLayout_1">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/certificationNumberEditText_3"
-                style="@style/TextAppearance.App.h3"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/certificationNumberEditText_2"
+                    style="@style/TextAppearance.App.h1.suit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintWidth_max="100dp"
+                    app:layout_constraintHeight_max="100dp"
+                    android:background="@{vm.certificationNumber2.isEmpty() ? @drawable/capsule : @drawable/white_background}"
+                    android:nextFocusDown="@id/certificationNumberEditText_3"
+                    android:gravity="center"
+                    android:inputType="phone"
+                    android:fontFamily="@font/suit_medium"
+                    android:text="@={vm.certificationNumber2}"
+                    android:maxLength="1"
+                    android:textColor="@color/black"
+                    tools:text="2" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/certificationNumberLayout_3"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="5dp"
-                android:nextFocusDown="@id/certificationNumberEditText_4"
-                android:background="@{vm.certificationNumber1.isEmpty() ? @drawable/capsule : @drawable/white_background}"
-                android:gravity="center"
-                android:inputType="phone"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="@color/white"
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
-                android:maxLength="1"
-                android:text="@={vm.certificationNumber3}"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_2"
+                app:layout_constraintBottom_toBottomOf="@id/certificationNumberLayout_2"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@id/certificationNumberEditText_4"
+                app:layout_constraintEnd_toStartOf="@id/certificationNumberLayout_4"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/certificationNumberEditText_2"
-                app:layout_constraintTop_toTopOf="@id/certificationNumberEditText_2"
-                tools:text="3" />
+                app:layout_constraintStart_toEndOf="@+id/certificationNumberLayout_2"
+                app:layout_constraintTop_toTopOf="@id/certificationNumberLayout_2">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/certificationNumberEditText_4"
-                style="@style/TextAppearance.App.h3"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/certificationNumberEditText_3"
+                    style="@style/TextAppearance.App.h1.suit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@{vm.certificationNumber3.isEmpty() ? @drawable/capsule : @drawable/white_background}"
+                    android:nextFocusDown="@id/certificationNumberEditText_4"
+                    android:gravity="center"
+                    android:inputType="phone"
+                    android:maxLength="1"
+                    android:fontFamily="@font/suit_medium"
+                    android:text="@={vm.certificationNumber3}"
+                    android:textColor="@color/black"
+                    tools:text="3" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/certificationNumberLayout_4"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="5dp"
-                android:imeOptions="actionDone"
-                android:background="@{vm.certificationNumber1.isEmpty() ? @drawable/capsule : @drawable/white_background}"
-                android:gravity="center"
-                android:inputType="phone"
-                android:maxLength="1"
-                android:text="@={vm.certificationNumber4}"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="@color/white"
                 app:layout_constraintWidth_max="100dp"
                 app:layout_constraintHeight_max="100dp"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@id/certificationNumberEditText_3"
+                app:layout_constraintBottom_toBottomOf="@id/certificationNumberLayout_3"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/certificationNumberEditText_3"
-                app:layout_constraintTop_toTopOf="@id/certificationNumberEditText_3"
-                tools:text="4" />
+                app:layout_constraintStart_toEndOf="@+id/certificationNumberLayout_3"
+                app:layout_constraintTop_toTopOf="@id/certificationNumberLayout_3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/certificationNumberEditText_4"
+                    style="@style/TextAppearance.App.h1.suit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionDone"
+                    android:gravity="center"
+                    android:inputType="phone"
+                    android:background="@{vm.certificationNumber4.isEmpty() ? @drawable/capsule : @drawable/white_background}"
+                    android:maxLength="1"
+                    android:text="@={vm.certificationNumber4}"
+                    app:layout_constraintWidth_max="100dp"
+                    app:layout_constraintHeight_max="100dp"
+                    android:fontFamily="@font/suit_medium"
+                    android:textColor="@color/black"
+                    tools:text="4" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/resendBtn"
@@ -147,14 +192,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rectangle_solid_corner_20dp"
-                android:backgroundTint="@color/main_bg_1"
+                android:backgroundTint="@color/white"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="10dp"
                 android:text="@string/reSend"
                 android:textAppearance="@style/TextAppearance.App.caption3"
                 android:textColor="@color/main_1"
-                app:layout_constraintBottom_toTopOf="@id/certificationNumberEditText_4"
-                app:layout_constraintEnd_toEndOf="@id/certificationNumberEditText_4"
+                app:layout_constraintBottom_toTopOf="@id/certificationNumberLayout_4"
+                app:layout_constraintEnd_toEndOf="@id/certificationNumberLayout_4"
                 app:layout_constraintTop_toBottomOf="@+id/remainTimeTextView"
                 app:layout_constraintVertical_bias="0.7826" />
 

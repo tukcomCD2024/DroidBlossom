@@ -14,11 +14,15 @@ interface SkinViewModel {
     val lastCreatedSkinTime: StateFlow<String>
     val hasNextSkins: StateFlow<Boolean>
     val isSearchOpen : StateFlow<Boolean>
+    val skinsUI: StateFlow<List<CapsuleSkinSummary>>
     fun getSkinList()
     fun goSkinMake()
     fun searchSkin()
     fun openSearchSkin()
     fun closeSearchSkin()
+
+    fun updateMySkinsUI()
+    fun clearSkins()
 
     sealed class SkinEvent {
         object ToSkinMake : SkinEvent()
