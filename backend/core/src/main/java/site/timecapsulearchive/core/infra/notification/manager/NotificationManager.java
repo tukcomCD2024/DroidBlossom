@@ -1,61 +1,36 @@
 package site.timecapsulearchive.core.infra.notification.manager;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
-import site.timecapsulearchive.core.global.error.ErrorCode;
+import site.timecapsulearchive.core.global.aop.anotation.NotificationRequest;
+import site.timecapsulearchive.core.global.aop.aspect.NotificationRequestExceptionAspect;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.CreatedCapsuleSkinNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendReqNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.mapper.NotificationMapper;
-import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 
 @Component
 @RequiredArgsConstructor
 public class NotificationManager {
 
-    private final RestTemplate restTemplate;
     private final NotificationMapper notificationMapper;
+    private final NotificationRequestExceptionAspect aspect;
     private final NotificationUrl notificationUrl;
 
+    @NotificationRequest
     public void sendCreatedSkinMessage(final Long memberId, final CapsuleSkinCreateDto dto) {
         final CreatedCapsuleSkinNotificationRequest request =
             notificationMapper.capsuleSkinDtoToMessage(memberId, dto);
 
-        try {
-            final HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            restTemplate.postForEntity(
-                notificationUrl.capsuleSkinAlarmUrl(),
-                new HttpEntity<>(request, headers),
-                Void.class
-            );
-        } catch (HttpClientErrorException e) {
-            throw new ExternalApiException(ErrorCode.EXTERNAL_API_ERROR);
-        }
+        aspect.sendNotification(request, NotificationUrl.CAPSULE_SKIN_ALARM_URL.getUrl());
     }
 
+    @NotificationRequest
     public void sendFriendReqMessage(final Long friendId, final String ownerNickname) {
         final FriendReqNotificationRequest request = notificationMapper.friendReqToMessage(friendId,
             ownerNickname);
-
-        try {
-            final HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            restTemplate.postForEntity(
-               notificationUrl.friendReqAlarmUrl(),
-                new HttpEntity<>(request, headers),
-                Void.class
-            );
-        } catch (HttpClientErrorException e) {
-            throw new ExternalApiException(ErrorCode.EXTERNAL_API_ERROR);
-        }
+      
+        aspect.sendNotification(request, NotificationUrl.FRIEND_REQ_ALARM_URL.getUrl());
     }
 }
