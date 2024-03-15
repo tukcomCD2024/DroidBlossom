@@ -70,7 +70,7 @@ class AnimationQueueController:
         try:
             json_object = self.parse_json(body)
 
-            filename = '%s.gif' % uuid.uuid4()
+            filename = f"capsuleSkin/{json_object['memberId']}/{uuid.uuid4()}.gif"
 
             chain(
                 self.make_animation_task.s(input_data=json_object,

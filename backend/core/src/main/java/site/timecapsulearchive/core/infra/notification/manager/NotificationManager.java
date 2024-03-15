@@ -16,6 +16,7 @@ public class NotificationManager {
 
     private final NotificationMapper notificationMapper;
     private final NotificationRequestExceptionAspect aspect;
+    private final NotificationUrl notificationUrl;
 
     @NotificationRequest
     public void sendCreatedSkinMessage(final Long memberId, final CapsuleSkinCreateDto dto) {
@@ -29,7 +30,7 @@ public class NotificationManager {
     public void sendFriendReqMessage(final Long friendId, final String ownerNickname) {
         final FriendReqNotificationRequest request = notificationMapper.friendReqToMessage(friendId,
             ownerNickname);
-
+      
         aspect.sendNotification(request, NotificationUrl.FRIEND_REQ_ALARM_URL.getUrl());
     }
 }

@@ -3,8 +3,8 @@ import logging
 import requests
 from celery import Task
 
-from application.model.capsule_skin_creation_status import \
-    CapsuleSkinCreationStatus
+from application.model.notification_status import \
+    NotificationStatus
 
 logger = logging.getLogger('error_task')
 
@@ -25,7 +25,7 @@ class LogErrorsTask(Task):
             'title': '캡슐 스킨 생성에 실패했습니다',
             'text': f"{kwargs['input_data']['skinName']}이 생성되지 않았습니다. 다시 한 번 시도해주세요!",
             'skinUrl': kwargs['filename'],
-            'status': CapsuleSkinCreationStatus.SUCCESS_MAKE_CAPSULE_SKIN.value
+            'status': NotificationStatus.SUCCESS.value
         }
 
         try:
