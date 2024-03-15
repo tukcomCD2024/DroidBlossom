@@ -28,9 +28,9 @@ public final class AESEncryptionManager {
         this.key = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 
-    public byte[] encryptWithPrefixIV(byte[] pText) throws EncryptionException {
-        byte[] iv = getRandomNonce();
-        byte[] cipherText = encrypt(pText, iv);
+    public byte[] encryptWithPrefixIV(final byte[] pText) throws EncryptionException {
+        final byte[] iv = getRandomNonce();
+        final byte[] cipherText = encrypt(pText, iv);
 
         return ByteBuffer.allocate(iv.length + cipherText.length)
             .put(iv)
@@ -38,44 +38,44 @@ public final class AESEncryptionManager {
             .array();
     }
 
-    private byte[] encrypt(byte[] pText, byte[] iv) {
+    private byte[] encrypt(final byte[] pText, final byte[] iv) {
         try {
-            Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
+            final Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
 
             return cipher.doFinal(pText);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new EncryptionException(e);
         }
     }
 
     private byte[] getRandomNonce() {
-        byte[] nonce = new byte[IV_LENGTH_BYTE];
+        final byte[] nonce = new byte[IV_LENGTH_BYTE];
         secureRandom.nextBytes(nonce);
         return nonce;
     }
 
-    public String decryptWithPrefixIV(byte[] cText) throws EncryptionException {
-        ByteBuffer bb = ByteBuffer.wrap(cText);
+    public String decryptWithPrefixIV(final byte[] cText) throws EncryptionException {
+        final ByteBuffer bb = ByteBuffer.wrap(cText);
 
-        byte[] iv = new byte[IV_LENGTH_BYTE];
+        final byte[] iv = new byte[IV_LENGTH_BYTE];
         bb.get(iv);
 
-        byte[] cipherText = new byte[bb.remaining()];
+        final byte[] cipherText = new byte[bb.remaining()];
         bb.get(cipherText);
 
         return decrypt(cipherText, iv);
     }
 
-    private String decrypt(byte[] cText, byte[] iv) {
+    private String decrypt(final byte[] cText, final byte[] iv) {
         try {
-            Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
+            final Cipher cipher = Cipher.getInstance(ENCRYPT_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(TAG_LENGTH_BIT, iv));
 
-            byte[] plainText = cipher.doFinal(cText);
+            final byte[] plainText = cipher.doFinal(cText);
 
             return new String(plainText, UTF_8);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new EncryptionException(e);
         }
     }

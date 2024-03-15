@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class QueryDSLConfig {
 
     @Bean
-    public JPAQueryFactory query(EntityManager entityManager) {
+    public JPAQueryFactory query(final EntityManager entityManager) {
         return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
     }
 }

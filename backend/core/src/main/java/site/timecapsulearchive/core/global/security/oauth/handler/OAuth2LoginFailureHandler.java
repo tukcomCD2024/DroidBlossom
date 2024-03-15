@@ -22,13 +22,13 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        AuthenticationException exception
+        final HttpServletRequest request,
+        final HttpServletResponse response,
+        final AuthenticationException exception
     ) throws IOException {
         log.info("oauth2 인증 실패", exception);
 
-        ErrorResponse errorResponse = ErrorResponse.create(
+        final ErrorResponse errorResponse = ErrorResponse.create(
             ErrorCode.OAUTH2_NOT_AUTHENTICATED_ERROR
         );
 

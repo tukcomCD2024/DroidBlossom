@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.domain.auth.service.TokenService;
+import site.timecapsulearchive.core.domain.auth.service.TokenManager;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 import site.timecapsulearchive.core.global.security.oauth.dto.CustomOAuth2User;
@@ -22,19 +22,22 @@ import site.timecapsulearchive.core.global.security.oauth.dto.CustomOAuth2User;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final TokenService tokenService;
+    private final TokenManager tokenService;
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-        Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(
+        final HttpServletRequest request,
+        final HttpServletResponse response,
+        final Authentication authentication
+    ) throws IOException {
 
         try {
-            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            final CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            PrintWriter writer = response.getWriter();
+            final PrintWriter writer = response.getWriter();
 
             if (oAuth2User.isNotVerified()) {
                 writer.write(objectMapper.writeValueAsString(
@@ -47,10 +50,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 tokenService.createNewToken(oAuth2User.getId())
             ));
 
-        } catch (Exception exception) {
+        } catch (final Exception exception) {
             log.info("oauth2 인증 실패", exception);
 
-            ErrorResponse errorResponse = ErrorResponse.create(
+            final ErrorResponse errorResponse = ErrorResponse.create(
                 ErrorCode.INTERNAL_SERVER_ERROR
             );
 

@@ -21,12 +21,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.dto.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.dto.secret_c.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -34,7 +33,6 @@ public class CapsuleQueryRepository {
 
     private final EntityManager entityManager;
     private final JPAQueryFactory jpaQueryFactory;
-    private final CapsuleMapper capsuleMapper;
 
     /**
      * 캡슐 타입에 따라 현재 위치에서 범위 내의 캡슐을 조회한다.
@@ -44,12 +42,12 @@ public class CapsuleQueryRepository {
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
-    public List<CapsuleSummaryDto> findCapsuleByCurrentLocationAndCapsuleType(
-        Long memberId,
-        Polygon mbr,
-        CapsuleType capsuleType
+    public List<CapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+        final Long memberId,
+        final Polygon mbr,
+        final CapsuleType capsuleType
     ) {
-        TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+        final TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
             capsuleType);
 
         assignParameter(memberId, mbr, capsuleType, query);
@@ -58,10 +56,10 @@ public class CapsuleQueryRepository {
     }
 
     private TypedQuery<CapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
-        CapsuleType capsuleType
+        final CapsuleType capsuleType
     ) {
         String queryString = """
-            select new site.timecapsulearchive.core.domain.capsule.dto.CapsuleSummaryDto(
+            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto(
                 c.id,
                 c.point,
                 m.nickname,
@@ -85,10 +83,10 @@ public class CapsuleQueryRepository {
     }
 
     private void assignParameter(
-        Long memberId,
-        Polygon mbr,
-        CapsuleType capsuleType,
-        TypedQuery<CapsuleSummaryDto> query
+        final Long memberId,
+        final Polygon mbr,
+        final CapsuleType capsuleType,
+        final TypedQuery<CapsuleSummaryDto> query
     ) {
         query.setParameter("mbr", mbr);
         query.setParameter("memberId", memberId);
@@ -98,9 +96,9 @@ public class CapsuleQueryRepository {
         }
     }
 
-    public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+    public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
+        final Long memberId,
+        final Long capsuleId
     ) {
         return Optional.ofNullable(
             jpaQueryFactory
@@ -125,11 +123,11 @@ public class CapsuleQueryRepository {
         );
     }
 
-    public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+    public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final Long memberId,
+        final Long capsuleId
     ) {
-        SecretCapsuleDetailDto detailDto = jpaQueryFactory
+        final SecretCapsuleDetailDto detailDto = jpaQueryFactory
             .select(
                 Projections.constructor(
                     SecretCapsuleDetailDto.class,
@@ -160,23 +158,26 @@ public class CapsuleQueryRepository {
             )
             .fetchFirst();
 
-        return Optional.ofNullable(detailDto);
+        if (detailDto.capsuleId() == null) {
+            return Optional.empty();
+        }
+        return Optional.of(detailDto);
     }
 
-    private StringExpression groupConcatDistinct(StringExpression expression) {
+    private StringExpression groupConcatDistinct(final StringExpression expression) {
         return Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", expression);
     }
 
     public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
-        List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsulesByMemberIdAndCreatedAt(
+        final List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsuleDtosByMemberIdAndCreatedAt(
             memberId, size, createdAt
         );
 
-        boolean hasNext = canMoreRead(size, mySecretCapsules.size());
+        final boolean hasNext = canMoreRead(size, mySecretCapsules.size());
         if (hasNext) {
             mySecretCapsules.remove(size);
         }
@@ -184,10 +185,10 @@ public class CapsuleQueryRepository {
         return new SliceImpl<>(mySecretCapsules, Pageable.ofSize(size), hasNext);
     }
 
-    private List<MySecreteCapsuleDto> findMySecretCapsulesByMemberIdAndCreatedAt(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+    private List<MySecreteCapsuleDto> findMySecretCapsuleDtosByMemberIdAndCreatedAt(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
         return jpaQueryFactory
             .select(
@@ -214,7 +215,7 @@ public class CapsuleQueryRepository {
             .fetch();
     }
 
-    private boolean canMoreRead(int size, int capsuleSize) {
+    private boolean canMoreRead(final int size, final int capsuleSize) {
         return capsuleSize > size;
     }
 }

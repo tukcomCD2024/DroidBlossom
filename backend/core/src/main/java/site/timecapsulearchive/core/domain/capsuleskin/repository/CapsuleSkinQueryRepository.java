@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.capsuleskin.dto.CapsuleSkinSummaryDto;
+import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class CapsuleSkinQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<CapsuleSkinSummaryDto> capsuleSkins = selectCapsuleSkinSummaryResponse(
+        final List<CapsuleSkinSummaryDto> capsuleSkins = findCapsuleSkinSummaryDtosByCreatedAtAndMemberId(
             memberId,
             size,
             createdAt
@@ -38,7 +38,7 @@ public class CapsuleSkinQueryRepository {
         return new SliceImpl<>(capsuleSkins, Pageable.ofSize(size), hasNext);
     }
 
-    private List<CapsuleSkinSummaryDto> selectCapsuleSkinSummaryResponse(
+    private List<CapsuleSkinSummaryDto> findCapsuleSkinSummaryDtosByCreatedAtAndMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

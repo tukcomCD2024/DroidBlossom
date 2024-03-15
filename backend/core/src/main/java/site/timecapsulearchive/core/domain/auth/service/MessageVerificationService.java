@@ -5,8 +5,8 @@ import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.auth.dto.response.TokenResponse;
-import site.timecapsulearchive.core.domain.auth.dto.response.VerificationMessageSendResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
@@ -14,8 +14,8 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
-import site.timecapsulearchive.core.infra.sms.dto.SmsApiResponse;
-import site.timecapsulearchive.core.infra.sms.service.SmsApiService;
+import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
+import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
 @Service
 @Transactional
@@ -27,9 +27,9 @@ public class MessageVerificationService {
     private static final int MAX = 10000;
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
-    private final SmsApiService smsApiService;
+    private final SmsApiManager smsApiManager;
     private final MemberService memberService;
-    private final TokenService tokenService;
+    private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
     private final HashEncryptionManager hashEncryptionManager;
@@ -50,7 +50,7 @@ public class MessageVerificationService {
 
         final String message = generateMessage(code, appHashKey);
 
-        final SmsApiResponse apiResponse = smsApiService.sendMessage(receiver, message);
+        final SmsApiResponse apiResponse = smsApiManager.sendMessage(receiver, message);
 
         messageAuthenticationCacheRepository.save(memberId, code);
 
@@ -77,7 +77,8 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
-        String findCertificationNumber = messageAuthenticationCacheRepository.get(memberId)
+        final String findCertificationNumber = messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
+                memberId)
             .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
@@ -86,17 +87,18 @@ public class MessageVerificationService {
 
         updateMemberData(memberId, receiver);
 
-        return tokenService.createNewToken(memberId);
+        return tokenManager.createNewToken(memberId);
     }
 
-    private boolean isNotMatch(String certificationNumber, String findCertificationNumber) {
+    private boolean isNotMatch(final String certificationNumber,
+        final String findCertificationNumber) {
         return !certificationNumber.equals(findCertificationNumber);
     }
 
-    private void updateMemberData(Long memberId, String receiver) {
-        Member findMember = memberService.findMemberByMemberId(memberId);
+    private void updateMemberData(final Long memberId, final String receiver) {
+        final Member findMember = memberService.findMemberByMemberId(memberId);
 
-        byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
 
         findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
         findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));

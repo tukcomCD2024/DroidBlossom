@@ -5,7 +5,9 @@ import static site.timecapsulearchive.core.global.error.ErrorCode.INPUT_INVALID_
 import static site.timecapsulearchive.core.global.error.ErrorCode.INTERNAL_SERVER_ERROR;
 import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_NOT_FOUND_ERROR;
 
+import jakarta.transaction.TransactionalException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,7 +25,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleGlobalException(final Exception e) {
         log.error(e.getMessage(), e);
 
-        ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INTERNAL_SERVER_ERROR);
+        final ErrorResponse errorResponse = ErrorResponse.create(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR.getStatus())
             .body(errorResponse);
     }
@@ -32,8 +34,8 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
         log.error(e.getMessage(), e);
 
-        ErrorCode errorCode = e.getErrorCode();
-        ErrorResponse errorResponse = ErrorResponse.create(errorCode);
+        final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse errorResponse = ErrorResponse.create(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);
@@ -45,7 +47,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        ErrorResponse response = ErrorResponse.create(INPUT_INVALID_VALUE_ERROR,
+        final ErrorResponse response = ErrorResponse.create(INPUT_INVALID_VALUE_ERROR,
             e.getBindingResult());
         return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
             .body(response);
@@ -57,7 +59,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        ErrorResponse response = ErrorResponse.create(INPUT_INVALID_TYPE_ERROR);
+        final ErrorResponse response = ErrorResponse.create(INPUT_INVALID_TYPE_ERROR);
         return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
             .body(response);
     }
@@ -66,8 +68,8 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleExternalApiException(ExternalApiException e) {
         log.warn(e.getMessage(), e);
 
-        ErrorCode errorCode = e.getErrorCode();
-        ErrorResponse response = ErrorResponse.create(errorCode);
+        final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse response = ErrorResponse.create(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(response);
@@ -79,10 +81,35 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        ErrorResponse errorResponse = ErrorResponse.parameter(REQUEST_PARAMETER_NOT_FOUND_ERROR,
+        final ErrorResponse errorResponse = ErrorResponse.parameter(
+            REQUEST_PARAMETER_NOT_FOUND_ERROR,
             e.getParameterName());
 
         return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
+        DataIntegrityViolationException e
+    ) {
+        log.warn(e.getMessage(), e);
+
+        ErrorCode errorCode = INPUT_INVALID_VALUE_ERROR;
+        final ErrorResponse errorResponse = ErrorResponse.create(errorCode);
+
+        return ResponseEntity.status(errorCode.getStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(TransactionalException.class)
+    protected ResponseEntity<ErrorResponse> handleTransactionException(TransactionalException e) {
+        log.warn(e.getMessage(), e);
+
+        ErrorCode errorCode = INTERNAL_SERVER_ERROR;
+        final ErrorResponse errorResponse = ErrorResponse.create(errorCode);
+
+        return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);
     }
 }

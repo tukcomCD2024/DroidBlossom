@@ -14,17 +14,17 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private final JwtFactory jwtFactory;
 
     @Override
-    public Authentication authenticate(Authentication authentication)
+    public Authentication authenticate(final Authentication authentication)
         throws AuthenticationException {
-        String accessToken = (String) authentication.getCredentials();
+        final String accessToken = (String) authentication.getCredentials();
 
         jwtFactory.validate(accessToken);
 
-        TokenParseResult tokenParseResult = jwtFactory.parse(
+        final TokenParseResult tokenParseResult = jwtFactory.parse(
             accessToken, List.of(TokenType.ACCESS, TokenType.TEMPORARY)
         );
 
-        Long memberId = getMemberId(tokenParseResult);
+        final Long memberId = getMemberId(tokenParseResult);
         if (tokenParseResult.tokenType() == TokenType.TEMPORARY) {
             return JwtAuthenticationToken.authenticatedWithTemporary(memberId);
         }
@@ -32,12 +32,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         return JwtAuthenticationToken.authenticatedWithAccess(memberId);
     }
 
-    private Long getMemberId(TokenParseResult tokenParseResult) {
+    private Long getMemberId(final TokenParseResult tokenParseResult) {
         return Long.valueOf(tokenParseResult.subject());
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
+    public boolean supports(final Class<?> authentication) {
         return JwtAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

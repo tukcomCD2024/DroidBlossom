@@ -29,15 +29,15 @@ public class ApiLimitCheckInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler
+        final HttpServletRequest request,
+        final HttpServletResponse response,
+        final Object handler
     ) {
-        Long memberId = (Long) SecurityContextHolder.getContext()
+        final Long memberId = (Long) SecurityContextHolder.getContext()
             .getAuthentication()
             .getPrincipal();
 
-        Integer apiUsageCount = apiUsageCacheRepository.getSmsApiUsage(memberId)
+        final Integer apiUsageCount = apiUsageCacheRepository.findSmsApiUsageByMemberId(memberId)
             .orElse(NO_USAGE);
 
         if (apiUsageCount > apiLimitProperties.smsLimit()) {
@@ -54,7 +54,7 @@ public class ApiLimitCheckInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean isFirstRequest(Integer apiUsageCount) {
+    private boolean isFirstRequest(final Integer apiUsageCount) {
         return apiUsageCount.equals(NO_USAGE);
     }
 }

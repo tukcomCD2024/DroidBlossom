@@ -5,7 +5,7 @@ public record TokenParseResult(
     TokenType tokenType
 ) {
 
-    public static TokenParseResult of(String subject, TokenType tokenType) {
+    public static TokenParseResult of(final String subject, final TokenType tokenType) {
         return new TokenParseResult(subject, tokenType);
     }
 }

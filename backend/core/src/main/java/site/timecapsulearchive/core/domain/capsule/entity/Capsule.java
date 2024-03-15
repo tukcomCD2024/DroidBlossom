@@ -15,7 +15,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -97,16 +96,11 @@ public class Capsule extends BaseEntity {
         this.content = content;
         this.point = point;
         this.type = type;
-        this.isOpened = false;
+        this.isOpened = Boolean.FALSE;
         this.address = address;
-        this.groupCapsuleOpens = Collections.emptyList();
         this.group = null;
         this.member = member;
         this.capsuleSkin = capsuleSkin;
-    }
-
-    public void open() {
-        this.isOpened = true;
     }
 
     public boolean isNotCapsuleOpened() {

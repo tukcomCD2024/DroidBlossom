@@ -15,7 +15,7 @@ import site.timecapsulearchive.core.global.common.valid.ImageExtensionValidator;
 @Documented
 public @interface Image {
 
-    String message() default "이미지는 공백을 포함하지 않은 jpeg만 지원합니다.";
+    String message() default "이미지는 공백을 포함하지 않은 png만 지원합니다.";
 
     Class<?>[] groups() default {};
 
