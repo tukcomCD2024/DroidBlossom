@@ -12,11 +12,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
@@ -101,9 +101,6 @@ public interface FriendApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        produces = {"application/json"}
-    )
     ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
         Long memberId,
 
@@ -126,11 +123,9 @@ public interface FriendApi {
             description = "ok"
         )
     })
-    @GetMapping(
-        value = "/requests",
-        produces = {"application/json"}
-    )
-    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendRequests(
+    ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
+        Long memberId,
+
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
         int size,
 

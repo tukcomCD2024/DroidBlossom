@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
@@ -59,10 +60,22 @@ public class FriendApiController implements FriendApi {
         );
     }
 
+    @GetMapping(
+        value = "/requests",
+        produces = {"application/json"}
+    )
     @Override
-    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendRequests(int size,
-        ZonedDateTime createdAt) {
-        return null;
+    public ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                friendService.findFriendRequestsSlice(memberId, size, createdAt)
+            )
+        );
     }
 
     @Override

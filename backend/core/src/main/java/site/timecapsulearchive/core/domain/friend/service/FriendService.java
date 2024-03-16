@@ -11,6 +11,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
@@ -96,5 +97,16 @@ public class FriendService {
             size, createdAt);
 
         return memberFriendMapper.friendsSliceToResponse(friends);
+    }
+
+    public FriendRequestsSliceResponse findFriendRequestsSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        Slice<FriendSummaryDto> friendRequests = memberFriendQueryRepository.findFriendRequestsSlice(
+            memberId, size, createdAt);
+
+        return memberFriendMapper.friendRequestsSliceToResponse(friendRequests.getContent(), friendRequests.hasNext());
     }
 }

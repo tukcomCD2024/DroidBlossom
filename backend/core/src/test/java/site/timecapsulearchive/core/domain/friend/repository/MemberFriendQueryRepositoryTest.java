@@ -101,4 +101,80 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         //then
         assertThat(slice.getContent().size()).isEqualTo(0);
     }
+
+    @DisplayName("사용자의_친구_요청_목록_조회_테스트")
+    @Test
+    void findFriendRequestsSlice() {
+        //given
+        Long memberId = 21L;
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
+
+        //when
+        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
+            memberId,
+            size,
+            now
+        );
+
+        //then
+        assertThat(slice.getContent().size()).isEqualTo(size);
+    }
+
+    @DisplayName("사용자의_친구_요청_목록_조회_테스트")
+    @ParameterizedTest
+    @ValueSource(ints = {20, 15, 10, 5})
+    void findFriendRequestsSliceWithDifferentSize(int size) {
+        //given
+        Long memberId = 21L;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
+
+        //when
+        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
+            memberId,
+            size,
+            now
+        );
+
+        //then
+        assertThat(slice.getContent().size()).isEqualTo(size);
+    }
+
+    @DisplayName("유효하지_않은_시간으로_사용자의_친구_요청_목록_조회_테스트")
+    @Test
+    void findFriendRequestsSliceWithNotValidDate() {
+        //given
+        Long memberId = 21L;
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
+
+        //when
+        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
+            memberId,
+            size,
+            now
+        );
+
+        //then
+        assertThat(slice.getContent().size()).isEqualTo(0);
+    }
+
+    @DisplayName("친구가_없는_사용자의_친구_요청_목록_조회_테스트")
+    @Test
+    void findFriendRequestsSliceWithNotMemberId() {
+        //given
+        Long memberId = 20L;
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
+
+        //when
+        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
+            memberId,
+            size,
+            now
+        );
+
+        //then
+        assertThat(slice.getContent().size()).isEqualTo(0);
+    }
 }
