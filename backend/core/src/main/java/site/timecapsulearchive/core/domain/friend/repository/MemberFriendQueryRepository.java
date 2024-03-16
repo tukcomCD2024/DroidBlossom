@@ -35,8 +35,8 @@ public class MemberFriendQueryRepository {
                 )
             )
             .from(memberFriend)
-            .leftJoin(member).on(memberFriend.friend.id.eq(member.id))
-            .leftJoin(member).on(memberFriend.owner.id.eq(member.id))
+            .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
+            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
             .where(memberFriend.owner.id.eq(memberId).and(memberFriend.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
@@ -49,7 +49,7 @@ public class MemberFriendQueryRepository {
         return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
     }
 
-    private boolean canMoreRead(final int size, final int capsuleSize) {
-        return capsuleSize > size;
+    private boolean canMoreRead(final int size, final int data) {
+        return data > size;
     }
 }
