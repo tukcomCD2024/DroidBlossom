@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.ZonedDateTime;
 
 @Schema(description = "친구 요약 정보")
 public record FriendSummaryResponse(
@@ -11,7 +12,10 @@ public record FriendSummaryResponse(
     String profileUrl,
 
     @Schema(description = "친구 닉네임")
-    String nickname
+    String nickname,
+
+    @Schema(description = "친구 수락일")
+    ZonedDateTime createdAt
 ) {
 
 }

@@ -20,6 +20,6 @@ public class MemberFriendMapper {
     }
 
     private FriendSummaryResponse friendsSummaryDtoToResponse(FriendSummaryDto dto) {
-        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname());
+        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(), dto.createdAt());
     }
 }

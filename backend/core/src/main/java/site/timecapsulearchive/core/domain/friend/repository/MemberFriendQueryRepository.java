@@ -31,7 +31,8 @@ public class MemberFriendQueryRepository {
                     FriendSummaryDto.class,
                     memberFriend.friend.id,
                     memberFriend.friend.profileUrl,
-                    memberFriend.friend.nickname
+                    memberFriend.friend.nickname,
+                    memberFriend.createdAt
                 )
             )
             .from(memberFriend)
