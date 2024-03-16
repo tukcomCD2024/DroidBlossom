@@ -3,11 +3,11 @@ name: ci/cd
 on:
   push:
     branches:
-      - develop_back
-      - 'hotfix/[0-9a-zA-z]+-B-#[0-9a-zA-z]+'
+      - develop_back_core
+      - 'hotfix/[0-9a-zA-z]+-B-core-#[0-9a-zA-z]+'
   pull_request:
     branches:
-      - develop_back
+      - develop_back_core
 
 jobs:
   formatting:
