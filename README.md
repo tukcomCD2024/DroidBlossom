@@ -36,7 +36,7 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/66acc665-0f44-4de7-ac0e-421f5ecefc47" width="190px" height="400px">
 
 ## 🛠 개발 시스템 구성도
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/b64cf260-e07d-4db0-9370-106cb3f218f3">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/1932a1c6-d8f2-4c11-82f4-1a602852bcd3">
 
 ## 🖥️ 시스템 디자인 & 하위 모듈
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0b274bed-1754-44b7-8860-5be834449734">
@@ -48,7 +48,10 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/68e6f0f5-5281-469e-b637-d343ac7fcfc7" width="260px" height="350px">
 
 ## ⚙️ 운용 환경
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/aedac9b1-a185-426f-b1a6-d3169d738c8c">
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/243bd68b-80f4-47ae-872c-a0e921c211f4">
+
+## 🛢 ERD
+<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/59e02146-a89c-4a71-b31a-debef38cb30d">
 
 ## 📝 위키
 <a href="https://github.com/tukcomCD2024/DroidBlossom/wiki" style="font-size: 25px">ARchive 위키</a>

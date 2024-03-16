@@ -31,6 +31,11 @@ class SkinViewModelImpl @Inject constructor(
     override val skins: StateFlow<List<CapsuleSkinSummary>>
         get() = _skins
 
+    private val _skinsUI = MutableStateFlow(listOf<CapsuleSkinSummary>())
+
+    override val skinsUI: StateFlow<List<CapsuleSkinSummary>>
+        get() = _skins
+
     private val _lastCreatedSkinTime = MutableStateFlow(DateUtils.dataServerString)
     override val lastCreatedSkinTime: StateFlow<String>
         get() = _lastCreatedSkinTime
@@ -38,6 +43,10 @@ class SkinViewModelImpl @Inject constructor(
     private val _hasNextSkins = MutableStateFlow(true)
     override val hasNextSkins: StateFlow<Boolean>
         get() = _hasNextSkins
+
+    private val _isSearchOpen = MutableStateFlow(false)
+    override val isSearchOpen: StateFlow<Boolean>
+        get() = _isSearchOpen
 
 
     override fun getSkinList() {
@@ -62,9 +71,42 @@ class SkinViewModelImpl @Inject constructor(
         }
     }
 
+    override fun updateMySkinsUI(){
+        viewModelScope.launch {
+            _skinsUI.emit(skins.value)
+        }
+    }
     override fun goSkinMake() {
         viewModelScope.launch {
             _skinEvents.emit(SkinViewModel.SkinEvent.ToSkinMake)
         }
     }
+
+    override fun searchSkin() {
+        viewModelScope.launch {
+            //스킨 검색 API
+        }
+    }
+
+    override fun openSearchSkin() {
+        viewModelScope.launch {
+            _isSearchOpen.emit(true)
+        }
+    }
+
+    override fun closeSearchSkin() {
+        viewModelScope.launch {
+            _isSearchOpen.emit(false)
+        }
+    }
+
+    override fun clearSkins() {
+        viewModelScope.launch {
+            _skins.value = listOf()
+            _lastCreatedSkinTime.value = DateUtils.dataServerString
+            _hasNextSkins.value = true
+            getSkinList()
+        }
+    }
+
 }

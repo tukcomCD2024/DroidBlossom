@@ -13,6 +13,7 @@ import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +42,10 @@ class MyPageViewModelImpl @Inject constructor(
     private val _myCapsules = MutableStateFlow(listOf<MyCapsule>())
     override val myCapsules: StateFlow<List<MyCapsule>>
         get() = _myCapsules
+
+    private val _myCapsulesUI = MutableStateFlow(listOf<MyCapsule>())
+    override val myCapsulesUI: StateFlow<List<MyCapsule>>
+        get() = _myCapsulesUI
 
     private val _hasNextPage = MutableStateFlow(true)
     override val hasNextPage: StateFlow<Boolean>
@@ -82,12 +88,33 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
+    override fun updateMyCapsulesUI() {
+        viewModelScope.launch {
+            _myCapsulesUI.emit(myCapsules.value)
+        }
+    }
+
     override fun clearCapsules() {
         viewModelScope.launch {
             _myCapsules.value = listOf()
             _lastCreatedTime.value = DateUtils.dataServerString
             _hasNextPage.value = true
             getSecretCapsulePage()
+        }
+    }
+
+    override fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean) {
+        viewModelScope.launch {
+            val updatedCapsules = withContext(Dispatchers.Default) {
+                _myCapsules.value.map { capsule ->
+                    if (capsule.capsuleId == capsuleId) {
+                        capsule.copy(isOpened = isOpened)
+                    } else {
+                        capsule
+                    }
+                }
+            }
+            _myCapsules.emit(updatedCapsules)
         }
     }
 }

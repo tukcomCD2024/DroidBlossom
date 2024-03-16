@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 Properties properties = new Properties()
@@ -125,8 +127,8 @@ dependencies {
     //circleImageView : https://github.com/hdodenhof/CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    //circleIndicator : https://github.com/ongakuer/CircleIndicator
-    implementation 'me.relex:circleindicator:2.1.6'
+    //indicator : https://github.com/tommybuonomo/dotsindicator?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=7127
+    implementation "com.tbuonomo:dotsindicator:5.0"
 
     // SMS Retriever API
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
@@ -160,6 +162,22 @@ dependencies {
     // SceneView
     implementation 'io.github.sceneview:arsceneview:2.0.2'
 
+    //exoplayer  -> media3
+    implementation 'androidx.media3:media3-exoplayer:1.2.1'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.2.1'
+    implementation 'androidx.media3:media3-ui:1.2.1'
+
+    //이미지 확대 : https://github.com/Baseflow/PhotoView
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics'
+
+    // Event Bus : https://github.com/greenrobot/EventBus
+    implementation("org.greenrobot:eventbus:3.3.1")
 }
 kapt {
     correctErrorTypes true

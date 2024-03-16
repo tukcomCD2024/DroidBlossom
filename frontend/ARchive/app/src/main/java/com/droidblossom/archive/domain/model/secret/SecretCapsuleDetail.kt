@@ -7,6 +7,7 @@ data class SecretCapsuleDetail(
     val content: String,
     val createdDate: String,
     val dueDate: String?,
+    val profileUrl :String,
     val isOpened: Boolean,
     val imageUrls: List<String>?,
     val videoUrls : List<String>?,
@@ -14,5 +15,5 @@ data class SecretCapsuleDetail(
     val title: String,
     val capsuleType: String
 ){
-    constructor() : this("","","","",null,false, listOf(), listOf(),"","","")
+    constructor() : this("","","","",null,"",false, listOf(), listOf(),"","","")
 }
