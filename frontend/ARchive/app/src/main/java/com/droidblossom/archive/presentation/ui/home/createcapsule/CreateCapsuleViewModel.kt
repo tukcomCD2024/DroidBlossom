@@ -1,13 +1,12 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
+import android.net.Uri
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
-import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +29,7 @@ interface CreateCapsuleViewModel {
     val hasNextSkins : StateFlow<Boolean>
 
     //Create3
+    val isNotSelectCapsule : StateFlow<Boolean>
     val create3Events: SharedFlow<Create3Event>
     val capsuleTitle: MutableStateFlow<String>
     val capsuleContent: MutableStateFlow<String>
@@ -40,8 +40,11 @@ interface CreateCapsuleViewModel {
     val capsuleImgUrls: StateFlow<List<String>>
     val isSelectTimeCapsule : StateFlow<Boolean>
     val imgUris : StateFlow<List<Dummy>>
+    val contentUris : StateFlow<List<Dummy>>
+    val videoUri : StateFlow<List<Uri>>
     val imageFiles: StateFlow<List<File>>
     val videoFiles: StateFlow<List<File>>
+    val isOpenTimeSetting : StateFlow<Boolean>
 
     //DatePicker
     val year : MutableStateFlow<Int>
@@ -70,15 +73,22 @@ interface CreateCapsuleViewModel {
     fun goSelectTime()
     fun moveImgUpLoad()
     fun moveSingleImgUpLoad()
+    fun moveVideoUpLoad()
     fun selectTimeCapsule()
     fun selectCapsule()
+    fun addContentUris(list: List<Dummy>)
     fun addImgUris(list: List<Dummy>)
     fun submitUris(list:List<Dummy>)
+    fun submitContentUris(list: List<Dummy>)
+    fun deleteVideoUrl()
+    fun addVideoUrl(uri : Uri)
     fun coordToAddress(latitude: Double, longitude: Double)
     fun getDueTime(tiem:String)
     fun getUploadUrls(getS3UrlData : S3UrlRequest)
 
-    fun makeFiles(files : List<File>)
+    fun setFiles(imageFiles: List<File>, videoFiles: List<File>)
+    fun closeTimeSetting()
+    fun openTimeSetting()
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
@@ -97,6 +107,7 @@ interface CreateCapsuleViewModel {
         object ClickDate : Create3Event()
         object ClickImgUpLoad : Create3Event()
         object CLickSingleImgUpLoad : Create3Event()
+        object ClickVideoUpLoad : Create3Event()
         data class ShowToastMessage(val message : String) : Create3Event()
     }
 

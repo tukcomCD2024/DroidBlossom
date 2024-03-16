@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -20,7 +20,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/main_4"
+            app:strokeWidth="8dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -29,16 +31,27 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/postImg"
                     android:layout_width="match_parent"
-                    android:layout_height="360dp"
+                    android:layout_height="0dp"
+                    android:layout_margin="4dp"
                     android:background="@drawable/corner_radius_16_stroke_2"
+                    android:backgroundTint="@color/white"
                     android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="w,3:4"
+                    app:layout_constraintDimensionRatio="w,1:1"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/plusV"
+                    android:layout_width="112dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/main_4"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/plusImg"
@@ -48,23 +61,45 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/currentImgT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/corner_radius_12"
+                    android:backgroundTint="@color/main_dark_alpha50"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
+                    android:textAppearance="@style/TextAppearance.App.caption4"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/plusT"
+                    android:id="@+id/videoT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="사진 업로드"
-                    android:textAppearance="@style/TextAppearance.App.body2"
-                    app:layout_constraintEnd_toEndOf="@id/plusImg"
-                    app:layout_constraintStart_toStartOf="@id/plusImg"
-                    app:layout_constraintTop_toBottomOf="@id/plusImg" />
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/main_alpha85"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:text="Video"
+                    android:textAppearance="@style/TextAppearance.App.h1"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

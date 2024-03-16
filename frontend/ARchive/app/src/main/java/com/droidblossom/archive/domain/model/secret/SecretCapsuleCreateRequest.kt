@@ -20,7 +20,7 @@ data class SecretCapsuleCreateRequest(
         capsuleSkinId = this.capsuleSkinId,
         content = this.content,
         directory = this.directory,
-        dueDate = this.dueDate,
+        dueDate = this.dueDate.ifEmpty { null },
         imageNames = this.imageNames.ifEmpty { null },
         videoNames = this.videoNames.ifEmpty { null },
         addressData = this.addressData.toDto(),

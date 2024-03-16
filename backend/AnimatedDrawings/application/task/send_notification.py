@@ -2,8 +2,8 @@ import logging
 
 import requests
 
-from application.model.capsule_skin_creation_status import \
-    CapsuleSkinCreationStatus
+from application.model.notification_status import \
+    NotificationStatus
 from application.task.base_task import LogErrorsTask
 
 logger = logging.getLogger('send_notification')
@@ -19,7 +19,7 @@ class SendNotification(LogErrorsTask):
             'title': '캡슐 스킨 생성이 완료되었습니다',
             'text': f"{kwargs['input_data']['skinName']}이 생성되었습니다. ARchive에서 확인해보세요!",
             'skinUrl': kwargs['filename'],
-            'status': CapsuleSkinCreationStatus.SUCCESS_MAKE_CAPSULE_SKIN.value
+            'status': NotificationStatus.SUCCESS.value
         }
 
         try:

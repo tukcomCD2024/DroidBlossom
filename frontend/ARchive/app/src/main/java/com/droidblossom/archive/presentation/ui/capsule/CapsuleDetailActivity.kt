@@ -3,14 +3,15 @@ package com.droidblossom.archive.presentation.ui.capsule
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.viewpager.widget.ViewPager
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCapsuleDetailBinding
-import com.droidblossom.archive.domain.model.common.ImageUrl
+import com.droidblossom.archive.domain.model.common.ContentType
+import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageUrlRVA
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -19,12 +20,26 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityCapsuleDetailBinding>(R.layout.activity_capsule_detail) {
+class CapsuleDetailActivity :
+    BaseActivity<CapsuleDetailViewModelImpl, ActivityCapsuleDetailBinding>(R.layout.activity_capsule_detail) {
     override val viewModel: CapsuleDetailViewModelImpl by viewModels()
 
     private val imageVP by lazy {
-        ImageUrlRVA{}
+        ImageUrlRVA({ position, list ->
+            startActivity(
+                ImagesActivity.newIntent(
+                    this,
+                    list.map { it.url }.toTypedArray(),
+                    position
+                )
+            )
+        }, { url ->
+            startActivity(
+                VideoActivity.newIntent(this, url)
+            )
+        })
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
@@ -33,22 +48,27 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
         initRVA()
     }
 
-    private fun initDetail(){
-        val type = intent.intentSerializable(CAPSULE_TYPE , HomeFragment.CapsuleType::class.java)
-        val capsuleInd =intent.getLongExtra(CAPSULE_ID, 0)
-        when (type){
+    private fun initDetail() {
+        val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.closeBtn.layoutParams = layoutParams
+
+        val type = intent.intentSerializable(CAPSULE_TYPE, HomeFragment.CapsuleType::class.java)
+        val capsuleInd = intent.getLongExtra(CAPSULE_ID, 0)
+
+        when (type) {
             HomeFragment.CapsuleType.SECRET -> {
-                binding.capsuleTypeT.text = type.name
                 viewModel.getSecretCapsuleDetail(capsuleInd)
             }
+
             HomeFragment.CapsuleType.GROUP -> {
-                binding.capsuleTypeT.text = type.name
 
             }
+
             HomeFragment.CapsuleType.PUBLIC -> {
-                binding.capsuleTypeT.text = type.name
 
             }
+
             null -> {}
         }
         binding.closeBtn.setOnClickListener {
@@ -56,27 +76,37 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
         }
     }
 
-    private fun initRVA(){
+    private fun initRVA() {
         binding.postImgVP.adapter = imageVP
         binding.postImgVP.offscreenPageLimit = 3
-        //binding.indicator.setViewPager(binding.postImgVP as ViewPager)
+        binding.indicator.attachTo(binding.postImgVP)
+
     }
 
     override fun observeData() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.capsuleDetail.collect{
-                    imageVP.submitList(it.imageUrls?.map { url -> ImageUrl(url) }?.toList() ?: listOf())
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.capsuleDetail.collect {
+                    imageVP.submitList(
+                        (it.imageUrls?.map { url ->
+                            ContentUrl(url, ContentType.IMAGE)
+                        }?.toList() ?: listOf<ContentUrl>())
+                                + (it.videoUrls?.map { url ->
+                                    ContentUrl(url, ContentType.VIDEO)
+                                }?.toList() ?: listOf<ContentUrl>())
+                    )
+
                 }
             }
         }
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.detailEvents.collect{
-                    when(it){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.detailEvents.collect {
+                    when (it) {
                         is CapsuleDetailViewModel.DetailEvent.ShowToastMessage -> {
                             showToastMessage(it.message)
                         }
+
                         else -> {}
                     }
                 }
@@ -89,7 +119,7 @@ class CapsuleDetailActivity : BaseActivity<CapsuleDetailViewModelImpl, ActivityC
         const val CAPSULE_ID = "capsule_id"
         const val CAPSULE_TYPE = "capsule_type"
 
-        fun newIntent(context: Context , capsuleId : Long, capsuleType : HomeFragment.CapsuleType) =
+        fun newIntent(context: Context, capsuleId: Long, capsuleType: HomeFragment.CapsuleType) =
             Intent(context, CapsuleDetailActivity::class.java).apply {
                 putExtra(CAPSULE_ID, capsuleId)
                 putExtra(CAPSULE_TYPE, capsuleType)

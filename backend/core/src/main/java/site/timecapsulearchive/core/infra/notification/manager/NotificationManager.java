@@ -16,6 +16,7 @@ public class NotificationManager {
 
     private final NotificationMapper notificationMapper;
     private final NotificationRequestExceptionAspect aspect;
+    private final NotificationUrl notificationUrl;
 
     @NotificationRequest
     public void sendCreatedSkinMessage(final Long memberId, final CapsuleSkinCreateDto dto) {

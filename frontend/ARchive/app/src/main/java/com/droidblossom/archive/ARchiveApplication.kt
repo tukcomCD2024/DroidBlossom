@@ -3,15 +3,21 @@ package com.droidblossom.archive
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
+import android.os.Process
 import androidx.annotation.StringRes
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.droidblossom.archive.util.DataStoreUtils
+import com.droidblossom.archive.presentation.ui.ErrorActivity
+import com.droidblossom.archive.util.ExceptionHandler
 import com.droidblossom.archive.util.NetworkStatusChecker
-import com.droidblossom.archive.util.SharedPreferencesUtils
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 
 @HiltAndroidApp
@@ -21,7 +27,9 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         context = applicationContext
         networkConnectionChecker = NetworkStatusChecker(context)
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
-
+        //setCrashHandler()
+        Thread.setDefaultUncaughtExceptionHandler { _, _ -> caughtException() }
+        dummyCoroutines()
 
         // 키 값 알아내기
 //        AppSignatureHelper(this@ARchiveApplication).apply {
@@ -29,6 +37,42 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
 //        }
 //        getHashKey()
         // Kakao Sdk 초기화
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun dummyCoroutines(){
+        GlobalScope.launch(Dispatchers.Default) {
+
+            GlobalScope.launch(Dispatchers.IO) {}
+
+            GlobalScope.launch(Dispatchers.Main) {}
+
+            GlobalScope.launch(Dispatchers.Unconfined) {}
+
+        }
+    }
+
+    private fun setCrashHandler() {
+        val crashlyticsExceptionHandler = Thread.getDefaultUncaughtExceptionHandler() ?: return
+        Thread.setDefaultUncaughtExceptionHandler(
+            ExceptionHandler(
+                this,
+                crashlyticsExceptionHandler
+            )
+        )
+    }
+
+    private fun caughtException(){
+        startErrorActivity()
+        Process.killProcess(Process.myPid())
+        exitProcess(-1)
+    }
+
+    private fun startErrorActivity(){
+        val intent = Intent(this, ErrorActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -52,6 +96,8 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
 
         private lateinit var networkConnectionChecker: NetworkStatusChecker
         fun isOnline() = networkConnectionChecker.isOnline()
+
+        fun getContext() : Context = context
 
     }
 
