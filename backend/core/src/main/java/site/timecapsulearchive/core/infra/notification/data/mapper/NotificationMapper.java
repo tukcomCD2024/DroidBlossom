@@ -11,13 +11,16 @@ import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 @RequiredArgsConstructor
 public class NotificationMapper {
 
+    private static final String NOTIFICATION_SEND_SUCCESS = "SUCCESS";
+    private static final String NOTIFICATION_SEND_FAILED = "FAILED";
+
     private final S3UrlGenerator s3UrlGenerator;
 
     public CreatedCapsuleSkinNotificationRequest capsuleSkinDtoToMessage(Long memberId,
         CapsuleSkinCreateDto dto) {
         return CreatedCapsuleSkinNotificationRequest.builder()
             .memberId(memberId)
-            .status("SUCCESS_MAKE_CAPSULE_SKIN")
+            .status(NOTIFICATION_SEND_SUCCESS)
             .skinName(dto.skinName())
             .title("캡슐 스킨 생성 알림")
             .text(dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!")
@@ -28,7 +31,7 @@ public class NotificationMapper {
     public FriendReqNotificationRequest friendReqToMessage(Long friendId, String ownerNickname) {
         return FriendReqNotificationRequest.builder()
             .friendId(friendId)
-            .status("SEND_FRIEND_REQ_MESSAGE")
+            .status(NOTIFICATION_SEND_FAILED)
             .title("친구 요청 알림")
             .text(ownerNickname + "로부터 친구 요청이 왔습니다. ARchive에서 확인해보세요!")
             .build();
