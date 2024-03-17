@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsPageResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
-import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface FriendApi {
 
@@ -33,10 +33,10 @@ public interface FriendApi {
             description = "처리 완료"
         )
     })
-    @PostMapping(value = "/friends/accept-request")
+    @PostMapping(value = "/accept-request")
     ResponseEntity<Void> acceptFriendRequest(
-        @Parameter(in = ParameterIn.QUERY, required = true)
-        @RequestParam(value = "friend_id") Long friendId
+        @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
+        @NotNull @Valid @RequestParam(value = "friend_id") Long friendId
     );
 
 
@@ -72,7 +72,7 @@ public interface FriendApi {
             description = "처리 완료"
         )
     })
-    @PostMapping(value = "/friends/deny-request")
+    @PostMapping(value = "/deny-request")
     ResponseEntity<Void> denyFriendRequest(
         @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
         @NotNull @Valid @RequestParam(value = "friend_id") Long friendId
@@ -92,7 +92,6 @@ public interface FriendApi {
         )
     })
     @GetMapping(
-        value = "/friends",
         produces = {"application/json"}
     )
     ResponseEntity<FriendsPageResponse> findFriends(
@@ -114,12 +113,17 @@ public interface FriendApi {
         @ApiResponse(
             responseCode = "202",
             description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
-    @PostMapping(value = "/friends/request")
-    ResponseEntity<Void> requestFriend(
-        @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "friend_id") Long friendId
+    ResponseEntity<ApiSpec<FriendReqStatusResponse>> requestFriend(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "친구 아이디", required = true, schema = @Schema())
+        Long friendId
     );
 
 

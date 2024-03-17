@@ -4,23 +4,36 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.CreatedCapsuleSkinNotificationRequest;
+import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendReqNotificationRequest;
 import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Component
 @RequiredArgsConstructor
 public class NotificationMapper {
 
+    private static final String NOTIFICATION_SEND_SUCCESS = "SUCCESS";
+    private static final String NOTIFICATION_SEND_FAILED = "FAILED";
+
     private final S3UrlGenerator s3UrlGenerator;
 
-    public CreatedCapsuleSkinNotificationRequest toRequest(Long memberId,
+    public CreatedCapsuleSkinNotificationRequest capsuleSkinDtoToMessage(Long memberId,
         CapsuleSkinCreateDto dto) {
-        return new CreatedCapsuleSkinNotificationRequest(
-            memberId,
-            "SUCCESS_MAKE_CAPSULE_SKIN",
-            dto.skinName(),
-            "캡슐 스킨 생성이 완료되었습니다",
-            dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!",
-            s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.skinName())
-        );
+        return CreatedCapsuleSkinNotificationRequest.builder()
+            .memberId(memberId)
+            .status(NOTIFICATION_SEND_SUCCESS)
+            .skinName(dto.skinName())
+            .title("캡슐 스킨 생성 알림")
+            .text(dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!")
+            .skinUrl(s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.skinName()))
+            .build();
+    }
+
+    public FriendReqNotificationRequest friendReqToMessage(Long friendId, String ownerNickname) {
+        return FriendReqNotificationRequest.builder()
+            .friendId(friendId)
+            .status(NOTIFICATION_SEND_FAILED)
+            .title("친구 요청 알림")
+            .text(ownerNickname + "로부터 친구 요청이 왔습니다. ARchive에서 확인해보세요!")
+            .build();
     }
 }

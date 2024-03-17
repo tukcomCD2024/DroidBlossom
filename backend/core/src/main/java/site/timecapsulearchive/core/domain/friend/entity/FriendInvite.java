@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -26,12 +27,21 @@ public class FriendInvite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "friend_status")
+    private FriendStatus friendStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "friend_id", nullable = false)
     private Member friend;
 
+    @Builder
+    private FriendInvite(FriendStatus friendStatus, Member owner, Member friend) {
+        this.friendStatus = friendStatus;
+        this.owner = owner;
+        this.friend = friend;
+    }
 }
