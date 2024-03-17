@@ -14,6 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
 
 @Repository
 @RequiredArgsConstructor
@@ -73,7 +74,9 @@ public class MemberFriendQueryRepository {
             .from(friendInvite)
             .innerJoin(member).on(friendInvite.owner.id.eq(member.id))
             .innerJoin(member).on(friendInvite.friend.id.eq(member.id))
-            .where(friendInvite.owner.id.eq(memberId).and(friendInvite.createdAt.lt(createdAt)))
+            .where(friendInvite.owner.id.eq(memberId)
+                .and(friendInvite.createdAt.lt(createdAt))
+                .and(friendInvite.friendStatus.eq(FriendStatus.PENDING)))
             .limit(size + 1)
             .fetch();
 

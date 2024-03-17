@@ -26,7 +26,6 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
-
 public class FriendService {
 
     private final MemberFriendRepository memberFriendRepository;
@@ -88,6 +87,7 @@ public class FriendService {
         memberFriendRepository.delete(memberFriend);
     }
 
+    @Transactional(readOnly = true)
     public FriendsSliceResponse findFriendsSlice(
         final Long memberId,
         final int size,
@@ -99,6 +99,7 @@ public class FriendService {
         return memberFriendMapper.friendsSliceToResponse(friends);
     }
 
+    @Transactional(readOnly = true)
     public FriendRequestsSliceResponse findFriendRequestsSlice(
         final Long memberId,
         final int size,

@@ -113,7 +113,7 @@ public interface FriendApi {
 
     @Operation(
         summary = "소셜 친구 요청 목록 조회",
-        description = "사용자의 소셜 친구 요청 목록을 보여준다.",
+        description = "사용자의 소셜 친구 요청 목록을 보여준다. 수락 대기 중인 요청만 해당한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
     )
