@@ -24,7 +24,7 @@ public class NotificationMapper {
             .skinName(dto.skinName())
             .title("캡슐 스킨 생성 알림")
             .text(dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!")
-            .skinUrl(s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.skinName()))
+            .skinUrl(s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl()))
             .build();
     }
 
