@@ -3,11 +3,14 @@ package site.timecapsulearchive.core.domain.friend.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
+import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
+import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -27,12 +30,13 @@ public class FriendService {
     private final TransactionTemplate transactionTemplate;
 
     public FriendService(
-        MemberRepository memberRepository,
+        MemberFriendRepository memberFriendRepository, MemberRepository memberRepository,
         FriendInviteRepository friendInviteRepository,
         FriendMapper friendMapper,
         NotificationManager notificationManager,
         PlatformTransactionManager transactionManager
     ) {
+        this.memberFriendRepository = memberFriendRepository;
         this.memberRepository = memberRepository;
         this.friendInviteRepository = friendInviteRepository;
         this.friendMapper = friendMapper;
@@ -64,7 +68,7 @@ public class FriendService {
 
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
-        MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
+        final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
                 memberId, friendId)
             .orElseThrow(FriendNotFoundException::new);
 

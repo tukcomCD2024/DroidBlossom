@@ -18,6 +18,7 @@ import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequ
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsPageResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface FriendApi {
 
