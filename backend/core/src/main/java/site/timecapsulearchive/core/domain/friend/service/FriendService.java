@@ -4,6 +4,7 @@ package site.timecapsulearchive.core.domain.friend.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
@@ -16,7 +17,6 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
-
 public class FriendService {
 
     private final MemberRepository memberRepository;
@@ -59,5 +59,10 @@ public class FriendService {
         notificationManager.sendFriendReqMessage(friendId, owner.getNickname());
 
         return FriendReqStatusResponse.success();
+    }
+
+    @Transactional
+    public void denyRequestFriend(Long memberId, Long friendId) {
+        friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(memberId, friendId);
     }
 }
