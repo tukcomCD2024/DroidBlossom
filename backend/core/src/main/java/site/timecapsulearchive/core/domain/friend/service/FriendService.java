@@ -79,6 +79,15 @@ public class FriendService {
     }
 
     @Transactional
+    public void denyRequestFriend(Long memberId, Long friendId) {
+        final FriendInvite friendInvite = friendInviteRepository
+            .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
+                FriendNotFoundException::new);
+
+        friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
+    }
+  
+    @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
         final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
                 memberId, friendId)

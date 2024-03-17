@@ -32,19 +32,6 @@ public class FriendApiController implements FriendApi {
         return null;
     }
 
-    @DeleteMapping(value = "/{friend_id}")
-    @Override
-    public ResponseEntity<ApiSpec<String>> deleteFriend(
-        @AuthenticationPrincipal final Long memberId,
-        @PathVariable("friend_id") final Long friendId
-    ) {
-        friendService.deleteFriend(memberId, friendId);
-
-        return ResponseEntity.ok(
-            ApiSpec.empty(SuccessCode.SUCCESS)
-        );
-    }
-
     @GetMapping
     @Override
     public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
@@ -78,9 +65,29 @@ public class FriendApiController implements FriendApi {
         );
     }
 
+    @DeleteMapping(value = "/{friend_id}")
     @Override
-    public ResponseEntity<Void> denyFriendRequest(Long friendId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> deleteFriend(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("friend_id") final Long friendId
+    ) {
+        friendService.deleteFriend(memberId, friendId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(SuccessCode.SUCCESS)
+        );
+    }
+
+    @DeleteMapping("{friend_id}/deny-request")
+    @Override
+    public ResponseEntity<ApiSpec<String>> denyFriendRequest(
+        @AuthenticationPrincipal Long memberId,
+        @PathVariable("friend_id") final Long friendId) {
+
+        friendService.denyRequestFriend(memberId, friendId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+
     }
 
     @PostMapping(value = "/{friend_id}/request")

@@ -83,10 +83,11 @@ public interface FriendApi {
             description = "처리 완료"
         )
     })
-    @PostMapping(value = "/deny-request")
-    ResponseEntity<Void> denyFriendRequest(
+    ResponseEntity<ApiSpec<String>> denyFriendRequest(
+        Long memberId,
+
         @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "friend_id") Long friendId
+        Long friendId
     );
 
     @Operation(
