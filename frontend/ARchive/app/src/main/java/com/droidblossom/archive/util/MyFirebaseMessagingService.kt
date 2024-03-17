@@ -134,7 +134,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     setContentIntent(pendingIntent)
 
                     bigPicture?.let {
-                        setStyle(NotificationCompat.BigPictureStyle().bigPicture(it))
+                        setStyle(NotificationCompat.BigPictureStyle()
+                            .bigPicture(it)
+                            .bigLargeIcon(null as Bitmap?))
+
+                        setLargeIcon(it)
                     }
                 }
 
