@@ -10,6 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
+import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
@@ -63,6 +64,10 @@ public class FriendService {
 
     @Transactional
     public void denyRequestFriend(Long memberId, Long friendId) {
-        friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(memberId, friendId);
+        final FriendInvite friendInvite = friendInviteRepository
+            .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
+                FriendNotFoundException::new);
+
+        friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
     }
 }
