@@ -98,7 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("액세스 토큰 인증 실패", exception);
         SecurityContextHolder.clearContext();
 
-        final ErrorResponse errorResponse = ErrorResponse.create(
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
             ErrorCode.AUTHENTICATION_ERROR
         );
 
