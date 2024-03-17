@@ -41,9 +41,16 @@ public class FriendApiController implements FriendApi {
         );
     }
 
+    @DeleteMapping("{friend_id}/deny-request")
     @Override
-    public ResponseEntity<Void> denyFriendRequest(Long friendId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> denyFriendRequest(
+        @AuthenticationPrincipal Long memberId,
+        @PathVariable("friend_id") final Long friendId) {
+
+        friendService.denyRequestFriend(memberId, friendId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+
     }
 
     @Override

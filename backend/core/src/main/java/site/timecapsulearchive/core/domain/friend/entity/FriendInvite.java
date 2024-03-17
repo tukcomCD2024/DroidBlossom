@@ -2,6 +2,8 @@ package site.timecapsulearchive.core.domain.friend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,7 @@ public class FriendInvite extends BaseEntity {
     private Long id;
 
     @Column(name = "friend_status")
+    @Enumerated(EnumType.STRING)
     private FriendStatus friendStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

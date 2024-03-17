@@ -19,7 +19,6 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
-
 public class FriendService {
 
     private final MemberFriendRepository memberFriendRepository;
@@ -66,6 +65,15 @@ public class FriendService {
         return FriendReqStatusResponse.success();
     }
 
+    @Transactional
+    public void denyRequestFriend(Long memberId, Long friendId) {
+        final FriendInvite friendInvite = friendInviteRepository
+            .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
+                FriendNotFoundException::new);
+
+        friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
+    }
+  
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
         final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
