@@ -27,11 +27,11 @@ public class MemberFriend extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "friend_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "friend_id", nullable = false)
     private Member friend;
 
 }
