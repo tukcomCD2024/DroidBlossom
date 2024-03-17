@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.friend.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
-@RequestMapping("/friend")
+@RequestMapping("/friends")
 @RequiredArgsConstructor
 public class FriendApiController implements FriendApi {
 
@@ -27,9 +28,17 @@ public class FriendApiController implements FriendApi {
         return null;
     }
 
+    @DeleteMapping(value = "/{friend_id}")
     @Override
-    public ResponseEntity<Void> deleteFriend(Long friendId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> deleteFriend(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("friend_id") final Long friendId
+    ) {
+        friendService.deleteFriend(memberId, friendId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(SuccessCode.SUCCESS)
+        );
     }
 
     @Override
@@ -45,7 +54,7 @@ public class FriendApiController implements FriendApi {
     @PostMapping(value = "/{friend_id}/request")
     @Override
     public ResponseEntity<ApiSpec<FriendReqStatusResponse>> requestFriend(
-        @AuthenticationPrincipal Long memberId,
+        @AuthenticationPrincipal final Long memberId,
         @PathVariable("friend_id") final Long friendId) {
 
         return ResponseEntity.accepted()
