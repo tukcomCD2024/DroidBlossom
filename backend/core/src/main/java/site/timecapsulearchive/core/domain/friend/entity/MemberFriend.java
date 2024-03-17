@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -34,4 +35,9 @@ public class MemberFriend extends BaseEntity {
     @JoinColumn(name = "friend_id", nullable = false)
     private Member friend;
 
+    @Builder
+    private MemberFriend(Member owner, Member friend) {
+        this.owner = owner;
+        this.friend = friend;
+    }
 }
