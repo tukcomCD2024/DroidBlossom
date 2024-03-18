@@ -100,9 +100,8 @@ public class MemberFriendQueryRepository {
                 )
             )
             .from(memberFriend)
-            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
-            .where(memberFriend.owner.id.eq(memberId)
-                .and(memberFriend.friend.phone_hash.in(hashes)))
+            .innerJoin(memberFriend.friend, member)
+            .where(memberFriend.owner.id.eq(memberId).and(member.phone_hash.in(hashes)))
             .fetch();
     }
 }
