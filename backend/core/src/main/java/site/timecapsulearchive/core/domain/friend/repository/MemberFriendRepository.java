@@ -9,4 +9,6 @@ public interface MemberFriendRepository extends Repository<MemberFriend, Long> {
     Optional<MemberFriend> findMemberFriendByOwnerIdAndFriendId(Long ownerId, Long friendId);
 
     void delete(MemberFriend memberFriend);
+
+    void save(MemberFriend memberFriend);
 }
