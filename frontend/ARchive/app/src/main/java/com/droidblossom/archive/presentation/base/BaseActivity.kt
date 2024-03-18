@@ -1,6 +1,5 @@
 package com.droidblossom.archive.presentation.base
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.droidblossom.archive.presentation.snack.CallSnackBar
-import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
+import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
