@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.droidblossom.archive.presentation.customview.LoadingDialog
 import kotlinx.coroutines.Job
 
 abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes val layoutResource :Int): Fragment() {
@@ -18,6 +20,9 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
 
     private var _binding: V? = null
     protected val binding : V get() = _binding!!
+
+    private lateinit var loadingDialog: LoadingDialog
+    private var loadingState = false
 
     protected fun getStatusBarHeight(): Int {
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
@@ -53,11 +58,27 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
         toast.show()
     }
 
+    fun showLoading(context: Context) {
+        if (!loadingState) {
+            loadingDialog = LoadingDialog(context)
+            loadingDialog.show()
+            loadingState = true
+        }
+    }
+
+    fun dismissLoading() {
+        if (loadingState) {
+            loadingDialog.dismiss()
+            loadingState = false
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (fetchJob.isActive) {
             fetchJob.cancel()
         }
+        dismissLoading()
         _binding = null
     }
 }
