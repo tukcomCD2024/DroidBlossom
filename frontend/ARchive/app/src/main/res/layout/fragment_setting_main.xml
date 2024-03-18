@@ -24,15 +24,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/backBtn"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/ic_left_arrow_24"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:layout_height="wrap_content"/>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/userLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/backBtn">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/userIcon"
@@ -83,7 +94,7 @@
                     android:id="@+id/notiLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/userLayout">
@@ -137,7 +148,7 @@
                     android:id="@+id/noticeLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/notiLayout">
@@ -191,7 +202,7 @@
                     android:id="@+id/agreeLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/noticeLayout">
@@ -245,7 +256,7 @@
                     android:id="@+id/inquiryLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/agreeLayout">
@@ -299,7 +310,7 @@
                     android:id="@+id/licenseLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/inquiryLayout">
@@ -353,7 +364,7 @@
                     android:id="@+id/logoutLayout"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginHorizontal="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/licenseLayout">
@@ -384,7 +395,6 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
                 <View
                     app:layout_constraintTop_toBottomOf="@id/logoutLayout"

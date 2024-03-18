@@ -88,6 +88,7 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
+
     override fun updateMyCapsulesUI() {
         viewModelScope.launch {
             _myCapsulesUI.emit(myCapsules.value)
@@ -115,6 +116,12 @@ class MyPageViewModelImpl @Inject constructor(
                 }
             }
             _myCapsules.emit(updatedCapsules)
+        }
+    }
+
+    override fun clickSetting() {
+        viewModelScope.launch {
+            _myPageEvents.emit(MyPageViewModel.MyPageEvent.ClickSetting)
         }
     }
 }

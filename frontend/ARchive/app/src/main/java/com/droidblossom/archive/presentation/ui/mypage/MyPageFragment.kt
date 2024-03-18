@@ -25,6 +25,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
+import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,9 +68,9 @@ class MyPageFragment :
 
         initRVA()
 
-        binding.settingBtn.setOnClickListener {
-            throw RuntimeException("Test Crash")
-        }
+//        binding.settingBtn.setOnClickListener {
+//            throw RuntimeException("Test Crash")
+//        }
 
         val layoutParams = binding.profileImg.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
@@ -120,6 +121,9 @@ class MyPageFragment :
                     when (event) {
                         is MyPageViewModel.MyPageEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+                        is MyPageViewModel.MyPageEvent.ClickSetting -> {
+                            startActivity(SettingActivity.newIntent(requireContext()))
                         }
 
                         else -> {}

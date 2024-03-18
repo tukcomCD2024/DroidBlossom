@@ -124,7 +124,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
                 )
 
-                val notificationBuilder = NotificationCompat.Builder(this@MyFirebaseMessagingService, channelId).apply {
+                val notificationBuilder = NotificationCompat.Builder(
+                    this@MyFirebaseMessagingService, channelId
+                ).apply {
                     priority = NotificationCompat.PRIORITY_HIGH
                     setSmallIcon(R.drawable.app_symbol)
                     setContentTitle(remoteMessage.data["title"])
