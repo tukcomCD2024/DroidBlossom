@@ -5,9 +5,13 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,12 +28,17 @@ import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.HashProperties;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
-    private Long memberId;
+    private final HashEncryptionManager hash = new HashEncryptionManager(new HashProperties("test"));
+    private final int MAX_FRIEND_ID = 21;
+
+    private Long ownerId;
 
     MemberFriendQueryRepositoryTest(EntityManager entityManager) {
         this.memberFriendQueryRepository = new MemberFriendQueryRepository(
@@ -41,9 +50,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     void setup(@Autowired EntityManager entityManager) {
         Member owner = getMember(0);
         entityManager.persist(owner);
-        memberId = owner.getId();
+        ownerId = owner.getId();
 
-        for (int i = 1; i < 21; i++) {
+        for (int i = 1; i < MAX_FRIEND_ID; i++) {
             Member friend = getMember(i);
             entityManager.persist(friend);
 
@@ -63,12 +72,21 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     private Member getMember(int count) {
-        return Member.builder()
+        Member member = Member.builder()
             .socialType(SocialType.GOOGLE)
             .email(count + "test@google.com")
             .authId(count + "test")
             .profileUrl(count + "test.com")
             .build();
+
+        byte[] number = getPhoneBytes(count);
+        member.updatePhoneHash(hash.encrypt(number));
+
+        return member;
+    }
+
+    private byte[] getPhoneBytes(int count) {
+        return ("0" + (1000000000 + count)).getBytes(StandardCharsets.UTF_8);
     }
 
     @ParameterizedTest
@@ -79,7 +97,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            memberId,
+            ownerId,
             size,
             now
         );
@@ -103,7 +121,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            memberId,
+            ownerId,
             size,
             now
         );
@@ -120,7 +138,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            memberId,
+            ownerId,
             size,
             now
         );
@@ -137,7 +155,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            memberId,
+            ownerId,
             size,
             now
         );
@@ -161,7 +179,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            memberId,
+            ownerId,
             size,
             now
         );
@@ -178,12 +196,70 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            memberId,
+            ownerId,
             size,
             now
         );
 
         //then
         assertThat(slice.getContent().size()).isEqualTo(0);
+    }
+
+    @Test
+    void 앱_사용자의_전화번호로만_사용자_리스트_조회_테스트() {
+        //given
+        List<byte[]> phoneHashes = IntStream.range(1, MAX_FRIEND_ID)
+            .mapToObj(i -> hash.encrypt(getPhoneBytes(i)))
+            .toList();
+
+        //when
+        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId,
+            phoneHashes);
+
+        //then
+        assertThat(friends.size()).isGreaterThan(0);
+    }
+
+    @Test
+    void 앱_사용자의_전화번호가_아닌_경우_사용자_리스트_조회_테스트() {
+        //given
+        List<byte[]> phoneHashes = IntStream.range(1, MAX_FRIEND_ID)
+            .mapToObj(count -> hash.encrypt(getPhoneBytes(count + MAX_FRIEND_ID)))
+            .toList();
+
+        //when
+        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId,
+            phoneHashes);
+
+        //then
+        assertThat(friends.size()).isSameAs(0);
+    }
+
+    @Test
+    void 친구가_없는_경우_사용자_리스트_조회_테스트() {
+        //given
+        List<byte[]> phoneHashes = IntStream.range(1, MAX_FRIEND_ID)
+            .mapToObj(count -> hash.encrypt(getPhoneBytes(count)))
+            .toList();
+
+        //when
+        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId + MAX_FRIEND_ID,
+            phoneHashes);
+
+        //then
+        assertThat(friends.size()).isSameAs(0);
+    }
+
+    @Test
+    void 빈_전화번호_목록인_경우_사용자_리스트_조회_테스트() {
+        //given
+        List<byte[]> phoneHashes = Collections.emptyList();
+
+        //when
+        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId,
+            phoneHashes);
+
+        //then
+        assertThat(friends.size()).isSameAs(0);
     }
 }
