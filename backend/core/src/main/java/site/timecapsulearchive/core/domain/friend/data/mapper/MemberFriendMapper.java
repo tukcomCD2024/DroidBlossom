@@ -7,6 +7,7 @@ import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 
 @Component
 public class MemberFriendMapper {
@@ -21,7 +22,8 @@ public class MemberFriendMapper {
     }
 
     private FriendSummaryResponse friendsSummaryDtoToResponse(FriendSummaryDto dto) {
-        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(), dto.createdAt());
+        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(),
+            dto.createdAt());
     }
 
     public FriendRequestsSliceResponse friendRequestsSliceToResponse(
@@ -33,5 +35,12 @@ public class MemberFriendMapper {
             .toList();
 
         return new FriendRequestsSliceResponse(friendRequests, hasNext);
+    }
+
+    public SearchFriendsResponse friendSummaryDtosToResponse(List<FriendSummaryDto> dtos) {
+        return new SearchFriendsResponse(dtos.stream()
+            .map(this::friendsSummaryDtoToResponse)
+            .toList()
+        );
     }
 }

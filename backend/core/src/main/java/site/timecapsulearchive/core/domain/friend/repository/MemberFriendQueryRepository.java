@@ -61,7 +61,7 @@ public class MemberFriendQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-         List<FriendSummaryDto> friends = jpaQueryFactory
+        List<FriendSummaryDto> friends = jpaQueryFactory
             .select(
                 Projections.constructor(
                     FriendSummaryDto.class,
@@ -86,5 +86,23 @@ public class MemberFriendQueryRepository {
         }
 
         return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
+    }
+
+    public List<FriendSummaryDto> findFriendsByPhone(Long memberId, List<byte[]> hashes) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    FriendSummaryDto.class,
+                    member.id,
+                    member.profileUrl,
+                    member.nickname,
+                    member.createdAt
+                )
+            )
+            .from(memberFriend)
+            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
+            .where(memberFriend.owner.id.eq(memberId)
+                .and(memberFriend.friend.phone_hash.in(hashes)))
+            .fetch();
     }
 }

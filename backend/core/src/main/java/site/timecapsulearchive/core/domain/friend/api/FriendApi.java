@@ -8,17 +8,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
@@ -171,11 +168,8 @@ public interface FriendApi {
             description = "ok"
         )
     })
-    @PostMapping(
-        value = "/friends/search",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
-    ResponseEntity<SearchFriendsResponse> searchMembersByPhones(
-        @RequestBody SearchFriendsRequest request);
+    ResponseEntity<ApiSpec<SearchFriendsResponse>> searchMembersByPhones(
+        Long memberId,
+        SearchFriendsRequest request
+    );
 }
