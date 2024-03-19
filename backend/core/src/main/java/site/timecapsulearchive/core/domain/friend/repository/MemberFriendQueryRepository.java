@@ -61,7 +61,7 @@ public class MemberFriendQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-         List<FriendSummaryDto> friends = jpaQueryFactory
+        List<FriendSummaryDto> friends = jpaQueryFactory
             .select(
                 Projections.constructor(
                     FriendSummaryDto.class,
