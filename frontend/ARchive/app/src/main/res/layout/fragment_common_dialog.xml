@@ -14,11 +14,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/messageLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="156dp"
             android:layout_marginHorizontal="16dp"
             android:background="@drawable/corner_radius_30"
             android:theme="@style/NumberPickerTextAppearance"
-            app:layout_constraintDimensionRatio="2:1 "
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

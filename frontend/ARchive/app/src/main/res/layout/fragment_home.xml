@@ -35,30 +35,29 @@
             android:layout_height="0dp"
             android:name="com.naver.maps.map.MapFragment" />
 
-        <TextView
-            android:id="@+id/snackbarTestBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="snackbarsmallTest"
-            android:textSize="32dp"
-            app:layout_constraintBottom_toTopOf="@id/snackbarBigText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+<!--        <TextView-->
+<!--            android:id="@+id/snackbarTestBtn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="snackbarsmallTest"-->
+<!--            android:textSize="32dp"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/snackbarBigText"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_chainStyle="packed" />-->
 
-        <TextView
-            android:id="@+id/snackbarBigText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="snackbarBigTest"
-            android:textSize="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/snackbarTestBtn"
-            app:layout_constraintVertical_chainStyle="packed" />
-
+<!--        <TextView-->
+<!--            android:id="@+id/snackbarBigText"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="snackbarBigTest"-->
+<!--            android:textSize="32dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/snackbarTestBtn"-->
+<!--            app:layout_constraintVertical_chainStyle="packed" />-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/secretBtn"
