@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member.entity;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +69,9 @@ public class Member extends BaseEntity {
     @Column(name = "auth_id", nullable = false, unique = true)
     private String authId;
 
+    @Column(name = "tag", nullable = false, unique = true)
+    private String tag;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Capsule> capsules;
 
@@ -93,12 +96,13 @@ public class Member extends BaseEntity {
     @Builder
     private Member(String profileUrl, SocialType socialType, String email, String authId) {
         this.profileUrl = profileUrl;
-        this.nickname = String.valueOf(UUID.randomUUID());
+        this.nickname = randomNickName();
         this.socialType = socialType;
         this.email = email;
         this.isVerified = false;
         this.notificationEnabled = false;
         this.authId = authId;
+        this.tag = uniqueTag();
     }
 
     public void updateVerification() {
@@ -113,7 +117,11 @@ public class Member extends BaseEntity {
         this.phone_hash = phone_hash;
     }
 
-    public void updateNickName() {
-        this.nickname = MakeRandomNickNameUtil.makeRandomNickName();
+    private String randomNickName() {
+        return MakeRandomNickNameUtil.makeRandomNickName();
+    }
+
+    private String uniqueTag() {
+        return NanoIdUtils.randomNanoId();
     }
 }
