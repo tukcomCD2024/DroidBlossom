@@ -23,7 +23,12 @@ public class MemberFriendMapper {
     }
 
     private FriendSummaryResponse friendsSummaryDtoToResponse(FriendSummaryDto dto) {
-        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(), dto.createdAt());
+        return FriendSummaryResponse.builder()
+            .id(dto.id())
+            .profileUrl(dto.profileUrl())
+            .nickname(dto.nickname())
+            .createdAt(dto.createdAt())
+            .build();
     }
 
     public FriendRequestsSliceResponse friendRequestsSliceToResponse(

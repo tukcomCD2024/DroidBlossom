@@ -2,7 +2,9 @@ package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
+import lombok.Builder;
 
+@Builder
 @Schema(description = "친구 요약 정보")
 public record FriendSummaryResponse(
     @Schema(description = "친구 아이디")
