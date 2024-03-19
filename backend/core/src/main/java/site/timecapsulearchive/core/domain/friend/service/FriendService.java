@@ -11,8 +11,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -86,7 +87,7 @@ public class FriendService {
 
         friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
     }
-  
+
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
         final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
@@ -117,6 +118,18 @@ public class FriendService {
         Slice<FriendSummaryDto> friendRequests = memberFriendQueryRepository.findFriendRequestsSlice(
             memberId, size, createdAt);
 
-        return memberFriendMapper.friendRequestsSliceToResponse(friendRequests.getContent(), friendRequests.hasNext());
+        return memberFriendMapper.friendRequestsSliceToResponse(friendRequests.getContent(),
+            friendRequests.hasNext());
+    }
+
+    public FriendSearchResponse searchFriend(final Long memberId, final String tag) {
+        final Member friend = memberRepository.findMemberByTag(tag)
+            .orElseThrow(MemberNotFoundException::new);
+
+        final MemberFriend memberFriend = memberFriendRepository
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friend.getId())
+            .orElseThrow(FriendNotFoundException::new);
+
+        return memberFriendMapper.friendSearchDtoToResponse(friend, memberFriend.isFriend());
     }
 }
