@@ -76,12 +76,6 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             makeSecretCapsuleBtn.setOnClickListener {
                 startActivity(CreateCapsuleActivity.newIntent(requireContext(), 3))
             }
-            snackbarTestBtn.setOnClickListener {
-                HomeSnackBarSmall(requireView()).show()
-            }
-            snackbarBigText.setOnClickListener {
-                HomeSnackBarBig(requireView(), "", "").show()
-            }
             refreshBtn.setOnClickListener {
                 locationUtil.getCurrentLocation { latitude, longitude ->
                     viewModel.getNearbyCapsules(
