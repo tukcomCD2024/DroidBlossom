@@ -180,7 +180,7 @@ dependencies {
     // Event Bus : https://github.com/greenrobot/EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
 
-    // oss-licenses
+    // oss-licenses : https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
 }
 kapt {

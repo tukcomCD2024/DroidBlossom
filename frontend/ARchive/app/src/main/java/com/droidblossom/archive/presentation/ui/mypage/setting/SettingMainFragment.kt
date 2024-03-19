@@ -21,6 +21,7 @@ class SettingMainFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
     }
+
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -60,7 +61,7 @@ class SettingMainFragment :
                         }
 
                         is SettingViewModel.SettingMainEvent.ShowToastMessage -> {
-
+                            showToastMessage(event.message)
                         }
 
                         else -> {}
