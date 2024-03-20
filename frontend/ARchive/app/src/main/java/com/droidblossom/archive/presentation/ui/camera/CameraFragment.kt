@@ -33,6 +33,7 @@ class CameraFragment :
     FragmentManagerProvider {
 
     override val viewModel: CameraViewModelImpl by viewModels<CameraViewModelImpl>()
+    private val anchorNodes = mutableListOf<AnchorNode>()
 
     // private val capsules: MutableList<CapsuleMarker> = mutableListOf()
     lateinit var arSceneView: ARSceneView
@@ -69,7 +70,7 @@ class CameraFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
                     arSceneView.onSessionUpdated = { session, frame ->
-                        if (anchorNode == null) {
+                        if (anchorNodes.isEmpty()) {
                             Log.d("CameraFragmentAR", "earth setting start")
                             val earth = session.earth
                             if (earth == null) {
@@ -137,32 +138,31 @@ class CameraFragment :
 
     private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
-        val arContentNode =
-            arSceneView.let { scenview ->
-                viewAttachmentManager.let { attachManager ->
-                    ARContentNode(
-                        scenview,
-                        attachManager,
-                        this,
-                        capsule,
-                        layoutInflater,
-                        requireContext(),
-                        onLoaded = { viewNode ->
-                            arSceneView.engine.let {
-                                AnchorNode(it, anchor)
-                                    .apply {
-                                        isEditable = true
-                                        lifecycleScope.launch {
-                                            addChildNode(viewNode)
-                                        }
-                                        anchorNode = this
-                                    }
-                            }.let {
-                                arSceneView.addChildNode(it)
+        arSceneView.let { sceneView ->
+            viewAttachmentManager.let { attachManager ->
+                ARContentNode(
+                    sceneView,
+                    attachManager,
+                    this,
+                    capsule,
+                    layoutInflater,
+                    requireContext(),
+                    onLoaded = { viewNode ->
+                        sceneView.engine.let {
+                            AnchorNode(it, anchor).apply {
+                                isEditable = true
+                                lifecycleScope.launch {
+                                    addChildNode(viewNode)
+                                }
+                                anchorNodes.add(this)
                             }
-                        })
-                }
+                        }.let {
+                            sceneView.addChildNode(it)
+                        }
+                    }
+                )
             }
+        }
     }
 
     private fun createSession() {
@@ -180,6 +180,10 @@ class CameraFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
+            for (anchorNode in anchorNodes) {
+                arSceneView.removeChildNode(anchorNode)
+            }
+            anchorNodes.clear()
             viewAttachmentManager.onPause()
             arSceneView.session?.pause()
         } else {
