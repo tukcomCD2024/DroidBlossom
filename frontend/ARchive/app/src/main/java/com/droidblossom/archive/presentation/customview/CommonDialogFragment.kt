@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.dialog
+package com.droidblossom.archive.presentation.customview
 
 import android.os.Bundle
 import android.view.View
