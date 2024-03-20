@@ -127,30 +127,36 @@
                 android:id="@+id/skinRV"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:orientation="vertical"
-                android:visibility="visible"
                 android:layout_marginTop="100dp"
-                app:layout_constraintBottom_toTopOf="@id/place"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                android:clipToPadding="false"
+                android:paddingBottom="70dp"
+                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle" />
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
+                app:layout_constraintVertical_bias="1.0"
+                app:spanCount="3" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/createCapsuleLayout"
                 android:layout_width="140dp"
                 android:layout_height="44dp"
                 android:backgroundTint="#B21B3AC4"
                 android:background="@drawable/rectangle_solid_corner_30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/place"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:cardCornerRadius="22dp"
+                app:strokeColor="@color/main_3"
                 android:elevation="2dp"
-                android:layout_marginBottom="40dp">
+                app:cardElevation="1dp"
+                android:layout_marginBottom="110dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/createCapsuleLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -192,14 +198,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
-
-            <View
-                android:id="@+id/place"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
