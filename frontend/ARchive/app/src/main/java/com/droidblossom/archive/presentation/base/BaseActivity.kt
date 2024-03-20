@@ -1,6 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
-import android.content.Intent
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +11,8 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.droidblossom.archive.presentation.snack.CallSnackBar
-import com.droidblossom.archive.presentation.snack.HomeSnackBarSmall
+import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
+import com.droidblossom.archive.presentation.customview.LoadingDialog
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -25,6 +25,9 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
 
     private var _binding: V? = null
     protected val binding: V get() = _binding!!
+
+    private lateinit var loadingDialog: LoadingDialog
+    private var loadingState = false
 
     abstract fun observeData()
 
@@ -66,11 +69,30 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         }
     }
 
+
+
+    fun showLoading(context: Context) {
+        if (!loadingState) {
+            loadingDialog = LoadingDialog(context)
+            loadingDialog.show()
+            loadingState = true
+        }
+    }
+
+
+    fun dismissLoading() {
+        if (loadingState) {
+            loadingDialog.dismiss()
+            loadingState = false
+        }
+    }
+
     override fun onDestroy() {
         fetchJob?.let {
             if (it.isActive) {
                 it.cancel()
             }
+            dismissLoading()
         }
         super.onDestroy()
     }

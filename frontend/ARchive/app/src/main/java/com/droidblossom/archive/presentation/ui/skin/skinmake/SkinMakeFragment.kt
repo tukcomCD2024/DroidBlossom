@@ -101,6 +101,8 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                     return@setOnClickListener
                 }else{
 
+                    showLoading(requireContext())
+
                     val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                     val currentTime = dateFormat.format(Date())
 

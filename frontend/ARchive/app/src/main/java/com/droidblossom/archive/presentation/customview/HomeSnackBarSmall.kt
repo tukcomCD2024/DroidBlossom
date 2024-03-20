@@ -1,4 +1,5 @@
-package com.droidblossom.archive.presentation.snack
+package com.droidblossom.archive.presentation.customview
+
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,16 +7,17 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.droidblossom.archive.R
-import com.droidblossom.archive.databinding.SnackbarHomeAlertWithImageBinding
+import com.droidblossom.archive.databinding.SnackbarHomeAlertBinding
 import com.google.android.material.snackbar.Snackbar
 
-class HomeSnackBarBig(private val view : View, private val message: String, private val imgUrl : String) {
+
+class HomeSnackBarSmall(private val view :View) {
 
     private val context = view.context
     private val snackBar = Snackbar.make(view, "", 5000)
     private val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
     private val inflater = LayoutInflater.from(context)
-    private val snackBarBinding: SnackbarHomeAlertWithImageBinding = DataBindingUtil.inflate(inflater, R.layout.snackbar_home_alert_with_image, null, false)
+    private val snackBarBinding: SnackbarHomeAlertBinding = DataBindingUtil.inflate(inflater, com.droidblossom.archive.R.layout.snackbar_home_alert, null, false)
 
 
     init {
@@ -37,7 +39,7 @@ class HomeSnackBarBig(private val view : View, private val message: String, priv
 
     private fun initData() {
         snackBarBinding.openBtn.setOnClickListener {
-            Toast.makeText(context,"테스트2", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"테스트1",Toast.LENGTH_SHORT).show()
         }
     }
 
