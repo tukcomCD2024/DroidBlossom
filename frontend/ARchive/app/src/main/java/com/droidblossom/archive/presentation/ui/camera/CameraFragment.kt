@@ -67,6 +67,18 @@ class CameraFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.anchorNodes
+                    .filter { anchorNodes ->
+                        anchorNodes.size == viewModel.capsuleListSize.value
+                    }
+                    .collect {
+                        dismissLoading()
+                    }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
                     arSceneView.onSessionUpdated = { session, frame ->
                         if (viewModel.anchorNodes.value.isEmpty()) {
