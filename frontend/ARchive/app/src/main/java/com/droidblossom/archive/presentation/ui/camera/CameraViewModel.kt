@@ -10,6 +10,7 @@ interface CameraViewModel {
 
     val capsuleList:StateFlow<List<CapsuleMarker>>
     val cameraEvents: SharedFlow<CameraEvent>
+    val capsuleListSize: SharedFlow<Int>
     val anchorNodes: StateFlow<List<AnchorNode>>
 
     fun getCapsules(latitude: Double, longitude: Double,): List<CapsuleMarker>

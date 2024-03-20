@@ -31,6 +31,9 @@ class CameraViewModelImpl@Inject constructor(
     override val capsuleList: StateFlow<List<CapsuleMarker>>
         get() = _capsuleList
 
+    private val _capsuleListSize = MutableStateFlow(-1)
+    override val capsuleListSize = _capsuleListSize.asStateFlow()
+
     private val _anchorNodes = MutableStateFlow<MutableList<AnchorNode>>(mutableListOf())
     override val anchorNodes get() =  _anchorNodes
 
@@ -56,6 +59,7 @@ class CameraViewModelImpl@Inject constructor(
             nearbyCapsulesUseCase(latitude,longitude,1.0,"ALL").collect{ result->
                 result.onSuccess {
                     _capsuleList.emit(it.capsules)
+                    _capsuleListSize.value = _capsuleList.value.size
                 }.onFail {
 
                 }
