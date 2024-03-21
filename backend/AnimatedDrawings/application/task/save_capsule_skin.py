@@ -15,9 +15,7 @@ class SaveCapsuleSkin(LogErrorsTask):
 
     def run(self, *args, **kwargs):
         capsule_skin = CapsuleSkin(skin_name=kwargs['input_data']['skinName'],
-                                   image_url='capsuleSkin/%s/%s' % (
-                                       kwargs['input_data']['memberId'],
-                                       kwargs['filename']),
+                                   image_url=kwargs['filename'],
                                    motion_name=Motion(
                                        kwargs['input_data']['motionName']).name,
                                    retarget=Retarget(
