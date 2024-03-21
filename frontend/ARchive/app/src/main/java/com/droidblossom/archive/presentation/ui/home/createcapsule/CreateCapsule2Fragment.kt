@@ -47,7 +47,8 @@ class CreateCapsule2Fragment :
                 if (viewModel.groupTypeInt != 1) {
                     requireActivity().finish()
                 } else {
-                    super.remove()
+                    isEnabled =false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
         }

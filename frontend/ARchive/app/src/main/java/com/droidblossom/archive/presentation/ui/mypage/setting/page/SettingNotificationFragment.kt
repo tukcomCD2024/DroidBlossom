@@ -1,8 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,17 +14,8 @@ import com.droidblossom.archive.databinding.FragmentSettingNotificationBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModel
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModelImpl
-import com.droidblossom.archive.util.DataStoreUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingNotificationFragment :
@@ -32,6 +23,7 @@ class SettingNotificationFragment :
 
     override val viewModel: SettingViewModelImpl by viewModels()
     lateinit var navController: NavController
+    private lateinit var callback: OnBackPressedCallback
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,8 +34,18 @@ class SettingNotificationFragment :
 
     private fun initView() {
         viewModel.getNotificationEnable()
+
         binding.backBtn.setOnClickListener {
             viewModel.postNotificationEnable(binding.notificationSwitch.isChecked)
+        }
+
+        binding.notificationSwitch.setOnCheckedChangeListener { _, b ->
+            callback = object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                   viewModel.postNotificationEnable(b)
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         }
     }
 
