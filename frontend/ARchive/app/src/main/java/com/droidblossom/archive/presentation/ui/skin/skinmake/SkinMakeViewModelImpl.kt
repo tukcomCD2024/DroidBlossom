@@ -11,6 +11,8 @@ import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModelImpl
+import com.droidblossom.archive.util.Motion
+import com.droidblossom.archive.util.Retarget
 import com.droidblossom.archive.util.S3Util
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -42,7 +44,8 @@ class SkinMakeViewModelImpl @Inject constructor(
     }
 
     private val _skinMakeEvents = MutableSharedFlow<SkinMakeViewModel.SkinMakeEvent>()
-    override val skinMakeEvents: SharedFlow<SkinMakeViewModel.SkinMakeEvent> = _skinMakeEvents.asSharedFlow()
+    override val skinMakeEvents: SharedFlow<SkinMakeViewModel.SkinMakeEvent> =
+        _skinMakeEvents.asSharedFlow()
 
     override val skinImgUri = MutableStateFlow<Uri?>(null)
 
@@ -117,7 +120,7 @@ class SkinMakeViewModelImpl @Inject constructor(
         }
     }
 
-    private fun submitSkin(){
+    private fun submitSkin() {
         viewModelScope.launch {
             capsuleSkinsMakeUseCase(
                 CapsuleSkinsMakeRequest(
