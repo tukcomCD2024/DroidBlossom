@@ -33,8 +33,8 @@ class MakeAnimation(LogErrorsTask):
             gif_bytes = bytearray(image.read())
 
         output_wrapper = get_object_wrapper(self.s3_bucket_name,
-                                            '%s/%s' % (output_directory,
-                                                       kwargs['filename']))
+                                            kwargs['filename'])
+        
         output_wrapper.put(gif_bytes)
 
         if os.path.exists(output_directory):
