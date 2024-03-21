@@ -2,10 +2,14 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface SettingViewModel {
 
     val settingMainEvents: SharedFlow<SettingMainEvent>
+
+    val notificationEnable : StateFlow<Boolean>
+    val settingNotificationEvents : SharedFlow<SettingNotificationEvent>
 
     fun back()
     fun goUser()
@@ -26,5 +30,10 @@ interface SettingViewModel {
         object GoLicenses : SettingMainEvent()
         object GoLogout : SettingMainEvent()
         data class ShowToastMessage(val message : String) : SettingMainEvent()
+    }
+
+    sealed class  SettingNotificationEvent {
+        object  Back : SettingNotificationEvent()
+        data class ShowToastMessage(val message : String) : SettingNotificationEvent()
     }
 }

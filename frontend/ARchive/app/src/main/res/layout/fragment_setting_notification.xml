@@ -20,7 +20,7 @@
             android:id="@+id/settingNotiTitleT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:text="알림 관리"
             android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/black"
@@ -34,13 +34,13 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
+            android:paddingTop="12dp"
             android:src="@drawable/ic_left_arrow_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/sympathy_notice_frame"
+            android:id="@+id/notificationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -62,7 +62,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/sympathy_notice_switch"
+                android:id="@+id/notificationSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
