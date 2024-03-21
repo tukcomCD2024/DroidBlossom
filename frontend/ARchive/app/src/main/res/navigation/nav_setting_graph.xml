@@ -9,5 +9,16 @@
         android:id="@+id/settingMainFragment"
         android:name="com.droidblossom.archive.presentation.ui.mypage.setting.SettingMainFragment"
         android:label="SettingMainFragment"
-        tools:layout="@layout/fragment_setting_main"/>
+        tools:layout="@layout/fragment_setting_main">
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingNotificationFragment"
+            app:destination="@id/settingNotificationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingNotificationFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingNotificationFragment"
+        android:label="SettingNotificationFragment"
+        tools:layout="@layout/fragment_setting_notification"/>
+
 </navigation>

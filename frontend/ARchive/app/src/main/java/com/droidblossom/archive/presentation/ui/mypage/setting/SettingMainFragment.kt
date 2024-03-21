@@ -7,6 +7,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSettingMainBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
@@ -25,13 +27,14 @@ class SettingMainFragment :
     BaseFragment<SettingViewModelImpl, FragmentSettingMainBinding>(R.layout.fragment_setting_main) {
 
     override val viewModel: SettingViewModelImpl by viewModels()
-
     @Inject
     lateinit var dataStoreUtils: DataStoreUtils
+    lateinit var navController: NavController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+        navController = Navigation.findNavController(view)
     }
 
     override fun observeData() {
@@ -71,7 +74,7 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoNotification -> {
-
+                            navController.navigate(R.id.action_settingMainFragment_to_settingNotificationFragment)
                         }
 
                         SettingViewModel.SettingMainEvent.GoUser -> {
