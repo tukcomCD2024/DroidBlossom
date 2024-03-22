@@ -48,21 +48,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()){
 
             EventBus.getDefault().post(remoteMessage.data)
-            CoroutineScope(Dispatchers.IO).launch {
-                val notificationsEnabled = dataStoreUtils.fetchNotificationsEnabled()
+            handleNotification(remoteMessage)
 
-                if (notificationsEnabled) {
-                    handleNotification(remoteMessage)
-                } else {
-                    Log.d(TAG, "사용자가 알림을 비활성화했습니다.")
-                }
-            }
         }else{
             // 데이터 메시지 비어있음
             Log.d(TAG, "메시지를 수신하지 못했습니다.")
         }
-
-
+        
     }
 
     private fun handleNotification(remoteMessage: RemoteMessage) {
