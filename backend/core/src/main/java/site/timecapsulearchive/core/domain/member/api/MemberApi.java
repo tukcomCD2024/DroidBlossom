@@ -129,6 +129,10 @@ public interface MemberApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "입력 이메일이 없거나 형식이 안맞는 경우 발생하는 예외"
         )
     })
     ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(String email);
