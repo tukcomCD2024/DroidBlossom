@@ -56,51 +56,70 @@ class SkinMakeViewModelImpl @Inject constructor(
     private val _skinImgFile = MutableStateFlow<File?>(null)
     override val skinImgFile: StateFlow<File?> = _skinImgFile
 
-    override val skinMotions: MutableList<SkinMotion> = mutableListOf(
-        SkinMotion(
-            1L,
-            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
-            Motion.JUMPING_JACKS,
-            Retarget.CMU,
-            false
-        ),
-        SkinMotion(
-            2L,
-            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
-            Motion.DAB,
-            Retarget.FAIR,
-            false
-        ),
-        SkinMotion(
-            3L,
-            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
-            Motion.JUMPING,
-            Retarget.FAIR,
-            false
-        ),
-        SkinMotion(
-            4L,
-            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
-            Motion.WAVE_HELLO,
-            Retarget.FAIR,
-            false
-        ),
-        SkinMotion(
-            5L,
-            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
-            Motion.ZOMBIE,
-            Retarget.FAIR,
-            false
-        ),
-        SkinMotion(
-            6L,
-            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
-            Motion.JESSE_DANCE,
-            Retarget.ROKOKO,
-            false
+    private val _skinMotions = MutableStateFlow<List<SkinMotion>>(
+        listOf(
+            SkinMotion(
+                1L,
+                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                Motion.JUMPING_JACKS,
+                Retarget.CMU,
+                false
+            ),
+            SkinMotion(
+                2L,
+                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                Motion.DAB,
+                Retarget.FAIR,
+                false
+            ),
+            SkinMotion(
+                3L,
+                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                Motion.JUMPING,
+                Retarget.FAIR,
+                false
+            ),
+            SkinMotion(
+                4L,
+                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                Motion.WAVE_HELLO,
+                Retarget.FAIR,
+                false
+            ),
+            SkinMotion(
+                5L,
+                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                Motion.ZOMBIE,
+                Retarget.FAIR,
+                false
+            ),
+            SkinMotion(
+                6L,
+                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                Motion.JESSE_DANCE,
+                Retarget.ROKOKO,
+                false
+            )
         )
     )
+    override val skinMotions: MutableStateFlow<List<SkinMotion>>
+        get() = _skinMotions
 
+    private val _skinMotionIndex = MutableStateFlow<Int>(-1)
+    override val skinMotionIndex: StateFlow<Int>
+        get() = _skinMotionIndex
+    override fun selectSkinMotion(skinMotion: SkinMotion) {
+        viewModelScope.launch {
+            val newList = skinMotions.value.map { existingSkinMotion ->
+                if (existingSkinMotion == skinMotion) {
+                    existingSkinMotion.copy(isClicked = true)
+                } else {
+                    existingSkinMotion.copy(isClicked = false)
+                }
+            }
+            _skinMotions.emit(newList)
+        }
+    }
     override fun skinMakeEvent(event: SkinMakeViewModel.SkinMakeEvent) {
         viewModelScope.launch {
             _skinMakeEvents.emit(event)
@@ -111,6 +130,13 @@ class SkinMakeViewModelImpl @Inject constructor(
 
     override fun selectAddMotion() {
         viewModelScope.launch {
+            if (addMotion.value) {
+                val newList = skinMotions.value.map { skinMotion ->
+                    skinMotion.copy(isClicked = false)
+                }
+                _skinMotions.emit(newList)
+                _skinMotionIndex.emit(-1)
+            }
             _addMotion.emit(!addMotion.value)
         }
     }
@@ -168,14 +194,18 @@ class SkinMakeViewModelImpl @Inject constructor(
     }
 
     private fun submitSkin() {
+        if (addMotion.value) {
+            val skinMotion = skinMotions.value.find { it.isClicked }
+            _skinMotionIndex.value = if (skinMotion != null) skinMotions.value.indexOf(skinMotion) else -1
+        }
         viewModelScope.launch {
             capsuleSkinsMakeUseCase(
                 CapsuleSkinsMakeRequest(
                     skinName.value,
                     skinImgFile.value!!.name,
                     S3DIRECTORY,
-                    null,
-                    null
+                    skinMotions.value.getOrNull(skinMotionIndex.value)?.motionName,
+                    skinMotions.value.getOrNull(skinMotionIndex.value)?.retarget
                 ).toDto()
             ).collect { result ->
                 result.onSuccess {
