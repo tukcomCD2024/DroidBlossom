@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.skin.skinmake
 
 import android.net.Uri
+import com.droidblossom.archive.domain.model.capsule_skin.SkinMotion
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -14,6 +15,7 @@ interface SkinMakeViewModel {
     val skinImgUri: MutableStateFlow<Uri?>
     val addMotion : StateFlow<Boolean>
     val skinImgFile: StateFlow<File?>
+    val skinMotions: MutableList<SkinMotion>
 
     fun skinMakeEvent(event: SkinMakeEvent)
     fun selectAddMotion()

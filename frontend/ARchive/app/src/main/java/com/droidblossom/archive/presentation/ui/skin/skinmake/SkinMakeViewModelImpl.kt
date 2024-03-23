@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsMakeRequest
+import com.droidblossom.archive.domain.model.capsule_skin.SkinMotion
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsMakeUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
@@ -54,6 +55,52 @@ class SkinMakeViewModelImpl @Inject constructor(
 
     private val _skinImgFile = MutableStateFlow<File?>(null)
     override val skinImgFile: StateFlow<File?> = _skinImgFile
+
+    override val skinMotions: MutableList<SkinMotion> = mutableListOf(
+        SkinMotion(
+            1L,
+            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+            Motion.JUMPING_JACKS,
+            Retarget.CMU,
+            false
+        ),
+        SkinMotion(
+            2L,
+            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+            Motion.DAB,
+            Retarget.FAIR,
+            false
+        ),
+        SkinMotion(
+            3L,
+            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+            Motion.JUMPING,
+            Retarget.FAIR,
+            false
+        ),
+        SkinMotion(
+            4L,
+            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+            Motion.WAVE_HELLO,
+            Retarget.FAIR,
+            false
+        ),
+        SkinMotion(
+            5L,
+            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+            Motion.ZOMBIE,
+            Retarget.FAIR,
+            false
+        ),
+        SkinMotion(
+            6L,
+            "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+            Motion.JESSE_DANCE,
+            Retarget.ROKOKO,
+            false
+        )
+    )
+
     override fun skinMakeEvent(event: SkinMakeViewModel.SkinMakeEvent) {
         viewModelScope.launch {
             _skinMakeEvents.emit(event)
@@ -130,7 +177,7 @@ class SkinMakeViewModelImpl @Inject constructor(
                     null,
                     null
                 ).toDto()
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
                     Log.d("스킨 생성", "생성 성공")
