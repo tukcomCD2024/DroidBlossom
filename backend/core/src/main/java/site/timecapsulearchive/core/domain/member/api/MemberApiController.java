@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
@@ -103,15 +104,15 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @GetMapping("/check-duplication/email")
+    @PostMapping("/check-duplication/email")
     @Override
     public ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
-        @RequestParam(value = "email") @Email final String email
+        @Valid @RequestBody CheckEmailDuplicationRequest request
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                memberService.checkEmailDuplication(email)
+                memberService.checkEmailDuplication(request.email())
             )
         );
     }

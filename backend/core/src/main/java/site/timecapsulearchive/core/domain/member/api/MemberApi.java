@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
+import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
@@ -135,5 +136,6 @@ public interface MemberApi {
             description = "입력 이메일이 없거나 형식이 안맞는 경우 발생하는 예외"
         )
     })
-    ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(String email);
+    ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
+        CheckEmailDuplicationRequest request);
 }
