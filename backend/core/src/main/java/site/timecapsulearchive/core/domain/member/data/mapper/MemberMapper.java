@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.member.data.mapper;
 
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
@@ -82,6 +83,8 @@ public class MemberMapper {
         return Member.builder()
             .email(email)
             .password(password)
+            .authId(String.valueOf(UUID.randomUUID()))
+            .profileUrl("")
             .socialType(SocialType.EMAIL)
             .build();
     }
