@@ -102,7 +102,6 @@ public class MessageVerificationService {
 
         findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
         findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));
-        findMember.updateNickName();
         findMember.updateVerification();
     }
 }
