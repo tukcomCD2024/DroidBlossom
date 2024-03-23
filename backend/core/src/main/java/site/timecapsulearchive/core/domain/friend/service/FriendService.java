@@ -80,15 +80,12 @@ public class FriendService {
 
     public void acceptFriend(final Long memberId, final Long friendId) {
         final FriendInvite friendInvite = friendInviteRepository
-            .findFriendInviteByOwnerIdAndFriendId(memberId, friendId)
+            .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
             .orElseThrow(FriendNotFoundException::new);
 
-        final Member owner = memberRepository
-            .findMemberById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-        final Member friend = memberRepository
-            .findMemberById(friendId)
-            .orElseThrow(MemberNotFoundException::new);
+        Member friend = friendInvite.getOwner();
+        Member owner = friendInvite.getFriend();
+
         final MemberFriend memberFriend = memberFriendMapper.memberToEntity(owner, friend);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -99,7 +96,7 @@ public class FriendService {
             }
         });
 
-        notificationManager.sendFriendAcceptMessage(memberId, friend.getNickname());
+        notificationManager.sendFriendAcceptMessage(friendId, owner.getNickname());
     }
 
     @Transactional
