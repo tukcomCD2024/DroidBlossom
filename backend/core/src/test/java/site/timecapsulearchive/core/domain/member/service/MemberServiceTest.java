@@ -72,7 +72,7 @@ class MemberServiceTest {
                 1L,
                 isVerified,
                 email,
-                passwordEncoder.encode(password)
+                (password == null) ? null : passwordEncoder.encode(password)
             )
         );
     }
@@ -116,6 +116,20 @@ class MemberServiceTest {
         //when, then
         assertThatThrownBy(
             () -> memberService.findVerifiedMemberIdByEmailAndPassword(email, password + "trash"))
+            .isExactlyInstanceOf(CredentialsNotMatchedException.class);
+    }
+
+    @Test
+    void 비밀번호가_없는_검증된_회원_아이디_검색_테스트() {
+        //given
+        String email = "test@google.com";
+        String password = "test-password";
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+            .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, null));
+
+        //when, then
+        assertThatThrownBy(
+            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email, password))
             .isExactlyInstanceOf(CredentialsNotMatchedException.class);
     }
 
