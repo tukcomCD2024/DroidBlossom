@@ -12,7 +12,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +68,9 @@ public class Member extends BaseEntity {
     @Column(name = "auth_id", nullable = false, unique = true)
     private String authId;
 
+    @Column(name = "password")
+    private String password;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Capsule> capsules;
 
@@ -91,14 +93,15 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, SocialType socialType, String email, String authId) {
+    private Member(String profileUrl, SocialType socialType, String email, String authId, String password) {
         this.profileUrl = profileUrl;
-        this.nickname = String.valueOf(UUID.randomUUID());
+        this.nickname = MakeRandomNickNameUtil.makeRandomNickName();
         this.socialType = socialType;
         this.email = email;
         this.isVerified = false;
         this.notificationEnabled = false;
         this.authId = authId;
+        this.password = password;
     }
 
     public void updateVerification() {
@@ -111,9 +114,5 @@ public class Member extends BaseEntity {
 
     public void updatePhoneHash(byte[] phone_hash) {
         this.phone_hash = phone_hash;
-    }
-
-    public void updateNickName() {
-        this.nickname = MakeRandomNickNameUtil.makeRandomNickName();
     }
 }
