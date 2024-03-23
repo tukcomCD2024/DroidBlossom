@@ -11,8 +11,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -78,6 +78,27 @@ public class FriendService {
         return FriendReqStatusResponse.success();
     }
 
+    public void acceptFriend(final Long memberId, final Long friendId) {
+        final FriendInvite friendInvite = friendInviteRepository
+            .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
+            .orElseThrow(FriendNotFoundException::new);
+
+        final MemberFriend ownerRelation = friendInvite.ownerRelation();
+        final MemberFriend friendRelation = friendInvite.friendRelation();
+
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                friendInviteRepository.delete(friendInvite);
+                memberFriendRepository.save(ownerRelation);
+                memberFriendRepository.save(friendRelation);
+            }
+        });
+
+        notificationManager.sendFriendAcceptMessage(friendId, ownerRelation.getOwnerNickname());
+    }
+
     @Transactional
     public void denyRequestFriend(Long memberId, Long friendId) {
         final FriendInvite friendInvite = friendInviteRepository
@@ -86,7 +107,7 @@ public class FriendService {
 
         friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
     }
-  
+
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
         final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
@@ -117,6 +138,7 @@ public class FriendService {
         Slice<FriendSummaryDto> friendRequests = memberFriendQueryRepository.findFriendRequestsSlice(
             memberId, size, createdAt);
 
-        return memberFriendMapper.friendRequestsSliceToResponse(friendRequests.getContent(), friendRequests.hasNext());
+        return memberFriendMapper.friendRequestsSliceToResponse(friendRequests.getContent(),
+            friendRequests.hasNext());
     }
 }
