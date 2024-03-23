@@ -64,22 +64,6 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @PostMapping(
-        value = "/status/email",
-        consumes = {"application/json"},
-        produces = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatusWithEmail(
-        @RequestParam(value = "email") @Email String email) {
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                memberService.checkStatusWithEmail(email)
-            )
-        );
-    }
-
     @Override
     @PatchMapping(value = "/fcm_token")
     public ResponseEntity<ApiSpec<String>> updateMemberFCMToken(

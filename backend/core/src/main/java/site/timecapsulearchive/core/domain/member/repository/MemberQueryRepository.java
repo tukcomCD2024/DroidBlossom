@@ -141,11 +141,4 @@ public class MemberQueryRepository {
 
         return count != null;
     }
-
-    public Boolean findIsVerifiedByEmail(final String email) {
-       return query.select(member.isVerified)
-            .from(member)
-            .where(member.authId.eq(email))
-            .fetchOne();
-    }
 }

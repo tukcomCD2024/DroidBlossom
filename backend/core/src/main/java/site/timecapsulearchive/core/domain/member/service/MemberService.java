@@ -209,14 +209,4 @@ public class MemberService {
 
         return new CheckEmailDuplicationResponse(isDuplicated);
     }
-
-    public MemberStatusResponse checkStatusWithEmail(String email) {
-        final Boolean isVerified = memberQueryRepository.findIsVerifiedByEmail(email);
-
-        if (isVerified == null) {
-            return MemberStatusResponse.empty();
-        }
-
-        return MemberStatusResponse.from(isVerified);
-    }
 }

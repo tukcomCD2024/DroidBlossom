@@ -53,19 +53,6 @@ public interface MemberApi {
     ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(CheckStatusRequest request);
 
     @Operation(
-        summary = "이메일로 유저의 인증 상태를 반환",
-        description = "이메일로 유저의 인증 상태를 반환한다.",
-        tags = {"member"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatusWithEmail(String email);
-
-    @Operation(
         summary = "회원 FCM 토큰 수정",
         description = "회원의 FCM 토큰을 수정한다.",
         security = {@SecurityRequirement(name = "member")},
