@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
+import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
@@ -50,6 +51,19 @@ public interface MemberApi {
         )
     })
     ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(CheckStatusRequest request);
+
+    @Operation(
+        summary = "이메일로 유저의 인증 상태를 반환",
+        description = "이메일로 유저의 인증 상태를 반환한다.",
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatusWithEmail(String email);
 
     @Operation(
         summary = "회원 FCM 토큰 수정",
@@ -117,4 +131,18 @@ public interface MemberApi {
         int size,
         ZonedDateTime createdAt
     );
+
+    @Operation(
+        summary = "이메일 중복 조회",
+        description = "이메일의 중복을 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        )
+    })
+    ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(String email);
 }
