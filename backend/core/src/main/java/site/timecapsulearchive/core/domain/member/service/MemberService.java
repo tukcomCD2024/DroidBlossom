@@ -179,16 +179,16 @@ public class MemberService {
     }
 
     @Transactional
-    public Long createMemberWithEmail(String email, String password) {
-        final Member member = memberMapper.createMemberWithEmail(email,
-            passwordEncoder.encode(password));
+    public Long createMemberWithEmail(final String email, final String password) {
+        final String encodedPassword = passwordEncoder.encode(password);
+        final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
 
         final Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();
     }
 
-    public Long findVerifiedMemberIdByEmailAndPassword(String email, String password) {
+    public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
         final EmailVerifiedCheckDto dto = memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(
                 email)
             .orElseThrow(MemberNotFoundException::new);

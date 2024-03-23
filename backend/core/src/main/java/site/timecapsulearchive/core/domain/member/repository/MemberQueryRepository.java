@@ -114,7 +114,7 @@ public class MemberQueryRepository {
     }
 
     public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmailAndPassword(
-        String email
+        final String email
     ) {
         return Optional.ofNullable(
             query
@@ -133,7 +133,7 @@ public class MemberQueryRepository {
         );
     }
 
-    public Boolean checkEmailDuplication(String email) {
+    public Boolean checkEmailDuplication(final String email) {
         Integer count = query.selectOne()
             .from(member)
             .where(member.email.eq(email))
@@ -142,7 +142,7 @@ public class MemberQueryRepository {
         return count != null;
     }
 
-    public Boolean findIsVerifiedByEmail(String email) {
+    public Boolean findIsVerifiedByEmail(final String email) {
        return query.select(member.isVerified)
             .from(member)
             .where(member.authId.eq(email))
