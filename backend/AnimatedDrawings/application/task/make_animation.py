@@ -15,6 +15,7 @@ class MakeAnimation(LogErrorsTask):
     name = 'make_animation'
 
     def __init__(self):
+        super().__init__()
         self.s3_bucket_name = S3Config().s3_bucket_name
 
     def run(self, *args, **kwargs):

@@ -2,10 +2,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from application.config.database_config import DatabaseConfig
-from application.task.base_task import LogErrorsTask
 from application.model.capsule_skin import CapsuleSkin
 from application.model.motion import Motion
 from application.model.retarget import Retarget
+from application.task.base_task import LogErrorsTask
 
 
 class SaveCapsuleSkin(LogErrorsTask):
