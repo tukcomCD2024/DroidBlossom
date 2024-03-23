@@ -49,7 +49,7 @@ public class NotificationMapper {
             .memberId(friendId)
             .status(NOTIFICATION_SEND_SUCCESS)
             .title("친구 수락 알림")
-            .text(ownerNickname + "가 친구 요청을 수락하였습니다. ARchive에서 확인해보세요!")
+            .text(ownerNickname + "님이 친구 요청을 수락하였습니다. ARchive에서 확인해보세요!")
             .build();
     }
 }
