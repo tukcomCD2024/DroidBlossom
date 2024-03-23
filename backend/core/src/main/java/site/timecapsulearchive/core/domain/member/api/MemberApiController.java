@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.member.api;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
+import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
@@ -63,6 +65,17 @@ public class MemberApiController implements MemberApi {
     }
 
     @Override
+    public ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatusWithEmail(
+        @RequestParam(value = "email") @Email String email) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.checkStatusWithEmail(email)
+            )
+        );
+    }
+
+    @Override
     @PatchMapping(value = "/fcm_token")
     public ResponseEntity<ApiSpec<String>> updateMemberFCMToken(
         @AuthenticationPrincipal final Long memberId,
@@ -97,6 +110,19 @@ public class MemberApiController implements MemberApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 memberService.findNotificationSliceByMemberId(memberId, size, createdAt)
+            )
+        );
+    }
+
+    @GetMapping("/check-duplication/email")
+    @Override
+    public ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
+        @RequestParam(value = "email") @Email final String email
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.checkEmailDuplication(email)
             )
         );
     }

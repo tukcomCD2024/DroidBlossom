@@ -4,19 +4,23 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
+import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
+import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
@@ -32,6 +36,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final AESEncryptionManager aesEncryptionManager;
+    private final PasswordEncoder passwordEncoder;
 
     private final MemberMapper memberMapper;
 
@@ -171,5 +176,47 @@ public class MemberService {
             notifications.getContent(),
             notifications.hasNext()
         );
+    }
+
+    @Transactional
+    public Long createMemberWithEmail(String email, String password) {
+        final Member member = memberMapper.createMemberWithEmail(email,
+            passwordEncoder.encode(password));
+
+        final Member savedMember = memberRepository.save(member);
+
+        return savedMember.getId();
+    }
+
+    public Long findVerifiedMemberIdByEmailAndPassword(String email, String password) {
+        final EmailVerifiedCheckDto dto = memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(
+                email)
+            .orElseThrow(MemberNotFoundException::new);
+
+        if (!dto.isVerified()) {
+            throw new NotVerifiedMemberException();
+        }
+
+        if (!dto.email().equals(email) || !passwordEncoder.matches(password, dto.password())) {
+            throw new CredentialsNotMatchedException();
+        }
+
+        return dto.memberId();
+    }
+
+    public CheckEmailDuplicationResponse checkEmailDuplication(String email) {
+        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(email);
+
+        return new CheckEmailDuplicationResponse(isDuplicated);
+    }
+
+    public MemberStatusResponse checkStatusWithEmail(String email) {
+        final Boolean isVerified = memberQueryRepository.findIsVerifiedByEmail(email);
+
+        if (isVerified == null) {
+            return MemberStatusResponse.empty();
+        }
+
+        return MemberStatusResponse.from(isVerified);
     }
 }

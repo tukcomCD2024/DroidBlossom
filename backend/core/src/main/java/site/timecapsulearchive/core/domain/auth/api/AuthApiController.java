@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.data.request.EmailSignInRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.EmailSignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.TemporaryTokenReIssueRequest;
@@ -198,6 +200,34 @@ public class AuthApiController implements AuthApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 response
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
+        @Valid @RequestBody final EmailSignUpRequest request
+    ) {
+        final Long id = memberService.createMemberWithEmail(request.email(), request.password());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createTemporaryToken(id)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<ApiSpec<TokenResponse>> signInWithEmail(
+        @Valid @RequestBody final EmailSignInRequest request
+    ) {
+        final Long id = memberService.findVerifiedMemberIdByEmailAndPassword(request.email(), request.password());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createNewToken(id)
             )
         );
     }

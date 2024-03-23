@@ -77,4 +77,12 @@ public class MemberMapper {
 
         return new MemberNotificationSliceResponse(responses, hasNext);
     }
+
+    public Member createMemberWithEmail(String email, String password) {
+        return Member.builder()
+            .email(email)
+            .password(password)
+            .socialType(SocialType.EMAIL)
+            .build();
+    }
 }
