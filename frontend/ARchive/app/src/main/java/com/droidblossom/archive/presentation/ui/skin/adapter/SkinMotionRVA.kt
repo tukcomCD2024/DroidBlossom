@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemSkinMotionBinding
 import com.droidblossom.archive.domain.model.capsule_skin.SkinMotion
 
-class SkinMotionRVA : ListAdapter<SkinMotion, SkinMotionRVA.ItemViewHolder>(differ) {
+class SkinMotionRVA(val ItemClick: (SkinMotion) -> Unit) : ListAdapter<SkinMotion, SkinMotionRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemSkinMotionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: SkinMotion) {
             binding.item = data
+            binding.root.setOnClickListener {
+                ItemClick(data)
+            }
         }
     }
 

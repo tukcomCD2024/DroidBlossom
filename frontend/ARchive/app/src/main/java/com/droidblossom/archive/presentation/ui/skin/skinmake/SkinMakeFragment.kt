@@ -21,6 +21,7 @@ import com.droidblossom.archive.util.S3Util
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -36,7 +37,7 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
     override val viewModel : SkinMakeViewModelImpl by activityViewModels()
 
     private val skinMotionRVA by lazy {
-        SkinMotionRVA()
+        SkinMotionRVA { viewModel.selectSkinMotion(it) }
     }
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
@@ -60,6 +61,14 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                             navController.navigate(R.id.action_skinMakeFragment_to_skinMakeSuccessFragment)
                         }
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.skinMotions.collect {
+                    skinMotionRVA.submitList(it)
                 }
             }
         }
@@ -125,6 +134,5 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     private fun initRVA(){
         binding.skinMotionRV.adapter = skinMotionRVA
-        skinMotionRVA.submitList(viewModel.skinMotions)
     }
 }
