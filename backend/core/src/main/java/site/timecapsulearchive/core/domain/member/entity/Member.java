@@ -93,7 +93,8 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, SocialType socialType, String email, String authId, String password) {
+    private Member(String profileUrl, SocialType socialType, String email, String authId,
+        String password) {
         this.profileUrl = profileUrl;
         this.nickname = MakeRandomNickNameUtil.makeRandomNickName();
         this.socialType = socialType;

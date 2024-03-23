@@ -232,7 +232,8 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithEmail(
         @Valid @RequestBody final EmailSignInRequest request
     ) {
-        final Long id = memberService.findVerifiedMemberIdByEmailAndPassword(request.email(), request.password());
+        final Long id = memberService.findVerifiedMemberIdByEmailAndPassword(request.email(),
+            request.password());
 
         return ResponseEntity.ok(
             ApiSpec.success(

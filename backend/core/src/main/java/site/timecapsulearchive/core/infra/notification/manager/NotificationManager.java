@@ -37,7 +37,8 @@ public class NotificationManager {
 
     @NotificationRequest
     public void sendFriendAcceptMessage(final Long friendId, final String ownerNickname) {
-        final FriendAcceptNotificationRequest request = notificationMapper.friendAcceptToMessage(friendId,
+        final FriendAcceptNotificationRequest request = notificationMapper.friendAcceptToMessage(
+            friendId,
             ownerNickname);
 
         aspect.sendNotification(request, notificationUrl.friendAcceptAlarmUrl());

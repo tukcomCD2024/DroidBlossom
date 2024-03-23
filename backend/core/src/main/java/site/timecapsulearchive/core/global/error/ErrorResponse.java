@@ -45,7 +45,7 @@ public record ErrorResponse(
             List.of(Error.fromParameter(parameterName))
         );
     }
-    
+
     public static ErrorResponse fromType(
         final ErrorCode errorCode,
         final String parameterName,
@@ -63,6 +63,7 @@ public record ErrorResponse(
         String value,
         String reason
     ) {
+
         public static Error fromType(final String parameterName, final String value) {
             return new Error(parameterName, value, "입력 파라미터의 타입이 올바르지 않습니다.");
         }
