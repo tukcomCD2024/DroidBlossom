@@ -86,7 +86,6 @@ public class FriendService {
         final MemberFriend ownerRelation = friendInvite.ownerRelation();
         final MemberFriend friendRelation = friendInvite.friendRelation();
 
-
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
