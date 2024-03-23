@@ -14,13 +14,8 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinMakeBinding
-import com.droidblossom.archive.domain.model.common.FileName
-import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.MainActivity
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModel
-import com.droidblossom.archive.presentation.ui.home.createcapsule.dialog.DatePickerDialogFragment
+import com.droidblossom.archive.presentation.ui.skin.adapter.SkinMotionRVA
 import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +34,10 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     lateinit var navController: NavController
     override val viewModel : SkinMakeViewModelImpl by activityViewModels()
+
+    private val skinMotionRVA by lazy {
+        SkinMotionRVA()
+    }
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
         if (uri != null){
@@ -72,6 +71,7 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
         navController = Navigation.findNavController(view)
         binding.vm = viewModel
         initView()
+        initRVA()
     }
 
     private fun initView(){
@@ -123,4 +123,8 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     }
 
+    private fun initRVA(){
+        binding.skinMotionRV.adapter = skinMotionRVA
+        skinMotionRVA.submitList(viewModel.skinMotions)
+    }
 }
