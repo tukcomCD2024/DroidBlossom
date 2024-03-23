@@ -204,6 +204,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/sign-up/email",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
         @Valid @RequestBody final EmailSignUpRequest request
@@ -218,6 +223,11 @@ public class AuthApiController implements AuthApi {
         );
     }
 
+    @PostMapping(
+        value = "/sign-in/email",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithEmail(
         @Valid @RequestBody final EmailSignInRequest request
