@@ -83,20 +83,20 @@ public class FriendService {
             .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
             .orElseThrow(FriendNotFoundException::new);
 
-        Member friend = friendInvite.getOwner();
-        Member owner = friendInvite.getFriend();
+        final MemberFriend ownerRelation = friendInvite.ownerRelation();
+        final MemberFriend friendRelation = friendInvite.friendRelation();
 
-        final MemberFriend memberFriend = memberFriendMapper.memberToEntity(owner, friend);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 friendInviteRepository.delete(friendInvite);
-                memberFriendRepository.save(memberFriend);
+                memberFriendRepository.save(ownerRelation);
+                memberFriendRepository.save(friendRelation);
             }
         });
 
-        notificationManager.sendFriendAcceptMessage(friendId, owner.getNickname());
+        notificationManager.sendFriendAcceptMessage(friendId, ownerRelation.getOwnerNickname());
     }
 
     @Transactional
