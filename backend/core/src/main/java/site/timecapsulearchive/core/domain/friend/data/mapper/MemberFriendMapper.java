@@ -7,8 +7,6 @@ import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
-import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
-import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @Component
 public class MemberFriendMapper {
@@ -36,12 +34,5 @@ public class MemberFriendMapper {
             .toList();
 
         return new FriendRequestsSliceResponse(friendRequests, hasNext);
-    }
-
-    public MemberFriend memberToEntity(Member owner, Member friend) {
-        return MemberFriend.builder()
-            .owner(owner)
-            .friend(friend)
-            .build();
     }
 }

@@ -47,4 +47,19 @@ public class FriendInvite extends BaseEntity {
         this.owner = owner;
         this.friend = friend;
     }
+
+    public MemberFriend friendRelation() {
+        return MemberFriend.builder()
+            .owner(owner)
+            .friend(friend)
+            .build();
+    }
+
+    public MemberFriend ownerRelation() {
+        return MemberFriend.builder()
+            .owner(friend)
+            .friend(owner)
+            .build();
+    }
+
 }
