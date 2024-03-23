@@ -94,15 +94,11 @@ public class MemberService {
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
-        if (isNotVerified(dto)) {
+        if (!dto.isVerified()) {
             throw new NotVerifiedMemberException();
         }
 
         return dto.memberId();
-    }
-
-    private boolean isNotVerified(final VerifiedCheckDto dto) {
-        return !dto.isVerified();
     }
 
     /**
@@ -121,15 +117,11 @@ public class MemberService {
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
-        if (isVerified(dto)) {
+        if (dto.isVerified()) {
             throw new AlreadyVerifiedException();
         }
 
         return dto.memberId();
-    }
-
-    private boolean isVerified(final VerifiedCheckDto dto) {
-        return dto.isVerified();
     }
 
     public MemberDetailResponse findMemberDetailById(final Long memberId) {
@@ -197,11 +189,22 @@ public class MemberService {
             throw new NotVerifiedMemberException();
         }
 
-        if (!dto.email().equals(email) || !passwordEncoder.matches(password, dto.password())) {
+        if (isNotMatched(email, password, dto.email(), dto.password())) {
             throw new CredentialsNotMatchedException();
         }
 
         return dto.memberId();
+    }
+
+    private boolean isNotMatched(
+        String inputEmail,
+        String inputPassword,
+        String email,
+        String password
+    ) {
+        return !inputEmail.equals(email) ||
+            password == null ||
+            !passwordEncoder.matches(inputPassword, password);
     }
 
     public CheckEmailDuplicationResponse checkEmailDuplication(String email) {
