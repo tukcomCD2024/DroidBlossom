@@ -116,12 +116,12 @@ public class FriendService {
     }
 
     @Transactional
-    public void deleteFriend(final Long memberId, final Long friendId) {
-        final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
-                memberId, friendId)
-            .orElseThrow(FriendNotFoundException::new);
+    public void deleteFriend(final Long memberId, final Long friend2Id) {
+        final List<MemberFriend> memberFriends = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
+                memberId, friend2Id);
 
-        memberFriendRepository.delete(memberFriend);
+        memberFriends
+            .forEach(memberFriendRepository::delete);
     }
 
     @Transactional(readOnly = true)
@@ -150,7 +150,8 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public SearchFriendsResponse findFriendsByPhone(final Long memberId, final List<String> phones) {
+    public SearchFriendsResponse findFriendsByPhone(final Long memberId,
+        final List<String> phones) {
         final List<byte[]> hashes = phones.stream()
             .map(phone -> hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8)))
             .toList();

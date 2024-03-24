@@ -1,9 +1,10 @@
 package site.timecapsulearchive.core.domain.friend.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import jakarta.persistence.EntityManager;
-import java.util.Optional;
+import java.util.List;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,11 +41,17 @@ class MemberFriendRepositoryTest extends RepositoryTest {
         entityManager.persist(friend);
         friendId = friend.getId();
 
-        MemberFriend memberFriend = MemberFriend.builder()
+        MemberFriend ownerRelation = MemberFriend.builder()
             .owner(owner)
             .friend(friend)
             .build();
-        entityManager.persist(memberFriend);
+
+        MemberFriend friendRelation = MemberFriend.builder()
+            .owner(friend)
+            .friend(owner)
+            .build();
+        entityManager.persist(ownerRelation);
+        entityManager.persist(friendRelation);
     }
 
     private Member getMember(int count) {
@@ -61,14 +68,32 @@ class MemberFriendRepositoryTest extends RepositoryTest {
     @Test
     void 사용자_아이디와_친구_아이디로_친구관계를_조회하여_친구관계를_확인한다() {
         //given
-        Optional<MemberFriend> memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
+        List<MemberFriend> memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
             ownerId, friendId);
 
         //when
-        Long actualFriendId = memberFriend.get().getFriend().getId();
+        Long actualFriendId = memberFriend.get(0).getFriend().getId();
+        Long actualOwnerId = memberFriend.get(1).getFriend().getId();
 
-        //then
-        assertThat(actualFriendId).isEqualTo(friendId);
+        //when
+        assertSoftly(softly -> {
+            softly.assertThat(memberFriend.size()).isEqualTo(2);
+            softly.assertThat(actualFriendId).isEqualTo(friendId);
+            softly.assertThat(actualOwnerId).isEqualTo(ownerId);
+        });
+    }
+
+    @Test
+    void 유효하지_않는_친구_아이디로_친구관계를_조회하면_빈_리스트를_반환한다() {
+        //given
+        Long friendId = -1L;
+
+        //when
+        List<MemberFriend> memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
+            ownerId, friendId);
+
+        //when
+        assertThat(memberFriend).isEmpty();
     }
 
 
