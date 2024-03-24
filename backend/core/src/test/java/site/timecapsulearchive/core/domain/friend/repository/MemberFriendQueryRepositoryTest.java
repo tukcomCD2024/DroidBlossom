@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
+import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,6 +24,7 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -31,12 +33,15 @@ import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashProperties;
 
+@FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
-    private final HashEncryptionManager hash = new HashEncryptionManager(new HashProperties("test"));
+    private final HashEncryptionManager hash = new HashEncryptionManager(
+        new HashProperties("test"));
     private final int MAX_FRIEND_ID = 21;
+    private final int MAX_MEMBER_ID = 31;
 
     private Long ownerId;
 
@@ -69,6 +74,11 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
                 .build();
             entityManager.persist(friendInvite);
         }
+
+        for (int i = MAX_FRIEND_ID; i < MAX_FRIEND_ID + 10; i++) {
+            Member friend = getMember(i);
+            entityManager.persist(friend);
+        }
     }
 
     private Member getMember(int count) {
@@ -91,7 +101,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {20, 15, 10, 5})
-    void 사용자의_친구_목록_조회_테스트(int size) {
+    void 특정_사용자로_친구_목록_조회하면_친구_목록_리스트가_나온다(int size) {
         //given
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
 
@@ -114,7 +124,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 유효하지_않은_시간으로_사용자의_친구_목록_조회_테스트() {
+    void 유효하지_않은_시간으로_사용자의_친구_목록_조회하면_빈_리스트가_나온다() {
         //given
         int size = 20;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
@@ -131,7 +141,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 친구가_없는_사용자의_친구_목록_조회_테스트() {
+    void 친구가_없는_사용자로_친구_목록_조회하면_빈_리스트가_나온다() {
         //given
         int size = 20;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
@@ -149,7 +159,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {20, 15, 10, 5})
-    void 사용자의_친구_요청_목록_조회_테스트(int size) {
+    void 특정_사용자로_친구_요청_목록_조회하면_친구_요청_목록_리스트가_나온다(int size) {
         //given
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
 
@@ -172,7 +182,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 유효하지_않은_시간으로_사용자의_친구_요청_목록_조회_테스트() {
+    void 유효하지_않은_시간으로_사용자의_친구_요청_목록_조회하면_빈_리스트가_나온다() {
         //given
         int size = 20;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
@@ -189,7 +199,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 친구가_없는_사용자의_친구_요청_목록_조회_테스트() {
+    void 친구가_없는_사용자로_친구_요청_목록_조회하면_빈_리스트가_나온다() {
         //given
         int size = 20;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
@@ -206,29 +216,31 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 앱_사용자의_전화번호로만_사용자_리스트_조회_테스트() {
+    void 앱_사용자의_전화번호로만_주소록_기반_사용자_리스트_조회하면_조회하면_앱_사용자_리스트가_나온다() {
         //given
-        List<byte[]> phoneHashes = IntStream.range(1, MAX_FRIEND_ID)
+        List<byte[]> phoneHashes = IntStream.range(1, MAX_MEMBER_ID)
             .mapToObj(i -> hash.encrypt(getPhoneBytes(i)))
             .toList();
 
         //when
-        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId,
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            ownerId,
             phoneHashes);
 
         //then
-        assertThat(friends.size()).isGreaterThan(0);
+        assertThat(friends.size()).isSameAs(MAX_MEMBER_ID - 1);
     }
 
     @Test
-    void 앱_사용자의_전화번호가_아닌_경우_사용자_리스트_조회_테스트() {
+    void 앱_사용자의_전화번호가_아닌_경우_주소록_기반_사용자_리스트_조회하면_빈_리스트가_나온다() {
         //given
-        List<byte[]> phoneHashes = IntStream.range(1, MAX_FRIEND_ID)
-            .mapToObj(count -> hash.encrypt(getPhoneBytes(count + MAX_FRIEND_ID)))
+        List<byte[]> phoneHashes = IntStream.range(1, MAX_MEMBER_ID)
+            .mapToObj(count -> hash.encrypt(getPhoneBytes(MAX_MEMBER_ID + count)))
             .toList();
 
         //when
-        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId,
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            ownerId,
             phoneHashes);
 
         //then
@@ -236,27 +248,51 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 친구가_없는_경우_사용자_리스트_조회_테스트() {
+    void 친구인_사용자로_주소록_기반_사용자_리스트_조회하면_친구인_앱_사용자_리스트가_나온다() {
         //given
         List<byte[]> phoneHashes = IntStream.range(1, MAX_FRIEND_ID)
             .mapToObj(count -> hash.encrypt(getPhoneBytes(count)))
             .toList();
 
         //when
-        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId + MAX_FRIEND_ID,
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            ownerId,
             phoneHashes);
 
         //then
-        assertThat(friends.size()).isSameAs(0);
+        assertSoftly(softly -> {
+            softly.assertThat(friends.size()).isSameAs(MAX_FRIEND_ID - 1);
+            softly.assertThat(friends).allMatch(friend -> friend.isFriend() == Boolean.TRUE);
+        });
     }
 
     @Test
-    void 빈_전화번호_목록인_경우_사용자_리스트_조회_테스트() {
+    void 친구가_아닌_사용자로_주소록_기반_사용자_리스트_조회하면_앱_사용자_리스트가_나온다() {
+        //given
+        List<byte[]> phoneHashes = IntStream.range(MAX_FRIEND_ID, MAX_MEMBER_ID)
+            .mapToObj(count -> hash.encrypt(getPhoneBytes(count)))
+            .toList();
+
+        //when
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            ownerId,
+            phoneHashes);
+
+        //then
+        assertSoftly(softly -> {
+            assertThat(friends.size()).isSameAs(MAX_MEMBER_ID - MAX_FRIEND_ID);
+            softly.assertThat(friends).allMatch(friend -> friend.isFriend() == Boolean.FALSE);
+        });
+    }
+
+    @Test
+    void 빈_전화번호_목록으로_주소록_기반_사용자_리스트_조회하면_빈_리스트가_나온다() {
         //given
         List<byte[]> phoneHashes = Collections.emptyList();
 
         //when
-        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(ownerId,
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            ownerId,
             phoneHashes);
 
         //then

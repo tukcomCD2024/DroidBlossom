@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
@@ -133,9 +134,9 @@ public class FriendService {
             .map(phone -> hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8)))
             .toList();
 
-        List<FriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
             memberId, hashes);
 
-        return memberFriendMapper.friendSummaryDtosToResponse(friends);
+        return memberFriendMapper.searchFriendSummaryDtosToResponse(friends);
     }
 }

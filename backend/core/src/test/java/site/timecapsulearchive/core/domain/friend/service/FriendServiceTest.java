@@ -6,13 +6,12 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
-import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
@@ -41,12 +40,20 @@ class FriendServiceTest {
     private final HashEncryptionManager hashEncryptionManager = new HashEncryptionManager(
         new HashProperties("test_salt"));
 
-    private final FriendService friendService = new FriendService(memberFriendRepository,
-        memberFriendQueryRepository, memberFriendMapper, memberRepository, friendInviteRepository,
-        friendMapper, notificationManager, transactionTemplate, hashEncryptionManager);
+    private final FriendService friendService = new FriendService(
+        memberFriendRepository,
+        memberFriendQueryRepository,
+        memberFriendMapper,
+        memberRepository,
+        friendInviteRepository,
+        friendMapper,
+        notificationManager,
+        transactionTemplate,
+        hashEncryptionManager
+    );
 
     @Test
-    void 사용자_핸드폰_번호로_친구_조회_테스트() {
+    void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
         List<String> phones = getPhones();
@@ -73,18 +80,18 @@ class FriendServiceTest {
         );
     }
 
-    private List<FriendSummaryDto> getFriendSummaryDtos() {
-        List<FriendSummaryDto> result = new ArrayList<>();
+    private List<SearchFriendSummaryDto> getFriendSummaryDtos() {
+        List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
-            result.add(new FriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                ZonedDateTime.now()));
+            result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
+                Boolean.TRUE));
         }
 
         return result;
     }
 
     @Test
-    void 번호_없이_친구_조회_테스트() {
+    void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
         List<String> phones = Collections.emptyList();
