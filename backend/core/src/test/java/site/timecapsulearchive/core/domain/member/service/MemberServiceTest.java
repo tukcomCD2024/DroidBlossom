@@ -36,7 +36,7 @@ class MemberServiceTest {
     );
 
     @Test
-    void 이메일과_패스워드로_존재하지_않는_회원_아이디_검색_테스트() {
+    void 이메일과_패스워드로_존재하지_않는_회원_아이디_검색하면_예외가_발생한다() {
         //given
         String email = "test@google.com";
         String password = "test-password";
@@ -50,7 +50,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 이메일과_패스워드로_검증된_회원_아이디_검색_테스트() {
+    void 이메일과_패스워드로_검증된_회원_아이디_검색하면_올바른_아이디가_반환된다() {
         //given
         String email = "test@google.com";
         String password = "test-password";
@@ -78,7 +78,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 이메일과_패스워드로_검증되지_않은_회원_아이디_검색_테스트() {
+    void 이메일과_패스워드로_검증되지_않은_회원_아이디_검색하면_예외가_발생한다() {
         //given
         String email = "test@google.com";
         String password = "test-password";
@@ -92,7 +92,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 올바르지_않은_이메일로_검증된_회원_아이디_검색_테스트() {
+    void 올바르지_않은_이메일로_검증된_회원_아이디_검색하면_예외가_발생한다() {
         //given
         String email = "test@google.com";
         String password = "test-password";
@@ -106,7 +106,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 올바르지_않은_비밀번호로_검증된_회원_아이디_검색_테스트() {
+    void 올바르지_않은_비밀번호로_검증된_회원_아이디_검색하면_예외가_발생한다() {
         //given
         String email = "test@google.com";
         String password = "test-password";
@@ -120,7 +120,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 비밀번호가_없는_검증된_회원_아이디_검색_테스트() {
+    void 비밀번호가_없는_검증된_회원_아이디_검색하면_예외가_발생한다() {
         //given
         String email = "test@google.com";
         String password = "test-password";
@@ -134,7 +134,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void 올바르지_않은_이메일과_비밀번호로_검증된_회원_아이디_검색_테스트() {
+    void 올바르지_않은_이메일과_비밀번호로_검증된_회원_아이디_검색하면_예외가_발생한다() {
         //given
         String email = "test@google.com";
         String password = "test-password";

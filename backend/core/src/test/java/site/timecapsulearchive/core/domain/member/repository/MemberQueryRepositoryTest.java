@@ -43,7 +43,7 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 중복_이메일로_중복_체크_테스트() {
+    void 중복_이메일로_중복_체크하면_True가_반환된다() {
         //given
         String duplicatedEmail = "0test@google.com";
 
@@ -55,7 +55,7 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 고유한_이메일로_중복_체크_테스트() {
+    void 고유한_이메일로_중복_체크_테스트하면_False가_반환된다() {
         //given
         String uniqueEmail = "unique@google.com";
 
