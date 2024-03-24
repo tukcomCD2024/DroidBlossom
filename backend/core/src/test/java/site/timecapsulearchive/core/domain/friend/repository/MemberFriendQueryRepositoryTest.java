@@ -65,6 +65,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private Member getMember(int count) {
         return Member.builder()
             .socialType(SocialType.GOOGLE)
+            .nickname(count + "testNickname")
             .email(count + "test@google.com")
             .authId(count + "test")
             .profileUrl(count + "test.com")
