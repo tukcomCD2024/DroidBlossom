@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -211,5 +212,12 @@ public class MemberService {
         Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(email);
 
         return new CheckEmailDuplicationResponse(isDuplicated);
+    }
+
+    public MemberNotificationStatusResponse checkNotificationStatus(Long memberId) {
+        Boolean isAlarm = memberQueryRepository.findIsAlarmByMemberId(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        return new MemberNotificationStatusResponse(isAlarm);
     }
 }

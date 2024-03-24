@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificatio
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -87,6 +88,18 @@ public class MemberApiController implements MemberApi {
         memberService.updateMemberNotificationEnabled(memberId, request.notificationEnabled());
 
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+    }
+
+    @Override
+    @PostMapping(value = "/notification_enabled")
+    public ResponseEntity<ApiSpec<MemberNotificationStatusResponse>> checkMemberNotificationStatus(
+        @AuthenticationPrincipal Long memberId) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.checkNotificationStatus(memberId)
+            )
+        );
     }
 
     @Override
