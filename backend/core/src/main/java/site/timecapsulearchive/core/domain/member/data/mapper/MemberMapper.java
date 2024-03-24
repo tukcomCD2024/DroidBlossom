@@ -92,6 +92,7 @@ public class MemberMapper {
             .authId(String.valueOf(UUID.randomUUID()))
             .profileUrl("")
             .socialType(SocialType.EMAIL)
+            .tag(NanoIdUtils.randomNanoId())
             .build();
     }
 }
