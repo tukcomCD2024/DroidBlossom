@@ -1,6 +1,9 @@
 package site.timecapsulearchive.core.domain.friend.service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -9,11 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
@@ -23,6 +29,7 @@ import site.timecapsulearchive.core.domain.friend.repository.MemberFriendReposit
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
@@ -36,6 +43,7 @@ public class FriendService {
     private final FriendMapper friendMapper;
     private final NotificationManager notificationManager;
     private final TransactionTemplate transactionTemplate;
+    private final HashEncryptionManager hashEncryptionManager;
 
     public FriendService(
         MemberFriendRepository memberFriendRepository,
@@ -44,7 +52,7 @@ public class FriendService {
         FriendInviteRepository friendInviteRepository,
         FriendMapper friendMapper,
         NotificationManager notificationManager,
-        PlatformTransactionManager transactionManager
+        PlatformTransactionManager transactionManager, HashEncryptionManager hashEncryptionManager
     ) {
         this.memberFriendRepository = memberFriendRepository;
         this.memberFriendQueryRepository = memberFriendQueryRepository;
@@ -54,6 +62,7 @@ public class FriendService {
         this.friendMapper = friendMapper;
         this.notificationManager = notificationManager;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.hashEncryptionManager = hashEncryptionManager;
         this.transactionTemplate.setTimeout(7);
     }
 
@@ -139,5 +148,28 @@ public class FriendService {
 
         return memberFriendMapper.friendRequestsSliceToResponse(friendRequests.getContent(),
             friendRequests.hasNext());
+    }
+
+    @Transactional(readOnly = true)
+    public SearchFriendsResponse findFriendsByPhone(Long memberId, List<String> phones) {
+        List<byte[]> hashes = phones.stream()
+            .map(phone -> hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8)))
+            .toList();
+
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            memberId, hashes);
+
+        return memberFriendMapper.searchFriendSummaryDtosToResponse(friends);
+    }
+
+    @Transactional(readOnly = true)
+    public FriendSearchResponse searchFriend(final Long memberId, final String tag) {
+        final Member friend = memberRepository.findMemberByTag(tag)
+            .orElseThrow(MemberNotFoundException::new);
+
+        final Optional<MemberFriend> memberFriend = memberFriendRepository
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friend.getId());
+
+        return memberFriendMapper.friendSearchDtoToResponse(friend, memberFriend.isPresent());
     }
 }

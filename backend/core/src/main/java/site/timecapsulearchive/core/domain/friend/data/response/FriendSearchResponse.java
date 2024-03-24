@@ -1,12 +1,10 @@
 package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.ZonedDateTime;
 import lombok.Builder;
 
 @Builder
-@Schema(description = "친구 요약 정보")
-public record FriendSummaryResponse(
+public record FriendSearchResponse(
     @Schema(description = "친구 아이디")
     Long id,
 
@@ -16,8 +14,8 @@ public record FriendSummaryResponse(
     @Schema(description = "친구 닉네임")
     String nickname,
 
-    @Schema(description = "친구 수락일")
-    ZonedDateTime createdAt
+    @Schema(description = "친구 관계")
+    Boolean isFriend
 ) {
 
 }

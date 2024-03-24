@@ -23,7 +23,6 @@ import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.history.entity.History;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
-import site.timecapsulearchive.core.global.util.nickname.MakeRandomNickNameUtil;
 
 @Entity
 @Getter
@@ -71,6 +70,9 @@ public class Member extends BaseEntity {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "tag", nullable = false, unique = true)
+    private String tag;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Capsule> capsules;
 
@@ -93,16 +95,17 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, SocialType socialType, String email, String authId,
-        String password) {
+    private Member(String profileUrl, String nickname, SocialType socialType, String email, String authId,
+        String password, String tag) {
         this.profileUrl = profileUrl;
-        this.nickname = MakeRandomNickNameUtil.makeRandomNickName();
+        this.nickname = nickname;
         this.socialType = socialType;
         this.email = email;
         this.isVerified = false;
         this.notificationEnabled = false;
         this.authId = authId;
         this.password = password;
+        this.tag = tag;
     }
 
     public void updateVerification() {

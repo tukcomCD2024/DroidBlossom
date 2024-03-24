@@ -10,12 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -174,11 +173,27 @@ public interface FriendApi {
             description = "ok"
         )
     })
-    @PostMapping(
-        value = "/friends/search",
-        produces = {"application/json"},
-        consumes = {"application/json"}
+    ResponseEntity<ApiSpec<SearchFriendsResponse>> searchMembersByPhones(
+        Long memberId,
+        SearchFriendsRequest request
+    );
+
+    @Operation(
+        summary = "찬구 검색",
+        description = "친구의 tag로 친구 검색을 한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
     )
-    ResponseEntity<SearchFriendsResponse> searchMembersByPhones(
-        @RequestBody SearchFriendsRequest request);
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<FriendSearchResponse>> searchFriendByTag(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        String tag
+    );
 }

@@ -4,9 +4,14 @@ import java.util.List;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSummaryResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @Component
 public class MemberFriendMapper {
@@ -21,8 +26,12 @@ public class MemberFriendMapper {
     }
 
     private FriendSummaryResponse friendsSummaryDtoToResponse(FriendSummaryDto dto) {
-        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(),
-            dto.createdAt());
+        return FriendSummaryResponse.builder()
+            .id(dto.id())
+            .profileUrl(dto.profileUrl())
+            .nickname(dto.nickname())
+            .createdAt(dto.createdAt())
+            .build();
     }
 
     public FriendRequestsSliceResponse friendRequestsSliceToResponse(
@@ -34,5 +43,28 @@ public class MemberFriendMapper {
             .toList();
 
         return new FriendRequestsSliceResponse(friendRequests, hasNext);
+    }
+
+    public SearchFriendsResponse searchFriendSummaryDtosToResponse(
+        List<SearchFriendSummaryDto> dtos) {
+        return new SearchFriendsResponse(dtos.stream()
+            .map(this::searchFriendSummaryDtoToResponse)
+            .toList()
+        );
+    }
+
+    private SearchFriendSummaryResponse searchFriendSummaryDtoToResponse(
+        SearchFriendSummaryDto dto) {
+        return new SearchFriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(),
+            dto.isFriend());
+    }
+
+    public FriendSearchResponse friendSearchDtoToResponse(final Member friend, boolean isFriend) {
+        return FriendSearchResponse.builder()
+            .id(friend.getId())
+            .profileUrl(friend.getProfileUrl())
+            .nickname(friend.getNickname())
+            .isFriend(isFriend)
+            .build();
     }
 }
