@@ -150,12 +150,12 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public SearchFriendsResponse findFriendsByPhone(Long memberId, List<String> phones) {
-        List<byte[]> hashes = phones.stream()
+    public SearchFriendsResponse findFriendsByPhone(final Long memberId, final List<String> phones) {
+        final List<byte[]> hashes = phones.stream()
             .map(phone -> hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8)))
             .toList();
 
-        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+        final List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
             memberId, hashes);
 
         return memberFriendMapper.searchFriendSummaryDtosToResponse(friends);

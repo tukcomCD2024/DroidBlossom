@@ -29,7 +29,7 @@ public class MemberFriendQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        List<FriendSummaryDto> friends = jpaQueryFactory
+        final List<FriendSummaryDto> friends = jpaQueryFactory
             .select(
                 Projections.constructor(
                     FriendSummaryDto.class,
@@ -63,7 +63,7 @@ public class MemberFriendQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        List<FriendSummaryDto> friends = jpaQueryFactory
+        final List<FriendSummaryDto> friends = jpaQueryFactory
             .select(
                 Projections.constructor(
                     FriendSummaryDto.class,
@@ -90,7 +90,10 @@ public class MemberFriendQueryRepository {
         return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
     }
 
-    public List<SearchFriendSummaryDto> findFriendsByPhone(Long memberId, List<byte[]> hashes) {
+    public List<SearchFriendSummaryDto> findFriendsByPhone(
+        final Long memberId,
+        final List<byte[]> hashes
+    ) {
         return jpaQueryFactory
             .select(
                 Projections.constructor(
@@ -108,8 +111,10 @@ public class MemberFriendQueryRepository {
             .fetch();
     }
 
-    public Optional<SearchFriendSummaryDto> findFriendsByTag(final Long memberId,
-        final String tag) {
+    public Optional<SearchFriendSummaryDto> findFriendsByTag(
+        final Long memberId,
+        final String tag
+    ) {
         return Optional.ofNullable(jpaQueryFactory
             .select(
                 Projections.constructor(

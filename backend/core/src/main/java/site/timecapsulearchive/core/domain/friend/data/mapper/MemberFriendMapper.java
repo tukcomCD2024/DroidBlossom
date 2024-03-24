@@ -14,8 +14,8 @@ import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsRes
 @Component
 public class MemberFriendMapper {
 
-    public FriendsSliceResponse friendsSliceToResponse(Slice<FriendSummaryDto> slice) {
-        List<FriendSummaryResponse> friends = slice.getContent()
+    public FriendsSliceResponse friendsSliceToResponse(final Slice<FriendSummaryDto> slice) {
+        final List<FriendSummaryResponse> friends = slice.getContent()
             .stream()
             .map(this::friendsSummaryDtoToResponse)
             .toList();
@@ -23,7 +23,7 @@ public class MemberFriendMapper {
         return new FriendsSliceResponse(friends, slice.hasNext());
     }
 
-    private FriendSummaryResponse friendsSummaryDtoToResponse(FriendSummaryDto dto) {
+    private FriendSummaryResponse friendsSummaryDtoToResponse(final FriendSummaryDto dto) {
         return FriendSummaryResponse.builder()
             .id(dto.id())
             .profileUrl(dto.profileUrl())
@@ -33,8 +33,8 @@ public class MemberFriendMapper {
     }
 
     public FriendRequestsSliceResponse friendRequestsSliceToResponse(
-        List<FriendSummaryDto> content,
-        boolean hasNext
+        final List<FriendSummaryDto> content,
+        final boolean hasNext
     ) {
         List<FriendSummaryResponse> friendRequests = content.stream()
             .map(this::friendsSummaryDtoToResponse)
@@ -44,7 +44,7 @@ public class MemberFriendMapper {
     }
 
     public SearchFriendsResponse searchFriendSummaryDtosToResponse(
-        List<SearchFriendSummaryDto> dtos) {
+        final List<SearchFriendSummaryDto> dtos) {
         return new SearchFriendsResponse(dtos.stream()
             .map(this::searchFriendSummaryDtoToResponse)
             .toList()
@@ -52,7 +52,7 @@ public class MemberFriendMapper {
     }
 
     public SearchFriendSummaryResponse searchFriendSummaryDtoToResponse(
-        SearchFriendSummaryDto dto) {
+        final SearchFriendSummaryDto dto) {
         return SearchFriendSummaryResponse.builder()
             .id(dto.id())
             .profileUrl(dto.profileUrl())
