@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -181,4 +182,23 @@ public interface FriendApi {
     )
     ResponseEntity<SearchFriendsResponse> searchMembersByPhones(
         @RequestBody SearchFriendsRequest request);
+
+    @Operation(
+        summary = "찬구 검색",
+        description = "친구의 tag로 친구 검색을 한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<FriendSearchResponse>> searchFriendByTag(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        String tag
+    );
 }

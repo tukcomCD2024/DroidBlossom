@@ -26,4 +26,6 @@ public interface MemberRepository extends Repository<Member, Long> {
         @Param("memberId") Long memberId,
         @Param("notificationEnabled") Boolean notificationEnabled
     );
+
+    Optional<Member> findMemberByTag(String tag);
 }

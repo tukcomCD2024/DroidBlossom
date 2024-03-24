@@ -5,8 +5,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
+import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @Component
 public class MemberFriendMapper {
@@ -21,8 +23,12 @@ public class MemberFriendMapper {
     }
 
     private FriendSummaryResponse friendsSummaryDtoToResponse(FriendSummaryDto dto) {
-        return new FriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(),
-            dto.createdAt());
+        return FriendSummaryResponse.builder()
+            .id(dto.id())
+            .profileUrl(dto.profileUrl())
+            .nickname(dto.nickname())
+            .createdAt(dto.createdAt())
+            .build();
     }
 
     public FriendRequestsSliceResponse friendRequestsSliceToResponse(
@@ -34,5 +40,14 @@ public class MemberFriendMapper {
             .toList();
 
         return new FriendRequestsSliceResponse(friendRequests, hasNext);
+    }
+
+    public FriendSearchResponse friendSearchDtoToResponse(final Member friend, boolean isFriend) {
+        return FriendSearchResponse.builder()
+            .id(friend.getId())
+            .profileUrl(friend.getProfileUrl())
+            .nickname(friend.getNickname())
+            .isFriend(isFriend)
+            .build();
     }
 }

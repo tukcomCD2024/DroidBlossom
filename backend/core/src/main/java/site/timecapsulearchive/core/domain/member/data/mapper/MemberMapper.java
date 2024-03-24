@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member.data.mapper;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import site.timecapsulearchive.core.domain.member.data.response.MemberNotificati
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.oauth.dto.OAuth2UserInfo;
+import site.timecapsulearchive.core.global.util.nickname.MakeRandomNickNameUtil;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Component
@@ -30,9 +32,11 @@ public class MemberMapper {
     ) {
         return Member.builder()
             .authId(authId)
-            .socialType(socialType)
+            .nickname(MakeRandomNickNameUtil.makeRandomNickName())
             .email(oAuth2UserInfo.getEmail())
             .profileUrl(oAuth2UserInfo.getImageUrl())
+            .socialType(socialType)
+            .tag(NanoIdUtils.randomNanoId())
             .build();
     }
 
@@ -48,9 +52,11 @@ public class MemberMapper {
     public Member signUpRequestDtoToEntity(final SignUpRequestDto dto) {
         return Member.builder()
             .authId(dto.authId())
+            .nickname(MakeRandomNickNameUtil.makeRandomNickName())
             .email(dto.email())
             .profileUrl(dto.profileUrl())
             .socialType(dto.socialType())
+            .tag(NanoIdUtils.randomNanoId())
             .build();
     }
 
