@@ -2,6 +2,8 @@ package site.timecapsulearchive.core.domain.friend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,4 +42,9 @@ public class MemberFriend extends BaseEntity {
         this.owner = owner;
         this.friend = friend;
     }
+
+    public String getOwnerNickname() {
+        return owner.getNickname();
+    }
+
 }

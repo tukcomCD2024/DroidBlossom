@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
@@ -29,9 +30,15 @@ public class FriendApiController implements FriendApi {
 
     private final FriendService friendService;
 
+    @PostMapping(value = "/{friend_id}/accept-request")
     @Override
-    public ResponseEntity<Void> acceptFriendRequest(Long friendId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> acceptFriendRequest(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("friend_id") final Long friendId
+    ) {
+        friendService.acceptFriend(memberId, friendId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @GetMapping
@@ -83,7 +90,7 @@ public class FriendApiController implements FriendApi {
     @DeleteMapping("{friend_id}/deny-request")
     @Override
     public ResponseEntity<ApiSpec<String>> denyFriendRequest(
-        @AuthenticationPrincipal Long memberId,
+        @AuthenticationPrincipal final Long memberId,
         @PathVariable("friend_id") final Long friendId) {
 
         friendService.denyRequestFriend(memberId, friendId);
@@ -123,5 +130,20 @@ public class FriendApiController implements FriendApi {
                 friendService.findFriendsByPhone(memberId, request.phones())
             )
         );
+    }
+
+    @PostMapping(value = "/search")
+    @Override
+    public ResponseEntity<ApiSpec<FriendSearchResponse>> searchFriendByTag(
+        @AuthenticationPrincipal Long memberId,
+        @RequestParam(value = "friend-tag") final String tag
+    ) {
+        return ResponseEntity.ok()
+            .body(
+                ApiSpec.success(
+                    SuccessCode.SUCCESS,
+                    friendService.searchFriend(memberId, tag)
+                )
+            );
     }
 }

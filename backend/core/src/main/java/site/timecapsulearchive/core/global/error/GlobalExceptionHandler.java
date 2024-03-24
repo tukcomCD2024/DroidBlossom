@@ -27,7 +27,8 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleGlobalException(final Exception e) {
         log.error(e.getMessage(), e);
 
-        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(ErrorCode.INTERNAL_SERVER_ERROR);
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
+            ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR.getStatus())
             .body(errorResponse);
     }
@@ -96,7 +97,7 @@ public class GlobalExceptionHandler {
         MethodArgumentTypeMismatchException e
     ) {
         log.warn(e.getMessage(), e);
-        
+
         final ErrorResponse errorResponse = ErrorResponse.fromType(
             REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR,
             e.getParameter().getParameterName(),

@@ -6,6 +6,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreat
 import site.timecapsulearchive.core.global.aop.anotation.NotificationRequest;
 import site.timecapsulearchive.core.global.aop.aspect.NotificationRequestExceptionAspect;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.CreatedCapsuleSkinNotificationRequest;
+import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendAcceptNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendReqNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.mapper.NotificationMapper;
 
@@ -32,5 +33,13 @@ public class NotificationManager {
             ownerNickname);
 
         aspect.sendNotification(request, notificationUrl.friendReqAlarmUrl());
+    }
+
+    @NotificationRequest
+    public void sendFriendAcceptMessage(final Long friendId, final String ownerNickname) {
+        final FriendAcceptNotificationRequest request = notificationMapper.friendAcceptToMessage(friendId,
+            ownerNickname);
+
+        aspect.sendNotification(request, notificationUrl.friendAcceptAlarmUrl());
     }
 }

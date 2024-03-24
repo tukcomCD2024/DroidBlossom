@@ -1,0 +1,2 @@
+ALTER TABLE member
+    ADD COLUMN tag VARCHAR(255);

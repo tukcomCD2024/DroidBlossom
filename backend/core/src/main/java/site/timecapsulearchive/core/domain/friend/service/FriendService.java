@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.friend.service;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,6 +17,7 @@ import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
@@ -85,6 +87,27 @@ public class FriendService {
         return FriendReqStatusResponse.success();
     }
 
+    public void acceptFriend(final Long memberId, final Long friendId) {
+        final FriendInvite friendInvite = friendInviteRepository
+            .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
+            .orElseThrow(FriendNotFoundException::new);
+
+        final MemberFriend ownerRelation = friendInvite.ownerRelation();
+        final MemberFriend friendRelation = friendInvite.friendRelation();
+
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                friendInviteRepository.delete(friendInvite);
+                memberFriendRepository.save(ownerRelation);
+                memberFriendRepository.save(friendRelation);
+            }
+        });
+
+        notificationManager.sendFriendAcceptMessage(friendId, ownerRelation.getOwnerNickname());
+    }
+
     @Transactional
     public void denyRequestFriend(Long memberId, Long friendId) {
         final FriendInvite friendInvite = friendInviteRepository
@@ -138,5 +161,16 @@ public class FriendService {
             memberId, hashes);
 
         return memberFriendMapper.searchFriendSummaryDtosToResponse(friends);
+    }
+      
+    @Transactional(readOnly = true)
+    public FriendSearchResponse searchFriend(final Long memberId, final String tag) {
+        final Member friend = memberRepository.findMemberByTag(tag)
+            .orElseThrow(MemberNotFoundException::new);
+
+        final Optional<MemberFriend> memberFriend = memberFriendRepository
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friend.getId());
+
+        return memberFriendMapper.friendSearchDtoToResponse(friend, memberFriend.isPresent());
     }
 }

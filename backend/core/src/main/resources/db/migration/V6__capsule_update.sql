@@ -1,9 +1,9 @@
 -- -- change capsule Geography data type
 ALTER TABLE capsule
-DROP
-COLUMN longitude,
     DROP
-COLUMN latitude;
+        COLUMN longitude,
+    DROP
+        COLUMN latitude;
 
 
 ALTER TABLE capsule
