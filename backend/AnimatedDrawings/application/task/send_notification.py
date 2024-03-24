@@ -1,16 +1,22 @@
-import logging
-
 import requests
+import celery.signals
+from celery.utils.log import get_task_logger
 
-from application.model.notification_status import \
-    NotificationStatus
+from application.logging.logger_factory import LoggerFactory
+from application.model.notification_status import NotificationStatus
 from application.task.base_task import LogErrorsTask
-
-logger = logging.getLogger('send_notification')
 
 
 class SendNotification(LogErrorsTask):
     name = 'send_notification'
+
+    def __init__(self):
+        super().__init__()
+        self.task_logger = get_task_logger(__name__)
+
+    @celery.signals.after_setup_task_logger.connect
+    def on_after_setup_logger(logger, **kwargs):
+        LoggerFactory.setup_logger(logger)
 
     def run(self, *args, **kwargs):
         request_data = {
@@ -21,7 +27,6 @@ class SendNotification(LogErrorsTask):
             'skinUrl': kwargs['filename'],
             'status': NotificationStatus.SUCCESS.value
         }
-
         try:
             r = requests.post(self.notification_server_url,
                               json=request_data,
@@ -29,4 +34,4 @@ class SendNotification(LogErrorsTask):
                               timeout=5)
             r.raise_for_status()
         except requests.exceptions.HTTPError as ex:
-            logger.error('알림 서버 동작 오류 request: %s, response: %s', ex.request, ex.response)
+            self.task_logger.exception('알림 서버 동작 오류', exc_info=ex)

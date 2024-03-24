@@ -2,10 +2,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from application.config.database_config import DatabaseConfig
-from application.task.base_task import LogErrorsTask
 from application.model.capsule_skin import CapsuleSkin
 from application.model.motion import Motion
 from application.model.retarget import Retarget
+from application.task.base_task import LogErrorsTask
 
 
 class SaveCapsuleSkin(LogErrorsTask):
@@ -15,9 +15,7 @@ class SaveCapsuleSkin(LogErrorsTask):
 
     def run(self, *args, **kwargs):
         capsule_skin = CapsuleSkin(skin_name=kwargs['input_data']['skinName'],
-                                   image_url='capsuleSkin/%s/%s' % (
-                                       kwargs['input_data']['memberId'],
-                                       kwargs['filename']),
+                                   image_url=kwargs['filename'],
                                    motion_name=Motion(
                                        kwargs['input_data']['motionName']).name,
                                    retarget=Retarget(

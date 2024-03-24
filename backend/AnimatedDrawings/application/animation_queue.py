@@ -1,5 +1,5 @@
+import argparse
 import json
-import logging
 import uuid
 from _xxsubinterpreters import ChannelClosedError
 from json.decoder import JSONDecodeError
@@ -10,17 +10,16 @@ from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic, BasicProperties
 
 from application.config.queue_config import QueueConfig
+from application.logging.logger_factory import LoggerFactory
 from application.model.motion import Motion
 from application.model.retarget import Retarget
 from application.task.make_animation import MakeAnimation
 from application.task.save_capsule_skin import SaveCapsuleSkin
 from application.task.send_notification import SendNotification
 
-logger = logging.getLogger('animation_queue_controller')
-
 
 class AnimationQueueController:
-    def __init__(self):
+    def __init__(self, output_file_path: str):
         self.queue_config = QueueConfig()
         self.require_keys = ['memberId', 'memberName', 'skinName', 'imageUrl',
                              'retarget', 'motionName']
@@ -30,9 +29,12 @@ class AnimationQueueController:
         self.make_animation_task = MakeAnimation()
         self.save_capsule_skin_task = SaveCapsuleSkin()
         self.send_notification_task = SendNotification()
+        self.logger = LoggerFactory.get_logger(__name__,
+                                               output_file_path=output_file_path)
 
     def run(self):
         # rabbitmq 채널 연결
+        self.logger.info('작업 큐 연결 시작')
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.queue_config.queue_host))
         channel = connection.channel()
@@ -42,13 +44,15 @@ class AnimationQueueController:
         channel.basic_consume(queue=self.queue_config.queue_name,
                               on_message_callback=self.callback,
                               auto_ack=False)
+        self.logger.info('작업 큐 연결 성공')
 
         try:
             channel.start_consuming()
         except ChannelClosedError as e:
-            logger.info("커넥션 연결 오류")
+            self.logger.info("큐 커넥션 연결 오류")
             raise e
         finally:
+            self.logger.info('큐 커넥션 종료')
             channel.close()
 
     def callback(
@@ -66,7 +70,6 @@ class AnimationQueueController:
         :param header: 기본 정보
         :param body: queue로부터 넘어온 데이터
         """
-        logger.info('큐 메시지 처리 시작 %s', header.message_id)
         try:
             json_object = self.parse_json(body)
 
@@ -90,7 +93,7 @@ class AnimationQueueController:
 
             channel.basic_ack(delivery_tag=method.delivery_tag)
         except Exception as e:
-            logger.exception('메시지 처리 오류', e)
+            self.logger.exception('작업 큐 메시지 처리 오류', exc_info=e)
             channel.basic_reject(delivery_tag=method.delivery_tag,
                                  requeue=False)
 
@@ -116,10 +119,22 @@ class AnimationQueueController:
             return json_object
 
         except (JSONDecodeError, KeyError, TypeError) as e:
-            logger.exception('json 파싱 오류', e)
+            self.logger.exception('작업 큐 메시지 json 파싱 오류', exc_info=e)
             raise e
 
 
+def parse_args() -> str:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--output", help="log file path")
+    args = parser.parse_args()
+
+    if args.output:
+        return args.output
+
+    return ''
+
+
 if __name__ == '__main__':
-    application = AnimationQueueController()
+    output_log_path = parse_args()
+    application = AnimationQueueController(output_log_path)
     application.run()
