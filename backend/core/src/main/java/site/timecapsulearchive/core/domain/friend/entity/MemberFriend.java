@@ -29,10 +29,6 @@ public class MemberFriend extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "friend_status")
-    @Enumerated(EnumType.STRING)
-    private FriendStatus friendStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
@@ -45,9 +41,5 @@ public class MemberFriend extends BaseEntity {
     private MemberFriend(Member owner, Member friend) {
         this.owner = owner;
         this.friend = friend;
-    }
-
-    public boolean isFriend() {
-        return this.friendStatus.equals(FriendStatus.ACCEPTED);
     }
 }

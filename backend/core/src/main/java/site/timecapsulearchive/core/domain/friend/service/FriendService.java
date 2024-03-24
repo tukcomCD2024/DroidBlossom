@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.friend.service;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -126,10 +127,9 @@ public class FriendService {
         final Member friend = memberRepository.findMemberByTag(tag)
             .orElseThrow(MemberNotFoundException::new);
 
-        final MemberFriend memberFriend = memberFriendRepository
-            .findMemberFriendByOwnerIdAndFriendId(memberId, friend.getId())
-            .orElseThrow(FriendNotFoundException::new);
+        final Optional<MemberFriend> memberFriend = memberFriendRepository
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friend.getId());
 
-        return memberFriendMapper.friendSearchDtoToResponse(friend, memberFriend.isFriend());
+        return memberFriendMapper.friendSearchDtoToResponse(friend, memberFriend.isPresent());
     }
 }
