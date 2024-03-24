@@ -207,7 +207,7 @@ public class MemberService {
             !passwordEncoder.matches(inputPassword, password);
     }
 
-    public CheckEmailDuplicationResponse checkEmailDuplication(String email) {
+    public CheckEmailDuplicationResponse checkEmailDuplication(final String email) {
         Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(email);
 
         return new CheckEmailDuplicationResponse(isDuplicated);

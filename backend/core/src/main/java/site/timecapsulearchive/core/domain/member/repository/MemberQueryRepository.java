@@ -134,7 +134,7 @@ public class MemberQueryRepository {
     }
 
     public Boolean checkEmailDuplication(final String email) {
-        Integer count = query.selectOne()
+        final Integer count = query.selectOne()
             .from(member)
             .where(member.email.eq(email))
             .fetchFirst();
