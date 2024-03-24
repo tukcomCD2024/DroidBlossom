@@ -1,7 +1,9 @@
 package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
+@Builder
 @Schema(description = "검색된 친구 정보")
 public record SearchFriendSummaryResponse(
 
