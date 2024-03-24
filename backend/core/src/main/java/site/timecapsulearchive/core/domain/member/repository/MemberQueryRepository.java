@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
@@ -110,5 +111,34 @@ public class MemberQueryRepository {
 
     private boolean canMoreRead(final int size, final int notificationSize) {
         return notificationSize > size;
+    }
+
+    public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(
+        final String email
+    ) {
+        return Optional.ofNullable(
+            query
+                .select(
+                    Projections.constructor(
+                        EmailVerifiedCheckDto.class,
+                        member.id,
+                        member.isVerified,
+                        member.email,
+                        member.password
+                    )
+                )
+                .from(member)
+                .where(member.email.eq(email))
+                .fetchOne()
+        );
+    }
+
+    public Boolean checkEmailDuplication(final String email) {
+        Integer count = query.selectOne()
+            .from(member)
+            .where(member.email.eq(email))
+            .fetchFirst();
+
+        return count != null;
     }
 }

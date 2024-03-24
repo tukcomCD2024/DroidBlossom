@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.member.data.mapper;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
@@ -82,5 +83,16 @@ public class MemberMapper {
             .toList();
 
         return new MemberNotificationSliceResponse(responses, hasNext);
+    }
+
+    public Member createMemberWithEmail(String email, String password) {
+        return Member.builder()
+            .email(email)
+            .password(password)
+            .authId(String.valueOf(UUID.randomUUID()))
+            .profileUrl("")
+            .socialType(SocialType.EMAIL)
+            .tag(NanoIdUtils.randomNanoId())
+            .build();
     }
 }

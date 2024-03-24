@@ -21,6 +21,7 @@ public enum ErrorCode {
     //auth
     AUTHENTICATION_ERROR(401, "AUTH-003", "인증에 실패했습니다. 인증 수단이 유효한지 확인하세요."),
     AUTHORIZATION_ERROR(403, "AUTH-004", "권한이 존재하지 않습니다."),
+    CREDENTIALS_NOT_MATCHED_ERROR(401, "AUTH-005", "이메일과 비밀번호 인증에 실패했습니다."),
 
     //message
     TOO_MANY_REQUEST_ERROR(429, "MESSAGE-001", "너무 많은 인증 메시지를 요청했습니다. 24시간 후 요청해주세요."),

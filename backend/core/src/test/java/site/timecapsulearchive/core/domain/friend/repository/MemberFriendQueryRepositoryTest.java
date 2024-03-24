@@ -88,6 +88,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             .email(count + "test@google.com")
             .authId(count + "test")
             .profileUrl(count + "test.com")
+            .tag(count + "testTag")
             .build();
 
         byte[] number = getPhoneBytes(count);

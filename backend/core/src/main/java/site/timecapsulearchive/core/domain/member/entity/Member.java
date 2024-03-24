@@ -67,6 +67,9 @@ public class Member extends BaseEntity {
     @Column(name = "auth_id", nullable = false, unique = true)
     private String authId;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
 
@@ -92,8 +95,8 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, String nickname, SocialType socialType, String email,
-        String authId, String tag) {
+    private Member(String profileUrl, String nickname, SocialType socialType, String email, String authId,
+        String password, String tag) {
         this.profileUrl = profileUrl;
         this.nickname = nickname;
         this.socialType = socialType;
@@ -101,6 +104,7 @@ public class Member extends BaseEntity {
         this.isVerified = false;
         this.notificationEnabled = false;
         this.authId = authId;
+        this.password = password;
         this.tag = tag;
     }
 
