@@ -94,15 +94,16 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, SocialType socialType, String email, String authId) {
+    private Member(String profileUrl, String nickname, SocialType socialType, String email,
+        String authId, String tag) {
         this.profileUrl = profileUrl;
-        this.nickname = randomNickName();
+        this.nickname = nickname;
         this.socialType = socialType;
         this.email = email;
         this.isVerified = false;
         this.notificationEnabled = false;
         this.authId = authId;
-        this.tag = uniqueTag();
+        this.tag = tag;
     }
 
     public void updateVerification() {
@@ -115,13 +116,5 @@ public class Member extends BaseEntity {
 
     public void updatePhoneHash(byte[] phone_hash) {
         this.phone_hash = phone_hash;
-    }
-
-    private String randomNickName() {
-        return MakeRandomNickNameUtil.makeRandomNickName();
-    }
-
-    private String uniqueTag() {
-        return NanoIdUtils.randomNanoId();
     }
 }
