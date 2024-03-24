@@ -95,7 +95,6 @@ public class FriendService {
         final MemberFriend ownerRelation = friendInvite.ownerRelation();
         final MemberFriend friendRelation = friendInvite.friendRelation();
 
-
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
@@ -162,7 +161,7 @@ public class FriendService {
 
         return memberFriendMapper.searchFriendSummaryDtosToResponse(friends);
     }
-      
+
     @Transactional(readOnly = true)
     public FriendSearchResponse searchFriend(final Long memberId, final String tag) {
         final Member friend = memberRepository.findMemberByTag(tag)

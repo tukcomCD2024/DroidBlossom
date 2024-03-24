@@ -53,11 +53,12 @@ public class MemberFriendMapper {
         );
     }
 
-    private SearchFriendSummaryResponse searchFriendSummaryDtoToResponse(SearchFriendSummaryDto dto) {
+    private SearchFriendSummaryResponse searchFriendSummaryDtoToResponse(
+        SearchFriendSummaryDto dto) {
         return new SearchFriendSummaryResponse(dto.id(), dto.profileUrl(), dto.nickname(),
             dto.isFriend());
     }
-  
+
     public FriendSearchResponse friendSearchDtoToResponse(final Member friend, boolean isFriend) {
         return FriendSearchResponse.builder()
             .id(friend.getId())

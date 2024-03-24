@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.member.entity;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +23,6 @@ import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.history.entity.History;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
-import site.timecapsulearchive.core.global.util.nickname.MakeRandomNickNameUtil;
 
 @Entity
 @Getter

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
@@ -177,7 +176,7 @@ public interface FriendApi {
     ResponseEntity<ApiSpec<SearchFriendsResponse>> searchMembersByPhones(
         Long memberId,
         SearchFriendsRequest request
-    )
+    );
 
     @Operation(
         summary = "찬구 검색",
