@@ -80,6 +80,27 @@ public class FriendService {
         return FriendReqStatusResponse.success();
     }
 
+    public void acceptFriend(final Long memberId, final Long friendId) {
+        final FriendInvite friendInvite = friendInviteRepository
+            .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
+            .orElseThrow(FriendNotFoundException::new);
+
+        final MemberFriend ownerRelation = friendInvite.ownerRelation();
+        final MemberFriend friendRelation = friendInvite.friendRelation();
+
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                friendInviteRepository.delete(friendInvite);
+                memberFriendRepository.save(ownerRelation);
+                memberFriendRepository.save(friendRelation);
+            }
+        });
+
+        notificationManager.sendFriendAcceptMessage(friendId, ownerRelation.getOwnerNickname());
+    }
+
     @Transactional
     public void denyRequestFriend(Long memberId, Long friendId) {
         final FriendInvite friendInvite = friendInviteRepository
@@ -123,6 +144,7 @@ public class FriendService {
             friendRequests.hasNext());
     }
 
+    @Transactional(readOnly = true)
     public FriendSearchResponse searchFriend(final Long memberId, final String tag) {
         final Member friend = memberRepository.findMemberByTag(tag)
             .orElseThrow(MemberNotFoundException::new);

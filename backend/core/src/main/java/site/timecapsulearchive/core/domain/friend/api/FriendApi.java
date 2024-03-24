@@ -25,7 +25,7 @@ import site.timecapsulearchive.core.global.error.ErrorResponse;
 public interface FriendApi {
 
     @Operation(
-        summary = "친구 요청 수락",
+        summary = "소셜 친구 요청 수락",
         description = "상대방으로부터 온 친구 요청을 수락한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
@@ -34,17 +34,22 @@ public interface FriendApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
-    @PostMapping(value = "/accept-request")
-    ResponseEntity<Void> acceptFriendRequest(
-        @Parameter(in = ParameterIn.QUERY, required = true)
+    ResponseEntity<ApiSpec<String>> acceptFriendRequest(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
         @RequestParam(value = "friend_id") Long friendId
     );
 
 
     @Operation(
-        summary = "친구 삭제",
+        summary = "소셜 친구 삭제",
         description = "사용자의 소셜 친구를 삭제한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
@@ -71,7 +76,7 @@ public interface FriendApi {
 
 
     @Operation(
-        summary = "친구 요청 거부",
+        summary = "소셜 친구 요청 거부",
         description = "상대방으로부터 온 친구 요청을 거부한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
@@ -135,7 +140,7 @@ public interface FriendApi {
 
 
     @Operation(
-        summary = "친구 요청",
+        summary = "소셜 친구 요청",
         description = "사용자에게 친구 요청을 보낸다. 해당 사용자에게 알림이 발송된다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}

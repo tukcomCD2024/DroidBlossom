@@ -28,9 +28,15 @@ public class FriendApiController implements FriendApi {
 
     private final FriendService friendService;
 
+    @PostMapping(value = "/{friend_id}/accept-request")
     @Override
-    public ResponseEntity<Void> acceptFriendRequest(Long friendId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> acceptFriendRequest(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("friend_id") final Long friendId
+    ) {
+        friendService.acceptFriend(memberId, friendId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @GetMapping
@@ -82,7 +88,7 @@ public class FriendApiController implements FriendApi {
     @DeleteMapping("{friend_id}/deny-request")
     @Override
     public ResponseEntity<ApiSpec<String>> denyFriendRequest(
-        @AuthenticationPrincipal Long memberId,
+        @AuthenticationPrincipal final Long memberId,
         @PathVariable("friend_id") final Long friendId) {
 
         friendService.denyRequestFriend(memberId, friendId);

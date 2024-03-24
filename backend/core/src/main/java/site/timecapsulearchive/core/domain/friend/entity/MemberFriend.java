@@ -42,4 +42,9 @@ public class MemberFriend extends BaseEntity {
         this.owner = owner;
         this.friend = friend;
     }
+
+    public String getOwnerNickname() {
+        return owner.getNickname();
+    }
+
 }
