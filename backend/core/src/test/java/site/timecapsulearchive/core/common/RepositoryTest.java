@@ -11,7 +11,6 @@ import site.timecapsulearchive.core.global.config.JpaAuditingConfig;
 
 @Import(JpaAuditingConfig.class)
 @DataJpaTest
-@FlywayTest
 @FlywayTestExtension
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
