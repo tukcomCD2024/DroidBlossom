@@ -1,4 +1,3 @@
-
 ALTER TABLE member_friend
     DROP CONSTRAINT fk_member_friend_member_id;
 ALTER TABLE member_friend

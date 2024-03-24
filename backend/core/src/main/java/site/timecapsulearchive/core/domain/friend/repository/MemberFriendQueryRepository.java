@@ -14,6 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
 
 @Repository
@@ -86,5 +87,23 @@ public class MemberFriendQueryRepository {
         }
 
         return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
+    }
+
+    public List<SearchFriendSummaryDto> findFriendsByPhone(Long memberId, List<byte[]> hashes) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    SearchFriendSummaryDto.class,
+                    member.id,
+                    member.profileUrl,
+                    member.nickname,
+                    memberFriend.id.isNotNull()
+                )
+            )
+            .from(member)
+            .leftJoin(memberFriend)
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .where(member.phone_hash.in(hashes))
+            .fetch();
     }
 }

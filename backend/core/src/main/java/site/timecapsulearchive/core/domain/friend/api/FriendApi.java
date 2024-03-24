@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
@@ -175,13 +174,10 @@ public interface FriendApi {
             description = "ok"
         )
     })
-    @PostMapping(
-        value = "/friends/search",
-        produces = {"application/json"},
-        consumes = {"application/json"}
+    ResponseEntity<ApiSpec<SearchFriendsResponse>> searchMembersByPhones(
+        Long memberId,
+        SearchFriendsRequest request
     )
-    ResponseEntity<SearchFriendsResponse> searchMembersByPhones(
-        @RequestBody SearchFriendsRequest request);
 
     @Operation(
         summary = "찬구 검색",

@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.api;
 
+import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,10 +114,22 @@ public class FriendApiController implements FriendApi {
             );
     }
 
+    @PostMapping(
+        value = "/search/phone",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
     @Override
-    public ResponseEntity<SearchFriendsResponse> searchMembersByPhones(
-        SearchFriendsRequest request) {
-        return null;
+    public ResponseEntity<ApiSpec<SearchFriendsResponse>> searchMembersByPhones(
+        @AuthenticationPrincipal Long memberId,
+        @Valid @RequestBody SearchFriendsRequest request
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                friendService.findFriendsByPhone(memberId, request.phones())
+            )
+        );
     }
 
     @PostMapping(value = "/search")
