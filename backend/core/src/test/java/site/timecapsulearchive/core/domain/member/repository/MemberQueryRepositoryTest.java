@@ -36,16 +36,18 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     private Member getMember() {
         return Member.builder()
             .socialType(SocialType.GOOGLE)
-            .email(0 + "test@google.com")
-            .authId(0 + "test")
-            .profileUrl(0 + "test.com")
+            .nickname("testNickname")
+            .email("test@google.com")
+            .authId("test")
+            .profileUrl("test.com")
+            .tag("testTag")
             .build();
     }
 
     @Test
     void 중복_이메일로_중복_체크하면_True가_반환된다() {
         //given
-        String duplicatedEmail = "0test@google.com";
+        String duplicatedEmail = "test@google.com";
 
         //when
         Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(duplicatedEmail);

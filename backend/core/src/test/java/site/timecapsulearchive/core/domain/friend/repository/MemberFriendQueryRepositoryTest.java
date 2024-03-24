@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import org.flywaydb.test.annotation.FlywayTest;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -89,6 +88,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             .email(count + "test@google.com")
             .authId(count + "test")
             .profileUrl(count + "test.com")
+            .tag(count + "testTag")
             .build();
 
         byte[] number = getPhoneBytes(count);
