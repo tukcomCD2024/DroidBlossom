@@ -213,7 +213,7 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
         @Valid @RequestBody final EmailSignUpRequest request
     ) {
-        final Long id = memberService.createMemberWithEmail(request.email(), request.password());
+        final Long id = memberService.createMemberWithEmailAndPassword(request.email(), request.password());
 
         return ResponseEntity.ok(
             ApiSpec.success(

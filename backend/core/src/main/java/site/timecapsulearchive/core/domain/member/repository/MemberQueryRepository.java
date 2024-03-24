@@ -113,7 +113,7 @@ public class MemberQueryRepository {
         return notificationSize > size;
     }
 
-    public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmailAndPassword(
+    public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(
         final String email
     ) {
         return Optional.ofNullable(

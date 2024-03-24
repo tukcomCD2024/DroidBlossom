@@ -40,7 +40,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(Optional.empty());
 
         //when, then
@@ -54,7 +54,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when
@@ -82,7 +82,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.FALSE, email, password));
 
         //when, then
@@ -96,7 +96,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when, then
@@ -110,7 +110,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when, then
@@ -124,7 +124,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, null));
 
         //when, then
@@ -138,7 +138,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmailAndPassword(anyString()))
+        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when, then
