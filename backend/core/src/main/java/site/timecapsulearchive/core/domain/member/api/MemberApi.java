@@ -15,6 +15,7 @@ import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificatio
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
@@ -95,6 +96,27 @@ public interface MemberApi {
     ResponseEntity<ApiSpec<String>> updateMemberNotificationEnabled(
         Long memberId,
         UpdateNotificationEnabledRequest updateNotificationEnabledRequest
+    );
+
+    @Operation(
+        summary = "회원 알림 수신 상태 확인",
+        description = "회원의 알림 수신 상태를 확인한다.",
+        security = {@SecurityRequirement(name = "member")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<MemberNotificationStatusResponse>> checkMemberNotificationStatus(
+        Long memberId
     );
 
     @Operation(

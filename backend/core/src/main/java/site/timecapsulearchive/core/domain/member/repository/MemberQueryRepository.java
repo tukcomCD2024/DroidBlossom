@@ -141,4 +141,13 @@ public class MemberQueryRepository {
 
         return count != null;
     }
+
+    public Optional<Boolean> findIsAlarmByMemberId(final Long memberId) {
+        return Optional.ofNullable(
+            query.select(member.notificationEnabled)
+                .from(member)
+                .where(member.id.eq(memberId))
+                .fetchOne()
+        );
+    }
 }
