@@ -19,7 +19,6 @@ class AgreeRVA :
     inner class ItemViewHolder(
         private val binding: ItemAgreeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("ClickableViewAccessibility")
         fun bind(data: Agree) {
             binding.item = data
             binding.moreBtn.setOnClickListener {
