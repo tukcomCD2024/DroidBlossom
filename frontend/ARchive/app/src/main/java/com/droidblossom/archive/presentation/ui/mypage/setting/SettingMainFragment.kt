@@ -77,7 +77,7 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoNotice -> {
-
+                            navController.navigate(R.id.action_settingMainFragment_to_settingNoticeFragment)
                         }
 
                         SettingViewModel.SettingMainEvent.GoNotification -> {
