@@ -1,7 +1,6 @@
 package site.timecapsulearchive.core.domain.member.api;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

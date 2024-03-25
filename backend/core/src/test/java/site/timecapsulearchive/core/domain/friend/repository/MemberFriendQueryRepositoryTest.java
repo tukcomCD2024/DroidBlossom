@@ -11,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -299,5 +300,33 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(friends.size()).isSameAs(0);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {20, 15, 10, 5})
+    void 사용자_아이디와_친구_태그로_친구관계를_조회하면_친구인_경우_True를_반환한다(int friendId) {
+        //given
+        Optional<SearchFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, friendId+ "testTag");
+
+        //when
+        Boolean isFriend = dto.get().isFriend();
+
+        //then
+        assertThat(isFriend).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {30, 28, 25, 21})
+    void 사용자_아이디와_친구_태그로_친구관계를_조회하면_친구가_아닌_경우_False를_반환한다(int friendId) {
+        //given
+        Optional<SearchFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, friendId + "testTag");
+
+        //when
+        Boolean isFriend = dto.get().isFriend();
+
+        //then
+        assertThat(isFriend).isFalse();
     }
 }

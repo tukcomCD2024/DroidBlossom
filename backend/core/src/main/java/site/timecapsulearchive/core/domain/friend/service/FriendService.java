@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.friend.service;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,8 +16,8 @@ import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendSearchResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -117,12 +116,10 @@ public class FriendService {
     }
 
     @Transactional
-    public void deleteFriend(final Long memberId, final Long friendId) {
-        final MemberFriend memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
-                memberId, friendId)
-            .orElseThrow(FriendNotFoundException::new);
-
-        memberFriendRepository.delete(memberFriend);
+    public void deleteFriend(final Long memberId, final Long friend2Id) {
+        memberFriendRepository
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friend2Id)
+            .forEach(memberFriendRepository::delete);
     }
 
     @Transactional(readOnly = true)
@@ -151,25 +148,23 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public SearchFriendsResponse findFriendsByPhone(Long memberId, List<String> phones) {
-        List<byte[]> hashes = phones.stream()
+    public SearchFriendsResponse findFriendsByPhone(final Long memberId,
+        final List<String> phones) {
+        final List<byte[]> hashes = phones.stream()
             .map(phone -> hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8)))
             .toList();
 
-        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+        final List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
             memberId, hashes);
 
         return memberFriendMapper.searchFriendSummaryDtosToResponse(friends);
     }
 
     @Transactional(readOnly = true)
-    public FriendSearchResponse searchFriend(final Long memberId, final String tag) {
-        final Member friend = memberRepository.findMemberByTag(tag)
-            .orElseThrow(MemberNotFoundException::new);
+    public SearchFriendSummaryResponse searchFriend(final Long memberId, final String tag) {
+        final SearchFriendSummaryDto friendSummaryDto = memberFriendQueryRepository
+            .findFriendsByTag(memberId, tag).orElseThrow(FriendNotFoundException::new);
 
-        final Optional<MemberFriend> memberFriend = memberFriendRepository
-            .findMemberFriendByOwnerIdAndFriendId(memberId, friend.getId());
-
-        return memberFriendMapper.friendSearchDtoToResponse(friend, memberFriend.isPresent());
+        return memberFriendMapper.searchFriendSummaryDtoToResponse(friendSummaryDto);
     }
 }
