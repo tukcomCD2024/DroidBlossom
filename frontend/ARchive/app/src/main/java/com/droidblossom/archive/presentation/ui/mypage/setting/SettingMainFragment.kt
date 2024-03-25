@@ -47,7 +47,7 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoAgree -> {
-
+                            navController.navigate(R.id.action_settingMainFragment_to_settingAgreeFragment)
                         }
 
                         SettingViewModel.SettingMainEvent.GoInquire -> {
