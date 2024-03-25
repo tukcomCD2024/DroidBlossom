@@ -27,7 +27,7 @@ class NoticeRVA :
                 if (data.isOpen) {
                     data.isOpen = false
                     binding.contentLayout.isGone = true
-                    binding.moreBtn.rotation = 180f
+                    binding.moreBtn.rotation = 0f
                     binding.line.setBackgroundResource(R.color.gray_400)
                 } else {
                     data.isOpen = true
