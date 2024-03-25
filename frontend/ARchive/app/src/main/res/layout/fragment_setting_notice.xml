@@ -53,7 +53,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/backBtn"
-            tools:listitem="@layout/item_agree" />
+            tools:listitem="@layout/item_notice" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
