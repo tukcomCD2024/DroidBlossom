@@ -91,7 +91,7 @@ public class MemberApiController implements MemberApi {
     }
 
     @Override
-    @PostMapping(value = "/notification_enabled")
+    @GetMapping(value = "/notification_enabled")
     public ResponseEntity<ApiSpec<MemberNotificationStatusResponse>> checkMemberNotificationStatus(
         @AuthenticationPrincipal Long memberId) {
         return ResponseEntity.ok(
