@@ -117,10 +117,8 @@ public class FriendService {
 
     @Transactional
     public void deleteFriend(final Long memberId, final Long friend2Id) {
-        final List<MemberFriend> memberFriends = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
-                memberId, friend2Id);
-
-        memberFriends
+        memberFriendRepository
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friend2Id)
             .forEach(memberFriendRepository::delete);
     }
 
