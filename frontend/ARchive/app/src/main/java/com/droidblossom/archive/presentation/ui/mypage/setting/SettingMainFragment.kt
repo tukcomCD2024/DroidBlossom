@@ -85,7 +85,7 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoUser -> {
-
+                            navController.navigate(R.id.action_settingMainFragment_to_settingUserFragment)
                         }
 
                         is SettingViewModel.SettingMainEvent.ShowToastMessage -> {
