@@ -236,13 +236,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun changeSkin(skin: CapsuleSkinSummary) {
-        val submitList = skins.value
-        submitList.map { it.isClicked = false }
-        submitList[submitList.indexOf(skin)].isClicked = true
+    override fun changeSkin(previousPosition: Int?, currentPosition: Int) {
         viewModelScope.launch {
-            _skins.emit(submitList)
+            val newList = _skins.value
+            previousPosition?.let {
+                newList[it].isClicked = false
+            }
+            newList[currentPosition].isClicked = true
+            _skins.emit(newList)
         }
+
     }
 
     override fun getSkinList() {

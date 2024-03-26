@@ -65,7 +65,7 @@ interface CreateCapsuleViewModel {
     fun openSearchSkin()
     fun closeSearchSkin()
     fun searchSkin()
-    fun changeSkin(skin: CapsuleSkinSummary)
+    fun changeSkin(previousPosition: Int?, currentPosition: Int)
     fun getSkinList()
     fun moveFinish()
     fun moveLocation()

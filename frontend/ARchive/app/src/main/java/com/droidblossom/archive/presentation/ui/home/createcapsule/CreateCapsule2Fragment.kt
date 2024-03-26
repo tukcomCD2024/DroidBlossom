@@ -23,6 +23,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
+import com.droidblossom.archive.presentation.ui.skin.adapter.SkinMotionRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -36,7 +37,9 @@ class CreateCapsule2Fragment :
     private lateinit var callback: OnBackPressedCallback
 
     private val skinRVA by lazy {
-        SkinRVA { viewModel.changeSkin(it) }
+        SkinRVA { previousPosition, currentPosition ->
+            viewModel.changeSkin(previousPosition, currentPosition)
+        }
     }
 
     //그룹캡슐이 아닐 경우 바로 엑티비티 닫기
