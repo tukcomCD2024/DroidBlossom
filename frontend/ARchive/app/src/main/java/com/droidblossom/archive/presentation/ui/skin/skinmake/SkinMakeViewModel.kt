@@ -15,7 +15,7 @@ interface SkinMakeViewModel {
     val skinImgUri: MutableStateFlow<Uri?>
     val addMotion : StateFlow<Boolean>
     val skinImgFile: StateFlow<File?>
-    val skinMotions: MutableStateFlow<List<SkinMotion>>
+    val skinMotions: StateFlow<List<SkinMotion>>
     val skinMotionIndex: StateFlow<Int>
 
     fun skinMakeEvent(event: SkinMakeEvent)

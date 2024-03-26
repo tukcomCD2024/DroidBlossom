@@ -102,8 +102,7 @@ class SkinMakeViewModelImpl @Inject constructor(
             )
         )
     )
-    override val skinMotions: MutableStateFlow<List<SkinMotion>>
-        get() = _skinMotions
+    override val skinMotions get() = _skinMotions
 
     private val _skinMotionIndex = MutableStateFlow<Int>(-1)
     override val skinMotionIndex: StateFlow<Int>
