@@ -85,7 +85,6 @@ interface CreateCapsuleViewModel {
     fun coordToAddress(latitude: Double, longitude: Double)
     fun getDueTime(tiem:String)
     fun getUploadUrls(getS3UrlData : S3UrlRequest)
-
     fun setFiles(imageFiles: List<File>, videoFiles: List<File>)
     fun closeTimeSetting()
     fun openTimeSetting()

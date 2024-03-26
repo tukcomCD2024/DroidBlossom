@@ -33,6 +33,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.ui.home.notification.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.ui.mypage.setting.SettingActivity"
             android:exported="false" />
         <activity
@@ -87,7 +90,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".presentation.ui.auth.AuthActivity"
             android:screenOrientation="portrait"
@@ -104,7 +107,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:screenOrientation="portrait"

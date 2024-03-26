@@ -245,7 +245,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             newList[currentPosition].isClicked = true
             _skins.emit(newList)
         }
-
     }
 
     override fun getSkinList() {

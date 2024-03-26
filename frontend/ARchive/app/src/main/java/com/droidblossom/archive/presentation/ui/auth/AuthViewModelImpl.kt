@@ -240,7 +240,9 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun submitCertificationNumber(){
         viewModelScope.launch {
-            validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
+            validMessageUseCase(
+                VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()
+            ).collect{ result ->
                 result.onSuccess {
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
