@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.skin.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemSkinMotionBinding
 import com.droidblossom.archive.domain.model.capsule_skin.SkinMotion
 
-class SkinMotionRVA(val ItemClick: (SkinMotion) -> Unit) : ListAdapter<SkinMotion, SkinMotionRVA.ItemViewHolder>(differ) {
+class SkinMotionRVA(val ItemClick: (previousPosition: Int?, currentPosition: Int) -> Unit) : ListAdapter<SkinMotion, SkinMotionRVA.ItemViewHolder>(differ) {
+
+    private var previousClickedPosition: Int? = null
 
     inner class ItemViewHolder(
         private val binding: ItemSkinMotionBinding
@@ -16,7 +19,13 @@ class SkinMotionRVA(val ItemClick: (SkinMotion) -> Unit) : ListAdapter<SkinMotio
         fun bind(data: SkinMotion) {
             binding.item = data
             binding.root.setOnClickListener {
-                ItemClick(data)
+                val currentClickedPosition = bindingAdapterPosition
+                if (currentClickedPosition != RecyclerView.NO_POSITION) {
+                    ItemClick(previousClickedPosition, currentClickedPosition)
+                    previousClickedPosition?.let { previousClickedPosition -> notifyItemChanged(previousClickedPosition) }
+                    notifyItemChanged(currentClickedPosition)
+                    previousClickedPosition = currentClickedPosition
+                }
             }
         }
     }
@@ -36,6 +45,11 @@ class SkinMotionRVA(val ItemClick: (SkinMotion) -> Unit) : ListAdapter<SkinMotio
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(getItem(position))
+    }
+
+    override fun submitList(list: List<SkinMotion>?) {
+        previousClickedPosition = null
+        super.submitList(list)
     }
 
 

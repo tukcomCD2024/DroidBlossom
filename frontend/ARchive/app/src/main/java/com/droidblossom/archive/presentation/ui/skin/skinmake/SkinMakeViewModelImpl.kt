@@ -107,15 +107,13 @@ class SkinMakeViewModelImpl @Inject constructor(
     private val _skinMotionIndex = MutableStateFlow<Int>(-1)
     override val skinMotionIndex: StateFlow<Int>
         get() = _skinMotionIndex
-    override fun selectSkinMotion(skinMotion: SkinMotion) {
+    override fun selectSkinMotion(previousPosition: Int?, currentPosition: Int) {
         viewModelScope.launch {
-            val newList = skinMotions.value.map { existingSkinMotion ->
-                if (existingSkinMotion == skinMotion) {
-                    existingSkinMotion.copy(isClicked = true)
-                } else {
-                    existingSkinMotion.copy(isClicked = false)
-                }
+            val newList = _skinMotions.value
+            previousPosition?.let {
+                newList[it].isClicked = false
             }
+            newList[currentPosition].isClicked = true
             _skinMotions.emit(newList)
         }
     }

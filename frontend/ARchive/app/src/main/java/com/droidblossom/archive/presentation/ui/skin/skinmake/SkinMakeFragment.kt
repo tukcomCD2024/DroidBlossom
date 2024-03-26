@@ -37,7 +37,9 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
     override val viewModel : SkinMakeViewModelImpl by activityViewModels()
 
     private val skinMotionRVA by lazy {
-        SkinMotionRVA { viewModel.selectSkinMotion(it) }
+        SkinMotionRVA { previousPosition, currentPosition ->
+            viewModel.selectSkinMotion(previousPosition, currentPosition)
+        }
     }
 
     private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->

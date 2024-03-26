@@ -23,7 +23,7 @@ interface SkinMakeViewModel {
     fun setFile(skinImgFile: File)
     fun makeSkin()
 
-    fun selectSkinMotion(skinMotion : SkinMotion)
+    fun selectSkinMotion(previousPosition : Int?, currentPosition : Int)
 
     sealed class SkinMakeEvent {
         object SuccessSkinMake : SkinMakeEvent()
