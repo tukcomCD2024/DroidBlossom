@@ -23,7 +23,7 @@ class NoticeRVA :
             val adapter = NoticeContentRVA()
             binding.contentRVA.adapter = adapter
             adapter.submitList(data.contents)
-            binding.moreBtn.setOnClickListener{
+            binding.noticeLayout.setOnClickListener{
                 if (data.isOpen) {
                     data.isOpen = false
                     binding.contentLayout.isGone = true

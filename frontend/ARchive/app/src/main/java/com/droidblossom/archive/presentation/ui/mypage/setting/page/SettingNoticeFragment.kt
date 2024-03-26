@@ -45,11 +45,12 @@ class SettingNoticeFragment :
                     )
                 ),
                 Notice(
-                    "아카이브 업데이트 : 1.1.0",
+                    "아카이브 업데이트 : 1.0.9",
                     "2024/03/01",
                     listOf(
                         NoticeContent("업데이트"),
-                        NoticeContent("했습니다 : 1.1.0")
+                        NoticeContent("hey"),
+                        NoticeContent("keep going"),
                     )
                 )
             )
