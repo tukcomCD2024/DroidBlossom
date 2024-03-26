@@ -39,7 +39,6 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        viewModel.getSkinList()
         initRVA()
         initSearchEdit()
         binding.createCapsuleLayout.setOnClickListener {
@@ -121,18 +120,14 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (hidden) {
-            Log.d("라프","히든")
+        if (!hidden) {
             viewModel.clearSkins()
             viewModel.closeSearchSkin()
-        } else {
-            Log.d("라프","쇼")
         }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("라프","온리쥼")
         viewModel.clearSkins()
         viewModel.closeSearchSkin()
     }
