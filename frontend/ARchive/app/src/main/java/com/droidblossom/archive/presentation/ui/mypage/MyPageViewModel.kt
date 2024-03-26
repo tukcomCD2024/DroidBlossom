@@ -18,11 +18,13 @@ interface MyPageViewModel {
     fun getSecretCapsulePage()
     fun clearCapsules()
     fun updateMyCapsulesUI()
-    fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean)
+    fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long)
     fun clickSetting()
 
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
+
+        data class CapsuleStateUpdate(val capsuleIndex: Int) : MyPageEvent()
 
         object ClickSetting : MyPageEvent()
 

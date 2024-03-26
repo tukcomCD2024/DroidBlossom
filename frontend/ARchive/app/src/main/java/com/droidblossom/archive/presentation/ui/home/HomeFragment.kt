@@ -109,7 +109,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     when (event) {
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment.newInstance(event.capsuleId, event.capsuleType, false)
+                            val sheet = CapsulePreviewDialogFragment.newInstance("-1",event.capsuleId, event.capsuleType, false)
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
                     }

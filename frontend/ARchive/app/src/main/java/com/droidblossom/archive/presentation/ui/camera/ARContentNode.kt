@@ -53,7 +53,7 @@ class ARContentNode(
                         isEditable = true
                     }
                     onSingleTapConfirmed = {
-                        val sheet = CapsulePreviewDialogFragment.newInstance(capsule.id.toString(), capsule.capsuleType.toString(), true)
+                        val sheet = CapsulePreviewDialogFragment.newInstance("-1",capsule.id.toString(), capsule.capsuleType.toString(), true)
                         sheet.show(fragmentManagerProvider.provideFragmentManager(), "CapsulePreviewDialog")
                         false
                     }

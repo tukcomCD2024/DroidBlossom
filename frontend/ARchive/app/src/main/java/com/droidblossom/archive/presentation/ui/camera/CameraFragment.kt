@@ -52,6 +52,7 @@ class CameraFragment :
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
                             val sheet = CapsulePreviewDialogFragment.newInstance(
+                                "-1",
                                 event.capsuleId,
                                 event.capsuleType,
                                 true

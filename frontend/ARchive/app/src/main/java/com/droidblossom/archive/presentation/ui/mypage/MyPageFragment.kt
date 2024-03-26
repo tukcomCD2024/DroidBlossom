@@ -47,8 +47,8 @@ class MyPageFragment :
                     )
                 )
             },
-            { id, type ->
-                val sheet = CapsulePreviewDialogFragment.newInstance(id.toString(), type.toString(), false)
+            { capsuleIndex, id, type ->
+                val sheet = CapsulePreviewDialogFragment.newInstance(capsuleIndex.toString(), id.toString(), type.toString(), false)
                 sheet.show(parentFragmentManager, "CapsulePreviewDialog")
             },
         )
@@ -61,9 +61,13 @@ class MyPageFragment :
         viewModel.getSecretCapsulePage()
 
         parentFragmentManager.setFragmentResultListener("capsuleState", viewLifecycleOwner) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
             val capsuleId = bundle.getLong("capsuleId")
             val capsuleOpenState = bundle.getBoolean("isOpened")
-            viewModel.updateCapsuleOpenState(capsuleId,capsuleOpenState)
+            if (capsuleIndex != -1 && capsuleOpenState) {
+                viewModel.updateCapsuleOpenState(capsuleIndex,capsuleId)
+                myCapsuleRVA.notifyItemChanged(capsuleIndex)
+            }
         }
 
         initRVA()
@@ -124,6 +128,10 @@ class MyPageFragment :
                         }
                         is MyPageViewModel.MyPageEvent.ClickSetting -> {
                             startActivity(SettingActivity.newIntent(requireContext()))
+                        }
+
+                        is MyPageViewModel.MyPageEvent.CapsuleStateUpdate -> {
+                            //myCapsuleRVA.notifyItemChanged(event.capsuleIndex)
                         }
 
                         else -> {}

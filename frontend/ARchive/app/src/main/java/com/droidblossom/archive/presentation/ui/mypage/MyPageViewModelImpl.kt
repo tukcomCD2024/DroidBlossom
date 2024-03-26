@@ -104,18 +104,12 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean) {
+    override fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long) {
         viewModelScope.launch {
-            val updatedCapsules = withContext(Dispatchers.Default) {
-                _myCapsules.value.map { capsule ->
-                    if (capsule.capsuleId == capsuleId) {
-                        capsule.copy(isOpened = isOpened)
-                    } else {
-                        capsule
-                    }
-                }
-            }
-            _myCapsules.emit(updatedCapsules)
+            val newList = _myCapsules.value
+            newList[capsuleIndex].isOpened = true
+            _myCapsules.emit(newList)
+            _myCapsulesUI.emit(myCapsules.value)
         }
     }
 
