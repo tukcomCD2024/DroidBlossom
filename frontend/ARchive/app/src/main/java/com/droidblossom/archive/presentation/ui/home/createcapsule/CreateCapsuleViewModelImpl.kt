@@ -258,9 +258,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        _skins.emit(it.skins)
                         _hasNextSkins.emit(it.hasNext)
-                        _lastCreatedSkinTime.emit(it.skins.last().createdAt)
+                        _skins.emit(skins.value + it.skins)
+                        _lastCreatedSkinTime.value = _skins.value.last().createdAt
                     }.onFail {
                         _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨 불러오기 실패."))
                     }

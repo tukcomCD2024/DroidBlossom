@@ -51,19 +51,21 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         binding.viewHeaderTitle.layoutParams = layoutParams
     }
 
+
     private fun initRVA() {
         binding.skinRV.adapter = mySkinRVA
         binding.skinRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
-                    viewModel.getSkinList()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.getSkinList()
+                    }
                 }
             }
         })
@@ -120,15 +122,17 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
-
-        } else {
+            Log.d("라프","히든")
             viewModel.clearSkins()
             viewModel.closeSearchSkin()
+        } else {
+            Log.d("라프","쇼")
         }
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d("라프","온리쥼")
         viewModel.clearSkins()
         viewModel.closeSearchSkin()
     }

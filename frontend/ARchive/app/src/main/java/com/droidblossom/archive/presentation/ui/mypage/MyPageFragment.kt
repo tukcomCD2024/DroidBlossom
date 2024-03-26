@@ -81,6 +81,7 @@ class MyPageFragment :
         binding.profileImg.layoutParams = layoutParams
     }
 
+
     private fun initRVA() {
         binding.capsuleRecycleView.adapter = myCapsuleRVA
         binding.capsuleRecycleView.animation = null

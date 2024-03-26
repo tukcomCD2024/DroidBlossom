@@ -33,11 +33,6 @@ class SkinRVA( val SkinFlow: (previousPosition: Int?, currentPosition: Int) -> U
         }
     }
 
-    override fun submitList(list: List<CapsuleSkinSummary>?) {
-        previousClickedPosition = null
-        super.submitList(list)
-    }
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

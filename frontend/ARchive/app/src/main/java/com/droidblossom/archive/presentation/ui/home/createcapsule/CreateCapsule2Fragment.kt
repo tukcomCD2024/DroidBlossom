@@ -112,25 +112,23 @@ class CreateCapsule2Fragment :
 
     }
 
-    private fun initRVA(){
+
+    private fun initRVA() {
         binding.recycleView.adapter = skinRVA
-        val defaultItemAnimator = DefaultItemAnimator()
-        defaultItemAnimator.changeDuration = 100
-        binding.recycleView.itemAnimator = defaultItemAnimator
         binding.recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
-                    viewModel.getSkinList()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.getSkinList()
+                    }
                 }
             }
-
         })
     }
 
