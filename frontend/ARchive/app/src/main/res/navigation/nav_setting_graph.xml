@@ -16,6 +16,12 @@
         <action
             android:id="@+id/action_settingMainFragment_to_settingAgreeFragment"
             app:destination="@id/settingAgreeFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingNoticeFragment"
+            app:destination="@id/settingNoticeFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingUserFragment"
+            app:destination="@id/settingUserFragment" />
     </fragment>
 
     <fragment
@@ -28,5 +34,15 @@
         android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingAgreeFragment"
         android:label="SettingAgreeFragment"
         tools:layout="@layout/fragment_setting_agree" />
+    <fragment
+        android:id="@+id/settingNoticeFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingNoticeFragment"
+        android:label="SettingNoticeFragment"
+        tools:layout="@layout/fragment_setting_notice"/>
+    <fragment
+        android:id="@+id/settingUserFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingUserFragment"
+        android:label="SettingUserFragment"
+        tools:layout="@layout/fragment_setting_user"/>
 
 </navigation>

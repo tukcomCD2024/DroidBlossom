@@ -40,33 +40,26 @@
             app:layout_constraintTop_toTopOf="@id/agreeTitle"
             app:tint="@color/gray_700" />
 
-        <ScrollView
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/contentSV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/corner_radius_12_stroke_1"
             android:fillViewport="true"
-            android:layout_marginBottom="8dp"
-            android:padding="8dp"
             android:nestedScrollingEnabled="true"
+            android:padding="8dp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/moreBtn">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <TextView
+                android:id="@+id/agreeContent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:text="@{item.content}"
+                android:textAppearance="@style/TextAppearance.App.caption4" />
 
-                <TextView
-                    android:id="@+id/agreeContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{item.content}"
-                    android:textAppearance="@style/TextAppearance.App.caption4" />
-
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </ScrollView>
-
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

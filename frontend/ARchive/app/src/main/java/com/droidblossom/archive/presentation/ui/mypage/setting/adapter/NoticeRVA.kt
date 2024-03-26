@@ -1,6 +1,5 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isGone
@@ -9,27 +8,32 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
-import com.droidblossom.archive.databinding.ItemAgreeBinding
-import com.droidblossom.archive.domain.model.setting.Agree
+import com.droidblossom.archive.databinding.ItemNoticeBinding
+import com.droidblossom.archive.domain.model.setting.Notice
 
 
-class AgreeRVA :
-    ListAdapter<Agree, AgreeRVA.ItemViewHolder>(differ) {
+class NoticeRVA :
+    ListAdapter<Notice, NoticeRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
-        private val binding: ItemAgreeBinding
+        private val binding: ItemNoticeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Agree) {
+        fun bind(data: Notice) {
             binding.item = data
-            binding.moreBtn.setOnClickListener {
+            val adapter = NoticeContentRVA()
+            binding.contentRVA.adapter = adapter
+            adapter.submitList(data.contents)
+            binding.noticeLayout.setOnClickListener{
                 if (data.isOpen) {
                     data.isOpen = false
-                    binding.contentSV.isGone = true
-                    binding.moreBtn.setImageResource(R.drawable.ic_plus_24)
+                    binding.contentLayout.isGone = true
+                    binding.moreBtn.rotation = 0f
+                    binding.line.setBackgroundResource(R.color.gray_400)
                 } else {
                     data.isOpen = true
-                    binding.contentSV.isVisible = true
-                    binding.moreBtn.setImageResource(R.drawable.ic_minus_24)
+                    binding.contentLayout.isVisible = true
+                    binding.moreBtn.rotation = 180f
+                    binding.line.setBackgroundResource(R.color.black)
                 }
             }
         }
@@ -42,7 +46,7 @@ class AgreeRVA :
         viewType: Int
     ): ItemViewHolder {
         return ItemViewHolder(
-            ItemAgreeBinding.inflate(
+            ItemNoticeBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -55,12 +59,12 @@ class AgreeRVA :
     }
 
     companion object {
-        val differ = object : DiffUtil.ItemCallback<Agree>() {
-            override fun areItemsTheSame(oldItem: Agree, newItem: Agree): Boolean {
+        val differ = object : DiffUtil.ItemCallback<Notice>() {
+            override fun areItemsTheSame(oldItem: Notice, newItem: Notice): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: Agree, newItem: Agree): Boolean {
+            override fun areContentsTheSame(oldItem: Notice, newItem: Notice): Boolean {
                 return oldItem == newItem
             }
         }
