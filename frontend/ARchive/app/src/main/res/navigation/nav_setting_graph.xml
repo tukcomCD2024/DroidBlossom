@@ -13,12 +13,20 @@
         <action
             android:id="@+id/action_settingMainFragment_to_settingNotificationFragment"
             app:destination="@id/settingNotificationFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingAgreeFragment"
+            app:destination="@id/settingAgreeFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/settingNotificationFragment"
         android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingNotificationFragment"
         android:label="SettingNotificationFragment"
-        tools:layout="@layout/fragment_setting_notification"/>
+        tools:layout="@layout/fragment_setting_notification" />
+    <fragment
+        android:id="@+id/settingAgreeFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingAgreeFragment"
+        android:label="SettingAgreeFragment"
+        tools:layout="@layout/fragment_setting_agree" />
 
 </navigation>
