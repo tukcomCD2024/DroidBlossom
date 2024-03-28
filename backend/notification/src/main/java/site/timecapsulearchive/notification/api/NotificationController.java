@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.notification.data.mapper.NotificationMapper;
 import site.timecapsulearchive.notification.data.request.CapsuleSkinNotificationSendRequest;
+import site.timecapsulearchive.notification.data.request.FriendNotificationRequest;
 import site.timecapsulearchive.notification.service.NotificationService;
 
 @RestController
@@ -28,4 +29,25 @@ public class NotificationController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/friend-request/send")
+    public ResponseEntity<Void> sendFriendRequestNotification(
+        @Valid @RequestBody FriendNotificationRequest request
+    ) {
+        notificationService.sendFriendRequestsNotification(
+            notificationMapper.friendNotificationRequestToDto(request));
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/friend-accept/send")
+    public ResponseEntity<Void> sendFriendAcceptNotification(
+        @Valid @RequestBody FriendNotificationRequest request
+    ) {
+        notificationService.sendFriendAcceptNotification(
+            notificationMapper.friendNotificationRequestToDto(request));
+
+        return ResponseEntity.noContent().build();
+    }
+
 }
