@@ -44,6 +44,4 @@ public class NotificationRequestExceptionAspect {
             throw new ExternalApiException(ErrorCode.EXTERNAL_API_ERROR);
         }
     }
-
-
 }

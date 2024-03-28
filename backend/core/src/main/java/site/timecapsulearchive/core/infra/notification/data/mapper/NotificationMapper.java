@@ -34,7 +34,7 @@ public class NotificationMapper {
         final String ownerNickname
     ) {
         return FriendReqNotificationRequest.builder()
-            .friendId(friendId)
+            .targetId(friendId)
             .status(NOTIFICATION_SEND_SUCCESS)
             .title("친구 요청 알림")
             .text(ownerNickname + "로부터 친구 요청이 왔습니다. ARchive에서 확인해보세요!")
@@ -46,7 +46,7 @@ public class NotificationMapper {
         final String ownerNickname
     ) {
         return FriendAcceptNotificationRequest.builder()
-            .memberId(friendId)
+            .targetId(friendId)
             .status(NOTIFICATION_SEND_SUCCESS)
             .title("친구 수락 알림")
             .text(ownerNickname + "님이 친구 요청을 수락하였습니다. ARchive에서 확인해보세요!")

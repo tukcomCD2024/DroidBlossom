@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record FriendReqNotificationRequest(
-    Long friendId,
+    Long targetId,
     String status,
     String title,
     String text

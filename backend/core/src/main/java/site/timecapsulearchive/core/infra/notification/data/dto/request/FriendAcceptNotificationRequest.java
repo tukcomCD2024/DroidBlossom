@@ -4,11 +4,10 @@ import lombok.Builder;
 
 @Builder
 public record FriendAcceptNotificationRequest(
-    Long memberId,
+    Long targetId,
     String status,
     String title,
     String text
-
 ) {
 
 }
