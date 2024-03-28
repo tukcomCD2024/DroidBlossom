@@ -5,9 +5,15 @@ import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageR
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.friend.request.FriendAcceptRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendReqRequestDto
+import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
+import com.droidblossom.archive.data.dto.friend.response.FriendsSearchPhoneResponseDto
+import com.droidblossom.archive.data.dto.friend.response.FriendsSearchResponseDto
 import com.droidblossom.archive.data.source.remote.api.FriendService
 import com.droidblossom.archive.domain.model.friend.FriendReqStatusResponse
+import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
+import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneResponse
+import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.domain.repository.FriendRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.apiHandler
@@ -22,5 +28,13 @@ class FriendRepositoryImpl @Inject constructor(
 
     override suspend fun postFriendsAcceptRequest(request: FriendAcceptRequestDto): RetrofitResult<String> {
         return apiHandler({ api.postFriendsAcceptRequestApi(request.friendId) }) {response: ResponseBody<String> -> response.result.toModel()}
+    }
+
+    override suspend fun postFriendsSearch(): RetrofitResult<FriendsSearchResponse> {
+        return apiHandler({ api.postFriendsSearchApi() }) {response: ResponseBody<FriendsSearchResponseDto> -> response.result.toModel()}
+    }
+
+    override suspend fun postFriendsSearchPhone(request: FriendsSearchPhoneRequestDto): RetrofitResult<FriendsSearchPhoneResponse> {
+        return apiHandler({ api.postFriendsSearchPhoneApi(request) }) {response: ResponseBody<FriendsSearchPhoneResponseDto> -> response.result.toModel()}
     }
 }
