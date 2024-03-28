@@ -41,8 +41,8 @@ public interface FriendApi {
     ResponseEntity<ApiSpec<String>> acceptFriendRequest(
         Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
-        @RequestParam(value = "friend_id") Long friendId
+        @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema())
+        Long friendId
     );
 
 
@@ -88,7 +88,7 @@ public interface FriendApi {
     ResponseEntity<ApiSpec<String>> denyFriendRequest(
         Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema())
         Long friendId
     );
 

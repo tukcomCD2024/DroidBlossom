@@ -21,6 +21,7 @@ import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSumm
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
+import site.timecapsulearchive.core.domain.friend.exception.DuplicateFriendIdException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
@@ -66,6 +67,9 @@ public class FriendService {
     }
 
     public FriendReqStatusResponse requestFriend(final Long memberId, final Long friendId) {
+        if (memberId.equals(friendId)){
+            throw new DuplicateFriendIdException();
+        }
         final Member owner = memberRepository.findMemberById(memberId).orElseThrow(
             MemberNotFoundException::new);
 
@@ -87,6 +91,9 @@ public class FriendService {
     }
 
     public void acceptFriend(final Long memberId, final Long friendId) {
+        if (memberId.equals(friendId)){
+            throw new DuplicateFriendIdException();
+        }
         final FriendInvite friendInvite = friendInviteRepository
             .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
             .orElseThrow(FriendNotFoundException::new);
@@ -108,6 +115,9 @@ public class FriendService {
 
     @Transactional
     public void denyRequestFriend(Long memberId, Long friendId) {
+        if (memberId.equals(friendId)){
+            throw new DuplicateFriendIdException();
+        }
         final FriendInvite friendInvite = friendInviteRepository
             .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
                 FriendNotFoundException::new);
@@ -116,9 +126,12 @@ public class FriendService {
     }
 
     @Transactional
-    public void deleteFriend(final Long memberId, final Long friend2Id) {
+    public void deleteFriend(final Long memberId, final Long friendId) {
+        if (memberId.equals(friendId)){
+            throw new DuplicateFriendIdException();
+        }
         memberFriendRepository
-            .findMemberFriendByOwnerIdAndFriendId(memberId, friend2Id)
+            .findMemberFriendByOwnerIdAndFriendId(memberId, friendId)
             .forEach(memberFriendRepository::delete);
     }
 

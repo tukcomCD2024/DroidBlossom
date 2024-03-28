@@ -53,7 +53,8 @@ public enum ErrorCode {
     CAPSULE_NOT_FOUND_ERROR(404, "CAPSULE-001", "캡슐을 찾지 못하였습니다."),
 
     //friend
-    FRIEND_NOT_FOUND_ERROR(404, "FRIEND-001", "친구를 찾지 못하였습니다");
+    FRIEND_NOT_FOUND_ERROR(404, "FRIEND-001", "친구를 찾지 못하였습니다"),
+    FRIEND_DUPLICATE_ID_ERROR(404, "FRIEND-001", "친구 아이디가 중복되었습니다.");
 
     private final int status;
     private final String code;
