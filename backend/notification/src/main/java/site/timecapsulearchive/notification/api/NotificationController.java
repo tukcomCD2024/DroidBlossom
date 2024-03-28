@@ -28,4 +28,25 @@ public class NotificationController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/friend-request/send")
+    public ResponseEntity<Void> sendFriendRequestNotification(
+        @Valid @RequestBody FriendNotificationRequest request
+    ) {
+        notificationService.sendFriendRequestsNotification(
+            notificationMapper.friendNotificationRequestToDto(request));
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/friend-accept/send")
+    public ResponseEntity<Void> sendFriendAcceptNotification(
+        @Valid @RequestBody FriendNotificationRequest request
+    ) {
+        notificationService.sendFriendAcceptNotification(
+            notificationMapper.friendNotificationRequestToDto(request));
+
+        return ResponseEntity.noContent().build();
+    }
+
 }
