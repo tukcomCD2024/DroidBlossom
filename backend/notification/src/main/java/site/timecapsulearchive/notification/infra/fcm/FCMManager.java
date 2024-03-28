@@ -58,8 +58,9 @@ public class FCMManager {
                         .putData(STATUS_DATA_NAME, String.valueOf(dto.status()))
                         .putData(TITLE_DATA_NAME, dto.title())
                         .putData(TEXT_DATA_NAME, dto.text())
-                        .putData(IMAGE_DATA_NAME, s3PreSignedUrlManager.createS3PreSignedUrlForGet(dto.skinUrl()))
                         .setToken(fcmToken)
+                        .putData(IMAGE_DATA_NAME,
+                            s3PreSignedUrlManager.createS3PreSignedUrlForGet(dto.skinUrl()))
                         .build()
                 );
         } catch (FirebaseMessagingException e) {

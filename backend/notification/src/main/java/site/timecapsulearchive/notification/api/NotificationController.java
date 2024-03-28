@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.notification.data.mapper.NotificationMapper;
 import site.timecapsulearchive.notification.data.request.CapsuleSkinNotificationSendRequest;
+import site.timecapsulearchive.notification.data.request.FriendNotificationRequest;
 import site.timecapsulearchive.notification.service.NotificationService;
 
 @RestController
