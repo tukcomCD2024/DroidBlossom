@@ -6,14 +6,14 @@ import site.timecapsulearchive.notification.entity.NotificationStatus;
 
 @Builder
 public record FriendNotificationDto(
-    Long memberId,
+    Long targetId,
     NotificationStatus status,
     String text,
     String title
 ) {
 
     public FriendNotificationDto {
-        Objects.requireNonNull(memberId);
+        Objects.requireNonNull(targetId);
         Objects.requireNonNull(status);
         Objects.requireNonNull(text);
         Objects.requireNonNull(title);

@@ -39,7 +39,7 @@ public class NotificationMapper {
     public FriendNotificationDto friendNotificationRequestToDto(
         final FriendNotificationRequest request) {
         return FriendNotificationDto.builder()
-            .memberId(request.memberId())
+            .targetId(request.targetId())
             .status(request.status())
             .title(request.title())
             .text(request.text())
@@ -49,7 +49,7 @@ public class NotificationMapper {
     public Notification friendNotificationDtoToEntity(final FriendNotificationDto dto,
         final NotificationCategory category) {
         return Notification.builder()
-            .memberId(dto.memberId())
+            .memberId(dto.targetId())
             .title(dto.title())
             .text(dto.text())
             .status(dto.status())

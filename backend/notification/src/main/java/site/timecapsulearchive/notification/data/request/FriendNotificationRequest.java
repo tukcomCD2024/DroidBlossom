@@ -7,7 +7,7 @@ import site.timecapsulearchive.notification.entity.NotificationStatus;
 public record FriendNotificationRequest(
 
     @NotNull(message = "멤버 아이디는 필수 입니다.")
-    Long memberId,
+    Long targetId,
 
     @NotNull(message = "알림 상태는 필수 입니다.")
     NotificationStatus status,

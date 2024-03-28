@@ -64,7 +64,7 @@ public class NotificationService {
     }
 
     private void sendFCM(FriendNotificationDto dto, CategoryName categoryName) {
-        final String fcmToken = memberRepository.findFCMToken(dto.memberId());
+        final String fcmToken = memberRepository.findFCMToken(dto.targetId());
         if (!fcmToken.isBlank()) {
             fcmManager.sendFriendNotification(dto, categoryName, fcmToken);
         }
