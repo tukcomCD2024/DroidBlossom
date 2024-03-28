@@ -14,4 +14,9 @@ interface FriendService {
     suspend fun postFriendsRequestApi(
         @Query("friend_id") friendId : Double,
     ) : Response<ResponseBody<FriendReqStatusResponseDto>>
+
+    @POST("friends/{friend_id/accept-request}")
+    suspend fun postFriendsAcceptRequestApi(
+        @Query("friend_id") friendId : Double,
+    ) : Response<ResponseBody<String>>
 }
