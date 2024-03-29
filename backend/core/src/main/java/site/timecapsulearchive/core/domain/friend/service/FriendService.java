@@ -67,7 +67,7 @@ public class FriendService {
     }
 
     public FriendReqStatusResponse requestFriend(final Long memberId, final Long friendId) {
-        if (memberId.equals(friendId)){
+        if (memberId.equals(friendId)) {
             throw new DuplicateFriendIdException();
         }
         final Member owner = memberRepository.findMemberById(memberId).orElseThrow(
@@ -91,7 +91,7 @@ public class FriendService {
     }
 
     public void acceptFriend(final Long memberId, final Long friendId) {
-        if (memberId.equals(friendId)){
+        if (memberId.equals(friendId)) {
             throw new DuplicateFriendIdException();
         }
         final FriendInvite friendInvite = friendInviteRepository
@@ -115,7 +115,7 @@ public class FriendService {
 
     @Transactional
     public void denyRequestFriend(Long memberId, Long friendId) {
-        if (memberId.equals(friendId)){
+        if (memberId.equals(friendId)) {
             throw new DuplicateFriendIdException();
         }
         final FriendInvite friendInvite = friendInviteRepository
@@ -127,7 +127,7 @@ public class FriendService {
 
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
-        if (memberId.equals(friendId)){
+        if (memberId.equals(friendId)) {
             throw new DuplicateFriendIdException();
         }
         memberFriendRepository

@@ -132,7 +132,7 @@ public class FriendApiController implements FriendApi {
         );
     }
 
-    @PostMapping(value = "/search")
+    @GetMapping(value = "/search")
     @Override
     public ResponseEntity<ApiSpec<SearchFriendSummaryResponse>> searchFriendByTag(
         @AuthenticationPrincipal Long memberId,

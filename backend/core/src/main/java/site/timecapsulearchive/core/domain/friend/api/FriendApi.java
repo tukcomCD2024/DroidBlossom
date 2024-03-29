@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
@@ -193,7 +192,7 @@ public interface FriendApi {
     ResponseEntity<ApiSpec<SearchFriendSummaryResponse>> searchFriendByTag(
         Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        @Parameter(in = ParameterIn.QUERY, description = "친구 태그", required = true)
         String tag
     );
 }
