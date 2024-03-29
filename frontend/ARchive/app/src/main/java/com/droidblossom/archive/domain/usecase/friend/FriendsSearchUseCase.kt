@@ -10,13 +10,13 @@ import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class FriendsSearchUseCase@Inject constructor(
+class FriendsSearchUseCase @Inject constructor(
     private val repository: FriendRepository
 ) {
     suspend operator fun invoke(request : FriendsSearchRequest) =
         flow {
             try {
-                emit(repository.postFriendsSearch().onSuccess {
+                emit(repository.postFriendsSearch(request.toDto()).onSuccess {
 
                 }.onFail {
 

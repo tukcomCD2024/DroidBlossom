@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.friend.request.FriendAcceptRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendReqRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
+import com.droidblossom.archive.data.dto.friend.request.FriendsSearchRequestDto
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchPhoneResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchResponseDto
@@ -30,8 +31,8 @@ class FriendRepositoryImpl @Inject constructor(
         return apiHandler({ api.postFriendsAcceptRequestApi(request.friendId) }) {response: ResponseBody<String> -> response.result.toModel()}
     }
 
-    override suspend fun postFriendsSearch(): RetrofitResult<FriendsSearchResponse> {
-        return apiHandler({ api.postFriendsSearchApi() }) {response: ResponseBody<FriendsSearchResponseDto> -> response.result.toModel()}
+    override suspend fun postFriendsSearch(request: FriendsSearchRequestDto): RetrofitResult<FriendsSearchResponse> {
+        return apiHandler({ api.postFriendsSearchApi(request.friendTag) }) {response: ResponseBody<FriendsSearchResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun postFriendsSearchPhone(request: FriendsSearchPhoneRequestDto): RetrofitResult<FriendsSearchPhoneResponse> {

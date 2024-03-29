@@ -9,24 +9,24 @@ import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneReques
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchPhoneResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchResponseDto
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FriendService {
 
     @POST("friends/{friend_id/request}")
     suspend fun postFriendsRequestApi(
-        @Query("friend_id") friendId : Double,
+        @Path("friend_id") friendId : Double,
     ) : Response<ResponseBody<FriendReqStatusResponseDto>>
 
     @POST("friends/{friend_id/accept-request}")
     suspend fun postFriendsAcceptRequestApi(
-        @Query("friend_id") friendId : Double,
+        @Path("friend_id") friendId : Double,
     ) : Response<ResponseBody<String>>
 
-    // 쿼리 쪽이없음
     @POST("friends/search")
     suspend fun postFriendsSearchApi(
-
+        @Query("friend-tag") friendTag : String
     ) : Response<ResponseBody<FriendsSearchResponseDto>>
 
     @POST("friends/search/phone")
