@@ -50,6 +50,10 @@ class FriendRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteFriend(friendId: Long): RetrofitResult<String> {
-        return  apiHandler({api.deleteFriendApi(friendId)}) {response: ResponseBody<String> -> response.result.toModel()}
+        return apiHandler({api.deleteFriendApi(friendId)}) {response: ResponseBody<String> -> response.result.toModel()}
+    }
+
+    override suspend fun deleteFriendDeny(friendId: Long): RetrofitResult<String> {
+        return apiHandler({api.deleteFriendDenyRequestApi(friendId)}) {response: ResponseBody<String> -> response.result.toModel()}
     }
 }
