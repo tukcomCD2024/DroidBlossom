@@ -19,4 +19,5 @@ interface FriendRepository {
     suspend fun postFriendsSearch(request: FriendsSearchRequestDto) : RetrofitResult<FriendsSearchResponse>
     suspend fun postFriendsSearchPhone(request : FriendsSearchPhoneRequestDto) : RetrofitResult<FriendsSearchPhoneResponse>
     suspend fun getFriendsPage(size: Int ,createdAt : String) : RetrofitResult<FriendsPage>
+    suspend fun getFriendsRequestsPage(size: Int, createdAt: String) : RetrofitResult<FriendsPage>
 }

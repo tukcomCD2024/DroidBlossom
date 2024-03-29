@@ -44,4 +44,8 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun getFriendsPage(size: Int, createdAt: String): RetrofitResult<FriendsPage> {
         return apiHandler({api.getFriendsPageApi(size, createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
     }
+
+    override suspend fun getFriendsRequestsPage(size: Int, createdAt: String): RetrofitResult<FriendsPage> {
+        return apiHandler({api.getFriendsRequestsPageApi(size, createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
+    }
 }
