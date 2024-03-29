@@ -53,4 +53,9 @@ interface FriendService {
     suspend fun deleteFriendApi(
         @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<String>>
+
+    @DELETE("friends/{friend_id}/deny-request")
+    suspend fun deleteFriendDenyRequestApi(
+        @Path("friend_id") friendId : Long,
+    ) : Response<ResponseBody<String>>
 }
