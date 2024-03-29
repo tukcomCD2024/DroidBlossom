@@ -54,20 +54,31 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             // 데이터 메시지 비어있음
             Log.d(TAG, "메시지를 수신하지 못했습니다.")
         }
-        
+
     }
 
     private fun handleNotification(remoteMessage: RemoteMessage) {
         var channelName = "공지사항"
         when(remoteMessage.data["topic"]){
 
-            FcmTopic.CAPSULE_SKIN.toString() -> {
+            FcmTopic.CAPSULE_SKIN.name -> {
                 channelName = "캡슐 스킨 생성"
+                sendNotification(remoteMessage, FcmTopic.CAPSULE_SKIN.name, channelName)
             }
-            else -> {}
 
+            FcmTopic.FRIEND_REQUEST.name -> {
+                channelName = "친구 요청"
+                sendNotification(remoteMessage, FcmTopic.FRIEND_REQUEST.name, channelName)
+            }
+
+            FcmTopic.FRIEND_ACCEPT.name -> {
+                channelName = "친구 요청 수락"
+                sendNotification(remoteMessage, FcmTopic.FRIEND_ACCEPT.name, channelName)
+            }
+
+            else -> {}
         }
-        sendNotification(remoteMessage, FcmTopic.CAPSULE_SKIN.toString(), channelName)
+
     }
 
 
@@ -82,6 +93,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             FcmTopic.CAPSULE_SKIN.name -> {
                 intent.putExtra("fragmentDestination", FragmentDestination.SKIN_FRAGMENT.name)
             }
+
+            FcmTopic.FRIEND_REQUEST.name -> {
+                intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_REQUEST_DIALOG.name)
+            }
+
+            FcmTopic.FRIEND_ACCEPT.name -> {
+                intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_ACCEPT_DIALOG.name)
+            }
+
             else -> {
 
             }
@@ -157,10 +177,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     enum class FragmentDestination {
-        SKIN_FRAGMENT
+        SKIN_FRAGMENT,
+        FRIEND_REQUEST_DIALOG,
+        FRIEND_ACCEPT_DIALOG,
     }
     enum class  FcmTopic{
-        CAPSULE_SKIN
+        CAPSULE_SKIN,
+        FRIEND_REQUEST,
+        FRIEND_ACCEPT,
     }
 
 }
