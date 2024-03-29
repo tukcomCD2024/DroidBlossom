@@ -7,8 +7,10 @@ import retrofit2.Response
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
+import com.droidblossom.archive.data.dto.friend.response.FriendsPageResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchPhoneResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchResponseDto
+import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -33,4 +35,10 @@ interface FriendService {
     suspend fun postFriendsSearchPhoneApi(
         @Body request : FriendsSearchPhoneRequestDto
     ) : Response<ResponseBody<FriendsSearchPhoneResponseDto>>
+
+    @GET("friends")
+    suspend fun getFriends(
+        @Query("size") size : Int,
+        @Query("createdAt") createdAt : String,
+    ) : Response<ResponseBody<FriendsPageResponseDto>>
 }
