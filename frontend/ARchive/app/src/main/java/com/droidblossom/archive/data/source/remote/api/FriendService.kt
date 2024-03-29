@@ -10,6 +10,7 @@ import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponse
 import com.droidblossom.archive.data.dto.friend.response.FriendsPageResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchPhoneResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsSearchResponseDto
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -47,4 +48,9 @@ interface FriendService {
         @Query("size") size : Int,
         @Query("createdAt") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
+
+    @DELETE("friends/{friend_id}")
+    suspend fun deleteFriendApi(
+        @Path("friend_id") friendId : Long,
+    ) : Response<ResponseBody<String>>
 }

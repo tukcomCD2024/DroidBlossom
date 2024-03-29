@@ -1,8 +1,6 @@
 package com.droidblossom.archive.domain.usecase.friend
 
 import android.util.Log
-import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
-import com.droidblossom.archive.domain.model.friend.FriendsSearchRequest
 import com.droidblossom.archive.domain.repository.FriendRepository
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
