@@ -5,6 +5,7 @@ import com.droidblossom.archive.data.dto.friend.request.FriendReqRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchRequestDto
 import com.droidblossom.archive.domain.model.friend.FriendReqStatusResponse
+import com.droidblossom.archive.domain.model.friend.FriendsPage
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneResponse
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.util.RetrofitResult
@@ -17,5 +18,5 @@ interface FriendRepository {
 
     suspend fun postFriendsSearch(request: FriendsSearchRequestDto) : RetrofitResult<FriendsSearchResponse>
     suspend fun postFriendsSearchPhone(request : FriendsSearchPhoneRequestDto) : RetrofitResult<FriendsSearchPhoneResponse>
-
+    suspend fun getFriendsPage(size: Int ,createdAt : String) : RetrofitResult<FriendsPage>
 }

@@ -37,7 +37,7 @@ interface FriendService {
     ) : Response<ResponseBody<FriendsSearchPhoneResponseDto>>
 
     @GET("friends")
-    suspend fun getFriends(
+    suspend fun getFriendsPageApi(
         @Query("size") size : Int,
         @Query("createdAt") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
