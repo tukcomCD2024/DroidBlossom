@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.member.repository;
 
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member.entity.QNotification.notification;
+import static site.timecapsulearchive.core.domain.member.entity.QNotificationCategory.notificationCategory;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,6 +18,7 @@ import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
+import site.timecapsulearchive.core.domain.member.entity.QNotificationCategory;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Repository
@@ -79,7 +81,7 @@ public class MemberQueryRepository {
         final List<MemberNotificationDto> notifications = findMemberNotificationDtos(
             memberId, size, createdAt);
 
-        final boolean hasNext = canMoreRead(size, notifications.size());
+        final boolean hasNext = notifications.size() > size;
         if (hasNext) {
             notifications.remove(size);
         }
@@ -99,18 +101,17 @@ public class MemberQueryRepository {
                     notification.title,
                     notification.text,
                     notification.createdAt,
-                    notification.imageUrl
+                    notification.imageUrl,
+                    notificationCategory.categoryName,
+                    notification.status
                 )
             )
             .from(notification)
+            .join(notification.notificationCategory, notificationCategory)
             .where(notification.createdAt.lt(createdAt).and(notification.member.id.eq(memberId)))
             .orderBy(notification.id.desc())
             .limit(size + 1)
             .fetch();
-    }
-
-    private boolean canMoreRead(final int size, final int notificationSize) {
-        return notificationSize > size;
     }
 
     public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(

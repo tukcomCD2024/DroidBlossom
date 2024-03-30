@@ -84,6 +84,8 @@ public class MemberMapper {
                         .text(dto.text())
                         .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
                         .imageUrl(imageUrl)
+                        .categoryName(dto.categoryName())
+                        .status(dto.status())
                         .build();
                 }
             )
