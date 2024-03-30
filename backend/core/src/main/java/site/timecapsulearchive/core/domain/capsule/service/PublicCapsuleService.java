@@ -9,8 +9,10 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.exception.NoCapsuleAuthorityException;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,5 +46,20 @@ public class PublicCapsuleService {
 
         return !detailDto.isOpened() || detailDto.dueDate()
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
+    }
+
+    public CapsuleSummaryResponse findPublicCapsuleSummaryByMemberIdAndCapsuleId(
+        Long memberId,
+        Long capsuleId
+    ) {
+        PublicCapsuleSummaryDto summaryDto = publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
+                memberId, capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+
+        if (!summaryDto.isFriend()) {
+            throw new NoCapsuleAuthorityException();
+        }
+
+        return capsuleMapper.publicCapsuleSummaryToResponse(summaryDto);
     }
 }

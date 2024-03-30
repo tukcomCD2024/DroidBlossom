@@ -13,6 +13,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
@@ -236,6 +237,22 @@ public class CapsuleMapper {
             .videoUrls(Collections.emptyList())
             .title(dto.title())
             .capsuleType(dto.capsuleType())
+            .build();
+    }
+
+    public CapsuleSummaryResponse publicCapsuleSummaryToResponse(
+        PublicCapsuleSummaryDto summaryDto
+    ) {
+        return CapsuleSummaryResponse.builder()
+            .nickname(summaryDto.nickname())
+            .profileUrl(summaryDto.profileUrl())
+            .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(summaryDto.skinUrl()))
+            .title(summaryDto.title())
+            .dueDate(checkNullable(summaryDto.dueDate()))
+            .address(summaryDto.address())
+            .roadName(summaryDto.roadName())
+            .isOpened(summaryDto.isOpened())
+            .createdAt(summaryDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .build();
     }
 }
