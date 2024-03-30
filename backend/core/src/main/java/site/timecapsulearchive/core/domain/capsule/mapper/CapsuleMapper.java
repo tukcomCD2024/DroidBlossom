@@ -18,7 +18,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.Secre
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -122,12 +122,12 @@ public class CapsuleMapper {
             .build();
     }
 
-    public SecretCapsuleDetailResponse secretCapsuleDetailDtoToResponse(
+    public CapsuleDetailResponse secretCapsuleDetailDtoToResponse(
         final SecretCapsuleDetailDto dto,
         final List<String> imageUrls,
         final List<String> videoUrls
     ) {
-        return SecretCapsuleDetailResponse.builder()
+        return CapsuleDetailResponse.builder()
             .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
             .dueDate(checkNullable(dto.dueDate()))
             .nickname(dto.nickname())
@@ -143,9 +143,9 @@ public class CapsuleMapper {
             .build();
     }
 
-    public SecretCapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
+    public CapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
         final SecretCapsuleDetailDto dto) {
-        return SecretCapsuleDetailResponse.builder()
+        return CapsuleDetailResponse.builder()
             .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
             .dueDate(checkNullable(dto.dueDate()))
             .nickname(dto.nickname())

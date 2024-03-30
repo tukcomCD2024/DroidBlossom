@@ -22,7 +22,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.Secre
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
@@ -95,7 +95,7 @@ public class SecretCapsuleService {
      * @param capsuleId 캡슐 아이디
      * @return 캡슐 상세 정보
      */
-    public SecretCapsuleDetailResponse findSecretCapsuleDetailById(
+    public CapsuleDetailResponse findSecretCapsuleDetailById(
         final Long memberId,
         final Long capsuleId
     ) {
