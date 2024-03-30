@@ -11,24 +11,27 @@ import com.droidblossom.archive.databinding.ItemSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Skin
 
-class SkinRVA( val SkinFlow: (CapsuleSkinSummary) -> Unit) :
+class SkinRVA(val SkinFlow: (previousPosition: Int?, currentPosition: Int) -> Unit) :
     ListAdapter<CapsuleSkinSummary, SkinRVA.ItemViewHolder>(differ) {
+
+    private var previousClickedPosition: Int? = null
 
     inner class ItemViewHolder(
         private val binding: ItemSkinBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        //@SuppressLint("NotifyDataSetChanged")
         fun bind(data: CapsuleSkinSummary) {
             binding.item = data
             binding.root.setOnClickListener {
-                notifyItemChanged(currentList.indexOf(
-                    currentList.find {
-                        it.isClicked
+                val currentClickedPosition = bindingAdapterPosition
+                if (currentClickedPosition != RecyclerView.NO_POSITION) {
+                    SkinFlow(previousClickedPosition, currentClickedPosition)
+                    previousClickedPosition?.let { previousClickedPosition ->
+                        notifyItemChanged(previousClickedPosition)
                     }
-                ))
-                SkinFlow(data)
-                notifyItemChanged(currentList.indexOf(data))
+                    notifyItemChanged(currentClickedPosition)
+                    previousClickedPosition = currentClickedPosition
+                }
             }
         }
     }
@@ -52,11 +55,17 @@ class SkinRVA( val SkinFlow: (CapsuleSkinSummary) -> Unit) :
 
     companion object {
         val differ = object : DiffUtil.ItemCallback<CapsuleSkinSummary>() {
-            override fun areItemsTheSame(oldItem: CapsuleSkinSummary, newItem: CapsuleSkinSummary): Boolean {
+            override fun areItemsTheSame(
+                oldItem: CapsuleSkinSummary,
+                newItem: CapsuleSkinSummary
+            ): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: CapsuleSkinSummary, newItem: CapsuleSkinSummary): Boolean {
+            override fun areContentsTheSame(
+                oldItem: CapsuleSkinSummary,
+                newItem: CapsuleSkinSummary
+            ): Boolean {
                 return oldItem == newItem
             }
         }

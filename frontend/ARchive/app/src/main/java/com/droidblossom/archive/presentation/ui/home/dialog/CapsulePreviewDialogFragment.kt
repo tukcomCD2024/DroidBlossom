@@ -31,6 +31,11 @@ class CapsulePreviewDialogFragment :
 
     private val viewModel: CapsulePreviewDialogViewModelImpl by viewModels()
 
+    val capsuleIndex: Int by lazy {
+        arguments?.getString("capsule_index")!!.toInt()
+    }
+
+
     val capsuleId: Int by lazy {
         arguments?.getString("capsule_id")!!.toInt()
     }
@@ -203,6 +208,7 @@ class CapsulePreviewDialogFragment :
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val capsuleState = Bundle().apply {
+            putInt("capsuleIndex",capsuleIndex)
             putLong("capsuleId", capsuleId.toLong())
             putBoolean("isOpened", viewModel.capsuleOpenState.value)
         }
@@ -210,8 +216,9 @@ class CapsulePreviewDialogFragment :
     }
 
     companion object {
-        fun newInstance(capsuleId: String, capsuleType: String, calledFromCamera : Boolean): CapsulePreviewDialogFragment {
+        fun newInstance(capsuleIndex: String, capsuleId: String, capsuleType: String, calledFromCamera : Boolean): CapsulePreviewDialogFragment {
             val args = Bundle().apply {
+                putString("capsule_index", capsuleIndex)
                 putString("capsule_id", capsuleId)
                 putString("capsule_type", capsuleType)
                 putBoolean("called_from_camera", calledFromCamera)

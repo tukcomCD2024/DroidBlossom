@@ -6,6 +6,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 Properties properties = new Properties()
@@ -178,6 +179,9 @@ dependencies {
 
     // Event Bus : https://github.com/greenrobot/EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
+
+    // oss-licenses : https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
 }
 kapt {
     correctErrorTypes true

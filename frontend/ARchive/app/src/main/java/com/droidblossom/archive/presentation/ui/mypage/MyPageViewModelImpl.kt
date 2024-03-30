@@ -35,7 +35,7 @@ class MyPageViewModelImpl @Inject constructor(
         get() =_myPageEvents.asSharedFlow()
 
 
-            private val _myInfo = MutableStateFlow(MemberDetail("USER", "", ""))
+    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", ""))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
@@ -79,7 +79,7 @@ class MyPageViewModelImpl @Inject constructor(
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
                         _myCapsules.emit(myCapsules.value + it.capsules)
-                        _lastCreatedTime.value = _myCapsules.value.last().createdDate
+                        _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }.onFail {
                         _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
@@ -87,6 +87,7 @@ class MyPageViewModelImpl @Inject constructor(
             }
         }
     }
+
 
     override fun updateMyCapsulesUI() {
         viewModelScope.launch {
@@ -103,18 +104,18 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun updateCapsuleOpenState(capsuleId: Long, isOpened: Boolean) {
+    override fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long) {
         viewModelScope.launch {
-            val updatedCapsules = withContext(Dispatchers.Default) {
-                _myCapsules.value.map { capsule ->
-                    if (capsule.capsuleId == capsuleId) {
-                        capsule.copy(isOpened = isOpened)
-                    } else {
-                        capsule
-                    }
-                }
-            }
-            _myCapsules.emit(updatedCapsules)
+            val newList = _myCapsules.value
+            newList[capsuleIndex].isOpened = true
+            _myCapsules.emit(newList)
+            _myCapsulesUI.emit(myCapsules.value)
+        }
+    }
+
+    override fun clickSetting() {
+        viewModelScope.launch {
+            _myPageEvents.emit(MyPageViewModel.MyPageEvent.ClickSetting)
         }
     }
 }

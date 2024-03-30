@@ -1,7 +1,6 @@
 package com.droidblossom.archive.domain.usecase.member
 
 import android.util.Log
-import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.util.RetrofitResult
@@ -14,14 +13,14 @@ import javax.inject.Inject
 class NotificationEnabledUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(request: NotificationEnabledRequestDto) =
+    suspend operator fun invoke(enabled: Boolean) =
         flow<RetrofitResult<String>> {
             try {
-                emit(repository.patchNotificationEnabled(request)
+                emit(repository.patchNotificationEnabled(NotificationEnabledRequestDto(enabled))
                     .onSuccess {
-
+                        Log.d("알림", "성공")
                     }.onFail {
-
+                        Log.d("알림", "실녀")
                     }.onException {
                         throw Exception(it)
                     })

@@ -5,7 +5,7 @@ data class MyCapsule (
     val capsuleSkinUrl: String,
     val createdDate: String,
     val dueDate: String?,
-    val isOpened: Boolean,
+    var isOpened: Boolean,
     val title: String,
     val capsuleType: String
 )

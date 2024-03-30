@@ -25,6 +25,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
+import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,8 +47,8 @@ class MyPageFragment :
                     )
                 )
             },
-            { id, type ->
-                val sheet = CapsulePreviewDialogFragment.newInstance(id.toString(), type.toString(), false)
+            { capsuleIndex, id, type ->
+                val sheet = CapsulePreviewDialogFragment.newInstance(capsuleIndex.toString(), id.toString(), type.toString(), false)
                 sheet.show(parentFragmentManager, "CapsulePreviewDialog")
             },
         )
@@ -60,21 +61,26 @@ class MyPageFragment :
         viewModel.getSecretCapsulePage()
 
         parentFragmentManager.setFragmentResultListener("capsuleState", viewLifecycleOwner) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
             val capsuleId = bundle.getLong("capsuleId")
             val capsuleOpenState = bundle.getBoolean("isOpened")
-            viewModel.updateCapsuleOpenState(capsuleId,capsuleOpenState)
+            if (capsuleIndex != -1 && capsuleOpenState) {
+                viewModel.updateCapsuleOpenState(capsuleIndex,capsuleId)
+                myCapsuleRVA.notifyItemChanged(capsuleIndex)
+            }
         }
 
         initRVA()
 
-        binding.settingBtn.setOnClickListener {
-            throw RuntimeException("Test Crash")
-        }
+//        binding.settingBtn.setOnClickListener {
+//            throw RuntimeException("Test Crash")
+//        }
 
         val layoutParams = binding.profileImg.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.profileImg.layoutParams = layoutParams
     }
+
 
     private fun initRVA() {
         binding.capsuleRecycleView.adapter = myCapsuleRVA
@@ -120,6 +126,13 @@ class MyPageFragment :
                     when (event) {
                         is MyPageViewModel.MyPageEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+                        is MyPageViewModel.MyPageEvent.ClickSetting -> {
+                            startActivity(SettingActivity.newIntent(requireContext()))
+                        }
+
+                        is MyPageViewModel.MyPageEvent.CapsuleStateUpdate -> {
+                            //myCapsuleRVA.notifyItemChanged(event.capsuleIndex)
                         }
 
                         else -> {}

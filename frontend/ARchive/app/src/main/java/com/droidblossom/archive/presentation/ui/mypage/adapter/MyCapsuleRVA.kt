@@ -17,7 +17,7 @@ import com.droidblossom.archive.util.CapsuleTypeUtils.stringToEnum
 
 class MyCapsuleRVA(
     private val goDetail: (Long, HomeFragment.CapsuleType) -> Unit,
-    private val goSummary: (Long, HomeFragment.CapsuleType) -> Unit
+    private val goSummary: (Int, Long, HomeFragment.CapsuleType) -> Unit
 ) :
     ListAdapter<MyCapsule, MyCapsuleRVA.ItemViewHolder>(differ) {
 
@@ -30,7 +30,7 @@ class MyCapsuleRVA(
                 if (data.isOpened) {
                     goDetail(data.capsuleId, stringToEnum(data.capsuleType))
                 } else {
-                    goSummary(data.capsuleId, stringToEnum(data.capsuleType))
+                    goSummary(bindingAdapterPosition, data.capsuleId, stringToEnum(data.capsuleType))
                 }
 
             }

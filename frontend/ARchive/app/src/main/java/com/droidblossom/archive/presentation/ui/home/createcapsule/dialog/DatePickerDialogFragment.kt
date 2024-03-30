@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule.dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,16 @@ class DatePickerDialogFragment(private val onClick: (String, String) -> Unit) :
     private val currentDay = DateUtils.getCurrentDay()
     private val currentHour = DateUtils.getCurrentHour()
     private val currentMin = DateUtils.getCurrentMin()
+
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog
+        if (dialog != null) {
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.WRAP_CONTENT
+            dialog.window?.setLayout(width, height)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

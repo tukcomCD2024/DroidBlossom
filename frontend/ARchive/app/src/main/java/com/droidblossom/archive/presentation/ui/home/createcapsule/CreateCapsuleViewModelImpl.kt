@@ -236,12 +236,14 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    override fun changeSkin(skin: CapsuleSkinSummary) {
-        val submitList = skins.value
-        submitList.map { it.isClicked = false }
-        submitList[submitList.indexOf(skin)].isClicked = true
+    override fun changeSkin(previousPosition: Int?, currentPosition: Int) {
         viewModelScope.launch {
-            _skins.emit(submitList)
+            val newList = _skins.value
+            previousPosition?.let {
+                newList[it].isClicked = false
+            }
+            newList[currentPosition].isClicked = true
+            _skins.emit(newList)
         }
     }
 
@@ -255,9 +257,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        _skins.emit(it.skins)
                         _hasNextSkins.emit(it.hasNext)
-                        _lastCreatedSkinTime.emit(it.skins.last().createdAt)
+                        _skins.emit(skins.value + it.skins)
+                        _lastCreatedSkinTime.value = _skins.value.last().createdAt
                     }.onFail {
                         _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨 불러오기 실패."))
                     }

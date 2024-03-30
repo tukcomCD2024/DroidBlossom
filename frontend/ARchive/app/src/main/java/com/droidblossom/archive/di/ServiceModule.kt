@@ -3,6 +3,7 @@ package com.droidblossom.archive.di
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
 import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
+import com.droidblossom.archive.data.source.remote.api.FriendService
 import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
@@ -41,4 +42,8 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providesCapsuleSkinService(retrofit: Retrofit) : CapsuleSkinService = retrofit.create(CapsuleSkinService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesFriendService(retrofit : Retrofit) : FriendService = retrofit.create(FriendService::class.java)
 }

@@ -16,12 +16,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        app:strokeColor="@color/white"
+        android:background="@color/white"
+        android:elevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:padding="12dp">
+
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/capsuleImg"
@@ -29,7 +33,7 @@
                 android:layout_height="0dp"
                 android:background="@drawable/corner_radius_8"
                 android:clipToOutline="true"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="w,4:3"
                 app:layout_constraintEnd_toEndOf="parent"

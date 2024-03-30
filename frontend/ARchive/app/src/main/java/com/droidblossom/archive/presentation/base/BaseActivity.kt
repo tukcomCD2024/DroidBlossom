@@ -50,7 +50,7 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         // 스낵바 호출로 바꾸면 될듯?
         Log.d("이베", "$event")
         binding.root.let { rootView ->
-            HomeSnackBarSmall(rootView).show()
+            //HomeSnackBarSmall(rootView).show()
         }
     }
 

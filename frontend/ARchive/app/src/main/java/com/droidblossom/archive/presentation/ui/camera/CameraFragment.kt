@@ -25,6 +25,7 @@ import com.google.ar.sceneform.rendering.ViewAttachmentManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.node.AnchorNode
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -36,7 +37,6 @@ class CameraFragment :
 
     // private val capsules: MutableList<CapsuleMarker> = mutableListOf()
     lateinit var arSceneView: ARSceneView
-    private var anchorNode: AnchorNode? = null
     private lateinit var session: Session
     private lateinit var config: Config
     private lateinit var viewAttachmentManager: ViewAttachmentManager
@@ -52,6 +52,7 @@ class CameraFragment :
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
                             val sheet = CapsulePreviewDialogFragment.newInstance(
+                                "-1",
                                 event.capsuleId,
                                 event.capsuleType,
                                 true
@@ -67,9 +68,21 @@ class CameraFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.anchorNodes
+                    .filter { anchorNodes ->
+                        anchorNodes.size == viewModel.capsuleListSize.value
+                    }
+                    .collect {
+                        dismissLoading()
+                    }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
                     arSceneView.onSessionUpdated = { session, frame ->
-                        if (anchorNode == null) {
+                        if (viewModel.anchorNodes.value.isEmpty()) {
                             Log.d("CameraFragmentAR", "earth setting start")
                             val earth = session.earth
                             if (earth == null) {
@@ -113,6 +126,7 @@ class CameraFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showLoading(requireContext())
         val locationUtil = LocationUtil(requireContext())
         locationUtil.getCurrentLocation { latitude, longitude ->
             viewModel.getCapsules(latitude = latitude, longitude = longitude)
@@ -137,32 +151,31 @@ class CameraFragment :
 
     private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
-        val arContentNode =
-            arSceneView.let { scenview ->
-                viewAttachmentManager.let { attachManager ->
-                    ARContentNode(
-                        scenview,
-                        attachManager,
-                        this,
-                        capsule,
-                        layoutInflater,
-                        requireContext(),
-                        onLoaded = { viewNode ->
-                            arSceneView.engine.let {
-                                AnchorNode(it, anchor)
-                                    .apply {
-                                        isEditable = true
-                                        lifecycleScope.launch {
-                                            addChildNode(viewNode)
-                                        }
-                                        anchorNode = this
-                                    }
-                            }.let {
-                                arSceneView.addChildNode(it)
+        arSceneView.let { sceneView ->
+            viewAttachmentManager.let { attachManager ->
+                ARContentNode(
+                    sceneView,
+                    attachManager,
+                    this,
+                    capsule,
+                    layoutInflater,
+                    requireContext(),
+                    onLoaded = { viewNode ->
+                        sceneView.engine.let {
+                            AnchorNode(it, anchor).apply {
+                                isEditable = true
+                                lifecycleScope.launch {
+                                    addChildNode(viewNode)
+                                }
+                                viewModel.addAnchorNode(this)
                             }
-                        })
-                }
+                        }.let {
+                            sceneView.addChildNode(it)
+                        }
+                    }
+                )
             }
+        }
     }
 
     private fun createSession() {
@@ -180,9 +193,15 @@ class CameraFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
+            dismissLoading()
+            for (anchorNode in viewModel.anchorNodes.value) {
+                arSceneView.removeChildNode(anchorNode)
+            }
+            viewModel.clearAnchorNode()
             viewAttachmentManager.onPause()
             arSceneView.session?.pause()
         } else {
+            showLoading(requireContext())
             arSceneView.session?.resume()
             viewAttachmentManager.onResume()
             val locationUtil = LocationUtil(requireContext())

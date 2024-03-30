@@ -15,10 +15,9 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentHomeBinding
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.customview.HomeSnackBarBig
-import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.home.notification.NotificationActivity
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
@@ -70,12 +69,6 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             makeSecretCapsuleBtn.setOnClickListener {
                 startActivity(CreateCapsuleActivity.newIntent(requireContext(), 3))
             }
-            snackbarTestBtn.setOnClickListener {
-                HomeSnackBarSmall(requireView()).show()
-            }
-            snackbarBigText.setOnClickListener {
-                HomeSnackBarBig(requireView(), "", "").show()
-            }
             refreshBtn.setOnClickListener {
                 locationUtil.getCurrentLocation { latitude, longitude ->
                     viewModel.getNearbyCapsules(
@@ -115,11 +108,16 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.homeEvents.collect { event ->
                     when (event) {
+                        HomeViewModel.HomeEvent.GoNotification -> {
+                            startActivity(NotificationActivity.newIntent(requireContext()))
+                        }
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment.newInstance(event.capsuleId, event.capsuleType, false)
+                            val sheet = CapsulePreviewDialogFragment.newInstance("-1",event.capsuleId, event.capsuleType, false)
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
+
+                        else -> {}
                     }
                 }
             }

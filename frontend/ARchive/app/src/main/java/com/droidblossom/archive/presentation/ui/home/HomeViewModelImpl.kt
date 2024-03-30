@@ -92,7 +92,7 @@ class HomeViewModelImpl @Inject constructor(
 
     override fun clickNotificationBtn() {
         viewModelScope.launch {
-            _existsNotification.emit(!existsNotification.value)
+            _homeEvents.emit(HomeViewModel.HomeEvent.GoNotification)
         }
     }
 

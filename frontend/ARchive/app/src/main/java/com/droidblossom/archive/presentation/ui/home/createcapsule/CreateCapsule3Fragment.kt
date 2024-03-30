@@ -219,6 +219,8 @@ class CreateCapsule3Fragment :
                         }
 
                         CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {}
+
+                        else -> {}
                     }
                 }
             }

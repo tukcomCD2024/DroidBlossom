@@ -131,6 +131,15 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
             MyFirebaseMessagingService.FragmentDestination.SKIN_FRAGMENT.name -> {
                 showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
             }
+
+            MyFirebaseMessagingService.FragmentDestination.FRIEND_REQUEST_DIALOG.name -> {
+
+            }
+
+            MyFirebaseMessagingService.FragmentDestination.FRIEND_ACCEPT_DIALOG.name -> {
+
+            }
+
             else -> {
 
             }

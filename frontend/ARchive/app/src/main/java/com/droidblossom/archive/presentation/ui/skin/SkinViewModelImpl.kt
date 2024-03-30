@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.skin
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
@@ -55,13 +56,13 @@ class SkinViewModelImpl @Inject constructor(
                 capsuleSkinsPageUseCase(
                     CapsuleSkinsPageRequestDto(
                         15,
-                        _lastCreatedSkinTime.value
+                        lastCreatedSkinTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        _skins.emit(it.skins)
-                        _hasNextSkins.emit(it.hasNext)
-                        _lastCreatedSkinTime.emit(it.skins.last().createdAt)
+                        _hasNextSkins.value = it.hasNext
+                        _skins.emit(skins.value + it.skins)
+                        _lastCreatedSkinTime.value = skins.value.last().createdAt
                     }.onFail {
                         _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
                     }

@@ -65,7 +65,7 @@ interface CreateCapsuleViewModel {
     fun openSearchSkin()
     fun closeSearchSkin()
     fun searchSkin()
-    fun changeSkin(skin: CapsuleSkinSummary)
+    fun changeSkin(previousPosition: Int?, currentPosition: Int)
     fun getSkinList()
     fun moveFinish()
     fun moveLocation()
@@ -85,7 +85,6 @@ interface CreateCapsuleViewModel {
     fun coordToAddress(latitude: Double, longitude: Double)
     fun getDueTime(tiem:String)
     fun getUploadUrls(getS3UrlData : S3UrlRequest)
-
     fun setFiles(imageFiles: List<File>, videoFiles: List<File>)
     fun closeTimeSetting()
     fun openTimeSetting()
