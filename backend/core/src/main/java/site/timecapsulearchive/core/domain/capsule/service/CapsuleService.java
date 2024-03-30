@@ -95,7 +95,11 @@ public class CapsuleService {
      * @param dto      캡슐 생성 요청 포맷
      */
     @Transactional
-    public void saveCapsule(final Long memberId, final CapsuleCreateRequestDto dto) {
+    public void saveCapsule(
+        final Long memberId,
+        final CapsuleCreateRequestDto dto,
+        final CapsuleType capsuleType
+    ) {
         final Member foundMember = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -104,7 +108,7 @@ public class CapsuleService {
             .orElseThrow(CapsuleSkinNotFoundException::new);
 
         final Capsule capsule = capsuleMapper.requestDtoToEntity(dto, foundMember,
-            foundCapsuleSkin);
+            foundCapsuleSkin, capsuleType);
 
         capsuleRepository.save(capsule);
 

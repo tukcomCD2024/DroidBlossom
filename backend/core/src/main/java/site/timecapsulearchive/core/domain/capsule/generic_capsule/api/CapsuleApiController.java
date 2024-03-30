@@ -82,7 +82,8 @@ public class CapsuleApiController implements CapsuleApi {
     ) {
         capsuleService.saveCapsule(
             memberId,
-            capsuleMapper.CapsuleCreateRequestToDto(request)
+            capsuleMapper.capsuleCreateRequestToDto(request),
+            CapsuleType.SECRET
         );
 
         return ResponseEntity.ok(
@@ -99,7 +100,8 @@ public class CapsuleApiController implements CapsuleApi {
 
         capsuleService.saveCapsule(
             memberId,
-            capsuleMapper.CapsuleCreateRequestToDto(request)
+            capsuleMapper.capsuleCreateRequestToDto(request),
+            CapsuleType.PUBLIC
         );
 
         return ResponseEntity.ok(

@@ -35,7 +35,7 @@ public class CapsuleMapper {
     private final GeoTransformManager geoTransformManager;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
-    public CapsuleCreateRequestDto CapsuleCreateRequestToDto(
+    public CapsuleCreateRequestDto capsuleCreateRequestToDto(
         final CapsuleCreateRequest request) {
         return CapsuleCreateRequestDto.builder()
             .capsuleSkinId(request.capsuleSkinId())
@@ -54,7 +54,8 @@ public class CapsuleMapper {
     public Capsule requestDtoToEntity(
         final CapsuleCreateRequestDto dto,
         final Member member,
-        final CapsuleSkin capsuleSkin
+        final CapsuleSkin capsuleSkin,
+        final CapsuleType capsuleType
     ) {
         final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
             dto.longitude());
@@ -64,7 +65,7 @@ public class CapsuleMapper {
             .content(dto.content())
             .point(point)
             .address(addressDataToEntity(dto.addressData()))
-            .type(CapsuleType.SECRET)
+            .type(capsuleType)
             .member(member)
             .dueDate(dto.dueDate())
             .capsuleSkin(capsuleSkin)
