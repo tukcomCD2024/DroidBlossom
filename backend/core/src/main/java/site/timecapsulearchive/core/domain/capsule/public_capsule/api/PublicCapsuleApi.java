@@ -14,35 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
 
 public interface PublicCapsuleApi {
-
-    @Operation(
-        summary = "공개 캡슐 생성",
-        description = "사용자의 친구들만 볼 수 있는 공개 캡슐을 생성한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"public capsule"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
-        )
-    })
-    @PostMapping(
-        value = "/public/capsules",
-        consumes = {"multipart/form-data"}
-    )
-    ResponseEntity<PublicCapsuleSummaryResponse> createPublicCapsule(
-        @ModelAttribute PublicCapsuleCreateRequest request
-    );
 
     @Operation(
         summary = "공개 캡슐 상세 조회",
