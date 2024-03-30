@@ -20,7 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.S
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.service.SecretCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -54,7 +54,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     @GetMapping(value = "/capsules/{capsule_id}/summary", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
+    public ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getSecretCapsuleSummary(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
@@ -104,7 +104,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     @PatchMapping(value = "/capsules/{capsule_id}", consumes = {"multipart/form-data"})
     @Override
-    public ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
+    public ResponseEntity<CapsuleSummaryResponse> updateSecretCapsule(
         @AuthenticationPrincipal final Long memberId,
         @ModelAttribute final SecretCapsuleUpdateRequest request,
         @PathVariable("capsule_id") final Long capsuleId

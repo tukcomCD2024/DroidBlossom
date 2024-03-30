@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
-public record CapsuleSummaryDto(
+public record NearbyCapsuleSummaryDto(
     Long id,
     Point point,
     String nickname,

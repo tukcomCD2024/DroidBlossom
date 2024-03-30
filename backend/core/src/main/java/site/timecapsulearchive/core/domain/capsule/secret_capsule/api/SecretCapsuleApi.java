@@ -14,7 +14,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.S
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
@@ -59,7 +59,7 @@ public interface SecretCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
+    ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getSecretCapsuleSummary(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
@@ -129,7 +129,7 @@ public interface SecretCapsuleApi {
             description = "처리 완료"
         )
     })
-    ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
+    ResponseEntity<CapsuleSummaryResponse> updateSecretCapsule(
         Long memberId,
         SecretCapsuleUpdateRequest request,
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)

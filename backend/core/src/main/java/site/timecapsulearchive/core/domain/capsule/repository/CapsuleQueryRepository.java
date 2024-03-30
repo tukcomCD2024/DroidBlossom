@@ -22,7 +22,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
@@ -42,12 +42,12 @@ public class CapsuleQueryRepository {
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
-    public List<CapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+    public List<NearbyCapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final Long memberId,
         final Polygon mbr,
         final CapsuleType capsuleType
     ) {
-        final TypedQuery<CapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+        final TypedQuery<NearbyCapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
             capsuleType);
 
         assignParameter(memberId, mbr, capsuleType, query);
@@ -55,11 +55,11 @@ public class CapsuleQueryRepository {
         return query.getResultList();
     }
 
-    private TypedQuery<CapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
+    private TypedQuery<NearbyCapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
         final CapsuleType capsuleType
     ) {
         String queryString = """
-            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto(
+            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto(
                 c.id,
                 c.point,
                 m.nickname,
@@ -79,14 +79,14 @@ public class CapsuleQueryRepository {
             queryString += " and c.type = :capsuleType";
         }
 
-        return entityManager.createQuery(queryString, CapsuleSummaryDto.class);
+        return entityManager.createQuery(queryString, NearbyCapsuleSummaryDto.class);
     }
 
     private void assignParameter(
         final Long memberId,
         final Polygon mbr,
         final CapsuleType capsuleType,
-        final TypedQuery<CapsuleSummaryDto> query
+        final TypedQuery<NearbyCapsuleSummaryDto> query
     ) {
         query.setParameter("mbr", mbr);
         query.setParameter("memberId", memberId);

@@ -7,10 +7,10 @@ import java.util.List;
 public record NearbyCapsuleResponse(
 
     @Schema(description = "캡슐 요약 정보 리스트")
-    List<CapsuleSummaryResponse> capsules
+    List<NearbyCapsuleSummaryResponse> capsules
 ) {
 
-    public static NearbyCapsuleResponse from(List<CapsuleSummaryResponse> capsules) {
+    public static NearbyCapsuleResponse from(List<NearbyCapsuleSummaryResponse> capsules) {
         return new NearbyCapsuleResponse(capsules);
     }
 }

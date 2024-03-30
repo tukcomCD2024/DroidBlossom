@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
@@ -21,7 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.S
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
@@ -90,10 +90,10 @@ public class CapsuleMapper {
             .build();
     }
 
-    public CapsuleSummaryResponse capsuleSummaryDtoToResponse(final CapsuleSummaryDto dto) {
+    public NearbyCapsuleSummaryResponse capsuleSummaryDtoToResponse(final NearbyCapsuleSummaryDto dto) {
         Point point = geoTransformManager.changePoint3857To4326(dto.point());
 
-        return CapsuleSummaryResponse.builder()
+        return NearbyCapsuleSummaryResponse.builder()
             .id(dto.id())
             .latitude(point.getX())
             .longitude(point.getY())
@@ -112,9 +112,9 @@ public class CapsuleMapper {
         return null;
     }
 
-    public SecretCapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
+    public CapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
         final SecretCapsuleSummaryDto dto) {
-        return SecretCapsuleSummaryResponse.builder()
+        return CapsuleSummaryResponse.builder()
             .nickname(dto.nickname())
             .profileUrl(dto.profileUrl())
             .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.skinUrl()))
