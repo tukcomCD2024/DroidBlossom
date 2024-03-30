@@ -24,8 +24,8 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -96,7 +96,7 @@ public class CapsuleQueryRepository {
         }
     }
 
-    public Optional<SecretCapsuleSummaryDto> findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
+    public Optional<CapsuleSummaryDto> findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
@@ -104,7 +104,7 @@ public class CapsuleQueryRepository {
             jpaQueryFactory
                 .select(
                     Projections.constructor(
-                        SecretCapsuleSummaryDto.class,
+                        CapsuleSummaryDto.class,
                         capsule.member.nickname,
                         capsule.member.profileUrl,
                         capsule.capsuleSkin.imageUrl,
@@ -123,14 +123,14 @@ public class CapsuleQueryRepository {
         );
     }
 
-    public Optional<SecretCapsuleDetailDto> findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
+    public Optional<CapsuleDetailDto> findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
-        final SecretCapsuleDetailDto detailDto = jpaQueryFactory
+        final CapsuleDetailDto detailDto = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    SecretCapsuleDetailDto.class,
+                    CapsuleDetailDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,

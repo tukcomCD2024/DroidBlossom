@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.domain.capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -19,8 +18,8 @@ import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryReposito
 import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -29,8 +28,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.infra.s3.data.dto.S3PreSignedUrlDto;
-import site.timecapsulearchive.core.infra.s3.data.request.S3PreSignedUrlRequestDto;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Service
@@ -38,16 +35,12 @@ import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 @RequiredArgsConstructor
 public class SecretCapsuleService {
 
-    private static final String DELIMITER = ",";
-
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
     private final MemberRepository memberRepository;
     private final ImageQueryRepository imageQueryRepository;
     private final VideoQueryRepository videoQueryRepository;
-
-    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     private final CapsuleMapper capsuleMapper;
     private final ImageMapper imageMapper;
@@ -79,7 +72,7 @@ public class SecretCapsuleService {
      * @param capsuleId 캡슐 아이디
      * @return 캡슐 요약 정보
      */
-    public SecretCapsuleSummaryDto findSecretCapsuleSummaryById(
+    public CapsuleSummaryDto findSecretCapsuleSummaryById(
         final Long memberId,
         final Long capsuleId
     ) {
@@ -99,37 +92,18 @@ public class SecretCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        final SecretCapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final CapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(dto)) {
-            return capsuleMapper.notOpenedSecretCapsuleDetailDtoToResponse(dto);
+            return capsuleMapper.notOpenedCapsuleDetailDtoToResponse(dto);
         }
 
-        final S3PreSignedUrlDto s3UrlsForGet = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
-            S3PreSignedUrlRequestDto.forGet(
-                splitFileNames(dto.images()),
-                splitFileNames(dto.videos())
-            )
-        );
-
-        return capsuleMapper.secretCapsuleDetailDtoToResponse(
-            dto,
-            s3UrlsForGet.preSignedImageUrls(),
-            s3UrlsForGet.preSignedVideoUrls()
-        );
+        return capsuleMapper.capsuleDetailDtoToResponse(dto);
     }
 
-    private List<String> splitFileNames(String fileNames) {
-        if (fileNames == null) {
-            return Collections.emptyList();
-        }
-
-        return List.of(fileNames.split(DELIMITER));
-    }
-
-    private boolean capsuleNotOpened(final SecretCapsuleDetailDto dto) {
+    private boolean capsuleNotOpened(final CapsuleDetailDto dto) {
         if (dto.dueDate() == null) {
             return false;
         }

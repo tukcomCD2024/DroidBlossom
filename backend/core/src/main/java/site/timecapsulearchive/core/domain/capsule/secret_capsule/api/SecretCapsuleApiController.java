@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
@@ -58,14 +58,14 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
-        final SecretCapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(
+        final CapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(
             memberId,
             capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleMapper.secretCapsuleSummaryDtoToResponse(dto)
+                capsuleMapper.capsuleSummaryDtoToResponse(dto)
             )
         );
     }

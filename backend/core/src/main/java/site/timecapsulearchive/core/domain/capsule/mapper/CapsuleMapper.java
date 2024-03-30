@@ -12,12 +12,10 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
@@ -113,8 +111,8 @@ public class CapsuleMapper {
         return null;
     }
 
-    public CapsuleSummaryResponse secretCapsuleSummaryDtoToResponse(
-        final SecretCapsuleSummaryDto dto) {
+    public CapsuleSummaryResponse capsuleSummaryDtoToResponse(
+        final CapsuleSummaryDto dto) {
         return CapsuleSummaryResponse.builder()
             .nickname(dto.nickname())
             .profileUrl(dto.profileUrl())
@@ -128,37 +126,58 @@ public class CapsuleMapper {
             .build();
     }
 
-    public CapsuleDetailResponse secretCapsuleDetailDtoToResponse(
-        final SecretCapsuleDetailDto dto,
-        final List<String> imageUrls,
-        final List<String> videoUrls
+    public CapsuleDetailResponse capsuleDetailDtoToResponse(
+        final CapsuleDetailDto detailDto
     ) {
+        final S3PreSignedUrlDto preSignedUrls = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
+            S3PreSignedUrlRequestDto.forGet(
+                splitFileNames(detailDto.images()),
+                splitFileNames(detailDto.videos())
+            )
+        );
+
+
         return CapsuleDetailResponse.builder()
-            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
-            .dueDate(checkNullable(dto.dueDate()))
-            .nickname(dto.nickname())
-            .profileUrl(dto.profileUrl())
-            .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
-            .address(dto.address())
-            .title(dto.title())
-            .content(dto.content())
-            .imageUrls(imageUrls)
-            .videoUrls(videoUrls)
-            .isOpened(dto.isOpened())
-            .capsuleType(dto.capsuleType())
+            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
+            .dueDate(checkNullable(detailDto.dueDate()))
+            .nickname(detailDto.nickname())
+            .profileUrl(detailDto.profileUrl())
+            .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
+            .address(detailDto.address())
+            .title(detailDto.title())
+            .content(detailDto.content())
+            .imageUrls(preSignedUrls.preSignedImageUrls())
+            .videoUrls(preSignedUrls.preSignedVideoUrls())
+            .isOpened(detailDto.isOpened())
+            .capsuleType(detailDto.capsuleType())
             .build();
     }
 
-    public CapsuleDetailResponse notOpenedSecretCapsuleDetailDtoToResponse(
-        final SecretCapsuleDetailDto dto) {
+
+    private List<String> splitFileNames(String fileNames) {
+        if (fileNames == null) {
+            return Collections.emptyList();
+        }
+
+        return List.of(fileNames.split(DELIMITER));
+    }
+
+    public CapsuleDetailResponse notOpenedCapsuleDetailDtoToResponse(
+        final CapsuleDetailDto detailDto
+    ) {
         return CapsuleDetailResponse.builder()
-            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
-            .dueDate(checkNullable(dto.dueDate()))
-            .nickname(dto.nickname())
-            .address(dto.address())
-            .isOpened(dto.isOpened())
-            .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
-            .title(dto.title())
+            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
+            .dueDate(checkNullable(detailDto.dueDate()))
+            .nickname(detailDto.nickname())
+            .profileUrl(detailDto.profileUrl())
+            .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
+            .address(detailDto.address())
+            .title("")
+            .content("")
+            .imageUrls(Collections.emptyList())
+            .videoUrls(Collections.emptyList())
+            .isOpened(detailDto.isOpened())
+            .capsuleType(detailDto.capsuleType())
             .build();
     }
 
@@ -185,74 +204,6 @@ public class CapsuleMapper {
             .title(dto.title())
             .isOpened(dto.isOpened())
             .type(dto.type())
-            .build();
-    }
-
-    public CapsuleDetailResponse publicCapsuleDetailDtoToResponse(
-        PublicCapsuleDetailDto detailDto
-    ) {
-        final S3PreSignedUrlDto preSignedUrls = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
-            S3PreSignedUrlRequestDto.forGet(
-                splitFileNames(detailDto.images()),
-                splitFileNames(detailDto.videos())
-            )
-        );
-
-        return CapsuleDetailResponse.builder()
-            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
-            .dueDate(checkNullable(detailDto.dueDate()))
-            .nickname(detailDto.nickname())
-            .profileUrl(detailDto.profileUrl())
-            .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
-            .address(detailDto.address())
-            .title(detailDto.title())
-            .content(detailDto.content())
-            .imageUrls(preSignedUrls.preSignedImageUrls())
-            .videoUrls(preSignedUrls.preSignedVideoUrls())
-            .isOpened(detailDto.isOpened())
-            .capsuleType(detailDto.capsuleType())
-            .build();
-    }
-
-    private List<String> splitFileNames(String fileNames) {
-        if (fileNames == null) {
-            return Collections.emptyList();
-        }
-
-        return List.of(fileNames.split(DELIMITER));
-    }
-
-    public CapsuleDetailResponse notOpenedPublicCapsuleDetailDtoToResponse(
-        final PublicCapsuleDetailDto dto
-    ) {
-        return CapsuleDetailResponse.builder()
-            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.capsuleSkinUrl()))
-            .dueDate(checkNullable(dto.dueDate()))
-            .nickname(dto.nickname())
-            .profileUrl(dto.profileUrl())
-            .address(dto.address())
-            .isOpened(dto.isOpened())
-            .createdDate(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
-            .imageUrls(Collections.emptyList())
-            .videoUrls(Collections.emptyList())
-            .title(dto.title())
-            .capsuleType(dto.capsuleType())
-            .build();
-    }
-
-    public CapsuleSummaryResponse publicCapsuleSummaryToResponse(
-        PublicCapsuleSummaryDto summaryDto
-    ) {
-        return CapsuleSummaryResponse.builder()
-            .nickname(summaryDto.nickname())
-            .profileUrl(summaryDto.profileUrl())
-            .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(summaryDto.skinUrl()))
-            .title(summaryDto.title())
-            .dueDate(checkNullable(summaryDto.dueDate()))
-            .address(summaryDto.address())
-            .roadName(summaryDto.roadName())
-            .isOpened(summaryDto.isOpened())
-            .createdAt(summaryDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .build();
     }
 }
