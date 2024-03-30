@@ -6,11 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
-import site.timecapsulearchive.core.domain.capsule.exception.NoCapsuleAuthorityException;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 
@@ -24,22 +23,18 @@ public class PublicCapsuleService {
 
     public CapsuleDetailResponse findPublicCapsuleDetailByMemberIdAndCapsuleId(Long memberId,
         Long capsuleId) {
-        PublicCapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (!detailDto.isFriend()) {
-            throw new NoCapsuleAuthorityException();
-        }
-
         if (capsuleNotOpened(detailDto)) {
-            return capsuleMapper.notOpenedPublicCapsuleDetailDtoToResponse(detailDto);
+            return capsuleMapper.notOpenedCapsuleDetailDtoToResponse(detailDto);
         }
 
-        return capsuleMapper.publicCapsuleDetailDtoToResponse(detailDto);
+        return capsuleMapper.capsuleDetailDtoToResponse(detailDto);
     }
 
-    private boolean capsuleNotOpened(final PublicCapsuleDetailDto detailDto) {
+    private boolean capsuleNotOpened(final CapsuleDetailDto detailDto) {
         if (detailDto.dueDate() == null) {
             return false;
         }
@@ -52,14 +47,10 @@ public class PublicCapsuleService {
         Long memberId,
         Long capsuleId
     ) {
-        PublicCapsuleSummaryDto summaryDto = publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
+        CapsuleSummaryDto summaryDto = publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (!summaryDto.isFriend()) {
-            throw new NoCapsuleAuthorityException();
-        }
-
-        return capsuleMapper.publicCapsuleSummaryToResponse(summaryDto);
+        return capsuleMapper.capsuleSummaryDtoToResponse(summaryDto);
     }
 }
