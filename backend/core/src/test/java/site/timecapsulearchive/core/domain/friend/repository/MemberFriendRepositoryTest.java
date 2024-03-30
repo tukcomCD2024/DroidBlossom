@@ -13,6 +13,7 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
+import site.timecapsulearchive.core.common.data.MemberTestDataRepository;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -22,9 +23,10 @@ import site.timecapsulearchive.core.domain.member.entity.SocialType;
 class MemberFriendRepositoryTest extends RepositoryTest {
 
     private final MemberFriendRepository memberFriendRepository;
-    private Long ownerId;
-    private Long friendId;
-
+    private final MemberTestDataRepository memberTestDataRepository = new MemberTestDataRepository();
+    
+    private Member owner;
+    private Member friend;
 
     MemberFriendRepositoryTest(MemberFriendRepository repository) {
         this.memberFriendRepository = repository;
@@ -33,43 +35,18 @@ class MemberFriendRepositoryTest extends RepositoryTest {
     @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
-        Member owner = getMember(0);
-        entityManager.persist(owner);
-        ownerId = owner.getId();
+        owner = memberTestDataRepository.insertAndGetMember(entityManager, 0);
+        friend = memberTestDataRepository.insertAndGetMember(entityManager, 1);
 
-        Member friend = getMember(1);
-        entityManager.persist(friend);
-        friendId = friend.getId();
-
-        MemberFriend ownerRelation = MemberFriend.builder()
-            .owner(owner)
-            .friend(friend)
-            .build();
-
-        MemberFriend friendRelation = MemberFriend.builder()
-            .owner(friend)
-            .friend(owner)
-            .build();
-        entityManager.persist(ownerRelation);
-        entityManager.persist(friendRelation);
-    }
-
-    private Member getMember(int count) {
-        return Member.builder()
-            .socialType(SocialType.GOOGLE)
-            .nickname(count + "testNickname")
-            .email(count + "test@google.com")
-            .authId(count + "test")
-            .profileUrl(count + "test.com")
-            .tag(count + "testTag")
-            .build();
+        memberTestDataRepository.insertMemberFriend(entityManager, owner, friend);
+        memberTestDataRepository.insertMemberFriend(entityManager, friend, owner);
     }
 
     @Test
     void 사용자_아이디와_친구_아이디로_친구관계를_조회하여_친구관계를_확인한다() {
         //given
         List<MemberFriend> memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
-            ownerId, friendId);
+            owner.getId(), friend.getId());
 
         //when
         Long actualFriendId = memberFriend.get(0).getFriend().getId();
@@ -78,8 +55,8 @@ class MemberFriendRepositoryTest extends RepositoryTest {
         //when
         assertSoftly(softly -> {
             softly.assertThat(memberFriend.size()).isEqualTo(2);
-            softly.assertThat(actualFriendId).isEqualTo(friendId);
-            softly.assertThat(actualOwnerId).isEqualTo(ownerId);
+            softly.assertThat(actualFriendId).isEqualTo(friend.getId());
+            softly.assertThat(actualOwnerId).isEqualTo(owner.getId());
         });
     }
 
@@ -90,7 +67,7 @@ class MemberFriendRepositoryTest extends RepositoryTest {
 
         //when
         List<MemberFriend> memberFriend = memberFriendRepository.findMemberFriendByOwnerIdAndFriendId(
-            ownerId, friendId);
+            owner.getId(), friendId);
 
         //when
         assertThat(memberFriend).isEmpty();
