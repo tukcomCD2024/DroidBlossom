@@ -37,7 +37,7 @@ public interface PublicCapsuleApi {
         )
     })
     @PostMapping(
-        value = "/public/capsules",
+        value = "/capsules",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<PublicCapsuleSummaryResponse> createPublicCapsule(
@@ -57,7 +57,7 @@ public interface PublicCapsuleApi {
         )
     })
     @GetMapping(
-        value = "/public/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         produces = {"application/json"}
     )
     ResponseEntity<PublicCapsuleDetailResponse> findPublicCapsuleById(
@@ -78,7 +78,7 @@ public interface PublicCapsuleApi {
         )
     })
     @GetMapping(
-        value = "/public/capsules",
+        value = "/capsules",
         produces = {"application/json"}
     )
     ResponseEntity<PublicCapsulePageResponse> getPublicCapsules(
@@ -102,7 +102,7 @@ public interface PublicCapsuleApi {
         )
     })
     @PatchMapping(
-        value = "/public/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<PublicCapsuleSummaryResponse> updatePublicCapsuleById(
