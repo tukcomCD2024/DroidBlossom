@@ -42,7 +42,8 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                publicCapsuleService.findPublicCapsuleSummaryByMemberIdAndCapsuleId(memberId, capsuleId)
+                publicCapsuleService.findPublicCapsuleSummaryByMemberIdAndCapsuleId(memberId,
+                    capsuleId)
             )
         );
     }
@@ -59,7 +60,8 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(memberId, capsuleId)
+                publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(memberId,
+                    capsuleId)
             )
         );
     }

@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsule.entity.Address;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
@@ -89,7 +89,8 @@ public class CapsuleMapper {
             .build();
     }
 
-    public NearbyCapsuleSummaryResponse capsuleSummaryDtoToResponse(final NearbyCapsuleSummaryDto dto) {
+    public NearbyCapsuleSummaryResponse capsuleSummaryDtoToResponse(
+        final NearbyCapsuleSummaryDto dto) {
         Point point = geoTransformManager.changePoint3857To4326(dto.point());
 
         return NearbyCapsuleSummaryResponse.builder()
@@ -136,9 +137,9 @@ public class CapsuleMapper {
             )
         );
 
-
         return CapsuleDetailResponse.builder()
-            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
+            .capsuleSkinUrl(
+                s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
             .dueDate(checkNullable(detailDto.dueDate()))
             .nickname(detailDto.nickname())
             .profileUrl(detailDto.profileUrl())
@@ -166,7 +167,8 @@ public class CapsuleMapper {
         final CapsuleDetailDto detailDto
     ) {
         return CapsuleDetailResponse.builder()
-            .capsuleSkinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
+            .capsuleSkinUrl(
+                s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
             .dueDate(checkNullable(detailDto.dueDate()))
             .nickname(detailDto.nickname())
             .profileUrl(detailDto.profileUrl())
