@@ -12,10 +12,10 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
@@ -35,9 +35,9 @@ public class CapsuleMapper {
     private final GeoTransformManager geoTransformManager;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
-    public SecretCapsuleCreateRequestDto secretCapsuleCreateRequestToDto(
-        final SecretCapsuleCreateRequest request) {
-        return SecretCapsuleCreateRequestDto.builder()
+    public CapsuleCreateRequestDto CapsuleCreateRequestToDto(
+        final CapsuleCreateRequest request) {
+        return CapsuleCreateRequestDto.builder()
             .capsuleSkinId(request.capsuleSkinId())
             .title(request.title())
             .content(request.content())
@@ -52,7 +52,7 @@ public class CapsuleMapper {
     }
 
     public Capsule requestDtoToEntity(
-        final SecretCapsuleCreateRequestDto dto,
+        final CapsuleCreateRequestDto dto,
         final Member member,
         final CapsuleSkin capsuleSkin
     ) {

@@ -6,7 +6,7 @@ import lombok.Builder;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Builder
-public record SecretCapsuleCreateRequestDto(
+public record CapsuleCreateRequestDto(
     Long capsuleSkinId,
     String title,
     String content,

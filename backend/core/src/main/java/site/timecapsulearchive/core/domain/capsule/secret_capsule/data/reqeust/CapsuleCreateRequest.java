@@ -11,7 +11,7 @@ import site.timecapsulearchive.core.global.common.valid.annotation.Video;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Schema(description = "캡슐 생성 포맷")
-public record SecretCapsuleCreateRequest(
+public record CapsuleCreateRequest(
 
     @Schema(description = "이미지 이름들")
     List<@Image String> imageNames,
