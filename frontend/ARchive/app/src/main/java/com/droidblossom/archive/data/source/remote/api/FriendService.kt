@@ -27,7 +27,7 @@ interface FriendService {
         @Path("friend_id") friendId : Double,
     ) : Response<ResponseBody<String>>
 
-    @POST("friends/search")
+    @GET("friends/search")
     suspend fun postFriendsSearchApi(
         @Query("friend-tag") friendTag : String
     ) : Response<ResponseBody<FriendsSearchResponseDto>>
