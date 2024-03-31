@@ -74,11 +74,6 @@ public class MemberService {
         return MemberStatusResponse.from(isVerified);
     }
 
-    public Member findMemberByMemberId(final Long memberId) {
-        return memberRepository.findMemberById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-    }
-
     /**
      * 인증 아이디와 소셜 프로바이더 타입을 받아 인증된 회원을 조회한다.
      *
