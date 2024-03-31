@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.image.repository;
+package site.timecapsulearchive.core.domain.capsule.media.repository;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,28 +19,34 @@ import site.timecapsulearchive.core.common.data.fixture.CapsuleFixture;
 import site.timecapsulearchive.core.common.data.fixture.CapsuleSkinFixture;
 import site.timecapsulearchive.core.common.data.fixture.ImageFixture;
 import site.timecapsulearchive.core.common.data.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.data.fixture.VideoFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
+import site.timecapsulearchive.core.domain.capsule.entity.Video;
 import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
-class ImageQueryRepositoryTest extends RepositoryTest {
+class MediaQueryRepositoryTest extends RepositoryTest {
 
     private final JdbcTemplate jdbcTemplate;
     private final ImageQueryRepository imageQueryRepository;
+    private final VideoQueryRepository videoQueryRepository;
     private List<Image> images;
+    private List<Video> videos;
     private Capsule capsule;
     private Member member;
 
-    public ImageQueryRepositoryTest(
+    public MediaQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
         DataSource dataSource
     ) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.imageQueryRepository = new ImageQueryRepository(jdbcTemplate);
+        this.videoQueryRepository = new VideoQueryRepository(jdbcTemplate);
     }
 
     @Transactional
@@ -56,6 +62,7 @@ class ImageQueryRepositoryTest extends RepositoryTest {
         entityManager.persist(capsule);
 
         images = ImageFixture.testImages(member, capsule, 5);
+        videos = VideoFixture.testVideos(member, capsule, 1);
     }
 
     @Test
@@ -78,6 +85,28 @@ class ImageQueryRepositoryTest extends RepositoryTest {
         );
 
         assertThat(actualImages.size()).isEqualTo(images.size());
+    }
+
+    @Test
+    void 비디오들의_데이터가_개수대로_벌크_저장이_되는지_확인한다() {
+        //given
+        //when
+        videoQueryRepository.bulkSave(videos);
+
+        //then
+        List<Video> actualVideos = jdbcTemplate.query(
+            """
+                SELECT * from video WHERE capsule_id = ?
+                """,
+            new Object[]{capsule.getId()},
+            (rs, rowNum) -> Video.builder()
+                .videoUrl(rs.getString("video_url"))
+                .member(member)
+                .capsule(capsule)
+                .build()
+        );
+
+        assertThat(actualVideos.size()).isEqualTo(videos.size());
     }
 }
 
