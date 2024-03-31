@@ -14,18 +14,18 @@ jobs:
     name: formatting
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'liberica'
           cache: gradle
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          token: ${{ secrets.CI_PAT }}
 
       - uses: axel-op/googlejavaformat-action@v3
         with:
