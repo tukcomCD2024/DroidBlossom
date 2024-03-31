@@ -31,11 +31,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'liberica'
-
-      - uses: axel-op/googlejavaformat-action@v3
-        with:
-          args: "--replace"
-          skip-commit: true
+          cache: gradle
 
       - name: grant execute permission for gradlew
         if: ${{ github.event_name == 'pull_request' }}
@@ -44,6 +40,11 @@ jobs:
       - name: build gradle
         if: ${{ github.event_name == 'pull_request' }}
         run: ./gradlew clean build
+
+      - uses: axel-op/googlejavaformat-action@v3
+        with:
+          args: "--replace"
+          skip-commit: true
 
   deploy-core:
     name: core application deploy
