@@ -37,9 +37,9 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: chmod +x ./gradlew
 
-      - name: build gradle
+      - name: test
         if: ${{ github.event_name == 'pull_request' }}
-        run: ./gradlew clean build
+        run: ./gradlew clean test
 
       - uses: axel-op/googlejavaformat-action@v3
         with:
