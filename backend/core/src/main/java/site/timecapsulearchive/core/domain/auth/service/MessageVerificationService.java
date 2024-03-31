@@ -11,7 +11,8 @@ import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNot
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
@@ -28,7 +29,7 @@ public class MessageVerificationService {
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
     private final SmsApiManager smsApiManager;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
@@ -52,7 +53,7 @@ public class MessageVerificationService {
 
         final SmsApiResponse apiResponse = smsApiManager.sendMessage(receiver, message);
 
-        messageAuthenticationCacheRepository.save(memberId, code);
+        messageAuthenticationCacheRepository.save(memberId, receiver, code);
 
         return VerificationMessageSendResponse.success(apiResponse.resultCode(),
             apiResponse.message());
@@ -77,8 +78,8 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
-        final String findCertificationNumber = messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
-                memberId)
+        final String findCertificationNumber = messageAuthenticationCacheRepository
+            .findMessageAuthenticationCodeByMemberId(memberId, receiver)
             .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
@@ -96,7 +97,8 @@ public class MessageVerificationService {
     }
 
     private void updateMemberData(final Long memberId, final String receiver) {
-        final Member findMember = memberService.findMemberByMemberId(memberId);
+        final Member findMember = memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
 
         final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
 
