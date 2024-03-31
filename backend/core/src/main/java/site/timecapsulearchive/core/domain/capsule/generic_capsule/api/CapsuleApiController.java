@@ -58,7 +58,6 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-
     @PatchMapping(value = "/{capsule_id}/opened", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
@@ -72,7 +71,6 @@ public class CapsuleApiController implements CapsuleApi {
             )
         );
     }
-
 
     @PostMapping(value = "/secret", consumes = {"application/json"})
     @Override
@@ -92,6 +90,7 @@ public class CapsuleApiController implements CapsuleApi {
             )
         );
     }
+
     @PostMapping(value = "/public", consumes = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<String>> createPublicCapsule(

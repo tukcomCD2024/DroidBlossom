@@ -19,10 +19,6 @@ public class ImageQueryRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public void bulkSave(final List<Image> images) {
-        batchInsert(images);
-    }
-
-    private void batchInsert(final List<Image> images) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO image (
