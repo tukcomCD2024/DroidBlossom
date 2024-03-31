@@ -34,15 +34,17 @@ class SocialFragment : BaseFragment<SocialViewModelImpl, FragmentSocialBinding>(
     }
 
     private fun initView(){
-        binding.socialViewPager.adapter = socialVPA
+        with(binding){
+            socialViewPager.adapter = socialVPA
 
-        TabLayoutMediator(binding.socialTabLayout, binding.socialViewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> getString(R.string.group)
-                1 -> getString(R.string.friend)
-                else -> null
-            }
-        }.attach()
+            TabLayoutMediator(socialTabLayout, socialViewPager) { tab, position ->
+                tab.text = when (position) {
+                    0 -> getString(R.string.group)
+                    1 -> getString(R.string.friend)
+                    else -> null
+                }
+            }.attach()
+        }
     }
 
     companion object{
