@@ -1,27 +1,54 @@
 package com.droidblossom.archive.presentation.ui.social
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.droidblossom.archive.R
-import com.droidblossom.archive.presentation.ui.skin.SkinFragment
+import com.droidblossom.archive.databinding.FragmentSocialBinding
+import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.social.adapter.SocialVPA
+import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
-class SocialFragment : Fragment() {
+@AndroidEntryPoint
+class SocialFragment : BaseFragment<SocialViewModelImpl, FragmentSocialBinding>(R.layout.fragment_social) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_social, container, false)
+    override val viewModel: SocialViewModelImpl by viewModels<SocialViewModelImpl>()
+
+    private val socialVPA by lazy {
+        SocialVPA(this)
+    }
+    override fun observeData() {
+
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val layoutParams = binding.viewHeaderTitle.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.viewHeaderTitle.layoutParams = layoutParams
+
+        initView()
+    }
+
+    private fun initView(){
+        binding.socialViewPager.adapter = socialVPA
+
+        TabLayoutMediator(binding.socialTabLayout, binding.socialViewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> getString(R.string.group)
+                1 -> getString(R.string.friend)
+                else -> null
+            }
+        }.attach()
+    }
 
     companion object{
 
         const val TAG = "Social"
         fun newIntent()= SocialFragment()
     }
+
 }

@@ -34,7 +34,6 @@ class CameraFragment :
     FragmentManagerProvider {
 
     override val viewModel: CameraViewModelImpl by viewModels<CameraViewModelImpl>()
-
     // private val capsules: MutableList<CapsuleMarker> = mutableListOf()
     lateinit var arSceneView: ARSceneView
     private lateinit var session: Session
