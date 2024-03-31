@@ -13,9 +13,15 @@ jobs:
   formatting:
     name: formatting
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/core
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           submodules: true
           token: ${{ secrets.CI_PAT }}
@@ -25,7 +31,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'liberica'
-          cache: gradle
 
       - uses: axel-op/googlejavaformat-action@v3
         with:
@@ -33,9 +38,11 @@ jobs:
           skip-commit: true
 
       - name: grant execute permission for gradlew
+        if: ${{ github.event_name == 'pull_request' }}
         run: chmod +x ./gradlew
 
       - name: build gradle
+        if: ${{ github.event_name == 'pull_request' }}
         run: ./gradlew clean build
 
   deploy-core:
