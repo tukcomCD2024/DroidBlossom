@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.droidblossom.archive.R
+import com.google.android.material.tabs.TabLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -183,4 +185,19 @@ fun ImageView.setCapsuleType2Img(type: String?){
         }
         else -> {}
     }
+}
+
+@BindingAdapter("bind:tabMarginEnd")
+fun TabLayout.setTabItemMargin(marginEndDp: Int) {
+    val marginEndPx = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, marginEndDp.toFloat(), resources.displayMetrics).toInt()
+
+    val tabs = getChildAt(0) as ViewGroup
+    for (i in 0 until tabs.childCount) {
+        val tab = tabs.getChildAt(i)
+        val layoutParams = tab.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.marginEnd = marginEndPx
+        tab.layoutParams = layoutParams
+    }
+    requestLayout()
 }
