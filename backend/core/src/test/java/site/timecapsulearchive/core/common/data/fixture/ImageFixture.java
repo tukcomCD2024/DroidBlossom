@@ -8,8 +8,8 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 
 public class ImageFixture {
 
-    public static List<Image> testImages(Member member, Capsule capsule) {
-        return IntStream.range(0, 5)
+    public static List<Image> testImages(Member member, Capsule capsule, int count) {
+        return IntStream.range(0, count)
             .mapToObj(
                 dataPrefix -> Image.builder()
                     .imageUrl(dataPrefix + "testImageURl")
