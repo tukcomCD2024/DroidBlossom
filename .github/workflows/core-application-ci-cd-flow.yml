@@ -12,19 +12,31 @@ on:
 jobs:
   formatting:
     name: formatting
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'corretto'
-      - uses: actions/checkout@v3
+          distribution: 'liberica'
+          cache: gradle
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
       - uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--replace"
           skip-commit: true
+
+      - name: grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: build gradle
+        run: ./gradlew clean build
 
   deploy-core:
     name: core application deploy
