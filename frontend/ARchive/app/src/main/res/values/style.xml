@@ -97,5 +97,6 @@
         <item name="tabPaddingBottom">13dp</item>
         <item name="tabIndicator">@null</item>
         <item name="android:background">@android:color/transparent</item>
+        <item name="tabRippleColor">@null</item>
     </style>
 </resources>
