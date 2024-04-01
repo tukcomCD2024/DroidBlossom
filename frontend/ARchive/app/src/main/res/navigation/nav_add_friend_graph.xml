@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_add_friend_graph"
+    app:startDestination="@id/searchFriendNicknameFragment">
+
+    <fragment
+        android:id="@+id/searchFriendNicknameFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.SearchFriendNicknameFragment"
+        android:label="SearchFriendNicknameFragment"
+        tools:layout="@layout/fragment_friend_search_nickname">
+        <action
+            android:id="@+id/action_searchFriendNicknameFragment_to_searchFriendNumberFragment"
+            app:destination="@id/searchFriendNumberFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFriendNumberFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.SearchFriendNumberFragment"
+        android:label="SearchFriendNumberFragment"
+        tools:layout="@layout/fragment_friend_search_number"/>
+
+</navigation>

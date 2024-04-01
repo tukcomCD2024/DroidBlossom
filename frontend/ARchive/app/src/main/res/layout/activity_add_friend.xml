@@ -12,5 +12,18 @@
         android:layout_height="match_parent"
         tools:context=".presentation.ui.mypage.friend.addfriend.AddFriendActivity">
 
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/naviHostFragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/nav_add_friend_graph" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

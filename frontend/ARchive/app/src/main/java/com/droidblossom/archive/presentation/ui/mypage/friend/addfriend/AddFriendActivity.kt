@@ -6,7 +6,9 @@ import androidx.activity.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddFriendBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddFriendActivity : BaseActivity<AddFriendViewModelImpl, ActivityAddFriendBinding>(R.layout.activity_add_friend) {
 
     override val viewModel: AddFriendViewModelImpl by viewModels()
