@@ -97,18 +97,17 @@
             android:id="@+id/recycleView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="85dp"
             android:clipToPadding="false"
             android:paddingBottom="140dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleT"
             app:spanCount="3"
             tools:itemCount="30"
-            tools:listitem="@layout/item_skin" />
+            tools:listitem="@layout/item_add_friend" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/addCV"
