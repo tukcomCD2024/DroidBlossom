@@ -10,11 +10,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/main_bg_1"
         tools:context=".presentation.ui.mypage.friend.addfriend.AddFriendActivity">
 
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/naviHostFragment"
+            android:id="@+id/naviFragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
