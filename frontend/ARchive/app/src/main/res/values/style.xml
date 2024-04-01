@@ -99,4 +99,14 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="tabRippleColor">@null</item>
     </style>
+
+    <style name="FriendTabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.App.body2</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/main_1</item>
+        <item name="tabBackground">@drawable/tab_selector_background</item>
+        <item name="tabIndicator">@null</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="tabRippleColor">@null</item>
+    </style>
 </resources>
