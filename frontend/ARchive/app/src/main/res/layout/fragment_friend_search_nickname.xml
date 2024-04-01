@@ -46,7 +46,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="16dp"
-            android:visibility="@{vm.isSearchNameOpen ? View.VISIBLE  : View.GONE}"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="21dp"
             app:cardElevation="0dp"
@@ -89,41 +88,6 @@
                     android:textColor="@color/main_1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/searchBtn"
-            android:layout_width="58dp"
-            android:layout_height="34dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="16dp"
-            android:onClick="@{()->vm.openSearchName()}"
-            android:visibility="@{vm.isSearchNameOpen ? View.GONE  : View.VISIBLE}"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="17dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleT"
-            tools:visibility="gone">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/searchBtnLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/searchBtnT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="검색"
-                    android:textAppearance="@style/TextAppearance.App.caption1"
-                    android:textColor="@color/main_1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

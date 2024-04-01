@@ -12,19 +12,9 @@ import javax.inject.Inject
 class AddFriendViewModelImpl @Inject constructor(
 
 ) : BaseViewModel(), AddFriendViewModel {
-
-
-    private val _isSearchNameOpen = MutableStateFlow(false)
-    override val isSearchNameOpen: StateFlow<Boolean>
-        get() = _isSearchNameOpen
-
+    
     override fun searchName() {
 
     }
 
-    override fun openSearchName() {
-        viewModelScope.launch {
-            _isSearchNameOpen.emit(true)
-        }
-    }
 }
