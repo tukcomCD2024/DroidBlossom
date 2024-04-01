@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Schema(description = "비밀 캡슐 요약 정보")
 @Builder
-public record SecretCapsuleSummaryResponse(
+public record CapsuleSummaryResponse(
 
     @Schema(description = "생성자 닉네임")
     String nickname,

@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Schema(description = "비밀 캡슐 상세 정보")
 @Builder
-public record SecretCapsuleDetailResponse(
+public record CapsuleDetailResponse(
 
     @Schema(description = "캡슐 스킨 url")
     String capsuleSkinUrl,

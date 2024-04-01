@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.common.fixture;
 
 import java.nio.charset.StandardCharsets;
+import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
@@ -28,4 +29,5 @@ public class MemberFixture {
     public static byte[] getPhoneBytes(int dataPrefix) {
         return ("0" + (1000000000 + dataPrefix)).getBytes(StandardCharsets.UTF_8);
     }
+
 }

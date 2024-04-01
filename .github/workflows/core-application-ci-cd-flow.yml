@@ -12,15 +12,35 @@ on:
 jobs:
   formatting:
     name: formatting
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/core
+
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'corretto'
-      - uses: actions/checkout@v3
+          distribution: 'liberica'
+          cache: gradle
+
+      - name: grant execute permission for gradlew
+        if: ${{ github.event_name == 'pull_request' }}
+        run: chmod +x ./gradlew
+
+      - name: test
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./gradlew clean test
+
       - uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--replace"
