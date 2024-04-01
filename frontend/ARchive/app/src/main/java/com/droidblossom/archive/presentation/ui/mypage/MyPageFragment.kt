@@ -25,6 +25,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.util.DateUtils
@@ -79,6 +80,11 @@ class MyPageFragment :
         val layoutParams = binding.profileImg.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.profileImg.layoutParams = layoutParams
+
+        //임시 : 친구 엑티비티로 이동
+        binding.profileImg.setOnClickListener{
+            startActivity(FriendActivity.newIntent(requireContext()))
+        }
     }
 
 
