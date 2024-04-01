@@ -29,4 +29,5 @@ public class MemberFixture {
     public static byte[] getPhoneBytes(int dataPrefix) {
         return ("0" + (1000000000 + dataPrefix)).getBytes(StandardCharsets.UTF_8);
     }
+
 }
