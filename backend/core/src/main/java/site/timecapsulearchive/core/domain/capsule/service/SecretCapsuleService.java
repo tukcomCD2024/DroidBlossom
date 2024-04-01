@@ -61,7 +61,7 @@ public class SecretCapsuleService {
         final Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
-        return capsuleMapper.capsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
+        return capsuleMapper.mySecretCapsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
     }
 
     /**

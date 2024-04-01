@@ -89,7 +89,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    public NearbyCapsuleSummaryResponse capsuleSummaryDtoToResponse(
+    public NearbyCapsuleSummaryResponse nearByCapsuleSummaryDtoToResponse(
         final NearbyCapsuleSummaryDto dto) {
         Point point = geoTransformManager.changePoint3857To4326(dto.point());
 
@@ -183,7 +183,7 @@ public class CapsuleMapper {
             .build();
     }
 
-    public MySecretCapsuleSliceResponse capsuleDetailSliceToResponse(
+    public MySecretCapsuleSliceResponse mySecretCapsuleDetailSliceToResponse(
         final List<MySecreteCapsuleDto> content,
         final boolean hasNext
     ) {
