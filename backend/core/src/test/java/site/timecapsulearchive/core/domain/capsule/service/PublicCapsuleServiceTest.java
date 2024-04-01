@@ -10,7 +10,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.opengis.referencing.FactoryException;
 import org.springframework.context.annotation.Import;
-import site.timecapsulearchive.core.common.TestDependency;
+import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
@@ -28,8 +28,8 @@ class PublicCapsuleServiceTest {
     private final PublicCapsuleService publicCapsuleService;
 
     PublicCapsuleServiceTest() throws FactoryException {
-        this.capsuleMapper = new CapsuleMapper(TestDependency.geoTransformManager(),
-            TestDependency.s3PreSignedUrlManager());
+        this.capsuleMapper = new CapsuleMapper(UnitTestDependency.geoTransformManager(),
+            UnitTestDependency.s3PreSignedUrlManager());
         this.publicCapsuleService = new PublicCapsuleService(publicCapsuleQueryRepository,
             capsuleMapper);
     }
