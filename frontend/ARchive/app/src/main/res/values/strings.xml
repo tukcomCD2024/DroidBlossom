@@ -44,4 +44,7 @@
     <string name="socialFragmentTitle">커뮤니티</string>
     <string name="group">그룹</string>
     <string name="friend">친구</string>
+
+    <string name="groupList">그룹 리스트</string>
+    <string name="friendList">친구 리스트</string>
 </resources>
