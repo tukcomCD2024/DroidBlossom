@@ -23,9 +23,13 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
-import site.timecapsulearchive.core.common.data.MemberTestDataRepository;
+import site.timecapsulearchive.core.common.fixture.FriendInviteFixture;
+import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
+import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @FlywayTest
@@ -40,7 +44,6 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private final List<byte[]> hashedNotFriendPhones = new ArrayList<>();
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
-    private final MemberTestDataRepository memberTestDataRepository = new MemberTestDataRepository();
 
     private Member owner;
 
@@ -52,27 +55,35 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
-        owner = memberTestDataRepository.insertAndGetMember(entityManager, 0);
+        owner = MemberFixture.member(0);
+        entityManager.persist(owner);
 
         //owner와 친구, 친구 초대 데이터
-        for (int i = 1; i < MAX_FRIEND_ID; i++) {
-            Member friend = memberTestDataRepository.insertAndGetMember(entityManager, i);
+        for (int count = 1; count < MAX_FRIEND_ID; count++) {
+            Member friend = MemberFixture.member(count);
+            entityManager.persist(friend);
             hashedFriendPhones.add(friend.getPhone_hash());
 
-            memberTestDataRepository.insertMemberFriend(entityManager, owner, friend);
-            memberTestDataRepository.insertMemberFriend(entityManager, friend, owner);
-            memberTestDataRepository.insertFriendInvite(entityManager, owner, friend);
+            MemberFriend memberFriend = MemberFriendFixture.memberFriend(owner, friend);
+            entityManager.persist(memberFriend);
+
+            MemberFriend friendMember = MemberFriendFixture.memberFriend(friend, owner);
+            entityManager.persist(friendMember);
+
+            FriendInvite friendInvite = FriendInviteFixture.friendInvite(owner, friend);
+            entityManager.persist(friendInvite);
         }
 
         //owner와 친구가 아닌 멤버 데이터
-        for (int i = MAX_FRIEND_ID; i < MAX_FRIEND_ID + 10; i++) {
-            Member notFriend = memberTestDataRepository.insertAndGetMember(entityManager, i);
+        for (int count = MAX_FRIEND_ID; count < MAX_FRIEND_ID + 10; count++) {
+            Member notFriend = MemberFixture.member(count);
+            entityManager.persist(notFriend);
             hashedNotFriendPhones.add(notFriend.getPhone_hash());
         }
 
         //회원이 아닌 휴대전화번호 데이터
-        for (int i = MAX_FRIEND_ID + 20; i < MAX_FRIEND_ID + 30; i++) {
-            hashedNotMemberPhones.add(memberTestDataRepository.getPhoneBytes(i));
+        for (int count = MAX_FRIEND_ID + 20; count < MAX_FRIEND_ID + 30; count++) {
+            hashedNotMemberPhones.add(MemberFixture.getPhoneBytes(count));
         }
     }
 

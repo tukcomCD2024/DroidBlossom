@@ -16,16 +16,20 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
-import site.timecapsulearchive.core.common.data.MemberTestDataRepository;
+import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.NotificationCategoryFixture;
+import site.timecapsulearchive.core.common.fixture.NotificationFixture;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
+import site.timecapsulearchive.core.domain.member.entity.CategoryName;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.Notification;
+import site.timecapsulearchive.core.domain.member.entity.NotificationCategory;
 
 @FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberQueryRepositoryTest extends RepositoryTest {
 
     private final MemberQueryRepository memberQueryRepository;
-    private final MemberTestDataRepository memberTestDataRepository = new MemberTestDataRepository();
 
     private Member member;
     private Member zeroNotificationMember;
@@ -38,11 +42,21 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
-        member = memberTestDataRepository.insertAndGetMember(entityManager, 1);
-        zeroNotificationMember = memberTestDataRepository.insertAndGetMember(entityManager, 2);
-        
-        memberTestDataRepository.insertNotificationCategory(entityManager);
-        memberTestDataRepository.insertNotification(entityManager, member.getId(), 20);
+        member = MemberFixture.member(0);
+        entityManager.persist(member);
+
+        zeroNotificationMember = MemberFixture.member(1);
+        entityManager.persist(zeroNotificationMember);
+
+        NotificationCategory notificationCategory = NotificationCategoryFixture.notificationCategory(
+            CategoryName.CAPSULE_SKIN);
+        entityManager.persist(notificationCategory);
+
+        for (int count = 0; count < 20; count++) {
+            Notification notification = NotificationFixture.notification(member,
+                notificationCategory);
+            entityManager.persist(notification);
+        }
     }
 
     @Test
@@ -77,7 +91,8 @@ class MemberQueryRepositoryTest extends RepositoryTest {
         Slice<MemberNotificationDto> slice = memberQueryRepository.findNotificationSliceByMemberId(
             member.getId(), size, now);
 
-        assertThat(slice.getContent()).allMatch(notification -> notification.createdAt().isBefore(now));
+        assertThat(slice.getContent()).allMatch(
+            notification -> notification.createdAt().isBefore(now));
     }
 
     @ParameterizedTest

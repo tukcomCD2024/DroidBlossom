@@ -13,18 +13,17 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
-import site.timecapsulearchive.core.common.data.MemberTestDataRepository;
+import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberFriendRepositoryTest extends RepositoryTest {
 
     private final MemberFriendRepository memberFriendRepository;
-    private final MemberTestDataRepository memberTestDataRepository = new MemberTestDataRepository();
-    
+
     private Member owner;
     private Member friend;
 
@@ -35,11 +34,17 @@ class MemberFriendRepositoryTest extends RepositoryTest {
     @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
-        owner = memberTestDataRepository.insertAndGetMember(entityManager, 0);
-        friend = memberTestDataRepository.insertAndGetMember(entityManager, 1);
+        owner = MemberFixture.member(0);
+        entityManager.persist(owner);
 
-        memberTestDataRepository.insertMemberFriend(entityManager, owner, friend);
-        memberTestDataRepository.insertMemberFriend(entityManager, friend, owner);
+        friend = MemberFixture.member(1);
+        entityManager.persist(friend);
+
+        MemberFriend memberFriend = MemberFriendFixture.memberFriend(owner, friend);
+        entityManager.persist(memberFriend);
+
+        MemberFriend friendMember = MemberFriendFixture.memberFriend(friend, owner);
+        entityManager.persist(friendMember);
     }
 
     @Test
