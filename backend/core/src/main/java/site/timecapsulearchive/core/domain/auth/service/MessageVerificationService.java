@@ -90,7 +90,7 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        updateMemberData(memberId, receiver);
+        updateMemberData(memberId, plain);
 
         return tokenManager.createNewToken(memberId);
     }
@@ -100,11 +100,9 @@ public class MessageVerificationService {
         return !certificationNumber.equals(findCertificationNumber);
     }
 
-    private void updateMemberData(final Long memberId, final String receiver) {
+    private void updateMemberData(final Long memberId, final byte[] plain) {
         final Member findMember = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
-
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
 
         findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
         findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));
