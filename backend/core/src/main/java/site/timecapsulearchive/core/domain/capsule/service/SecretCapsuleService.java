@@ -10,17 +10,10 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.mapper.ImageMapper;
-import site.timecapsulearchive.core.domain.capsule.mapper.VideoMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,15 +21,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 public class SecretCapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
-    private final CapsuleRepository capsuleRepository;
-    private final CapsuleSkinRepository capsuleSkinRepository;
-    private final MemberRepository memberRepository;
-    private final ImageQueryRepository imageQueryRepository;
-    private final VideoQueryRepository videoQueryRepository;
-
     private final CapsuleMapper capsuleMapper;
-    private final ImageMapper imageMapper;
-    private final VideoMapper videoMapper;
 
     /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
