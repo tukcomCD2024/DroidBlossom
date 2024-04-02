@@ -7,7 +7,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 @Schema(description = "캡슐 요약 정보")
 @Builder
-public record CapsuleSummaryResponse(
+public record NearbyCapsuleSummaryResponse(
 
     @Schema(description = "캡슐 아이디")
     Long id,

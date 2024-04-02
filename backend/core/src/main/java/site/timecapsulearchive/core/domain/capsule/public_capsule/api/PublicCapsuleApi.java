@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.public_capsule.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface PublicCapsuleApi {
 
@@ -37,11 +41,40 @@ public interface PublicCapsuleApi {
         )
     })
     @PostMapping(
-        value = "/public/capsules",
+        value = "/capsules",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<PublicCapsuleSummaryResponse> createPublicCapsule(
         @ModelAttribute PublicCapsuleCreateRequest request
+    );
+
+    @Operation(
+        summary = "공개 캡슐 요약 조회",
+        description = "사용자의 친구들만 볼 수 있는 공개 캡슐 내용을 요약 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"public capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "해당 캡슐에 접근 권한이 없는 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getPublicCapsuleSummaryById(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true, schema = @Schema())
+        Long capsuleId
     );
 
     @Operation(
@@ -54,15 +87,23 @@ public interface PublicCapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "해당 캡슐에 접근 권한이 없는 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @GetMapping(
-        value = "/public/capsules/{capsule_id}",
-        produces = {"application/json"}
-    )
-    ResponseEntity<PublicCapsuleDetailResponse> findPublicCapsuleById(
+    ResponseEntity<ApiSpec<CapsuleDetailResponse>> getPublicCapsuleDetailById(
+        Long memberId,
+
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true, schema = @Schema())
-        @PathVariable("capsule_id") Long capsuleId
+        Long capsuleId
     );
 
     @Operation(
@@ -78,7 +119,7 @@ public interface PublicCapsuleApi {
         )
     })
     @GetMapping(
-        value = "/public/capsules",
+        value = "/capsules",
         produces = {"application/json"}
     )
     ResponseEntity<PublicCapsulePageResponse> getPublicCapsules(
@@ -102,7 +143,7 @@ public interface PublicCapsuleApi {
         )
     })
     @PatchMapping(
-        value = "/public/capsules/{capsule_id}",
+        value = "/capsules/{capsule_id}",
         consumes = {"multipart/form-data"}
     )
     ResponseEntity<PublicCapsuleSummaryResponse> updatePublicCapsuleById(
