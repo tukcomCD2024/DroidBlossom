@@ -32,7 +32,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/searchOpenBtn"
             android:layout_width="0dp"
-            android:layout_height="42dp"
+            android:layout_height="36dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="16dp"
@@ -87,7 +87,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/searchBtn"
             android:layout_width="58dp"
-            android:layout_height="34dp"
+            android:layout_height="36dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             android:onClick="@{()->vm.openSearchSkin()}"

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeWidth="@null"
+        android:backgroundTint="@color/white_alpha60"
+        app:cardCornerRadius="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+            android:padding="@dimen/padding">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/capsuleImg"
+                android:layout_width="66dp"
+                android:layout_height="66dp"
+                bind:baseImg="@{@drawable/sample_skin}"
+                bind:url="@{item.capsuleContentImg}"
+                app:civ_border_color="@color/white"
+                app:civ_border_overlay="true"
+                app:civ_circle_background_color="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tool:src="@drawable/sample_skin" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/capsuleImg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/capsuleImg"
+                app:layout_constraintTop_toTopOf="@id/capsuleImg">
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/groupOrFriendTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_marginStart="8dp"
+                    android:text="@{item.capsuleWriter}"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_700"
+                    app:layout_constraintBottom_toTopOf="@id/capsuleTitleTextView"
+                    app:layout_constraintEnd_toStartOf="@id/capsuleOpenDateTextView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tool:text="그룹 또는 친구 이름" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/capsuleTitleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_marginStart="8dp"
+                    android:text="@{item.capsuleTitle}"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/capsuleOpenDateTextView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/groupOrFriendTextView"
+                    tool:text="캡슐의 이름" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/capsuleOpenDateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:text="@{item.capsuleCreateTime}"
+                    android:textAppearance="@style/TextAppearance.App.caption4"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tool:text="2023.03.13 12:00" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>
