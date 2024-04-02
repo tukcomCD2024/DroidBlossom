@@ -9,6 +9,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendVPA
+import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
@@ -48,8 +49,14 @@ class FriendActivity :
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position == 0){
                     binding.addT.text = "그룹 추가"
+                    binding.addCV.setOnClickListener {
+
+                    }
                 } else {
                     binding.addT.text = "친구 추가"
+                    binding.addCV.setOnClickListener{
+                        startActivity(AddFriendActivity.newIntent(this@FriendActivity))
+                    }
                 }
             }
             override fun onTabUnselected(tab: TabLayout.Tab) {}

@@ -31,7 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@{item.isClicked ? @color/main_2 : @color/write}"
+            app:strokeColor="@{item.isClicked ? @color/main_2 : @color/white}"
             app:strokeWidth="3dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
