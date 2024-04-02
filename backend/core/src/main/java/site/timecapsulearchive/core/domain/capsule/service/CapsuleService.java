@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
@@ -12,8 +13,19 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Coor
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.mapper.ImageMapper;
+import site.timecapsulearchive.core.domain.capsule.mapper.VideoMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
+import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
+import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
+import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
 @Service
@@ -23,7 +35,13 @@ public class CapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
+    private final MemberRepository memberRepository;
+    private final CapsuleSkinRepository capsuleSkinRepository;
+    private final ImageQueryRepository imageQueryRepository;
+    private final VideoQueryRepository videoQueryRepository;
     private final GeoTransformManager geoTransformManager;
+    private final ImageMapper imageMapper;
+    private final VideoMapper videoMapper;
     private final CapsuleMapper capsuleMapper;
 
     /**
@@ -68,5 +86,46 @@ public class CapsuleService {
 
         capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
         return CapsuleOpenedResponse.opened();
+    }
+
+    /**
+     * 멤버 아이디와 캡슐 생성 포맷을 받아서 캡슐을 생성한다.
+     *
+     * @param memberId 캡슐을 생성할 멤버 아이디
+     * @param dto      캡슐 생성 요청 포맷
+     */
+    @Transactional
+    public void saveCapsule(
+        final Long memberId,
+        final CapsuleCreateRequestDto dto,
+        final CapsuleType capsuleType
+    ) {
+        final Member foundMember = memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        final CapsuleSkin foundCapsuleSkin = capsuleSkinRepository
+            .findCapsuleSkinById(dto.capsuleSkinId())
+            .orElseThrow(CapsuleSkinNotFoundException::new);
+
+        final Capsule capsule = capsuleMapper.requestDtoToEntity(dto, foundMember,
+            foundCapsuleSkin, capsuleType);
+
+        capsuleRepository.save(capsule);
+
+        if (isNotEmpty(dto.imageNames())) {
+            imageQueryRepository.bulkSave(
+                imageMapper.toEntity(capsule, foundMember, dto.directory(), dto.imageNames())
+            );
+        }
+
+        if (isNotEmpty(dto.videoNames())) {
+            videoQueryRepository.bulkSave(
+                videoMapper.toEntity(capsule, foundMember, dto.directory(), dto.videoNames())
+            );
+        }
+    }
+
+    private boolean isNotEmpty(List<String> fileNames) {
+        return fileNames != null && !fileNames.isEmpty();
     }
 }

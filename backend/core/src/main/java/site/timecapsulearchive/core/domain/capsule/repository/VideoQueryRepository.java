@@ -19,10 +19,6 @@ public class VideoQueryRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public void bulkSave(final List<Video> videos) {
-        batchInsert(videos);
-    }
-
-    private void batchInsert(final List<Video> videos) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO video (

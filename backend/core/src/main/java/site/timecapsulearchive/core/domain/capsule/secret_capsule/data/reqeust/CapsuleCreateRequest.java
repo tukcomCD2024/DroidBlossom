@@ -6,12 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
+import org.hibernate.validator.constraints.Range;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 import site.timecapsulearchive.core.global.common.valid.annotation.Video;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Schema(description = "캡슐 생성 포맷")
-public record SecretCapsuleCreateRequest(
+public record CapsuleCreateRequest(
 
     @Schema(description = "이미지 이름들")
     List<@Image String> imageNames,
@@ -35,11 +36,15 @@ public record SecretCapsuleCreateRequest(
     @NotBlank(message = "캡슐 내용은 필수 입니다.")
     String content,
 
-    @Schema(description = "현재 경도(wsg84)", requiredMode = RequiredMode.REQUIRED)
-    double longitude,
+    @Range(min = -180, max = 180)
+    @NotNull(message = "현재 경도는 필수 입니다.")
+    @Schema(description = "현재 경도(wsg84)")
+    Double longitude,
 
+    @Range(min = -90, max = 90)
+    @NotNull(message = "현재 경도는 필수 입니다.")
     @Schema(description = "현재 위도(wsg84)", requiredMode = RequiredMode.REQUIRED)
-    double latitude,
+    Double latitude,
 
     @Schema(description = "캡슐 생성 주소")
     @NotNull(message = "캡슐 생성 주소는 필수 입니다.")

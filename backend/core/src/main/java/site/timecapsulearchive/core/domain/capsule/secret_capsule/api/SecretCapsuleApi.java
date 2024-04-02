@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
@@ -88,33 +87,6 @@ public interface SecretCapsuleApi {
 
         @Parameter(in = ParameterIn.PATH, description = "비밀 캡슐 아이디", required = true)
         Long capsuleId
-    );
-
-    @Operation(
-        summary = "비밀 캡슐 생성",
-        description = "사용자만 볼 수 있는 비밀 캡슐을 생성한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"secret capsule"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "좌표변환을 할 수 없을 때 발생하는 예외, 입력좌표 확인 요망",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "캡슐 스킨을 찾을 수 없을 경우 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        )
-    })
-    ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        Long memberId,
-        SecretCapsuleCreateRequest request
     );
 
     @Operation(
