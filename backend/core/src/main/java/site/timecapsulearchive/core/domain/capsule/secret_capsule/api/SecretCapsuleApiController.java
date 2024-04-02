@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.secret_capsule.api;
 
-import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,14 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
@@ -80,24 +76,6 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 secretCapsuleService.findSecretCapsuleDetailById(memberId, capsuleId)
-            )
-        );
-    }
-
-    @PostMapping(value = "/capsules", consumes = {"application/json"})
-    @Override
-    public ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final SecretCapsuleCreateRequest request
-    ) {
-        secretCapsuleService.saveCapsule(
-            memberId,
-            capsuleMapper.secretCapsuleCreateRequestToDto(request)
-        );
-
-        return ResponseEntity.ok(
-            ApiSpec.empty(
-                SuccessCode.SUCCESS
             )
         );
     }

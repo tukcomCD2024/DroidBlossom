@@ -18,7 +18,6 @@ import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.entity.QNotificationCategory;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Repository

@@ -2,32 +2,18 @@ package site.timecapsulearchive.core.domain.capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.mapper.ImageMapper;
-import site.timecapsulearchive.core.domain.capsule.mapper.VideoMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
-import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
-import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
-import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,15 +21,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 public class SecretCapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
-    private final CapsuleRepository capsuleRepository;
-    private final CapsuleSkinRepository capsuleSkinRepository;
-    private final MemberRepository memberRepository;
-    private final ImageQueryRepository imageQueryRepository;
-    private final VideoQueryRepository videoQueryRepository;
-
     private final CapsuleMapper capsuleMapper;
-    private final ImageMapper imageMapper;
-    private final VideoMapper videoMapper;
 
     /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
@@ -61,7 +39,8 @@ public class SecretCapsuleService {
         final Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
-        return capsuleMapper.mySecretCapsuleDetailSliceToResponse(slice.getContent(), slice.hasNext());
+        return capsuleMapper.mySecretCapsuleDetailSliceToResponse(slice.getContent(),
+            slice.hasNext());
     }
 
     /**
@@ -108,43 +87,6 @@ public class SecretCapsuleService {
         }
 
         return !dto.isOpened() || dto.dueDate().isAfter(ZonedDateTime.now(ZoneOffset.UTC));
-    }
-
-    /**
-     * 멤버 아이디와 캡슐 생성 포맷을 받아서 캡슐을 생성한다.
-     *
-     * @param memberId 캡슐을 생성할 멤버 아이디
-     * @param dto      캡슐 생성 요청 포맷
-     */
-    @Transactional
-    public void saveCapsule(final Long memberId, final SecretCapsuleCreateRequestDto dto) {
-        final Member foundMember = memberRepository.findMemberById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-
-        final CapsuleSkin foundCapsuleSkin = capsuleSkinRepository
-            .findCapsuleSkinById(dto.capsuleSkinId())
-            .orElseThrow(CapsuleSkinNotFoundException::new);
-
-        final Capsule capsule = capsuleMapper.requestDtoToEntity(dto, foundMember,
-            foundCapsuleSkin);
-
-        capsuleRepository.save(capsule);
-
-        if (isNotEmpty(dto.imageNames())) {
-            imageQueryRepository.bulkSave(
-                imageMapper.toEntity(capsule, foundMember, dto.directory(), dto.imageNames())
-            );
-        }
-
-        if (isNotEmpty(dto.videoNames())) {
-            videoQueryRepository.bulkSave(
-                videoMapper.toEntity(capsule, foundMember, dto.directory(), dto.videoNames())
-            );
-        }
-    }
-
-    private boolean isNotEmpty(List<String> fileNames) {
-        return fileNames != null && !fileNames.isEmpty();
     }
 }
 

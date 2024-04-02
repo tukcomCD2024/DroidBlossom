@@ -6,12 +6,12 @@ import lombok.Builder;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Builder
-public record SecretCapsuleCreateRequestDto(
+public record CapsuleCreateRequestDto(
     Long capsuleSkinId,
     String title,
     String content,
-    double longitude,
-    double latitude,
+    Double longitude,
+    Double latitude,
     AddressData addressData,
     ZonedDateTime dueDate,
     List<String> imageNames,
