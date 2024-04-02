@@ -73,12 +73,21 @@ public class MemberMapper {
         final boolean hasNext
     ) {
         List<MemberNotificationResponse> responses = content.stream()
-            .map(dto -> MemberNotificationResponse.builder()
-                .title(dto.title())
-                .text(dto.text())
-                .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
-                .imageUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.imageUrl()))
-                .build()
+            .map(dto -> {
+                    String imageUrl = "";
+                    if (dto.imageUrl() != null) {
+                        imageUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.imageUrl());
+                    }
+
+                    return MemberNotificationResponse.builder()
+                        .title(dto.title())
+                        .text(dto.text())
+                        .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
+                        .imageUrl(imageUrl)
+                        .categoryName(dto.categoryName())
+                        .status(dto.status())
+                        .build();
+                }
             )
             .toList();
 

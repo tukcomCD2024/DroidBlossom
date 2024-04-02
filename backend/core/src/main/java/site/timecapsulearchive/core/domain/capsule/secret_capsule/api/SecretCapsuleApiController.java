@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.SecretCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.SecretCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.service.SecretCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -54,25 +54,25 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     @GetMapping(value = "/capsules/{capsule_id}/summary", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<SecretCapsuleSummaryResponse>> getSecretCapsuleSummary(
+    public ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getSecretCapsuleSummary(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
-        final SecretCapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(
+        final CapsuleSummaryDto dto = secretCapsuleService.findSecretCapsuleSummaryById(
             memberId,
             capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleMapper.secretCapsuleSummaryDtoToResponse(dto)
+                capsuleMapper.capsuleSummaryDtoToResponse(dto)
             )
         );
     }
 
     @GetMapping(value = "/capsules/{capsule_id}/detail", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<SecretCapsuleDetailResponse>> getSecretCapsuleDetail(
+    public ResponseEntity<ApiSpec<CapsuleDetailResponse>> getSecretCapsuleDetail(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
@@ -104,7 +104,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     @PatchMapping(value = "/capsules/{capsule_id}", consumes = {"multipart/form-data"})
     @Override
-    public ResponseEntity<SecretCapsuleSummaryResponse> updateSecretCapsule(
+    public ResponseEntity<CapsuleSummaryResponse> updateSecretCapsule(
         @AuthenticationPrincipal final Long memberId,
         @ModelAttribute final SecretCapsuleUpdateRequest request,
         @PathVariable("capsule_id") final Long capsuleId
