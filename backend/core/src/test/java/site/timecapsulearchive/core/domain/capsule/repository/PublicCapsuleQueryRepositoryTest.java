@@ -51,8 +51,8 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         notFriend = MemberFixture.member(3);
         entityManager.persist(notFriend);
 
-        MemberFriend ownerFriend = MemberFriendFixture.friend(member, friend);
-        MemberFriend friendOwner = MemberFriendFixture.friend(friend, member);
+        MemberFriend ownerFriend = MemberFriendFixture.memberFriend(member, friend);
+        MemberFriend friendOwner = MemberFriendFixture.memberFriend(friend, member);
         entityManager.persist(ownerFriend);
         entityManager.persist(friendOwner);
 
