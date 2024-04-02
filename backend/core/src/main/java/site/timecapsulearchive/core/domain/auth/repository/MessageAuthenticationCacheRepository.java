@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,7 +16,6 @@ public class MessageAuthenticationCacheRepository {
     private final StringRedisTemplate redisTemplate;
 
     public void save(final Long memberId, final byte[] receiver, final String code) {
-        redisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Object.class));
         redisTemplate.opsForHash().put(PREFIX + memberId, receiver, code);
         redisTemplate.expire(PREFIX + memberId, MINUTE, TimeUnit.MINUTES);
     }
