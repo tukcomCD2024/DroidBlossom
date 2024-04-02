@@ -48,12 +48,13 @@ public class MessageVerificationService {
         final String appHashKey
     ) {
         final String code = generateRandomCode();
-
         final String message = generateMessage(code, appHashKey);
-
         final SmsApiResponse apiResponse = smsApiManager.sendMessage(receiver, message);
 
-        messageAuthenticationCacheRepository.save(memberId, receiver, code);
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        byte[] encrypt = hashEncryptionManager.encrypt(plain);
+
+        messageAuthenticationCacheRepository.save(memberId, encrypt, code);
 
         return VerificationMessageSendResponse.success(apiResponse.resultCode(),
             apiResponse.message());
@@ -78,8 +79,11 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        byte[] encrypt = hashEncryptionManager.encrypt(plain);
+
         final String findCertificationNumber = messageAuthenticationCacheRepository
-            .findMessageAuthenticationCodeByMemberId(memberId, receiver)
+            .findMessageAuthenticationCodeByMemberId(memberId, encrypt)
             .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
