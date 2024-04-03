@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupSummaryResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsPageResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface GroupApi {
 
@@ -58,11 +58,10 @@ public interface GroupApi {
             description = "처리완료"
         )
     })
-    @PostMapping(
-        value = "/groups",
-        consumes = {"multipart/form-data"}
-    )
-    ResponseEntity<GroupSummaryResponse> createGroup(@ModelAttribute GroupCreateRequest request);
+    ResponseEntity<ApiSpec<String>> createGroup(
+        Long memberId,
+        GroupCreateRequest request
+    );
 
     @Operation(
         summary = "그룹 삭제",

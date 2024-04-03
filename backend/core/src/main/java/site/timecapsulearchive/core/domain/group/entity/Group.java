@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -40,4 +41,11 @@ public class Group extends BaseEntity {
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGroup> members;
+
+    @Builder
+    private Group(String groupName, String groupDescription, String groupProfileUrl) {
+        this.groupName = groupName;
+        this.groupDescription = groupDescription;
+        this.groupProfileUrl = groupProfileUrl;
+    }
 }
