@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.repository.CapsuleSkinRepositoryImpl
 import com.droidblossom.archive.data.repository.FriendRepositoryImpl
 import com.droidblossom.archive.data.repository.MemberRepositoryImpl
 import com.droidblossom.archive.data.repository.KakaoRepositoryImpl
+import com.droidblossom.archive.data.repository.PublicRepositoryImpl
 import com.droidblossom.archive.data.repository.S3RepositoryImpl
 import com.droidblossom.archive.data.repository.SecretRepositoryImpl
 import com.droidblossom.archive.data.source.remote.api.AuthService
@@ -14,6 +15,7 @@ import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
 import com.droidblossom.archive.data.source.remote.api.FriendService
 import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.KakaoService
+import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
 import com.droidblossom.archive.domain.repository.AuthRepository
@@ -22,6 +24,7 @@ import com.droidblossom.archive.domain.repository.CapsuleSkinRepository
 import com.droidblossom.archive.domain.repository.FriendRepository
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.domain.repository.KakaoRepository
+import com.droidblossom.archive.domain.repository.PublicRepository
 import com.droidblossom.archive.domain.repository.S3Repository
 import com.droidblossom.archive.domain.repository.SecretRepository
 import dagger.Module
@@ -70,5 +73,9 @@ object RepositoryModule {
     @Provides
     @ViewModelScoped
     fun providesFriendRepository(api : FriendService) : FriendRepository = FriendRepositoryImpl(api)
+
+    @Provides
+    @ViewModelScoped
+    fun providesPublicRepository(api : PublicService) : PublicRepository = PublicRepositoryImpl(api)
 
 }
