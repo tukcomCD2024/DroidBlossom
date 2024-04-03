@@ -2,7 +2,7 @@ package com.droidblossom.archive.presentation.ui.home.dialog
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.model.secret.SecretCapsuleSummary
+import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -34,9 +34,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _capsulePreviewDialogEvents = MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
     override val capsulePreviewDialogEvents: SharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent> = _capsulePreviewDialogEvents.asSharedFlow()
 
-    private val _secretCapsuleSummary = MutableStateFlow(SecretCapsuleSummary("","","","","","","", false, ""))
-    override val secretCapsuleSummary: StateFlow<SecretCapsuleSummary>
-        get() = _secretCapsuleSummary
+    private val _CapsuleSummaryResponse = MutableStateFlow(CapsuleSummaryResponse("","","","","","","", false, ""))
+    override val capsuleSummaryResponse: StateFlow<CapsuleSummaryResponse>
+        get() = _CapsuleSummaryResponse
 
     private val _startTime = MutableStateFlow<Calendar?>(null)
     private val _endTime = MutableStateFlow<Calendar?>(null)
@@ -88,8 +88,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
-                    _secretCapsuleSummary.emit(it)
-                    _capsuleOpenState.emit(secretCapsuleSummary.value.isOpened)
+                    _CapsuleSummaryResponse.emit(it)
+                    _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
                     if (!capsuleOpenState.value){
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }

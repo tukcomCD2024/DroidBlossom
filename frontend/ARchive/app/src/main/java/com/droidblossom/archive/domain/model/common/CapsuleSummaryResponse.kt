@@ -1,6 +1,6 @@
-package com.droidblossom.archive.domain.model.secret
+package com.droidblossom.archive.domain.model.common
 
-data class SecretCapsuleSummary(
+data class CapsuleSummaryResponse(
     val nickname: String,
     val profileUrl: String,
     val skinUrl: String,

@@ -1,10 +1,8 @@
-package com.droidblossom.archive.domain.model.secret
+package com.droidblossom.archive.domain.model.common
 
-import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleCreateRequestDto
-import com.droidblossom.archive.domain.model.common.AddressData
-import com.droidblossom.archive.domain.model.common.FileName
+import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 
-data class SecretCapsuleCreateRequest(
+data class CapsuleCreateRequest(
     val capsuleSkinId: Long,
     val content: String,
     val directory: String,
@@ -16,7 +14,7 @@ data class SecretCapsuleCreateRequest(
     val longitude: Double,
     val title: String
 ) {
-    fun toDto() = SecretCapsuleCreateRequestDto(
+    fun toDto() = CapsuleCreateRequestDto(
         capsuleSkinId = this.capsuleSkinId,
         content = this.content,
         directory = this.directory,
