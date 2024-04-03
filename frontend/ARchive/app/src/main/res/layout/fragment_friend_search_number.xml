@@ -148,6 +148,15 @@
             tools:itemCount="20"
             tools:listitem="@layout/item_add_friend" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/main_bg_1_alpha20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/addBtn" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/addBtn"
             android:layout_width="0dp"
@@ -196,17 +205,6 @@
                 app:layout_constraintStart_toEndOf="@id/addCountT"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/main_bg_1_alpha20"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/addBtn" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

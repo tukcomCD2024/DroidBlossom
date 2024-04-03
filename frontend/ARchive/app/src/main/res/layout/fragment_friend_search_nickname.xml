@@ -171,8 +171,16 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/main_bg_1_alpha20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/addBtn" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/addBtn"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -181,6 +189,7 @@
             android:alpha="@{vm.checkedList.size() == 0 ? 0.5f : 1f}"
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
+            android:gravity="center"
             android:onClick="@{()->vm.requestFriends()}"
             android:text="추가하기"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
@@ -191,14 +200,6 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:alpha="0.5" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/main_bg_1_alpha20"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/addBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
