@@ -1,15 +1,12 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.datastore.preferences.core.preferencesOf
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
-import com.droidblossom.archive.domain.model.common.Skin
 
 class SkinRVA(val SkinFlow: (previousPosition: Int?, currentPosition: Int) -> Unit) :
     ListAdapter<CapsuleSkinSummary, SkinRVA.ItemViewHolder>(differ) {
