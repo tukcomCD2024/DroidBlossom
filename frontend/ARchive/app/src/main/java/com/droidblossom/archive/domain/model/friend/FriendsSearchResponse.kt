@@ -4,5 +4,6 @@ data class FriendsSearchResponse (
     val id : Long,
     val profileUrl : String,
     val nickname : String,
-    val isFriend : Boolean
+    val isFriend : Boolean,
+    var isChecked : Boolean
 )
