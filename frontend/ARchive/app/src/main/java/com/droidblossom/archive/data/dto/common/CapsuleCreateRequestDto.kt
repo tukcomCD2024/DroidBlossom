@@ -1,9 +1,8 @@
-package com.droidblossom.archive.data.dto.secret.request
+package com.droidblossom.archive.data.dto.common
 
 import com.droidblossom.archive.data.dto.capsule.response.AddressDataDto
-import com.droidblossom.archive.data.dto.common.FileNameDto
 
-data class SecretCapsuleCreateRequestDto(
+data class CapsuleCreateRequestDto(
     val capsuleSkinId: Long,
     val content: String,
     val directory: String,

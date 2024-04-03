@@ -1,10 +1,8 @@
 package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
-import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleCreateRequestDto
+import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyRequestDto
-import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
-import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleCreateResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleModifyResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsulePageResponseDto
@@ -27,7 +25,7 @@ interface SecretService {
 
     @POST("capsules/secret")
     suspend fun postSecretCapsuleApi(
-        @Body request : SecretCapsuleCreateRequestDto
+        @Body request : CapsuleCreateRequestDto
     ) : Response<ResponseBody<String>>
 
     @GET("secret/capsules/{capsule_id}/detail")

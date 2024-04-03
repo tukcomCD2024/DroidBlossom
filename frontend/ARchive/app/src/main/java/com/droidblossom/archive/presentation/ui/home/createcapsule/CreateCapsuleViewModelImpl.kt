@@ -9,27 +9,20 @@ import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
-import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
-import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
+import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
-import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModelImpl.Companion.S3DIRECTORY
 import com.droidblossom.archive.util.DateUtils
-import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
-import com.droidblossom.archive.util.onError
-import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,7 +30,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -536,7 +528,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
                     secretCapsuleCreateUseCase(
-                        SecretCapsuleCreateRequest(
+                        CapsuleCreateRequest(
                             capsuleSkinId = skinId.value,
                             content = capsuleContent.value,
                             directory = S3DIRECTORY,

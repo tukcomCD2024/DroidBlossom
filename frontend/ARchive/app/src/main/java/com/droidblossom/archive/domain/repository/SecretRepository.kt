@@ -1,6 +1,6 @@
 package com.droidblossom.archive.domain.repository
 
-import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleCreateRequestDto
+import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleDetail
@@ -13,7 +13,7 @@ interface SecretRepository {
 
     suspend fun getSecretCapsulePage (request: SecretCapsulePageRequestDto) : RetrofitResult<SecretCapsulePage>
 
-    suspend fun createSecretCapsule (request: SecretCapsuleCreateRequestDto) : RetrofitResult<String>
+    suspend fun createSecretCapsule (request: CapsuleCreateRequestDto) : RetrofitResult<String>
 
     suspend fun getSecretCapsuleDetail (capsuleId: Long) : RetrofitResult<SecretCapsuleDetail>
 
