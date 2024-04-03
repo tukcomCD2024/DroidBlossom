@@ -10,7 +10,7 @@
 
         <variable
             name="item"
-            type="com.droidblossom.archive.domain.model.common.CapsuleSkinSummary" />
+            type="com.droidblossom.archive.domain.model.friend.FriendsSearchResponse" />
 
     </data>
 
@@ -31,7 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@{item.isClicked ? @color/main_2 : @color/white}"
+            app:strokeColor="@{item.checked ? @color/main_2 : @color/white}"
             app:strokeWidth="3dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +48,9 @@
                     android:src="@color/main_1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:baseImg="@{@drawable/base_use_img}"
+                    bind:url="@{item.profileUrl}" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/nameT"
@@ -56,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="10dp"
-                    android:text="이름"
+                    android:text="@{item.nickname}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toStartOf="@id/checkBtn"
@@ -68,7 +70,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="`@Name"
+                    android:text="`@NameTag"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_600"
                     app:layout_constraintEnd_toEndOf="@id/nameT"
@@ -81,7 +83,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginEnd="20dp"
-                    android:backgroundTint="@color/main_4"
+                    android:backgroundTint="@{item.checked ? @color/main_2 : @color/main_4}"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="@id/profileImg"
@@ -92,7 +94,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_plus_small_24" />
+                        android:src="@{item.checked ? @drawable/ic_check_24 : @drawable/ic_plus_small_24}" />
 
                 </com.google.android.material.card.MaterialCardView>
 
