@@ -6,7 +6,7 @@ import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyReque
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleModifyResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsulePageResponseDto
-import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleSummaryResponseDto
+import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,7 +36,7 @@ interface SecretService {
     @GET("secret/capsules/{capsule_id}/summary")
     suspend fun getSecretCapsuleSummaryApi(
         @Path("capsule_id") capsuleId : Int,
-    ) : Response<ResponseBody<SecretCapsuleSummaryResponseDto>>
+    ) : Response<ResponseBody<CapsuleSummaryResponseDto>>
 
     //미정 (1/27 기준)
     @PATCH("secret/capsules/{capsule_id}")

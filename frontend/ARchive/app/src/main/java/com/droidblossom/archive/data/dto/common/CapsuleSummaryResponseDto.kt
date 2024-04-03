@@ -1,8 +1,8 @@
-package com.droidblossom.archive.data.dto.secret.response
+package com.droidblossom.archive.data.dto.common
 
-import com.droidblossom.archive.domain.model.secret.SecretCapsuleSummary
+import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 
-data class SecretCapsuleSummaryResponseDto(
+data class CapsuleSummaryResponseDto(
     val nickname: String,
     val profileUrl: String,
     val skinUrl: String,
@@ -13,7 +13,7 @@ data class SecretCapsuleSummaryResponseDto(
     val isOpened: Boolean,
     val createdAt: String
 ){
-    fun toModel() = SecretCapsuleSummary(
+    fun toModel() = CapsuleSummaryResponse(
         nickname = this.nickname,
         profileUrl = this.profileUrl,
         skinUrl = this.skinUrl,
