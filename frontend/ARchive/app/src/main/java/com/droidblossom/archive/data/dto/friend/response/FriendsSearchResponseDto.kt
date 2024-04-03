@@ -15,5 +15,6 @@ data class FriendsSearchResponseDto(
         profileUrl = this.profileUrl,
         nickname = this.nickname,
         isFriend = this.isFriend,
+        isChecked = false
     )
 }

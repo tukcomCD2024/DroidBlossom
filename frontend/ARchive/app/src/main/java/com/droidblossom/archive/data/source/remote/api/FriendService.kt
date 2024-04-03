@@ -17,14 +17,14 @@ import retrofit2.http.Query
 
 interface FriendService {
 
-    @POST("friends/{friend_id/request}")
+    @POST("friends/{friend_id}/request")
     suspend fun postFriendsRequestApi(
-        @Path("friend_id") friendId : Double,
+        @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<FriendReqStatusResponseDto>>
 
-    @POST("friends/{friend_id/accept-request}")
+    @POST("friends/{friend_id}/accept-request")
     suspend fun postFriendsAcceptRequestApi(
-        @Path("friend_id") friendId : Double,
+        @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<String>>
 
     @GET("friends/search")

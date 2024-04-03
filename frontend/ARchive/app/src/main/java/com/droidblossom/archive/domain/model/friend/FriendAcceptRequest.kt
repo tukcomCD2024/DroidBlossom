@@ -4,7 +4,7 @@ import com.droidblossom.archive.data.dto.friend.request.FriendAcceptRequestDto
 
 
 data class FriendAcceptRequest (
-    val friendId : Double
+    val friendId : Long
 ){
     fun toDto() = FriendAcceptRequestDto(
         friendId = this.friendId,
