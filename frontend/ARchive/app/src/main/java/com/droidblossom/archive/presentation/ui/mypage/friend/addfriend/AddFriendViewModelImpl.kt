@@ -3,9 +3,11 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.R
 import com.droidblossom.archive.domain.model.friend.FriendReqRequest
+import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.domain.usecase.friend.FriendsRequestUseCase
+import com.droidblossom.archive.domain.usecase.friend.FriendsSearchPhoneUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsSearchUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
@@ -22,8 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddFriendViewModelImpl @Inject constructor(
-    private val friendsSearchUseCase : FriendsSearchUseCase,
-    private val friendsRequestUseCase: FriendsRequestUseCase
+    private val friendsSearchUseCase: FriendsSearchUseCase,
+    private val friendsRequestUseCase: FriendsRequestUseCase,
+    private val friendsSearchPhoneUseCase: FriendsSearchPhoneUseCase
 ) : BaseViewModel(), AddFriendViewModel {
 
     private val _addEvent = MutableSharedFlow<AddFriendViewModel.AddEvent>()
@@ -36,6 +39,11 @@ class AddFriendViewModelImpl @Inject constructor(
     private val _addFriendListUI = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
     override val addFriendListUI: StateFlow<List<FriendsSearchResponse>>
         get() = _addFriendListUI
+
+    private val _addFriendList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
+    override val addFriendList: StateFlow<List<FriendsSearchResponse>>
+        get() = _addFriendList
+
 
     private val _checkedList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
     override val checkedList: StateFlow<List<FriendsSearchResponse>>
@@ -53,7 +61,7 @@ class AddFriendViewModelImpl @Inject constructor(
     override fun requestFriends() {
         viewModelScope.launch {
             checkedList.value.forEach { friend ->
-                friendsRequestUseCase(FriendReqRequest(friendId = friend.id)).collect{ result ->
+                friendsRequestUseCase(FriendReqRequest(friendId = friend.id)).collect { result ->
                     result.onSuccess {
                         _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다"))
                     }.onFail {
@@ -64,10 +72,10 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-    fun checkAddFriendList(position : Int) {
+    fun checkAddFriendList(position: Int) {
         viewModelScope.launch {
             val newAddList = addFriendListUI.value
-            if (newAddList[position].isChecked){
+            if (newAddList[position].isChecked) {
                 newAddList[position].isChecked = false
                 _checkedList.emit(newAddList.filter { it.isChecked })
             } else {
@@ -80,7 +88,7 @@ class AddFriendViewModelImpl @Inject constructor(
 
     override fun searchTag() {
         viewModelScope.launch {
-            friendsSearchUseCase(FriendsSearchRequest(tagT.value)).collect{ result ->
+            friendsSearchUseCase(FriendsSearchRequest(tagT.value)).collect { result ->
                 result.onSuccess { response ->
                     _addFriendListUI.emit(listOf(response))
                 }.onFail {
@@ -95,14 +103,13 @@ class AddFriendViewModelImpl @Inject constructor(
             if (checkedList.value.isNotEmpty()) {
                 _checkedList.emit(listOf())
             }
-            if (addFriendListUI.value.isNotEmpty()){
+            if (addFriendListUI.value.isNotEmpty()) {
                 _addFriendListUI.emit(listOf())
             }
         }
     }
 
     //Name
-
 
 
     //Num
@@ -116,9 +123,24 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-    fun closeSearchNum(){
+    fun closeSearchNum() {
         viewModelScope.launch {
             _isSearchNumOpen.emit(false)
+        }
+    }
+
+    fun contactsSearch(phones: List<String>) {
+        viewModelScope.launch {
+            friendsSearchPhoneUseCase(FriendsSearchPhoneRequest(phones.filter {
+                it.length == 11 && it.substring(0,3) == "010"
+            })).collect { result ->
+                result.onSuccess { response ->
+                    _addFriendList.emit(response.friends)
+                    _addFriendListUI.emit(response.friends)
+                }.onFail {
+                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("주소록 불러오기 실패."))
+                }
+            }
         }
     }
 }

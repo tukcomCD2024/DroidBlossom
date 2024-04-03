@@ -17,6 +17,7 @@ interface AddFriendViewModel {
 
     //searchNum
     val isSearchNumOpen : StateFlow<Boolean>
+    val addFriendList: StateFlow<List<FriendsSearchResponse>>
 
 
     fun requestFriends()
