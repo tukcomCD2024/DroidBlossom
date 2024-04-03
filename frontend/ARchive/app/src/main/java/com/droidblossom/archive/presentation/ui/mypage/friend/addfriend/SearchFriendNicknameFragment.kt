@@ -96,7 +96,7 @@ class SearchFriendNicknameFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addFriendList.collect{ friends ->
+                viewModel.addFriendListUI.collect{ friends ->
                     addFriendRVA.submitList(friends)
                 }
             }

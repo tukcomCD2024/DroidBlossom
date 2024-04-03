@@ -11,7 +11,7 @@ interface AddFriendViewModel {
     val addEvent : SharedFlow<AddEvent>
 
     //searchName
-    val addFriendList : StateFlow<List<FriendsSearchResponse>>
+    val addFriendListUI : StateFlow<List<FriendsSearchResponse>>
     val checkedList : StateFlow<List<FriendsSearchResponse>>
     val tagT : MutableStateFlow<String>
 

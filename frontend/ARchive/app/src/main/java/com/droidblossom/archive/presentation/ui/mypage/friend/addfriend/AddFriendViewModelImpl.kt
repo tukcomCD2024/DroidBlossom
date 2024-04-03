@@ -33,9 +33,9 @@ class AddFriendViewModelImpl @Inject constructor(
 
     //name
 
-    private val _addFriendList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
-    override val addFriendList: StateFlow<List<FriendsSearchResponse>>
-        get() = _addFriendList
+    private val _addFriendListUI = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
+    override val addFriendListUI: StateFlow<List<FriendsSearchResponse>>
+        get() = _addFriendListUI
 
     private val _checkedList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
     override val checkedList: StateFlow<List<FriendsSearchResponse>>
@@ -66,7 +66,7 @@ class AddFriendViewModelImpl @Inject constructor(
 
     fun checkAddFriendList(position : Int) {
         viewModelScope.launch {
-            val newAddList = addFriendList.value
+            val newAddList = addFriendListUI.value
             if (newAddList[position].isChecked){
                 newAddList[position].isChecked = false
                 _checkedList.emit(newAddList.filter { it.isChecked })
@@ -74,7 +74,7 @@ class AddFriendViewModelImpl @Inject constructor(
                 newAddList[position].isChecked = true
                 _checkedList.emit(newAddList.filter { it.isChecked })
             }
-            _addFriendList.emit(newAddList)
+            _addFriendListUI.emit(newAddList)
         }
     }
 
@@ -82,7 +82,7 @@ class AddFriendViewModelImpl @Inject constructor(
         viewModelScope.launch {
             friendsSearchUseCase(FriendsSearchRequest(tagT.value)).collect{ result ->
                 result.onSuccess { response ->
-                    _addFriendList.emit(listOf(response))
+                    _addFriendListUI.emit(listOf(response))
                 }.onFail {
                     _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("검색이 불가능 합니다."))
                 }
@@ -95,8 +95,8 @@ class AddFriendViewModelImpl @Inject constructor(
             if (checkedList.value.isNotEmpty()) {
                 _checkedList.emit(listOf())
             }
-            if (addFriendList.value.isNotEmpty()){
-                _addFriendList.emit(listOf())
+            if (addFriendListUI.value.isNotEmpty()){
+                _addFriendListUI.emit(listOf())
             }
         }
     }
@@ -116,4 +116,9 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
+    fun closeSearchNum(){
+        viewModelScope.launch {
+            _isSearchNumOpen.emit(false)
+        }
+    }
 }

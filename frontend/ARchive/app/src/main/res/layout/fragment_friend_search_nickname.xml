@@ -68,9 +68,9 @@
                     android:ellipsize="start"
                     android:imeOptions="actionDone"
                     android:lines="1"
-                    android:text="@={vm.tagT}"
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:text="@={vm.tagT}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
@@ -178,18 +178,18 @@
             android:layout_height="56dp"
             android:layout_marginHorizontal="@dimen/margin"
             android:layout_marginBottom="@dimen/margin"
-            tools:alpha="0.5"
             android:alpha="@{vm.checkedList.size() == 0 ? 0.5f : 1f}"
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
-            android:text="추가하기"
             android:onClick="@{()->vm.requestFriends()}"
+            android:text="추가하기"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/white"
             app:circularflow_radiusInDP="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:alpha="0.5" />
 
         <View
             android:layout_width="0dp"
