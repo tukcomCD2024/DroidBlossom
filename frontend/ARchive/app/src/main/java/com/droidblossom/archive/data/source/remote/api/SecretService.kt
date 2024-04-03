@@ -25,7 +25,7 @@ interface SecretService {
         @Query("createdAt") createdAt: String
     ) : Response<ResponseBody<SecretCapsulePageResponseDto>>
 
-    @POST("secret/capsules")
+    @POST("capsules/secret")
     suspend fun postSecretCapsuleApi(
         @Body request : SecretCapsuleCreateRequestDto
     ) : Response<ResponseBody<String>>
