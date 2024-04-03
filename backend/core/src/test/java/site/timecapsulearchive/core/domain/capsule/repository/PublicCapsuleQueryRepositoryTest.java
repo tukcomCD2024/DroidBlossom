@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,9 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
 
     private Capsule capsule;
     private Member member;
+    private Member friend;
     private Member notFriend;
+    private CapsuleSkin capsuleSkin;
 
     PublicCapsuleQueryRepositoryTest(EntityManager entityManager) {
         this.publicCapsuleQueryRepository = new PublicCapsuleQueryRepository(
@@ -45,7 +49,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         member = MemberFixture.member(1);
         entityManager.persist(member);
 
-        Member friend = MemberFixture.member(2);
+        friend = MemberFixture.member(2);
         entityManager.persist(friend);
 
         notFriend = MemberFixture.member(3);
@@ -56,11 +60,20 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         entityManager.persist(ownerFriend);
         entityManager.persist(friendOwner);
 
-        CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(friend);
+        capsuleSkin = CapsuleSkinFixture.capsuleSkin(friend);
         entityManager.persist(capsuleSkin);
 
         capsule = CapsuleFixture.publicCapsule(friend, capsuleSkin);
         entityManager.persist(capsule);
+
+        Capsule capsuleByNotFriend = CapsuleFixture.publicCapsule(notFriend, capsuleSkin);
+        entityManager.persist(capsuleByNotFriend);
+    }
+
+    @Transactional
+    void saveCapsuleMadeByFriend(EntityManager entityManager) {
+        CapsuleFixture.publicCapsules(friend, capsuleSkin)
+            .forEach(entityManager::persist);
     }
 
     @Test
@@ -117,5 +130,40 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(detailDto.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 사용자는_친구가_생성한_공개_캡슐을_조회할_수_있다(@Autowired EntityManager entityManager) {
+        //given
+        saveCapsuleMadeByFriend(entityManager);
+
+        //when
+        Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
+            member.getId(), 3, ZonedDateTime.now());
+
+        //then
+        assertThat(dto.getSize()).isEqualTo(3);
+    }
+
+    @Test
+    void 사용자는_친구가_아닌_사용자가_만든_공개_캡슐을_조회하면_빈_리스트를_반환한다() {
+        //given
+        //when
+        Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
+            friend.getId(), 3, ZonedDateTime.now());
+
+        //then
+        assertThat(dto.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 친구가_없는_사용자는_친구가_생성한_공개_캡슐을_조회할_때_빈_리스트를_반환한다() {
+        //given
+        //when
+        Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
+            notFriend.getId(), 3, ZonedDateTime.now());
+
+        //then
+        assertThat(dto.isEmpty()).isTrue();
     }
 }
