@@ -77,7 +77,8 @@ class CapsulePreviewDialogFragment :
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-
+                viewModel.getPublicCapsuleSummary(capsuleId)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_public_marker_24)
             }
 
             HomeFragment.CapsuleType.GROUP -> {

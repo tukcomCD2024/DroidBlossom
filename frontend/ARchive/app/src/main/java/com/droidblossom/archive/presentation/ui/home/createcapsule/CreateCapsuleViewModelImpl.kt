@@ -13,6 +13,7 @@ import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
+import com.droidblossom.archive.domain.usecase.open.PublicCapsuleCreateUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -38,6 +39,7 @@ import javax.inject.Inject
 class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
+    private val publicCapsuleCreateUseCase: PublicCapsuleCreateUseCase,
     private val s3UrlsGetUseCase: S3UrlsGetUseCase,
     private val capsuleSkinsPageUseCase: CapsuleSkinsPageUseCase,
     private val s3Util: S3Util,
@@ -523,7 +525,27 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch {
             when (capsuleTypeCreateIs.value) {
                 CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
-
+                    publicCapsuleCreateUseCase(
+                        CapsuleCreateRequest(
+                            capsuleSkinId = skinId.value,
+                            content = capsuleContent.value,
+                            directory = S3DIRECTORY,
+                            dueDate = dueTime.value,
+                            imageNames = imageNames,
+                            videoNames = videoNames,
+                            addressData = address.value,
+                            latitude = capsuleLatitude.value,
+                            longitude = capsuleLongitude.value,
+                            title = capsuleTitle.value,
+                        )
+                    ).collect{ result ->
+                        result.onSuccess {
+                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                            Log.d("캡슐생성", "$it")
+                        }.onFail {
+                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성 실패했습니다.."))
+                        }
+                    }
                 }
 
                 CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {

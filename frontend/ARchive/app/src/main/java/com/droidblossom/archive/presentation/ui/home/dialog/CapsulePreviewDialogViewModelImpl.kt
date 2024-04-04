@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
+import com.droidblossom.archive.domain.usecase.open.PublicCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onError
@@ -28,15 +29,16 @@ import javax.inject.Inject
 @HiltViewModel
 class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val secretCapsuleSummaryUseCase: SecretCapsuleSummaryUseCase,
+    private val publicCapsuleSummaryUseCase: PublicCapsuleSummaryUseCase,
     private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents = MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
     override val capsulePreviewDialogEvents: SharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent> = _capsulePreviewDialogEvents.asSharedFlow()
 
-    private val _CapsuleSummaryResponse = MutableStateFlow(CapsuleSummaryResponse("","","","","","","", false, ""))
+    private val _capsuleSummaryResponse = MutableStateFlow(CapsuleSummaryResponse("","","","","","","", false, ""))
     override val capsuleSummaryResponse: StateFlow<CapsuleSummaryResponse>
-        get() = _CapsuleSummaryResponse
+        get() = _capsuleSummaryResponse
 
     private val _startTime = MutableStateFlow<Calendar?>(null)
     private val _endTime = MutableStateFlow<Calendar?>(null)
@@ -84,20 +86,32 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override fun setCalledFromCamera(calledFromCamera : Boolean){
         _calledFromCamera.value = calledFromCamera
     }
-    fun getSecretCapsuleSummary(capsuleId: Int) {
+    override fun getSecretCapsuleSummary(capsuleId: Int) {
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
-                    _CapsuleSummaryResponse.emit(it)
+                    _capsuleSummaryResponse.emit(it)
                     _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
                     if (!capsuleOpenState.value){
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
 
-                }.onException {
+                }
+            }
+        }
+    }
 
-                }.onError {
+    override fun getPublicCapsuleSummary(capsuleId: Int) {
+        viewModelScope.launch {
+            publicCapsuleSummaryUseCase(capsuleId).collect { result ->
+                result.onSuccess {
+                    _capsuleSummaryResponse.emit(it)
+                    _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
+                    if (!capsuleOpenState.value){
+                        calculateCapsuleOpenTime(it.createdAt, it.dueDate)
+                    }
+                }.onFail {
 
                 }
             }
