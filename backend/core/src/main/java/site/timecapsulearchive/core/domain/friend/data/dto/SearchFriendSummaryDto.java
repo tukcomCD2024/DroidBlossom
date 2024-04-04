@@ -4,7 +4,8 @@ public record SearchFriendSummaryDto(
     Long id,
     String profileUrl,
     String nickname,
-    Boolean isFriend
+    Boolean isFriend,
+    Boolean isFriendRequest
 ) {
 
 }

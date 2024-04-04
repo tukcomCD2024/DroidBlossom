@@ -17,7 +17,11 @@ public record SearchFriendSummaryResponse(
     String nickname,
 
     @Schema(description = "친구 유무")
-    Boolean isFriend
+    Boolean isFriend,
+
+    @Schema(description = "친구 요청 유무")
+    Boolean isFriendRequest
+
 ) {
 
 }

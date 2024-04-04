@@ -58,6 +58,7 @@ public class MemberFriendMapper {
             .profileUrl(dto.profileUrl())
             .nickname(dto.nickname())
             .isFriend(dto.isFriend())
+            .isFriendRequest(dto.isFriendRequest())
             .build();
     }
 }
