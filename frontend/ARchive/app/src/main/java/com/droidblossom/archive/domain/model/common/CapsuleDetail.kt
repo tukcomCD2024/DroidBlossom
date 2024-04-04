@@ -1,7 +1,7 @@
-package com.droidblossom.archive.domain.model.secret
+package com.droidblossom.archive.domain.model.common
 
 // 모든 캡슐 디테일로 통합될 예정 maybe
-data class SecretCapsuleDetail(
+data class CapsuleDetail(
     val address: String,
     val capsuleSkinUrl: String,
     val content: String,

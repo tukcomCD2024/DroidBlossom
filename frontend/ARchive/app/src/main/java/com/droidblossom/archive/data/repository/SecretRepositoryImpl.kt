@@ -5,12 +5,12 @@ import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsulePageRequestDto
-import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleDetailResponseDto
+import com.droidblossom.archive.data.dto.common.CapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleModifyResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsulePageResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
 import com.droidblossom.archive.data.source.remote.api.SecretService
-import com.droidblossom.archive.domain.model.secret.SecretCapsuleDetail
+import com.droidblossom.archive.domain.model.common.CapsuleDetail
 import com.droidblossom.archive.domain.model.secret.SecretCapsuleModify
 import com.droidblossom.archive.domain.model.secret.SecretCapsulePage
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
@@ -31,8 +31,8 @@ class SecretRepositoryImpl @Inject constructor(
         return apiHandler({ api.postSecretCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
-    override suspend fun getSecretCapsuleDetail(capsuleId: Long): RetrofitResult<SecretCapsuleDetail> {
-        return apiHandler({ api.getSecretCapsuleDetailApi(capsuleId) }) { response: ResponseBody<SecretCapsuleDetailResponseDto> -> response.result.toModel() }
+    override suspend fun getSecretCapsuleDetail(capsuleId: Long): RetrofitResult<CapsuleDetail> {
+        return apiHandler({ api.getSecretCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getSecretCapsuleSummary (capsuleId: Int) : RetrofitResult<CapsuleSummaryResponse> {

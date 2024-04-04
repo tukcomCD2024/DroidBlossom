@@ -3,7 +3,7 @@ package com.droidblossom.archive.data.source.remote.api
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.secret.request.SecretCapsuleModifyRequestDto
-import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleDetailResponseDto
+import com.droidblossom.archive.data.dto.common.CapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleModifyResponseDto
 import com.droidblossom.archive.data.dto.secret.response.SecretCapsulePageResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
@@ -31,7 +31,7 @@ interface SecretService {
     @GET("secret/capsules/{capsule_id}/detail")
     suspend fun getSecretCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Long,
-    ) : Response<ResponseBody<SecretCapsuleDetailResponseDto>>
+    ) : Response<ResponseBody<CapsuleDetailResponseDto>>
 
     @GET("secret/capsules/{capsule_id}/summary")
     suspend fun getSecretCapsuleSummaryApi(

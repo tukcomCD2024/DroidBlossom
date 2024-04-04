@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
+import com.droidblossom.archive.data.dto.common.CapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
@@ -21,5 +22,9 @@ interface PublicService {
         @Path("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<CapsuleSummaryResponseDto>>
 
+    @GET("public/capsules/{capsule_id}/detail")
+    suspend fun getPublicCapsuleDetailApi(
+        @Path("capsule_id") capsuleId : Int,
+    ) : Response<ResponseBody<CapsuleDetailResponseDto>>
 
 }
