@@ -24,7 +24,7 @@ interface PublicService {
 
     @GET("public/capsules/{capsule_id}/detail")
     suspend fun getPublicCapsuleDetailApi(
-        @Path("capsule_id") capsuleId : Int,
+        @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<CapsuleDetailResponseDto>>
 
 }
