@@ -16,6 +16,9 @@ public record SearchFriendSummaryResponse(
     @Schema(description = "검색된 사용자 닉네임")
     String nickname,
 
+    @Schema(description = "친구 전화번호")
+    String phone,
+
     @Schema(description = "친구 유무")
     Boolean isFriend,
 

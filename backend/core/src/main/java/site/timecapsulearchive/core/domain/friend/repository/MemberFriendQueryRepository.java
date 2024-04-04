@@ -101,12 +101,16 @@ public class MemberFriendQueryRepository {
                     member.id,
                     member.profileUrl,
                     member.nickname,
-                    memberFriend.id.isNotNull()
+                    member.phone,
+                    memberFriend.id.isNotNull(),
+                    friendInvite.id.isNotNull()
                 )
             )
             .from(member)
             .leftJoin(memberFriend)
             .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInvite)
+            .on(friendInvite.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
             .where(member.phone_hash.in(hashes))
             .fetch();
     }
@@ -122,6 +126,7 @@ public class MemberFriendQueryRepository {
                     member.id,
                     member.profileUrl,
                     member.nickname,
+                    member.phone,
                     memberFriend.id.isNotNull(),
                     friendInvite.id.isNotNull()
                 )

@@ -4,6 +4,7 @@ public record SearchFriendSummaryDto(
     Long id,
     String profileUrl,
     String nickname,
+    byte[] phone,
     Boolean isFriend,
     Boolean isFriendRequest
 ) {
