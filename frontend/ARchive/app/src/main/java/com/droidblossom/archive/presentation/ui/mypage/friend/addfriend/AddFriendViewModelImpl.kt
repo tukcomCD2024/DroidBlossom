@@ -114,7 +114,7 @@ class AddFriendViewModelImpl @Inject constructor(
 
     //Num
     override fun searchNum() {
-
+        //respone에 이름 추가시 구현
     }
 
     override fun openSearchNum() {
@@ -137,8 +137,10 @@ class AddFriendViewModelImpl @Inject constructor(
                 result.onSuccess { response ->
                     _addFriendList.emit(response.friends)
                     _addFriendListUI.emit(response.friends)
+                    _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }.onFail {
                     _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("주소록 불러오기 실패."))
+                    _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }
             }
         }

@@ -3,14 +3,12 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,12 +16,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
-import com.droidblossom.archive.databinding.FragmentFriendSearchNicknameBinding
 import com.droidblossom.archive.databinding.FragmentFriendSearchNumberBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
+import com.droidblossom.archive.util.ContactsUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class SearchFriendNumberFragment :
@@ -44,6 +43,9 @@ class SearchFriendNumberFragment :
 
         navController = Navigation.findNavController(view)
         initView()
+
+        showLoading(requireContext())
+        viewModel.contactsSearch(ContactsUtils.getContacts(requireContext()))
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -120,7 +122,9 @@ class SearchFriendNumberFragment :
                             showToastMessage(event.message)
                         }
 
-                        else -> {}
+                        is AddFriendViewModel.AddEvent.CloseLoading -> {
+                            dismissLoading()
+                        }
                     }
                 }
             }
