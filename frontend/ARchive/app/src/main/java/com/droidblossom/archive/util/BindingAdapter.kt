@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -22,6 +23,11 @@ import com.google.android.material.tabs.TabLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Locale
+
+@BindingAdapter("textInt")
+fun AppCompatTextView.textInt(int: Int) {
+    this.text = int.toString()
+}
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
