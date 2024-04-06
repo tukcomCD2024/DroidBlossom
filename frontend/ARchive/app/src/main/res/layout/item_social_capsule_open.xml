@@ -128,7 +128,7 @@
                         app:cardCornerRadius="19.5dp"
                         android:layout_marginTop="@dimen/margin"
                         app:layout_constraintTop_toBottomOf="@id/capsuleContentTextView"
-                        app:layout_constraintDimensionRatio="w,1:2">
+                        app:layout_constraintDimensionRatio="w,151:264">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/capsuleContentImageView"
