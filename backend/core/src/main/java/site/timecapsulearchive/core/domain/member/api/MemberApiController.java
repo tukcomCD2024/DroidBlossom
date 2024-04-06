@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
@@ -37,10 +38,12 @@ public class MemberApiController implements MemberApi {
     public ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(
         @AuthenticationPrincipal final Long memberId
     ) {
+        final MemberDetailDto detailDto = memberService.findMemberDetailById(memberId);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                memberService.findMemberDetailById(memberId)
+                MemberDetailResponse.createBy(detailDto)
             )
         );
     }

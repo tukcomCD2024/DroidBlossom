@@ -8,13 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
@@ -26,7 +25,6 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 
 @Slf4j
 @Service
@@ -36,7 +34,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
-    private final AESEncryptionManager aesEncryptionManager;
     private final PasswordEncoder passwordEncoder;
 
     private final MemberMapper memberMapper;
@@ -120,14 +117,9 @@ public class MemberService {
         return dto.memberId();
     }
 
-    public MemberDetailResponse findMemberDetailById(final Long memberId) {
-        final MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailResponseDtoById(
-                memberId)
+    public MemberDetailDto findMemberDetailById(final Long memberId) {
+        return memberQueryRepository.findMemberDetailResponseDtoById(memberId)
             .orElseThrow(MemberNotFoundException::new);
-
-        final String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
-
-        return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }
 
     @Transactional

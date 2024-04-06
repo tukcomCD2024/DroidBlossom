@@ -1,9 +1,12 @@
 package site.timecapsulearchive.core.domain.member.repository;
 
+import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
+import static site.timecapsulearchive.core.domain.group.entity.QMemberGroup.memberGroup;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member.entity.QNotification.notification;
 import static site.timecapsulearchive.core.domain.member.entity.QNotificationCategory.notificationCategory;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
@@ -15,7 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -55,20 +58,39 @@ public class MemberQueryRepository {
         );
     }
 
-    public Optional<MemberDetailResponseDto> findMemberDetailResponseDtoById(final Long memberId) {
-        return Optional.ofNullable(
-            query
-                .select(
-                    Projections.constructor(
-                        MemberDetailResponseDto.class,
-                        member.nickname,
-                        member.profileUrl,
-                        member.phone
-                    )
-                )
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetchOne()
+    public Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId) {
+        final Tuple memberDetail = query
+            .select(
+                member.nickname,
+                member.profileUrl,
+                member.tag
+            )
+            .from(member)
+            .where(member.id.eq(memberId))
+            .fetchOne();
+
+        if (memberDetail == null || memberDetail.size() == 0) {
+            return Optional.empty();
+        }
+
+        final Long friendCount = query.select(memberFriend.count())
+            .from(memberFriend)
+            .where(memberFriend.owner.id.eq(memberId))
+            .fetchOne();
+
+        final Long groupCount = query.select(memberGroup.count())
+            .from(memberGroup)
+            .where(memberGroup.member.id.eq(memberId))
+            .fetchOne();
+
+        return Optional.of(
+            MemberDetailDto.builder()
+                .nickname(memberDetail.get(0, String.class))
+                .profileUrl(memberDetail.get(1, String.class))
+                .tag(memberDetail.get(2, String.class))
+                .friendCount(friendCount)
+                .groupCount(groupCount)
+                .build()
         );
     }
 
