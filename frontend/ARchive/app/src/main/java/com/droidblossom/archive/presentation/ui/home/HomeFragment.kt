@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home
 import android.graphics.Point
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -72,14 +73,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 startActivity(CreateCapsuleActivity.newIntent(requireContext(), 3))
             }
             refreshBtn.setOnClickListener {
-                locationUtil.getCurrentLocation { latitude, longitude ->
-                    viewModel.getNearbyCapsules(
-                        latitude,
-                        longitude,
-                        calculateRadiusForZoomLevel(),
-                        viewModel.filterCapsuleSelect.value.toString()
-                    )
-                }
+                val cameraTarget = naverMap.cameraPosition.target
+                viewModel.getNearbyCapsules(
+                    cameraTarget.latitude,
+                    cameraTarget.longitude,
+                    calculateRadiusForZoomLevel(),
+                    viewModel.filterCapsuleSelect.value.toString()
+                )
             }
 
 
