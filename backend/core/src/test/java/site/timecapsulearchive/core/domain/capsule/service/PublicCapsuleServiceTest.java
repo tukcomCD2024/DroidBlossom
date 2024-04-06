@@ -27,7 +27,7 @@ class PublicCapsuleServiceTest {
     private final CapsuleMapper capsuleMapper;
     private final PublicCapsuleService publicCapsuleService;
 
-    PublicCapsuleServiceTest() throws FactoryException {
+    PublicCapsuleServiceTest() {
         this.capsuleMapper = new CapsuleMapper(UnitTestDependency.geoTransformManager(),
             UnitTestDependency.s3PreSignedUrlManager());
         this.publicCapsuleService = new PublicCapsuleService(publicCapsuleQueryRepository,
@@ -63,8 +63,7 @@ class PublicCapsuleServiceTest {
 
         return Optional.of(
             new CapsuleDetailDto(capsuleId, "test", dueDate, "test", "test", now, "address",
-                "title",
-                "content", "images", "videos", isOpened, CapsuleType.PUBLIC)
+                "roadName", "title", "content", "images", "videos", isOpened, CapsuleType.PUBLIC)
         );
     }
 
