@@ -11,6 +11,7 @@ public record MemberDetailDto(
     Long friendCount,
     Long groupCount
 ) {
+
     public MemberDetailDto {
         Objects.requireNonNull(nickname);
         Objects.requireNonNull(profileUrl);
