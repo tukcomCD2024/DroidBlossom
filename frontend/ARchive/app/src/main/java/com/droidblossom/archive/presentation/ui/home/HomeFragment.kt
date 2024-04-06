@@ -21,6 +21,8 @@ import com.droidblossom.archive.presentation.ui.home.notification.NotificationAc
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
@@ -176,6 +178,12 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.minZoom = MINZOOM
         naverMap.maxZoom = MAXZOOM
+
+        val southWest = LatLng(MINLAT, MINLNG)
+        val northEast = LatLng(MAXLAT, MAXLNG)
+        val koreaBounds = LatLngBounds(southWest, northEast)
+        naverMap.extent = koreaBounds
+
         LocationUtil(requireContext()).getCurrentLocation { latitude, longitude ->
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
             naverMap.moveCamera(cameraUpdate)
@@ -280,9 +288,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         fun newIntent() = HomeFragment()
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-        const val MAXZOOM = 18.0
-        const val MINZOOM = 6.0
+        const val MAXZOOM = 20.0
+        const val MINZOOM = 5.5
         const val FIXZOOM = 14.0
+        const val MINLAT = 32.0
+        const val MAXLAT = 43.0
+        const val MINLNG = 124.0
+        const val MAXLNG = 132.0
     }
 
 }
