@@ -9,7 +9,8 @@ import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
 
 public class NotificationFixture {
 
-    public static Notification notification(Member member, NotificationCategory notificationCategory) {
+    public static Notification notification(Member member,
+        NotificationCategory notificationCategory) {
         try {
             Constructor<Notification> declaredConstructor = Notification.class.getDeclaredConstructor();
             declaredConstructor.setAccessible(true);

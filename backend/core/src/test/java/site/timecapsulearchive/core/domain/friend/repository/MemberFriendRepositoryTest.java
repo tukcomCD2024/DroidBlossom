@@ -5,7 +5,6 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import jakarta.persistence.EntityManager;
 import java.util.List;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import site.timecapsulearchive.core.common.fixture.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
-@FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberFriendRepositoryTest extends RepositoryTest {
 

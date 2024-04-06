@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.opengis.referencing.FactoryException;
 import org.springframework.context.annotation.Import;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;

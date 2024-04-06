@@ -9,20 +9,21 @@ import java.util.function.Consumer;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
 public abstract class DatabaseContainer {
 
-    @Container
-    protected static final MySQLContainer<?> mysqlContainer =
-        new MySQLContainer<>(DockerImageName.parse("mysql:8.0.35"))
+    protected static final MySQLContainer<?> mysqlContainer;
+
+    static {
+        mysqlContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.35"))
             .withCreateContainerCmdModifier(bingPort())
             .withDatabaseName("test-database")
             .withUsername("test-user")
             .withPassword("test-password");
+
+        mysqlContainer.start();
+    }
 
     private static Consumer<CreateContainerCmd> bingPort() {
         return cmd -> cmd.withHostConfig(new HostConfig().withPortBindings(
