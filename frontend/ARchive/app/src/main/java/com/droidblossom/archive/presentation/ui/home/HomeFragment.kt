@@ -73,16 +73,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 startActivity(CreateCapsuleActivity.newIntent(requireContext(), 3))
             }
             refreshBtn.setOnClickListener {
-                naverCluster.clearItems()
-                val cameraTarget = naverMap.cameraPosition.target
-                viewModel.getNearbyCapsules(
-                    cameraTarget.latitude,
-                    cameraTarget.longitude,
-                    calculateRadiusForZoomLevel(),
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
+                fetchCapsulesInCameraFocus()
             }
-
 
         }
     }
@@ -94,14 +86,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 viewModel.filterCapsuleSelect.collect {
                     viewModel.resetNearbyCapsules()
                     if (::naverMap.isInitialized) {
-                        naverCluster.clearItems()
-                        val cameraTarget = naverMap.cameraPosition.target
-                        viewModel.getNearbyCapsules(
-                            cameraTarget.latitude,
-                            cameraTarget.longitude,
-                            calculateRadiusForZoomLevel(),
-                            viewModel.filterCapsuleSelect.value.toString()
-                        )
+                        fetchCapsulesInCameraFocus()
                     }
                 }
             }
@@ -242,27 +227,31 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             val temp = MapCapsuleMarker(capsuleMarker)
             markers.add(temp)
         }
-//        val bounds = naverMap.contentBounds
-//        for (i in 0..49) {
-//            val temp = MapCapsuleMarker(
-//                CapsuleMarker(
-//                    id = 0,
-//                    longitude = (bounds.eastLongitude - bounds.westLongitude) * Math.random() + bounds.westLongitude,
-//                    latitude = (bounds.northLatitude - bounds.southLatitude) * Math.random() + bounds.southLatitude,
-//                    capsuleType = when (i % 3) {
-//                        0 -> CapsuleType.SECRET
-//                        1 -> CapsuleType.PUBLIC
-//                        2 -> CapsuleType.GROUP
-//                        else -> CapsuleType.SECRET
-//                    },
-//                    skinUrl = ""
-//                )
-//            )
-//            markers.add(temp)
-//        }
         return markers
     }
 
+    private fun fetchCapsulesNearUser(){
+        locationUtil.getCurrentLocation { latitude, longitude ->
+            viewModel.getNearbyCapsules(
+                latitude,
+                longitude,
+                calculateRadiusForZoomLevel(),
+                viewModel.filterCapsuleSelect.value.toString()
+            )
+        }
+    }
+
+    private fun fetchCapsulesInCameraFocus(){
+        if (::naverMap.isInitialized){
+            val cameraTarget = naverMap.cameraPosition.target
+            viewModel.getNearbyCapsules(
+                cameraTarget.latitude,
+                cameraTarget.longitude,
+                calculateRadiusForZoomLevel(),
+                viewModel.filterCapsuleSelect.value.toString()
+            )
+        }
+    }
 
     private fun calculateRadiusForZoomLevel(): Double {
         val earthRadius = 6371.01
@@ -308,32 +297,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     override fun onResume() {
         super.onResume()
-        locationUtil.getCurrentLocation { latitude, longitude ->
-            if (::naverMap.isInitialized) {
-                naverCluster.clearItems()
-                viewModel.getNearbyCapsules(
-                    latitude,
-                    longitude,
-                    calculateRadiusForZoomLevel(),
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
-            }
-        }
+        fetchCapsulesNearUser()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden){
-            if (::naverMap.isInitialized) {
-                naverCluster.clearItems()
-                val cameraTarget = naverMap.cameraPosition.target
-                viewModel.getNearbyCapsules(
-                    cameraTarget.latitude,
-                    cameraTarget.longitude,
-                    calculateRadiusForZoomLevel(),
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
-            }
+            fetchCapsulesInCameraFocus()
         }
     }
 
