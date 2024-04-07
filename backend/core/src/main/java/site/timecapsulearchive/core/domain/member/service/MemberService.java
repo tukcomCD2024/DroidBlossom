@@ -215,4 +215,9 @@ public class MemberService {
 
         return new MemberNotificationStatusResponse(isAlarm);
     }
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+    }
 }

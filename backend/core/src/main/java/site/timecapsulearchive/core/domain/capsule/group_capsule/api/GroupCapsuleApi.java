@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 
 public interface GroupCapsuleApi {
@@ -37,15 +37,13 @@ public interface GroupCapsuleApi {
             description = "처리 시작"
         )
     })
-    @PostMapping(
-        value = "/groups/{group_id}/capsules",
-        consumes = {"multipart/form-data"}
-    )
-    ResponseEntity<GroupCapsuleSummaryResponse> createGroupCapsule(
-        @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> createGroupCapsule(
+        Long memberId,
 
-        @ModelAttribute GroupCapsuleCreateRequest request
+        @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true, schema = @Schema())
+        Long groupId,
+
+        GroupCapsuleCreateRequest request
     );
 
     @Operation(
