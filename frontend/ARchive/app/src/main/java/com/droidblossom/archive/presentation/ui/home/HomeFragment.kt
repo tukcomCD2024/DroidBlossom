@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home
 import android.graphics.Point
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ted.gun0912.clustering.naver.TedNaverClustering
+import kotlin.math.pow
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layout.fragment_home),
@@ -48,6 +50,19 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverCluster: TedNaverClustering<MapCapsuleMarker>
+
+    private val zoomToRadiusMap: Map<Double, Double> by lazy {
+        val map = mutableMapOf<Double, Double>()
+        val maxRadius = 1100.0
+        val minRadius = 2.0
+
+        for (zoomLevel in MINZOOM.toInt()..MAXZOOM.toInt()) {
+            val normalizedZoom = 1 - ((zoomLevel - MINZOOM) / (MAXZOOM - MINZOOM))
+            val radius = minRadius + (maxRadius - minRadius) * normalizedZoom.pow(3)
+            map[zoomLevel.toDouble()] = radius
+        }
+        map.toMap()
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         locationUtil = LocationUtil(requireContext())
@@ -85,9 +100,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.filterCapsuleSelect.collect {
                     viewModel.resetNearbyCapsules()
-                    if (::naverMap.isInitialized) {
-                        fetchCapsulesInCameraFocus()
-                    }
+                    fetchCapsulesInCameraFocus()
                 }
             }
         }
@@ -231,13 +244,24 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     }
 
     private fun fetchCapsulesNearUser(){
-        locationUtil.getCurrentLocation { latitude, longitude ->
-            viewModel.getNearbyCapsules(
-                latitude,
-                longitude,
-                calculateRadiusForZoomLevel(),
-                viewModel.filterCapsuleSelect.value.toString()
-            )
+        if (::naverMap.isInitialized){
+            locationUtil.getCurrentLocation { latitude, longitude ->
+                viewModel.getNearbyCapsules(
+                    latitude,
+                    longitude,
+                    getRadiusForCurrentZoom(),
+                    viewModel.filterCapsuleSelect.value.toString()
+                )
+            }
+        }else{
+            locationUtil.getCurrentLocation { latitude, longitude ->
+                viewModel.getNearbyCapsules(
+                    latitude,
+                    longitude,
+                    4.0,
+                    viewModel.filterCapsuleSelect.value.toString()
+                )
+            }
         }
     }
 
@@ -247,27 +271,17 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             viewModel.getNearbyCapsules(
                 cameraTarget.latitude,
                 cameraTarget.longitude,
-                calculateRadiusForZoomLevel(),
+                getRadiusForCurrentZoom(),
                 viewModel.filterCapsuleSelect.value.toString()
             )
         }
     }
 
-    private fun calculateRadiusForZoomLevel(): Double {
-        val earthRadius = 6371.01
 
-        val latDistance = Math.toRadians(MAXLAT - MINLAT)
-        val lngDistance = Math.toRadians(MAXLNG - MINLNG)
-
-        val a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
-                Math.cos(Math.toRadians(MINLAT)) * Math.cos(Math.toRadians(MAXLAT)) *
-                Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2)
-
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
-        val maxRadius = earthRadius * c
-
-        return maxRadius
+    private fun getRadiusForCurrentZoom(): Double {
+        val currentZoom = naverMap.cameraPosition.zoom
+        val closestZoomLevel = zoomToRadiusMap.keys.minByOrNull { Math.abs(it - currentZoom) }
+        return zoomToRadiusMap[closestZoomLevel] ?: throw IllegalArgumentException("Invalid zoom level: $currentZoom")
     }
 
     override fun onRequestPermissionsResult(
