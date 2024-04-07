@@ -14,10 +14,10 @@ import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 @Schema(description = "그룹 캡슐 생성 포맷")
 public record GroupCapsuleCreateRequest(
 
-    @Schema(description = "업로드한 이미지 경로 ex) capsule/1/xxxx.jpg")
+    @Schema(description = "업로드한 이미지 경로 ex) xxx.jpg")
     List<@Image String> imageNames,
 
-    @Schema(description = "업로드한 비디오 경로 ex) capsule/1/xxxx.mp4")
+    @Schema(description = "업로드한 비디오 경로 ex) xxx.mp4")
     List<@Video String> videoNames,
 
     @Schema(description = "캡슐 스킨 아이디")
