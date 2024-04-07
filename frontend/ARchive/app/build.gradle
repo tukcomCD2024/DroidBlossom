@@ -182,6 +182,10 @@ dependencies {
 
     // oss-licenses : https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+
+    // TedNaverMapClustering: https://github.com/ParkSangGwon/TedNaverMapClustering
+    //implementation 'io.github.ParkSangGwon:tedclustering-naver:x.y.z'
+    implementation 'io.github.ParkSangGwon:tedclustering-naver:1.0.2'
 }
 kapt {
     correctErrorTypes true
