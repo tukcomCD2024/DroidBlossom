@@ -143,7 +143,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 사용자는_친구가_아닌_사용자가_만든_공개_캡슐을_조회하면_빈_리스트를_반환한다() {
+    void 사용자는_친구가_아닌_사용자_혹은_자신이_만든_공개_캡슐을_조회하면_빈_리스트를_반환한다() {
         //given
         //when
         Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
