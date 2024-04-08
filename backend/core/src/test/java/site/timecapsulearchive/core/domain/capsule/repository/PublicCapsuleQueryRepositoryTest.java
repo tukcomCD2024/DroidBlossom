@@ -132,7 +132,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 사용자는_친구가_생성한_공개_캡슐을_조회할_수_있다() {
+    void 사용자는_나_혹은_친구가_생성한_공개_캡슐을_조회할_수_있다() {
         //given
         //when
         Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
@@ -143,22 +143,11 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 사용자는_친구가_아닌_사용자_혹은_자신이_만든_공개_캡슐을_조회하면_빈_리스트를_반환한다() {
+    void 존재하지_않는_사용자는_공개_캡슐을_조회하면_빈_리스트를_반환한다() {
         //given
         //when
         Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
-            friend.getId(), 3, ZonedDateTime.now());
-
-        //then
-        assertThat(dto.isEmpty()).isTrue();
-    }
-
-    @Test
-    void 친구가_없는_사용자는_친구가_생성한_공개_캡슐을_조회할_때_빈_리스트를_반환한다() {
-        //given
-        //when
-        Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
-            notFriend.getId(), 3, ZonedDateTime.now());
+            999L, 3, ZonedDateTime.now());
 
         //then
         assertThat(dto.isEmpty()).isTrue();
