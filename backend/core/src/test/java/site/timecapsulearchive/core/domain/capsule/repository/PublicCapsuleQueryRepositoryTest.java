@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.common.fixture.CapsuleSkinFixture;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -63,16 +64,14 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         capsuleSkin = CapsuleSkinFixture.capsuleSkin(friend);
         entityManager.persist(capsuleSkin);
 
-        capsule = CapsuleFixture.publicCapsule(friend, capsuleSkin);
+        capsule = CapsuleFixture.capsule(friend, capsuleSkin, CapsuleType.PUBLIC);
         entityManager.persist(capsule);
 
-        Capsule capsuleByNotFriend = CapsuleFixture.publicCapsule(notFriend, capsuleSkin);
+        Capsule capsuleByNotFriend = CapsuleFixture.capsule(notFriend, capsuleSkin,
+            CapsuleType.PUBLIC);
         entityManager.persist(capsuleByNotFriend);
-    }
 
-    @Transactional
-    void saveCapsuleMadeByFriend(EntityManager entityManager) {
-        CapsuleFixture.publicCapsules(friend, capsuleSkin)
+        CapsuleFixture.capsules(10, friend, capsuleSkin, CapsuleType.PUBLIC)
             .forEach(entityManager::persist);
     }
 
@@ -133,10 +132,8 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 사용자는_친구가_생성한_공개_캡슐을_조회할_수_있다(@Autowired EntityManager entityManager) {
+    void 사용자는_친구가_생성한_공개_캡슐을_조회할_수_있다() {
         //given
-        saveCapsuleMadeByFriend(entityManager);
-
         //when
         Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
             member.getId(), 3, ZonedDateTime.now());

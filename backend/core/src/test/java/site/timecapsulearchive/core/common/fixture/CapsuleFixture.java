@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.common.fixture;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
@@ -13,37 +14,41 @@ import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 public class CapsuleFixture {
 
     private static final GeoTransformManager geoTransformManager = UnitTestDependency.geoTransformManager();
-    private static final double x = 37.078;
-    private static final double y = 127.423;
+    private static final double TEST_LATITUDE = 37.078;
+    private static final double TEST_LONGITUDE = 127.423;
 
-    public static Capsule publicCapsule(Member member, CapsuleSkin capsuleSkin) {
+    public static List<Capsule> capsules(int size, Member member, CapsuleSkin capsuleSkin,
+        CapsuleType capsuleType) {
+        return IntStream
+            .range(0, size)
+            .mapToObj(i -> capsule(member, capsuleSkin, capsuleType))
+            .toList();
+    }
+
+    public static Capsule capsule(Member member, CapsuleSkin capsuleSkin, CapsuleType capsuleType) {
         return Capsule.builder()
-            .title("test_title")
-            .content("test_content")
-            .dueDate(null)
-            .type(CapsuleType.PUBLIC)
-            .point(geoTransformManager.changePoint4326To3857(x, y))
+            .dueDate(ZonedDateTime.now())
+            .title("testTitle")
+            .content("testContent")
+            .type(capsuleType)
+            .address(getTestAddress())
+            .point(geoTransformManager.changePoint4326To3857(TEST_LATITUDE, TEST_LONGITUDE))
             .member(member)
-            .address(Address.from("full_test_address"))
             .capsuleSkin(capsuleSkin)
             .build();
     }
 
-    public static List<Capsule> publicCapsules(Member member, CapsuleSkin capsuleSkin) {
-        return IntStream
-            .range(0, 10)
-            .mapToObj(i -> {
-                return Capsule.builder()
-                    .title(i + "test_title")
-                    .content(i + "test_content")
-                    .dueDate(null)
-                    .type(CapsuleType.PUBLIC)
-                    .point(geoTransformManager.changePoint4326To3857(x, y))
-                    .member(member)
-                    .address(Address.from("full_test_address"))
-                    .capsuleSkin(capsuleSkin)
-                    .build();
-            })
-            .toList();
+    private static Address getTestAddress() {
+        return Address.builder()
+            .fullRoadAddressName("testFullRoadAddressName")
+            .province("testProvince")
+            .city("testCity")
+            .subDistinct("testSubDistinct")
+            .roadName("testRoadName")
+            .mainBuildingNumber("testMainBuildingNumber")
+            .subBuildingNumber("testSubBuildingNumber")
+            .buildingName("testBuildingName")
+            .zipCode("testZipCode")
+            .build();
     }
 }
