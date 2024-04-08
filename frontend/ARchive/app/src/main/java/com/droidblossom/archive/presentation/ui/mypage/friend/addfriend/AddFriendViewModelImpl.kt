@@ -131,6 +131,7 @@ class AddFriendViewModelImpl @Inject constructor(
 
     fun contactsSearch(phones: List<String>) {
         viewModelScope.launch {
+            _addEvent.emit(AddFriendViewModel.AddEvent.OpenLoading)
             friendsSearchPhoneUseCase(FriendsSearchPhoneRequest(phones.filter {
                 it.length == 11 && it.substring(0,3) == "010"
             })).collect { result ->
@@ -143,6 +144,13 @@ class AddFriendViewModelImpl @Inject constructor(
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }
             }
+        }
+    }
+
+
+    fun closeLoading(){
+        viewModelScope.launch {
+            _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
         }
     }
 }

@@ -30,6 +30,7 @@ interface AddFriendViewModel {
 
     sealed class AddEvent {
         data class ShowToastMessage(val message : String) : AddEvent()
+        object  OpenLoading : AddEvent()
         object  CloseLoading : AddEvent()
     }
 }
