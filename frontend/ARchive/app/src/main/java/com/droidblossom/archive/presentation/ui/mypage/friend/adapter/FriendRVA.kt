@@ -16,7 +16,11 @@ import com.droidblossom.archive.databinding.ItemFriendBinding
 import com.droidblossom.archive.domain.model.friend.Friend
 
 
-class FriendRVA(private val context: Context, private val click: (Int?,Int) -> Unit) :
+class FriendRVA(
+    private val context: Context,
+    private val click: (Int?, Int) -> Unit,
+    private val delete: (Friend) -> Unit
+) :
     ListAdapter<Friend, FriendRVA.ItemViewHolder>(differ) {
 
     private var previousClickedPosition: Int? = null
@@ -49,6 +53,7 @@ class FriendRVA(private val context: Context, private val click: (Int?,Int) -> U
                     Log.d("아이템 ", "onScroll() called : $p0")
                     return true
                 }
+
                 override fun onLongPress(p0: MotionEvent) = Unit
                 override fun onFling(p0: MotionEvent?, p1: MotionEvent, p2: Float, p3: Float) = true
             })
@@ -57,15 +62,9 @@ class FriendRVA(private val context: Context, private val click: (Int?,Int) -> U
                 return@setOnTouchListener false
             }
 
-
-            binding.root.setOnGenericMotionListener { _, motionEvent ->
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_SCROLL -> {
-                        Log.d("아이탬", "tqtqt")
-                    }
-                }
-
-                return@setOnGenericMotionListener false
+            binding.deleteBtn.setOnClickListener {
+                delete(data)
+                notifyItemRemoved(bindingAdapterPosition)
             }
         }
     }

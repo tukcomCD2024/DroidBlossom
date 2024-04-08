@@ -4,7 +4,7 @@ import com.droidblossom.archive.domain.model.friend.Friend
 
 data class FriendResponseDto(
     val createdAt: String,
-    val id: Int,
+    val id: Long,
     val nickname: String,
     val profileUrl: String
 ) {

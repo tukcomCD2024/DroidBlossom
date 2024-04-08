@@ -11,6 +11,7 @@ import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -83,6 +84,20 @@ class FriendViewModelImpl @Inject constructor(
             }
             newList[currentPosition].isOpenDelete = true
             _friendListUI.emit(newList)
+        }
+    }
+
+    override fun deleteFriend(friend: Friend) {
+        viewModelScope.launch {
+            friendDeleteUseCase(friend.id).collect{ result ->
+                result.onSuccess {
+                    val list = friendListUI.value.toMutableList()
+                    list.remove(friend)
+                    _friendListUI.emit(list)
+                }.onFail {
+
+                }
+            }
         }
     }
 }

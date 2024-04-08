@@ -15,5 +15,5 @@ interface FriendViewModel {
     fun searchFriend()
     fun getFriendList()
     fun changeDeleteOpen(previousPosition: Int?, currentPosition: Int)
-
+    fun deleteFriend(friend : Friend)
 }

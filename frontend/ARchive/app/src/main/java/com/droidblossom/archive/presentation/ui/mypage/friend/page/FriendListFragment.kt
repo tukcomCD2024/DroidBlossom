@@ -33,9 +33,13 @@ class FriendListFragment :
     override val viewModel: FriendViewModelImpl by activityViewModels()
 
     private val friendRVA by lazy {
-        FriendRVA(requireContext()){
-
-        }
+        FriendRVA(requireContext(),
+            { prev, curr ->
+                viewModel.changeDeleteOpen(prev, curr)
+            }, { friend ->
+                viewModel.deleteFriend(friend)
+            }
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +71,7 @@ class FriendListFragment :
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendListUI.collect{ friends ->
+                viewModel.friendListUI.collect { friends ->
                     friendRVA.submitList(friends)
                 }
             }
