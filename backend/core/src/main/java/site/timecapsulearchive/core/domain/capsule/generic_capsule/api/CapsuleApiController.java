@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeRequestDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
@@ -51,7 +51,7 @@ public class CapsuleApiController implements CapsuleApi {
                 SuccessCode.SUCCESS,
                 capsuleService.findCapsuleByCurrentLocationAndCapsuleType(
                     memberId,
-                    CoordinateRangeRequestDto.from(latitude, longitude, distance),
+                    CoordinateRangeDto.from(latitude, longitude, distance),
                     capsuleType
                 )
             )
