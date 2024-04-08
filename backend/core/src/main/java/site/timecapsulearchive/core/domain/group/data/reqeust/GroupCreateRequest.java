@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.group.data.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 
 @Schema(description = "그룹 생성 포맷")
@@ -24,4 +25,12 @@ public record GroupCreateRequest(
     String description
 ) {
 
+    public GroupCreateDto toDto(String url) {
+        return GroupCreateDto.builder()
+            .name(name)
+            .groupImage(groupImage)
+            .description(description)
+            .groupDirectory(url)
+            .build();
+    }
 }
