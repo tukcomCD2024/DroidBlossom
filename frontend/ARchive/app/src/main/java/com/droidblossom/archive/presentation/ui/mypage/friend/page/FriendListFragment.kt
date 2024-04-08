@@ -23,6 +23,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentListFriendBinding
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendRVA
 import kotlinx.coroutines.launch
@@ -73,6 +74,20 @@ class FriendListFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendListUI.collect { friends ->
                     friendRVA.submitList(friends)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.friendEvent.collect{ event ->
+                    when(event){
+                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+                        
+                        else -> {}
+                    }
                 }
             }
         }

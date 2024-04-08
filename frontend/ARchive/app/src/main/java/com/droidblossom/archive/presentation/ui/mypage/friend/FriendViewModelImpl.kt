@@ -5,12 +5,17 @@ import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.usecase.friend.FriendDeleteUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.ui.home.notification.NotificationViewModel
+import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,8 +26,12 @@ class FriendViewModelImpl @Inject constructor(
     private val friendDeleteUseCase: FriendDeleteUseCase
 ) : BaseViewModel(), FriendViewModel {
 
+    private val _friendEvent = MutableSharedFlow<FriendViewModel.FriendEvent>()
+    override val friendEvent: SharedFlow<FriendViewModel.FriendEvent>
+        get() = _friendEvent.asSharedFlow()
 
     private val _isFriendSearchOpen = MutableStateFlow(false)
+
     override val isFriendSearchOpen: StateFlow<Boolean>
         get() = _isFriendSearchOpen
 
@@ -51,7 +60,7 @@ class FriendViewModelImpl @Inject constructor(
         }
     }
 
-    override fun searchFriend(){
+    override fun searchFriend() {
 
     }
 
@@ -65,11 +74,11 @@ class FriendViewModelImpl @Inject constructor(
                         _friendList.emit(friendList.value + it.friends)
                         friendLastCreatedTime.value = it.friends.last().createdAt
                     }.onFail {
-//                        .emit(
-//                            NotificationViewModel.NotificationEvent.ShowToastMessage(
-//                                "알림 불러오기 실패"
-//                            )
-//                        )
+                        _friendEvent.emit(
+                            FriendViewModel.FriendEvent.ShowToastMessage(
+                                "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                            )
+                        )
                     }
                 }
             }
@@ -89,13 +98,17 @@ class FriendViewModelImpl @Inject constructor(
 
     override fun deleteFriend(friend: Friend) {
         viewModelScope.launch {
-            friendDeleteUseCase(friend.id).collect{ result ->
+            friendDeleteUseCase(friend.id).collect { result ->
                 result.onSuccess {
                     val list = friendListUI.value.toMutableList()
                     list.remove(friend)
                     _friendListUI.emit(list)
                 }.onFail {
-
+                    _friendEvent.emit(
+                        FriendViewModel.FriendEvent.ShowToastMessage(
+                            "친구 삭제 실패. 잠시후 시도해 주세요"
+                        )
+                    )
                 }
             }
         }
