@@ -12,6 +12,7 @@ data class FriendResponseDto(
          createdAt = this.createdAt,
          id = this.id,
          nickname = this.nickname,
-         profileUrl = this.profileUrl
+         profileUrl = this.profileUrl,
+         isOpenDelete = false
      )
 }
