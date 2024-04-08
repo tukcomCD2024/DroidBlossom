@@ -28,6 +28,9 @@ public record CapsuleDetailResponse(
     @Schema(description = "캡슐 생성 주소")
     String address,
 
+    @Schema(description = "캡슐 생성 도로 이름")
+    String roadName,
+
     @Schema(description = "제목")
     String title,
 

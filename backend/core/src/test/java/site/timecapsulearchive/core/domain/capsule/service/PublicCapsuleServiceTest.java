@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.opengis.referencing.FactoryException;
 import org.springframework.context.annotation.Import;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -27,7 +26,7 @@ class PublicCapsuleServiceTest {
     private final CapsuleMapper capsuleMapper;
     private final PublicCapsuleService publicCapsuleService;
 
-    PublicCapsuleServiceTest() throws FactoryException {
+    PublicCapsuleServiceTest() {
         this.capsuleMapper = new CapsuleMapper(UnitTestDependency.geoTransformManager(),
             UnitTestDependency.s3PreSignedUrlManager());
         this.publicCapsuleService = new PublicCapsuleService(publicCapsuleQueryRepository,
@@ -63,8 +62,7 @@ class PublicCapsuleServiceTest {
 
         return Optional.of(
             new CapsuleDetailDto(capsuleId, "test", dueDate, "test", "test", now, "address",
-                "title",
-                "content", "images", "videos", isOpened, CapsuleType.PUBLIC)
+                "roadName", "title", "content", "images", "videos", isOpened, CapsuleType.PUBLIC)
         );
     }
 
