@@ -28,14 +28,20 @@ class FriendActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+
+        viewModel.getFriendList()
     }
 
     private fun initView(){
-        val layoutParams = binding.tab.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.tab.layoutParams = layoutParams
+        binding.closeBtn.layoutParams = layoutParams
 
         binding.vp.adapter = friendVPA
+
+        binding.closeBtn.setOnClickListener {
+            finish()
+        }
 
         TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
             tab.text = when (position) {
