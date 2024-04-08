@@ -46,7 +46,7 @@ public class FriendApiController implements FriendApi {
     public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -64,7 +64,7 @@ public class FriendApiController implements FriendApi {
     public ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -136,7 +136,7 @@ public class FriendApiController implements FriendApi {
     @Override
     public ResponseEntity<ApiSpec<SearchFriendSummaryResponse>> searchFriendByTag(
         @AuthenticationPrincipal Long memberId,
-        @RequestParam(value = "friend-tag") final String tag
+        @RequestParam(value = "friend_tag") final String tag
     ) {
         return ResponseEntity.ok()
             .body(

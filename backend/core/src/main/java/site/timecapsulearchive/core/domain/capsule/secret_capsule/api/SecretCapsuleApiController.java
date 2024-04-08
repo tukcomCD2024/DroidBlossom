@@ -34,7 +34,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
     public ResponseEntity<ApiSpec<MySecretCapsuleSliceResponse>> getMySecretCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(defaultValue = "0", value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(defaultValue = "0", value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
