@@ -147,7 +147,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         //given
         //when
         Slice<CapsuleDetailDto> dto = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
-            999L, 3, ZonedDateTime.now());
+            0L, 3, ZonedDateTime.now());
 
         //then
         assertThat(dto.isEmpty()).isTrue();

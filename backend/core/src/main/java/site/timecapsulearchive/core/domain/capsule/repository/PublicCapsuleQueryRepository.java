@@ -22,7 +22,6 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.member.entity.QMember;
 
 @Repository
 @RequiredArgsConstructor
@@ -108,7 +107,13 @@ public class PublicCapsuleQueryRepository {
         final ZonedDateTime createdAt
     ) {
 
-        final QMember friend = new QMember("friend");
+        final List<Long> memberIds = jpaQueryFactory
+            .select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(memberFriend.owner.id.eq(memberId))
+            .fetch();
+        memberIds.add(memberId);
+
         final List<CapsuleDetailDto> publicCapsuleDetailDtos = jpaQueryFactory
             .select(
                 Projections.constructor(
@@ -116,8 +121,8 @@ public class PublicCapsuleQueryRepository {
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
-                    friend.nickname,
-                    friend.profileUrl,
+                    member.nickname,
+                    member.profileUrl,
                     capsule.createdAt,
                     capsule.address.fullRoadAddressName,
                     capsule.title,
@@ -129,15 +134,13 @@ public class PublicCapsuleQueryRepository {
                 )
             )
             .from(capsule)
+            .join(member).on(capsule.member.id.in(memberIds))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .leftJoin(memberFriend).on(memberFriend.owner.id.eq(memberId)
-                .and(memberFriend.friend.id.eq(capsule.member.id)))
-            .leftJoin(friend).on(friend.id.eq(memberFriend.friend.id))
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.createdAt.lt(createdAt)
-                .and(capsule.type.eq(CapsuleType.PUBLIC))
-                .and(capsule.member.id.in(memberId)))
+                .and(capsule.type.eq(CapsuleType.PUBLIC)))
+            .groupBy(member.id)
             .groupBy(capsule.id)
             .orderBy(capsule.createdAt.desc())
             .limit(size + 1)
