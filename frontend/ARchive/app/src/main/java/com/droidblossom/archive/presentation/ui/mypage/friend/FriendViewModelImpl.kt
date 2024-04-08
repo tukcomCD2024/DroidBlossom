@@ -30,6 +30,7 @@ class FriendViewModelImpl @Inject constructor(
     override val friendEvent: SharedFlow<FriendViewModel.FriendEvent>
         get() = _friendEvent.asSharedFlow()
 
+    //friend
     private val _isFriendSearchOpen = MutableStateFlow(false)
 
     override val isFriendSearchOpen: StateFlow<Boolean>
@@ -48,6 +49,13 @@ class FriendViewModelImpl @Inject constructor(
 
     private val friendLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
 
+    //group
+    private val _isGroupSearchOpen = MutableStateFlow(false)
+
+    override val isGroupSearchOpen: StateFlow<Boolean>
+        get() = _isGroupSearchOpen
+
+    //friend
     override fun openSearchFriend() {
         viewModelScope.launch {
             _isFriendSearchOpen.emit(true)
@@ -112,5 +120,22 @@ class FriendViewModelImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    //group
+    override fun openSearchGroup() {
+        viewModelScope.launch {
+            _isGroupSearchOpen.emit(true)
+        }
+    }
+
+    override fun closeSearchGroup() {
+        viewModelScope.launch {
+            _isGroupSearchOpen.emit(false)
+        }
+    }
+
+    override fun searchGroup() {
+
     }
 }

@@ -10,17 +10,26 @@ interface FriendViewModel {
 
     val friendEvent : SharedFlow<FriendEvent>
 
-
+    //friend
     val isFriendSearchOpen : StateFlow<Boolean>
     val friendList: StateFlow<List<Friend>>
     val friendListUI: StateFlow<List<Friend>>
 
+    //group
+    val isGroupSearchOpen : StateFlow<Boolean>
+
+    //friend
     fun openSearchFriend()
     fun closeSearchFriend()
     fun searchFriend()
     fun getFriendList()
     fun changeDeleteOpen(previousPosition: Int?, currentPosition: Int)
     fun deleteFriend(friend : Friend)
+
+    //group
+    fun openSearchGroup()
+    fun closeSearchGroup()
+    fun searchGroup()
 
     sealed class FriendEvent {
         data class ShowToastMessage(val message : String) : FriendViewModel.FriendEvent()
