@@ -44,6 +44,7 @@ public class PublicCapsuleQueryRepository {
                     member.profileUrl,
                     capsule.createdAt,
                     capsule.address.fullRoadAddressName,
+                    capsule.address.roadName,
                     capsule.title,
                     capsule.content,
                     groupConcatDistinct(image.imageUrl),
@@ -54,12 +55,13 @@ public class PublicCapsuleQueryRepository {
             )
             .from(capsule)
             .join(member).on(capsule.member.id.eq(member.id))
-            .join(memberFriend).on(memberFriend.friend.id.eq(capsule.member.id)
-                .and(memberFriend.owner.id.eq(memberId)))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .join(memberFriend).on(memberFriend.friend.id.eq(capsule.member.id)
+                .or(memberFriend.owner.id.eq(capsule.member.id)))
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
-            .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC)))
+            .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
+                .and(memberFriend.owner.id.eq(memberId)))
             .fetchFirst();
 
         if (detailDto.capsuleId() == null) {
@@ -95,8 +97,9 @@ public class PublicCapsuleQueryRepository {
                 )
                 .from(capsule)
                 .join(memberFriend).on(memberFriend.friend.id.eq(capsule.member.id)
+                    .or(memberFriend.owner.id.eq(capsule.member.id)))
+                .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
                     .and(memberFriend.owner.id.eq(memberId)))
-                .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC)))
                 .fetchOne()
         );
     }

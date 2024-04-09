@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.sql.DataSource;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryReposito
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
-@FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MediaQueryRepositoryTest extends RepositoryTest {
 
