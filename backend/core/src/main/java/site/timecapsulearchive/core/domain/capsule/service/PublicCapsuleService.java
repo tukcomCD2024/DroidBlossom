@@ -22,7 +22,7 @@ public class PublicCapsuleService {
         Long capsuleId
     ) {
         CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
-                capsuleId, memberId)
+                memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(detailDto)) {
