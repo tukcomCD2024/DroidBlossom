@@ -14,11 +14,13 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.PublicCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -146,6 +148,7 @@ public class CapsuleMapper {
             .profileUrl(detailDto.profileUrl())
             .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(detailDto.address())
+            .roadName(detailDto.roadName())
             .title(detailDto.title())
             .content(detailDto.content())
             .imageUrls(preSignedUrls.preSignedImageUrls())
@@ -175,6 +178,7 @@ public class CapsuleMapper {
             .profileUrl(detailDto.profileUrl())
             .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(detailDto.address())
+            .roadName(detailDto.roadName())
             .title("")
             .content("")
             .imageUrls(Collections.emptyList())
@@ -207,6 +211,44 @@ public class CapsuleMapper {
             .title(dto.title())
             .isOpened(dto.isOpened())
             .type(dto.type())
+            .build();
+    }
+
+    public PublicCapsuleSliceResponse publicCapsuleDetailSliceToResponse(
+        final List<CapsuleDetailDto> content, final boolean hasNext) {
+        List<PublicCapsuleDetailResponse> responses = content.stream()
+            .map(this::publicCapsuleDetailDtoToResponse)
+            .toList();
+
+        return new PublicCapsuleSliceResponse(responses, hasNext);
+    }
+
+    public PublicCapsuleDetailResponse publicCapsuleDetailDtoToResponse(
+        final CapsuleDetailDto detailDto
+    ) {
+        final S3PreSignedUrlDto preSignedUrls = s3PreSignedUrlManager.getS3PreSignedUrlsForGet(
+            S3PreSignedUrlRequestDto.forGet(
+                splitFileNames(detailDto.images()),
+                splitFileNames(detailDto.videos())
+            )
+        );
+
+        return PublicCapsuleDetailResponse.builder()
+            .capsuleId(detailDto.capsuleId())
+            .capsuleSkinUrl(
+                s3PreSignedUrlManager.getS3PreSignedUrlForGet(detailDto.capsuleSkinUrl()))
+            .dueDate(checkNullable(detailDto.dueDate()))
+            .nickname(detailDto.nickname())
+            .profileUrl(detailDto.profileUrl())
+            .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
+            .address(detailDto.address())
+            .roadName(detailDto.roadName())
+            .title(detailDto.title())
+            .content(detailDto.content())
+            .imageUrls(preSignedUrls.preSignedImageUrls())
+            .videoUrls(preSignedUrls.preSignedVideoUrls())
+            .isOpened(detailDto.isOpened())
+            .capsuleType(detailDto.capsuleType())
             .build();
     }
 }

@@ -7,7 +7,6 @@ import jakarta.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +29,6 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.Notification;
 import site.timecapsulearchive.core.domain.member.entity.NotificationCategory;
 
-@FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberQueryRepositoryTest extends RepositoryTest {
 

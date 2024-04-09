@@ -16,6 +16,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
 
 @Repository
@@ -101,33 +102,40 @@ public class MemberFriendQueryRepository {
                     member.id,
                     member.profileUrl,
                     member.nickname,
-                    memberFriend.id.isNotNull()
+                    member.phone,
+                    memberFriend.id.isNotNull(),
+                    friendInvite.id.isNotNull()
                 )
             )
             .from(member)
             .leftJoin(memberFriend)
             .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInvite)
+            .on(friendInvite.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
             .where(member.phone_hash.in(hashes))
             .fetch();
     }
 
-    public Optional<SearchFriendSummaryDto> findFriendsByTag(
+    public Optional<SearchTagFriendSummaryDto> findFriendsByTag(
         final Long memberId,
         final String tag
     ) {
         return Optional.ofNullable(jpaQueryFactory
             .select(
                 Projections.constructor(
-                    SearchFriendSummaryDto.class,
+                    SearchTagFriendSummaryDto.class,
                     member.id,
                     member.profileUrl,
                     member.nickname,
-                    memberFriend.id.isNotNull()
+                    memberFriend.id.isNotNull(),
+                    friendInvite.id.isNotNull()
                 )
             )
             .from(member)
             .leftJoin(memberFriend)
             .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInvite)
+            .on(friendInvite.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
             .where(member.tag.eq(tag))
             .fetchOne()
         );
