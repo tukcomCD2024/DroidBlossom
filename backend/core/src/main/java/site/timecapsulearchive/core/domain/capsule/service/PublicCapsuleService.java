@@ -9,11 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,10 +19,10 @@ public class PublicCapsuleService {
     private final PublicCapsuleQueryRepository publicCapsuleQueryRepository;
 
     public CapsuleDetailDto findPublicCapsuleDetailByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
-        CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
@@ -47,23 +43,20 @@ public class PublicCapsuleService {
     }
 
     public CapsuleSummaryDto findPublicCapsuleSummaryByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
         return publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
     }
 
-    public PublicCapsuleSliceResponse findPublicCapsulesMadeByFriend(
+    public Slice<CapsuleDetailDto> findPublicCapsulesMadeByFriend(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final Slice<CapsuleDetailDto> publicCapsuleDetailSlice = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
-            memberId, size, createdAt);
-
-        return capsuleMapper.publicCapsuleDetailSliceToResponse(
-            publicCapsuleDetailSlice.getContent(), publicCapsuleDetailSlice.hasNext());
+        return publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(memberId, size,
+            createdAt);
     }
 }

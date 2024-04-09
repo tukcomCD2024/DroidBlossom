@@ -78,7 +78,6 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 특정_사용자의_친구_캡슐을_상세_조회하면_친구_캡슐_상세_내용을_볼_수_있다() {
     void 친구가_공개_캡슐을_상세_조회하면_공개_캡슐_상세_내용을_볼_수_있다() {
         //given
         Long friendId = friend.getId();
@@ -122,7 +121,6 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
 
     @Test
     void 친구가_공개_캡슐을_요약_조회하면_공개_캡슐_요약_내용을_볼_수_있다() {
-    void 특정_사용자의_친구_캡슐을_요약_조회하면_친구_캡슐_요약_내용을_볼_수_있다() {
         //given
         Long friendId = friend.getId();
         Long capsuleId = friendCapsule.getId();

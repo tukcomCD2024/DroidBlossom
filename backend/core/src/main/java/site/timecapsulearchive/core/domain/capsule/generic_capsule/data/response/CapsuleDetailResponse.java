@@ -2,8 +2,6 @@ package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.respons
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
@@ -54,6 +52,7 @@ public record CapsuleDetailResponse(
     @Schema(description = "캡슐 타입")
     CapsuleType capsuleType
 ) {
+
     public CapsuleDetailResponse {
         if (dueDate != null) {
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
@@ -63,27 +62,17 @@ public record CapsuleDetailResponse(
     }
 
     public static CapsuleDetailResponse createOf(
-        CapsuleDetailDto detailDto,
-        Function<String, String> preSignUrlFunction
+        final CapsuleDetailDto detailDto,
+        final Function<String, String> singlePreSignUrlFunction,
+        final Function<String, List<String>> multiplePreSignUrlFunction
     ) {
-        List<String> preSignedImageUrls = Collections.emptyList();
-        if (!(detailDto.images() == null)) {
-            preSignedImageUrls = Arrays.stream(detailDto.images().split(","))
-                .filter(url -> !url.isBlank())
-                .map(preSignUrlFunction)
-                .toList();
-        }
-
-        List<String> preSignedVideoUrls = Collections.emptyList();
-        if (!(detailDto.videos() == null)) {
-            preSignedVideoUrls = Arrays.stream(detailDto.videos().split(","))
-                .filter(url -> !url.isBlank())
-                .map(preSignUrlFunction)
-                .toList();
-        }
+        final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
+            detailDto.images());
+        final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
+            detailDto.videos());
 
         return new CapsuleDetailResponse(
-            preSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
+            singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
             detailDto.dueDate(),
             detailDto.nickname(),
             detailDto.profileUrl(),
