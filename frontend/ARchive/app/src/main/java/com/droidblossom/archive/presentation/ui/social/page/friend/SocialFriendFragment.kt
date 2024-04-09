@@ -22,14 +22,18 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialFriendBinding
 import com.droidblossom.archive.databinding.FragmentSocialGroupBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
+import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
 import com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel
 import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupViewModelImpl
 import com.droidblossom.archive.util.SpaceItemDecoration
 import com.droidblossom.archive.util.updateTopConstraintsForSearch
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSocialFriendBinding>(R.layout.fragment_social_friend) {
 
     override val viewModel: SocialFriendViewModelImpl by viewModels<SocialFriendViewModelImpl>()
@@ -58,6 +62,28 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.socialFriendEvents.collect { event ->
+                    when (event) {
+                        is SocialFriendViewModel.SocialFriendEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.publicCapsules.collect{ publicCapsule ->
+                    socialFriendCapsuleRVA.submitList(publicCapsule)
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,7 +98,22 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
 
         val spaceInPixels = resources.getDimensionPixelSize(R.dimen.margin)
         binding.socialFriendRV.addItemDecoration(SpaceItemDecoration(spaceBottom = spaceInPixels))
-        socialFriendCapsuleRVA.submitList(dummyFriendCapsules())
+
+        binding.socialFriendRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.getPublicCapsulePage()
+                    }
+                }
+            }
+        })
     }
 
     private fun dummyFriendCapsules(): MutableList<TestSocialFriendModel>{
