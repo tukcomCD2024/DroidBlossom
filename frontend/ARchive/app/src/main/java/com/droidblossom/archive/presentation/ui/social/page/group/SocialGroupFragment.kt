@@ -66,31 +66,8 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
 
         val spaceInPixels = resources.getDimensionPixelSize(R.dimen.margin)
         binding.socialGroupRV.addItemDecoration(SpaceItemDecoration(spaceBottom = spaceInPixels))
-        socialFriendCapsuleRVA.submitList(dummyGroupCapsules())
     }
 
-
-    private fun dummyGroupCapsules(): MutableList<TestSocialFriendModel>{
-
-        val dummyList = mutableListOf<TestSocialFriendModel>()
-
-        for(i in 1..10){
-            val capsule = TestSocialFriendModel(
-                id = i.toLong(),
-                capsuleTitle = "comprehensam",
-                capsuleWriter = "deseruisse",
-                capsuleContent = "eirmod",
-                capsuleContentImg = "enim",
-                capsuleLocation = "discere",
-                capsuleCreateTime = "amet",
-                isOpened = i % 2 == 0
-            )
-
-            dummyList.add(capsule)
-        }
-
-        return dummyList
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun initSearchEdit(){

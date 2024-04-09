@@ -116,28 +116,6 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         })
     }
 
-    private fun dummyFriendCapsules(): MutableList<TestSocialFriendModel>{
-
-        val dummyList = mutableListOf<TestSocialFriendModel>()
-
-        for(i in 1..10){
-            val capsule = TestSocialFriendModel(
-                id = i.toLong(),
-                capsuleTitle = "comprehensam",
-                capsuleWriter = "deseruisse",
-                capsuleContent = "eirmod",
-                capsuleContentImg = "enim",
-                capsuleLocation = "discere",
-                capsuleCreateTime = "amet",
-                isOpened = i % 2 == 0
-            )
-
-            dummyList.add(capsule)
-        }
-
-        return dummyList
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     fun initSearchEdit(){
         binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
