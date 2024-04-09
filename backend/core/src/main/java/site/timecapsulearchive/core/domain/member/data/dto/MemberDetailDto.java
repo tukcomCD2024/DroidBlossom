@@ -12,11 +12,4 @@ public record MemberDetailDto(
     Long groupCount
 ) {
 
-    public MemberDetailDto {
-        Objects.requireNonNull(nickname);
-        Objects.requireNonNull(profileUrl);
-        Objects.requireNonNull(tag);
-        Objects.requireNonNull(friendCount);
-        Objects.requireNonNull(groupCount);
-    }
 }

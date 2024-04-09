@@ -43,7 +43,7 @@ public class MemberApiController implements MemberApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                MemberDetailResponse.createBy(detailDto)
+                MemberDetailResponse.createOf(detailDto)
             )
         );
     }

@@ -22,8 +22,13 @@ public record MemberDetailResponse(
     Long groupCount
 ) {
 
-    public static MemberDetailResponse createBy(MemberDetailDto detailDto) {
-        return new MemberDetailResponse(detailDto.nickname(), detailDto.profileUrl(),
-            detailDto.tag(), detailDto.friendCount(), detailDto.groupCount());
+    public static MemberDetailResponse createOf(MemberDetailDto detailDto) {
+        return new MemberDetailResponse(
+            detailDto.nickname(),
+            detailDto.profileUrl(),
+            detailDto.tag(),
+            detailDto.friendCount(),
+            detailDto.groupCount()
+        );
     }
 }
