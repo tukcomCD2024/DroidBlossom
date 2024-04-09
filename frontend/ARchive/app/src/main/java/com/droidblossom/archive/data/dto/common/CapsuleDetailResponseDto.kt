@@ -1,6 +1,7 @@
 package com.droidblossom.archive.data.dto.common
 
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
+import com.droidblossom.archive.domain.model.common.SocialCapsules
 
 data class CapsuleDetailResponseDto(
     val address: String,
@@ -31,5 +32,20 @@ data class CapsuleDetailResponseDto(
         nickname = this.nickname,
         title =  this.title,
         capsuleType=this.capsuleType
+    )
+
+    fun toSocialCapsuleModel() = SocialCapsules(
+        title = this.title,
+        content = this.content ?: "",
+        createdDate = this.createdDate,
+        dueDate = this.dueDate,
+        profileUrl = this.profileUrl,
+        capsuleSkinUrl = this.capsuleSkinUrl,
+        nickNameOrGroupName = this.nickname,
+        roadName = this.roadName,
+        address = this.address,
+        hasThumbnail = !(imageUrls.isNullOrEmpty() && videoUrls.isNullOrEmpty()),
+        thumbnailImage = imageUrls?.firstOrNull() ?: videoUrls?.firstOrNull(),
+        isOpened = false
     )
 }

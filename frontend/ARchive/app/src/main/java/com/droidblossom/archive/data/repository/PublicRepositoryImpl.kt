@@ -5,9 +5,12 @@ import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.common.CapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
 import com.droidblossom.archive.data.dto.common.toModel
+import com.droidblossom.archive.data.dto.open.request.PublicCapsuleSliceRequestDto
+import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
+import com.droidblossom.archive.domain.model.open.PublicCapsuleSliceResponse
 import com.droidblossom.archive.domain.repository.PublicRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.apiHandler
@@ -26,5 +29,9 @@ class PublicRepositoryImpl @Inject constructor(
 
     override suspend fun getPublicCapsuleDetail(capsuleId: Long): RetrofitResult<CapsuleDetail> {
         return apiHandler({ api.getPublicCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel()}
+    }
+
+    override suspend fun getPublicCapsulesPage(request: PublicCapsuleSliceRequestDto): RetrofitResult<PublicCapsuleSliceResponse> {
+        return apiHandler({ api.getPublicCapsulesPageApi(request.size, request.createdAt) }){ response: ResponseBody<PublicCapsuleSliceResponseDto> -> response.result.toModel() }
     }
 }
