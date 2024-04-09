@@ -62,11 +62,11 @@ class CapsuleDetailActivity :
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-
+            
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-
+                viewModel.getPublicCapsuleDetail(capsuleInd)
             }
 
             null -> {}
