@@ -64,7 +64,7 @@ class SocialFriendCapsuleRVA() : ListAdapter<SocialCapsules, RecyclerView.ViewHo
 
         val differ = object : DiffUtil.ItemCallback<SocialCapsules>() {
             override fun areItemsTheSame(oldItem: SocialCapsules, newItem: SocialCapsules): Boolean {
-                return oldItem === newItem
+                return oldItem.capsuleId == newItem.capsuleId
             }
 
             override fun areContentsTheSame(oldItem: SocialCapsules, newItem: SocialCapsules): Boolean {

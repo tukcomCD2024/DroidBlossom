@@ -62,7 +62,7 @@ class CapsuleDetailActivity :
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-            
+
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {

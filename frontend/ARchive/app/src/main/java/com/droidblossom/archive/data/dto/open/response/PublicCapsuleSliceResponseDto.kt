@@ -5,11 +5,11 @@ import com.droidblossom.archive.domain.model.open.PublicCapsuleSliceResponse
 import com.droidblossom.archive.domain.model.s3.S3Urls
 
 data class PublicCapsuleSliceResponseDto(
-    val publicCapsules: List<CapsuleDetailResponseDto>,
+    val publicCapsules: List<PublicCapsuleResponseDto>,
     val hasNext: Boolean
 ){
     fun toModel()= PublicCapsuleSliceResponse(
-        publicCapsules = this.publicCapsules.map { it.toSocialCapsuleModel() },
+        publicCapsules = this.publicCapsules.map { it.toModel() },
         hasNext = false
     )
 }

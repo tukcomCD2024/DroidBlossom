@@ -32,7 +32,7 @@ interface PublicService {
     @GET("public/capsules")
     suspend fun getPublicCapsulesPageApi(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt: String
+        @Query("created_at") createdAt: String
     ) : Response<ResponseBody<PublicCapsuleSliceResponseDto>>
 
 }

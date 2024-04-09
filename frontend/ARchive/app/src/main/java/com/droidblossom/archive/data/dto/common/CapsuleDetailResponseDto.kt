@@ -33,19 +33,4 @@ data class CapsuleDetailResponseDto(
         title =  this.title,
         capsuleType=this.capsuleType
     )
-
-    fun toSocialCapsuleModel() = SocialCapsules(
-        title = this.title,
-        content = this.content ?: "",
-        createdDate = this.createdDate,
-        dueDate = this.dueDate,
-        profileUrl = this.profileUrl,
-        capsuleSkinUrl = this.capsuleSkinUrl,
-        nickNameOrGroupName = this.nickname,
-        roadName = this.roadName,
-        address = this.address,
-        hasThumbnail = !(imageUrls.isNullOrEmpty() && videoUrls.isNullOrEmpty()),
-        thumbnailImage = imageUrls?.firstOrNull() ?: videoUrls?.firstOrNull(),
-        isOpened = false
-    )
 }

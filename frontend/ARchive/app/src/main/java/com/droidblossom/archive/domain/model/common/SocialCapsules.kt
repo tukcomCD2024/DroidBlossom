@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.model.common
 
 data class SocialCapsules (
+    val capsuleId:Long,
     val title:String,
     val content:String,
     val createdDate:String,
