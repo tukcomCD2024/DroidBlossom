@@ -95,7 +95,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         //then
         assertThat(detailDto.isEmpty()).isTrue();
     }
-    
+
     @Test
     void 사용자가_만든_공개_캡슐을_상세_조회하면_공개_캡슐_상세_내용을_볼_수_있다() {
         //given

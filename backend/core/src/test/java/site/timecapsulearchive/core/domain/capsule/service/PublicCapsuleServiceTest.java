@@ -23,14 +23,10 @@ class PublicCapsuleServiceTest {
 
     private final PublicCapsuleQueryRepository publicCapsuleQueryRepository = mock(
         PublicCapsuleQueryRepository.class);
-    private final CapsuleMapper capsuleMapper;
     private final PublicCapsuleService publicCapsuleService;
 
     PublicCapsuleServiceTest() {
-        this.capsuleMapper = new CapsuleMapper(UnitTestDependency.geoTransformManager(),
-            UnitTestDependency.s3PreSignedUrlManager());
-        this.publicCapsuleService = new PublicCapsuleService(publicCapsuleQueryRepository,
-            capsuleMapper);
+        this.publicCapsuleService = new PublicCapsuleService(publicCapsuleQueryRepository);
     }
 
     @Test
@@ -43,7 +39,7 @@ class PublicCapsuleServiceTest {
             .willReturn(getCapsuleDetailDto(capsuleId, true, ZonedDateTime.now()));
 
         //when
-        CapsuleDetailResponse response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -51,8 +47,8 @@ class PublicCapsuleServiceTest {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.title()).isNotBlank();
             softly.assertThat(response.content()).isNotBlank();
-            softly.assertThat(response.imageUrls()).allMatch(urls -> !urls.isBlank());
-            softly.assertThat(response.videoUrls()).allMatch(urls -> !urls.isBlank());
+            softly.assertThat(response.images()).isNotBlank();
+            softly.assertThat(response.videos()).isNotBlank();
         });
     }
 
@@ -76,7 +72,7 @@ class PublicCapsuleServiceTest {
             .willReturn(getCapsuleDetailDto(capsuleId, true, null));
 
         //when
-        CapsuleDetailResponse response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -84,8 +80,8 @@ class PublicCapsuleServiceTest {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.title()).isNotBlank();
             softly.assertThat(response.content()).isNotBlank();
-            softly.assertThat(response.imageUrls()).allMatch(urls -> !urls.isBlank());
-            softly.assertThat(response.videoUrls()).allMatch(urls -> !urls.isBlank());
+            softly.assertThat(response.images()).isNotBlank();
+            softly.assertThat(response.videos()).isNotBlank();
         });
     }
 
@@ -99,7 +95,7 @@ class PublicCapsuleServiceTest {
             .willReturn(getCapsuleDetailDto(capsuleId, false, null));
 
         //when
-        CapsuleDetailResponse response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -107,8 +103,8 @@ class PublicCapsuleServiceTest {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.title()).isNotBlank();
             softly.assertThat(response.content()).isNotBlank();
-            softly.assertThat(response.imageUrls()).allMatch(urls -> !urls.isBlank());
-            softly.assertThat(response.videoUrls()).allMatch(urls -> !urls.isBlank());
+            softly.assertThat(response.images()).isNotBlank();
+            softly.assertThat(response.videos()).isNotBlank();
         });
     }
 
@@ -122,15 +118,15 @@ class PublicCapsuleServiceTest {
             .willReturn(getCapsuleDetailDto(capsuleId, false, ZonedDateTime.now().minusDays(5)));
 
         //when
-        CapsuleDetailResponse response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.isOpened()).isFalse();
-            softly.assertThat(response.imageUrls()).isEmpty();
-            softly.assertThat(response.videoUrls()).isEmpty();
+            softly.assertThat(response.images()).isNullOrEmpty();
+            softly.assertThat(response.videos()).isNullOrEmpty();
         });
     }
 
@@ -144,15 +140,15 @@ class PublicCapsuleServiceTest {
             .willReturn(getCapsuleDetailDto(capsuleId, false, ZonedDateTime.now().plusDays(5)));
 
         //when
-        CapsuleDetailResponse response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.isOpened()).isFalse();
-            softly.assertThat(response.imageUrls()).isEmpty();
-            softly.assertThat(response.videoUrls()).isEmpty();
+            softly.assertThat(response.images()).isNullOrEmpty();
+            softly.assertThat(response.videos()).isNullOrEmpty();
         });
     }
 
@@ -166,15 +162,15 @@ class PublicCapsuleServiceTest {
             .willReturn(getCapsuleDetailDto(capsuleId, true, ZonedDateTime.now().plusDays(5)));
 
         //when
-        CapsuleDetailResponse response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.isOpened()).isTrue();
-            softly.assertThat(response.imageUrls()).isEmpty();
-            softly.assertThat(response.videoUrls()).isEmpty();
+            softly.assertThat(response.images()).isNullOrEmpty();
+            softly.assertThat(response.videos()).isNullOrEmpty();
         });
     }
 }
