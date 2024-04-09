@@ -29,7 +29,7 @@ interface FriendService {
 
     @GET("friends/search")
     suspend fun postFriendsSearchApi(
-        @Query("friend-tag") friendTag : String
+        @Query("friend_tag") friendTag : String
     ) : Response<ResponseBody<FriendsSearchResponseDto>>
 
     @POST("friends/search/phone")
@@ -40,13 +40,13 @@ interface FriendService {
     @GET("friends")
     suspend fun getFriendsPageApi(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt : String,
+        @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
 
     @GET("friends/requests")
     suspend fun getFriendsRequestsPageApi(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt : String,
+        @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
 
     @DELETE("friends/{friend_id}")
