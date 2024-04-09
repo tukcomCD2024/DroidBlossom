@@ -12,8 +12,8 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 
 @Service
 @Transactional(readOnly = true)

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.service.PublicCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -70,7 +70,7 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
     public ResponseEntity<ApiSpec<PublicCapsuleSliceResponse>> getPublicCapsulesMadeByFriend(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(defaultValue = "0", value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(defaultValue = "0", value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
