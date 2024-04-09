@@ -51,12 +51,12 @@ public class PublicCapsuleQueryRepository {
             .from(capsule)
             .join(member).on(capsule.member.id.eq(member.id))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .join(memberFriend).on(memberFriend.friend.id.eq(capsule.member.id)
-                .or(memberFriend.owner.id.eq(capsule.member.id)))
+            .leftJoin(memberFriend).on(capsule.member.id.eq(memberFriend.owner.id)
+                .or(capsule.member.id.eq(memberFriend.friend.id)))
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
-                .and(memberFriend.owner.id.eq(memberId)))
+                .and(capsule.member.id.eq(memberId).or(memberFriend.friend.id.eq(memberId))))
             .fetchFirst();
 
         if (detailDto.capsuleId() == null) {
@@ -71,17 +71,17 @@ public class PublicCapsuleQueryRepository {
     }
 
     public Optional<CapsuleSummaryDto> findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
         return Optional.ofNullable(
             jpaQueryFactory
                 .select(
                     Projections.constructor(
                         CapsuleSummaryDto.class,
-                        capsule.member.nickname,
-                        capsule.member.profileUrl,
-                        capsule.capsuleSkin.imageUrl,
+                        member.nickname,
+                        member.profileUrl,
+                        capsuleSkin.imageUrl,
                         capsule.title,
                         capsule.dueDate,
                         capsule.address.fullRoadAddressName,
@@ -91,10 +91,13 @@ public class PublicCapsuleQueryRepository {
                     )
                 )
                 .from(capsule)
-                .join(memberFriend).on(memberFriend.friend.id.eq(capsule.member.id)
-                    .or(memberFriend.owner.id.eq(capsule.member.id)))
+                .join(member).on(capsule.member.id.eq(member.id))
+                .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+                .leftJoin(memberFriend).on(capsule.member.id.eq(memberFriend.owner.id)
+                    .or(capsule.member.id.eq(memberFriend.friend.id)))
                 .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
-                    .and(memberFriend.owner.id.eq(memberId)))
+                    .and(capsule.member.id.eq(memberId).or(memberFriend.friend.id.eq(memberId))))
+                .groupBy(capsule.id)
                 .fetchOne()
         );
     }

@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,19 +16,20 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.
 public class PublicCapsuleService {
 
     private final PublicCapsuleQueryRepository publicCapsuleQueryRepository;
-    private final CapsuleMapper capsuleMapper;
 
-    public CapsuleDetailResponse findPublicCapsuleDetailByMemberIdAndCapsuleId(Long memberId,
-        Long capsuleId) {
+    public CapsuleDetailDto findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        Long memberId,
+        Long capsuleId
+    ) {
         CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
-                memberId, capsuleId)
+                capsuleId, memberId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(detailDto)) {
-            return capsuleMapper.notOpenedCapsuleDetailDtoToResponse(detailDto);
+            return detailDto.removeContent();
         }
 
-        return capsuleMapper.capsuleDetailDtoToResponse(detailDto);
+        return detailDto;
     }
 
     private boolean capsuleNotOpened(final CapsuleDetailDto detailDto) {
@@ -43,14 +41,12 @@ public class PublicCapsuleService {
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public CapsuleSummaryResponse findPublicCapsuleSummaryByMemberIdAndCapsuleId(
+    public CapsuleSummaryDto findPublicCapsuleSummaryByMemberIdAndCapsuleId(
         Long memberId,
         Long capsuleId
     ) {
-        CapsuleSummaryDto summaryDto = publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
+        return publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
-
-        return capsuleMapper.capsuleSummaryDtoToResponse(summaryDto);
     }
 }

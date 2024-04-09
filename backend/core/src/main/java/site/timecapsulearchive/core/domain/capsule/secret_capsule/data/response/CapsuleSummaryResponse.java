@@ -2,7 +2,10 @@ package site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
+import java.util.function.Function;
 import lombok.Builder;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "비밀 캡슐 요약 정보")
 @Builder
@@ -36,4 +39,28 @@ public record CapsuleSummaryResponse(
     ZonedDateTime createdAt
 ) {
 
+    public CapsuleSummaryResponse {
+        if (dueDate != null) {
+            dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
+
+        createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+    }
+
+    public static CapsuleSummaryResponse createOf(
+        CapsuleSummaryDto summaryDto,
+        Function<String, String> preSignUrlFunction
+    ) {
+        return new CapsuleSummaryResponse(
+            summaryDto.nickname(),
+            summaryDto.profileUrl(),
+            preSignUrlFunction.apply(summaryDto.skinUrl()),
+            summaryDto.title(),
+            summaryDto.dueDate(),
+            summaryDto.address(),
+            summaryDto.roadName(),
+            summaryDto.isOpened(),
+            summaryDto.createdAt()
+        );
+    }
 }
