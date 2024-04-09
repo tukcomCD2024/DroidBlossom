@@ -62,6 +62,8 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                         is SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake -> {
                             navController.navigate(R.id.action_skinMakeFragment_to_skinMakeSuccessFragment)
                         }
+                        else -> {}
+
                     }
                 }
             }

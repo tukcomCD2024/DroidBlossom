@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="item"
             type="com.droidblossom.archive.domain.model.member.NotificationModel" />
@@ -88,6 +90,7 @@
                 android:layout_marginVertical="8dp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/main_bg_2"
+                android:visibility="@{item.imageUrl.isEmpty ?View.GONE :View.VISIBLE}"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
