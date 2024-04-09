@@ -52,32 +52,12 @@
                     android:layout_marginStart="16dp"
                     app:civ_border_color="@color/white"
                     app:civ_border_overlay="true"
+                    android:layout_marginTop="36dp"
                     app:civ_circle_background_color="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/capsuleTypeCardView"
+                    app:layout_constraintTop_toBottomOf="@id/closeBtn"
                     bind:imageUrl="@{vm.capsuleDetail.profileUrl}"
                     bind:placeholder="@{@drawable/app_symbol}" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/capsuleTypeCardView"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginEnd="@dimen/margin"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="0dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/closeBtn">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/capsuleTypeImageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        bind:setCapsuleType2Img="@{vm.capsuleDetail.capsuleType}" />
-
-                </androidx.cardview.widget.CardView>
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/capsuleDetailLayout"
@@ -92,7 +72,7 @@
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/capsuleTypeCardView">
+                    app:layout_constraintTop_toBottomOf="@id/userProfileImg">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleTitleTextView"
@@ -100,10 +80,35 @@
                         android:layout_height="wrap_content"
                         android:text="@{vm.capsuleDetail.title}"
                         android:textAppearance="@style/TextAppearance.App.h2"
+                        android:maxLines="1"
+                        android:ellipsize="middle"
                         android:textColor="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/capsuleTypeCardView"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/capsuleTypeCardView"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:cardCornerRadius="22dp"
+                        android:layout_marginEnd="@dimen/margin"
+                        app:cardElevation="0dp"
+                        app:layout_constraintBottom_toBottomOf="@id/capsuleTitleTextView"
+                        app:layout_constraintEnd_toStartOf="@id/capsuleTitleTextView"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/capsuleTitleTextView">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/capsuleTypeImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            bind:setCapsuleType2Img="@{vm.capsuleDetail.capsuleType}" />
+
+                    </androidx.cardview.widget.CardView>
+
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleOpenDateTextView"
@@ -113,6 +118,7 @@
                         android:drawablePadding="@dimen/padding_small"
                         android:textAppearance="@style/TextAppearance.App.caption4"
                         android:textColor="@color/white"
+                        android:layout_marginTop="12dp"
                         app:layout_constraintEnd_toStartOf="@id/capsuleLocationTextView"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView"
@@ -124,9 +130,10 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_group_chip"
                         android:drawablePadding="@dimen/padding_small"
-                        android:text="@{vm.capsuleDetail.address}"
+                        android:text="@{vm.capsuleDetail.roadName.empty ? vm.capsuleDetail.address : vm.capsuleDetail.roadName}"
                         android:textAppearance="@style/TextAppearance.App.caption4"
                         android:textColor="@color/white"
+                        android:layout_marginTop="12dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/capsuleOpenDateTextView"
                         app:layout_constraintTop_toBottomOf="@id/capsuleTitleTextView" />
@@ -192,14 +199,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="42dp"
                     android:ellipsize="end"
                     android:lines="1"
+                    android:layout_marginEnd="@dimen/margin"
                     android:text="@{vm.capsuleDetail.nickname}"
                     android:textAppearance="@style/TextAppearance.App.caption4"
                     android:textColor="@color/gray_700"
                     app:layout_constraintBottom_toBottomOf="@id/userProfileImg"
-                    app:layout_constraintEnd_toStartOf="@id/capsuleTypeCardView"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/userProfileImg"
                     app:layout_constraintTop_toTopOf="@id/userProfileImg" />
 

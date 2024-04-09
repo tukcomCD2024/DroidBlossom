@@ -3,6 +3,7 @@ package com.droidblossom.archive.domain.model.common
 // 모든 캡슐 디테일로 통합될 예정 maybe
 data class CapsuleDetail(
     val address: String,
+    val roadName: String,
     val capsuleSkinUrl: String,
     val content: String,
     val createdDate: String,
@@ -15,5 +16,5 @@ data class CapsuleDetail(
     val title: String,
     val capsuleType: String
 ){
-    constructor() : this("","","","",null,"",false, listOf(), listOf(),"","","")
+    constructor() : this("","", "","","",null,"",false, listOf(), listOf(),"","","")
 }

@@ -4,6 +4,7 @@ import com.droidblossom.archive.domain.model.common.CapsuleDetail
 
 data class CapsuleDetailResponseDto(
     val address: String,
+    val roadName: String,
     val capsuleSkinUrl: String,
     val content: String?,
     val createdDate: String,
@@ -18,6 +19,7 @@ data class CapsuleDetailResponseDto(
 ){
     fun toModel() = CapsuleDetail(
         address = this.address,
+        roadName = this.roadName,
         capsuleSkinUrl = this.capsuleSkinUrl,
         content = this.content ?: "",
         createdDate = this.createdDate,
