@@ -207,3 +207,16 @@ fun TabLayout.setTabItemMargin(marginEndDp: Int) {
     }
     requestLayout()
 }
+
+@BindingAdapter(value = ["bind:isFriend", "bind:isRequest","bind:friendName"], requireAll = false)
+fun TextView.addFriendText(isFriend: Boolean, isRequest : Boolean, name : String) {
+    if (isFriend || isRequest){
+        if (isFriend){
+            this.text = "이미 친구입니다."
+        } else {
+            this.text = "요천을 보냈습니다."
+        }
+    }else {
+        this.text = name
+    }
+}

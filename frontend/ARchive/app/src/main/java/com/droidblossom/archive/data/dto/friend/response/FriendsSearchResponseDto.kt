@@ -7,7 +7,8 @@ data class FriendsSearchResponseDto(
     val id: Long,
     val profileUrl: String,
     val nickname: String,
-    val isFriend: Boolean
+    val isFriend: Boolean,
+    val isFriendRequest :Boolean,
 ) : Serializable {
 
     fun toModel() = FriendsSearchResponse(
@@ -15,6 +16,8 @@ data class FriendsSearchResponseDto(
         profileUrl = this.profileUrl,
         nickname = this.nickname,
         isFriend = this.isFriend,
+        isFriendRequest = this.isFriendRequest,
+        name = "",
         isChecked = false
     )
 }
