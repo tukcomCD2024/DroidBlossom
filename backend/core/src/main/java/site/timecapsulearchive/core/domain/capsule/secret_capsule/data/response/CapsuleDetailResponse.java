@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
-@Schema(description = "비밀 캡슐 상세 정보")
+@Schema(description = "캡슐 상세 정보")
 @Builder
 public record CapsuleDetailResponse(
 

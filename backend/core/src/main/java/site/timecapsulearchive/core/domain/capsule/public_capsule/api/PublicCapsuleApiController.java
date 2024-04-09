@@ -1,16 +1,17 @@
 package site.timecapsulearchive.core.domain.capsule.public_capsule.api;
 
 
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.service.PublicCapsuleService;
@@ -60,12 +61,27 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         );
     }
 
-    public ResponseEntity<PublicCapsulePageResponse> getPublicCapsules(Long size, Long capsuleId) {
+    public ResponseEntity<PublicCapsuleSliceResponse> getPublicCapsules(Long size, Long capsuleId) {
         return null;
     }
 
+    @GetMapping(value = "/capsules", produces = {"application/json"})
     @Override
-    public ResponseEntity<PublicCapsuleSummaryResponse> updatePublicCapsuleById(Long capsuleId,
+    public ResponseEntity<ApiSpec<PublicCapsuleSliceResponse>> getPublicCapsulesMadeByFriend(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(defaultValue = "0", value = "createdAt") final ZonedDateTime createdAt
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                publicCapsuleService.findPublicCapsulesMadeByFriend(memberId, size, createdAt)
+            )
+        );
+    }
+
+    @Override
+    public ResponseEntity<Void> updatePublicCapsuleById(Long capsuleId,
         PublicCapsuleUpdateRequest request) {
         return null;
     }
