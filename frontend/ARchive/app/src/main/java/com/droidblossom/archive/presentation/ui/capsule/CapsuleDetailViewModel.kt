@@ -10,6 +10,7 @@ interface CapsuleDetailViewModel {
 
     val capsuleDetail :StateFlow<CapsuleDetail>
     fun getSecretCapsuleDetail(id:Long)
+    fun getPublicCapsuleDetail(id:Long)
 
     sealed class DetailEvent {
         data class ShowToastMessage(val message : String) : DetailEvent()
