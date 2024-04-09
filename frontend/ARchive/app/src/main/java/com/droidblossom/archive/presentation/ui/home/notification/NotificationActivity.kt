@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityNotificationBinding
+import com.droidblossom.archive.domain.model.member.NotiCategoryName
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.home.notification.adapter.NotificationRVA
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -25,7 +27,23 @@ class NotificationActivity :
 
     private val notificationRVA by lazy {
         NotificationRVA {
+            when (it.categoryName) {
+                NotiCategoryName.CAPSULE_SKIN -> {
 
+                }
+
+                NotiCategoryName.FRIEND_REQUEST,
+                NotiCategoryName.GROUP_REQUEST -> {
+                    startActivity(FriendAcceptActivity.newIntent(this))
+                }
+
+                NotiCategoryName.FRIEND_ACCEPT,
+                NotiCategoryName.GROUP_ACCEPT -> {
+
+                }
+
+                else ->{}
+            }
         }
     }
 

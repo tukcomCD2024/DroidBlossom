@@ -18,9 +18,9 @@ class FriendAcceptActivity :
     BaseActivity<FriendAcceptViewModelImpl, ActivityFriendAcceptBinding>(R.layout.activity_friend_accept) {
     override val viewModel: FriendAcceptViewModelImpl by viewModels<FriendAcceptViewModelImpl>()
 
-    private val friendVPA by lazy {
-        FriendVPA(this)
-    }
+//    private val friendVPA by lazy {
+//        FriendVPA(this)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,19 +33,19 @@ class FriendAcceptActivity :
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
 
-        binding.vp.adapter = friendVPA
+//        binding.vp.adapter = friendVPA
 
         binding.closeBtn.setOnClickListener {
             finish()
         }
 
-        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
-            tab.text = when (position) {
-                0 -> getString(R.string.groupAccept)
-                1 -> getString(R.string.friendAccept)
-                else -> null
-            }
-        }.attach()
+//        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
+//            tab.text = when (position) {
+//                0 -> getString(R.string.groupAccept)
+//                1 -> getString(R.string.friendAccept)
+//                else -> null
+//            }
+//        }.attach()
     }
 
     override fun observeData() {
