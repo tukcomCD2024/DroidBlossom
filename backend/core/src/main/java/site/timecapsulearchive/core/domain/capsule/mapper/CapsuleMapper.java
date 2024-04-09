@@ -14,6 +14,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
@@ -146,6 +147,7 @@ public class CapsuleMapper {
             .profileUrl(detailDto.profileUrl())
             .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(detailDto.address())
+            .roadName(detailDto.roadName())
             .title(detailDto.title())
             .content(detailDto.content())
             .imageUrls(preSignedUrls.preSignedImageUrls())
@@ -175,6 +177,7 @@ public class CapsuleMapper {
             .profileUrl(detailDto.profileUrl())
             .createdDate(detailDto.createdAt().withZoneSameInstant(ASIA_SEOUL))
             .address(detailDto.address())
+            .roadName(detailDto.roadName())
             .title("")
             .content("")
             .imageUrls(Collections.emptyList())
@@ -208,5 +211,14 @@ public class CapsuleMapper {
             .isOpened(dto.isOpened())
             .type(dto.type())
             .build();
+    }
+
+    public PublicCapsuleSliceResponse publicCapsuleDetailSliceToResponse(
+        final List<CapsuleDetailDto> content, final boolean hasNext) {
+        List<CapsuleDetailResponse> responses = content.stream()
+            .map(this::capsuleDetailDtoToResponse)
+            .toList();
+
+        return new PublicCapsuleSliceResponse(responses, hasNext);
     }
 }
