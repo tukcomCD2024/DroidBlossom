@@ -1,34 +1,22 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.AbsListView.OnScrollListener
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
-import com.droidblossom.archive.domain.model.common.MyCapsule
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
-import com.droidblossom.archive.presentation.ui.home.HomeFragment
-import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
-import com.droidblossom.archive.presentation.ui.skin.SkinFragment
-import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

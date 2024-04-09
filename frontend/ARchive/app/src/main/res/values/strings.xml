@@ -47,4 +47,7 @@
 
     <string name="groupList">그룹 리스트</string>
     <string name="friendList">친구 리스트</string>
+
+    <string name="groupAccept">그룹 요청</string>
+    <string name="friendAccept">친구 요청</string>
 </resources>
