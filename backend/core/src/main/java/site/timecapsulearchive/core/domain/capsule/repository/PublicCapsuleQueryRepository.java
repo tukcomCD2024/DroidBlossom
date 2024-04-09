@@ -128,6 +128,7 @@ public class PublicCapsuleQueryRepository {
                     member.profileUrl,
                     capsule.createdAt,
                     capsule.address.fullRoadAddressName,
+                    capsule.address.roadName,
                     capsule.title,
                     capsule.content,
                     groupConcatDistinct(image.imageUrl),
