@@ -5,9 +5,10 @@
     xmlns:tool="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="item"
-            type="com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel" />
+            type="com.droidblossom.archive.domain.model.common.SocialCapsules" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -29,7 +30,7 @@
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
                 bind:baseImg="@{@drawable/app_symbol}"
-                bind:url="@{item.capsuleContentImg}"
+                bind:url="@{item.capsuleSkinUrl}"
                 app:civ_circle_background_color="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -57,7 +58,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:layout_marginStart="8dp"
-                    android:text="@{item.capsuleTitle}"
+                    android:text="@{item.title}"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_700"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -74,7 +75,7 @@
                     android:gravity="end"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{item.capsuleWriter}"
+                    android:text="@{item.nickNameOrGroupName}"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_700"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -110,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="2"
                         android:ellipsize="end"
-                        android:text="@{item.capsuleContent}"
+                        android:text="@{item.content}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -134,8 +135,9 @@
                             android:id="@+id/capsuleContentImageView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:visibility="@{item.hasThumbnail ? View.VISIBLE : View.GONE}"
                             bind:baseImg="@{@drawable/img}"
-                            bind:url="@{item.capsuleContent}"
+                            bind:url="@{item.thumbnailImage}"
                             android:scaleType="fitXY"/>
 
                     </com.google.android.material.card.MaterialCardView>
@@ -168,7 +170,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tool:text="마유로"
-                            android:text="@{item.capsuleLocation}"
+                            android:text="@{item.roadName.isEmpty ? item.address : item.roadName}"
                             android:layout_marginEnd="8dp"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -184,7 +186,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/middleGuideline2"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:text="@{item.capsuleCreateTime}"
+                            bind:displayCreationDateFormatted="@{item.createdDate}"
                             tool:text="2024.02.11" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
