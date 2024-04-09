@@ -128,6 +128,7 @@ public class PublicCapsuleQueryRepository {
                     member.profileUrl,
                     capsule.createdAt,
                     capsule.address.fullRoadAddressName,
+                    capsule.address.roadName,
                     capsule.title,
                     capsule.content,
                     groupConcatDistinct(image.imageUrl),
@@ -137,13 +138,13 @@ public class PublicCapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.in(memberIds))
+            .join(member).on(capsule.member.id.eq(member.id))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
-            .where(capsule.createdAt.lt(createdAt)
+            .where(capsule.member.id.in(memberIds)
+                .and(capsule.createdAt.lt(createdAt))
                 .and(capsule.type.eq(CapsuleType.PUBLIC)))
-            .groupBy(member.id)
             .groupBy(capsule.id)
             .orderBy(capsule.createdAt.desc())
             .limit(size + 1)
