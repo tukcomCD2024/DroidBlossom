@@ -1,10 +1,10 @@
-package site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 
-@Schema(description = "비밀 캡슐 요약 정보")
+@Schema(description = "캡슐 요약 정보")
 @Builder
 public record CapsuleSummaryResponse(
 

@@ -3,15 +3,17 @@ package site.timecapsulearchive.core.domain.capsule.service;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,13 +46,25 @@ public class PublicCapsuleService {
     }
 
     public CapsuleSummaryResponse findPublicCapsuleSummaryByMemberIdAndCapsuleId(
-        Long memberId,
-        Long capsuleId
+        final Long memberId,
+        final Long capsuleId
     ) {
         CapsuleSummaryDto summaryDto = publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         return capsuleMapper.capsuleSummaryDtoToResponse(summaryDto);
+    }
+
+    public PublicCapsuleSliceResponse findPublicCapsulesMadeByFriend(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        final Slice<CapsuleDetailDto> publicCapsuleDetailSlice = publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(
+            memberId, size, createdAt);
+
+        return capsuleMapper.publicCapsuleDetailSliceToResponse(
+            publicCapsuleDetailSlice.getContent(), publicCapsuleDetailSlice.hasNext());
     }
 }

@@ -12,13 +12,14 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.friend.exception.DuplicateFriendIdException;
@@ -174,10 +175,10 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public SearchFriendSummaryResponse searchFriend(final Long memberId, final String tag) {
-        final SearchFriendSummaryDto friendSummaryDto = memberFriendQueryRepository
+    public SearchTagFriendSummaryResponse searchFriend(final Long memberId, final String tag) {
+        final SearchTagFriendSummaryDto friendSummaryDto = memberFriendQueryRepository
             .findFriendsByTag(memberId, tag).orElseThrow(FriendNotFoundException::new);
 
-        return memberFriendMapper.searchFriendSummaryDtoToResponse(friendSummaryDto);
+        return friendSummaryDto.toResponse();
     }
 }

@@ -11,6 +11,7 @@ public record CapsuleDetailDto(
     String profileUrl,
     ZonedDateTime createdAt,
     String address,
+    String roadName,
     String title,
     String content,
     String images,
