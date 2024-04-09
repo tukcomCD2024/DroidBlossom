@@ -11,8 +11,13 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
@@ -100,5 +105,64 @@ public class PublicCapsuleQueryRepository {
                 .groupBy(capsule.id)
                 .fetchOne()
         );
+    }
+
+    public Slice<CapsuleDetailDto> findPublicCapsulesDtoMadeByFriend(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+
+        final List<Long> memberIds = jpaQueryFactory
+            .select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(memberFriend.owner.id.eq(memberId))
+            .fetch();
+        memberIds.add(memberId);
+
+        final List<CapsuleDetailDto> publicCapsuleDetailDtos = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    CapsuleDetailDto.class,
+                    capsule.id,
+                    capsuleSkin.imageUrl,
+                    capsule.dueDate,
+                    member.nickname,
+                    member.profileUrl,
+                    capsule.createdAt,
+                    capsule.address.fullRoadAddressName,
+                    capsule.address.roadName,
+                    capsule.title,
+                    capsule.content,
+                    groupConcatDistinct(image.imageUrl),
+                    groupConcatDistinct(video.videoUrl),
+                    capsule.isOpened,
+                    capsule.type
+                )
+            )
+            .from(capsule)
+            .join(member).on(capsule.member.id.eq(member.id))
+            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
+            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .where(capsule.member.id.in(memberIds)
+                .and(capsule.createdAt.lt(createdAt))
+                .and(capsule.type.eq(CapsuleType.PUBLIC)))
+            .groupBy(capsule.id)
+            .orderBy(capsule.createdAt.desc())
+            .limit(size + 1)
+            .fetch();
+
+        final boolean hasNext = canMoreRead(size, publicCapsuleDetailDtos.size());
+        if (hasNext) {
+            publicCapsuleDetailDtos.remove(size);
+        }
+
+        return new SliceImpl<>(publicCapsuleDetailDtos, Pageable.ofSize(size), hasNext);
+
+    }
+
+    private boolean canMoreRead(final int size, final int capsuleSize) {
+        return capsuleSize > size;
     }
 }

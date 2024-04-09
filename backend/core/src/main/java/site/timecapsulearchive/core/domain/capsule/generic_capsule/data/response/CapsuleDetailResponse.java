@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
@@ -11,7 +11,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
-@Schema(description = "비밀 캡슐 상세 정보")
+@Schema(description = "캡슐 상세 정보")
 @Builder
 public record CapsuleDetailResponse(
 

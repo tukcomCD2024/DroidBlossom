@@ -27,6 +27,7 @@ import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -261,7 +262,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @ValueSource(ints = {20, 15, 10, 5})
     void 사용자_아이디와_친구_태그로_친구관계를_조회하면_친구인_경우_True를_반환한다(int friendId) {
         //given
-        Optional<SearchFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
+        Optional<SearchTagFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
             owner.getId(), friendId + "testTag");
 
         //when
@@ -275,7 +276,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @ValueSource(ints = {30, 28, 25, 21})
     void 사용자_아이디와_친구_태그로_친구관계를_조회하면_친구가_아닌_경우_False를_반환한다(int friendId) {
         //given
-        Optional<SearchFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
+        Optional<SearchTagFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
             owner.getId(), friendId + "testTag");
 
         //when

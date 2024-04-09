@@ -14,8 +14,8 @@ import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequ
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
@@ -189,7 +189,7 @@ public interface FriendApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<SearchFriendSummaryResponse>> searchFriendByTag(
+    ResponseEntity<ApiSpec<SearchTagFriendSummaryResponse>> searchFriendByTag(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "친구 태그", required = true)
