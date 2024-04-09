@@ -121,7 +121,7 @@ public interface PublicCapsuleApi {
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
         int size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 생성 시간", required = true, schema = @Schema())
         ZonedDateTime createAt
     );
 
