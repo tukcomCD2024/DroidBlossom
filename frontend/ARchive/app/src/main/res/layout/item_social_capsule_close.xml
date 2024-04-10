@@ -7,7 +7,7 @@
     <data>
         <variable
             name="item"
-            type="com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel" />
+            type="com.droidblossom.archive.domain.model.common.SocialCapsules" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -28,7 +28,7 @@
                 android:layout_width="66dp"
                 android:layout_height="66dp"
                 bind:baseImg="@{@drawable/sample_skin}"
-                bind:url="@{item.capsuleContentImg}"
+                bind:url="@{item.capsuleSkinUrl}"
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
                 app:civ_circle_background_color="@color/white"
@@ -55,7 +55,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:layout_marginStart="8dp"
-                    android:text="@{item.capsuleWriter}"
+                    android:text="@{item.nickNameOrGroupName}"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_700"
                     app:layout_constraintBottom_toTopOf="@id/capsuleTitleTextView"
@@ -73,7 +73,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:layout_marginStart="8dp"
-                    android:text="@{item.capsuleTitle}"
+                    android:text="@{item.title}"
                     android:textAppearance="@style/TextAppearance.App.caption2"
                     android:textColor="@color/gray_600"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +89,7 @@
                     android:ellipsize="end"
                     android:gravity="end"
                     android:maxLines="1"
-                    android:text="@{item.capsuleCreateTime}"
+                    bind:displayCreationDateFormatted="@{item.dueDate != null ? item.dueDate : item.createdDate}"
                     android:textAppearance="@style/TextAppearance.App.caption4"
                     android:textColor="@color/gray_600"
                     app:layout_constraintBottom_toBottomOf="parent"

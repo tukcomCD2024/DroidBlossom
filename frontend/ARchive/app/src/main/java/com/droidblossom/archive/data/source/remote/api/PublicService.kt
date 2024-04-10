@@ -4,11 +4,13 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.common.CapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
+import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PublicService {
 
@@ -26,5 +28,11 @@ interface PublicService {
     suspend fun getPublicCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<CapsuleDetailResponseDto>>
+
+    @GET("public/capsules")
+    suspend fun getPublicCapsulesPageApi(
+        @Query("size") size : Int,
+        @Query("created_at") createdAt: String
+    ) : Response<ResponseBody<PublicCapsuleSliceResponseDto>>
 
 }

@@ -1,22 +1,56 @@
 package com.droidblossom.archive.presentation.ui.social.page.friend
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.open.request.PublicCapsuleSliceRequestDto
+import com.droidblossom.archive.domain.model.common.MyCapsule
+import com.droidblossom.archive.domain.model.common.SocialCapsules
+import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
+import com.droidblossom.archive.domain.usecase.open.PublicCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
+import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
+import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.onFail
+import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SocialFriendViewModelImpl @Inject constructor(
-
+    private val publicCapsulePageUseCase: PublicCapsulePageUseCase
 ): BaseViewModel(), SocialFriendViewModel {
 
+    private val _socialFriendEvents = MutableSharedFlow<SocialFriendViewModel.SocialFriendEvent>()
+    override val socialFriendEvents: SharedFlow<SocialFriendViewModel.SocialFriendEvent>
+        get() =_socialFriendEvents.asSharedFlow()
+
+    private val _publicCapsules = MutableStateFlow(listOf<SocialCapsules>())
+    override val publicCapsules: StateFlow<List<SocialCapsules>>
+        get() = _publicCapsules
 
     private val _isSearchOpen = MutableStateFlow(false)
     override val isSearchOpen: StateFlow<Boolean>
         get() = _isSearchOpen
+
+    private val _hasNextPage = MutableStateFlow(true)
+    override val hasNextPage: StateFlow<Boolean>
+        get() = _hasNextPage
+    private val _lastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
+    override val lastCreatedTime: StateFlow<String>
+        get() = _lastCreatedTime
+
+    override fun socialFriendEvent(event: SocialFriendViewModel.SocialFriendEvent) {
+        viewModelScope.launch {
+            _socialFriendEvents.emit(event)
+        }
+    }
 
     override fun openSearchFriendCapsule() {
         viewModelScope.launch {
@@ -27,6 +61,30 @@ class SocialFriendViewModelImpl @Inject constructor(
     override fun closeSearchFriendCapsule() {
         viewModelScope.launch {
             _isSearchOpen.emit(false)
+        }
+    }
+
+    init {
+        getPublicCapsulePage()
+    }
+    override fun getPublicCapsulePage(){
+        viewModelScope.launch {
+            if (hasNextPage.value) {
+                publicCapsulePageUseCase(
+                    PublicCapsuleSliceRequestDto(
+                        15,
+                        lastCreatedTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        _hasNextPage.value = it.hasNext
+                        _publicCapsules.emit(publicCapsules.value + it.publicCapsules)
+                        _lastCreatedTime.value = publicCapsules.value.last().createdDate
+                    }.onFail {
+                        socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
+                    }
+                }
+            }
         }
     }
 

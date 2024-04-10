@@ -1,6 +1,7 @@
 package com.droidblossom.archive.data.dto.common
 
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
+import com.droidblossom.archive.domain.model.common.SocialCapsules
 
 data class CapsuleDetailResponseDto(
     val address: String,

@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemSocialCapsuleCloseBinding
 import com.droidblossom.archive.databinding.ItemSocialCapsuleOpenBinding
+import com.droidblossom.archive.domain.model.common.SocialCapsules
 
-class SocialFriendCapsuleRVA() : ListAdapter<TestSocialFriendModel, RecyclerView.ViewHolder>(differ) {
+class SocialFriendCapsuleRVA() : ListAdapter<SocialCapsules, RecyclerView.ViewHolder>(differ) {
 
     inner class OpenedCapsuleViewHolder(
         private val binding: ItemSocialCapsuleOpenBinding
     ) : RecyclerView.ViewHolder(binding.root){
 
-        fun bindOpenedCapsule(data : TestSocialFriendModel){
+        fun bindOpenedCapsule(data : SocialCapsules){
             binding.item = data
         }
 
@@ -24,7 +25,7 @@ class SocialFriendCapsuleRVA() : ListAdapter<TestSocialFriendModel, RecyclerView
         private val binding: ItemSocialCapsuleCloseBinding
     ) : RecyclerView.ViewHolder(binding.root){
 
-        fun bindClosedCapsule(data: TestSocialFriendModel){
+        fun bindClosedCapsule(data: SocialCapsules){
             binding.item = data
         }
 
@@ -61,12 +62,12 @@ class SocialFriendCapsuleRVA() : ListAdapter<TestSocialFriendModel, RecyclerView
         private const val TYPE_OPENED_CAPSULE = 0
         private const val TYPE_CLOSED_CAPSULE = 1
 
-        val differ = object : DiffUtil.ItemCallback<TestSocialFriendModel>() {
-            override fun areItemsTheSame(oldItem: TestSocialFriendModel, newItem: TestSocialFriendModel): Boolean {
-                return oldItem.id == newItem.id
+        val differ = object : DiffUtil.ItemCallback<SocialCapsules>() {
+            override fun areItemsTheSame(oldItem: SocialCapsules, newItem: SocialCapsules): Boolean {
+                return oldItem.capsuleId == newItem.capsuleId
             }
 
-            override fun areContentsTheSame(oldItem: TestSocialFriendModel, newItem: TestSocialFriendModel): Boolean {
+            override fun areContentsTheSame(oldItem: SocialCapsules, newItem: SocialCapsules): Boolean {
                 return oldItem == newItem
             }
         }
