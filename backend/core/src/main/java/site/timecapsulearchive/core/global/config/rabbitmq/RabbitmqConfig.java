@@ -33,7 +33,7 @@ public class RabbitmqConfig {
     @Bean
     public Queue queue() {
         return QueueBuilder.durable(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getValue())
-            .deadLetterExchange("capsuleSkin_delay.exchange")
+            .deadLetterExchange(RabbitmqComponentConstants.CAPSULE_SKIN_DELAY_EXCHANGE.getValue())
             .ttl(5000)
             .build();
     }
