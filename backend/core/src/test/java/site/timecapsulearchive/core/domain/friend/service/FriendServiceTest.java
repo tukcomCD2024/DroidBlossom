@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
@@ -36,6 +37,8 @@ class FriendServiceTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final FriendInviteRepository friendInviteRepository = mock(
         FriendInviteRepository.class);
+    private final FriendInviteQueryRepository friendInviteQueryRepository = mock(
+        FriendInviteQueryRepository.class);
     private final FriendMapper friendMapper = mock(FriendMapper.class);
     private final NotificationManager notificationManager = mock(NotificationManager.class);
     private final PlatformTransactionManager transactionTemplate = mock(
@@ -49,6 +52,7 @@ class FriendServiceTest {
         memberFriendMapper,
         memberRepository,
         friendInviteRepository,
+        friendInviteQueryRepository,
         friendMapper,
         notificationManager,
         transactionTemplate,
@@ -87,7 +91,7 @@ class FriendServiceTest {
         List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
             result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                MemberFixture.getPhoneBytes((int)i), Boolean.TRUE, Boolean.FALSE));
+                MemberFixture.getPhoneBytes((int) i), Boolean.TRUE, Boolean.FALSE));
         }
 
         return result;

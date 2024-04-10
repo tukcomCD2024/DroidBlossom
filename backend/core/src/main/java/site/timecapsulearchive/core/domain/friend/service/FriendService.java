@@ -42,7 +42,7 @@ public class FriendService {
     private final MemberFriendMapper memberFriendMapper;
     private final MemberRepository memberRepository;
     private final FriendInviteRepository friendInviteRepository;
-    private final FriendInviteQueryRepository friendInviteQueryRepsotiroy;
+    private final FriendInviteQueryRepository friendInviteQueryRepository;
     private final FriendMapper friendMapper;
     private final NotificationManager notificationManager;
     private final TransactionTemplate transactionTemplate;
@@ -63,7 +63,7 @@ public class FriendService {
         this.memberFriendMapper = memberFriendMapper;
         this.memberRepository = memberRepository;
         this.friendInviteRepository = friendInviteRepository;
-        this.friendInviteQueryRepsotiroy = friendInviteQueryRepository;
+        this.friendInviteQueryRepository = friendInviteQueryRepository;
         this.friendMapper = friendMapper;
         this.notificationManager = notificationManager;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -192,6 +192,6 @@ public class FriendService {
             return;
         }
 
-        friendInviteQueryRepsotiroy.bulkSave(ownerId, friendIds);
+        friendInviteQueryRepository.bulkSave(ownerId, friendIds);
     }
 }
