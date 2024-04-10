@@ -20,7 +20,7 @@ public record CapsuleDetailDto(
     CapsuleType capsuleType
 ) {
 
-    public CapsuleDetailDto removeTitleAndContentAndImagesAndVideos() {
+    public CapsuleDetailDto excludeTitleAndContentAndImagesAndVideos() {
         return new CapsuleDetailDto(
             capsuleId,
             capsuleSkinUrl,
