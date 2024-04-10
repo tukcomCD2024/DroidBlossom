@@ -7,10 +7,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
-import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -59,13 +57,6 @@ public class MemberMapper {
             .socialType(dto.socialType())
             .tag(NanoIdUtils.randomNanoId())
             .build();
-    }
-
-    public MemberDetailResponse memberDetailResponseDtoToResponse(
-        final MemberDetailResponseDto dto,
-        final String decryptedPhone
-    ) {
-        return new MemberDetailResponse(dto.nickname(), dto.profileUrl(), decryptedPhone);
     }
 
     public MemberNotificationSliceResponse notificationSliceToResponse(
