@@ -23,7 +23,9 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
 import com.droidblossom.archive.util.ContactsUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 
 
 @AndroidEntryPoint
@@ -49,7 +51,7 @@ class SearchFriendNumberFragment :
         permissionCheck()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "NotifyDataSetChanged")
     private fun initView() {
 
         val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
@@ -129,6 +131,10 @@ class SearchFriendNumberFragment :
 
                         is AddFriendViewModel.AddEvent.OpenLoading -> {
                             showLoading(requireContext())
+                        }
+
+                        is AddFriendViewModel.AddEvent.NotificationChange -> {
+                            addFriendRVA.notifyDataSetChanged()
                         }
 
                         else -> {}

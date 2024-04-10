@@ -88,6 +88,10 @@ class SearchFriendNicknameFragment :
                             showToastMessage(event.message)
                         }
 
+                        is AddFriendViewModel.AddEvent.NotificationChange -> {
+                            addFriendRVA.notifyDataSetChanged()
+                        }
+
                         else -> {}
                     }
                 }

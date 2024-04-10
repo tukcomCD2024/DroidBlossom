@@ -58,6 +58,8 @@ class AddFriendViewModelImpl @Inject constructor(
     override val isSearchNumOpen: StateFlow<Boolean>
         get() = _isSearchNumOpen
 
+
+    //Name
     override fun requestFriends() {
         viewModelScope.launch {
             checkedList.value.forEach { friend ->
@@ -68,7 +70,11 @@ class AddFriendViewModelImpl @Inject constructor(
                         _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청 오류 발생"))
                     }
                 }
+                changeRequestUI(friend.id)
             }
+            _checkedList.emit(listOf())
+            _addEvent.emit(AddFriendViewModel.AddEvent.NotificationChange)
+
         }
     }
 
@@ -109,8 +115,6 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-    //Name
-
 
     //Num
     override fun searchNum() {
@@ -133,7 +137,7 @@ class AddFriendViewModelImpl @Inject constructor(
         viewModelScope.launch {
             _addEvent.emit(AddFriendViewModel.AddEvent.OpenLoading)
             friendsSearchPhoneUseCase(FriendsSearchPhoneRequest(phones.filter {
-                it.length == 11 && it.substring(0,3) == "010"
+                it.length == 11 && it.substring(0, 3) == "010"
             })).collect { result ->
                 result.onSuccess { response ->
                     _addFriendList.emit(response.friends)
@@ -147,10 +151,23 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-
-    fun closeLoading(){
+    fun closeLoading() {
         viewModelScope.launch {
             _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
+        }
+    }
+
+    private fun changeRequestUI(id: Long) {
+        val newList = addFriendListUI.value
+        val index = newList.indexOfFirst {
+            it.id == id
+        }
+        if (index != -1) {
+            newList[index].isFriendRequest = true
+            newList[index].isChecked = false
+            viewModelScope.launch {
+                _addFriendListUI.emit(newList)
+            }
         }
     }
 }
