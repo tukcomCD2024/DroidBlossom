@@ -16,7 +16,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
-import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinMessageManager;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
