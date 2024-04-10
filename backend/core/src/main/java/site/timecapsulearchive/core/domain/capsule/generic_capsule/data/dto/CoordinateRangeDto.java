@@ -1,16 +1,16 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto;
 
-public record CoordinateRangeRequestDto(
+public record CoordinateRangeDto(
     double latitude,
     double longitude,
     double distance
 ) {
 
-    public static CoordinateRangeRequestDto from(
+    public static CoordinateRangeDto from(
         double latitude,
         double longitude,
         double distance
     ) {
-        return new CoordinateRangeRequestDto(latitude, longitude, distance);
+        return new CoordinateRangeDto(latitude, longitude, distance);
     }
 }
