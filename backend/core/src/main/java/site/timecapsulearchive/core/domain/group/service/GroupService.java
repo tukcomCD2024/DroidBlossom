@@ -9,6 +9,7 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupInviteMessageDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -55,4 +56,10 @@ public class GroupService {
         GroupInviteMessageDto groupInviteMessageDto = dto.toInviteMessageDto(member.getNickname());
         groupInviteMessageManager.sendGroupInviteMessage(groupInviteMessageDto);
     }
+
+    public Group findGroupById(Long groupId) {
+        return groupRepository.findGroupById(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+    }
+
 }

@@ -58,7 +58,8 @@ public enum ErrorCode {
     FRIEND_DUPLICATE_ID_ERROR(404, "FRIEND-001", "친구 아이디가 중복되었습니다."),
 
     //group
-    GROUP_CREATE_ERROR(400, "GROUP-001", "그룹 생성에 실패하였습니다.");
+    GROUP_CREATE_ERROR(400, "GROUP-001", "그룹 생성에 실패하였습니다."),
+    GROUP_NOT_FOUND_ERROR(404, "GROUP-002", "그룹을 찾을 수 없습니다");
 
     private final int status;
     private final String code;
