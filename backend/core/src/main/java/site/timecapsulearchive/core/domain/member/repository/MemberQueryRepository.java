@@ -6,8 +6,9 @@ import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member.entity.QNotification.notification;
 import static site.timecapsulearchive.core.domain.member.entity.QNotificationCategory.notificationCategory;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -59,39 +60,29 @@ public class MemberQueryRepository {
     }
 
     public Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId) {
-        final Tuple memberDetail = query
-            .select(
-                member.nickname,
-                member.profileUrl,
-                member.tag
-            )
-            .from(member)
-            .where(member.id.eq(memberId))
-            .fetchOne();
-
-        if (memberDetail == null || memberDetail.size() == 0) {
-            return Optional.empty();
-        }
-
-        final Long friendCount = query.select(memberFriend.count())
-            .from(memberFriend)
-            .where(memberFriend.owner.id.eq(memberId))
-            .fetchOne();
-
-        final Long groupCount = query.select(memberGroup.count())
-            .from(memberGroup)
-            .where(memberGroup.member.id.eq(memberId))
-            .fetchOne();
-
-        return Optional.of(
-            MemberDetailDto.builder()
-                .nickname(memberDetail.get(0, String.class))
-                .profileUrl(memberDetail.get(1, String.class))
-                .tag(memberDetail.get(2, String.class))
-                .friendCount(friendCount)
-                .groupCount(groupCount)
-                .build()
+        return Optional.ofNullable(
+            query
+                .select(
+                    Projections.constructor(
+                        MemberDetailDto.class,
+                        member.nickname,
+                        member.profileUrl,
+                        member.tag,
+                        countDistinct(memberFriend.id),
+                        countDistinct(memberGroup.id)
+                    )
+                )
+                .from(member)
+                .leftJoin(memberFriend).on(member.id.eq(memberFriend.owner.id))
+                .leftJoin(memberGroup).on(member.id.eq(memberGroup.member.id))
+                .where(member.id.eq(memberId))
+                .groupBy(member.id)
+                .fetchOne()
         );
+    }
+
+    private NumberExpression<Long> countDistinct(final NumberExpression<Long> expression) {
+        return Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", expression);
     }
 
     public Slice<MemberNotificationDto> findNotificationSliceByMemberId(
