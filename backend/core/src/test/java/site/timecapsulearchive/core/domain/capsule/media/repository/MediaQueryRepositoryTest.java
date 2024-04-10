@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.sql.DataSource;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +14,13 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
-import site.timecapsulearchive.core.common.data.fixture.CapsuleFixture;
-import site.timecapsulearchive.core.common.data.fixture.CapsuleSkinFixture;
-import site.timecapsulearchive.core.common.data.fixture.ImageFixture;
-import site.timecapsulearchive.core.common.data.fixture.MemberFixture;
-import site.timecapsulearchive.core.common.data.fixture.VideoFixture;
+import site.timecapsulearchive.core.common.fixture.CapsuleFixture;
+import site.timecapsulearchive.core.common.fixture.CapsuleSkinFixture;
+import site.timecapsulearchive.core.common.fixture.ImageFixture;
+import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.VideoFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;
 import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
@@ -28,7 +28,6 @@ import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryReposito
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
-@FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MediaQueryRepositoryTest extends RepositoryTest {
 
@@ -52,13 +51,13 @@ class MediaQueryRepositoryTest extends RepositoryTest {
     @Transactional
     @BeforeEach
     void setUp(@Autowired EntityManager entityManager) {
-        member = MemberFixture.testMember(1);
+        member = MemberFixture.member(1);
         entityManager.persist(member);
 
-        CapsuleSkin capsuleSkin = CapsuleSkinFixture.testCapsuleSkin(1, member);
+        CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(member);
         entityManager.persist(capsuleSkin);
 
-        capsule = CapsuleFixture.testCapsule(1, member, capsuleSkin);
+        capsule = CapsuleFixture.capsule(member, capsuleSkin, CapsuleType.PUBLIC);
         entityManager.persist(capsule);
 
         images = ImageFixture.testImages(member, capsule, 5);

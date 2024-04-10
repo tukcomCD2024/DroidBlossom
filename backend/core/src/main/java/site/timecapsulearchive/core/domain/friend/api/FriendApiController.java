@@ -17,8 +17,8 @@ import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequ
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -46,7 +46,7 @@ public class FriendApiController implements FriendApi {
     public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -64,7 +64,7 @@ public class FriendApiController implements FriendApi {
     public ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -134,9 +134,9 @@ public class FriendApiController implements FriendApi {
 
     @GetMapping(value = "/search")
     @Override
-    public ResponseEntity<ApiSpec<SearchFriendSummaryResponse>> searchFriendByTag(
+    public ResponseEntity<ApiSpec<SearchTagFriendSummaryResponse>> searchFriendByTag(
         @AuthenticationPrincipal Long memberId,
-        @RequestParam(value = "friend-tag") final String tag
+        @RequestParam(value = "friend_tag") final String tag
     ) {
         return ResponseEntity.ok()
             .body(

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
+import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
@@ -19,13 +20,15 @@ import site.timecapsulearchive.core.domain.friend.repository.FriendInviteReposit
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashProperties;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 class FriendServiceTest {
 
-    private final MemberFriendMapper memberFriendMapper = new MemberFriendMapper();
+    private final MemberFriendMapper memberFriendMapper = new MemberFriendMapper(mock(
+        AESEncryptionManager.class));
     private final MemberFriendQueryRepository memberFriendQueryRepository = mock(
         MemberFriendQueryRepository.class);
     private final MemberFriendRepository memberFriendRepository = mock(
@@ -84,7 +87,7 @@ class FriendServiceTest {
         List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
             result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                Boolean.TRUE));
+                MemberFixture.getPhoneBytes((int)i), Boolean.TRUE, Boolean.FALSE));
         }
 
         return result;
