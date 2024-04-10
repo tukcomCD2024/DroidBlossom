@@ -55,7 +55,10 @@ public enum ErrorCode {
 
     //friend
     FRIEND_NOT_FOUND_ERROR(404, "FRIEND-001", "친구를 찾지 못하였습니다"),
-    FRIEND_DUPLICATE_ID_ERROR(404, "FRIEND-001", "친구 아이디가 중복되었습니다.");
+    FRIEND_DUPLICATE_ID_ERROR(404, "FRIEND-001", "친구 아이디가 중복되었습니다."),
+
+    //group
+    GROUP_NOT_FOUND_ERROR(404, "GROUP-001", "그룹을 찾을 수 없습니다");
 
     private final int status;
     private final String code;
