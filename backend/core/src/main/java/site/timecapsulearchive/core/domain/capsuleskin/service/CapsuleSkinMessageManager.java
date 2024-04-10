@@ -5,13 +5,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
-import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqConfig;
+import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqComponentConstants;
 
 @Component
 @RequiredArgsConstructor
 public class CapsuleSkinMessageManager {
 
-    private final RabbitmqConfig rabbitmqConfig;
     private final RabbitTemplate rabbitTemplate;
     private final CapsuleSkinMapper capsuleSkinMapper;
 
@@ -21,8 +20,8 @@ public class CapsuleSkinMessageManager {
         final CapsuleSkinCreateDto dto
     ) {
         rabbitTemplate.convertAndSend(
-            rabbitmqConfig.getCapsuleSkinExchangeName(),
-            rabbitmqConfig.getRoutingKey(),
+            RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getValue(),
+            RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getValue(),
             capsuleSkinMapper.createDtoToMessageDto(memberId, nickname, dto)
         );
     }

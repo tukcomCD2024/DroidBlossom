@@ -10,7 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
@@ -157,6 +158,28 @@ public interface FriendApi {
 
         @Parameter(in = ParameterIn.PATH, description = "친구 아이디", required = true, schema = @Schema())
         Long friendId
+    );
+
+    @Operation(
+        summary = "소셜 친구들에게 친구 요청",
+        description = "사용자들에게 친구 요청을 보낸다. 해당 사용자들에게 알림이 발송된다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "202",
+            description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
+        )
+    })
+    ResponseEntity<ApiSpec<String>> requestFriends(
+        Long memberId,
+
+        SendFriendRequest request
     );
 
 

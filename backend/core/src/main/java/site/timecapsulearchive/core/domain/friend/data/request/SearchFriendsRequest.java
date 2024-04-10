@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.data.reqeust;
+package site.timecapsulearchive.core.domain.friend.data.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;

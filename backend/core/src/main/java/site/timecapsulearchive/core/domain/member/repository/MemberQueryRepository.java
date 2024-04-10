@@ -163,4 +163,12 @@ public class MemberQueryRepository {
                 .fetchOne()
         );
     }
+
+    public List<Long> findMemberIdsByIds(List<Long> ids) {
+        return query
+            .select(member.id)
+            .from(member)
+            .where(member.id.in(ids))
+            .fetch();
+    }
 }

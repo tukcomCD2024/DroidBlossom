@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
@@ -30,13 +31,16 @@ public class RabbitmqConfig {
     private final RabbitmqProperties rabbitmqProperties;
 
     @Bean
-    public Queue capsuleSkinQueue() {
-        return new Queue(CAPSULE_SKIN_QUEUE_NAME, true);
+    public Queue queue() {
+        return QueueBuilder.durable(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getValue())
+            .deadLetterExchange("capsuleSkin_delay.exchange")
+            .ttl(5000)
+            .build();
     }
 
     @Bean
-    public DirectExchange capsuleSkinExchange() {
-        return new DirectExchange(CAPSULE_SKIN_EXCHANGE_NAME);
+    public DirectExchange exchange() {
+        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getValue());
     }
 
     @Bean
@@ -62,6 +66,26 @@ public class RabbitmqConfig {
         return BindingBuilder
             .bind(groupInviteQueue())
             .to(groupInviteExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue friendRequestQueue() {
+        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getValue(),
+            true);
+    }
+
+    @Bean
+    public DirectExchange friendRequestExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getValue());
+    }
+
+    @Bean
+    public Binding friendRequestQueueAndExchangeBinding() {
+        return BindingBuilder
+            .bind(friendRequestQueue())
+            .to(friendRequestExchange())
             .withQueueName();
     }
 

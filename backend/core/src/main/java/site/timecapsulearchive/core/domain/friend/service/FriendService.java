@@ -24,6 +24,7 @@ import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.friend.exception.DuplicateFriendIdException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
+import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
@@ -41,6 +42,7 @@ public class FriendService {
     private final MemberFriendMapper memberFriendMapper;
     private final MemberRepository memberRepository;
     private final FriendInviteRepository friendInviteRepository;
+    private final FriendInviteQueryRepository friendInviteQueryRepsotiroy;
     private final FriendMapper friendMapper;
     private final NotificationManager notificationManager;
     private final TransactionTemplate transactionTemplate;
@@ -51,6 +53,7 @@ public class FriendService {
         MemberFriendQueryRepository memberFriendQueryRepository,
         MemberFriendMapper memberFriendMapper, MemberRepository memberRepository,
         FriendInviteRepository friendInviteRepository,
+        FriendInviteQueryRepository friendInviteQueryRepository,
         FriendMapper friendMapper,
         NotificationManager notificationManager,
         PlatformTransactionManager transactionManager, HashEncryptionManager hashEncryptionManager
@@ -60,6 +63,7 @@ public class FriendService {
         this.memberFriendMapper = memberFriendMapper;
         this.memberRepository = memberRepository;
         this.friendInviteRepository = friendInviteRepository;
+        this.friendInviteQueryRepsotiroy = friendInviteQueryRepository;
         this.friendMapper = friendMapper;
         this.notificationManager = notificationManager;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -180,5 +184,14 @@ public class FriendService {
             .findFriendsByTag(memberId, tag).orElseThrow(FriendNotFoundException::new);
 
         return friendSummaryDto.toResponse();
+    }
+
+    @Transactional
+    public void bulkSaveFriendInvites(Long ownerId, List<Long> friendIds) {
+        if (friendIds.isEmpty()) {
+            return;
+        }
+
+        friendInviteQueryRepsotiroy.bulkSave(ownerId, friendIds);
     }
 }

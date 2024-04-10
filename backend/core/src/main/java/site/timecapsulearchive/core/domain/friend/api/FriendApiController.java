@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.friend.data.reqeust.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
+import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
+import site.timecapsulearchive.core.domain.friend.facade.FriendFacade;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -29,6 +31,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class FriendApiController implements FriendApi {
 
     private final FriendService friendService;
+    private final FriendFacade friendFacade;
 
     @PostMapping(value = "/{friend_id}/accept-request")
     @Override
@@ -112,6 +115,18 @@ public class FriendApiController implements FriendApi {
                     friendService.requestFriend(memberId, friendId)
                 )
             );
+    }
+
+    @PostMapping(value = "/requests")
+    @Override
+    public ResponseEntity<ApiSpec<String>> requestFriends(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestBody SendFriendRequest request
+    ) {
+        friendFacade.requestFriends(memberId, request.friendIds());
+
+        return ResponseEntity.accepted()
+            .body(ApiSpec.empty(SuccessCode.ACCEPTED));
     }
 
     @PostMapping(
