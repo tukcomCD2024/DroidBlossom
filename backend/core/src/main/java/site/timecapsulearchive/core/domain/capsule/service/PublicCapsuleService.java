@@ -27,7 +27,7 @@ public class PublicCapsuleService {
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(detailDto)) {
-            return detailDto.removeContent();
+            return detailDto.removeTitleAndContentAndImagesAndVideos();
         }
 
         return detailDto;
