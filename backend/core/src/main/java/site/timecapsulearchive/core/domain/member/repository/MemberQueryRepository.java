@@ -1,10 +1,14 @@
 package site.timecapsulearchive.core.domain.member.repository;
 
+import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
+import static site.timecapsulearchive.core.domain.group.entity.QMemberGroup.memberGroup;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member.entity.QNotification.notification;
 import static site.timecapsulearchive.core.domain.member.entity.QNotificationCategory.notificationCategory;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -15,7 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -55,21 +59,30 @@ public class MemberQueryRepository {
         );
     }
 
-    public Optional<MemberDetailResponseDto> findMemberDetailResponseDtoById(final Long memberId) {
+    public Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId) {
         return Optional.ofNullable(
             query
                 .select(
                     Projections.constructor(
-                        MemberDetailResponseDto.class,
+                        MemberDetailDto.class,
                         member.nickname,
                         member.profileUrl,
-                        member.phone
+                        member.tag,
+                        countDistinct(memberFriend.id),
+                        countDistinct(memberGroup.id)
                     )
                 )
                 .from(member)
+                .leftJoin(memberFriend).on(member.id.eq(memberFriend.owner.id))
+                .leftJoin(memberGroup).on(member.id.eq(memberGroup.member.id))
                 .where(member.id.eq(memberId))
+                .groupBy(member.id)
                 .fetchOne()
         );
+    }
+
+    private NumberExpression<Long> countDistinct(final NumberExpression<Long> expression) {
+        return Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", expression);
     }
 
     public Slice<MemberNotificationDto> findNotificationSliceByMemberId(

@@ -59,6 +59,15 @@ public class S3PreSignedUrlManager {
         );
     }
 
+    public String getImageS3PreSignedUrlsForPut(
+        final Long memberId,
+        final String directory,
+        final String fileName
+    ) {
+        return createS3PreSignedUrlForPut(memberId, directory, fileName, IMAGE_CONTENT_TYPE,
+            bucketName);
+    }
+
     private List<String> getPreSignedImageUrls(
         final S3PreSignedUrlRequestDto dto,
         final UnaryOperator<String> preSignedUrlConvertFunction

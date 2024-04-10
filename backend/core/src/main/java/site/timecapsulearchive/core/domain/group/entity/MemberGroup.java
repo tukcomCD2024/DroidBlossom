@@ -36,4 +36,14 @@ public class MemberGroup extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+
+    private MemberGroup(Boolean isOwner, Member member, Group group) {
+        this.isOwner = isOwner;
+        this.member = member;
+        this.group = group;
+    }
+
+    public static MemberGroup createGroupOwner(Member member, Group group) {
+        return new MemberGroup(true, member, group);
+    }
 }

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeRequestDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
@@ -55,7 +55,7 @@ public class CapsuleService {
      */
     public NearbyCapsuleResponse findCapsuleByCurrentLocationAndCapsuleType(
         final Long memberId,
-        final CoordinateRangeRequestDto dto,
+        final CoordinateRangeDto dto,
         final CapsuleType capsuleType
     ) {
         final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
