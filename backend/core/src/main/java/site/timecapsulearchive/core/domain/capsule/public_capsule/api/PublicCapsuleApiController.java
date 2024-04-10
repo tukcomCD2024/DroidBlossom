@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.public_capsule.api;
 
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.service.PublicCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
 @RequestMapping("/public")
@@ -24,6 +28,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class PublicCapsuleApiController implements PublicCapsuleApi {
 
     private final PublicCapsuleService publicCapsuleService;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @GetMapping(
         value = "/capsules/{capsule_id}/summary",
@@ -31,14 +36,17 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
     )
     @Override
     public ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getPublicCapsuleSummaryById(
-        @AuthenticationPrincipal Long memberId,
-        @PathVariable("capsule_id") Long capsuleId
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
     ) {
+        final CapsuleSummaryDto summaryDto = publicCapsuleService.findPublicCapsuleSummaryByMemberIdAndCapsuleId(
+            memberId, capsuleId);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                publicCapsuleService.findPublicCapsuleSummaryByMemberIdAndCapsuleId(memberId,
-                    capsuleId)
+                CapsuleSummaryResponse.createOf(summaryDto,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet)
             )
         );
     }
@@ -49,14 +57,20 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
     )
     @Override
     public ResponseEntity<ApiSpec<CapsuleDetailResponse>> getPublicCapsuleDetailById(
-        @AuthenticationPrincipal Long memberId,
-        @PathVariable("capsule_id") Long capsuleId
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
     ) {
+        final CapsuleDetailDto detailDto = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+            memberId, capsuleId);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(memberId,
-                    capsuleId)
+                CapsuleDetailResponse.createOf(
+                    detailDto,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet,
+                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                )
             )
         );
     }
@@ -72,10 +86,18 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(defaultValue = "0", value = "created_at") final ZonedDateTime createdAt
     ) {
+        final Slice<CapsuleDetailDto> publicCapsuleSlice = publicCapsuleService.findPublicCapsulesMadeByFriend(
+            memberId, size, createdAt);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                publicCapsuleService.findPublicCapsulesMadeByFriend(memberId, size, createdAt)
+                PublicCapsuleSliceResponse.createOf(
+                    publicCapsuleSlice.getContent(),
+                    publicCapsuleSlice.hasNext(),
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet,
+                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                )
             )
         );
     }

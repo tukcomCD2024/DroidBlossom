@@ -20,4 +20,22 @@ public record CapsuleDetailDto(
     CapsuleType capsuleType
 ) {
 
+    public CapsuleDetailDto excludeTitleAndContentAndImagesAndVideos() {
+        return new CapsuleDetailDto(
+            capsuleId,
+            capsuleSkinUrl,
+            dueDate,
+            nickname,
+            profileUrl,
+            createdAt,
+            address,
+            roadName,
+            "",
+            "",
+            "",
+            "",
+            isOpened,
+            capsuleType
+        );
+    }
 }

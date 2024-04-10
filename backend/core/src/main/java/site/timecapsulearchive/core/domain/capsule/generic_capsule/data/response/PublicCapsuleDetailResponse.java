@@ -3,8 +3,11 @@ package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.respons
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.Function;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "공개 캡슐 상세 정보")
 @Builder
@@ -53,4 +56,39 @@ public record PublicCapsuleDetailResponse(
     CapsuleType capsuleType
 ) {
 
+    public PublicCapsuleDetailResponse {
+        if (dueDate != null) {
+            dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
+
+        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+    }
+
+    public static PublicCapsuleDetailResponse createOf(
+        final CapsuleDetailDto detailDto,
+        final Function<String, String> singlePreSignUrlFunction,
+        final Function<String, List<String>> multiplePreSignUrlFunction
+    ) {
+        final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
+            detailDto.images());
+        final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
+            detailDto.videos());
+
+        return new PublicCapsuleDetailResponse(
+            detailDto.capsuleId(),
+            singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
+            detailDto.dueDate(),
+            detailDto.nickname(),
+            detailDto.profileUrl(),
+            detailDto.createdAt(),
+            detailDto.address(),
+            detailDto.roadName(),
+            detailDto.title(),
+            detailDto.content(),
+            preSignedImageUrls,
+            preSignedVideoUrls,
+            detailDto.isOpened(),
+            detailDto.capsuleType()
+        );
+    }
 }

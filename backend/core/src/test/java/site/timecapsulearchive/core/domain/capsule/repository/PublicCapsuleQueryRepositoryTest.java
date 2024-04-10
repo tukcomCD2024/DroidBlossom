@@ -6,7 +6,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.Optional;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +26,13 @@ import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
-@FlywayTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
 
     private final PublicCapsuleQueryRepository publicCapsuleQueryRepository;
 
-    private Capsule myCapsule;
     private Capsule friendCapsule;
+    private Capsule myCapsule;
     private Member member;
     private Member friend;
     private Member notFriend;
@@ -80,14 +78,14 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 특정_사용자의_친구_캡슐을_상세_조회하면_친구_캡슐_상세_내용을_볼_수_있다() {
+    void 친구가_공개_캡슐을_상세_조회하면_공개_캡슐_상세_내용을_볼_수_있다() {
         //given
-        Long memberId = member.getId();
+        Long friendId = friend.getId();
         Long capsuleId = friendCapsule.getId();
 
         //when
         Optional<CapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
-            memberId, capsuleId);
+            friendId, capsuleId);
 
         //then
         assertThat(detailDto.isPresent()).isTrue();
@@ -108,14 +106,28 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 특정_사용자의_친구_캡슐을_요약_조회하면_친구_캡슐_요약_내용을_볼_수_있다() {
+    void 사용자가_만든_공개_캡슐을_상세_조회하면_공개_캡슐_상세_내용을_볼_수_있다() {
         //given
         Long memberId = member.getId();
+        Long capsuleId = myCapsule.getId();
+
+        //when
+        Optional<CapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+            memberId, capsuleId);
+
+        //then
+        assertThat(detailDto.isPresent()).isTrue();
+    }
+
+    @Test
+    void 친구가_공개_캡슐을_요약_조회하면_공개_캡슐_요약_내용을_볼_수_있다() {
+        //given
+        Long friendId = friend.getId();
         Long capsuleId = friendCapsule.getId();
 
         //when
         Optional<CapsuleSummaryDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
-            memberId, capsuleId);
+            friendId, capsuleId);
 
         //then
         assertThat(detailDto.isPresent()).isTrue();
