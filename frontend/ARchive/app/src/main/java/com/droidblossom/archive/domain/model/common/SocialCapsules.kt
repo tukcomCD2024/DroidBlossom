@@ -9,7 +9,7 @@ data class SocialCapsules (
     val profileUrl:String,
     val capsuleSkinUrl: String,
     val nickNameOrGroupName:String,
-    val thumbnailImage:String?,
+    val thumbnailImage:String,
     val roadName: String,
     val address: String,
     val hasThumbnail: Boolean,

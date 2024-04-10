@@ -32,7 +32,7 @@ data class PublicCapsuleResponseDto (
         roadName = this.roadName,
         address = this.address,
         hasThumbnail = !(imageUrls.isNullOrEmpty() && videoUrls.isNullOrEmpty()),
-        thumbnailImage = imageUrls?.firstOrNull() ?: videoUrls?.firstOrNull(),
-        isOpened = false
+        thumbnailImage = imageUrls?.firstOrNull() ?: videoUrls?.firstOrNull() ?: "",
+        isOpened = this.isOpened
     )
 }
