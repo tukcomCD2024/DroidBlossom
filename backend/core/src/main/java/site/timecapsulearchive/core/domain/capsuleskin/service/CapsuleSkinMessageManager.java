@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsuleskin.repository;
+package site.timecapsulearchive.core.domain.capsuleskin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

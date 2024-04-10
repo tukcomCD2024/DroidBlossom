@@ -42,7 +42,7 @@ public class GroupApiController implements GroupApi {
             request.groupDirectory(), request.groupImage());
         final GroupCreateDto dto = request.toDto(groupProfileUrl);
 
-        groupService.createGroup(dto);
+        groupService.createGroup(memberId, dto);
 
         return ResponseEntity.ok(
             ApiSpec.empty(

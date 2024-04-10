@@ -63,7 +63,8 @@ public class S3PreSignedUrlManager {
         final String directory,
         final String fileName
     ) {
-        return createS3PreSignedUrlForPut(memberId, directory, fileName, IMAGE_CONTENT_TYPE, bucketName);
+        return createS3PreSignedUrlForPut(memberId, directory, fileName, IMAGE_CONTENT_TYPE,
+            bucketName);
     }
 
     private List<String> getPreSignedImageUrls(

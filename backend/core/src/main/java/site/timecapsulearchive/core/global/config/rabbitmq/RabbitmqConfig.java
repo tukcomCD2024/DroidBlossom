@@ -23,25 +23,45 @@ public class RabbitmqConfig {
 
     private static final String CAPSULE_SKIN_EXCHANGE_NAME = "capsuleSkin.exchange";
     private static final String CAPSULE_SKIN_QUEUE_NAME = "capsuleSkin.queue";
+    private static final String GROUP_INVITE_EXCHANGE_NAME = "groupInvite.exchange";
+    private static final String GROUP_INVITE_QUEUE_NAME = "groupInvite.queue";
     private static final String ROUTING_KEY = "";
 
     private final RabbitmqProperties rabbitmqProperties;
 
     @Bean
-    public Queue queue() {
+    public Queue capsuleSkinQueue() {
         return new Queue(CAPSULE_SKIN_QUEUE_NAME, true);
     }
 
     @Bean
-    public DirectExchange exchange() {
+    public DirectExchange capsuleSkinExchange() {
         return new DirectExchange(CAPSULE_SKIN_EXCHANGE_NAME);
     }
 
     @Bean
-    public Binding binding() {
+    public Binding capsuleSkinBinding() {
         return BindingBuilder
-            .bind(queue())
-            .to(exchange())
+            .bind(capsuleSkinQueue())
+            .to(capsuleSkinExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue groupInviteQueue() {
+        return new Queue(GROUP_INVITE_QUEUE_NAME, true);
+    }
+
+    @Bean
+    public DirectExchange groupInviteExchange() {
+        return new DirectExchange(GROUP_INVITE_EXCHANGE_NAME);
+    }
+
+    @Bean
+    public Binding groupInviteBinding() {
+        return BindingBuilder
+            .bind(groupInviteQueue())
+            .to(groupInviteExchange())
             .withQueueName();
     }
 
@@ -78,6 +98,10 @@ public class RabbitmqConfig {
 
     public String getCapsuleSkinExchangeName() {
         return CAPSULE_SKIN_EXCHANGE_NAME;
+    }
+
+    public String getGroupInviteExchangeName() {
+        return GROUP_INVITE_EXCHANGE_NAME;
     }
 
     public String getRoutingKey() {
