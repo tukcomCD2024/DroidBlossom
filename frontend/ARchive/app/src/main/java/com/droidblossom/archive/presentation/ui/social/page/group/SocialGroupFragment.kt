@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.social.page.group
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -13,8 +14,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialGroupBinding
+import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -50,7 +54,7 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.socialGroupRV.layoutParams as ConstraintLayout.LayoutParams
+                    val layoutParams = binding.socialFriendSwipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.updateTopConstraintsForSearch(
                         isSearchOpen = it,
                         searchOpenView = binding.searchOpenBtn,
@@ -67,20 +71,50 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.groupCapsules.collect{ groupCapsules ->
+                    socialFriendCapsuleRVA.submitList(groupCapsules){
+                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            binding.socialGroupRV.scrollToPosition(0)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        initSearchEdit()
         initRVA()
+        initSearchEdit()
     }
 
     private fun initRVA() {
         binding.socialGroupRV.adapter = socialFriendCapsuleRVA
-
         val spaceInPixels = resources.getDimensionPixelSize(R.dimen.margin)
         binding.socialGroupRV.addItemDecoration(SpaceItemDecoration(spaceBottom = spaceInPixels))
+        binding.socialFriendSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLatestGroupCapsule()
+        }
+        
+        binding.socialGroupRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.getGroupCapsulePage()
+                    }
+                }
+            }
+        })
     }
 
 
