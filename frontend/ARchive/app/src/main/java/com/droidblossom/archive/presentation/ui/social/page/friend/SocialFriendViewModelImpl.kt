@@ -46,6 +46,10 @@ class SocialFriendViewModelImpl @Inject constructor(
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
 
+    init {
+        getPublicCapsulePage()
+    }
+
     override fun socialFriendEvent(event: SocialFriendViewModel.SocialFriendEvent) {
         viewModelScope.launch {
             _socialFriendEvents.emit(event)
@@ -64,9 +68,7 @@ class SocialFriendViewModelImpl @Inject constructor(
         }
     }
 
-    init {
-        getPublicCapsulePage()
-    }
+
     override fun getPublicCapsulePage(){
         viewModelScope.launch {
             if (hasNextPage.value) {
@@ -83,6 +85,25 @@ class SocialFriendViewModelImpl @Inject constructor(
                     }.onFail {
                         socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
                     }
+                }
+            }
+        }
+    }
+
+    override fun getLatestPublicCapsule(){
+        viewModelScope.launch {
+            publicCapsulePageUseCase(
+                PublicCapsuleSliceRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _publicCapsules.emit(it.publicCapsules)
+                    _lastCreatedTime.value = publicCapsules.value.last().createdDate
+                }.onFail {
+                    socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
                 }
             }
         }

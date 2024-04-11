@@ -3,12 +3,8 @@ package com.droidblossom.archive.presentation.ui.social.page.friend
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.TypedValue
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -20,15 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialFriendBinding
-import com.droidblossom.archive.databinding.FragmentSocialGroupBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
-import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
-import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
-import com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel
-import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupViewModelImpl
 import com.droidblossom.archive.util.SpaceItemDecoration
 import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,7 +52,7 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.socialFriendRV.layoutParams as ConstraintLayout.LayoutParams
+                    val layoutParams = binding.socialFriendSwipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.updateTopConstraintsForSearch(
                         isSearchOpen = it,
                         searchOpenView = binding.searchOpenBtn,
@@ -94,8 +85,13 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.publicCapsules.collect{ publicCapsule ->
-                    socialFriendCapsuleRVA.submitList(publicCapsule)
+                viewModel.publicCapsules.collect{ publicCapsules ->
+                    socialFriendCapsuleRVA.submitList(publicCapsules){
+                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            binding.socialFriendRV.scrollToPosition(0)
+                        }
+                    }
                 }
             }
         }
@@ -113,6 +109,9 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
 
         val spaceInPixels = resources.getDimensionPixelSize(R.dimen.margin)
         binding.socialFriendRV.addItemDecoration(SpaceItemDecoration(spaceBottom = spaceInPixels))
+        binding.socialFriendSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLatestPublicCapsule()
+        }
 
         binding.socialFriendRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -122,7 +121,6 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
                         viewModel.getPublicCapsulePage()
                     }
