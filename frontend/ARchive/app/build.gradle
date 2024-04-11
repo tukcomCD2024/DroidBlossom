@@ -186,6 +186,9 @@ dependencies {
     // TedNaverMapClustering: https://github.com/ParkSangGwon/TedNaverMapClustering
     //implementation 'io.github.ParkSangGwon:tedclustering-naver:x.y.z'
     implementation 'io.github.ParkSangGwon:tedclustering-naver:1.0.2'
+
+    // Swiperefreshlayout: https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=ko#kts
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
 kapt {
     correctErrorTypes true
