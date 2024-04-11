@@ -8,8 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemSocialCapsuleCloseBinding
 import com.droidblossom.archive.databinding.ItemSocialCapsuleOpenBinding
 import com.droidblossom.archive.domain.model.common.SocialCapsules
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 
-class SocialFriendCapsuleRVA() : ListAdapter<SocialCapsules, RecyclerView.ViewHolder>(differ) {
+class SocialFriendCapsuleRVA(
+    private val openCapsuleClick: (Long) -> Unit,
+    private val closeCapsuleClick:() -> Unit
+) : ListAdapter<SocialCapsules, RecyclerView.ViewHolder>(differ) {
 
     inner class OpenedCapsuleViewHolder(
         private val binding: ItemSocialCapsuleOpenBinding
@@ -17,6 +21,9 @@ class SocialFriendCapsuleRVA() : ListAdapter<SocialCapsules, RecyclerView.ViewHo
 
         fun bindOpenedCapsule(data : SocialCapsules){
             binding.item = data
+            binding.root.setOnClickListener {
+                openCapsuleClick(data.capsuleId)
+            }
         }
 
     }
@@ -27,6 +34,9 @@ class SocialFriendCapsuleRVA() : ListAdapter<SocialCapsules, RecyclerView.ViewHo
 
         fun bindClosedCapsule(data: SocialCapsules){
             binding.item = data
+            binding.root.setOnClickListener{
+                closeCapsuleClick()
+            }
         }
 
     }

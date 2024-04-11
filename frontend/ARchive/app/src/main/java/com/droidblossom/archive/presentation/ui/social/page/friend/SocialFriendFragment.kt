@@ -22,6 +22,8 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialFriendBinding
 import com.droidblossom.archive.databinding.FragmentSocialGroupBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
@@ -39,7 +41,20 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
     override val viewModel: SocialFriendViewModelImpl by viewModels<SocialFriendViewModelImpl>()
 
     private val socialFriendCapsuleRVA by lazy {
-        SocialFriendCapsuleRVA()
+        SocialFriendCapsuleRVA(
+            { id ->
+                startActivity(
+                    CapsuleDetailActivity.newIntent(
+                        requireContext(),
+                        id,
+                        HomeFragment.CapsuleType.PUBLIC
+                    )
+                )
+            },
+            {
+                showToastMessage("개봉되지 않은 캡슐입니다.")
+            }
+        )
     }
 
     override fun observeData() {

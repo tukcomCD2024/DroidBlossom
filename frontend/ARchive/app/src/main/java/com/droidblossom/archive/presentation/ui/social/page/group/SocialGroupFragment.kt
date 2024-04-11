@@ -16,6 +16,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialGroupBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
 import com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel
 import com.droidblossom.archive.util.SpaceItemDecoration
@@ -29,7 +31,20 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
     override val viewModel: SocialGroupViewModelImpl by viewModels<SocialGroupViewModelImpl>()
 
     private val socialFriendCapsuleRVA by lazy {
-        SocialFriendCapsuleRVA()
+        SocialFriendCapsuleRVA(
+            { id ->
+                startActivity(
+                    CapsuleDetailActivity.newIntent(
+                        requireContext(),
+                        id,
+                        HomeFragment.CapsuleType.GROUP
+                    )
+                )
+            },
+            {
+                showToastMessage("개봉되지 않은 캡슐입니다.")
+            }
+        )
     }
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
