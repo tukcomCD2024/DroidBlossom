@@ -60,7 +60,7 @@ public class NotificationManager {
 
         rabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getValue(),
-            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_ROUTING_KEY.getValue(),
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getValue(),
             FriendRequestNotificationDto.createOf(ownerNickname, profileUrl, targetIds)
         );
     }

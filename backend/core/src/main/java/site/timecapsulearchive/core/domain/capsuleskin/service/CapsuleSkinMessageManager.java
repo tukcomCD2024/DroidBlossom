@@ -21,7 +21,7 @@ public class CapsuleSkinMessageManager {
     ) {
         rabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getValue(),
-            RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getValue(),
+            "",
             capsuleSkinMapper.createDtoToMessageDto(memberId, nickname, dto)
         );
     }

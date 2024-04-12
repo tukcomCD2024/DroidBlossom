@@ -10,7 +10,8 @@ public enum RabbitmqComponentConstants {
     CAPSULE_SKIN_DELAY_EXCHANGE("capsuleSkin_delay.exchange"),
     FRIEND_REQUEST_NOTIFICATION_QUEUE("friendRequest.queue"),
     FRIEND_REQUEST_NOTIFICATION_EXCHANGE("friendRequest.exchange"),
-    FRIEND_REQUEST_NOTIFICATION_ROUTING_KEY("friendRequest.queue");
+    GROUP_INVITE_QUEUE_NAME("groupInvite.queue"),
+    GROUP_INVITE_EXCHANGE_NAME("groupInvite.exchange");
 
     private final String value;
 
