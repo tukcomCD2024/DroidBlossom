@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.mapper;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.mapper;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

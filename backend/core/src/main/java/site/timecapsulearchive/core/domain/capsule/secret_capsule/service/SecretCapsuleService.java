@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.service;
+package site.timecapsulearchive.core.domain.capsule.secret_capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 

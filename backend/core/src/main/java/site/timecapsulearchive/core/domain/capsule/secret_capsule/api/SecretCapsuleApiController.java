@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.service.SecretCapsuleService;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.service.SecretCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 

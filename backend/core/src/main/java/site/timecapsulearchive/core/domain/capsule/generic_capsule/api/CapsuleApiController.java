@@ -17,9 +17,9 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Coor
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.CapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 

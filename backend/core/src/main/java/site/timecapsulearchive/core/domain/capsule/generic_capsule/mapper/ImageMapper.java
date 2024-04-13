@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.mapper;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.mapper;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

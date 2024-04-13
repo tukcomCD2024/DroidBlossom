@@ -9,12 +9,10 @@ import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
-import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.service.PublicCapsuleService;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformConfig;
 import site.timecapsulearchive.core.infra.s3.config.S3Config;
 

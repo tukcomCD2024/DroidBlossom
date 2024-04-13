@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.repository;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository;
 
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
