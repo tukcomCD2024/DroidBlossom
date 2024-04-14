@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.facade.CapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -30,7 +30,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class CapsuleApiController implements CapsuleApi {
 
     private final CapsuleService capsuleService;
-    private final CapsuleMapper capsuleMapper;
+    private final CapsuleFacade capsuleFacade;
 
     @GetMapping(value = "/images", produces = {"application/json"})
     @Override
@@ -89,7 +89,7 @@ public class CapsuleApiController implements CapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleService.updateCapsuleOpened(memberId, capsuleId)
+                capsuleFacade.updateCapsuleOpened(memberId, capsuleId)
             )
         );
     }
@@ -100,11 +100,7 @@ public class CapsuleApiController implements CapsuleApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final CapsuleCreateRequest request
     ) {
-        capsuleService.saveCapsule(
-            memberId,
-            capsuleMapper.capsuleCreateRequestToDto(request),
-            CapsuleType.SECRET
-        );
+        capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.SECRET);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
@@ -118,12 +114,7 @@ public class CapsuleApiController implements CapsuleApi {
     public ResponseEntity<ApiSpec<String>> createPublicCapsule(
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final CapsuleCreateRequest request) {
-
-        capsuleService.saveCapsule(
-            memberId,
-            capsuleMapper.capsuleCreateRequestToDto(request),
-            CapsuleType.PUBLIC
-        );
+        capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.PUBLIC);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
