@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
@@ -35,6 +36,27 @@ public class CapsuleApiController implements CapsuleApi {
     @Override
     public ResponseEntity<ImagesPageResponse> getImages(final Long size, final Long capsuleId) {
         return null;
+    }
+
+    @GetMapping(value = "/nearby/ar", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance,
+        @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") final CapsuleType capsuleType
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                capsuleService.findARCapsuleByCurrentLocationAndCapsuleType(
+                    memberId,
+                    CoordinateRangeDto.from(latitude, longitude, distance),
+                    capsuleType
+                )
+            )
+        );
     }
 
     @GetMapping(value = "/nearby", produces = {"application/json"})

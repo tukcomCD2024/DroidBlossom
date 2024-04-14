@@ -24,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 
@@ -42,24 +43,24 @@ public class CapsuleQueryRepository {
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
-    public List<NearbyCapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+    public List<NearbyARCapsuleSummaryDto> findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final Long memberId,
         final Polygon mbr,
         final CapsuleType capsuleType
     ) {
-        final TypedQuery<NearbyCapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+        final TypedQuery<NearbyARCapsuleSummaryDto> query = generateSelectQueryOnARCapsuleSummaryDtoWith(
             capsuleType);
 
-        assignParameter(memberId, mbr, capsuleType, query);
+        assignARCapsuleParameter(memberId, mbr, capsuleType, query);
 
         return query.getResultList();
     }
 
-    private TypedQuery<NearbyCapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
+    private TypedQuery<NearbyARCapsuleSummaryDto> generateSelectQueryOnARCapsuleSummaryDtoWith(
         final CapsuleType capsuleType
     ) {
         String queryString = """
-            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto(
+            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto(
                 c.id,
                 c.point,
                 m.nickname,
@@ -79,10 +80,58 @@ public class CapsuleQueryRepository {
             queryString += " and c.type = :capsuleType";
         }
 
+        return entityManager.createQuery(queryString, NearbyARCapsuleSummaryDto.class);
+    }
+
+    private void assignARCapsuleParameter(
+        final Long memberId,
+        final Polygon mbr,
+        final CapsuleType capsuleType,
+        final TypedQuery<NearbyARCapsuleSummaryDto> query
+    ) {
+        query.setParameter("mbr", mbr);
+        query.setParameter("memberId", memberId);
+
+        if (capsuleType != CapsuleType.ALL) {
+            query.setParameter("capsuleType", capsuleType);
+        }
+    }
+
+    public List<NearbyCapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+        final Long memberId,
+        final Polygon mbr,
+        final CapsuleType capsuleType
+    ) {
+        final TypedQuery<NearbyCapsuleSummaryDto> query = generateSelectQueryOnCapsuleSummaryDtoWith(
+            capsuleType);
+
+        assignCapsuleParameter(memberId, mbr, capsuleType, query);
+
+        return query.getResultList();
+    }
+
+    private TypedQuery<NearbyCapsuleSummaryDto> generateSelectQueryOnCapsuleSummaryDtoWith(
+        final CapsuleType capsuleType
+    ) {
+        String queryString = """
+            select new site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto(
+                c.id,
+                c.point,
+                c.type
+            )
+            from Capsule c
+            join c.member m
+            where ST_Contains(:mbr, c.point) and m.id=:memberId
+            """;
+
+        if (capsuleType != CapsuleType.ALL) {
+            queryString += " and c.type = :capsuleType";
+        }
+
         return entityManager.createQuery(queryString, NearbyCapsuleSummaryDto.class);
     }
 
-    private void assignParameter(
+    private void assignCapsuleParameter(
         final Long memberId,
         final Polygon mbr,
         final CapsuleType capsuleType,

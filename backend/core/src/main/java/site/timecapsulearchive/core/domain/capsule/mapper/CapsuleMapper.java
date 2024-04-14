@@ -12,10 +12,10 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
@@ -92,11 +92,11 @@ public class CapsuleMapper {
             .build();
     }
 
-    public NearbyCapsuleSummaryResponse nearByCapsuleSummaryDtoToResponse(
-        final NearbyCapsuleSummaryDto dto) {
+    public NearbyARCapsuleSummaryResponse nearByARCapsuleSummaryDtoToResponse(
+        final NearbyARCapsuleSummaryDto dto) {
         Point point = geoTransformManager.changePoint3857To4326(dto.point());
 
-        return NearbyCapsuleSummaryResponse.builder()
+        return NearbyARCapsuleSummaryResponse.builder()
             .id(dto.id())
             .latitude(point.getX())
             .longitude(point.getY())

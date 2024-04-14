@@ -1,18 +1,22 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto;
 
-import java.time.ZonedDateTime;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleSummaryResponse;
 
 public record NearbyCapsuleSummaryDto(
     Long id,
     Point point,
-    String nickname,
-    String skinUrl,
-    String title,
-    ZonedDateTime dueDate,
-    Boolean isOpened,
     CapsuleType capsuleType
 ) {
+
+    public NearbyCapsuleSummaryResponse toResponse() {
+        return NearbyCapsuleSummaryResponse.builder()
+            .id(id)
+            .latitude(point.getX())
+            .longitude(point.getY())
+            .capsuleType(capsuleType)
+            .build();
+    }
 
 }

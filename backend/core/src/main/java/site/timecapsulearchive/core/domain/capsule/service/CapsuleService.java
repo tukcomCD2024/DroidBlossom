@@ -10,7 +10,9 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.mapper.ImageMapper;
@@ -53,6 +55,25 @@ public class CapsuleService {
      * @return NearbyCapsuleResponse 현재 위치 {@code dto.latitude()}, {@code dto.longitude()}에서 반경
      * {@code dto.distance()} 안에 캡슐 목록을 조회한다. 응답 좌표는 SRID 4326이다.
      */
+    public NearbyARCapsuleResponse findARCapsuleByCurrentLocationAndCapsuleType(
+        final Long memberId,
+        final CoordinateRangeDto dto,
+        final CapsuleType capsuleType
+    ) {
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
+
+        final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
+
+        return NearbyARCapsuleResponse.from(
+            capsuleQueryRepository.findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+                    memberId, mbr, capsuleType)
+                .stream()
+                .map(capsuleMapper::nearByARCapsuleSummaryDtoToResponse)
+                .toList()
+        );
+    }
+
     public NearbyCapsuleResponse findCapsuleByCurrentLocationAndCapsuleType(
         final Long memberId,
         final CoordinateRangeDto dto,
@@ -67,11 +88,10 @@ public class CapsuleService {
             capsuleQueryRepository.findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
                     memberId, mbr, capsuleType)
                 .stream()
-                .map(capsuleMapper::nearByCapsuleSummaryDtoToResponse)
+                .map(NearbyCapsuleSummaryDto::toResponse)
                 .toList()
         );
     }
-
 
     @Transactional
     public CapsuleOpenedResponse updateCapsuleOpened(final Long memberId, final Long capsuleId) {
