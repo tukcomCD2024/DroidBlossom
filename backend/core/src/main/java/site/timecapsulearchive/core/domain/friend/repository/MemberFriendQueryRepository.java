@@ -4,7 +4,6 @@ import static site.timecapsulearchive.core.domain.friend.entity.QFriendInvite.fr
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
@@ -97,62 +96,48 @@ public class MemberFriendQueryRepository {
         final List<byte[]> hashes
     ) {
         return jpaQueryFactory
-            .select(member.id, member.profileUrl, member.nickname, member.phone)
+            .select(
+                Projections.constructor(
+                    SearchFriendSummaryDto.class,
+                    member.id,
+                    member.profileUrl,
+                    member.nickname,
+                    member.phone,
+                    memberFriend.id.isNotNull(),
+                    friendInvite.id.isNotNull()
+                )
+            )
             .from(member)
+            .leftJoin(memberFriend)
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInvite)
+            .on(friendInvite.friend.id.eq(member.id).and(friendInvite.owner.id.eq(memberId)))
             .where(member.phone_hash.in(hashes))
-            .fetch()
-            .stream()
-            .map(tuple -> SearchFriendSummaryDto.builder()
-                .id(tuple.get(0, Long.class))
-                .profileUrl(tuple.get(1, String.class))
-                .nickname(tuple.get(2, String.class))
-                .phone(tuple.get(3, byte[].class))
-                .isFriend(checkFriend(memberId, tuple.get(0, Long.class)))
-                .isFriendRequest(checkFriendRequest(memberId, tuple.get(0, Long.class)))
-                .build())
-            .toList();
+            .fetch();
     }
-
 
     public Optional<SearchTagFriendSummaryDto> findFriendsByTag(
         final Long memberId,
         final String tag
     ) {
-        Tuple memberDetail = jpaQueryFactory
-            .select(member.id, member.profileUrl, member.nickname)
+        return Optional.ofNullable(jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    SearchTagFriendSummaryDto.class,
+                    member.id,
+                    member.profileUrl,
+                    member.nickname,
+                    memberFriend.id.isNotNull(),
+                    friendInvite.id.isNotNull()
+                )
+            )
             .from(member)
+            .leftJoin(memberFriend)
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInvite)
+            .on(friendInvite.friend.id.eq(member.id).and(friendInvite.owner.id.eq(memberId)))
             .where(member.tag.eq(tag))
-            .fetchOne();
-
-        if (memberDetail == null || memberDetail.size() == 0) {
-            return Optional.empty();
-        }
-
-        Boolean isFriend = checkFriend(memberId, memberDetail.get(0, Long.class));
-        Boolean isFriendRequest = checkFriendRequest(memberId, memberDetail.get(0, Long.class));
-
-        return Optional.of(SearchTagFriendSummaryDto.builder()
-            .id(memberDetail.get(0, Long.class))
-            .profileUrl(memberDetail.get(1, String.class))
-            .nickname(memberDetail.get(2, String.class))
-            .isFriend(isFriend)
-            .isFriendRequest(isFriendRequest)
-            .build());
-    }
-
-    private Boolean checkFriend(Long memberId, Long friendId) {
-        Integer isFriendCount = jpaQueryFactory.selectOne()
-            .from(memberFriend)
-            .where(memberFriend.friend.id.eq(friendId).and(memberFriend.owner.id.eq(memberId)))
-            .fetchFirst();
-        return isFriendCount != null;
-    }
-
-    private Boolean checkFriendRequest(Long memberId, Long friendId) {
-        Integer isFriendRequestCount = jpaQueryFactory.selectOne()
-            .from(friendInvite)
-            .where(friendInvite.friend.id.eq(friendId).and(friendInvite.owner.id.eq(memberId)))
-            .fetchFirst();
-        return isFriendRequestCount != null;
+            .fetchOne()
+        );
     }
 }
