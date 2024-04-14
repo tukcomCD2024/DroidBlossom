@@ -11,7 +11,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.SecretCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 
@@ -20,7 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.
 @RequiredArgsConstructor
 public class SecretCapsuleService {
 
-    private final CapsuleQueryRepository capsuleQueryRepository;
+    private final SecretCapsuleQueryRepository secretCapsuleQueryRepository;
     private final CapsuleMapper capsuleMapper;
 
     /**
@@ -36,7 +36,7 @@ public class SecretCapsuleService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
+        final Slice<MySecreteCapsuleDto> slice = secretCapsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
 
         return capsuleMapper.mySecretCapsuleDetailSliceToResponse(slice.getContent(),
@@ -54,7 +54,7 @@ public class SecretCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        return capsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
+        return secretCapsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
     }
@@ -70,7 +70,7 @@ public class SecretCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        final CapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final CapsuleDetailDto dto = secretCapsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
