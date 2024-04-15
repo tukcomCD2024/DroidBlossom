@@ -22,11 +22,12 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
 @RequestMapping("/capsules")
@@ -35,7 +36,8 @@ public class CapsuleApiController implements CapsuleApi {
 
     private final CapsuleService capsuleService;
     private final CapsuleFacade capsuleFacade;
-    private final CapsuleMapper capsuleMapper;
+    private final GeoTransformManager geoTransformManager;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @GetMapping(value = "/images", produces = {"application/json"})
     @Override
@@ -61,11 +63,7 @@ public class CapsuleApiController implements CapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                NearbyARCapsuleResponse.from(
-                    dtos.stream()
-                        .map(capsuleMapper::nearByARCapsuleSummaryDtoToResponse)
-                        .toList()
-                )
+                NearbyARCapsuleResponse.createOf(dtos, geoTransformManager, s3PreSignedUrlManager)
             )
         );
     }
@@ -88,11 +86,7 @@ public class CapsuleApiController implements CapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                NearbyCapsuleResponse.from(
-                    dtos.stream()
-                        .map(NearbyCapsuleSummaryDto::toResponse)
-                        .toList()
-                )
+                NearbyCapsuleResponse.from(dtos)
             )
         );
     }
