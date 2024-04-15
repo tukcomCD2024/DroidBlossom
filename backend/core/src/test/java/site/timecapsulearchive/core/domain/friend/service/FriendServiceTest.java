@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
+import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
@@ -36,6 +37,8 @@ class FriendServiceTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final FriendInviteRepository friendInviteRepository = mock(
         FriendInviteRepository.class);
+    private final FriendInviteQueryRepository friendInviteQueryRepository = mock(
+        FriendInviteQueryRepository.class);
     private final FriendMapper friendMapper = mock(FriendMapper.class);
     private final NotificationManager notificationManager = mock(NotificationManager.class);
     private final PlatformTransactionManager transactionTemplate = mock(
@@ -49,6 +52,7 @@ class FriendServiceTest {
         memberFriendMapper,
         memberRepository,
         friendInviteRepository,
+        friendInviteQueryRepository,
         friendMapper,
         notificationManager,
         transactionTemplate,

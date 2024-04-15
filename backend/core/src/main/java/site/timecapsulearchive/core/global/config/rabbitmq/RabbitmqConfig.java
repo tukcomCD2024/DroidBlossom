@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
@@ -21,22 +22,19 @@ import org.springframework.util.ErrorHandler;
 @RequiredArgsConstructor
 public class RabbitmqConfig {
 
-    private static final String CAPSULE_SKIN_EXCHANGE_NAME = "capsuleSkin.exchange";
-    private static final String CAPSULE_SKIN_QUEUE_NAME = "capsuleSkin.queue";
-    private static final String GROUP_INVITE_EXCHANGE_NAME = "groupInvite.exchange";
-    private static final String GROUP_INVITE_QUEUE_NAME = "groupInvite.queue";
-    private static final String ROUTING_KEY = "";
-
     private final RabbitmqProperties rabbitmqProperties;
 
     @Bean
     public Queue capsuleSkinQueue() {
-        return new Queue(CAPSULE_SKIN_QUEUE_NAME, true);
+        return QueueBuilder.durable(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getValue())
+            .deadLetterExchange(RabbitmqComponentConstants.CAPSULE_SKIN_DELAY_EXCHANGE.getValue())
+            .ttl(5000)
+            .build();
     }
 
     @Bean
     public DirectExchange capsuleSkinExchange() {
-        return new DirectExchange(CAPSULE_SKIN_EXCHANGE_NAME);
+        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getValue());
     }
 
     @Bean
@@ -49,12 +47,12 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue groupInviteQueue() {
-        return new Queue(GROUP_INVITE_QUEUE_NAME, true);
+        return new Queue(RabbitmqComponentConstants.GROUP_INVITE_QUEUE_NAME.getValue(), true);
     }
 
     @Bean
     public DirectExchange groupInviteExchange() {
-        return new DirectExchange(GROUP_INVITE_EXCHANGE_NAME);
+        return new DirectExchange(RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE_NAME.getValue());
     }
 
     @Bean
@@ -62,6 +60,26 @@ public class RabbitmqConfig {
         return BindingBuilder
             .bind(groupInviteQueue())
             .to(groupInviteExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue friendRequestQueue() {
+        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getValue(),
+            true);
+    }
+
+    @Bean
+    public DirectExchange friendRequestExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getValue());
+    }
+
+    @Bean
+    public Binding friendRequestQueueAndExchangeBinding() {
+        return BindingBuilder
+            .bind(friendRequestQueue())
+            .to(friendRequestExchange())
             .withQueueName();
     }
 
@@ -94,18 +112,6 @@ public class RabbitmqConfig {
     @Bean
     public ErrorHandler errorHandler() {
         return new ConditionalRejectingErrorHandler(new MyFatalExceptionStrategy());
-    }
-
-    public String getCapsuleSkinExchangeName() {
-        return CAPSULE_SKIN_EXCHANGE_NAME;
-    }
-
-    public String getGroupInviteExchangeName() {
-        return GROUP_INVITE_EXCHANGE_NAME;
-    }
-
-    public String getRoutingKey() {
-        return ROUTING_KEY;
     }
 
     public static class MyFatalExceptionStrategy extends DefaultExceptionStrategy {

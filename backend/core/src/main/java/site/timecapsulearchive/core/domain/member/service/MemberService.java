@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.member.service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
@@ -211,5 +212,9 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public List<Long> findMemberIdsByIds(List<Long> ids) {
+        return memberQueryRepository.findMemberIdsByIds(ids);
     }
 }
