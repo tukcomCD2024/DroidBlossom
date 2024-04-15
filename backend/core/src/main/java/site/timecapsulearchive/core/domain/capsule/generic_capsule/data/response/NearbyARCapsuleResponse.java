@@ -19,11 +19,7 @@ public record NearbyARCapsuleResponse(
         final Function<String, String> preSignUrlFunction
     ) {
         final List<NearbyARCapsuleSummaryResponse> capsules = dtos.stream()
-            .map(dto -> {
-                    Point point = geoTransformFunction.apply(dto.point());
-                    return dto.toResponse(point, preSignUrlFunction);
-                }
-            )
+            .map(dto ->dto.toResponse(geoTransformFunction, preSignUrlFunction))
             .toList();
 
         return new NearbyARCapsuleResponse(capsules);

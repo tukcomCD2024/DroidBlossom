@@ -25,13 +25,15 @@ public record NearbyARCapsuleSummaryDto(
     }
 
     public NearbyARCapsuleSummaryResponse toResponse(
-        final Point point,
+        final Function<Point, Point> geoTransformFunction,
         final Function<String, String> preSignUrlFunction
     ) {
+        Point curPoint = geoTransformFunction.apply(point);
+
         return NearbyARCapsuleSummaryResponse.builder()
             .id(id)
-            .latitude(point.getX())
-            .longitude(point.getY())
+            .latitude(curPoint.getX())
+            .longitude(curPoint.getY())
             .nickname(nickname)
             .capsuleSkinUrl(preSignUrlFunction.apply(skinUrl))
             .title(title)
