@@ -63,7 +63,11 @@ public class CapsuleApiController implements CapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                NearbyARCapsuleResponse.createOf(dtos, geoTransformManager, s3PreSignedUrlManager)
+                NearbyARCapsuleResponse.createOf(
+                    dtos,
+                    geoTransformManager::changePoint3857To4326,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
             )
         );
     }
