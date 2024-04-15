@@ -48,8 +48,8 @@ public record CapsuleSummaryResponse(
     }
 
     public static CapsuleSummaryResponse createOf(
-        CapsuleSummaryDto summaryDto,
-        Function<String, String> preSignUrlFunction
+        final CapsuleSummaryDto summaryDto,
+        final Function<String, String> preSignUrlFunction
     ) {
         return new CapsuleSummaryResponse(
             summaryDto.nickname(),

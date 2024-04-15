@@ -17,6 +17,7 @@ public record NearbyARCapsuleSummaryDto(
     Boolean isOpened,
     CapsuleType capsuleType
 ) {
+
     public NearbyARCapsuleSummaryDto {
         if (dueDate != null) {
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);

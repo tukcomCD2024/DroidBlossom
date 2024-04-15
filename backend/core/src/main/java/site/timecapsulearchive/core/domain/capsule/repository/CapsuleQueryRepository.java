@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
