@@ -41,22 +41,6 @@ public class CapsuleMapper {
     private final GeoTransformManager geoTransformManager;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
-    public CapsuleCreateRequestDto capsuleCreateRequestToDto(
-        final CapsuleCreateRequest request) {
-        return CapsuleCreateRequestDto.builder()
-            .capsuleSkinId(request.capsuleSkinId())
-            .title(request.title())
-            .content(request.content())
-            .longitude(request.longitude())
-            .latitude(request.latitude())
-            .addressData(request.addressData())
-            .dueDate(request.dueDate())
-            .imageNames(request.imageNames())
-            .videoNames(request.videoNames())
-            .directory(request.directory())
-            .build();
-    }
-
     public Capsule requestDtoToEntity(
         final CapsuleCreateRequestDto dto,
         final Member member,
@@ -158,7 +142,6 @@ public class CapsuleMapper {
             .build();
     }
 
-
     private List<String> splitFileNames(String fileNames) {
         if (fileNames == null) {
             return Collections.emptyList();
@@ -212,15 +195,6 @@ public class CapsuleMapper {
             .isOpened(dto.isOpened())
             .type(dto.type())
             .build();
-    }
-
-    public PublicCapsuleSliceResponse publicCapsuleDetailSliceToResponse(
-        final List<CapsuleDetailDto> content, final boolean hasNext) {
-        List<PublicCapsuleDetailResponse> responses = content.stream()
-            .map(this::publicCapsuleDetailDtoToResponse)
-            .toList();
-
-        return new PublicCapsuleSliceResponse(responses, hasNext);
     }
 
     public PublicCapsuleDetailResponse publicCapsuleDetailDtoToResponse(

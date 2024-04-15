@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.api;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.facade.CapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
+import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -31,6 +35,7 @@ public class CapsuleApiController implements CapsuleApi {
 
     private final CapsuleService capsuleService;
     private final CapsuleFacade capsuleFacade;
+    private final CapsuleMapper capsuleMapper;
 
     @GetMapping(value = "/images", produces = {"application/json"})
     @Override
@@ -47,13 +52,19 @@ public class CapsuleApiController implements CapsuleApi {
         @RequestParam(value = "distance") final double distance,
         @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") final CapsuleType capsuleType
     ) {
+        final List<NearbyARCapsuleSummaryDto> dtos = capsuleService.findARCapsuleByCurrentLocationAndCapsuleType(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance),
+            capsuleType
+        );
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleService.findARCapsuleByCurrentLocationAndCapsuleType(
-                    memberId,
-                    CoordinateRangeDto.from(latitude, longitude, distance),
-                    capsuleType
+                NearbyARCapsuleResponse.from(
+                    dtos.stream()
+                        .map(capsuleMapper::nearByARCapsuleSummaryDtoToResponse)
+                        .toList()
                 )
             )
         );
@@ -68,13 +79,19 @@ public class CapsuleApiController implements CapsuleApi {
         @RequestParam(value = "distance") final double distance,
         @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") final CapsuleType capsuleType
     ) {
+        List<NearbyCapsuleSummaryDto> dtos = capsuleService.findCapsuleByCurrentLocationAndCapsuleType(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance),
+            capsuleType
+        );
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleService.findCapsuleByCurrentLocationAndCapsuleType(
-                    memberId,
-                    CoordinateRangeDto.from(latitude, longitude, distance),
-                    capsuleType
+                NearbyCapsuleResponse.from(
+                    dtos.stream()
+                        .map(NearbyCapsuleSummaryDto::toResponse)
+                        .toList()
                 )
             )
         );

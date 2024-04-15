@@ -1,53 +1,40 @@
 package site.timecapsulearchive.core.domain.capsule.facade;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.mapper.ImageMapper;
-import site.timecapsulearchive.core.domain.capsule.mapper.VideoMapper;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
+import site.timecapsulearchive.core.domain.capsule.service.ImageService;
+import site.timecapsulearchive.core.domain.capsule.service.VideoService;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
-import site.timecapsulearchive.core.domain.capsuleskin.exception.CapsuleSkinNotFoundException;
-import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
+import site.timecapsulearchive.core.domain.capsuleskin.service.CapsuleSkinService;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member.service.MemberService;
 
 @Component
 @RequiredArgsConstructor
 public class CapsuleFacade {
 
-    private final CapsuleRepository capsuleRepository;
-    private final MemberRepository memberRepository;
-    private final CapsuleSkinRepository capsuleSkinRepository;
-    private final ImageQueryRepository imageQueryRepository;
-    private final VideoQueryRepository videoQueryRepository;
-    private final CapsuleMapper capsuleMapper;
-    private final ImageMapper imageMapper;
-    private final VideoMapper videoMapper;
-
+    private final CapsuleService capsuleService;
+    private final MemberService memberService;
+    private final CapsuleSkinService capsuleSkinService;
+    private final ImageService imageService;
+    private final VideoService videoService;
 
     @Transactional
     public CapsuleOpenedResponse updateCapsuleOpened(final Long memberId, final Long capsuleId) {
-        final Capsule findCapsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(
-            memberId,
-            capsuleId
-        ).orElseThrow(CapsuleNotFondException::new);
+        final Capsule findCapsule = capsuleService.findCapsuleByMemberIdAndCapsuleId(memberId,
+            capsuleId);
 
         if (findCapsule.isNotCapsuleOpened()) {
             return CapsuleOpenedResponse.notOpened();
         }
 
-        capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+        capsuleService.updateIsOpenedTrue(memberId, capsuleId);
         return CapsuleOpenedResponse.opened();
     }
 
@@ -63,32 +50,14 @@ public class CapsuleFacade {
         final CapsuleCreateRequestDto dto,
         final CapsuleType capsuleType
     ) {
-        final Member foundMember = memberRepository.findMemberById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+        final Member member = memberService.findMemberById(memberId);
+        final CapsuleSkin capsuleSkin = capsuleSkinService.findCapsuleSkinById(
+            dto.capsuleSkinId());
 
-        final CapsuleSkin foundCapsuleSkin = capsuleSkinRepository
-            .findCapsuleSkinById(dto.capsuleSkinId())
-            .orElseThrow(CapsuleSkinNotFoundException::new);
+        final Capsule capsule = capsuleService.saveCapsule(dto, member, capsuleSkin, capsuleType);
 
-        final Capsule capsule = capsuleMapper.requestDtoToEntity(dto, foundMember,
-            foundCapsuleSkin, capsuleType);
-
-        capsuleRepository.save(capsule);
-
-        if (isNotEmpty(dto.imageNames())) {
-            imageQueryRepository.bulkSave(
-                imageMapper.toEntity(capsule, foundMember, dto.directory(), dto.imageNames())
-            );
-        }
-
-        if (isNotEmpty(dto.videoNames())) {
-            videoQueryRepository.bulkSave(
-                videoMapper.toEntity(capsule, foundMember, dto.directory(), dto.videoNames())
-            );
-        }
+        imageService.bulkSave(dto.imageNames(), capsule, member);
+        videoService.bulkSave(dto.videoNames(), capsule, member);
     }
 
-    private boolean isNotEmpty(List<String> fileNames) {
-        return fileNames != null && !fileNames.isEmpty();
-    }
 }

@@ -18,10 +18,16 @@ public class ImageService {
 
     @Transactional
     public void bulkSave(List<String> fileNames, Capsule capsule, Member member) {
-        List<String> fullFileNames = fileNames.stream()
-            .map(fileName -> S3Directory.CAPSULE.generateFullPath(member.getId(), fileName))
-            .toList();
+        if (isNotEmpty(fileNames)) {
+            List<String> fullFileNames = fileNames.stream()
+                .map(fileName -> S3Directory.CAPSULE.generateFullPath(member.getId(), fileName))
+                .toList();
 
-        imageQueryRepository.bulkSave(Image.createOf(fullFileNames, capsule, member));
+            imageQueryRepository.bulkSave(Image.createOf(fullFileNames, capsule, member));
+        }
+    }
+
+    private boolean isNotEmpty(List<String> fileNames) {
+        return fileNames != null && !fileNames.isEmpty();
     }
 }

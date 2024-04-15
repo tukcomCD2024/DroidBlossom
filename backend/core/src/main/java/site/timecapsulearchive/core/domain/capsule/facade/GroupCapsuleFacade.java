@@ -45,6 +45,6 @@ public class GroupCapsuleFacade {
             point);
 
         imageService.bulkSave(dto.imageNames(), capsule, member);
-        videoService.bulkSave(dto.imageNames(), capsule, member);
+        videoService.bulkSave(dto.videoNames(), capsule, member);
     }
 }

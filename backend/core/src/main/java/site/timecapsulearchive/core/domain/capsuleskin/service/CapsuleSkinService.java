@@ -97,6 +97,7 @@ public class CapsuleSkinService {
         return dto.motionName() == null && dto.retarget() == null;
     }
 
+    @Transactional(readOnly = true)
     public CapsuleSkin findCapsuleSkinById(Long capsuleSkinId) {
         return capsuleSkinRepository.findCapsuleSkinById(capsuleSkinId)
             .orElseThrow(CapsuleSkinNotFoundException::new);
