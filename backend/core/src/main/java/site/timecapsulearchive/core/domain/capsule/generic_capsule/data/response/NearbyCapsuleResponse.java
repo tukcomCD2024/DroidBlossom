@@ -11,8 +11,8 @@ public record NearbyCapsuleResponse(
     List<NearbyCapsuleSummaryResponse> capsules
 ) {
 
-    public static NearbyCapsuleResponse from(List<NearbyCapsuleSummaryDto> dtos) {
-        List<NearbyCapsuleSummaryResponse> capsules = dtos.stream()
+    public static NearbyCapsuleResponse from(final List<NearbyCapsuleSummaryDto> dtos) {
+        final List<NearbyCapsuleSummaryResponse> capsules = dtos.stream()
             .map(NearbyCapsuleSummaryDto::toResponse)
             .toList();
 

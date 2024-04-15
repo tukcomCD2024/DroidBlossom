@@ -39,6 +39,4 @@ public record NearbyARCapsuleSummaryDto(
             .capsuleType(capsuleType)
             .build();
     }
-
-
 }

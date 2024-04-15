@@ -25,10 +25,10 @@ public record CapsuleCreateRequestDto(
 ) {
 
     public Capsule toCapsule(
-        Point point,
-        Member member,
-        CapsuleSkin capsuleSkin,
-        CapsuleType capsuleType
+        final Point point,
+        final Member member,
+        final CapsuleSkin capsuleSkin,
+        final CapsuleType capsuleType
     ) {
         return Capsule.builder()
             .title(title)

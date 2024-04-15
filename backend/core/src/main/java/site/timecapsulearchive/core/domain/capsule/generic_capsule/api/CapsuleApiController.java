@@ -77,7 +77,7 @@ public class CapsuleApiController implements CapsuleApi {
         @RequestParam(value = "distance") final double distance,
         @RequestParam(value = "capsule_type", required = false, defaultValue = "ALL") final CapsuleType capsuleType
     ) {
-        List<NearbyCapsuleSummaryDto> dtos = capsuleService.findCapsuleByCurrentLocationAndCapsuleType(
+        final List<NearbyCapsuleSummaryDto> dtos = capsuleService.findCapsuleByCurrentLocationAndCapsuleType(
             memberId,
             CoordinateRangeDto.from(latitude, longitude, distance),
             capsuleType

@@ -17,7 +17,7 @@ public class ImageService {
     private final ImageQueryRepository imageQueryRepository;
 
     @Transactional
-    public void bulkSave(List<String> fileNames, Capsule capsule, Member member) {
+    public void bulkSave(final List<String> fileNames, final Capsule capsule, final Member member) {
         if (isNotEmpty(fileNames)) {
             List<String> fullFileNames = fileNames.stream()
                 .map(fileName -> S3Directory.CAPSULE.generateFullPath(member.getId(), fileName))
@@ -27,7 +27,7 @@ public class ImageService {
         }
     }
 
-    private boolean isNotEmpty(List<String> fileNames) {
+    private boolean isNotEmpty(final List<String> fileNames) {
         return fileNames != null && !fileNames.isEmpty();
     }
 }

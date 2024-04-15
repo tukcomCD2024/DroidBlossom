@@ -7,9 +7,9 @@ public record CoordinateRangeDto(
 ) {
 
     public static CoordinateRangeDto from(
-        double latitude,
-        double longitude,
-        double distance
+        final double latitude,
+        final double longitude,
+        final double distance
     ) {
         return new CoordinateRangeDto(latitude, longitude, distance);
     }

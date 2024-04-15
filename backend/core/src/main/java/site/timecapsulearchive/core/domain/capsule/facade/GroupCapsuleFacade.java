@@ -31,17 +31,19 @@ public class GroupCapsuleFacade {
 
     @Transactional
     public void saveGroupCapsule(
-        GroupCapsuleCreateRequestDto dto,
-        Long memberId,
-        Long groupId
+        final GroupCapsuleCreateRequestDto dto,
+        final Long memberId,
+        final Long groupId
     ) {
-        Member member = memberService.findMemberById(memberId);
-        Group group = groupService.findGroupById(groupId);
-        CapsuleSkin capsuleSkin = capsuleSkinService.findCapsuleSkinById(dto.capsuleSkinId());
+        final Member member = memberService.findMemberById(memberId);
+        final Group group = groupService.findGroupById(groupId);
+        final CapsuleSkin capsuleSkin = capsuleSkinService.findCapsuleSkinById(dto.capsuleSkinId());
 
-        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(), dto.longitude());
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
 
-        Capsule capsule = groupCapsuleService.saveGroupCapsule(dto, member, group, capsuleSkin,
+        final Capsule capsule = groupCapsuleService.saveGroupCapsule(dto, member, group,
+            capsuleSkin,
             point);
 
         imageService.bulkSave(dto.imageNames(), capsule, member);

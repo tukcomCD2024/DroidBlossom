@@ -18,5 +18,4 @@ public record NearbyCapsuleSummaryDto(
             .capsuleType(capsuleType)
             .build();
     }
-
 }

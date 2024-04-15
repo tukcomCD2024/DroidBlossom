@@ -15,11 +15,11 @@ public record NearbyARCapsuleResponse(
 ) {
 
     public static NearbyARCapsuleResponse createOf(
-        List<NearbyARCapsuleSummaryDto> dtos,
-        GeoTransformManager geoTransformManager,
-        S3PreSignedUrlManager s3PreSignedUrlManager
+        final List<NearbyARCapsuleSummaryDto> dtos,
+        final GeoTransformManager geoTransformManager,
+        final S3PreSignedUrlManager s3PreSignedUrlManager
     ) {
-        List<NearbyARCapsuleSummaryResponse> capsules = dtos.stream()
+        final List<NearbyARCapsuleSummaryResponse> capsules = dtos.stream()
             .map(dto -> {
                     Point point = geoTransformManager.changePoint3857To4326(dto.point());
                     return dto.toResponse(point,

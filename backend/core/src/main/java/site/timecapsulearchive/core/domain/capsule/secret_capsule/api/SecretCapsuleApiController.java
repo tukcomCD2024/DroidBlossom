@@ -45,7 +45,8 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                MySecretCapsuleSliceResponse.createOf(dtos, s3PreSignedUrlManager)
+                MySecretCapsuleSliceResponse.createOf(
+                    dtos, s3PreSignedUrlManager::getS3PreSignedUrlForGet)
             )
         );
     }
