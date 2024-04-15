@@ -30,4 +30,8 @@ public class MemberFixture {
         return ("0" + (1000000000 + dataPrefix)).getBytes(StandardCharsets.UTF_8);
     }
 
+    public static byte[] getRealPhoneBytes(String phone, HashEncryptionManager manager) {
+        return manager.encrypt(phone.getBytes(StandardCharsets.UTF_8));
+    }
+
 }

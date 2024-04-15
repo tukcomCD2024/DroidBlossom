@@ -1,18 +1,19 @@
 package site.timecapsulearchive.core.domain.friend.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
@@ -63,27 +64,28 @@ class FriendServiceTest {
     void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        Set<String> phones = getPhones();
-        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
+        Map<String, String> phones = getPhones();
+        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anySet()))
             .willReturn(getFriendSummaryDtos());
 
         //when
-        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
+        Map<PhoneBook, SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
+            phones);
 
         //then
-        assertThat(dtos.size()).isEqualTo(phones.size());
+        assertThat(dtos.size()).isEqualTo(0);
     }
 
-    private Set<String> getPhones() {
-        return Set.of(
-            "01012341234",
-            "01012341235",
-            "01012341236",
-            "01012341237",
-            "01012341238",
-            "01012341239",
-            "01012341240",
-            "01012341241"
+    private Map<String, String> getPhones() {
+        return Map.of(
+            "01012341234", "member1",
+            "01012341235", "member2",
+            "01012341236", "member3",
+            "01012341237", "member4",
+            "01012341238", "member5",
+            "01012341239", "member6",
+            "01012341240", "member7",
+            "01012341241", "member8"
         );
     }
 
@@ -91,7 +93,8 @@ class FriendServiceTest {
         List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
             result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                MemberFixture.getPhoneBytes((int) i), Boolean.TRUE, Boolean.FALSE));
+                MemberFixture.getPhoneBytes((int) i), MemberFixture.getPhoneBytes((int) i),
+                Boolean.TRUE, Boolean.FALSE));
         }
 
         return result;
@@ -101,12 +104,13 @@ class FriendServiceTest {
     void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        Set<String> phones = Collections.emptySet();
-        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
+        Map<String, String> phones = Collections.emptyMap();
+        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anySet()))
             .willReturn(Collections.emptyList());
 
         //when
-        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
+        Map<PhoneBook, SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
+            phones);
 
         //then
         assertThat(dtos.size()).isEqualTo(0);

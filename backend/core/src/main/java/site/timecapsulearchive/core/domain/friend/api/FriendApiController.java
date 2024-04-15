@@ -2,7 +2,7 @@ package site.timecapsulearchive.core.domain.friend.api;
 
 import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
@@ -143,15 +144,13 @@ public class FriendApiController implements FriendApi {
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody SearchFriendsRequest request
     ) {
-        final List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
-            request.phoneBook().keySet());
+        final Map<PhoneBook, SearchFriendSummaryDto> resultPhoneMaps = friendService.findFriendsByPhone(
+            memberId, request.phoneBooks());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                SearchFriendsResponse.createOf(
-                    dtos, request, aesEncryptionManager::decryptWithPrefixIV
-                )
+                SearchFriendsResponse.createOf(resultPhoneMaps)
             )
         );
     }

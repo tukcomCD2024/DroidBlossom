@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.global.common.valid.annotation.Phone;
 public record SearchFriendsRequest(
 
     @Schema(description = "전화번호부")
-    Map<@Phone String, String> phoneBook
+    Map<@Phone String, String> phoneBooks
 ) {
 
 }

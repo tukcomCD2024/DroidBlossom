@@ -2,8 +2,11 @@ package site.timecapsulearchive.core.domain.friend.service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
@@ -166,15 +170,25 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public List<SearchFriendSummaryDto> findFriendsByPhone(
+    public Map<PhoneBook, SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
-        final Set<String> phones
+        final Map<String, String> phoneBooks
     ) {
-        final List<byte[]> hashes = phones.stream()
-            .map(phone -> hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8)))
-            .toList();
+        final Map<byte[], PhoneBook> phoneMaps = phoneBooks.entrySet().stream()
+            .map(phoneBook -> new AbstractMap.SimpleEntry<>(
+                hashEncryptionManager.encrypt(phoneBook.getKey().getBytes(StandardCharsets.UTF_8)),
+                new PhoneBook(phoneBook.getKey(), phoneBook.getValue())
+            ))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        return memberFriendQueryRepository.findFriendsByPhone(memberId, hashes);
+        List<SearchFriendSummaryDto> dtos = memberFriendQueryRepository.findFriendsByPhone(
+            memberId, phoneMaps.keySet());
+
+        return dtos.stream()
+            .flatMap(dto -> phoneMaps.entrySet().stream()
+                .filter(phoneMap -> Arrays.equals(dto.phoneHash(), phoneMap.getKey()))
+                .map(phoneMap -> new AbstractMap.SimpleEntry<>(phoneMap.getValue(), dto)))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
 
