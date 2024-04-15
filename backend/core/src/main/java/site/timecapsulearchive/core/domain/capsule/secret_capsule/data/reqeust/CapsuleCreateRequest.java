@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.hibernate.validator.constraints.Range;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 import site.timecapsulearchive.core.global.common.valid.annotation.Video;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
@@ -53,5 +54,20 @@ public record CapsuleCreateRequest(
     @Schema(description = "개봉일")
     ZonedDateTime dueDate
 ) {
+
+    public CapsuleCreateRequestDto toDto() {
+        return CapsuleCreateRequestDto.builder()
+            .capsuleSkinId(capsuleSkinId)
+            .title(title)
+            .content(content)
+            .longitude(longitude)
+            .latitude(latitude)
+            .addressData(addressData)
+            .dueDate(dueDate)
+            .imageNames(imageNames)
+            .videoNames(videoNames)
+            .directory(directory)
+            .build();
+    }
 
 }

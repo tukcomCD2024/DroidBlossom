@@ -93,11 +93,12 @@ public class CapsuleSkinService {
         return CapsuleSkinStatusResponse.sendMessage();
     }
 
-    private boolean isNotExistMotionNameAndRetarget(CapsuleSkinCreateDto dto) {
+    private boolean isNotExistMotionNameAndRetarget(final CapsuleSkinCreateDto dto) {
         return dto.motionName() == null && dto.retarget() == null;
     }
 
-    public CapsuleSkin findCapsuleSkinById(Long capsuleSkinId) {
+    @Transactional(readOnly = true)
+    public CapsuleSkin findCapsuleSkinById(final Long capsuleSkinId) {
         return capsuleSkinRepository.findCapsuleSkinById(capsuleSkinId)
             .orElseThrow(CapsuleSkinNotFoundException::new);
     }

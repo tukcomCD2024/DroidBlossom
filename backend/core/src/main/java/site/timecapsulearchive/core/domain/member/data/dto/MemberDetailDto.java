@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.member.data.dto;
 
-import java.util.Objects;
 import lombok.Builder;
 
 @Builder

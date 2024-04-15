@@ -7,6 +7,7 @@ import site.timecapsulearchive.core.domain.group.entity.Group;
 public interface GroupRepository extends Repository<Group, Long> {
 
     void save(Group group);
+
     Optional<Group> findGroupById(Long groupId);
 
 }

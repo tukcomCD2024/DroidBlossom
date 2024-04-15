@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyCapsuleResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.CapsuleCreateRequest;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -37,6 +38,38 @@ public interface CapsuleApi {
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 이미지 아이디", required = true)
         Long capsuleId
+    );
+
+    @Operation(
+        summary = "현재 사용자 위치 기준 AR 캡슐 목록 조회",
+        description = "현재 사용자 위치를 바탕으로 반경 distance km만큼 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "잘못된 요청 파라미터에 의해 발생"
+        )
+    })
+    ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
+        double longitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
+        double latitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
+        double distance,
+
+        @Parameter(in = ParameterIn.QUERY, description = "캡슐 필터링 타입", schema = @Schema(defaultValue = "ALL"))
+        CapsuleType capsuleType
     );
 
     @Operation(
