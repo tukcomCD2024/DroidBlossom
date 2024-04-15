@@ -9,13 +9,13 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
@@ -63,19 +63,19 @@ class FriendServiceTest {
     void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        List<String> phones = getPhones();
+        Set<String> phones = getPhones();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(getFriendSummaryDtos());
 
         //when
-        SearchFriendsResponse response = friendService.findFriendsByPhone(memberId, phones);
+        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
 
         //then
-        assertThat(response.friends().size()).isEqualTo(phones.size());
+        assertThat(dtos.size()).isEqualTo(phones.size());
     }
 
-    private List<String> getPhones() {
-        return List.of(
+    private Set<String> getPhones() {
+        return Set.of(
             "01012341234",
             "01012341235",
             "01012341236",
@@ -101,14 +101,14 @@ class FriendServiceTest {
     void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        List<String> phones = Collections.emptyList();
+        Set<String> phones = Collections.emptySet();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 
         //when
-        SearchFriendsResponse response = friendService.findFriendsByPhone(memberId, phones);
+        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
 
         //then
-        assertThat(response.friends().size()).isEqualTo(0);
+        assertThat(dtos.size()).isEqualTo(0);
     }
 }
