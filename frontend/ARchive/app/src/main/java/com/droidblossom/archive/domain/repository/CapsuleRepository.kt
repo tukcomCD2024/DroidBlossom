@@ -12,7 +12,7 @@ interface CapsuleRepository {
         capsuleId : Long
     ): RetrofitResult<CapsuleOpenedResponse>
 
-    suspend fun NearbyCapsules(
+    suspend fun nearbyCapsulesAR(
         latitude: Double,
         longitude: Double,
         distance: Double,

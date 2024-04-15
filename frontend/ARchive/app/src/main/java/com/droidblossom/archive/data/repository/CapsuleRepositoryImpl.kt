@@ -23,13 +23,13 @@ class CapsuleRepositoryImpl @Inject constructor(
         return apiHandler({ api.patchCapsuleOpenApi(capsuleId = capsuleId) }) { response: ResponseBody<CapsuleOpenedResponseDto> -> response.result.toModel() }
     }
 
-    override suspend fun NearbyCapsules(
+    override suspend fun nearbyCapsulesAR(
         latitude: Double,
         longitude: Double,
         distance: Double,
-        capsule_type: String
+        capsuleType: String
     ): RetrofitResult<NearbyCapsule> {
-        return apiHandler({ api.getNearbyCapsulesApi(latitude = latitude, longitude = longitude, distance= distance, capsule_type= capsule_type) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toModel() }
+        return apiHandler({ api.getNearbyCapsulesApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getAddress(

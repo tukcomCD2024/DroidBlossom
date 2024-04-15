@@ -3,7 +3,7 @@ package com.droidblossom.archive.presentation.ui.home
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.CapsuleMarker
-import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesUseCase
+import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesARUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModelImpl @Inject constructor(
-    private val nearbyCapsulesUseCase: NearbyCapsulesUseCase,
+    private val nearbyCapsulesARUseCase: NearbyCapsulesARUseCase,
 ) : BaseViewModel(), HomeViewModel {
 
     private val _homeEvents = MutableSharedFlow<HomeViewModel.HomeEvent>()
@@ -109,7 +109,7 @@ class HomeViewModelImpl @Inject constructor(
     override fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String) {
         Log.d("티티","$latitude, $longitude, $distance, $capsuleType")
         viewModelScope.launch {
-            nearbyCapsulesUseCase(latitude,longitude, distance, capsuleType ).collect{result->
+            nearbyCapsulesARUseCase(latitude,longitude, distance, capsuleType ).collect{ result->
                 result.onSuccess {
                     _capsuleList.emit(it.capsules)
                     Log.d("티티","getNearbyCapsules 성공")
