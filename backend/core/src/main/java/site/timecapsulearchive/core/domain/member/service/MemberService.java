@@ -186,10 +186,10 @@ public class MemberService {
     }
 
     private boolean isNotMatched(
-        String inputEmail,
-        String inputPassword,
-        String email,
-        String password
+        final String inputEmail,
+        final String inputPassword,
+        final String email,
+        final String password
     ) {
         return !inputEmail.equals(email) ||
             password == null ||
@@ -202,14 +202,14 @@ public class MemberService {
         return new CheckEmailDuplicationResponse(isDuplicated);
     }
 
-    public MemberNotificationStatusResponse checkNotificationStatus(Long memberId) {
-        Boolean isAlarm = memberQueryRepository.findIsAlarmByMemberId(memberId)
+    public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
+        final Boolean isAlarm = memberQueryRepository.findIsAlarmByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         return new MemberNotificationStatusResponse(isAlarm);
     }
 
-    public Member findMemberById(Long memberId) {
+    public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }

@@ -152,6 +152,7 @@ public class S3PreSignedUrlManager {
 
     /**
      * 구분자 ,로 이루어진 히나의 파일 이름들을 받아서 s3 presign url을 반환한다
+     *
      * @param fileNames 구분자 ,로 이루어진 하나의 파일 이름들
      * @return 구분자 ,로 구분된 각각의 서명된 이미지 url
      */

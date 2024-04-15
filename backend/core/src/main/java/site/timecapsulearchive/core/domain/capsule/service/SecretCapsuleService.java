@@ -9,19 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.mapper.CapsuleMapper;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.SecretCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SecretCapsuleService {
 
-    private final CapsuleQueryRepository capsuleQueryRepository;
-    private final CapsuleMapper capsuleMapper;
+    private final SecretCapsuleQueryRepository secretCapsuleQueryRepository;
 
     /**
      * 멤버 아이디와 마지막 캡슐 생성 날짜를 받아서 내 페이지 비밀 캡슐을 조회한다.
@@ -31,16 +27,13 @@ public class SecretCapsuleService {
      * @param createdAt 마지막 캡슐 생성 날짜
      * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
-    public MySecretCapsuleSliceResponse findSecretCapsuleSliceByMemberId(
+    public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final Slice<MySecreteCapsuleDto> slice = capsuleQueryRepository
+        return secretCapsuleQueryRepository
             .findSecretCapsuleSliceByMemberIdAndCreatedAt(memberId, size, createdAt);
-
-        return capsuleMapper.mySecretCapsuleDetailSliceToResponse(slice.getContent(),
-            slice.hasNext());
     }
 
     /**
@@ -54,7 +47,7 @@ public class SecretCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        return capsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
+        return secretCapsuleQueryRepository.findSecretCapsuleSummaryDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
     }
@@ -66,19 +59,19 @@ public class SecretCapsuleService {
      * @param capsuleId 캡슐 아이디
      * @return 캡슐 상세 정보
      */
-    public CapsuleDetailResponse findSecretCapsuleDetailById(
+    public CapsuleDetailDto findSecretCapsuleDetailById(
         final Long memberId,
         final Long capsuleId
     ) {
-        final CapsuleDetailDto dto = capsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final CapsuleDetailDto detailDto = secretCapsuleQueryRepository.findSecretCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (capsuleNotOpened(dto)) {
-            return capsuleMapper.notOpenedCapsuleDetailDtoToResponse(dto);
+        if (capsuleNotOpened(detailDto)) {
+            return detailDto.excludeTitleAndContentAndImagesAndVideos();
         }
 
-        return capsuleMapper.capsuleDetailDtoToResponse(dto);
+        return detailDto;
     }
 
     private boolean capsuleNotOpened(final CapsuleDetailDto dto) {

@@ -21,11 +21,11 @@ public class GroupCapsuleService {
 
     @Transactional
     public Capsule saveGroupCapsule(
-        GroupCapsuleCreateRequestDto dto,
-        Member member,
-        Group group,
-        CapsuleSkin capsuleSkin,
-        Point point
+        final GroupCapsuleCreateRequestDto dto,
+        final Member member,
+        final Group group,
+        final CapsuleSkin capsuleSkin,
+        final Point point
     ) {
         final Capsule capsule = dto.toGroupCapsule(member, capsuleSkin, group,
             CapsuleType.GROUP, point);
