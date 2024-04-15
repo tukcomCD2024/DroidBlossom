@@ -5,11 +5,11 @@ import com.droidblossom.archive.data.dto.capsule.response.AddressDataDto
 import com.droidblossom.archive.data.dto.capsule.response.CapsuleImagesDto
 import com.droidblossom.archive.data.dto.capsule.response.CapsuleOpenedResponseDto
 import com.droidblossom.archive.data.dto.capsule.response.NearbyCapsuleResponseDto
-import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
 import com.droidblossom.archive.domain.model.capsule.CapsuleImages
 import com.droidblossom.archive.domain.model.capsule.CapsuleOpenedResponse
-import com.droidblossom.archive.domain.model.capsule.NearbyCapsule
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchors
+import com.droidblossom.archive.domain.model.capsule.CapsuleMarkers
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.repository.CapsuleRepository
 import com.droidblossom.archive.util.RetrofitResult
@@ -23,13 +23,22 @@ class CapsuleRepositoryImpl @Inject constructor(
         return apiHandler({ api.patchCapsuleOpenApi(capsuleId = capsuleId) }) { response: ResponseBody<CapsuleOpenedResponseDto> -> response.result.toModel() }
     }
 
+    override suspend fun nearbyCapsulesHome(
+        latitude: Double,
+        longitude: Double,
+        distance: Double,
+        capsuleType: String
+    ): RetrofitResult<CapsuleMarkers> {
+        return apiHandler({ api.getNearbyCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
+    }
+
     override suspend fun nearbyCapsulesAR(
         latitude: Double,
         longitude: Double,
         distance: Double,
         capsuleType: String
-    ): RetrofitResult<NearbyCapsule> {
-        return apiHandler({ api.getNearbyCapsulesApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toModel() }
+    ): RetrofitResult<CapsuleAnchors> {
+        return apiHandler({ api.getNearbyCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
     }
 
     override suspend fun getAddress(

@@ -2,8 +2,8 @@ package com.droidblossom.archive.presentation.ui.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
-import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesARUseCase
+import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
+import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesHomeUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModelImpl @Inject constructor(
-    private val nearbyCapsulesARUseCase: NearbyCapsulesARUseCase,
+    private val nearbyCapsulesHomeUseCase: NearbyCapsulesHomeUseCase
 ) : BaseViewModel(), HomeViewModel {
 
     private val _homeEvents = MutableSharedFlow<HomeViewModel.HomeEvent>()
@@ -109,10 +109,9 @@ class HomeViewModelImpl @Inject constructor(
     override fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String) {
         Log.d("티티","$latitude, $longitude, $distance, $capsuleType")
         viewModelScope.launch {
-            nearbyCapsulesARUseCase(latitude,longitude, distance, capsuleType ).collect{ result->
+            nearbyCapsulesHomeUseCase(latitude,longitude, distance, capsuleType ).collect{ result->
                 result.onSuccess {
-                    _capsuleList.emit(it.capsules)
-                    Log.d("티티","getNearbyCapsules 성공")
+                    _capsuleList.emit(it.capsuleMarkers)
                 }.onFail {
                     Log.d("티티","getNearbyCapsules 실패")
                 }

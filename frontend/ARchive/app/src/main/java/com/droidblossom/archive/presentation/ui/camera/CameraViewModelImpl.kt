@@ -1,7 +1,7 @@
 package com.droidblossom.archive.presentation.ui.camera
 
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesARUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
@@ -26,8 +26,8 @@ class CameraViewModelImpl@Inject constructor(
     override val cameraEvents: SharedFlow<CameraViewModel.CameraEvent>
         get() = _cameraEvents.asSharedFlow()
 
-    private val _capsuleList = MutableStateFlow(listOf<CapsuleMarker>())
-    override val capsuleList: StateFlow<List<CapsuleMarker>>
+    private val _capsuleList = MutableStateFlow(listOf<CapsuleAnchor>())
+    override val capsuleList: StateFlow<List<CapsuleAnchor>>
         get() = _capsuleList
 
     private val _capsuleListSize = MutableStateFlow(-1)
@@ -53,11 +53,11 @@ class CameraViewModelImpl@Inject constructor(
         }
     }
 
-    override fun getCapsules(latitude: Double, longitude: Double) : List<CapsuleMarker> {
+    override fun getCapsules(latitude: Double, longitude: Double) : List<CapsuleAnchor> {
         viewModelScope.launch {
             nearbyCapsulesARUseCase(latitude,longitude,0.5,"ALL").collect{ result->
                 result.onSuccess {
-                    _capsuleList.emit(it.capsules)
+                    _capsuleList.emit(it.capsuleAnchors)
                     _capsuleListSize.value = _capsuleList.value.size
                 }.onFail {
 

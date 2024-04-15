@@ -1,7 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home
 
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
+import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 

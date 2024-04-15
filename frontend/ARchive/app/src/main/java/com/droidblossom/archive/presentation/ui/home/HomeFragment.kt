@@ -1,27 +1,22 @@
 package com.droidblossom.archive.presentation.ui.home
 
-import android.graphics.Point
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toPointF
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentHomeBinding
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationActivity
-import com.droidblossom.archive.util.CapsuleTypeUtils
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -30,9 +25,7 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.Projection
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
@@ -204,14 +197,14 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             .markerClickListener { capsuleMarker ->
                 viewModel.homeEvent(
                     HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
-                        capsuleMarker.capsuleMarker.id.toString(),
-                        capsuleMarker.capsuleMarker.capsuleType.toString()
+                        capsuleMarker.capsuleAnchor.id.toString(),
+                        capsuleMarker.capsuleAnchor.capsuleType.toString()
                     )
                 )
 
             }.customMarker { capsuleMarker ->
                 Marker().apply {
-                    icon = when (capsuleMarker.capsuleMarker.capsuleType) {
+                    icon = when (capsuleMarker.capsuleAnchor.capsuleType) {
                         CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
                         CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
                         CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)

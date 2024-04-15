@@ -18,8 +18,16 @@ interface CapsuleService {
         @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<CapsuleOpenedResponseDto>>
 
+    @GET("capsules/nearby")
+    suspend fun getNearbyCapsulesHomeApi(
+        @Query("latitude") latitude : Double,
+        @Query("longitude") longitude : Double,
+        @Query("distance") distance : Double,
+        @Query("capsule_type") capsuleType : String
+    ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
+
     @GET("capsules/nearby/ar")
-    suspend fun getNearbyCapsulesApi(
+    suspend fun getNearbyCapsulesARApi(
         @Query("latitude") latitude : Double,
         @Query("longitude") longitude : Double,
         @Query("distance") distance : Double,

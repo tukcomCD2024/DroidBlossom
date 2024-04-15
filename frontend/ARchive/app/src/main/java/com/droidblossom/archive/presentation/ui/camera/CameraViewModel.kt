@@ -1,19 +1,18 @@
 package com.droidblossom.archive.presentation.ui.camera
 
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import io.github.sceneview.ar.node.AnchorNode
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface CameraViewModel {
 
-    val capsuleList:StateFlow<List<CapsuleMarker>>
+    val capsuleList:StateFlow<List<CapsuleAnchor>>
     val cameraEvents: SharedFlow<CameraEvent>
     val capsuleListSize: SharedFlow<Int>
     val anchorNodes: StateFlow<List<AnchorNode>>
 
-    fun getCapsules(latitude: Double, longitude: Double,): List<CapsuleMarker>
+    fun getCapsules(latitude: Double, longitude: Double,): List<CapsuleAnchor>
 
     fun cameraEvent(event : CameraEvent)
 

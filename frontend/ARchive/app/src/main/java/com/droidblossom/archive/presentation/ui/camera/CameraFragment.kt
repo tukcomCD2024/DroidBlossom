@@ -4,7 +4,6 @@ import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.util.FragmentManagerProvider
@@ -148,7 +147,7 @@ class CameraFragment :
     }
 
 
-    private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
+    private fun addAnchorNode(anchor: Anchor, capsule: CapsuleAnchor) {
         Log.d("CameraFragmentAR", "addAnchorNode added")
         arSceneView.let { sceneView ->
             viewAttachmentManager.let { attachManager ->
