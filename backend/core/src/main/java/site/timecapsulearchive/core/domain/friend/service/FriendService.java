@@ -1,12 +1,8 @@
 package site.timecapsulearchive.core.domain.friend.service;
 
-import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
-import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -15,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
@@ -50,7 +45,6 @@ public class FriendService {
     private final FriendMapper friendMapper;
     private final NotificationManager notificationManager;
     private final TransactionTemplate transactionTemplate;
-    private final HashEncryptionManager hashEncryptionManager;
 
     public FriendService(
         MemberFriendRepository memberFriendRepository,
@@ -60,7 +54,7 @@ public class FriendService {
         FriendInviteQueryRepository friendInviteQueryRepository,
         FriendMapper friendMapper,
         NotificationManager notificationManager,
-        PlatformTransactionManager transactionManager, HashEncryptionManager hashEncryptionManager
+        PlatformTransactionManager transactionManager
     ) {
         this.memberFriendRepository = memberFriendRepository;
         this.memberFriendQueryRepository = memberFriendQueryRepository;
@@ -71,7 +65,6 @@ public class FriendService {
         this.friendMapper = friendMapper;
         this.notificationManager = notificationManager;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.hashEncryptionManager = hashEncryptionManager;
         this.transactionTemplate.setTimeout(7);
     }
 
@@ -170,25 +163,11 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public Map<PhoneBook, SearchFriendSummaryDto> findFriendsByPhone(
+    public List<SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
-        final Map<String, String> phoneBooks
+        final Set<byte[]> phones
     ) {
-        final Map<byte[], PhoneBook> phoneMaps = phoneBooks.entrySet().stream()
-            .map(phoneBook -> new AbstractMap.SimpleEntry<>(
-                hashEncryptionManager.encrypt(phoneBook.getKey().getBytes(StandardCharsets.UTF_8)),
-                new PhoneBook(phoneBook.getKey(), phoneBook.getValue())
-            ))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        List<SearchFriendSummaryDto> dtos = memberFriendQueryRepository.findFriendsByPhone(
-            memberId, phoneMaps.keySet());
-
-        return dtos.stream()
-            .flatMap(dto -> phoneMaps.entrySet().stream()
-                .filter(phoneMap -> Arrays.equals(dto.phoneHash(), phoneMap.getKey()))
-                .map(phoneMap -> new AbstractMap.SimpleEntry<>(phoneMap.getValue(), dto)))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return memberFriendQueryRepository.findFriendsByPhone(memberId, phones);
     }
 
 

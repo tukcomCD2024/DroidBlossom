@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.friend.api;
 
 import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ import site.timecapsulearchive.core.domain.friend.facade.FriendFacade;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
-import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 
 @RestController
 @RequestMapping("/friends")
@@ -36,7 +37,7 @@ public class FriendApiController implements FriendApi {
 
     private final FriendService friendService;
     private final FriendFacade friendFacade;
-    private final AESEncryptionManager aesEncryptionManager;
+    private final HashEncryptionManager hashEncryptionManager;
 
     @PostMapping(value = "/{friend_id}/accept-request")
     @Override
@@ -144,13 +145,16 @@ public class FriendApiController implements FriendApi {
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody SearchFriendsRequest request
     ) {
-        final Map<PhoneBook, SearchFriendSummaryDto> resultPhoneMaps = friendService.findFriendsByPhone(
-            memberId, request.phoneBooks());
+        final Map<byte[], PhoneBook> phoneBookMaps = request.phoneBookMap(
+            hashEncryptionManager::encrypt);
+
+        final List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(
+            memberId, phoneBookMaps.keySet());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                SearchFriendsResponse.createOf(resultPhoneMaps)
+                SearchFriendsResponse.createOf(dtos, phoneBookMaps)
             )
         );
     }

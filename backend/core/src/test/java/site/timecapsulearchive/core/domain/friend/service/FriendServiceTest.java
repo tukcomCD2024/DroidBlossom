@@ -9,11 +9,10 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
-import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
@@ -23,8 +22,6 @@ import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRe
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
-import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
-import site.timecapsulearchive.core.global.security.encryption.HashProperties;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 class FriendServiceTest {
@@ -44,8 +41,6 @@ class FriendServiceTest {
     private final NotificationManager notificationManager = mock(NotificationManager.class);
     private final PlatformTransactionManager transactionTemplate = mock(
         PlatformTransactionManager.class);
-    private final HashEncryptionManager hashEncryptionManager = new HashEncryptionManager(
-        new HashProperties("test_salt"));
 
     private final FriendService friendService = new FriendService(
         memberFriendRepository,
@@ -56,37 +51,22 @@ class FriendServiceTest {
         friendInviteQueryRepository,
         friendMapper,
         notificationManager,
-        transactionTemplate,
-        hashEncryptionManager
+        transactionTemplate
     );
 
     @Test
     void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        Map<String, String> phones = getPhones();
+        Set<byte[]> phones = MemberFixture.getPhones();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anySet()))
             .willReturn(getFriendSummaryDtos());
 
         //when
-        Map<PhoneBook, SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
-            phones);
+        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
 
         //then
-        assertThat(dtos.size()).isEqualTo(0);
-    }
-
-    private Map<String, String> getPhones() {
-        return Map.of(
-            "01012341234", "member1",
-            "01012341235", "member2",
-            "01012341236", "member3",
-            "01012341237", "member4",
-            "01012341238", "member5",
-            "01012341239", "member6",
-            "01012341240", "member7",
-            "01012341241", "member8"
-        );
+        assertThat(dtos.size()).isEqualTo(phones.size());
     }
 
     private List<SearchFriendSummaryDto> getFriendSummaryDtos() {
@@ -104,12 +84,12 @@ class FriendServiceTest {
     void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        Map<String, String> phones = Collections.emptyMap();
+        Set<byte[]> phones = Collections.emptySet();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anySet()))
             .willReturn(Collections.emptyList());
 
         //when
-        Map<PhoneBook, SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
+        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
             phones);
 
         //then

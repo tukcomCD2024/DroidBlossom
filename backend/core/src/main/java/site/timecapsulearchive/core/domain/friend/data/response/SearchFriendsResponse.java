@@ -1,8 +1,12 @@
 package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 
@@ -14,8 +18,15 @@ public record SearchFriendsResponse(
 ) {
 
     public static SearchFriendsResponse createOf(
-        final Map<PhoneBook, SearchFriendSummaryDto> resultPhoneMaps
+        final List<SearchFriendSummaryDto> dtos,
+        final Map<byte[], PhoneBook> phoneBookMaps
     ) {
+        final Map<PhoneBook, SearchFriendSummaryDto> resultPhoneMaps = dtos.stream()
+            .flatMap(dto -> phoneBookMaps.entrySet().stream()
+                .filter(phoneMap -> Arrays.equals(dto.phoneHash(), phoneMap.getKey()))
+                .map(phoneMap -> new SimpleEntry<>(phoneMap.getValue(), dto)))
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
         final List<SearchFriendSummaryResponse> friends = resultPhoneMaps
             .entrySet().stream()
             .map(entry -> entry.getValue().toResponse(entry.getKey()))
