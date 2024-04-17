@@ -73,7 +73,7 @@ class FriendServiceTest {
         List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
             result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                MemberFixture.getPhoneBytes((int) i),
+                new ByteArrayWrapper(MemberFixture.getPhoneBytes((int) i)),
                 Boolean.TRUE, Boolean.FALSE));
         }
 
