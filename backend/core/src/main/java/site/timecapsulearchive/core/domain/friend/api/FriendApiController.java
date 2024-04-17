@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.domain.friend.facade.FriendFacade;
 import site.timecapsulearchive.core.domain.friend.service.FriendService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 
 @RestController
@@ -144,7 +145,7 @@ public class FriendApiController implements FriendApi {
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody SearchFriendsRequest request
     ) {
-        final List<byte[]> phoneEncryption = request.toPhoneEncryption(
+        final List<ByteArrayWrapper> phoneEncryption = request.toPhoneEncryption(
             hashEncryptionManager::encrypt);
 
         final List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(

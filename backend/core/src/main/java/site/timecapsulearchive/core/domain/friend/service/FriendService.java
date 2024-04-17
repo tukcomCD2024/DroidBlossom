@@ -29,6 +29,7 @@ import site.timecapsulearchive.core.domain.friend.repository.MemberFriendReposit
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
@@ -163,9 +164,11 @@ public class FriendService {
     @Transactional(readOnly = true)
     public List<SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
-        final List<byte[]> phoneEncryption
+        final List<ByteArrayWrapper> phoneEncryption
     ) {
-        return memberFriendQueryRepository.findFriendsByPhone(memberId, phoneEncryption);
+        final List<byte[]> hashes = phoneEncryption.stream().map(ByteArrayWrapper::getData).toList();
+
+        return memberFriendQueryRepository.findFriendsByPhone(memberId, hashes);
     }
 
 

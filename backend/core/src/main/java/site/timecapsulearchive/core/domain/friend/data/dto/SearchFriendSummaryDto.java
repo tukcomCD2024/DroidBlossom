@@ -8,7 +8,6 @@ public record SearchFriendSummaryDto(
     Long id,
     String profileUrl,
     String nickname,
-    byte[] phone,
     byte[] phoneHash,
     Boolean isFriend,
     Boolean isFriendRequest

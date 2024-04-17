@@ -20,6 +20,7 @@ import site.timecapsulearchive.core.domain.friend.repository.FriendInviteReposit
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
@@ -57,7 +58,7 @@ class FriendServiceTest {
     void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        List<byte[]> phones = MemberFixture.getPhones();
+        List<ByteArrayWrapper> phones = MemberFixture.getPhones();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(getFriendSummaryDtos());
 
@@ -72,7 +73,7 @@ class FriendServiceTest {
         List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
             result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                MemberFixture.getPhoneBytes((int) i), MemberFixture.getPhoneBytes((int) i),
+                MemberFixture.getPhoneBytes((int) i),
                 Boolean.TRUE, Boolean.FALSE));
         }
 
@@ -83,7 +84,7 @@ class FriendServiceTest {
     void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        List<byte[]> phones = Collections.emptyList();
+        List<ByteArrayWrapper> phones = Collections.emptyList();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 

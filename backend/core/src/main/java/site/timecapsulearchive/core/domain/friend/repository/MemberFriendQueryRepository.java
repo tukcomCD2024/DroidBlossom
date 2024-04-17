@@ -102,7 +102,6 @@ public class MemberFriendQueryRepository {
                     member.id,
                     member.profileUrl,
                     member.nickname,
-                    member.phone,
                     member.phone_hash,
                     memberFriend.id.isNotNull(),
                     friendInvite.id.isNotNull()

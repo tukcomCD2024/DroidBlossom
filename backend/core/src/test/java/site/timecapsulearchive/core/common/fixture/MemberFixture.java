@@ -2,10 +2,10 @@ package site.timecapsulearchive.core.common.fixture;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 
 public class MemberFixture {
@@ -32,16 +32,16 @@ public class MemberFixture {
         return ("0" + (1000000000 + dataPrefix)).getBytes(StandardCharsets.UTF_8);
     }
 
-    public static List<byte[]> getPhones() {
+    public static List<ByteArrayWrapper> getPhones() {
         return List.of(
-            MemberFixture.getPhoneBytes("01012341234"),
-            MemberFixture.getPhoneBytes("01012341235"),
-            MemberFixture.getPhoneBytes("01012341236"),
-            MemberFixture.getPhoneBytes("01012341237"),
-            MemberFixture.getPhoneBytes("01012341238"),
-            MemberFixture.getPhoneBytes("01012341239"),
-            MemberFixture.getPhoneBytes("01012341240"),
-            MemberFixture.getPhoneBytes("01012341241")
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341234")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341235")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341236")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341237")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341238")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341239")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341240")),
+            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341241"))
         );
     }
 
