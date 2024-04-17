@@ -90,7 +90,7 @@ public class CapsuleApiController implements CapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                NearbyCapsuleResponse.from(dtos)
+                NearbyCapsuleResponse.createOf(dtos, geoTransformManager::changePoint3857To4326)
             )
         );
     }
