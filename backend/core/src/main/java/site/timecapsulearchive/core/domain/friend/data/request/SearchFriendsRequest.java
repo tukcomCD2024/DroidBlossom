@@ -13,7 +13,7 @@ public record SearchFriendsRequest(
     List<PhoneBook> phoneBooks
 ) {
 
-    public List<byte[]> toPoneEncryption(
+    public List<byte[]> toPhoneEncryption(
         final Function<byte[], byte[]> hashEncryptionFunction
     ) {
         return phoneBooks.stream()

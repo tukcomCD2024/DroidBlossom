@@ -144,7 +144,7 @@ public class FriendApiController implements FriendApi {
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody SearchFriendsRequest request
     ) {
-        final List<byte[]> phoneEncryption = request.toPoneEncryption(
+        final List<byte[]> phoneEncryption = request.toPhoneEncryption(
             hashEncryptionManager::encrypt);
 
         final List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(
