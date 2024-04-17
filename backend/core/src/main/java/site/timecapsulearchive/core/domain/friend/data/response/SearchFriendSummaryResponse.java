@@ -13,6 +13,9 @@ public record SearchFriendSummaryResponse(
     @Schema(description = "검색된 사용자 프로필")
     String profileUrl,
 
+    @Schema(description = "전화번호부 닉네임")
+    String originName,
+
     @Schema(description = "검색된 사용자 닉네임")
     String nickname,
 

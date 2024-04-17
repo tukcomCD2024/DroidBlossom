@@ -15,15 +15,13 @@ import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
 import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
-import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
-import site.timecapsulearchive.core.global.security.encryption.HashProperties;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 class FriendServiceTest {
@@ -43,8 +41,6 @@ class FriendServiceTest {
     private final NotificationManager notificationManager = mock(NotificationManager.class);
     private final PlatformTransactionManager transactionTemplate = mock(
         PlatformTransactionManager.class);
-    private final HashEncryptionManager hashEncryptionManager = new HashEncryptionManager(
-        new HashProperties("test_salt"));
 
     private final FriendService friendService = new FriendService(
         memberFriendRepository,
@@ -55,43 +51,30 @@ class FriendServiceTest {
         friendInviteQueryRepository,
         friendMapper,
         notificationManager,
-        transactionTemplate,
-        hashEncryptionManager
+        transactionTemplate
     );
 
     @Test
     void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        List<String> phones = getPhones();
+        List<ByteArrayWrapper> phones = MemberFixture.getPhones();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(getFriendSummaryDtos());
 
         //when
-        SearchFriendsResponse response = friendService.findFriendsByPhone(memberId, phones);
+        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
 
         //then
-        assertThat(response.friends().size()).isEqualTo(phones.size());
-    }
-
-    private List<String> getPhones() {
-        return List.of(
-            "01012341234",
-            "01012341235",
-            "01012341236",
-            "01012341237",
-            "01012341238",
-            "01012341239",
-            "01012341240",
-            "01012341241"
-        );
+        assertThat(dtos.size()).isEqualTo(phones.size());
     }
 
     private List<SearchFriendSummaryDto> getFriendSummaryDtos() {
         List<SearchFriendSummaryDto> result = new ArrayList<>();
         for (long i = 0; i < 8; i++) {
             result.add(new SearchFriendSummaryDto(i, i + "testProfile.com", i + "testNickname",
-                MemberFixture.getPhoneBytes((int) i), Boolean.TRUE, Boolean.FALSE));
+                MemberFixture.getPhoneBytes((int) i),
+                Boolean.TRUE, Boolean.FALSE));
         }
 
         return result;
@@ -101,14 +84,15 @@ class FriendServiceTest {
     void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        List<String> phones = Collections.emptyList();
+        List<ByteArrayWrapper> phones = Collections.emptyList();
         given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 
         //when
-        SearchFriendsResponse response = friendService.findFriendsByPhone(memberId, phones);
+        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
+            phones);
 
         //then
-        assertThat(response.friends().size()).isEqualTo(0);
+        assertThat(dtos.size()).isEqualTo(0);
     }
 }
