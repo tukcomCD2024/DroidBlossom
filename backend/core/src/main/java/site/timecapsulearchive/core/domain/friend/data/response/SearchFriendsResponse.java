@@ -1,12 +1,9 @@
 package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 
@@ -19,17 +16,13 @@ public record SearchFriendsResponse(
 
     public static SearchFriendsResponse createOf(
         final List<SearchFriendSummaryDto> dtos,
-        final Map<byte[], PhoneBook> phoneBookMaps
+        final List<byte[]> phoneEncryption,
+        final List<PhoneBook> phoneBooks
     ) {
-        final Map<PhoneBook, SearchFriendSummaryDto> resultPhoneMaps = dtos.stream()
-            .flatMap(dto -> phoneBookMaps.entrySet().stream()
-                .filter(phoneMap -> Arrays.equals(dto.phoneHash(), phoneMap.getKey()))
-                .map(phoneMap -> new SimpleEntry<>(phoneMap.getValue(), dto)))
-            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-
-        final List<SearchFriendSummaryResponse> friends = resultPhoneMaps
-            .entrySet().stream()
-            .map(entry -> entry.getValue().toResponse(entry.getKey()))
+        List<SearchFriendSummaryResponse> friends = dtos.stream()
+            .flatMap(dto -> IntStream.range(0, phoneEncryption.size())
+                .filter(index -> Arrays.equals(dto.phoneHash(), phoneEncryption.get(index)))
+                .mapToObj(index -> dto.toResponse(phoneBooks.get(index))))
             .toList();
 
         return new SearchFriendsResponse(friends);

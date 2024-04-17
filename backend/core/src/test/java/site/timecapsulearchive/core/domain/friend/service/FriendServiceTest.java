@@ -1,15 +1,14 @@
 package site.timecapsulearchive.core.domain.friend.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
@@ -58,8 +57,8 @@ class FriendServiceTest {
     void 앱_사용자_핸드폰_번호로_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        Set<byte[]> phones = MemberFixture.getPhones();
-        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anySet()))
+        List<byte[]> phones = MemberFixture.getPhones();
+        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(getFriendSummaryDtos());
 
         //when
@@ -84,8 +83,8 @@ class FriendServiceTest {
     void 번호_없이_주소록_기반_사용자_리스트_조회_테스트() {
         //given
         Long memberId = 1L;
-        Set<byte[]> phones = Collections.emptySet();
-        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anySet()))
+        List<byte[]> phones = Collections.emptyList();
+        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 
         //when

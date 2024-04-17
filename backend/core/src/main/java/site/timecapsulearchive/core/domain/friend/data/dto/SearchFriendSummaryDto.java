@@ -22,7 +22,7 @@ public record SearchFriendSummaryDto(
             .profileUrl(profileUrl)
             .originName(phoneBook.originName())
             .nickname(nickname)
-            .phone(phoneBook.phone())
+            .phone(phoneBook.originPhone())
             .isFriend(isFriend)
             .isFriendRequest(isFriendRequest)
             .build();

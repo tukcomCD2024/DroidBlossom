@@ -9,11 +9,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,9 +38,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private static final int MAX_FRIEND_ID = 21;
     private static final int MAX_MEMBER_ID = 31;
 
-    private final Set<byte[]> hashedNotMemberPhones = new HashSet<>();
-    private final Set<byte[]> hashedFriendPhones = new HashSet<>();
-    private final Set<byte[]> hashedNotFriendPhones = new HashSet<>();
+    private final List<byte[]> hashedNotMemberPhones = new ArrayList<>();
+    private final List<byte[]> hashedFriendPhones = new ArrayList<>();
+    private final List<byte[]> hashedNotFriendPhones = new ArrayList<>();
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
@@ -249,7 +247,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @Test
     void 빈_전화번호_목록으로_주소록_기반_사용자_리스트_조회하면_빈_리스트가_나온다() {
         //given
-        Set<byte[]> phoneHashes = Collections.emptySet();
+        List<byte[]> phoneHashes = Collections.emptyList();
 
         //when
         List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(

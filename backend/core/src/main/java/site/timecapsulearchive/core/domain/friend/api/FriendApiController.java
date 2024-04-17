@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.friend.api;
 import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
@@ -38,6 +36,7 @@ public class FriendApiController implements FriendApi {
     private final FriendService friendService;
     private final FriendFacade friendFacade;
     private final HashEncryptionManager hashEncryptionManager;
+
 
     @PostMapping(value = "/{friend_id}/accept-request")
     @Override
@@ -145,16 +144,16 @@ public class FriendApiController implements FriendApi {
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody SearchFriendsRequest request
     ) {
-        final Map<byte[], PhoneBook> phoneBookMaps = request.phoneBookMap(
+        final List<byte[]> phoneEncryption = request.toPoneEncryption(
             hashEncryptionManager::encrypt);
 
         final List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(
-            memberId, phoneBookMaps.keySet());
+            memberId, phoneEncryption);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                SearchFriendsResponse.createOf(dtos, phoneBookMaps)
+                SearchFriendsResponse.createOf(dtos, phoneEncryption, request.phoneBooks())
             )
         );
     }

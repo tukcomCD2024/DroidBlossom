@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.domain.friend.service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,7 +29,6 @@ import site.timecapsulearchive.core.domain.friend.repository.MemberFriendReposit
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 @Service
@@ -165,9 +163,9 @@ public class FriendService {
     @Transactional(readOnly = true)
     public List<SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
-        final Set<byte[]> phones
+        final List<byte[]> phoneEncryption
     ) {
-        return memberFriendQueryRepository.findFriendsByPhone(memberId, phones);
+        return memberFriendQueryRepository.findFriendsByPhone(memberId, phoneEncryption);
     }
 
 

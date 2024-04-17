@@ -9,7 +9,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -94,7 +93,7 @@ public class MemberFriendQueryRepository {
 
     public List<SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
-        final Set<byte[]> hashes
+        final List<byte[]> hashes
     ) {
         return jpaQueryFactory
             .select(
