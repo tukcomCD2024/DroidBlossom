@@ -6,16 +6,12 @@ public final class ByteArrayWrapper {
 
     private final byte[] data;
 
-    private ByteArrayWrapper(final byte[] data) {
+    public ByteArrayWrapper(final byte[] data) {
         if (data == null)
         {
             throw new NullPointerException();
         }
         this.data = data;
-    }
-
-    public static ByteArrayWrapper from(final byte[] data) {
-        return new ByteArrayWrapper(data);
     }
 
     public byte[] getData() {

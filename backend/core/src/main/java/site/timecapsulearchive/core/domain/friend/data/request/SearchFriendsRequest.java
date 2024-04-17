@@ -18,7 +18,7 @@ public record SearchFriendsRequest(
         final Function<byte[], byte[]> hashEncryptionFunction
     ) {
         return phoneBooks.stream()
-            .map(phoneBook -> ByteArrayWrapper.from(hashEncryptionFunction.apply(
+            .map(phoneBook -> new ByteArrayWrapper(hashEncryptionFunction.apply(
                 phoneBook.originPhone().getBytes(StandardCharsets.UTF_8))))
             .toList();
     }

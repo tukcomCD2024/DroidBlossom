@@ -34,14 +34,14 @@ public class MemberFixture {
 
     public static List<ByteArrayWrapper> getPhones() {
         return List.of(
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341234")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341235")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341236")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341237")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341238")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341239")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341240")),
-            ByteArrayWrapper.from(MemberFixture.getPhoneBytes("01012341241"))
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341234")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341235")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341236")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341237")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341238")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341239")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341240")),
+            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341241"))
         );
     }
 

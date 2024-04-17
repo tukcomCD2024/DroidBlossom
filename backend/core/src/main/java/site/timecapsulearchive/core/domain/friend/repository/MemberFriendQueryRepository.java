@@ -18,6 +18,7 @@ import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Repository
 @RequiredArgsConstructor
@@ -102,7 +103,10 @@ public class MemberFriendQueryRepository {
                     member.id,
                     member.profileUrl,
                     member.nickname,
-                    member.phone_hash,
+                    Projections.constructor(
+                        ByteArrayWrapper.class,
+                        member.phone_hash
+                    ),
                     memberFriend.id.isNotNull(),
                     friendInvite.id.isNotNull()
                 )

@@ -19,9 +19,9 @@ public record SearchFriendsResponse(
         final List<PhoneBook> phoneBooks
     ) {
         List<SearchFriendSummaryResponse> friends = dtos.stream()
-            .filter(dto -> phoneEncryption.contains(ByteArrayWrapper.from(dto.phoneHash())))
+            .filter(dto -> phoneEncryption.contains(dto.phoneHash()))
             .map(dto -> {
-                int index = phoneEncryption.indexOf(ByteArrayWrapper.from(dto.phoneHash()));
+                int index = phoneEncryption.indexOf(dto.phoneHash());
                 return dto.toResponse(phoneBooks.get(index));
             })
             .toList();

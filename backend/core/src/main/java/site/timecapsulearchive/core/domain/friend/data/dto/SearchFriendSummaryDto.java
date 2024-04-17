@@ -2,13 +2,14 @@ package site.timecapsulearchive.core.domain.friend.data.dto;
 
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendSummaryResponse;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Builder
 public record SearchFriendSummaryDto(
     Long id,
     String profileUrl,
     String nickname,
-    byte[] phoneHash,
+    ByteArrayWrapper phoneHash,
     Boolean isFriend,
     Boolean isFriendRequest
 ) {
