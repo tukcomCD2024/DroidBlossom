@@ -24,17 +24,4 @@ public record NearbyCapsuleSummaryResponse(
     CapsuleType capsuleType
 ) {
 
-    public static NearbyCapsuleSummaryResponse createOf(
-        NearbyCapsuleSummaryDto dto,
-        Function<Point, Point> geoTransformFunction
-    ) {
-        Point point = geoTransformFunction.apply(dto.point());
-
-        return new NearbyCapsuleSummaryResponse(
-            dto.id(),
-            point.getY(),
-            point.getX(),
-            dto.capsuleType()
-        );
-    }
 }

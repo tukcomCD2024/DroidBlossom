@@ -18,7 +18,7 @@ public record NearbyCapsuleResponse(
         final Function<Point, Point> geoTransformFunction
     ) {
         final List<NearbyCapsuleSummaryResponse> capsules = dtos.stream()
-            .map(dto -> NearbyCapsuleSummaryResponse.createOf(dto, geoTransformFunction))
+            .map(dto -> dto.toResponse(geoTransformFunction))
             .toList();
 
         return new NearbyCapsuleResponse(capsules);
