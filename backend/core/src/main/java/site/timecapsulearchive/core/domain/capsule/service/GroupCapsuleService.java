@@ -42,27 +42,25 @@ public class GroupCapsuleService {
     }
 
     public GroupCapsuleDetailDto findGroupCapsuleDetailByGroupIDAndCapsuleId(
-        final Long memberId,
-        final Long groupId,
         final Long capsuleId
     ) {
-        final GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByIds(
-                memberId, groupId, capsuleId)
+        final GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+                capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (capsuleNotOpened(detailDto)) {
-            return detailDto.excludeTitleAndContentAndImagesAndVideos();
+            return detailDto.excludeDetailContents();
         }
 
         return detailDto;
     }
 
     private boolean capsuleNotOpened(final GroupCapsuleDetailDto detailDto) {
-        if (detailDto.dueDate() == null) {
+        if (detailDto.capsuleDetailDto().dueDate() == null) {
             return false;
         }
 
-        return !detailDto.isOpened() || detailDto.dueDate()
+        return !detailDto.capsuleDetailDto().isOpened() || detailDto.capsuleDetailDto().dueDate()
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }

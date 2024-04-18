@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
@@ -66,10 +67,12 @@ public record GroupCapsuleDetailResponse(
     }
 
     public static GroupCapsuleDetailResponse createOf(
-        final GroupCapsuleDetailDto detailDto,
+        final GroupCapsuleDetailDto groupCapsuleDetailDto,
         final Function<String, String> singlePreSignUrlFunction,
         final Function<String, List<String>> multiplePreSignUrlFunction
     ) {
+        CapsuleDetailDto detailDto = groupCapsuleDetailDto.capsuleDetailDto();
+
         final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
             detailDto.images());
         final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
@@ -78,7 +81,7 @@ public record GroupCapsuleDetailResponse(
         return new GroupCapsuleDetailResponse(
             detailDto.capsuleId(),
             singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
-            detailDto.toGroupMemberSummaryResponse(),
+            groupCapsuleDetailDto.toGroupMemberSummaryResponse(),
             detailDto.dueDate(),
             detailDto.nickname(),
             detailDto.profileUrl(),

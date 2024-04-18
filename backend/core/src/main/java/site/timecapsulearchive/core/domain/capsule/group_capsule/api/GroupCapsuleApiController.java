@@ -50,17 +50,16 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     }
 
     @GetMapping(
-        value = "/{group_id}/capsule/{capsule_id}",
+        value = "/capsule/{capsule_id}",
         produces = {"application/json"}
     )
     @Override
     public ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByGroupIdAndCapsuleId(
         @AuthenticationPrincipal Long memberId,
-        @PathVariable("group_id") Long groupId,
         @PathVariable("capsule_id") Long capsuleId
     ) {
         final GroupCapsuleDetailDto detailDto = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
-            memberId, groupId, capsuleId);
+            capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.success(

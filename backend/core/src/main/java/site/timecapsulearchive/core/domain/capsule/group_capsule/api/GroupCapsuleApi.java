@@ -75,9 +75,6 @@ public interface GroupCapsuleApi {
     ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByGroupIdAndCapsuleId(
         Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true)
-        Long groupId,
-
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true)
         Long capsuleId
     );
