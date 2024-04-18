@@ -1,13 +1,18 @@
-package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
+package site.timecapsulearchive.core.domain.capsule.service;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -18,6 +23,7 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 public class GroupCapsuleService {
 
     private final CapsuleRepository capsuleRepository;
+    private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
 
     @Transactional
     public Capsule saveGroupCapsule(
@@ -33,5 +39,30 @@ public class GroupCapsuleService {
         capsuleRepository.save(capsule);
 
         return capsule;
+    }
+
+    public GroupCapsuleDetailDto findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        final Long memberId,
+        final Long groupId,
+        final Long capsuleId
+    ) {
+        final GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByIds(
+                memberId, groupId, capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+
+        if (capsuleNotOpened(detailDto)) {
+            return detailDto.excludeTitleAndContentAndImagesAndVideos();
+        }
+
+        return detailDto;
+    }
+
+    private boolean capsuleNotOpened(final GroupCapsuleDetailDto detailDto) {
+        if (detailDto.dueDate() == null) {
+            return false;
+        }
+
+        return !detailDto.isOpened() || detailDto.dueDate()
+            .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }

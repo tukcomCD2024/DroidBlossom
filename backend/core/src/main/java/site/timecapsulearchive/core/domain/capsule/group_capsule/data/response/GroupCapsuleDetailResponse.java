@@ -3,10 +3,16 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.data.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.Function;
+import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
+import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "그룹 캡슐 상세 정보")
 public record GroupCapsuleDetailResponse(
+    @Schema(description = "캡슐 아이디")
+    Long capsuleId,
 
     @Schema(description = "캡슐 스킨 url")
     String capsuleSkinUrl,
@@ -20,11 +26,17 @@ public record GroupCapsuleDetailResponse(
     @Schema(description = "생성자 닉네임")
     String nickname,
 
-    @Schema(description = "캡슐 생성일")
+    @Schema(description = "생성자 프로필 url")
+    String profileUrl,
+
+    @Schema(description = "생성일")
     ZonedDateTime createdDate,
 
     @Schema(description = "캡슐 생성 주소")
     String address,
+
+    @Schema(description = "캡슐 생성 도로 이름")
+    String roadName,
 
     @Schema(description = "제목")
     String title,
@@ -32,11 +44,54 @@ public record GroupCapsuleDetailResponse(
     @Schema(description = "내용")
     String content,
 
-    @Schema(description = "미디어 url들")
-    List<String> mediaUrls,
+    @Schema(description = "이미지 url들")
+    List<String> imageUrls,
+
+    @Schema(description = "비디오 url들")
+    List<String> videoUrls,
 
     @Schema(description = "개봉 여부")
-    Boolean isOpened
+    Boolean isOpened,
+
+    @Schema(description = "캡슐 타입")
+    CapsuleType capsuleType
 ) {
+
+    public GroupCapsuleDetailResponse {
+        if (dueDate != null) {
+            dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
+
+        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+    }
+
+    public static GroupCapsuleDetailResponse createOf(
+        final GroupCapsuleDetailDto detailDto,
+        final Function<String, String> singlePreSignUrlFunction,
+        final Function<String, List<String>> multiplePreSignUrlFunction
+    ) {
+        final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
+            detailDto.images());
+        final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
+            detailDto.videos());
+
+        return new GroupCapsuleDetailResponse(
+            detailDto.capsuleId(),
+            singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
+            detailDto.toGroupMemberSummaryResponse(),
+            detailDto.dueDate(),
+            detailDto.nickname(),
+            detailDto.profileUrl(),
+            detailDto.createdAt(),
+            detailDto.address(),
+            detailDto.roadName(),
+            detailDto.title(),
+            detailDto.content(),
+            preSignedImageUrls,
+            preSignedVideoUrls,
+            detailDto.isOpened(),
+            detailDto.capsuleType()
+        );
+    }
 
 }

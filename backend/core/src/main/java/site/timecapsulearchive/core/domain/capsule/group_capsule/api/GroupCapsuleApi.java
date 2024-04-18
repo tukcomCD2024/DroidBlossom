@@ -72,16 +72,14 @@ public interface GroupCapsuleApi {
             description = "처리 완료"
         )
     })
-    @GetMapping(
-        value = "/groups/{group_id}/capsules/{capsule_id}",
-        produces = {"application/json"}
-    )
-    ResponseEntity<GroupCapsuleDetailResponse> findGroupCapsuleByIdAndGroupId(
-        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByGroupIdAndCapsuleId(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true, schema = @Schema())
-        @PathVariable("capsule_id") Long capsuleId
+        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true)
+        Long capsuleId
     );
 
     @Operation(
