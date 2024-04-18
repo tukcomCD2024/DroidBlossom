@@ -54,6 +54,15 @@ class MyPageViewModelImpl @Inject constructor(
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
 
+    init {
+        load()
+    }
+
+    override fun load(){
+        getMe()
+        clearCapsules()
+    }
+
 
     override fun getMe() {
         viewModelScope.launch {

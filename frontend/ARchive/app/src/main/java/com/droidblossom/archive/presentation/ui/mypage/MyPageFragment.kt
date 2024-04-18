@@ -46,8 +46,6 @@ class MyPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        viewModel.getMe()
-        viewModel.getSecretCapsulePage()
 
         parentFragmentManager.setFragmentResultListener("capsuleState", viewLifecycleOwner) { key, bundle ->
             val capsuleIndex = bundle.getInt("capsuleIndex")
@@ -139,7 +137,7 @@ class MyPageFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            viewModel.clearCapsules()
+            viewModel.load()
         }
     }
 

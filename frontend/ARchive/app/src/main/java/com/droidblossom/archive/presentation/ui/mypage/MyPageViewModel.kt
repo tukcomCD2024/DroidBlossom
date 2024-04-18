@@ -21,6 +21,7 @@ interface MyPageViewModel {
     fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long)
     fun clickSetting()
 
+    fun load()
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
 

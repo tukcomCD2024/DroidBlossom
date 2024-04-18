@@ -220,3 +220,24 @@ fun TextView.addFriendText(isFriend: Boolean, isRequest : Boolean, name : String
         this.text = name
     }
 }
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter(value = ["bind:count", "bind:showDecimal"], requireAll = true)
+fun TextView.formatCountWithK(count: Int, showDecimal: Boolean) {
+
+    if (count < 1000) {
+        this.text = count.toString()
+    }else{
+        if (showDecimal) {
+            val thousands = count / 1000
+            val remainder = (count % 1000) / 100
+            if (remainder == 0) {
+                this.text = "${thousands}K"
+            } else {
+                this.text = "${thousands}.${remainder}K"
+            }
+        } else {
+            this.text = "${count / 1000}K"
+        }
+    }
+}

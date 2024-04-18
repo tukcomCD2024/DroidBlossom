@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/main_bg_1"
         tools:context=".presentation.ui.MyPageFragment">
 
         <androidx.core.widget.NestedScrollView
@@ -32,10 +32,10 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profileImg"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="24dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     bind:baseImg="@{@drawable/base_use_img}"
@@ -52,41 +52,169 @@
                     android:maxWidth="250dp"
                     android:text="@{vm.myInfo.nickname}"
                     android:textAppearance="@style/TextAppearance.App.body2"
-                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toEndOf="@id/profileImg"
                     app:layout_constraintTop_toTopOf="@id/profileImg" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profileTagT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:maxLines="1"
+                    android:text="@{'@' + vm.myInfo.tag}"
+                    android:textAppearance="@style/TextAppearance.App.caption4"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    app:layout_constraintStart_toEndOf="@id/profileImg" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/settingBtn"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginEnd="16dp"
                     android:onClick="@{()->vm.clickSetting()}"
                     app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="22dp"
+                    app:cardCornerRadius="18dp"
                     app:cardElevation="15dp"
                     app:layout_constraintBottom_toBottomOf="@id/profileImg"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/profileImg">
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_setting_24" />
+                        android:backgroundTint="@color/main_1"
+                        android:src="@drawable/ic_setting_24_main_1" />
                 </androidx.cardview.widget.CardView>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/groupLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/main_4"
+                    app:layout_constraintEnd_toStartOf="@id/friendLayout"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/profileImg">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/groupT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/group"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/groupNumberT"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/groupNumberT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="5dp"
+                        android:minWidth="36dp"
+                        android:background="@drawable/corner_radius_30"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="@dimen/padding_small"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/groupT"
+                        app:layout_constraintTop_toTopOf="parent"
+                        bind:count="@{vm.myInfo.groupCount}"
+                        bind:showDecimal="@{true}" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/friendLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/main_4"
+                    app:layout_constraintEnd_toStartOf="@id/requestLayout"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/groupLayout"
+                    app:layout_constraintTop_toBottomOf="@id/profileImg">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/friendT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/friend"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/friendNumberT"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/friendNumberT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="5dp"
+                        android:minWidth="36dp"
+                        android:background="@drawable/corner_radius_30"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="@dimen/padding_small"
+                        android:textAppearance="@style/TextAppearance.App.caption2"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/friendT"
+                        app:layout_constraintTop_toTopOf="parent"
+                        bind:count="@{vm.myInfo.friendCount}"
+                        bind:showDecimal="@{true}" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/requestLayout"
+                    android:layout_width="72dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/main_4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/friendLayout"
+                    app:layout_constraintTop_toBottomOf="@id/profileImg">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/requestImg"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_add_person_24" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/storyRecycleView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="24dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/settingBtn"
+                    app:layout_constraintTop_toBottomOf="@id/groupLayout"
                     tools:listitem="@layout/item_story" />
 
                 <View
