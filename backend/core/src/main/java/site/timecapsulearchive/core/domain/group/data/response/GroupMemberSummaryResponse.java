@@ -1,18 +1,26 @@
 package site.timecapsulearchive.core.domain.group.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
+@Builder
 @Schema(description = "그룹원 요약 정보")
 public record GroupMemberSummaryResponse(
 
-    @Schema(description = "닉네임")
-    String nickname,
+    @Schema(description = "그룹원 아이디")
+    Long memberId,
 
-    @Schema(description = "프로필 url")
+    @Schema(description = "그룹원 프로필 url")
     String profileUrl,
 
-    @Schema(description = "개봉 여부")
-    Boolean isOpened
+    @Schema(description = "그룹원 닉네임")
+    String nickname,
+
+    @Schema(description = "그룹원 태그")
+    String tag,
+
+    @Schema(description = "그룹장 여부")
+    Boolean isOwner
 ) {
 
 }

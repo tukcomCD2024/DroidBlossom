@@ -7,12 +7,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
@@ -73,9 +75,24 @@ public class GroupApiController implements GroupApi {
         return null;
     }
 
+    @GetMapping(
+        value = "/{group_id}",
+        produces = {"application/json"}
+    )
     @Override
-    public ResponseEntity<GroupDetailResponse> findGroupById(Long groupId) {
-        return null;
+    public ResponseEntity<ApiSpec<GroupDetailResponse>> findGroupDetailById(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId
+    ) {
+        GroupDetailDto groupDetailDto = groupService.findGroupDetailByMemberIdAndGroupId(
+            memberId, groupId);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                groupDetailDto.toResponse()
+            )
+        );
     }
 
     @GetMapping(

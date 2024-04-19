@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupInviteMessageDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
+import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
@@ -31,6 +33,7 @@ public class GroupService {
     private final MemberGroupQueryRepository memberGroupQueryRepository;
     private final TransactionTemplate transactionTemplate;
     private final GroupInviteMessageManager groupInviteMessageManager;
+    private final GroupQueryRepository groupQueryRepository;
 
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
         Member member = memberRepository.findMemberById(memberId)
@@ -65,5 +68,14 @@ public class GroupService {
         final ZonedDateTime createdAt
     ) {
         return memberGroupQueryRepository.findGroupsSlice(memberId, size, createdAt);
+    }
+
+    @Transactional(readOnly = true)
+    public GroupDetailDto findGroupDetailByMemberIdAndGroupId(
+        final Long memberId,
+        final Long groupId
+    ) {
+        return groupQueryRepository.findGroupDetailByGroupId(groupId)
+            .orElseThrow(GroupNotFoundException::new);
     }
 }

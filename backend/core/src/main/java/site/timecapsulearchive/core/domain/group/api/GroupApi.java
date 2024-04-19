@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -131,15 +130,21 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "잘못된 파라미터를 받았을 때 발생하는 오류"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹에 포함된 사용자가 아닌 경우 발생하는 오류"
         )
     })
-    @GetMapping(
-        value = "/groups/{group_id}",
-        produces = {"application/json"}
-    )
-    ResponseEntity<GroupDetailResponse> findGroupById(
+    ResponseEntity<ApiSpec<GroupDetailResponse>> findGroupDetailById(
+        Long memberId,
+
         @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId
+        Long groupId
     );
 
     @Operation(
