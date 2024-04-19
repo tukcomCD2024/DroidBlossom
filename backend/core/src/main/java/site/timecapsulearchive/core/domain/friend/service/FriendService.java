@@ -95,23 +95,27 @@ public class FriendService {
         if (memberId.equals(friendId)) {
             throw new DuplicateFriendIdException();
         }
-        final FriendInvite friendInvite = friendInviteRepository
-            .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
-            .orElseThrow(FriendNotFoundException::new);
 
-        final MemberFriend ownerRelation = friendInvite.ownerRelation();
-        final MemberFriend friendRelation = friendInvite.friendRelation();
-
+        final String[] ownerNickname = new String[1];
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final FriendInvite friendInvite = friendInviteRepository
+                    .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId)
+                    .orElseThrow(FriendNotFoundException::new);
+
+                final MemberFriend ownerRelation = friendInvite.ownerRelation();
+                ownerNickname[0] = ownerRelation.getOwnerNickname();
+
+                final MemberFriend friendRelation = friendInvite.friendRelation();
+
                 friendInviteRepository.delete(friendInvite);
                 memberFriendRepository.save(ownerRelation);
                 memberFriendRepository.save(friendRelation);
             }
         });
 
-        notificationManager.sendFriendAcceptMessage(friendId, ownerRelation.getOwnerNickname());
+        notificationManager.sendFriendAcceptMessage(friendId, ownerNickname[0]);
     }
 
     @Transactional
