@@ -76,8 +76,11 @@ class FriendActivity :
 
     companion object {
         const val FRIEND = "friend"
-
-        fun newIntent(context: Context) =
-            Intent(context, FriendActivity::class.java)
+        const val GROUP = "group"
+        const val TYPE_KEY = "type_key"
+        fun newIntent(context: Context, type: String) =
+            Intent(context, FriendActivity::class.java).apply {
+                putExtra(TYPE_KEY, type)
+            }
     }
 }

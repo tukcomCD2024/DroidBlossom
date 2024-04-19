@@ -1,12 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -73,9 +69,11 @@ class MyPageFragment :
         layoutParams.topMargin += getStatusBarHeight()
         binding.profileImg.layoutParams = layoutParams
 
-        //임시 : 친구 엑티비티로 이동
-        binding.profileImg.setOnClickListener{
-            startActivity(FriendActivity.newIntent(requireContext()))
+        binding.groupLayout.setOnClickListener{
+            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
+        }
+        binding.friendLayout.setOnClickListener{
+            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
         }
     }
 
