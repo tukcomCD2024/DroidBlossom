@@ -43,6 +43,11 @@ public class MemberGroupQueryRepository {
             .limit(size + 1)
             .fetch();
 
+        boolean hasNext = groups.size() > size;
+        if (hasNext) {
+            groups.remove(size);
+        }
+
         return new SliceImpl<>(groups, Pageable.ofSize(size), groups.size() > size);
     }
 }
