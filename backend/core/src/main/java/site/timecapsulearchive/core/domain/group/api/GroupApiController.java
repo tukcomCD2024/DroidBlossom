@@ -1,21 +1,27 @@
 package site.timecapsulearchive.core.domain.group.api;
 
 import jakarta.validation.Valid;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupsPageResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.domain.group.service.GroupService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 
@@ -26,6 +32,7 @@ public class GroupApiController implements GroupApi {
 
     private final GroupService groupService;
     private final S3UrlGenerator s3UrlGenerator;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @Override
     public ResponseEntity<Void> acceptGroupInvitation(Long groupId, Long memberId) {
@@ -71,9 +78,28 @@ public class GroupApiController implements GroupApi {
         return null;
     }
 
+    @GetMapping(
+        produces = {"application/json"}
+    )
     @Override
-    public ResponseEntity<GroupsPageResponse> findGroups(Long size, Long groupId) {
-        return null;
+    public ResponseEntity<ApiSpec<GroupsSliceResponse>> findGroups(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
+    ) {
+        Slice<GroupSummaryDto> groupsSlice = groupService.findGroupsSlice(memberId, size,
+            createdAt);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                GroupsSliceResponse.createOf(
+                    groupsSlice.getContent(),
+                    groupsSlice.hasNext(),
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
+            )
+        );
     }
 
     @Override
