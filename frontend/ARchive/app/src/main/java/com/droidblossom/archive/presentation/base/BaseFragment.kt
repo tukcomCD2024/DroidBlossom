@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.base
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
+import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
 
 abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes val layoutResource :Int): Fragment() {
@@ -51,6 +53,13 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
         super.onViewCreated(view, savedInstanceState)
         fetchJob = viewModel.fetchData()
         observeData()
+    }
+
+    fun copyText(label:String, text: String) {
+        ClipboardUtil.copyTextToClipboard(requireContext(), label, text)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2){
+            showToastMessage("클립보드에 복사되었어요.")
+        }
     }
 
     fun showToastMessage(message: String) {

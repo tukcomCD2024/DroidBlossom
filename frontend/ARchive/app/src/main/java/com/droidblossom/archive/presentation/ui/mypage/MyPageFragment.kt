@@ -1,8 +1,12 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +23,7 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MyPageFragment :
@@ -58,6 +63,7 @@ class MyPageFragment :
         }
 
         initRVA()
+        initView()
 
 //        binding.settingBtn.setOnClickListener {
 //            throw RuntimeException("Test Crash")
@@ -70,6 +76,16 @@ class MyPageFragment :
         //임시 : 친구 엑티비티로 이동
         binding.profileImg.setOnClickListener{
             startActivity(FriendActivity.newIntent(requireContext()))
+        }
+    }
+
+    private fun initView(){
+
+        with(binding){
+            profileTagT.setOnLongClickListener {
+                copyText("userTag", viewModel.myInfo.value.tag)
+                true
+            }
         }
     }
 
