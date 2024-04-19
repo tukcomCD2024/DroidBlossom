@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
 
 @Service
@@ -51,7 +52,7 @@ public class PublicCapsuleService {
             .orElseThrow(CapsuleNotFondException::new);
     }
 
-    public Slice<CapsuleDetailDto> findPublicCapsulesMadeByFriend(
+    public Slice<PublicCapsuleDetailDto> findPublicCapsulesMadeByFriend(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
