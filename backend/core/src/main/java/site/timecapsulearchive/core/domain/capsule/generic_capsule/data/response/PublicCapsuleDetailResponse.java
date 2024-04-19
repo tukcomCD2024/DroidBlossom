@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "공개 캡슐 상세 정보")
@@ -30,6 +30,12 @@ public record PublicCapsuleDetailResponse(
 
     @Schema(description = "생성일")
     ZonedDateTime createdDate,
+
+    @Schema(description = "캡슐 위도")
+    Double latitude,
+
+    @Schema(description = "캡슐 경도")
+    Double longitude,
 
     @Schema(description = "캡슐 생성 주소")
     String address,
@@ -65,7 +71,7 @@ public record PublicCapsuleDetailResponse(
     }
 
     public static PublicCapsuleDetailResponse createOf(
-        final CapsuleDetailDto detailDto,
+        final PublicCapsuleDetailDto detailDto,
         final Function<String, String> singlePreSignUrlFunction,
         final Function<String, List<String>> multiplePreSignUrlFunction
     ) {
@@ -81,6 +87,8 @@ public record PublicCapsuleDetailResponse(
             detailDto.nickname(),
             detailDto.profileUrl(),
             detailDto.createdAt(),
+            detailDto.point().getX(),
+            detailDto.point().getY(),
             detailDto.address(),
             detailDto.roadName(),
             detailDto.title(),

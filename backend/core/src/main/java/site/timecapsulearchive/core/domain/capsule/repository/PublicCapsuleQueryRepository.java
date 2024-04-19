@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -107,7 +108,7 @@ public class PublicCapsuleQueryRepository {
         );
     }
 
-    public Slice<CapsuleDetailDto> findPublicCapsulesDtoMadeByFriend(
+    public Slice<PublicCapsuleDetailDto> findPublicCapsulesDtoMadeByFriend(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
@@ -120,16 +121,17 @@ public class PublicCapsuleQueryRepository {
             .fetch();
         memberIds.add(memberId);
 
-        final List<CapsuleDetailDto> publicCapsuleDetailDtos = jpaQueryFactory
+        final List<PublicCapsuleDetailDto> publicCapsuleDetailDtos = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    CapsuleDetailDto.class,
+                    PublicCapsuleDetailDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
                     member.nickname,
                     member.profileUrl,
                     capsule.createdAt,
+                    capsule.point,
                     capsule.address.fullRoadAddressName,
                     capsule.address.roadName,
                     capsule.title,
