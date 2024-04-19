@@ -62,7 +62,7 @@ public interface GroupCapsuleApi {
 
     @Operation(
         summary = "그룹 캡슐 상세 조회",
-        description = "그룹원만 볼 수 있는 그룹 캡슐 내용을 조회한다.",
+        description = "그룹원만 볼 수 있는 그룹 캡슐 내용을 상세 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group capsule"}
     )
@@ -72,7 +72,26 @@ public interface GroupCapsuleApi {
             description = "처리 완료"
         )
     })
-    ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByGroupIdAndCapsuleId(
+    ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByCapsuleId(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true)
+        Long capsuleId
+    );
+
+    @Operation(
+        summary = "그룹 캡슐 요약 조회",
+        description = "그룹원만 볼 수 있는 그룹 캡슐 내용을 요약 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        )
+    })
+    ResponseEntity<ApiSpec<GroupCapsuleSummaryResponse>> getGroupCapsuleSummaryByCapsuleId(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true)

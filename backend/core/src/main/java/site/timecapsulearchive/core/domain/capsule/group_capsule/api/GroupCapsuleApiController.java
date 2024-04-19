@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.facade.GroupCapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
@@ -50,11 +51,11 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     }
 
     @GetMapping(
-        value = "/capsule/{capsule_id}",
+        value = "/capsules/{capsule_id}/detail",
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByGroupIdAndCapsuleId(
+    public ResponseEntity<ApiSpec<GroupCapsuleDetailResponse>> getGroupCapsuleDetailByCapsuleId(
         @AuthenticationPrincipal Long memberId,
         @PathVariable("capsule_id") Long capsuleId
     ) {
@@ -68,6 +69,29 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
                     detailDto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                )
+            )
+        );
+    }
+
+    @GetMapping(
+        value = "/capsules/{capsule_id}/summary",
+        produces = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<GroupCapsuleSummaryResponse>> getGroupCapsuleSummaryByCapsuleId(
+        @AuthenticationPrincipal Long memberId,
+        @PathVariable("capsule_id") Long capsuleId
+    ) {
+        final GroupCapsuleSummaryDto summaryDto = groupCapsuleService.findGroupCapsuleSummaryByGroupIDAndCapsuleId(
+            capsuleId);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                GroupCapsuleSummaryResponse.createOf(
+                    summaryDto,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
                 )
             )
         );

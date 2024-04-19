@@ -7,6 +7,7 @@ public record GroupMemberSummaryDto(
     String profileUrl,
     Boolean isOpened
 ) {
+
     public GroupMemberSummaryResponse toResponse() {
         return new GroupMemberSummaryResponse(nickname, profileUrl, isOpened);
     }

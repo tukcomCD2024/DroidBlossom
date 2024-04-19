@@ -11,6 +11,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -63,4 +64,11 @@ public class GroupCapsuleService {
         return !detailDto.capsuleDetailDto().isOpened() || detailDto.capsuleDetailDto().dueDate()
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
+
+    public GroupCapsuleSummaryDto findGroupCapsuleSummaryByGroupIDAndCapsuleId(
+        final Long capsuleId) {
+        return groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+    }
 }
+

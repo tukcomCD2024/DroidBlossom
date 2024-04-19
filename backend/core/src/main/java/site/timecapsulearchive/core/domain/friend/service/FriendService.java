@@ -166,7 +166,8 @@ public class FriendService {
         final Long memberId,
         final List<ByteArrayWrapper> phoneEncryption
     ) {
-        final List<byte[]> hashes = phoneEncryption.stream().map(ByteArrayWrapper::getData).toList();
+        final List<byte[]> hashes = phoneEncryption.stream().map(ByteArrayWrapper::getData)
+            .toList();
 
         return memberFriendQueryRepository.findFriendsByPhone(memberId, hashes);
     }
