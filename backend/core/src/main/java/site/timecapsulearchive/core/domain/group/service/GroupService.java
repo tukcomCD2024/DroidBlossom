@@ -17,7 +17,6 @@ import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
-import site.timecapsulearchive.core.domain.group.repository.MemberGroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
@@ -30,7 +29,6 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
     private final MemberGroupRepository memberGroupRepository;
-    private final MemberGroupQueryRepository memberGroupQueryRepository;
     private final TransactionTemplate transactionTemplate;
     private final GroupInviteMessageManager groupInviteMessageManager;
     private final GroupQueryRepository groupQueryRepository;
@@ -67,7 +65,7 @@ public class GroupService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return memberGroupQueryRepository.findGroupsSlice(memberId, size, createdAt);
+        return groupQueryRepository.findGroupsSlice(memberId, size, createdAt);
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +73,7 @@ public class GroupService {
         final Long memberId,
         final Long groupId
     ) {
+        //TODO: 그룹 상세에서 그룹원 목록에서 내가 조회 가능해야 하는가?
         return groupQueryRepository.findGroupDetailByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);
     }
