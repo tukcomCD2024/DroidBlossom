@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.service;
+package site.timecapsulearchive.core.domain.capsule.public_capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -10,7 +10,7 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.repository.PublicCapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 
 @Service
 @Transactional(readOnly = true)

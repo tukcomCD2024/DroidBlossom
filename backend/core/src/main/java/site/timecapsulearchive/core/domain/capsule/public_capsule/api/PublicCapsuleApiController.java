@@ -18,7 +18,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.service.PublicCapsuleService;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.service.PublicCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;

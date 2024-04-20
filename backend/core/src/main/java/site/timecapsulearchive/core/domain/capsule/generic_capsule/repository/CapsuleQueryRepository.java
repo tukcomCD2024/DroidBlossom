@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.repository;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
