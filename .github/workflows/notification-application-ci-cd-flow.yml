@@ -10,6 +10,40 @@ on:
       - develop_back_notification
 
 jobs:
+  build_and_test:
+    name: build and test
+    if: ${{github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/core
+
+    steps:
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: formatting
+        uses: axel-op/googlejavaformat-action@v3
+        with:
+          args: "--replace"
+          skip-commit: true
+
+      - name: grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: test
+        run: ./gradlew clean test
+
   deploy-notification:
     name: notification application deploy
     if: ${{ github.event_name == 'push' }}
