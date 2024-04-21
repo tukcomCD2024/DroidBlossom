@@ -34,6 +34,10 @@ public interface FriendApi {
             description = "처리 완료"
         ),
         @ApiResponse(
+          responseCode = "404",
+          description = "친구 요청이 존재하지 않는 경우 발생"
+        ),
+        @ApiResponse(
             responseCode = "500",
             description = "외부 API 요청 실패"
         )
