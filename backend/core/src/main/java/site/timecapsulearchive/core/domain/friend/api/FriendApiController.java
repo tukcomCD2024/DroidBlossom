@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
@@ -57,10 +59,13 @@ public class FriendApiController implements FriendApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
+        Slice<FriendSummaryDto> friendsSlice = friendService.findFriendsSlice(memberId, size,
+            createdAt);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                friendService.findFriendsSlice(memberId, size, createdAt)
+                FriendsSliceResponse.createOf(friendsSlice.getContent(), friendsSlice.hasNext())
             )
         );
     }
@@ -75,10 +80,13 @@ public class FriendApiController implements FriendApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
+        Slice<FriendSummaryDto> friendRequestsSlice = friendService.findFriendRequestsSlice(
+            memberId, size, createdAt);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                friendService.findFriendRequestsSlice(memberId, size, createdAt)
+                FriendRequestsSliceResponse.createOf(friendRequestsSlice.getContent(), friendRequestsSlice.hasNext())
             )
         );
     }
