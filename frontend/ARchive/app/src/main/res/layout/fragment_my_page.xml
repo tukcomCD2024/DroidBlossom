@@ -119,10 +119,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginVertical="5dp"
-                        android:minWidth="36dp"
                         android:background="@drawable/corner_radius_30"
                         android:gravity="center"
                         android:maxLines="1"
+                        android:minWidth="36dp"
                         android:padding="@dimen/padding_small"
                         android:textAppearance="@style/TextAppearance.App.caption2"
                         android:textColor="@color/black"
@@ -165,10 +165,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginVertical="5dp"
-                        android:minWidth="36dp"
                         android:background="@drawable/corner_radius_30"
                         android:gravity="center"
                         android:maxLines="1"
+                        android:minWidth="36dp"
                         android:padding="@dimen/padding_small"
                         android:textAppearance="@style/TextAppearance.App.caption2"
                         android:textColor="@color/black"
@@ -205,17 +205,35 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/storyRecycleView"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/storyLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/padding_small"
+                    android:layout_marginStart="16dp"
+                    android:paddingStart="20dp"
                     android:layout_marginTop="24dp"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:background="@drawable/my_page_history_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/groupLayout"
-                    tools:listitem="@layout/item_story" />
+                    app:layout_constraintTop_toBottomOf="@id/groupLayout">
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/storyRecycleView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:itemCount="6"
+                        android:background="@drawable/my_page_history_background"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:listitem="@layout/item_story" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <View
                     android:id="@+id/line"
@@ -225,7 +243,7 @@
                     android:background="@color/main_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/storyRecycleView" />
+                    app:layout_constraintTop_toBottomOf="@id/storyLayout" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/myCapsuleTitleT"
