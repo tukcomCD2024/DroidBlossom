@@ -46,7 +46,6 @@ jobs:
 
   deploy-core:
     name: core application deploy
-    needs: formatting
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
