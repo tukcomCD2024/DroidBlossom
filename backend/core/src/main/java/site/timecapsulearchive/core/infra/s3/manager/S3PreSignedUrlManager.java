@@ -56,11 +56,19 @@ public class S3PreSignedUrlManager {
         final Long memberId,
         final List<String> imageNames
     ) {
+        if (isNotNull(s3Directory, memberId, imageNames)) {
+            return Collections.emptyList();
+        }
+
         return imageNames.stream()
             .filter(path -> !path.isBlank())
             .map(path -> s3Directory.generateFullPath(memberId, path))
             .map(fullPath -> createS3PreSignedUrlForPut(bucketName, fullPath, IMAGE_CONTENT_TYPE))
             .toList();
+    }
+
+    private boolean isNotNull(S3Directory s3Directory, Long memberId, List<String> videoNames) {
+        return videoNames == null || memberId == null || s3Directory == null;
     }
 
     private String createS3PreSignedUrlForPut(
@@ -100,6 +108,10 @@ public class S3PreSignedUrlManager {
         final Long memberId,
         final List<String> videoNames
     ) {
+        if (isNotNull(s3Directory, memberId, videoNames)) {
+            return Collections.emptyList();
+        }
+
         return videoNames.stream()
             .filter(path -> !path.isBlank())
             .map(path -> s3Directory.generateFullPath(memberId, path))
@@ -127,7 +139,7 @@ public class S3PreSignedUrlManager {
         final Long memberId,
         final String imageName
     ) {
-        if (imageName.isBlank()) {
+        if (imageName.isBlank() || memberId == null || s3Directory == null) {
             return "";
         }
 

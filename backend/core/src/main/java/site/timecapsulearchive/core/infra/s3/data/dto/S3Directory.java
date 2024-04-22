@@ -1,7 +1,8 @@
 package site.timecapsulearchive.core.infra.s3.data.dto;
 
 public enum S3Directory {
-    CAPSULE("capsuleContents");
+    CAPSULE("capsuleContents"),
+    CAPSULE_SKIN("capsuleSkin");
 
     private final String value;
 

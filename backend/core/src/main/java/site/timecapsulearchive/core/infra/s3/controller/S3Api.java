@@ -22,6 +22,15 @@ public interface S3Api {
         @ApiResponse(
             responseCode = "200",
             description = "s3업로드에 필요한 주소 반환"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                올바르지 않은 입력인 경우 발생
+                
+                1. 리스트 크기 제한을 넘는 경우 ex) imageNames.size() > 20 or videoNames.size() > 20
+                2. 올바르지 않은 입력 포맷이나 형식인 경우 ex) png, mp4가 아닌 경우
+                """
         )
     })
     ResponseEntity<ApiSpec<S3PreSignedUrlResponse>> getS3PreSignedUrl(
@@ -39,6 +48,14 @@ public interface S3Api {
         @ApiResponse(
             responseCode = "200",
             description = "s3업로드에 필요한 주소 반환"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                올바르지 않은 입력인 경우 발생
+                
+                1. 올바르지 않은 입력 포맷이나 형식인 경우 ex) png, mp4가 아닌 경우
+                """
         )
     })
     ResponseEntity<ApiSpec<String>> getImageS3PreSignedUrl(
