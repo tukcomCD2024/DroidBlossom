@@ -11,6 +11,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
@@ -37,7 +38,7 @@ public class CapsuleSkinMapper {
         final CapsuleSkinSummaryDto skin) {
         return CapsuleSkinSummaryResponse.builder()
             .id(skin.id())
-            .skinUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(skin.skinUrl()))
+            .skinUrl(s3PreSignedUrlManager.preSignImageForGet(skin.skinUrl()))
             .name(skin.name())
             .createdAt(skin.createdAt())
             .build();
@@ -67,14 +68,13 @@ public class CapsuleSkinMapper {
         final String memberName,
         final CapsuleSkinCreateDto dto
     ) {
+        String fullPath = S3Directory.CAPSULE_SKIN.generateFullPath(memberId, dto.imageUrl());
+
         return CapsuleSkinMessageDto.builder()
             .memberId(memberId)
             .memberName(memberName)
             .skinName(dto.skinName())
-            .imageUrl(
-                s3PreSignedUrlManager.getS3PreSignedUrlForGet(
-                    s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl())
-                ))
+            .imageUrl(s3PreSignedUrlManager.preSignImageForGet(fullPath))
             .motionName(dto.motionName())
             .retarget(dto.retarget())
             .build();

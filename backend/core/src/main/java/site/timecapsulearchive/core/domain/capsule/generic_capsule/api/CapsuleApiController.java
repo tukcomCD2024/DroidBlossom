@@ -66,7 +66,7 @@ public class CapsuleApiController implements CapsuleApi {
                 NearbyARCapsuleResponse.createOf(
                     dtos,
                     geoTransformManager::changePoint3857To4326,
-                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                    s3PreSignedUrlManager::preSignImageForGet
                 )
             )
         );

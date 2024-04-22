@@ -67,7 +67,7 @@ public class MemberMapper {
             .map(dto -> {
                     String imageUrl = "";
                     if (dto.imageUrl() != null) {
-                        imageUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.imageUrl());
+                        imageUrl = s3PreSignedUrlManager.preSignImageForGet(dto.imageUrl());
                     }
 
                     return MemberNotificationResponse.builder()

@@ -46,7 +46,9 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 MySecretCapsuleSliceResponse.createOf(
-                    dtos, s3PreSignedUrlManager::getS3PreSignedUrlForGet)
+                    dtos,
+                    s3PreSignedUrlManager::preSignImageForGet
+                )
             )
         );
     }
@@ -64,7 +66,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                CapsuleSummaryResponse.createOf(dto, s3PreSignedUrlManager::getS3PreSignedUrlForGet)
+                CapsuleSummaryResponse.createOf(dto, s3PreSignedUrlManager::preSignImageForGet)
             )
         );
     }
@@ -83,8 +85,8 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
                 SuccessCode.SUCCESS,
                 CapsuleDetailResponse.createOf(
                     dto,
-                    s3PreSignedUrlManager::getS3PreSignedUrlForGet,
-                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                    s3PreSignedUrlManager::preSignImageForGet,
+                    s3PreSignedUrlManager::preSignImagesForGet
                 )
             )
         );
