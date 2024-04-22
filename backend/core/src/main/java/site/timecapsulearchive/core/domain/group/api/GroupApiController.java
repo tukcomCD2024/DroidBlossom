@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
@@ -16,7 +15,7 @@ import site.timecapsulearchive.core.domain.group.data.response.GroupsPageRespons
 import site.timecapsulearchive.core.domain.group.service.GroupService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
-import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
+import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 
 
 @RestController
@@ -25,7 +24,6 @@ import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 public class GroupApiController implements GroupApi {
 
     private final GroupService groupService;
-    private final S3UrlGenerator s3UrlGenerator;
 
     @Override
     public ResponseEntity<Void> acceptGroupInvitation(Long groupId, Long memberId) {
@@ -38,11 +36,8 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody GroupCreateRequest request
     ) {
-        final String groupProfileUrl = s3UrlGenerator.generateFileName(memberId,
-            request.groupDirectory(), request.groupImage());
-        final GroupCreateDto dto = request.toDto(groupProfileUrl);
-
-        groupService.createGroup(memberId, dto);
+        String fullPath = S3Directory.GROUP.generateFullPath(memberId, request.groupImage());
+        groupService.createGroup(memberId, request.toDto(fullPath));
 
         return ResponseEntity.ok(
             ApiSpec.empty(
