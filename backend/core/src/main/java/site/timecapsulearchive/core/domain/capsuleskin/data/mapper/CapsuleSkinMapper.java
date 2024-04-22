@@ -6,20 +6,14 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinMessageDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
-import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSummaryResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
-import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
-import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
-import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Component
 @RequiredArgsConstructor
 public class CapsuleSkinMapper {
 
-    private final S3UrlGenerator s3UrlGenerator;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     public CapsuleSkinsSliceResponse capsuleSkinSliceToResponse(
@@ -44,37 +38,16 @@ public class CapsuleSkinMapper {
             .build();
     }
 
-    public CapsuleSkinCreateDto createRequestToDto(final CapsuleSkinCreateRequest request) {
-        return new CapsuleSkinCreateDto(
-            request.skinName(),
-            request.imageUrl(),
-            request.directory(),
-            request.motionName(),
-            request.retarget()
-        );
-    }
-
-    public CapsuleSkin createDtoToEntity(CapsuleSkinCreateDto dto, Member member) {
-        return CapsuleSkin.builder()
-            .skinName(dto.skinName())
-            .imageUrl(
-                s3UrlGenerator.generateFileName(member.getId(), dto.directory(), dto.imageUrl()))
-            .member(member)
-            .build();
-    }
-
     public CapsuleSkinMessageDto createDtoToMessageDto(
         final Long memberId,
         final String memberName,
         final CapsuleSkinCreateDto dto
     ) {
-        String fullPath = S3Directory.CAPSULE_SKIN.generateFullPath(memberId, dto.imageUrl());
-
         return CapsuleSkinMessageDto.builder()
             .memberId(memberId)
             .memberName(memberName)
             .skinName(dto.skinName())
-            .imageUrl(s3PreSignedUrlManager.preSignImageForGet(fullPath))
+            .imageUrl(dto.imageFullPath())
             .motionName(dto.motionName())
             .retarget(dto.retarget())
             .build();

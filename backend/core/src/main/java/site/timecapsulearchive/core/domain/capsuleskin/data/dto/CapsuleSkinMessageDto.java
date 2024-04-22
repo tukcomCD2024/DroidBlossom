@@ -6,7 +6,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.entity.Retarget;
 
 @Builder
 public record CapsuleSkinMessageDto(
-
     Long memberId,
     String memberName,
     String skinName,

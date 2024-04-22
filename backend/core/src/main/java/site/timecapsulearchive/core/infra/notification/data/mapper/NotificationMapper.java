@@ -6,14 +6,13 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreat
 import site.timecapsulearchive.core.infra.notification.data.dto.request.CreatedCapsuleSkinNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendAcceptNotificationRequest;
 import site.timecapsulearchive.core.infra.notification.data.dto.request.FriendReqNotificationRequest;
-import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
+import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 
 @Component
 @RequiredArgsConstructor
 public class NotificationMapper {
 
     private static final String NOTIFICATION_SEND_SUCCESS = "SUCCESS";
-    private final S3UrlGenerator s3UrlGenerator;
 
     public CreatedCapsuleSkinNotificationRequest capsuleSkinDtoToMessage(
         final Long memberId,
@@ -25,7 +24,7 @@ public class NotificationMapper {
             .skinName(dto.skinName())
             .title("캡슐 스킨 생성 알림")
             .text(dto.skinName() + "이 생성되었습니다. ARchive에서 확인해보세요!")
-            .skinUrl(s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl()))
+            .skinUrl(S3Directory.CAPSULE_SKIN.generateFullPath(memberId, dto.imageFullPath()))
             .build();
     }
 

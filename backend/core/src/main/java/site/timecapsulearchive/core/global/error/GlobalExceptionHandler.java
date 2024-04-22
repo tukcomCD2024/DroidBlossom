@@ -7,6 +7,7 @@ import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAME
 import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR;
 
 import jakarta.transaction.TransactionalException;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
+import site.timecapsulearchive.core.global.error.exception.EntityCreateRestrictionException;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 @RestControllerAdvice
@@ -31,6 +33,16 @@ public class GlobalExceptionHandler {
             ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR.getStatus())
             .body(errorResponse);
+    }
+
+    @ExceptionHandler(EntityCreateRestrictionException.class)
+    protected ResponseEntity<ErrorResponse> handleEntityRestrictionException(final EntityCreateRestrictionException e) {
+        log.error("ClassName: {}, Input: {}, Message: {}", e.getClassName(), Arrays.toString(e.getInputs()), e.getMessage());
+
+        final ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity.status(errorCode.getStatus())
+            .body(ErrorResponse.fromErrorCode(errorCode));
     }
 
     @ExceptionHandler(BusinessException.class)

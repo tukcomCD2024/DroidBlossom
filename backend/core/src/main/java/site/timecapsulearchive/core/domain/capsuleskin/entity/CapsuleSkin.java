@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
+import site.timecapsulearchive.core.global.error.exception.EntityCreateRestrictionException;
 
 @Entity
 @Getter
@@ -55,5 +56,22 @@ public class CapsuleSkin extends BaseEntity {
         this.motionName = motionName;
         this.member = member;
         this.retarget = retarget;
+    }
+
+    /**
+     * <code>CapsuleSkin</code>을 생성하는 정적 팩토리 메소드이다.
+     *
+     * @param skinName 스킨 이름
+     * @param fullPath 완전한 캡슐 스킨 이미지 경로
+     * @param member   캡슐 스킨을 생성한 멤버
+     * @return <code>CapsuleSkin</code>
+     */
+    public static CapsuleSkin createOf(String skinName, String fullPath, Member member) {
+        if (fullPath.isBlank() || skinName.isBlank() || member == null) {
+            throw new EntityCreateRestrictionException(CapsuleSkin.class.getSimpleName(), skinName,
+                fullPath, member);
+        }
+
+        return new CapsuleSkin(skinName, fullPath, null, member, null);
     }
 }

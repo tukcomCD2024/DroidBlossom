@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinStatusResponse;
@@ -21,6 +20,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 import site.timecapsulearchive.core.domain.capsuleskin.service.CapsuleSkinService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 
 @RestController
 @RequestMapping("/capsule-skins")
@@ -28,7 +28,6 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     private final CapsuleSkinService capsuleSkinService;
-    private final CapsuleSkinMapper capsuleSkinMapper;
 
     @GetMapping(value = "/search", produces = {"application/json"})
     @Override
@@ -65,12 +64,13 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         @AuthenticationPrincipal final Long memberId,
         @RequestBody final CapsuleSkinCreateRequest request
     ) {
+        String imageFullPath = S3Directory.CAPSULE.generateFullPath(memberId, request.imageName());
+
         return ResponseEntity.accepted().body(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                capsuleSkinService.sendCapsuleSkinCreateMessage(
-                    memberId, capsuleSkinMapper.createRequestToDto(request)
-                )
+                capsuleSkinService.sendCapsuleSkinCreateMessage(memberId,
+                    request.toCapsuleSkinCreateDto(imageFullPath))
             )
         );
     }
