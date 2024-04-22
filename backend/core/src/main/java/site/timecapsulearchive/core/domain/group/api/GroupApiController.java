@@ -36,7 +36,7 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody GroupCreateRequest request
     ) {
-        String fullPath = S3Directory.GROUP.generateFullPath(memberId, request.groupImage());
+        final String fullPath = S3Directory.GROUP.generateFullPath(memberId, request.groupImage());
         groupService.createGroup(memberId, request.toDto(fullPath));
 
         return ResponseEntity.ok(

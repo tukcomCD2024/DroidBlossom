@@ -22,7 +22,6 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
-import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 
 @Service
 @RequiredArgsConstructor
@@ -55,11 +54,11 @@ public class CapsuleSkinService {
         final Long memberId,
         final CapsuleSkinCreateDto dto
     ) {
-        Member foundMember = memberRepository.findMemberById(memberId)
+        final Member foundMember = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         if (isNotExistMotionNameAndRetarget(dto)) {
-            CapsuleSkin capsuleSkin = dto.toCapsuleSkin(foundMember);
+            final CapsuleSkin capsuleSkin = dto.toCapsuleSkin(foundMember);
 
             transactionTemplate.execute(new TransactionCallbackWithoutResult() {
                 @Override

@@ -64,7 +64,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
         @AuthenticationPrincipal final Long memberId,
         @RequestBody final CapsuleSkinCreateRequest request
     ) {
-        String imageFullPath = S3Directory.CAPSULE.generateFullPath(memberId, request.imageName());
+        final String imageFullPath = S3Directory.CAPSULE.generateFullPath(memberId, request.imageName());
 
         return ResponseEntity.accepted().body(
             ApiSpec.success(
