@@ -209,11 +209,11 @@
                     android:id="@+id/storyLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="@dimen/padding_small"
                     android:layout_marginStart="16dp"
-                    android:paddingStart="20dp"
                     android:layout_marginTop="24dp"
                     android:background="@drawable/my_page_history_background"
+                    android:paddingVertical="@dimen/padding_small"
+                    android:paddingStart="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/groupLayout">
@@ -223,39 +223,31 @@
                         android:id="@+id/storyRecycleView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:itemCount="6"
                         android:background="@drawable/my_page_history_background"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        tools:itemCount="6"
                         tools:listitem="@layout/item_story" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
-                    android:background="@color/main_4"
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/capsuleTypeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/common_spinner_height"
+                    android:layout_marginHorizontal="@dimen/margin"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/spinner_background"
+                    android:dropDownWidth="match_parent"
+                    android:dropDownVerticalOffset="@dimen/common_spinner_height"
+                    android:spinnerMode="dropdown"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/storyLayout" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/myCapsuleTitleT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="32dp"
-                    android:text="MY 캡슐"
-                    android:textAppearance="@style/TextAppearance.App.body2"
-                    android:textColor="@color/gray_600"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/capsuleRecycleView"
@@ -266,7 +258,7 @@
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/myCapsuleTitleT"
+                    app:layout_constraintTop_toBottomOf="@id/capsuleTypeSpinner"
                     app:spanCount="3"
                     tools:listitem="@layout/item_my_capsule" />
 

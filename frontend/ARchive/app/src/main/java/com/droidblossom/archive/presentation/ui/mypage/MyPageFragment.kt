@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,7 @@ import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleTypeSpinner
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
@@ -38,7 +40,12 @@ class MyPageFragment :
                 )
             },
             { capsuleIndex, id, type ->
-                val sheet = CapsulePreviewDialogFragment.newInstance(capsuleIndex.toString(), id.toString(), type.toString(), false)
+                val sheet = CapsulePreviewDialogFragment.newInstance(
+                    capsuleIndex.toString(),
+                    id.toString(),
+                    type.toString(),
+                    false
+                )
                 sheet.show(parentFragmentManager, "CapsulePreviewDialog")
             },
         )
@@ -48,12 +55,15 @@ class MyPageFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
 
-        parentFragmentManager.setFragmentResultListener("capsuleState", viewLifecycleOwner) { key, bundle ->
+        parentFragmentManager.setFragmentResultListener(
+            "capsuleState",
+            viewLifecycleOwner
+        ) { key, bundle ->
             val capsuleIndex = bundle.getInt("capsuleIndex")
             val capsuleId = bundle.getLong("capsuleId")
             val capsuleOpenState = bundle.getBoolean("isOpened")
             if (capsuleIndex != -1 && capsuleOpenState) {
-                viewModel.updateCapsuleOpenState(capsuleIndex,capsuleId)
+                viewModel.updateCapsuleOpenState(capsuleIndex, capsuleId)
                 myCapsuleRVA.notifyItemChanged(capsuleIndex)
             }
         }
@@ -69,21 +79,41 @@ class MyPageFragment :
         layoutParams.topMargin += getStatusBarHeight()
         binding.profileImg.layoutParams = layoutParams
 
-        binding.groupLayout.setOnClickListener{
+        binding.groupLayout.setOnClickListener {
             startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
         }
-        binding.friendLayout.setOnClickListener{
+        binding.friendLayout.setOnClickListener {
             startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
         }
     }
 
-    private fun initView(){
+    private fun initView() {
 
-        with(binding){
+        with(binding) {
             profileTagT.setOnLongClickListener {
                 copyText("userTag", viewModel.myInfo.value.tag)
                 true
             }
+
+            val data = arrayOf("Secret", "Public", "Group")
+            val adapter = CapsuleTypeSpinner(requireContext(), data)
+            capsuleTypeSpinner.adapter = adapter
+            capsuleTypeSpinner.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View,
+                        position: Int,
+                        id: Long
+                    ) {
+
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+                }
+
         }
     }
 
@@ -113,7 +143,7 @@ class MyPageFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsules.collect { capsule ->
-                    if (capsule.isNotEmpty()){
+                    if (capsule.isNotEmpty()) {
                         viewModel.updateMyCapsulesUI()
                     }
                 }
@@ -133,6 +163,7 @@ class MyPageFragment :
                         is MyPageViewModel.MyPageEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
+
                         is MyPageViewModel.MyPageEvent.ClickSetting -> {
                             startActivity(SettingActivity.newIntent(requireContext()))
                         }
@@ -159,5 +190,11 @@ class MyPageFragment :
 
         const val TAG = "MY"
         fun newIntent() = MyPageFragment()
+    }
+
+    enum class SpinnerCapsuleType(val description: String) {
+        SECRET("Secret"),
+        PUBLIC("Public"),
+        GROUP("Group")
     }
 }

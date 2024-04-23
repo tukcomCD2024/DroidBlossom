@@ -50,4 +50,10 @@
 
     <string name="groupAccept">그룹 요청</string>
     <string name="friendAccept">친구 요청</string>
+
+    <string-array name="spinner_capsule_type">
+        <item>Secret</item>
+        <item>Public</item>
+        <item>Group</item>
+    </string-array>
 </resources>
