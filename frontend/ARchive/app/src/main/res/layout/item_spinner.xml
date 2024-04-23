@@ -11,6 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/common_spinner_height"
             android:ellipsize="marquee"
+            android:background="@drawable/spinner_background"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/padding"
             android:paddingEnd="@dimen/padding"
