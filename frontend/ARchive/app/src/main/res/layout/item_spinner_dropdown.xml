@@ -8,7 +8,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvDropdownItemName"
+            android:id="@+id/dropdownItemName"
             android:layout_width="match_parent"
             android:layout_height="@dimen/common_spinner_height"
             android:ellipsize="marquee"
@@ -23,7 +23,7 @@
 
         <!-- Divider -->
         <TextView
-            android:id="@+id/tvDivider"
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height=".1dp"
             android:layout_marginStart="10dp"

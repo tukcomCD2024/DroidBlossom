@@ -28,7 +28,7 @@ class ARchiveApplication : Application(), DefaultLifecycleObserver {
         networkConnectionChecker = NetworkStatusChecker(context)
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
         //setCrashHandler()
-        Thread.setDefaultUncaughtExceptionHandler { _, _ -> caughtException() }
+        //Thread.setDefaultUncaughtExceptionHandler { _, _ -> caughtException() }
         dummyCoroutines()
 
         // 키 값 알아내기
