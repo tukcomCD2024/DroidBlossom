@@ -7,6 +7,15 @@
         android:background="@color/main_2"
         android:orientation="vertical">
 
+        <!-- Divider -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height=".1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/gray_700" />
+
         <TextView
             android:id="@+id/dropdownItemName"
             android:layout_width="match_parent"
@@ -21,13 +30,5 @@
             android:textStyle="bold"
             android:textColor="@color/white" />
 
-        <!-- Divider -->
-        <TextView
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height=".1dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@color/gray_700" />
     </LinearLayout>
 </layout>

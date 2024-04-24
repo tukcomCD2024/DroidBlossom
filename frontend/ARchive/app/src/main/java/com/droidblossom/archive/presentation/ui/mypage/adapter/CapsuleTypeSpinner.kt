@@ -56,7 +56,6 @@ class CapsuleTypeSpinner(private val context: Context, private val items: Array<
         }
 
         if (position == (count - 1)) {
-            spinnerDropdownItemBinding.divider.visibility = View.GONE
             spinnerDropdownItemBinding.root.setBackgroundResource(R.drawable.spinner_dropdown_item_last)
 
         }
