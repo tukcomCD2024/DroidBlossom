@@ -54,7 +54,6 @@ class MyPageViewModelImpl @Inject constructor(
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
 
-
     init {
         load()
     }
@@ -128,5 +127,4 @@ class MyPageViewModelImpl @Inject constructor(
             _myPageEvents.emit(MyPageViewModel.MyPageEvent.ClickSetting)
         }
     }
-
 }
