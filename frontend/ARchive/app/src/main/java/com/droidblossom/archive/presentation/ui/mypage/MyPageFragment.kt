@@ -1,9 +1,12 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -51,6 +54,11 @@ class MyPageFragment :
         )
     }
 
+    private val spinnerAdapter by lazy {
+        val capsuleTypeList = arrayOf("Secret", "Public", "Group")
+        CapsuleTypeSpinner(requireContext(), capsuleTypeList)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
@@ -70,6 +78,7 @@ class MyPageFragment :
 
         initRVA()
         initView()
+        initSpinner()
 
 //        binding.settingBtn.setOnClickListener {
 //            throw RuntimeException("Test Crash")
@@ -94,26 +103,6 @@ class MyPageFragment :
                 copyText("userTag", viewModel.myInfo.value.tag)
                 true
             }
-
-            val data = arrayOf("Secret", "Public", "Group")
-            val adapter = CapsuleTypeSpinner(requireContext(), data)
-            capsuleTypeSpinner.adapter = adapter
-            capsuleTypeSpinner.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>,
-                        view: View,
-                        position: Int,
-                        id: Long
-                    ) {
-
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                    }
-                }
-
         }
     }
 
@@ -137,6 +126,32 @@ class MyPageFragment :
             }
 
         })
+    }
+
+    private fun initSpinner() {
+        with(binding) {
+            capsuleTypeSpinner.adapter = spinnerAdapter
+            capsuleTypeSpinner.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View,
+                        position: Int,
+                        id: Long
+                    ) {
+
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+                }
+            capsuleTypeSpinner.viewTreeObserver.addOnWindowFocusChangeListener { hasFocus ->
+                spinnerAdapter.spinnerIsOpened = hasFocus
+                spinnerAdapter.notifyDataSetChanged()
+            }
+        }
+
     }
 
     override fun observeData() {
@@ -177,6 +192,7 @@ class MyPageFragment :
                 }
             }
         }
+
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

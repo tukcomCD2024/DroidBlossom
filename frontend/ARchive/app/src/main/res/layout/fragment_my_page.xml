@@ -241,6 +241,7 @@
                     android:layout_marginHorizontal="@dimen/margin"
                     android:layout_marginTop="24dp"
                     android:background="@null"
+                    android:popupBackground="@null"
                     android:dropDownWidth="match_parent"
                     android:dropDownVerticalOffset="@dimen/common_spinner_height"
                     android:spinnerMode="dropdown"
