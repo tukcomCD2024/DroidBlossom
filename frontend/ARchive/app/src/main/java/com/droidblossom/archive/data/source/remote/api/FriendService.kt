@@ -5,6 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Response
 import com.droidblossom.archive.data.dto.ResponseBody
+import com.droidblossom.archive.data.dto.friend.request.FriendsReqRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsPageResponseDto
@@ -48,6 +49,11 @@ interface FriendService {
         @Query("size") size : Int,
         @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
+
+    @POST("friends/requests")
+    suspend fun postFriendListRequestsPageApi(
+        @Body request : FriendsReqRequestDto
+    ) : Response<ResponseBody<String>>
 
     @DELETE("friends/{friend_id}")
     suspend fun deleteFriendApi(

@@ -1,13 +1,12 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
-import android.text.TextUtils.substring
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.friend.request.PhoneBooks
 import com.droidblossom.archive.domain.model.friend.FriendReqRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
+import com.droidblossom.archive.domain.usecase.friend.FriendListRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsSearchPhoneUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsSearchUseCase
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +26,7 @@ import javax.inject.Inject
 class AddFriendViewModelImpl @Inject constructor(
     private val friendsSearchUseCase: FriendsSearchUseCase,
     private val friendsRequestUseCase: FriendsRequestUseCase,
+    private val friendListRequestUseCase: FriendListRequestUseCase,
     private val friendsSearchPhoneUseCase: FriendsSearchPhoneUseCase
 ) : BaseViewModel(), AddFriendViewModel {
 

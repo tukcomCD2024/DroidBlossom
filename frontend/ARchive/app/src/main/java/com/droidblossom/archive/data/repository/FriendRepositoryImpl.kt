@@ -5,6 +5,7 @@ import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageR
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.friend.request.FriendAcceptRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendReqRequestDto
+import com.droidblossom.archive.data.dto.friend.request.FriendsReqRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchRequestDto
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
@@ -27,6 +28,10 @@ class FriendRepositoryImpl @Inject constructor(
 ) : FriendRepository {
     override suspend fun postFriendsRequest(request: FriendReqRequestDto): RetrofitResult<FriendReqStatusResponse> {
         return apiHandler({ api.postFriendsRequestApi(request.friendId) }) { response: ResponseBody<FriendReqStatusResponseDto> -> response.result.toModel() }
+    }
+
+    override suspend fun postFriendsListRequest(request: FriendsReqRequestDto): RetrofitResult<String> {
+        return apiHandler({api.postFriendListRequestsPageApi(request)}) { response : ResponseBody<String> ->response.result.toModel()}
     }
 
     override suspend fun postFriendsAcceptRequest(request: FriendAcceptRequestDto): RetrofitResult<String> {
