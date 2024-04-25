@@ -1,10 +1,8 @@
 package com.droidblossom.archive.presentation.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,12 +23,17 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.clustering.ClusterMarkerInfo
+import com.naver.maps.map.clustering.Clusterer
+import com.naver.maps.map.clustering.DefaultClusterMarkerUpdater
+import com.naver.maps.map.clustering.DefaultLeafMarkerUpdater
+import com.naver.maps.map.clustering.LeafMarkerInfo
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ted.gun0912.clustering.naver.TedNaverClustering
 import kotlin.math.pow
 
 @AndroidEntryPoint
@@ -39,10 +42,46 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     override val viewModel: HomeViewModelImpl by viewModels<HomeViewModelImpl>()
 
-    private lateinit var naverMap: NaverMap
+    //private lateinit var naverMap: NaverMap
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
-    private lateinit var naverCluster: TedNaverClustering<MapCapsuleMarker>
+
+    // https://navermaps.github.io/android-map-sdk/guide-ko/5-8.html
+    private val clusterer: Clusterer<CapsuleClusteringKey> = Clusterer.Builder<CapsuleClusteringKey>()
+        .clusterMarkerUpdater(object : DefaultClusterMarkerUpdater(){
+            override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
+                super.updateClusterMarker(info, marker)
+                //marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker)
+                //marker.captionColor = Color.BLACK
+                marker.onClickListener = Overlay.OnClickListener{
+                    // 클러스터된 거 클릭이벤트 - 나중에 클러스터에 행당된 캡슐들 사이드에 보여주거나 하면 좋을듯?
+                    true
+                }
+            }
+        }).leafMarkerUpdater(object : DefaultLeafMarkerUpdater(){
+            override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
+                super.updateLeafMarker(info, marker)
+                val key = info.key as CapsuleClusteringKey
+                marker.icon = when(key.capsuleType){
+                    CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
+                    CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
+                    CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
+                }
+                marker.onClickListener = Overlay.OnClickListener {
+                    viewModel.homeEvent(
+                        HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
+                            key.id.toString(),
+                            key.capsuleType.toString()
+                        )
+                    )
+                    true
+                }
+            }
+        })
+        .minZoom(MINZOOM.toInt()+2)
+        .maxZoom(MAXZOOM.toInt()-2)
+        .build()
+
 
     private val zoomToRadiusMap: Map<Double, Double> by lazy {
         val map = mutableMapOf<Double, Double>()
@@ -123,36 +162,36 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.followLocation.collect {
-                    if (::naverMap.isInitialized) {
-                        if (it) {
-                            naverMap.maxZoom = FIXZOOM
-                            naverMap.minZoom = FIXZOOM
-                            naverMap.locationOverlay.circleRadius = 100
-                            naverMap.locationOverlay.circleOutlineWidth = 1
-                            naverMap.locationOverlay.circleColor =
+                viewModel.followLocation.collect { followLocation ->
+                    clusterer.map?.let { map ->
+                        if (followLocation) {
+                            map.maxZoom = FIXZOOM
+                            map.minZoom = FIXZOOM
+                            map.locationOverlay.circleRadius = 100
+                            map.locationOverlay.circleOutlineWidth = 1
+                            map.locationOverlay.circleColor =
                                 ContextCompat.getColor(requireContext(), R.color.main_1_alpha20)
-                            naverMap.locationOverlay.circleOutlineColor =
+                            map.locationOverlay.circleOutlineColor =
                                 ContextCompat.getColor(requireContext(), R.color.main_1)
-                            naverMap.locationTrackingMode = LocationTrackingMode.Follow
+                            map.locationTrackingMode = LocationTrackingMode.Follow
                         } else {
-                            naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
-                            naverMap.minZoom = MINZOOM
-                            naverMap.maxZoom = MAXZOOM
-                            naverMap.locationOverlay.circleRadius = 0
-
+                            map.locationTrackingMode = LocationTrackingMode.NoFollow
+                            map.minZoom = MINZOOM
+                            map.maxZoom = MAXZOOM
+                            map.locationOverlay.circleRadius = 0
                         }
                     }
-
                 }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect {
-                    if (::naverMap.isInitialized) {
-                        naverCluster.clearItems()
-                        naverCluster.addItems(getItems(it))
+                    clusterer.map?.let{ map ->
+                        // 마커 지우는 로직
+                        clusterer.clear()
+                        // 마커 찍는 로직
+                        addMarker(it)
                     }
                 }
             }
@@ -172,7 +211,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
 
     override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
+        this.clusterer.map = naverMap
         naverMap.uiSettings.isRotateGesturesEnabled = false
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
@@ -192,75 +231,32 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             isVisible = true
             icon = OverlayImage.fromResource(R.drawable.ic_my_location_24)
         }
-
-        naverCluster = TedNaverClustering.with<MapCapsuleMarker>(requireContext(), naverMap)
-            .markerClickListener { capsuleMarker ->
-                viewModel.homeEvent(
-                    HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
-                        capsuleMarker.capsuleAnchor.id.toString(),
-                        capsuleMarker.capsuleAnchor.capsuleType.toString()
-                    )
-                )
-
-            }.customMarker { capsuleMarker ->
-                Marker().apply {
-                    icon = when (capsuleMarker.capsuleAnchor.capsuleType) {
-                        CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
-                        CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
-                        CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
-                    }
-                }
-            }.customCluster { cluster ->
-                val clusterView = LayoutInflater.from(requireContext()).inflate(R.layout.item_marker_cluster, null)
-                val clusterSize = clusterView.findViewById<TextView>(R.id.capsuleNumTextView)
-
-                val displayText = when {
-                    cluster.items.size < 10 -> cluster.items.size.toString()
-                    cluster.items.size % 10 == 0 -> cluster.items.size.toString()
-                    else -> "${(cluster.items.size / 10) * 10}+"
-                }
-
-                clusterSize.text = displayText
-                clusterView
-            }
-            .make()
     }
 
+    private fun addMarker(capsuleList: List<CapsuleMarker>) {
 
-    private fun getItems(capsuleList: List<CapsuleMarker>): List<MapCapsuleMarker> {
-        val markers = ArrayList<MapCapsuleMarker>()
-        capsuleList.map { capsuleMarker ->
-            val temp = MapCapsuleMarker(capsuleMarker)
-            markers.add(temp)
+        val keyTagMap: Map<CapsuleClusteringKey, *> = capsuleList.associate {
+            CapsuleClusteringKey(id = it.id, capsuleType = it.capsuleType, position = LatLng(it.latitude, it.longitude)) to null
         }
-        return markers
+
+        clusterer.addAll(keyTagMap)
     }
 
-    private fun fetchCapsulesNearUser(){
-        if (::naverMap.isInitialized){
-            locationUtil.getCurrentLocation { latitude, longitude ->
-                viewModel.getNearbyCapsules(
-                    latitude,
-                    longitude,
-                    getRadiusForCurrentZoom(),
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
-            }
-        }else{
-            locationUtil.getCurrentLocation { latitude, longitude ->
-                viewModel.getNearbyCapsules(
-                    latitude,
-                    longitude,
-                    4.0,
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
-            }
+    private fun fetchCapsulesNearUser() {
+        locationUtil.getCurrentLocation { latitude, longitude ->
+            val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else 4.0
+            viewModel.getNearbyCapsules(
+                latitude,
+                longitude,
+                radius,
+                viewModel.filterCapsuleSelect.value.toString()
+            )
         }
     }
 
-    private fun fetchCapsulesInCameraFocus(){
-        if (::naverMap.isInitialized){
-            val cameraTarget = naverMap.cameraPosition.target
+    private fun fetchCapsulesInCameraFocus() {
+        clusterer.map?.let { map ->
+            val cameraTarget = map.cameraPosition.target
             viewModel.getNearbyCapsules(
                 cameraTarget.latitude,
                 cameraTarget.longitude,
@@ -272,8 +268,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
 
     private fun getRadiusForCurrentZoom(): Double {
-        val currentZoom = naverMap.cameraPosition.zoom
-        val closestZoomLevel = zoomToRadiusMap.keys.minByOrNull { Math.abs(it - currentZoom) }
+        val currentZoom = clusterer.map?.cameraPosition?.zoom ?: return FIXZOOM
+
+        val closestZoomLevel = zoomToRadiusMap.keys.minByOrNull { kotlin.math.abs(it - currentZoom) }
+
         return zoomToRadiusMap[closestZoomLevel] ?: throw IllegalArgumentException("Invalid zoom level: $currentZoom")
     }
 
@@ -288,7 +286,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             )
         ) {
             if (!locationSource.isActivated) { // 권한 거부됨
-                naverMap.locationTrackingMode = LocationTrackingMode.None
+                clusterer.map?.locationTrackingMode = LocationTrackingMode.None
             }
             return
         }

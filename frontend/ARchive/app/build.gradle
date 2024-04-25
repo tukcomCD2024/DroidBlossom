@@ -142,7 +142,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
     //네이버 지도 : https://navermaps.github.io/android-map-sdk/guide-ko/1.html
-    implementation 'com.naver.maps:map-sdk:3.17.0'
+    implementation 'com.naver.maps:map-sdk:3.18.0'
 
     // Jetpack Security
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha06'
@@ -182,10 +182,6 @@ dependencies {
 
     // oss-licenses : https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
-
-    // TedNaverMapClustering: https://github.com/ParkSangGwon/TedNaverMapClustering
-    //implementation 'io.github.ParkSangGwon:tedclustering-naver:x.y.z'
-    implementation 'io.github.ParkSangGwon:tedclustering-naver:1.0.2'
 
     // Swiperefreshlayout: https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=ko#kts
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
