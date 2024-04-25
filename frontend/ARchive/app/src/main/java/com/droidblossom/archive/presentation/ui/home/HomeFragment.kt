@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
+import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.pow
@@ -47,12 +49,14 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private lateinit var locationSource: FusedLocationSource
 
     // https://navermaps.github.io/android-map-sdk/guide-ko/5-8.html
-    private val clusterer: Clusterer<CapsuleClusteringKey> = Clusterer.Builder<CapsuleClusteringKey>()
-        .clusterMarkerUpdater(object : DefaultClusterMarkerUpdater(){
+    private val clusterer: Clusterer<CapsuleClusteringKey> =
+        Clusterer.Builder<CapsuleClusteringKey>().clusterMarkerUpdater(object : DefaultClusterMarkerUpdater(){
             override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                 super.updateClusterMarker(info, marker)
-                //marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker)
-                //marker.captionColor = Color.BLACK
+                marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker_46)
+                marker.captionColor = Color.BLACK
+                marker.captionHaloColor = ContextCompat.getColor(requireContext(), R.color.main_bg_1)
+                marker.captionTextSize = 20f
                 marker.onClickListener = Overlay.OnClickListener{
                     // 클러스터된 거 클릭이벤트 - 나중에 클러스터에 행당된 캡슐들 사이드에 보여주거나 하면 좋을듯?
                     true
@@ -85,12 +89,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     private val zoomToRadiusMap: Map<Double, Double> by lazy {
         val map = mutableMapOf<Double, Double>()
-        val maxRadius = 1100.0
-        val minRadius = 2.0
 
         for (zoomLevel in MINZOOM.toInt()..MAXZOOM.toInt()) {
             val normalizedZoom = 1 - ((zoomLevel - MINZOOM) / (MAXZOOM - MINZOOM))
-            val radius = minRadius + (maxRadius - minRadius) * normalizedZoom.pow(3)
+            val radius = MINRADIUS + (MAXRADIUS - MINRADIUS) * normalizedZoom.pow(3)
             map[zoomLevel.toDouble()] = radius
         }
         map.toMap()
@@ -187,7 +189,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect {
-                    clusterer.map?.let{ map ->
+                    clusterer.map?.let{ _ ->
                         // 마커 지우는 로직
                         clusterer.clear()
                         // 마커 찍는 로직
@@ -244,7 +246,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     private fun fetchCapsulesNearUser() {
         locationUtil.getCurrentLocation { latitude, longitude ->
-            val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else 4.0
+            val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else DEFATULTRADIUS
             viewModel.getNearbyCapsules(
                 latitude,
                 longitude,
@@ -324,6 +326,9 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         const val MAXLAT = 43.0
         const val MINLNG = 124.0
         const val MAXLNG = 132.0
+        const val DEFATULTRADIUS = 4.0
+        const val MAXRADIUS = 1100.0
+        const val MINRADIUS = 2.0
     }
 
 }

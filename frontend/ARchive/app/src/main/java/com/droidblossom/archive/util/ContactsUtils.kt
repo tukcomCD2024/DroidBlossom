@@ -4,11 +4,12 @@ import android.content.ContentResolver
 import android.content.Context
 import android.provider.ContactsContract
 import android.util.Log
+import com.droidblossom.archive.data.dto.friend.request.PhoneBooks
 
 
 object ContactsUtils {
 
-    fun getContacts(context : Context) : List<String> {
+    fun getContacts(context : Context) : List<PhoneBooks> {
         val resolver: ContentResolver = context.contentResolver
         val phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val projection = arrayOf(
@@ -16,7 +17,7 @@ object ContactsUtils {
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.NUMBER
         )
-        val numberList = mutableListOf<String>()
+        val numberList = mutableListOf<PhoneBooks>()
         val cursor = resolver.query(phoneUri, projection, null, null, null)
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -25,7 +26,7 @@ object ContactsUtils {
                 val name = cursor.getString(nameIndex)
                 var number = cursor.getString(numberIndex)
                 number = number.replace("-", "")
-                numberList.add(number)
+                numberList.add(PhoneBooks(number,name))
                 Log.d("GetContact", "이름 : $name 번호 : $number")
             }
         }

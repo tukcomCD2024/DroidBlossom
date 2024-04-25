@@ -1,7 +1,9 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
+import android.text.TextUtils.substring
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.R
+import com.droidblossom.archive.data.dto.friend.request.PhoneBooks
 import com.droidblossom.archive.domain.model.friend.FriendReqRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchRequest
@@ -133,11 +135,11 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-    fun contactsSearch(phones: List<String>) {
+    fun contactsSearch(phoneBooks: List<PhoneBooks>) {
         viewModelScope.launch {
             _addEvent.emit(AddFriendViewModel.AddEvent.OpenLoading)
-            friendsSearchPhoneUseCase(FriendsSearchPhoneRequest(phones.filter {
-                it.length == 11 && it.substring(0, 3) == "010"
+            friendsSearchPhoneUseCase(FriendsSearchPhoneRequest(phoneBooks.filter {
+                it.originPhone.length == 11 && it.originPhone.substring(0, 3) == "010"
             })).collect { result ->
                 result.onSuccess { response ->
                     _addFriendList.emit(response.friends)
