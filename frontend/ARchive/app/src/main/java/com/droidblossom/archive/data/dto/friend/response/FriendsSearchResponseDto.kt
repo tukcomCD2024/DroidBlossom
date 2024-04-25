@@ -6,6 +6,7 @@ import java.io.Serializable
 data class FriendsSearchResponseDto(
     val id: Long,
     val profileUrl: String,
+    val originName : String?,
     val nickname: String,
     val isFriend: Boolean,
     val isFriendRequest :Boolean,
@@ -17,7 +18,7 @@ data class FriendsSearchResponseDto(
         nickname = this.nickname,
         isFriend = this.isFriend,
         isFriendRequest = this.isFriendRequest,
-        name = "",
+        name = this.originName ?: "",
         isChecked = false
     )
 }

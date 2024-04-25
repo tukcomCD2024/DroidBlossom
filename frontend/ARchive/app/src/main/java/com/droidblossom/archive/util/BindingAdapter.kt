@@ -214,7 +214,7 @@ fun TextView.addFriendText(isFriend: Boolean, isRequest : Boolean, name : String
         if (isFriend){
             this.text = "이미 친구입니다."
         } else {
-            this.text = "요천을 보냈습니다."
+            this.text = "요청을 보냈습니다."
         }
     }else {
         this.text = name
