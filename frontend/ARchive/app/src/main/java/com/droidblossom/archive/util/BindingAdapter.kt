@@ -98,6 +98,11 @@ fun TextView.displayRemainingTime(totalSeconds: Int) {
     this.text = String.format("%02d분 %02d초", minutes, seconds)
 }
 
+@BindingAdapter("bind:culcLastDay")
+fun TextView.culcLastDays(date : String){
+    this.text = DateUtils.calcLastDate(date)
+}
+
 @BindingAdapter("bind:animateFAB")
 fun CardView.animateFAB(y : Float){
     ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
