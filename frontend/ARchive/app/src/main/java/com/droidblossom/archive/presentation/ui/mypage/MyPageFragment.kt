@@ -21,6 +21,7 @@ import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialog
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleTypeSpinner
 import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -104,6 +105,17 @@ class MyPageFragment :
                 copyText("userTag", viewModel.myInfo.value.tag)
                 true
             }
+        }
+
+        binding.groupLayout.setOnClickListener {
+            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
+        }
+        binding.friendLayout.setOnClickListener {
+            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
+        }
+
+        binding.requestLayout.setOnClickListener {
+            startActivity(FriendAcceptActivity.newIntent(requireContext(), FriendAcceptActivity.FRIEND))
         }
     }
 

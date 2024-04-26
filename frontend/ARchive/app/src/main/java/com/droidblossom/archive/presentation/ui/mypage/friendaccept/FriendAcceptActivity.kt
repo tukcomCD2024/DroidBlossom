@@ -30,7 +30,7 @@ class FriendAcceptActivity :
         viewModel.getFriendAcceptList()
     }
 
-    private fun initView(){
+    private fun initView() {
         val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
@@ -77,7 +77,7 @@ class FriendAcceptActivity :
         const val GROUP = "group"
         const val FRIENDACCEPT = "friend_accept"
 
-        fun newIntent(context: Context, type : String) =
+        fun newIntent(context: Context, type: String) =
             Intent(context, FriendAcceptActivity::class.java).apply {
                 putExtra(FRIENDACCEPT, type)
             }
