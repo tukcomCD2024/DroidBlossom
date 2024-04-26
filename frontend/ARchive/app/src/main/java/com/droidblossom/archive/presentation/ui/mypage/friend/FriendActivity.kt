@@ -89,6 +89,7 @@ class FriendActivity :
             }
         }
     }
+
     override fun observeData() {
 
     }

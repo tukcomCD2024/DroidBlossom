@@ -50,13 +50,13 @@ class FriendAcceptActivity :
         }.attach()
 
 
-        intent.getStringExtra(FriendActivity.TYPE_KEY)?.let { type ->
+        intent.getStringExtra(FRIENDACCEPT)?.let { type ->
             when (type) {
-                FriendActivity.GROUP -> {
+                GROUP -> {
                     binding.tab.getTabAt(0)?.select()
                 }
 
-                FriendActivity.FRIEND -> {
+                FRIEND -> {
                     binding.tab.getTabAt(1)?.select()
                 }
 

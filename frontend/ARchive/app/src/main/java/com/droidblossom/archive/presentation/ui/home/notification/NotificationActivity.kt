@@ -47,10 +47,10 @@ class NotificationActivity :
                 }
 
                 NotiCategoryName.GROUP_ACCEPT -> {
-                    startActivity(FriendActivity.newIntent(this,FriendActivity.GROUP))
+                    startActivity(FriendActivity.newIntent(this, FriendActivity.GROUP))
                 }
 
-                else ->{}
+                else -> {}
             }
         }
     }

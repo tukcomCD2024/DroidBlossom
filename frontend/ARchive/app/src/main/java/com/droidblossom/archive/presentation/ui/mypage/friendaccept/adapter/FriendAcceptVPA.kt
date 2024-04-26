@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.FriendAcceptFragment
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.GroupAcceptFragment
 
-class FriendAcceptVPA(activity: FragmentActivity) : FragmentStateAdapter(activity){
+class FriendAcceptVPA(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
     private val fragmentList = listOf(
         GroupAcceptFragment(),

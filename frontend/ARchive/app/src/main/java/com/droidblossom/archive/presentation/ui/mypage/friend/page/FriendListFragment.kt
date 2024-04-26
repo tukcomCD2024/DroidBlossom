@@ -68,8 +68,8 @@ class FriendListFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendEvent.collect{ event ->
-                    when(event){
+                viewModel.friendEvent.collect { event ->
+                    when (event) {
                         is FriendViewModel.FriendEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
