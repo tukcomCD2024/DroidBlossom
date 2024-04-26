@@ -55,7 +55,8 @@ class MyPageFragment :
     }
 
     private val spinnerAdapter by lazy {
-        val capsuleTypeList = arrayOf(SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP)
+        val capsuleTypeList =
+            arrayOf(SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP)
         CapsuleTypeSpinner(requireContext(), capsuleTypeList)
     }
 

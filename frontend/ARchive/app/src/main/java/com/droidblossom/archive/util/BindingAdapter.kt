@@ -98,7 +98,7 @@ fun TextView.displayRemainingTime(totalSeconds: Int) {
     this.text = String.format("%02d분 %02d초", minutes, seconds)
 }
 
-@BindingAdapter("bind:culcLastDay")
+@BindingAdapter("bind:culcLastDays")
 fun TextView.culcLastDays(date : String){
     this.text = DateUtils.calcLastDate(date)
 }

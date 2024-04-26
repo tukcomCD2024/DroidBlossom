@@ -1,5 +1,6 @@
 package com.droidblossom.archive.util
 
+import android.annotation.SuppressLint
 import android.util.Log
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -149,12 +150,14 @@ object DateUtils {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println( calcLastDate("2024-01-22T11:36:57.593Z"))
+
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun calcLastDate(date: String): String {
-        val currentDate = Date(System.currentTimeMillis())
-        val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse(date)
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val date = format.parse(date)
+        val currentDate = format.parse(dataServerString)
 
         val difference = currentDate.time - date.time
         val daysDifference = difference / (24 * 60 * 60 * 1000)

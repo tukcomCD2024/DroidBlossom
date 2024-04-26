@@ -10,8 +10,8 @@ import com.droidblossom.archive.domain.model.friend.Friend
 
 
 class FriendAcceptRVA(
-    private val onDeny : (Friend) -> Unit,
-    private val onAccept : (Friend) -> Unit
+    private val onDeny: (Friend) -> Unit,
+    private val onAccept: (Friend) -> Unit
 ) :
     ListAdapter<Friend, FriendAcceptRVA.ItemViewHolder>(differ) {
 

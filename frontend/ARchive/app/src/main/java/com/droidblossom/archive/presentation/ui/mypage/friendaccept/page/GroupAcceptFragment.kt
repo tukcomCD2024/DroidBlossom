@@ -32,8 +32,8 @@ class GroupAcceptFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendAcceptEvent.collect{ event ->
-                    when(event){
+                viewModel.friendAcceptEvent.collect { event ->
+                    when (event) {
                         is FriendViewModel.FriendEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
