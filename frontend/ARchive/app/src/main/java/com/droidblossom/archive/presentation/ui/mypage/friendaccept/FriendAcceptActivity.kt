@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendVPA
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptVPA
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,9 +18,9 @@ class FriendAcceptActivity :
     BaseActivity<FriendAcceptViewModelImpl, ActivityFriendAcceptBinding>(R.layout.activity_friend_accept) {
     override val viewModel: FriendAcceptViewModelImpl by viewModels<FriendAcceptViewModelImpl>()
 
-//    private val friendVPA by lazy {
-//        FriendVPA(this)
-//    }
+    private val friendAcceptVPA by lazy {
+        FriendAcceptVPA(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,19 +33,19 @@ class FriendAcceptActivity :
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
 
-//        binding.vp.adapter = friendVPA
+        binding.vp.adapter = friendAcceptVPA
 
         binding.closeBtn.setOnClickListener {
             finish()
         }
 
-//        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
-//            tab.text = when (position) {
-//                0 -> getString(R.string.groupAccept)
-//                1 -> getString(R.string.friendAccept)
-//                else -> null
-//            }
-//        }.attach()
+        TabLayoutMediator(binding.tab, binding.vp) { tab, position ->
+            tab.text = when (position) {
+                0 -> getString(R.string.groupAccept)
+                1 -> getString(R.string.friendAccept)
+                else -> null
+            }
+        }.attach()
     }
 
     override fun observeData() {
@@ -53,9 +53,13 @@ class FriendAcceptActivity :
     }
 
     companion object {
+        const val FRIEND = "friend"
+        const val GROUP = "group"
         const val FRIENDACCEPT = "friend_accept"
 
-        fun newIntent(context: Context) =
-            Intent(context, FriendAcceptActivity::class.java)
+        fun newIntent(context: Context, type : String) =
+            Intent(context, FriendAcceptActivity::class.java).apply {
+                putExtra(FRIENDACCEPT, type)
+            }
     }
 }

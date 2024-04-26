@@ -34,9 +34,12 @@ class NotificationActivity :
 
                 }
 
-                NotiCategoryName.FRIEND_REQUEST,
+                NotiCategoryName.FRIEND_REQUEST -> {
+                    startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.FRIEND))
+                }
+
                 NotiCategoryName.GROUP_REQUEST -> {
-                    startActivity(FriendAcceptActivity.newIntent(this))
+                    startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.GROUP))
                 }
 
                 NotiCategoryName.FRIEND_ACCEPT -> {
