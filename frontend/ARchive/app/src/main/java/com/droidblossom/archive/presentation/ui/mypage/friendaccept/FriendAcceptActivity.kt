@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptVPA
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,7 @@ class FriendAcceptActivity :
         super.onCreate(savedInstanceState)
         initView()
 
+        viewModel.getFriendAcceptList()
     }
 
     private fun initView(){
@@ -46,6 +48,24 @@ class FriendAcceptActivity :
                 else -> null
             }
         }.attach()
+
+
+        intent.getStringExtra(FriendActivity.TYPE_KEY)?.let { type ->
+            when (type) {
+                FriendActivity.GROUP -> {
+                    binding.tab.getTabAt(0)?.select()
+                }
+
+                FriendActivity.FRIEND -> {
+                    binding.tab.getTabAt(1)?.select()
+                }
+
+                else -> {
+                    binding.tab.getTabAt(0)?.select()
+                }
+
+            }
+        }
     }
 
     override fun observeData() {
