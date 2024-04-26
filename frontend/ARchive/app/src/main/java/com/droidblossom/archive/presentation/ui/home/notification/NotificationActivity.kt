@@ -15,6 +15,8 @@ import com.droidblossom.archive.databinding.ActivityNotificationBinding
 import com.droidblossom.archive.domain.model.member.NotiCategoryName
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.home.notification.adapter.NotificationRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.FRIEND
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -37,9 +39,12 @@ class NotificationActivity :
                     startActivity(FriendAcceptActivity.newIntent(this))
                 }
 
-                NotiCategoryName.FRIEND_ACCEPT,
-                NotiCategoryName.GROUP_ACCEPT -> {
+                NotiCategoryName.FRIEND_ACCEPT -> {
+                    startActivity(FriendActivity.newIntent(this, FriendActivity.FRIEND))
+                }
 
+                NotiCategoryName.GROUP_ACCEPT -> {
+                    startActivity(FriendActivity.newIntent(this,FriendActivity.GROUP))
                 }
 
                 else ->{}

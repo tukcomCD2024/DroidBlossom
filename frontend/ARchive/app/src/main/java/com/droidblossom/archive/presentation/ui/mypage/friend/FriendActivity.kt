@@ -13,6 +13,8 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFrien
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.KakaoSdk.type
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -32,7 +34,7 @@ class FriendActivity :
         viewModel.getFriendList()
     }
 
-    private fun initView(){
+    private fun initView() {
         val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
@@ -53,23 +55,40 @@ class FriendActivity :
 
         binding.tab.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position == 0){
+                if (tab.position == 0) {
                     binding.addT.text = "그룹 추가"
                     binding.addCV.setOnClickListener {
 
                     }
                 } else {
                     binding.addT.text = "친구 추가"
-                    binding.addCV.setOnClickListener{
+                    binding.addCV.setOnClickListener {
                         startActivity(AddFriendActivity.newIntent(this@FriendActivity))
                     }
                 }
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-    }
 
+        intent.getStringExtra(TYPE_KEY)?.let { type ->
+            when (type) {
+                GROUP -> {
+                    binding.tab.getTabAt(0)?.select()
+                }
+
+                FRIEND -> {
+                    binding.tab.getTabAt(1)?.select()
+                }
+
+                else -> {
+                    binding.tab.getTabAt(0)?.select()
+                }
+
+            }
+        }
+    }
     override fun observeData() {
 
     }
