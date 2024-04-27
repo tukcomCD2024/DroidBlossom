@@ -34,6 +34,9 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:9.5.1'
     implementation 'org.flywaydb:flyway-mysql:9.5.1'
 
+    //RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
