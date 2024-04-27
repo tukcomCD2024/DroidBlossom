@@ -56,7 +56,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker_46)
                 marker.captionColor = Color.BLACK
                 marker.captionHaloColor = ContextCompat.getColor(requireContext(), R.color.main_bg_1)
-                marker.captionTextSize = 20f
+                marker.captionTextSize = if (info.size >= 100)  15f else 18f
                 marker.onClickListener = Overlay.OnClickListener{
                     // 클러스터된 거 클릭이벤트 - 나중에 클러스터에 행당된 캡슐들 사이드에 보여주거나 하면 좋을듯?
                     true
