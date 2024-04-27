@@ -2,9 +2,9 @@ package site.timecapsulearchive.core.domain.capsuleskin.service;
 
 
 import java.time.ZonedDateTime;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -24,6 +24,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.queue.manager.CapsuleSkinMessageManager;
 
 @Service
+@RequiredArgsConstructor
 public class CapsuleSkinService {
 
     private final CapsuleSkinRepository capsuleSkinRepository;

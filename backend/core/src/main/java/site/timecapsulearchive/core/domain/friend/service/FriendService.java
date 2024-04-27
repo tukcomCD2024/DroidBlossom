@@ -66,7 +66,7 @@ public class FriendService {
             }
         });
 
-        notificationManager.sendFriendReqMessage(friendId, owner.getNickname());
+        socialNotificationManager.sendFriendReqMessage(owner.getNickname(), friendId);
 
         return FriendReqStatusResponse.success();
     }
@@ -95,7 +95,7 @@ public class FriendService {
             }
         });
 
-        notificationManager.sendFriendAcceptMessage(friendId, ownerNickname[0]);
+        socialNotificationManager.sendFriendAcceptMessage(ownerNickname[0], friendId);
     }
 
     @Transactional

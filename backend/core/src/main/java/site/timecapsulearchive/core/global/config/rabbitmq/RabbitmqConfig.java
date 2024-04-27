@@ -1,7 +1,6 @@
 package site.timecapsulearchive.core.global.config.rabbitmq;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@Slf4j
 @RequiredArgsConstructor
 public class RabbitmqConfig {
 
@@ -26,15 +24,12 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue capsuleSkinQueue() {
-        return QueueBuilder.durable(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getValue())
-            .deadLetterExchange(RabbitmqComponentConstants.CAPSULE_SKIN_DELAY_EXCHANGE.getValue())
-            .ttl(5000)
-            .build();
+        return new Queue(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getSuccessComponent(), true);
     }
 
     @Bean
     public DirectExchange capsuleSkinExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getValue());
+        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getSuccessComponent());
     }
 
     @Bean
@@ -47,12 +42,12 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue groupInviteQueue() {
-        return new Queue(RabbitmqComponentConstants.GROUP_INVITE_QUEUE_NAME.getValue(), true);
+        return new Queue(RabbitmqComponentConstants.GROUP_INVITE_QUEUE.getSuccessComponent(), true);
     }
 
     @Bean
     public DirectExchange groupInviteExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE_NAME.getValue());
+        return new DirectExchange(RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent());
     }
 
     @Bean
@@ -65,21 +60,41 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue friendRequestQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getValue(),
+        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
             true);
     }
 
     @Bean
     public DirectExchange friendRequestExchange() {
         return new DirectExchange(
-            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getValue());
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getSuccessComponent());
     }
 
     @Bean
-    public Binding friendRequestQueueAndExchangeBinding() {
+    public Binding friendRequestBinding() {
         return BindingBuilder
             .bind(friendRequestQueue())
             .to(friendRequestExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue friendAcceptQueue() {
+        return new Queue(RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
+            true);
+    }
+
+    @Bean
+    public DirectExchange friendAcceptExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_EXCHANGE.getSuccessComponent());
+    }
+
+    @Bean
+    public Binding friendAcceptBinding() {
+        return BindingBuilder
+            .bind(friendAcceptQueue())
+            .to(friendAcceptExchange())
             .withQueueName();
     }
 
