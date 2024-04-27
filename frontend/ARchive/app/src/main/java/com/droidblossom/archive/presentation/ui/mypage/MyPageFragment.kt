@@ -115,6 +115,7 @@ class MyPageFragment :
         }
 
         binding.requestLayout.setOnClickListener {
+            viewModel.reloadMyInfo = true
             startActivity(FriendAcceptActivity.newIntent(requireContext(), FriendAcceptActivity.FRIEND))
         }
     }
@@ -206,6 +207,13 @@ class MyPageFragment :
             }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.reloadMyInfo){
+            viewModel.getMe()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

@@ -13,6 +13,7 @@ interface MyPageViewModel {
     val myCapsulesUI : StateFlow<List<MyCapsule>>
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
+    var reloadMyInfo:Boolean
 
     fun getMe()
     fun getSecretCapsulePage()

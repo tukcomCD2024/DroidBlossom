@@ -54,6 +54,7 @@ class MyPageViewModelImpl @Inject constructor(
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
 
+    override var reloadMyInfo = false
 
     init {
         load()
@@ -70,6 +71,7 @@ class MyPageViewModelImpl @Inject constructor(
             memberUseCase().collect { result ->
                 result.onSuccess {
                     _myInfo.emit(it)
+                    reloadMyInfo = false
                 }.onFail {
                     _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                 }
