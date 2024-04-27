@@ -5,22 +5,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
-import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler.DefaultExceptionStrategy;
-import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ErrorHandler;
 
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
 public class RabbitmqConfig {
+
+    private static final int MAX_RETRY_COUNT = 3;
+    private static final String RETRY_HEADER = "x-retry-count";
 
     private final RabbitmqProperties rabbitmqProperties;
 
@@ -84,15 +84,35 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate() {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+    public RabbitTemplate publisherConfirmsRabbitTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(publisherConfirmsConnectionFactory());
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
-        rabbitTemplate.setReplyErrorHandler(errorHandler());
+        rabbitTemplate.setReturnsCallback(returned -> {
+            Message message = returned.getMessage();
+
+            Integer retryCount = message.getMessageProperties()
+                .getHeader(RETRY_HEADER);
+
+            if (retryCount == null) {
+                retryCount = 0;
+            } else if (retryCount > MAX_RETRY_COUNT) {
+                final String routingKey = returned.getRoutingKey();
+
+                final String failRoutingKey = RabbitmqComponentConstants.getFailComponent(routingKey);
+                final String failExchange = RabbitmqComponentConstants.getFailComponent(routingKey);
+
+                rabbitTemplate.send(failExchange, failRoutingKey, message);
+                return;
+            }
+
+            message.getMessageProperties().setHeader(RETRY_HEADER, retryCount + 1);
+            rabbitTemplate.send(message);
+        });
         return rabbitTemplate;
     }
 
     @Bean
-    public CachingConnectionFactory connectionFactory() {
+    public CachingConnectionFactory publisherConfirmsConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
 
         connectionFactory.setHost(rabbitmqProperties.host());
@@ -100,31 +120,21 @@ public class RabbitmqConfig {
         connectionFactory.setUsername(rabbitmqProperties.userName());
         connectionFactory.setPassword(rabbitmqProperties.password());
         connectionFactory.setVirtualHost(rabbitmqProperties.virtualHost());
+        connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
+        connectionFactory.setPublisherReturns(true);
 
         return connectionFactory;
     }
 
     @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+    public RabbitTemplate basicRabbitTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(publisherConfirmsConnectionFactory());
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return rabbitTemplate;
     }
 
     @Bean
-    public ErrorHandler errorHandler() {
-        return new ConditionalRejectingErrorHandler(new MyFatalExceptionStrategy());
-    }
-
-    public static class MyFatalExceptionStrategy extends DefaultExceptionStrategy {
-
-        @Override
-        public boolean isFatal(Throwable throwable) {
-            if (throwable instanceof ListenerExecutionFailedException exception) {
-                logger.error("Failed to process inbound message from queue "
-                    + exception.getFailedMessage().getMessageProperties().getConsumerQueue()
-                    + "; failed message: " + exception.getFailedMessage(), throwable);
-            }
-            return super.isFatal(throwable);
-        }
-
+    public Jackson2JsonMessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 }

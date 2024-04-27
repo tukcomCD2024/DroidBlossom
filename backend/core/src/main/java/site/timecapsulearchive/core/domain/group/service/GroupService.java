@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepositor
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
 public class GroupService {

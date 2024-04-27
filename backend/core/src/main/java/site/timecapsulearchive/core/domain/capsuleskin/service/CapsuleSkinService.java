@@ -21,7 +21,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
+import site.timecapsulearchive.core.infra.queue.manager.CapsuleSkinMessageManager;
 
 @Service
 public class CapsuleSkinService {
@@ -30,28 +30,8 @@ public class CapsuleSkinService {
     private final CapsuleSkinQueryRepository capsuleSkinQueryRepository;
     private final CapsuleSkinMessageManager capsuleSkinMessageManager;
     private final MemberRepository memberRepository;
-    private final NotificationManager notificationManager;
     private final CapsuleSkinMapper capsuleSkinMapper;
     private final TransactionTemplate transactionTemplate;
-
-    public CapsuleSkinService(
-        CapsuleSkinRepository capsuleSkinRepository,
-        CapsuleSkinQueryRepository capsuleSkinQueryRepository,
-        CapsuleSkinMessageManager capsuleSkinMessageManager,
-        MemberRepository memberRepository,
-        NotificationManager notificationManager,
-        CapsuleSkinMapper capsuleSkinMapper,
-        PlatformTransactionManager transactionManager
-    ) {
-        this.capsuleSkinRepository = capsuleSkinRepository;
-        this.capsuleSkinQueryRepository = capsuleSkinQueryRepository;
-        this.capsuleSkinMessageManager = capsuleSkinMessageManager;
-        this.memberRepository = memberRepository;
-        this.notificationManager = notificationManager;
-        this.capsuleSkinMapper = capsuleSkinMapper;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.transactionTemplate.setTimeout(7);
-    }
 
     @Transactional(readOnly = true)
     public CapsuleSkinsSliceResponse findCapsuleSkinSliceByCreatedAtAndMemberId(
@@ -84,8 +64,6 @@ public class CapsuleSkinService {
                     capsuleSkinRepository.save(capsuleSkin);
                 }
             });
-
-            notificationManager.sendCreatedSkinMessage(memberId, dto);
             return CapsuleSkinStatusResponse.success();
         }
 

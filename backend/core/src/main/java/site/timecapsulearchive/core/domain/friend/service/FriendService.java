@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.friend.service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,9 +31,10 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
-import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
+import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
+@RequiredArgsConstructor
 public class FriendService {
 
     private final MemberFriendRepository memberFriendRepository;
@@ -42,30 +44,8 @@ public class FriendService {
     private final FriendInviteRepository friendInviteRepository;
     private final FriendInviteQueryRepository friendInviteQueryRepository;
     private final FriendMapper friendMapper;
-    private final NotificationManager notificationManager;
+    private final SocialNotificationManager socialNotificationManager;
     private final TransactionTemplate transactionTemplate;
-
-    public FriendService(
-        MemberFriendRepository memberFriendRepository,
-        MemberFriendQueryRepository memberFriendQueryRepository,
-        MemberFriendMapper memberFriendMapper, MemberRepository memberRepository,
-        FriendInviteRepository friendInviteRepository,
-        FriendInviteQueryRepository friendInviteQueryRepository,
-        FriendMapper friendMapper,
-        NotificationManager notificationManager,
-        PlatformTransactionManager transactionManager
-    ) {
-        this.memberFriendRepository = memberFriendRepository;
-        this.memberFriendQueryRepository = memberFriendQueryRepository;
-        this.memberFriendMapper = memberFriendMapper;
-        this.memberRepository = memberRepository;
-        this.friendInviteRepository = friendInviteRepository;
-        this.friendInviteQueryRepository = friendInviteQueryRepository;
-        this.friendMapper = friendMapper;
-        this.notificationManager = notificationManager;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.transactionTemplate.setTimeout(7);
-    }
 
     public FriendReqStatusResponse requestFriend(final Long memberId, final Long friendId) {
         if (memberId.equals(friendId)) {
