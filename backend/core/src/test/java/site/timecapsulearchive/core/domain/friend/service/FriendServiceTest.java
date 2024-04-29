@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
-import site.timecapsulearchive.core.domain.friend.data.mapper.MemberFriendMapper;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
@@ -26,8 +24,6 @@ import site.timecapsulearchive.core.infra.notification.manager.NotificationManag
 
 class FriendServiceTest {
 
-    private final MemberFriendMapper memberFriendMapper = new MemberFriendMapper(mock(
-        AESEncryptionManager.class));
     private final MemberFriendQueryRepository memberFriendQueryRepository = mock(
         MemberFriendQueryRepository.class);
     private final MemberFriendRepository memberFriendRepository = mock(
@@ -37,18 +33,15 @@ class FriendServiceTest {
         FriendInviteRepository.class);
     private final FriendInviteQueryRepository friendInviteQueryRepository = mock(
         FriendInviteQueryRepository.class);
-    private final FriendMapper friendMapper = mock(FriendMapper.class);
     private final NotificationManager notificationManager = mock(NotificationManager.class);
     private final TransactionTemplate transactionTemplate = mock(TransactionTemplate.class);
 
     private final FriendService friendService = new FriendService(
         memberFriendRepository,
         memberFriendQueryRepository,
-        memberFriendMapper,
         memberRepository,
         friendInviteRepository,
         friendInviteQueryRepository,
-        friendMapper,
         notificationManager,
         transactionTemplate
     );
