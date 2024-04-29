@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitFailedComponentConfig {
+
     @Bean
     public Queue capsuleSkinFailQueue() {
         return new Queue(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getFailComponent(), true);
@@ -16,7 +17,8 @@ public class RabbitFailedComponentConfig {
 
     @Bean
     public DirectExchange capsuleSkinFailExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getFailComponent());
+        return new DirectExchange(
+            RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getFailComponent());
     }
 
     @Bean
@@ -34,7 +36,8 @@ public class RabbitFailedComponentConfig {
 
     @Bean
     public DirectExchange groupInviteFailExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getFailComponent());
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getFailComponent());
     }
 
     @Bean
@@ -47,7 +50,8 @@ public class RabbitFailedComponentConfig {
 
     @Bean
     public Queue friendRequestFailQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getFailComponent(),
+        return new Queue(
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getFailComponent(),
             true);
     }
 
@@ -67,7 +71,8 @@ public class RabbitFailedComponentConfig {
 
     @Bean
     public Queue friendAcceptFailQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getFailComponent(),
+        return new Queue(
+            RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getFailComponent(),
             true);
     }
 

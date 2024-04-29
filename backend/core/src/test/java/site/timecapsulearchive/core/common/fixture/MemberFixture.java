@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.common.fixture;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -49,4 +50,21 @@ public class MemberFixture {
         return hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8));
     }
 
+    public static List<Member> members(int start, int count) {
+        List<Member> result = new ArrayList<>();
+        for (int index = start; index < start + count; index++) {
+            result.add(member(index));
+        }
+
+        return result;
+    }
+
+    public static List<byte[]> getPhoneBytesList(int start, int count) {
+        List<byte[]> result = new ArrayList<>();
+        for (int index = start; index < start + count; index++) {
+            result.add(getPhoneBytes(index));
+        }
+
+        return result;
+    }
 }

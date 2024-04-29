@@ -8,15 +8,14 @@ public enum NotificationRequestMessage {
     FRIEND_ACCEPT(NotificationStatus.SUCCESS, "친구 수락 알림", "님이 친구 요청을 수락하였습니다. ARchive에서 확인해보세요!");
 
 
+    private final NotificationStatus status;
+    private final String title;
+    private final String text;
     NotificationRequestMessage(NotificationStatus status, String title, String text) {
         this.status = status;
         this.title = title;
         this.text = text;
     }
-
-    private final NotificationStatus status;
-    private final String title;
-    private final String text;
 
     public NotificationStatus getStatus() {
         return status;

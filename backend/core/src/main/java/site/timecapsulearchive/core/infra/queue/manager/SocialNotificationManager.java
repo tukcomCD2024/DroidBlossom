@@ -22,7 +22,7 @@ public class SocialNotificationManager {
      * 예를 들면, 친구 검색을 한 후 친구 추가 요청을 보낼 때 사용된다.
      *
      * @param ownerNickname 친구 요청 보내는 사람 닉네임
-     * @param friendId 친구 요청 대상 아이디
+     * @param friendId      친구 요청 대상 아이디
      */
     public void sendFriendReqMessage(final String ownerNickname, final Long friendId) {
         basicRabbitTemplate.convertAndSend(
@@ -46,8 +46,8 @@ public class SocialNotificationManager {
      * 예를 들면, 전화번호부에서 친구 요청 목록을 받아서 친구 추가 요청을 보낼 때 사용된다.
      *
      * @param ownerNickname 친구 요청 보내는 사람 닉네임
-     * @param profileUrl 친구 요청 보내는 사람 프로필
-     * @param targetIds 친구 요청 대상 아이디들
+     * @param profileUrl    친구 요청 보내는 사람 프로필
+     * @param targetIds     친구 요청 대상 아이디들
      */
     public void sendFriendRequestMessages(
         String ownerNickname,

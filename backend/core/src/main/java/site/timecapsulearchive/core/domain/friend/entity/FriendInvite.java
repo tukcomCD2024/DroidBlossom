@@ -2,8 +2,6 @@ package site.timecapsulearchive.core.domain.friend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -29,10 +26,6 @@ public class FriendInvite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "friend_status")
-    @Enumerated(EnumType.STRING)
-    private FriendStatus friendStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
@@ -41,11 +34,13 @@ public class FriendInvite extends BaseEntity {
     @JoinColumn(name = "friend_id", nullable = false)
     private Member friend;
 
-    @Builder
-    private FriendInvite(FriendStatus friendStatus, Member owner, Member friend) {
-        this.friendStatus = friendStatus;
+    private FriendInvite(Member owner, Member friend) {
         this.owner = owner;
         this.friend = friend;
+    }
+
+    public static FriendInvite createOf(Member owner, Member friend) {
+        return new FriendInvite(owner, friend);
     }
 
     public MemberFriend friendRelation() {
@@ -61,5 +56,4 @@ public class FriendInvite extends BaseEntity {
             .friend(owner)
             .build();
     }
-
 }

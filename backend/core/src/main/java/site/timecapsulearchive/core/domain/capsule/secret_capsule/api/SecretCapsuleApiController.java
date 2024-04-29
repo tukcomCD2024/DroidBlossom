@@ -19,7 +19,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.service.SecretCapsuleService;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.service.SecretCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;

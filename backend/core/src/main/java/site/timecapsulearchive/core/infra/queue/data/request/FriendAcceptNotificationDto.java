@@ -12,7 +12,8 @@ public record FriendAcceptNotificationDto(
     String text
 ) {
 
-    public static FriendAcceptNotificationDto createOf(final Long friendId, final String ownerNickname) {
+    public static FriendAcceptNotificationDto createOf(final Long friendId,
+        final String ownerNickname) {
         final NotificationRequestMessage friendAcceptRequest = NotificationRequestMessage.FRIEND_ACCEPT;
 
         return new FriendAcceptNotificationDto(

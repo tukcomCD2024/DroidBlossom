@@ -15,7 +15,8 @@ public record CreatedCapsuleSkinNotificationDto(
     String skinUrl
 ) {
 
-    public static CreatedCapsuleSkinNotificationDto createOf(final Long memberId, final CapsuleSkinCreateDto dto) {
+    public static CreatedCapsuleSkinNotificationDto createOf(final Long memberId,
+        final CapsuleSkinCreateDto dto) {
         final NotificationRequestMessage capsuleSkinRequest = NotificationRequestMessage.CAPSULE_SKIN;
 
         return new CreatedCapsuleSkinNotificationDto(

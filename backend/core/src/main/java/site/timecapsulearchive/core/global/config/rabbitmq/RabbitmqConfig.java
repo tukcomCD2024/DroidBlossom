@@ -29,7 +29,8 @@ public class RabbitmqConfig {
 
     @Bean
     public DirectExchange capsuleSkinExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getSuccessComponent());
+        return new DirectExchange(
+            RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getSuccessComponent());
     }
 
     @Bean
@@ -47,7 +48,8 @@ public class RabbitmqConfig {
 
     @Bean
     public DirectExchange groupInviteExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent());
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent());
     }
 
     @Bean
@@ -60,7 +62,8 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue friendRequestQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
+        return new Queue(
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
             true);
     }
 
@@ -80,7 +83,8 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue friendAcceptQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
+        return new Queue(
+            RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
             true);
     }
 
@@ -113,7 +117,8 @@ public class RabbitmqConfig {
             } else if (retryCount > MAX_RETRY_COUNT) {
                 final String routingKey = returned.getRoutingKey();
 
-                final String failRoutingKey = RabbitmqComponentConstants.getFailComponent(routingKey);
+                final String failRoutingKey = RabbitmqComponentConstants.getFailComponent(
+                    routingKey);
                 final String failExchange = RabbitmqComponentConstants.getFailComponent(routingKey);
 
                 rabbitTemplate.send(failExchange, failRoutingKey, message);

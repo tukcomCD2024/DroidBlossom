@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -14,8 +15,8 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long> {
         + "from FriendInvite fi "
         + "join fetch fi.owner "
         + "join fetch fi.friend "
-        + "where fi.owner.id =:friendId and fi.friend.id =:memberId")
-    Optional<FriendInvite> findFriendInviteWithMembersByOwnerIdAndFriendId(
+        + "where (fi.owner.id =:friendId and fi.friend.id =:memberId) or (fi.owner.id =: memberId and fi.friend.id =: friendId)")
+    List<FriendInvite> findFriendInviteWithMembersByOwnerIdAndFriendId(
         @Param(value = "memberId") Long memberId,
         @Param(value = "friendId") Long friendId
     );

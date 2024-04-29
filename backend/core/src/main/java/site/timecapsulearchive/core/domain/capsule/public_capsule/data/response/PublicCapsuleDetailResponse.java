@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response;
+package site.timecapsulearchive.core.domain.capsule.public_capsule.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;

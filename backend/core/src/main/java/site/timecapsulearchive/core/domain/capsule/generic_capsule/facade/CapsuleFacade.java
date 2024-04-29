@@ -1,15 +1,15 @@
-package site.timecapsulearchive.core.domain.capsule.facade;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.service.CapsuleService;
-import site.timecapsulearchive.core.domain.capsule.service.ImageService;
-import site.timecapsulearchive.core.domain.capsule.service.VideoService;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.CapsuleService;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.ImageService;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.VideoService;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.service.CapsuleSkinService;
 import site.timecapsulearchive.core.domain.member.entity.Member;

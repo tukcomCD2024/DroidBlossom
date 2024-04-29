@@ -1,4 +1,4 @@
-name: ci/cd
+name: core-ci/cd
 
 on:
   push:
@@ -10,25 +10,42 @@ on:
       - develop_back_core
 
 jobs:
-  formatting:
-    name: formatting
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+  build_and_test:
+    name: build and test
+    if: ${{github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/core
+
     steps:
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'liberica'
-      - uses: actions/checkout@v3
-      - uses: axel-op/googlejavaformat-action@v3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: formatting
+        uses: axel-op/googlejavaformat-action@v3
         with:
           args: "--replace"
           skip-commit: true
 
+      - name: grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: test
+        run: ./gradlew clean test
+
   deploy-core:
     name: core application deploy
-    needs: formatting
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
@@ -115,6 +132,7 @@ jobs:
             docker ps -q --filter "name=core" | xargs -r docker stop
             docker ps -aq --filter "name=core" | xargs -r docker rm
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            docker image prune -f
             docker pull ${{ steps.meta.outputs.tags }}
             docker run -d -p 8080:8080 --name core --network test_backend ${{ steps.meta.outputs.tags }}
 
