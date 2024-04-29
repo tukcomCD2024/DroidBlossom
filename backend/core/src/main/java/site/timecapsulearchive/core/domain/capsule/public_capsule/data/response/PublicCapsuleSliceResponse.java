@@ -3,8 +3,8 @@ package site.timecapsulearchive.core.domain.capsule.public_capsule.data.response
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.function.Function;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.PublicCapsuleDetailResponse;
+import org.locationtech.jts.geom.Point;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 
 @Schema(description = "공개 캡슐 슬라이싱")
 public record PublicCapsuleSliceResponse(
@@ -17,13 +17,14 @@ public record PublicCapsuleSliceResponse(
 ) {
 
     public static PublicCapsuleSliceResponse createOf(
-        final List<CapsuleDetailDto> content,
+        final List<PublicCapsuleDetailDto> content,
         final boolean hasNext,
+        final Function<Point, Point> changePointFunction,
         final Function<String, String> singlePreSignUrlFunction,
         final Function<String, List<String>> multiplePreSignUrlFunction
     ) {
         final List<PublicCapsuleDetailResponse> list = content.stream()
-            .map(dto -> PublicCapsuleDetailResponse.createOf(dto, singlePreSignUrlFunction,
+            .map(dto -> dto.toResponse(changePointFunction, singlePreSignUrlFunction,
                 multiplePreSignUrlFunction))
             .toList();
 

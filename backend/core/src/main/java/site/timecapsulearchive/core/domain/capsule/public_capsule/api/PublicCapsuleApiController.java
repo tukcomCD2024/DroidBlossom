@@ -15,11 +15,13 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.service.PublicCapsuleService;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.service.PublicCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
@@ -29,6 +31,7 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
 
     private final PublicCapsuleService publicCapsuleService;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
+    private final GeoTransformManager geoTransformManager;
 
     @GetMapping(
         value = "/capsules/{capsule_id}/summary",
@@ -75,18 +78,14 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         );
     }
 
-    public ResponseEntity<PublicCapsuleSliceResponse> getPublicCapsules(Long size, Long capsuleId) {
-        return null;
-    }
-
     @GetMapping(value = "/capsules", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<PublicCapsuleSliceResponse>> getPublicCapsulesMadeByFriend(
+    public ResponseEntity<ApiSpec<PublicCapsuleSliceResponse>> getPublicCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(defaultValue = "0", value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<CapsuleDetailDto> publicCapsuleSlice = publicCapsuleService.findPublicCapsulesMadeByFriend(
+        final Slice<PublicCapsuleDetailDto> publicCapsuleSlice = publicCapsuleService.findPublicCapsulesMadeByFriend(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(
@@ -95,6 +94,7 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
                 PublicCapsuleSliceResponse.createOf(
                     publicCapsuleSlice.getContent(),
                     publicCapsuleSlice.hasNext(),
+                    geoTransformManager::changePoint3857To4326,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     s3PreSignedUrlManager::getS3PreSignedUrlsForGet
                 )

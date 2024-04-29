@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,7 +43,8 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
-    private Member owner;
+    private Long ownerId;
+    private Long friendId;
 
     MemberFriendQueryRepositoryTest(EntityManager entityManager) {
         this.memberFriendQueryRepository = new MemberFriendQueryRepository(
@@ -54,12 +54,13 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
-        owner = MemberFixture.member(0);
+        Member owner = MemberFixture.member(0);
         entityManager.persist(owner);
+        ownerId = owner.getId();
 
+        List<Member> friends = MemberFixture.members(1, MAX_FRIEND_ID - 1);
         //owner와 친구, 친구 초대 데이터
-        for (int count = 1; count < MAX_FRIEND_ID; count++) {
-            Member friend = MemberFixture.member(count);
+        for (Member friend : friends) {
             entityManager.persist(friend);
             hashedFriendPhones.add(friend.getPhone_hash());
 
@@ -69,21 +70,23 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             MemberFriend friendMember = MemberFriendFixture.memberFriend(friend, owner);
             entityManager.persist(friendMember);
 
-            FriendInvite friendInvite = FriendInviteFixture.friendInvite(owner, friend);
+            //friend -> owner 친구 요청
+            FriendInvite friendInvite = FriendInviteFixture.friendInvite(friend, owner);
             entityManager.persist(friendInvite);
         }
 
+        //friend id
+        friendId = friends.get(friends.size() - 1).getId();
+
         //owner와 친구가 아닌 멤버 데이터
-        for (int count = MAX_FRIEND_ID; count < MAX_FRIEND_ID + 10; count++) {
-            Member notFriend = MemberFixture.member(count);
+        List<Member> members = MemberFixture.members(MAX_FRIEND_ID, 10);
+        for (Member notFriend : members) {
             entityManager.persist(notFriend);
             hashedNotFriendPhones.add(notFriend.getPhone_hash());
         }
 
         //회원이 아닌 휴대전화번호 데이터
-        for (int count = MAX_FRIEND_ID + 20; count < MAX_FRIEND_ID + 30; count++) {
-            hashedNotMemberPhones.add(MemberFixture.getPhoneBytes(count));
-        }
+        hashedNotMemberPhones.addAll(MemberFixture.getPhoneBytesList(MAX_MEMBER_ID + 20, 10));
     }
 
     @ParameterizedTest
@@ -94,7 +97,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            owner.getId(),
+            ownerId,
             size,
             now
         );
@@ -111,6 +114,23 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
+    void 친구_요청만_보낸_사용자의_친구_목록_조회하면_빈_리스트가_나온다() {
+        //given
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
+
+        //when
+        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
+            friendId,
+            size,
+            now
+        );
+
+        //then
+        assertThat(slice.getContent().size()).isEqualTo(0);
+    }
+
+    @Test
     void 유효하지_않은_시간으로_사용자의_친구_목록_조회하면_빈_리스트가_나온다() {
         //given
         int size = 20;
@@ -118,7 +138,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            owner.getId(),
+            ownerId,
             size,
             now
         );
@@ -135,7 +155,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            owner.getId(),
+            ownerId,
             size,
             now
         );
@@ -152,7 +172,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            owner.getId(),
+            ownerId,
             size,
             now
         );
@@ -176,7 +196,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            owner.getId(),
+            ownerId,
             size,
             now
         );
@@ -193,7 +213,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            owner.getId(),
+            ownerId,
             size,
             now
         );
@@ -207,7 +227,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         //given
         //when
         List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
-            owner.getId(),
+            ownerId,
             hashedNotMemberPhones);
 
         //then
@@ -219,7 +239,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         //given
         //when
         List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
-            owner.getId(),
+            ownerId,
             hashedFriendPhones);
 
         //then
@@ -234,7 +254,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         //given
         //when
         List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
-            owner.getId(),
+            ownerId,
             hashedNotFriendPhones);
 
         //then
@@ -251,7 +271,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
-            owner.getId(),
+            ownerId,
             phoneHashes);
 
         //then
@@ -262,11 +282,11 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @ValueSource(ints = {20, 15, 10, 5})
     void 사용자_아이디와_친구_태그로_친구관계를_조회하면_친구인_경우_True를_반환한다(int friendId) {
         //given
-        Optional<SearchTagFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
-            owner.getId(), friendId + "testTag");
+        SearchTagFriendSummaryDto dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, friendId + "testTag").orElseThrow();
 
         //when
-        Boolean isFriend = dto.get().isFriend();
+        Boolean isFriend = dto.isFriend();
 
         //then
         assertThat(isFriend).isTrue();
@@ -276,11 +296,11 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @ValueSource(ints = {30, 28, 25, 21})
     void 사용자_아이디와_친구_태그로_친구관계를_조회하면_친구가_아닌_경우_False를_반환한다(int friendId) {
         //given
-        Optional<SearchTagFriendSummaryDto> dto = memberFriendQueryRepository.findFriendsByTag(
-            owner.getId(), friendId + "testTag");
+        SearchTagFriendSummaryDto dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, friendId + "testTag").orElseThrow();
 
         //when
-        Boolean isFriend = dto.get().isFriend();
+        Boolean isFriend = dto.isFriend();
 
         //then
         assertThat(isFriend).isFalse();

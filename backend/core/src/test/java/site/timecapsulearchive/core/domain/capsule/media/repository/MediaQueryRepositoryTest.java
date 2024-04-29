@@ -23,8 +23,8 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;
-import site.timecapsulearchive.core.domain.capsule.repository.ImageQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.VideoQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.ImageQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.VideoQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
