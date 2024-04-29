@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
@@ -32,6 +33,12 @@ public record GroupCapsuleDetailResponse(
 
     @Schema(description = "생성일")
     ZonedDateTime createdDate,
+
+    @Schema(description = "캡슐 위도 좌표")
+    Double latitude,
+
+    @Schema(description = "캡슐 경도 좌표")
+    Double longitude,
 
     @Schema(description = "캡슐 생성 주소")
     String address,
@@ -69,9 +76,11 @@ public record GroupCapsuleDetailResponse(
     public static GroupCapsuleDetailResponse createOf(
         final GroupCapsuleDetailDto groupCapsuleDetailDto,
         final Function<String, String> singlePreSignUrlFunction,
-        final Function<String, List<String>> multiplePreSignUrlFunction
+        final Function<String, List<String>> multiplePreSignUrlFunction,
+        final Function<Point, Point> changePointFunction
     ) {
-        CapsuleDetailDto detailDto = groupCapsuleDetailDto.capsuleDetailDto();
+        final CapsuleDetailDto detailDto = groupCapsuleDetailDto.capsuleDetailDto();
+        final Point changePoint = changePointFunction.apply(detailDto.point());
 
         final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
             detailDto.images());
@@ -86,6 +95,8 @@ public record GroupCapsuleDetailResponse(
             detailDto.nickname(),
             detailDto.profileUrl(),
             detailDto.createdAt(),
+            changePoint.getX(),
+            changePoint.getY(),
             detailDto.address(),
             detailDto.roadName(),
             detailDto.title(),

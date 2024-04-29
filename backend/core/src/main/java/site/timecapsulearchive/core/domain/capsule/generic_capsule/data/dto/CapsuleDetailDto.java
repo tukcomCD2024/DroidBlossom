@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto;
 
 import java.time.ZonedDateTime;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 public record CapsuleDetailDto(
@@ -10,6 +11,7 @@ public record CapsuleDetailDto(
     String nickname,
     String profileUrl,
     ZonedDateTime createdAt,
+    Point point,
     String address,
     String roadName,
     String title,
@@ -28,6 +30,7 @@ public record CapsuleDetailDto(
             nickname,
             profileUrl,
             createdAt,
+            point,
             address,
             roadName,
             "",

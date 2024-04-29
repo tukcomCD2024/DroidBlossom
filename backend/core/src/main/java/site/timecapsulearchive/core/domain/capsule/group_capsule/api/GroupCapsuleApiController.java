@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
@@ -31,6 +32,7 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     private final GroupCapsuleFacade groupCapsuleFacade;
     private final GroupCapsuleService groupCapsuleService;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
+    private final GeoTransformManager geoTransformManager;
 
     @PostMapping(
         value = "/{group_id}/capsules",
@@ -68,7 +70,8 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
                 GroupCapsuleDetailResponse.createOf(
                     detailDto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
-                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet,
+                    geoTransformManager::changePoint3857To4326
                 )
             )
         );
@@ -91,7 +94,8 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
                 SuccessCode.SUCCESS,
                 GroupCapsuleSummaryResponse.createOf(
                     summaryDto,
-                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet,
+                    geoTransformManager::changePoint3857To4326
                 )
             )
         );

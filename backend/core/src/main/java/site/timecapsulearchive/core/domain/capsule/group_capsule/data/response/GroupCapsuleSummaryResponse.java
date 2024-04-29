@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
@@ -32,6 +33,12 @@ public record GroupCapsuleSummaryResponse(
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
 
+    @Schema(description = "캡슐 위도 좌표")
+    Double latitude,
+
+    @Schema(description = "캡슐 경도 좌표")
+    Double longitude,
+
     @Schema(description = "캡슐 생성 주소")
     String address,
 
@@ -55,9 +62,11 @@ public record GroupCapsuleSummaryResponse(
 
     public static GroupCapsuleSummaryResponse createOf(
         final GroupCapsuleSummaryDto summaryDto,
-        final Function<String, String> preSignUrlFunction
+        final Function<String, String> preSignUrlFunction,
+        final Function<Point, Point> changePointFunction
     ) {
-        CapsuleSummaryDto capsuleSummaryDto = summaryDto.capsuleSummaryDto();
+        final CapsuleSummaryDto capsuleSummaryDto = summaryDto.capsuleSummaryDto();
+        final Point changePoint = changePointFunction.apply(capsuleSummaryDto.point());
 
         return new GroupCapsuleSummaryResponse(
             summaryDto.toGroupMemberSummaryResponse(),
@@ -66,6 +75,8 @@ public record GroupCapsuleSummaryResponse(
             preSignUrlFunction.apply(capsuleSummaryDto.skinUrl()),
             capsuleSummaryDto.title(),
             capsuleSummaryDto.dueDate(),
+            changePoint.getX(),
+            changePoint.getY(),
             capsuleSummaryDto.address(),
             capsuleSummaryDto.roadName(),
             capsuleSummaryDto.isOpened(),

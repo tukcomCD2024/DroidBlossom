@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.service.SecretCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
@@ -31,6 +32,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
 
     private final SecretCapsuleService secretCapsuleService;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
+    private final GeoTransformManager geoTransformManager;
 
     @GetMapping(value = "/capsules", produces = {"application/json"})
     @Override
@@ -64,7 +66,11 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                CapsuleSummaryResponse.createOf(dto, s3PreSignedUrlManager::getS3PreSignedUrlForGet)
+                CapsuleSummaryResponse.createOf(
+                    dto,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet,
+                    geoTransformManager::changePoint3857To4326
+                )
             )
         );
     }
@@ -84,7 +90,8 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
                 CapsuleDetailResponse.createOf(
                     dto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
-                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet,
+                    geoTransformManager::changePoint3857To4326
                 )
             )
         );
