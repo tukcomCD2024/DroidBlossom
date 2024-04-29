@@ -33,6 +33,17 @@ public interface NotificationServiceListener {
     )
     void sendFriendRequestNotification(final FriendNotificationDto dto);
 
+    @RabbitListener(
+        bindings = @QueueBinding(
+            value = @Queue(value = "friendAccept.queue", durable = "true"),
+            exchange = @Exchange(value = "friendAccept.exchange"),
+            key = "friendAccept.queue"
+        ),
+        returnExceptions = "false",
+        messageConverter = "jsonMessageConverter"
+    )
+    void sendFriendAcceptNotification(final FriendNotificationDto dto);
+
 
     @RabbitListener(
         bindings = @QueueBinding(
@@ -54,6 +65,6 @@ public interface NotificationServiceListener {
         ),
         returnExceptions = "false"
     )
-    void sendGroupAcceptNotification(final GroupInviteNotificationDto dto);
+    void sendGroupInviteNotification(final GroupInviteNotificationDto dto);
 
 }

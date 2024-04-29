@@ -9,3 +9,7 @@ WHERE NOT EXISTS(SELECT * FROM notification_category where category_name='FRIEND
 INSERT INTO notification_category (category_name, category_description, created_at, updated_at)
 SELECT 'FRIEND_ACCEPT', '친구 수락 관련', now(), now()
 WHERE NOT EXISTS(SELECT * FROM notification_category where category_name='FRIEND_ACCEPT');
+
+INSERT INTO notification_category (category_name, category_description, created_at, updated_at)
+SELECT 'GROUP_INVITE', '그룹 초대 관련', now(), now()
+WHERE NOT EXISTS(SELECT * FROM notification_category where category_name='GROUP_INVITE');

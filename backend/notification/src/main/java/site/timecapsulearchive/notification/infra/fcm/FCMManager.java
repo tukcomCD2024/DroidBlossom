@@ -82,7 +82,7 @@ public class FCMManager {
                 .send(
                     Message.builder()
                         .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
-                        .putData(STATUS_DATA_NAME, String.valueOf(dto.status()))
+                        .putData(STATUS_DATA_NAME, String.valueOf(dto.notificationStatus()))
                         .putData(TITLE_DATA_NAME, dto.title())
                         .putData(TEXT_DATA_NAME, dto.text())
                         .setToken(fcmToken)

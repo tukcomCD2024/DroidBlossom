@@ -10,7 +10,6 @@ import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSend
 import site.timecapsulearchive.notification.data.dto.FriendNotificationDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
-import site.timecapsulearchive.notification.data.mapper.NotificationMapper;
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
@@ -29,7 +28,6 @@ public class NotificationService implements NotificationServiceListener {
     private final NotificationQueryRepository notificationQueryRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
-    private final NotificationMapper notificationMapper;
     private final TransactionTemplate transactionTemplate;
 
     public void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto) {
@@ -39,8 +37,7 @@ public class NotificationService implements NotificationServiceListener {
                 final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
                     CategoryName.CAPSULE_SKIN);
 
-                final Notification notification = notificationMapper.capsuleSkinNotificationSendDtoToEntity(
-                    dto, notificationCategory);
+                final Notification notification = dto.toNotification(notificationCategory);
 
                 notificationRepository.save(notification);
             }
@@ -57,8 +54,7 @@ public class NotificationService implements NotificationServiceListener {
                 final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
                     CategoryName.FRIEND_REQUEST);
 
-                final Notification notification = notificationMapper.friendNotificationDtoToEntity(
-                    dto, notificationCategory);
+                final Notification notification = dto.toNotification(notificationCategory);
 
                 notificationRepository.save(notification);
             }
@@ -68,6 +64,22 @@ public class NotificationService implements NotificationServiceListener {
         fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
     }
 
+    public void sendFriendAcceptNotification(final FriendNotificationDto dto) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.FRIEND_ACCEPT);
+
+                final Notification notification = dto.toNotification(notificationCategory);
+
+                notificationRepository.save(notification);
+            }
+        });
+
+        final String fcmToken = memberRepository.findFCMToken(dto.targetId());
+        fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
+    }
 
 
     public void sendFriendRequestNotifications(final FriendNotificationsDto dto) {
@@ -93,7 +105,7 @@ public class NotificationService implements NotificationServiceListener {
             .toList();
     }
 
-    public void sendGroupAcceptNotification(final GroupInviteNotificationDto dto) {
+    public void sendGroupInviteNotification(final GroupInviteNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
