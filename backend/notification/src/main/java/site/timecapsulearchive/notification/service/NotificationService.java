@@ -61,7 +61,9 @@ public class NotificationService implements NotificationServiceListener {
         });
 
         final String fcmToken = memberRepository.findFCMToken(dto.targetId());
-        fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
+        if (fcmToken != null && !fcmToken.isBlank()) {
+            fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
+        }
     }
 
     public void sendFriendAcceptNotification(final FriendNotificationDto dto) {
@@ -78,7 +80,9 @@ public class NotificationService implements NotificationServiceListener {
         });
 
         final String fcmToken = memberRepository.findFCMToken(dto.targetId());
-        fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
+        if (fcmToken != null && !fcmToken.isBlank()) {
+            fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
+        }
     }
 
 
@@ -95,13 +99,14 @@ public class NotificationService implements NotificationServiceListener {
         });
 
         final List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
-        fcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
+        if (fcmTokens != null && !fcmTokens.isEmpty()) {
+            fcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
+        }
     }
 
     private List<String> getTargetFcmTokens(List<Long> targetIds) {
         return memberRepository.findFCMTokens(targetIds)
             .stream()
-            .filter(fcmToken -> fcmToken != null && !fcmToken.isBlank())
             .toList();
     }
 
@@ -116,7 +121,10 @@ public class NotificationService implements NotificationServiceListener {
             }
         });
 
+
         List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
-        fcmManager.sendGroupInviteNotifications(dto, CategoryName.GROUP_INVITE, fcmTokens);
+        if (fcmTokens != null && !fcmTokens.isEmpty()) {
+            fcmManager.sendGroupInviteNotifications(dto, CategoryName.GROUP_INVITE, fcmTokens);
+        }
     }
 }
