@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.mapper.FriendMapper;
@@ -39,8 +39,7 @@ class FriendServiceTest {
         FriendInviteQueryRepository.class);
     private final FriendMapper friendMapper = mock(FriendMapper.class);
     private final NotificationManager notificationManager = mock(NotificationManager.class);
-    private final PlatformTransactionManager transactionTemplate = mock(
-        PlatformTransactionManager.class);
+    private final TransactionTemplate transactionTemplate = mock(TransactionTemplate.class);
 
     private final FriendService friendService = new FriendService(
         memberFriendRepository,
