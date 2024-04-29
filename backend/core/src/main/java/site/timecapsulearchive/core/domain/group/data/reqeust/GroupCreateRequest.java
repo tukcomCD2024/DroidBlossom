@@ -28,7 +28,7 @@ public record GroupCreateRequest(
 
     @Schema(description = "그룹원 아이디들")
     @NotNull(message = "그룹원 아이디들은 필수 입니다.")
-    List<Long> memberIds
+    List<Long> targetIds
 
 ) {
 
@@ -38,7 +38,7 @@ public record GroupCreateRequest(
             .groupImage(groupImage)
             .description(description)
             .groupProfileUrl(url)
-            .memberIds(memberIds)
+            .targetIds(targetIds)
             .build();
     }
 }

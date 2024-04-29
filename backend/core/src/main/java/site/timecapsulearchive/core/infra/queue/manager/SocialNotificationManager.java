@@ -50,9 +50,9 @@ public class SocialNotificationManager {
      * @param targetIds     친구 요청 대상 아이디들
      */
     public void sendFriendRequestMessages(
-        String ownerNickname,
-        String profileUrl,
-        List<Long> targetIds
+        final String ownerNickname,
+        final String profileUrl,
+        final List<Long> targetIds
     ) {
         if (targetIds.isEmpty()) {
             return;
@@ -66,12 +66,14 @@ public class SocialNotificationManager {
     }
 
     public void sendGroupInviteMessage(
-        final GroupInviteMessageDto groupInviteMessageDto
+        final String ownerNickname,
+        final String groupProfileUrl,
+        final List<Long> targetIds
     ) {
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.GROUP_INVITE_QUEUE.getSuccessComponent(),
-            groupInviteMessageDto
+            GroupInviteMessageDto.createOf(ownerNickname, groupProfileUrl, targetIds)
         );
     }
 }

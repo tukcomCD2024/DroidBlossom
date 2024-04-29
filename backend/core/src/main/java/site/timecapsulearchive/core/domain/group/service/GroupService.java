@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupInviteMessageDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
@@ -29,12 +28,12 @@ public class GroupService {
     private final SocialNotificationManager socialNotificationManager;
 
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
-        Member member = memberRepository.findMemberById(memberId)
+        final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        Group group = dto.toEntity();
+        final Group group = dto.toEntity();
 
-        MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
+        final MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -44,8 +43,8 @@ public class GroupService {
             }
         });
 
-        GroupInviteMessageDto groupInviteMessageDto = dto.toInviteMessageDto(member.getNickname());
-        socialNotificationManager.sendGroupInviteMessage(groupInviteMessageDto);
+        socialNotificationManager.sendGroupInviteMessage(member.getNickname(),
+            dto.groupProfileUrl(), dto.targetIds());
     }
 
     @Transactional(readOnly = true)

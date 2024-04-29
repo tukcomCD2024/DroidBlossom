@@ -7,14 +7,16 @@ import site.timecapsulearchive.core.infra.queue.data.dto.NotificationRequestMess
 @Builder
 public record FriendReqNotificationDto(
     Long targetId,
-    NotificationStatus status,
+    NotificationStatus notificationStatus,
     String title,
     String text
 ) {
 
-    public static FriendReqNotificationDto createOf(final Long friendId,
-        final String ownerNickname) {
-        final NotificationRequestMessage friendReqRequest = NotificationRequestMessage.FRIEND_ACCEPT;
+    public static FriendReqNotificationDto createOf(
+        final Long friendId,
+        final String ownerNickname
+    ) {
+        final NotificationRequestMessage friendReqRequest = NotificationRequestMessage.FRIEND_REQUEST;
 
         return new FriendReqNotificationDto(
             friendId,

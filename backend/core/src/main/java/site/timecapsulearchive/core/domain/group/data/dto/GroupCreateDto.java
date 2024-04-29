@@ -10,7 +10,7 @@ public record GroupCreateDto(
     String groupImage,
     String groupProfileUrl,
     String description,
-    List<Long> memberIds
+    List<Long> targetIds
 ) {
 
     public Group toEntity() {
@@ -19,17 +19,5 @@ public record GroupCreateDto(
             .groupDescription(description)
             .groupProfileUrl(groupProfileUrl)
             .build();
-    }
-
-    public GroupInviteMessageDto toInviteMessageDto(String ownerName) {
-        return GroupInviteMessageDto.builder()
-            .ownerName(ownerName)
-            .groupName(groupName)
-            .groupImage(groupImage)
-            .groupProfileUrl(groupProfileUrl)
-            .description(description)
-            .memberIds(memberIds)
-            .build();
-
     }
 }
