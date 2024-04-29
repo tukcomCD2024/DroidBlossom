@@ -1,12 +1,11 @@
-package site.timecapsulearchive.core.domain.group.data.dto;
+package site.timecapsulearchive.core.infra.queue.data.dto;
 
 import java.util.List;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
-import site.timecapsulearchive.core.infra.queue.data.dto.NotificationRequestMessage;
 
 @Builder
-public record GroupInviteMessageDto(
+public record GroupInviteNotificationDto(
 
     String groupProfileUrl,
     NotificationStatus notificationStatus,
@@ -15,7 +14,7 @@ public record GroupInviteMessageDto(
     List<Long> targetIds
 ) {
 
-    public static GroupInviteMessageDto createOf(
+    public static GroupInviteNotificationDto createOf(
         final String groupProfileUrl,
         final String ownerNickname,
         final List<Long> targetIds
@@ -23,7 +22,7 @@ public record GroupInviteMessageDto(
     ) {
         NotificationRequestMessage notificationRequestMessage = NotificationRequestMessage.GROUP_INVITE;
 
-        return GroupInviteMessageDto.builder()
+        return GroupInviteNotificationDto.builder()
             .groupProfileUrl(groupProfileUrl)
             .notificationStatus(notificationRequestMessage.getStatus())
             .title(notificationRequestMessage.getTitle())

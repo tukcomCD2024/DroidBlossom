@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.infra.queue.data.dto;
 import java.util.List;
 import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
 
-public record FriendsReqNotificationDto(
+public record FriendsReqNotificationsDto(
     String profileUrl,
     NotificationStatus notificationStatus,
     String title,
@@ -11,14 +11,14 @@ public record FriendsReqNotificationDto(
     List<Long> friendIds
 ) {
 
-    public static FriendsReqNotificationDto createOf(
+    public static FriendsReqNotificationsDto createOf(
         final String nickname,
         final String profileUrl,
         final List<Long> friendIds
     ) {
         NotificationRequestMessage friendAcceptRequest = NotificationRequestMessage.FRIEND_REQUEST;
 
-        return new FriendsReqNotificationDto(
+        return new FriendsReqNotificationsDto(
             profileUrl,
             friendAcceptRequest.getStatus(),
             friendAcceptRequest.getTitle(),
