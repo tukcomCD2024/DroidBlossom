@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.hibernate.validator.constraints.Range;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
 import site.timecapsulearchive.core.global.common.valid.annotation.Video;
 import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
