@@ -1,8 +1,7 @@
-package site.timecapsulearchive.core.infra.queue.data.request;
+package site.timecapsulearchive.core.infra.queue.data.dto;
 
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
-import site.timecapsulearchive.core.infra.queue.data.dto.NotificationRequestMessage;
 
 @Builder
 public record FriendAcceptNotificationDto(

@@ -4,11 +4,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupInviteMessageDto;
 import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqComponentConstants;
-import site.timecapsulearchive.core.infra.queue.data.dto.FriendsReqNotificationDto;
-import site.timecapsulearchive.core.infra.queue.data.request.FriendAcceptNotificationDto;
-import site.timecapsulearchive.core.infra.queue.data.request.FriendReqNotificationDto;
+import site.timecapsulearchive.core.infra.queue.data.dto.FriendAcceptNotificationDto;
+import site.timecapsulearchive.core.infra.queue.data.dto.FriendReqNotificationDto;
+import site.timecapsulearchive.core.infra.queue.data.dto.FriendsReqNotificationsDto;
+import site.timecapsulearchive.core.infra.queue.data.dto.GroupInviteNotificationDto;
 
 @Component
 @RequiredArgsConstructor
@@ -61,7 +61,7 @@ public class SocialNotificationManager {
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
-            FriendsReqNotificationDto.createOf(ownerNickname, profileUrl, targetIds)
+            FriendsReqNotificationsDto.createOf(ownerNickname, profileUrl, targetIds)
         );
     }
 
@@ -73,7 +73,7 @@ public class SocialNotificationManager {
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.GROUP_INVITE_QUEUE.getSuccessComponent(),
-            GroupInviteMessageDto.createOf(ownerNickname, groupProfileUrl, targetIds)
+            GroupInviteNotificationDto.createOf(ownerNickname, groupProfileUrl, targetIds)
         );
     }
 }
