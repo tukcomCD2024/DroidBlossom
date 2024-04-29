@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.repository;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository;
 
 import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;

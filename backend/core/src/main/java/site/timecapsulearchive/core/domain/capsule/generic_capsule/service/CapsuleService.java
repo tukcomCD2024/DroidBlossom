@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.service;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +12,9 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.repository.CapsuleRepository;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.CapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;

@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto;
 
 import java.time.ZonedDateTime;
 import java.util.List;

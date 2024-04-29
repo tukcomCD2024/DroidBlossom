@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.entity.FriendStatus;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Repository
@@ -48,16 +47,12 @@ public class MemberFriendQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = canMoreRead(size, friends.size());
+        final boolean hasNext = friends.size() > size;
         if (hasNext) {
             friends.remove(size);
         }
 
         return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
-    }
-
-    private boolean canMoreRead(final int size, final int data) {
-        return data > size;
     }
 
     public Slice<FriendSummaryDto> findFriendRequestsSlice(
@@ -69,22 +64,19 @@ public class MemberFriendQueryRepository {
             .select(
                 Projections.constructor(
                     FriendSummaryDto.class,
-                    friendInvite.friend.id,
-                    friendInvite.friend.profileUrl,
-                    friendInvite.friend.nickname,
+                    friendInvite.owner.id,
+                    friendInvite.owner.profileUrl,
+                    friendInvite.owner.nickname,
                     friendInvite.createdAt
                 )
             )
             .from(friendInvite)
-            .innerJoin(member).on(friendInvite.owner.id.eq(member.id))
-            .innerJoin(member).on(friendInvite.friend.id.eq(member.id))
-            .where(friendInvite.owner.id.eq(memberId)
-                .and(friendInvite.createdAt.lt(createdAt))
-                .and(friendInvite.friendStatus.eq(FriendStatus.PENDING)))
+            .join(friendInvite.owner, member)
+            .where(friendInvite.friend.id.eq(memberId).and(friendInvite.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = canMoreRead(size, friends.size());
+        final boolean hasNext = friends.size() > size;
         if (hasNext) {
             friends.remove(size);
         }
