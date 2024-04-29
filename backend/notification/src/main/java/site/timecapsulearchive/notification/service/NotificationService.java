@@ -2,10 +2,6 @@ package site.timecapsulearchive.notification.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -26,7 +22,7 @@ import site.timecapsulearchive.notification.repository.NotificationRepository;
 
 @Component
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationService implements NotificationServiceListener {
 
     private final FCMManager fcmManager;
     private final NotificationRepository notificationRepository;
@@ -36,22 +32,12 @@ public class NotificationService {
     private final NotificationMapper notificationMapper;
     private final TransactionTemplate transactionTemplate;
 
-    @RabbitListener(
-        bindings = @QueueBinding(
-            value = @Queue(value = "capsuleSkin.queue", durable = "true"),
-            exchange = @Exchange(value = "capsuleSkin.exchange"),
-            key = "capsuleSkin.queue"
-        ),
-        returnExceptions = "false"
-    )
     public void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto) {
-        final CategoryName categoryName = CategoryName.CAPSULE_SKIN;
-
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
-                    categoryName);
+                    CategoryName.CAPSULE_SKIN);
 
                 final Notification notification = notificationMapper.capsuleSkinNotificationSendDtoToEntity(
                     dto, notificationCategory);
@@ -61,125 +47,64 @@ public class NotificationService {
         });
 
         final String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        if (fcmToken != null && !fcmToken.isBlank()) {
-            fcmManager.sendCapsuleSkinNotification(dto, categoryName, fcmToken);
-        }
+        fcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN, fcmToken);
     }
 
-    @RabbitListener(
-        bindings = @QueueBinding(
-            value = @Queue(value = "friendRequest.queue", durable = "true"),
-            exchange = @Exchange(value = "friendRequest.exchange"),
-            key = "friendRequest.queue"
-        ),
-        returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
-    )
-    public void sendFriendRequestsNotification(final FriendNotificationDto dto) {
-        final CategoryName categoryName = CategoryName.FRIEND_REQUEST;
-
+    public void sendFriendRequestNotification(final FriendNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                saveFriendNotification(categoryName, dto);
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.FRIEND_REQUEST);
+
+                final Notification notification = notificationMapper.friendNotificationDtoToEntity(
+                    dto, notificationCategory);
+
+                notificationRepository.save(notification);
             }
         });
 
-        sendFCM(dto, categoryName);
-    }
-
-    private void saveFriendNotification(
-        final CategoryName categoryName,
-        final FriendNotificationDto dto
-    ) {
-        final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
-            categoryName);
-
-        final Notification notification = notificationMapper.friendNotificationDtoToEntity(dto,
-            notificationCategory);
-
-        notificationRepository.save(notification);
-    }
-
-    private void sendFCM(FriendNotificationDto dto, CategoryName categoryName) {
         final String fcmToken = memberRepository.findFCMToken(dto.targetId());
-        if (fcmToken != null && !fcmToken.isBlank()) {
-            fcmManager.sendFriendNotification(dto, categoryName, fcmToken);
-        }
+        fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
     }
 
-    @RabbitListener(
-        bindings = @QueueBinding(
-            value = @Queue(value = "groupInvite.queue", durable = "true"),
-            exchange = @Exchange(value = "groupInvite.exchange"),
-            key = "groupInvite.queue"
-        ),
-        returnExceptions = "false"
-    )
-    public void sendFriendAcceptNotification(final GroupInviteNotificationDto dto) {
-        if (dto.targetIds().isEmpty()) {
-            return;
-        }
 
-        final CategoryName categoryName = CategoryName.GROUP_INVITE;
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
-                    categoryName);
-                List<Notification> notifications = dto.toNotification(notificationCategory);
-                notificationQueryRepository.bulkSave(notifications);
-            }
-        });
 
-        List<String> fcmTokens = memberRepository.findFCMTokens(dto.targetIds())
-            .stream()
-            .filter(fcmToken -> fcmToken != null && !fcmToken.isBlank())
-            .toList();
-
-        if (fcmTokens.isEmpty()) {
-            return;
-        }
-
-        fcmManager.sendGroupInviteNotifications(dto, categoryName, fcmTokens);
-    }
-
-    @RabbitListener(
-        bindings = @QueueBinding(
-            value = @Queue(value = "friendRequests.queue", durable = "true"),
-            exchange = @Exchange(value = "friendRequests.exchange"),
-            key = "friendRequests.queue"
-        ),
-        returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
-    )
     public void sendFriendRequestNotifications(final FriendNotificationsDto dto) {
-        if (dto.targetIds().isEmpty()) {
-            return;
-        }
-
-        final CategoryName categoryName = CategoryName.FRIEND_ACCEPT;
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
-                    categoryName);
+                    CategoryName.FRIEND_ACCEPT);
 
                 final List<Notification> notifications = dto.toNotification(notificationCategory);
                 notificationQueryRepository.bulkSave(notifications);
             }
         });
 
+        final List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
+        fcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
+    }
 
-        final List<String> fcmTokens = memberRepository.findFCMTokens(dto.targetIds())
+    private List<String> getTargetFcmTokens(List<Long> targetIds) {
+        return memberRepository.findFCMTokens(targetIds)
             .stream()
             .filter(fcmToken -> fcmToken != null && !fcmToken.isBlank())
             .toList();
+    }
 
-        if (fcmTokens.isEmpty()) {
-            return;
-        }
+    public void sendGroupAcceptNotification(final GroupInviteNotificationDto dto) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.GROUP_INVITE);
+                List<Notification> notifications = dto.toNotification(notificationCategory);
+                notificationQueryRepository.bulkSave(notifications);
+            }
+        });
 
-        fcmManager.sendFriendNotifications(dto, categoryName, fcmTokens);
+        List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
+        fcmManager.sendGroupInviteNotifications(dto, CategoryName.GROUP_INVITE, fcmTokens);
     }
 }
