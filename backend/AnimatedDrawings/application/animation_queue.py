@@ -1,13 +1,12 @@
 import argparse
 import json
 import uuid
-from _xxsubinterpreters import ChannelClosedError
 from json.decoder import JSONDecodeError
 
-import pika
 from celery import chain
-from pika.adapters.blocking_connection import BlockingChannel
-from pika.spec import Basic, BasicProperties
+from kombu import Exchange, Queue
+
+from kombu_connection_pool import connection, connections
 
 from application.config.queue_config import QueueConfig
 from application.logging.logger_factory import LoggerFactory
@@ -29,48 +28,38 @@ class AnimationQueueController:
         self.make_animation_task = MakeAnimation()
         self.save_capsule_skin_task = SaveCapsuleSkin()
         self.send_notification_task = SendNotification()
-        self.logger = LoggerFactory.get_logger(__name__,
-                                               output_file_path=output_file_path)
+        self.output_file_path = output_file_path
+        self.logger = LoggerFactory.get_logger(__name__)
 
     def run(self):
-        # rabbitmq 채널 연결
-        self.logger.info('작업 큐 연결 시작')
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=self.queue_config.queue_host))
-        channel = connection.channel()
+        capsule_skin_exchange = Exchange(
+            name=QueueConfig.CAPSULE_SKIN_REQUEST_EXCHANGE_NAME,
+            type='direct',
+            durable=True)
+        capsule_skin_queue = Queue(
+            name=QueueConfig.CAPSULE_SKIN_REQUEST_QUEUE_NAME,
+            exchange=capsule_skin_exchange,
+            routing_key=QueueConfig.CAPSULE_SKIN_REQUEST_QUEUE_NAME)
 
-        channel.queue_declare(queue=self.queue_config.queue_name, durable=True)
-
-        channel.basic_consume(queue=self.queue_config.queue_name,
-                              on_message_callback=self.callback,
-                              auto_ack=False)
-        self.logger.info('작업 큐 연결 성공')
-
-        try:
-            channel.start_consuming()
-        except ChannelClosedError as e:
-            self.logger.info("큐 커넥션 연결 오류")
-            raise e
-        finally:
-            self.logger.info('큐 커넥션 종료')
-            channel.close()
+        with connections[connection].acquire(block=True) as conn:
+            with conn.Consumer(queues=[capsule_skin_queue],
+                               callbacks=[self.callback],
+                               accept=['json']) as consumer:
+                self.logger.info('메시지 수신 시작')
+                while True:
+                    conn.drain_events()
 
     def callback(
         self,
-        channel: BlockingChannel,
-        method: Basic.Deliver,
-        header: BasicProperties,
-        body: bytes,
+        body: str,
+        message
     ) -> None:
         """
         queue에서 message consume 시 동작하는 callback
         celery worker한테 animation 생성 작업을 실행한다
-        :param channel: 큐와 연결된 채널
-        :param method: 메시지의 상태
-        :param header: 기본 정보
-        :param body: queue로부터 넘어온 데이터
         """
         try:
+            self.logger.debug('메시지 수신 완료, 콜백 동작')
             json_object = self.parse_json(body)
 
             filename = f"capsuleSkin/{json_object['memberId']}/{uuid.uuid4()}.gif"
@@ -91,13 +80,13 @@ class AnimationQueueController:
                 ignore_result=True
             )
 
-            channel.basic_ack(delivery_tag=method.delivery_tag)
+            message.ack()
+            self.logger.debug('celery에 작업 전달 완료')
         except Exception as e:
             self.logger.exception('작업 큐 메시지 처리 오류', exc_info=e)
-            channel.basic_reject(delivery_tag=method.delivery_tag,
-                                 requeue=False)
+            message.reject()
 
-    def parse_json(self, body: bytes):
+    def parse_json(self, body: str):
         """
         json bytes를 파싱해 dict로 반환하는 함수
         :param body: queue로부터 넘어온 json bytes
@@ -107,7 +96,7 @@ class AnimationQueueController:
         :raise TypeError: 잘못된 json 입력 타입인 경우
         """
         try:
-            json_object = json.loads(body.decode(encoding='utf8'))
+            json_object = json.loads(body)
             json_object['memberId'] = str(json_object['memberId'])
             json_object['retarget'] = Retarget[json_object['retarget']].value
             json_object['motionName'] = Motion[json_object['motionName']].value
