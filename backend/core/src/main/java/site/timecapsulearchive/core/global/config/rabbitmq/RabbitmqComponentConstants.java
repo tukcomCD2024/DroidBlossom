@@ -6,14 +6,14 @@ import lombok.Getter;
 @Getter
 public enum RabbitmqComponentConstants {
 
-    CAPSULE_SKIN_QUEUE("request.createCapsuleSkin.queue", "fail.createCapsuleSkin.queue"),
-    CAPSULE_SKIN_EXCHANGE("request.createCapsuleSkin.exchange", "fail.createCapsuleSkin.exchange"),
-    FRIEND_REQUEST_NOTIFICATION_QUEUE("request.notifyFriendRequest.queue", "fail.notifyFriendRequest.queue"),
-    FRIEND_REQUEST_NOTIFICATION_EXCHANGE("request.notifyFriendRequest.exchange", "fail.notifyFriendRequest.exchange"),
-    FRIEND_ACCEPT_NOTIFICATION_QUEUE("request.notifyFriendAccept.queue", "fail.notifyFriendAccept.queue"),
-    FRIEND_ACCEPT_NOTIFICATION_EXCHANGE("request.notifyFriendAccept.exchange", "fail.notifyFriendAccept.exchange"),
-    GROUP_INVITE_QUEUE("request.notifyGroupInvite.queue", "fail.notifyGroupInvite.queue"),
-    GROUP_INVITE_EXCHANGE("request.notifyGroupInvite.exchange", "fail.notifyGroupInvite.exchange");
+    CAPSULE_SKIN_QUEUE("request.createCapsuleSkin.queue", "fail.request.createCapsuleSkin.queue"),
+    CAPSULE_SKIN_EXCHANGE("request.createCapsuleSkin.exchange", "fail.request.createCapsuleSkin.exchange"),
+    FRIEND_REQUEST_NOTIFICATION_QUEUE("notification.friendRequest.queue", "fail.notification.friendRequest.queue"),
+    FRIEND_REQUEST_NOTIFICATION_EXCHANGE("notification.friendRequest.exchange", "fail.notification.friendRequest.exchange"),
+    FRIEND_ACCEPT_NOTIFICATION_QUEUE("notification.friendAccept.queue", "fail.notification.friendAccept.queue"),
+    FRIEND_ACCEPT_NOTIFICATION_EXCHANGE("notification.friendAccept.exchange", "fail.notification.friendAccept.exchange"),
+    GROUP_INVITE_QUEUE("notification.groupInvite.queue", "fail.notification.groupInvite.queue"),
+    GROUP_INVITE_EXCHANGE("notification.groupInvite.exchange", "fail.notification.groupInvite.exchange");
 
     private final String successComponent;
     private final String failComponent;
