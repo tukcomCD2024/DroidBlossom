@@ -1,3 +1,5 @@
+import json
+
 import celery.signals
 from celery import Task
 from celery.utils.log import get_task_logger
@@ -30,14 +32,14 @@ class LogErrorsTask(Task):
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         self.task_logger.exception('태스크 처리 실패 %s', task_id, exc_info=einfo)
-        request_data = {
+        request_data = json.dumps({
             'memberId': kwargs['input_data']['memberId'],
             'skinName': kwargs['input_data']['skinName'],
             'title': '캡슐 스킨 생성에 실패했습니다',
             'text': f"{kwargs['input_data']['skinName']}이 생성되지 않았습니다. 다시 한 번 시도해주세요!",
             'skinUrl': kwargs['filename'],
-            'status': NotificationStatus.SUCCESS.value
-        }
+            'status': NotificationStatus.FAIL.value
+        }, ensure_ascii=False)
         with producers[connection].acquire(block=True) as producer:
             exchange = Exchange(name=QueueConfig.NOTIFICATION_EXCHANGE_NAME,
                                 type='direct',
