@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,7 +11,10 @@ import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment.Companion.
 import com.droidblossom.archive.presentation.model.mypage.ProfileData
 
 class ProfileRVA(
-
+    private val goGroupList: () -> Unit,
+    private val goFriendList: () -> Unit,
+    private val goRequestList: () -> Unit,
+    private val goSetting: () -> Unit,
 ) : ListAdapter<ProfileData, ProfileRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -18,10 +22,10 @@ class ProfileRVA(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ProfileData) {
             binding.data = data
-            binding.root.setOnClickListener {
-
-
-            }
+            binding.groupLayout.setOnClickListener { goGroupList() }
+            binding.friendLayout.setOnClickListener { goFriendList() }
+            binding.requestLayout.setOnClickListener { goRequestList() }
+            binding.settingBtn.setOnClickListener { goSetting() }
         }
     }
 
