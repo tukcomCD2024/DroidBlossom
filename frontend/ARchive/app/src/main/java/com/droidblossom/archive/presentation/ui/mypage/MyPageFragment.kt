@@ -1,16 +1,14 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
@@ -18,8 +16,9 @@ import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
-import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleTypeSpinner
-import com.droidblossom.archive.presentation.ui.mypage.adapter.MyCapsuleRVA
+import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
+import com.droidblossom.archive.presentation.ui.mypage.adapter.ProfileRVA
+import com.droidblossom.archive.presentation.ui.mypage.adapter.SpinnerAdapter
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
@@ -32,8 +31,59 @@ class MyPageFragment :
     BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
     override val viewModel: MyPageViewModelImpl by viewModels()
 
-    private val myCapsuleRVA by lazy {
-        MyCapsuleRVA(
+    private lateinit var profileRVA: ProfileRVA
+    private lateinit var capsuleRVA: CapsuleRVA
+    private lateinit var spinnerA: SpinnerAdapter
+
+    private lateinit var concatAdapter: ConcatAdapter
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        parentFragmentManager.setFragmentResultListener(
+            "capsuleState",
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val capsuleOpenState = bundle.getBoolean("isOpened")
+            if (capsuleIndex != -1 && capsuleOpenState) {
+                viewModel.updateCapsuleOpenState(capsuleIndex, capsuleId)
+                capsuleRVA.notifyItemChanged(capsuleIndex)
+            }
+        }
+
+        initAdapters()
+        initMyPageRVA()
+        val layoutParams = binding.myPageRV.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.myPageRV.layoutParams = layoutParams
+    }
+
+    private fun initAdapters() {
+        profileRVA = ProfileRVA(
+            {
+                startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
+            },
+            {
+                startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
+            },
+            {
+                viewModel.reloadMyInfo = true
+                startActivity(
+                    FriendAcceptActivity.newIntent(
+                        requireContext(),
+                        FriendAcceptActivity.FRIEND
+                    )
+                )
+            },
+            {
+                startActivity(SettingActivity.newIntent(requireContext()))
+            }
+
+        )
+        capsuleRVA = CapsuleRVA(
             { id, type ->
                 startActivity(
                     CapsuleDetailActivity.newIntent(
@@ -51,120 +101,60 @@ class MyPageFragment :
                     false
                 )
                 sheet.show(parentFragmentManager, "CapsulePreviewDialog")
-            },
+            }
         )
+
+        val capsuleTypes = arrayOf(
+            SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP
+        )
+        spinnerA = SpinnerAdapter(requireContext(), capsuleTypes)
+
+        val config = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(true)
+            .setStableIdMode(ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS)
+            .build()
+
+        concatAdapter = ConcatAdapter(config, profileRVA, spinnerA, capsuleRVA)
     }
 
-    private val spinnerAdapter by lazy {
-        val capsuleTypeList =
-            arrayOf(SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP)
-        CapsuleTypeSpinner(requireContext(), capsuleTypeList)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.vm = viewModel
-
-        parentFragmentManager.setFragmentResultListener(
-            "capsuleState",
-            viewLifecycleOwner
-        ) { key, bundle ->
-            val capsuleIndex = bundle.getInt("capsuleIndex")
-            val capsuleId = bundle.getLong("capsuleId")
-            val capsuleOpenState = bundle.getBoolean("isOpened")
-            if (capsuleIndex != -1 && capsuleOpenState) {
-                viewModel.updateCapsuleOpenState(capsuleIndex, capsuleId)
-                myCapsuleRVA.notifyItemChanged(capsuleIndex)
+    private fun initMyPageRVA() {
+        val layoutManager = GridLayoutManager(requireContext(), 3)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                var totalItemsCounted = 0
+                concatAdapter.adapters.forEach { adapter ->
+                    val itemCount = adapter.itemCount
+                    if (position < totalItemsCounted + itemCount) {
+                        val localPosition = position - totalItemsCounted
+                        val viewType = adapter.getItemViewType(localPosition)
+                        return when (viewType) {
+                            PROFILE_TYPE -> 3
+                            CAPSULE_TYPE -> 1
+                            else -> 3
+                        }
+                    }
+                    totalItemsCounted += itemCount
+                }
+                return 3
             }
         }
+        binding.myPageRV.layoutManager = layoutManager
+        binding.myPageRV.adapter = concatAdapter
 
-        initRVA()
-        initView()
-        initSpinner()
-
-//        binding.settingBtn.setOnClickListener {
-//            throw RuntimeException("Test Crash")
-//        }
-
-        val layoutParams = binding.profileImg.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.topMargin += getStatusBarHeight()
-        binding.profileImg.layoutParams = layoutParams
-
-        binding.groupLayout.setOnClickListener {
-            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
-        }
-        binding.friendLayout.setOnClickListener {
-            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
-        }
-    }
-
-    private fun initView() {
-
-        with(binding) {
-            profileTagT.setOnLongClickListener {
-                copyText("userTag", viewModel.myInfo.value.tag)
-                true
-            }
-        }
-
-        binding.groupLayout.setOnClickListener {
-            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
-        }
-        binding.friendLayout.setOnClickListener {
-            startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
-        }
-
-        binding.requestLayout.setOnClickListener {
-            viewModel.reloadMyInfo = true
-            startActivity(FriendAcceptActivity.newIntent(requireContext(), FriendAcceptActivity.FRIEND))
-        }
-    }
-
-
-    private fun initRVA() {
-        binding.capsuleRecycleView.adapter = myCapsuleRVA
-        binding.capsuleRecycleView.animation = null
-        //무한 스크롤
-        binding.capsuleRecycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.myPageRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                val totalItemCount = recyclerView.adapter!!.itemCount
+                val threshold = 6
+
+                if (lastVisibleItemPosition >= totalItemCount - threshold) {
                     viewModel.getSecretCapsulePage()
                 }
             }
-
         })
-    }
-
-    private fun initSpinner() {
-        with(binding) {
-            capsuleTypeSpinner.adapter = spinnerAdapter
-            capsuleTypeSpinner.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>,
-                        view: View,
-                        position: Int,
-                        id: Long
-                    ) {
-
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                    }
-                }
-            capsuleTypeSpinner.viewTreeObserver.addOnWindowFocusChangeListener { hasFocus ->
-                spinnerAdapter.spinnerIsOpened = hasFocus
-                spinnerAdapter.notifyDataSetChanged()
-            }
-        }
 
     }
 
@@ -181,10 +171,11 @@ class MyPageFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsulesUI.collect { capsule ->
-                    myCapsuleRVA.submitList(capsule)
+                    capsuleRVA.submitList(capsule)
                 }
             }
         }
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myPageEvents.collect { event ->
@@ -197,12 +188,16 @@ class MyPageFragment :
                             startActivity(SettingActivity.newIntent(requireContext()))
                         }
 
-                        is MyPageViewModel.MyPageEvent.CapsuleStateUpdate -> {
-                            //myCapsuleRVA.notifyItemChanged(event.capsuleIndex)
-                        }
-
                         else -> {}
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.myInfo.collect { memberDetail ->
+                    profileRVA.submitList(listOf(memberDetail.toUIModel()))
                 }
             }
         }
@@ -211,7 +206,7 @@ class MyPageFragment :
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.reloadMyInfo){
+        if (viewModel.reloadMyInfo) {
             viewModel.getMe()
         }
     }
@@ -226,6 +221,10 @@ class MyPageFragment :
     companion object {
 
         const val TAG = "MY"
+        const val PROFILE_TYPE = 1
+        const val STORY_TYPE = 2
+        const val SPINNER_TYPE = 3
+        const val CAPSULE_TYPE = 4
         fun newIntent() = MyPageFragment()
     }
 
