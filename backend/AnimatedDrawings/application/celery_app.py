@@ -10,7 +10,7 @@ celery = Celery('application.task',
 
 celery.conf.result_expires = 300
 celery.conf.task_queues = (
-    Queue('makeAnimation.queue'),
-    Queue('saveCapsuleSkin.queue'),
-    Queue('sendNotification.queue')
+    Queue('task.makeAnimation.queue'),
+    Queue('task.saveCapsuleSkin.queue'),
+    Queue('task.sendNotification.queue')
 )
