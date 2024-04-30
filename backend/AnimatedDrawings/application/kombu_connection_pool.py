@@ -16,7 +16,6 @@ producers = pools.Producers(limit=2)
 
 connection = Connection(hostname=QueueConfig.get_kombu_broker_url(),
                         connect_timeout=7,
-                        heartbeat=60,
                         errback=errback)
 
 logger.info('레빗 엠큐 커넥션 풀 연결 설정 완료')
