@@ -14,6 +14,8 @@ public class MemberFixture {
     private static final HashEncryptionManager hashEncryptionManager = UnitTestDependency.hashEncryptionManager();
 
     public static Member member(int dataPrefix) {
+        byte[] number = getPhoneBytes(dataPrefix);
+
         Member member = Member.builder()
             .socialType(SocialType.GOOGLE)
             .nickname(dataPrefix + "testNickname")
@@ -21,10 +23,8 @@ public class MemberFixture {
             .authId(dataPrefix + "test")
             .profileUrl(dataPrefix + "test.com")
             .tag(dataPrefix + "testTag")
+            .phone_hash(hashEncryptionManager.encrypt(number))
             .build();
-
-        byte[] number = getPhoneBytes(dataPrefix);
-        member.updatePhoneHash(hashEncryptionManager.encrypt(number));
 
         return member;
     }

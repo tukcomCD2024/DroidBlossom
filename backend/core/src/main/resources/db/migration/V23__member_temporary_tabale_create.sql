@@ -1,6 +1,6 @@
 CREATE TABLE member_temporary
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
+    member_temporary_id          INT AUTO_INCREMENT PRIMARY KEY,
     profile_url VARCHAR(255),
     nickname    VARCHAR(255),
     social_type VARCHAR(255),

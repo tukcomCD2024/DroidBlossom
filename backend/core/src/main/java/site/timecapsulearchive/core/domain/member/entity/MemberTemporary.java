@@ -61,5 +61,16 @@ public class MemberTemporary extends BaseEntity {
         this.tag = Objects.requireNonNull(tag);
     }
 
-
+    public Member toMember(final byte[] phone_hash, final byte[] phone) {
+        return Member.builder()
+            .profileUrl(profileUrl)
+            .nickname(nickname)
+            .socialType(socialType)
+            .email(email)
+            .authId(authId)
+            .tag(tag)
+            .phone_hash(phone_hash)
+            .phone(phone)
+            .build();
+    }
 }

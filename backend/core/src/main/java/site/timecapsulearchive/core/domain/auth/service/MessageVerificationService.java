@@ -11,8 +11,10 @@ import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNot
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
@@ -30,6 +32,7 @@ public class MessageVerificationService {
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
     private final SmsApiManager smsApiManager;
     private final MemberRepository memberRepository;
+    private final MemberTemporaryRepository memberTemporaryRepository;
     private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
@@ -101,11 +104,12 @@ public class MessageVerificationService {
     }
 
     private void updateMemberData(final Long memberId, final byte[] plain) {
-        final Member findMember = memberRepository.findMemberById(memberId)
+        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
-        findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));
-        findMember.updateVerification();
+        final Member member = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
+            aesEncryptionManager.encryptWithPrefixIV(plain));
+
+        memberRepository.save(member);
     }
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -96,27 +97,18 @@ public class Member extends BaseEntity {
 
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,
-        String authId, String password, String tag) {
-        this.profileUrl = profileUrl;
-        this.nickname = nickname;
-        this.socialType = socialType;
-        this.email = email;
-        this.isVerified = false;
-        this.notificationEnabled = false;
-        this.authId = authId;
-        this.password = password;
-        this.tag = tag;
-    }
-
-    public void updateVerification() {
+        String authId, String password, String tag, byte[] phone, byte[] phone_hash) {
+        this.profileUrl = Objects.requireNonNull(profileUrl);
+        this.nickname = Objects.requireNonNull(nickname);
+        this.socialType = Objects.requireNonNull(socialType);
+        this.email = Objects.requireNonNull(email);
+        this.tag = Objects.requireNonNull(tag);
+        this.authId = Objects.requireNonNull(authId);
         this.isVerified = true;
-    }
-
-    public void updatePhoneNumber(byte[] phone) {
+        this.notificationEnabled = false;
+        this.password = password;
         this.phone = phone;
-    }
-
-    public void updatePhoneHash(byte[] phone_hash) {
         this.phone_hash = phone_hash;
     }
+
 }
