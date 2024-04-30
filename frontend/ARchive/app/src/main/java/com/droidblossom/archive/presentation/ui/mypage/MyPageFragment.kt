@@ -31,8 +31,50 @@ class MyPageFragment :
     BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
     override val viewModel: MyPageViewModelImpl by viewModels()
 
-    private lateinit var profileRVA: ProfileRVA
-    private lateinit var capsuleRVA: CapsuleRVA
+    private val profileRVA: ProfileRVA by lazy {
+        ProfileRVA(
+            {
+                startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
+            },
+            {
+                startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
+            },
+            {
+                viewModel.reloadMyInfo = true
+                startActivity(
+                    FriendAcceptActivity.newIntent(
+                        requireContext(),
+                        FriendAcceptActivity.FRIEND
+                    )
+                )
+            },
+            {
+                startActivity(SettingActivity.newIntent(requireContext()))
+            }
+        )
+    }
+    private val capsuleRVA: CapsuleRVA by lazy {
+        CapsuleRVA(
+            { id, type ->
+                startActivity(
+                    CapsuleDetailActivity.newIntent(
+                        requireContext(),
+                        id,
+                        type
+                    )
+                )
+            },
+            { capsuleIndex, id, type ->
+                val sheet = CapsulePreviewDialogFragment.newInstance(
+                    capsuleIndex.toString(),
+                    id.toString(),
+                    type.toString(),
+                    false
+                )
+                sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+            }
+        )
+    }
     private lateinit var spinnerA: SpinnerAdapter
 
     private lateinit var concatAdapter: ConcatAdapter
@@ -62,48 +104,6 @@ class MyPageFragment :
     }
 
     private fun initAdapters() {
-        profileRVA = ProfileRVA(
-            {
-                startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
-            },
-            {
-                startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
-            },
-            {
-                viewModel.reloadMyInfo = true
-                startActivity(
-                    FriendAcceptActivity.newIntent(
-                        requireContext(),
-                        FriendAcceptActivity.FRIEND
-                    )
-                )
-            },
-            {
-                startActivity(SettingActivity.newIntent(requireContext()))
-            }
-
-        )
-        capsuleRVA = CapsuleRVA(
-            { id, type ->
-                startActivity(
-                    CapsuleDetailActivity.newIntent(
-                        requireContext(),
-                        id,
-                        type
-                    )
-                )
-            },
-            { capsuleIndex, id, type ->
-                val sheet = CapsulePreviewDialogFragment.newInstance(
-                    capsuleIndex.toString(),
-                    id.toString(),
-                    type.toString(),
-                    false
-                )
-                sheet.show(parentFragmentManager, "CapsulePreviewDialog")
-            }
-        )
-
         val capsuleTypes = arrayOf(
             SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP
         )
