@@ -3,6 +3,7 @@ import requests
 from celery import Task
 from celery.utils.log import get_task_logger
 
+from application.config.logger_config import LoggerConfig
 from application.logging.logger_factory import LoggerFactory
 from application.model.notification_status import NotificationStatus
 
@@ -20,7 +21,7 @@ class LogErrorsTask(Task):
 
     @celery.signals.after_setup_task_logger.connect
     def on_after_setup_logger(logger, **kwargs):
-        LoggerFactory.setup_logger(logger)
+        LoggerFactory.setup_logger(logger, LoggerConfig.CELERY_OUTPUT_FILE_PATH)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         self.task_logger.exception('태스크 처리 실패 %s', task_id, exc_info=einfo)

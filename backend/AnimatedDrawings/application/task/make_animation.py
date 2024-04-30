@@ -2,9 +2,13 @@ import os
 import shutil
 from pathlib import Path
 
+import celery.signals
 import requests
+from celery.utils.log import get_task_logger
 
+from application.config.logger_config import LoggerConfig
 from application.config.s3_config import S3Config
+from application.logging.logger_factory import LoggerFactory
 from application.s3.s3_connection import get_object_wrapper
 from application.task.base_task import LogErrorsTask
 from examples.annotations_to_animation import annotations_to_animation
@@ -15,10 +19,15 @@ class MakeAnimation(LogErrorsTask):
     name = 'make_animation'
 
     def __init__(self):
-        super().__init__()
-        self.s3_bucket_name = S3Config().s3_bucket_name
+        self.s3_bucket_name = S3Config.S3_BUCKET_NAME
+        self.task_logger = get_task_logger(__name__)
+
+    @celery.signals.after_setup_task_logger.connect
+    def on_after_setup_logger(logger, **kwargs):
+        LoggerFactory.setup_logger(logger, LoggerConfig.CELERY_OUTPUT_FILE_PATH)
 
     def run(self, *args, **kwargs):
+        self.task_logger.debug('애니메이션 생성 시작')
         img_bytes = requests.get(kwargs['input_data']['imageUrl']).content
 
         output_directory = 'capsuleSkin/' + kwargs['input_data']['memberId']
@@ -35,8 +44,9 @@ class MakeAnimation(LogErrorsTask):
 
         output_wrapper = get_object_wrapper(self.s3_bucket_name,
                                             kwargs['filename'])
-        
+
         output_wrapper.put(gif_bytes)
 
         if os.path.exists(output_directory):
             shutil.rmtree(output_directory)
+        self.task_logger.debug('애니메이션 생성 완료')
