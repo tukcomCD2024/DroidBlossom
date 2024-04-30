@@ -29,31 +29,43 @@ s3_bucket_name = S3Config.S3_BUCKET_NAME
 
 @celery.task(base=LogErrorsTask)
 def create_animation(input_data: dict, filename: str):
+    """
+    애니메이션 생성 task
+    :param input_data: 입력 데이터(dict) - imageUrl, motionName, retarget, skinName, memberId, memberName
+    :param filename: 원격지에 저장될 파일 이름 ex) capsuleSkin/2/1234.gif
+    :return:
+    """
     img_bytes = requests.get(input_data['imageUrl']).content
 
-    directory = uuid.uuid4()
-    output_directory = f'capsuleSkin/{directory}'
-    result = Path(output_directory)
+    temporary_directory = f'capsuleSkin/{uuid.uuid4()}'
+    result = Path(temporary_directory)
     result.mkdir(exist_ok=True)
 
     image_to_annotations(img_bytes, result)
-    annotations_to_animation(output_directory,
+    annotations_to_animation(temporary_directory,
                              input_data['motionName'],
                              input_data['retarget'])
 
-    with open(f'{output_directory}/video.gif', 'rb') as image:
+    with open(f'{temporary_directory}/video.gif', 'rb') as image:
         gif_bytes = bytearray(image.read())
 
     output_wrapper = get_object_wrapper(s3_bucket_name, filename)
 
     output_wrapper.put(gif_bytes)
 
-    if os.path.exists(output_directory):
-        shutil.rmtree(output_directory)
+    if os.path.exists(temporary_directory):
+        shutil.rmtree(temporary_directory)
 
 
 @celery.task(base=LogErrorsTask)
 def save_capsule_skin(_, input_data: dict, filename: str):
+    """
+    캡슐 스킨 생성 정보 DB 저장 태스크
+    :param _: 이전 task 결과
+    :param input_data: 입력 데이터(dict) - imageUrl, motionName, retarget, skinName, memberId, memberName
+    :param filename: 원격지에 저장될 파일 이름 ex) capsuleSkin/2/1234.gif
+    :return:
+    """
     capsule_skin = CapsuleSkin(skin_name=input_data['skinName'],
                                image_url=filename,
                                motion_name=Motion(
@@ -68,6 +80,13 @@ def save_capsule_skin(_, input_data: dict, filename: str):
 
 @celery.task(base=LogErrorsTask)
 def send_notification(_, input_data: dict, filename: str):
+    """
+    캡슐 스킨 생성 완료 알림 전송 태스크
+    :param _: 이전 task 결과
+    :param input_data: 입력 데이터(dict) - imageUrl, motionName, retarget, skinName, memberId, memberName
+    :param filename: 원격지에 저장될 파일 이름 ex) capsuleSkin/2/1234.gif
+    :return:
+    """
     request_data = json.dumps({
         'memberId': input_data['memberId'],
         'skinName': input_data['skinName'],
