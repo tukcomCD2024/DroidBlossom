@@ -1,20 +1,20 @@
 import argparse
 import json
+import socket
 import uuid
 from json.decoder import JSONDecodeError
 
 from celery import chain
 from kombu import Exchange, Queue
 
+from application.task.tasks import create_animation, save_capsule_skin, \
+    send_notification
 from kombu_connection_pool import connection, connections
 
 from application.config.queue_config import QueueConfig
 from application.logging.logger_factory import LoggerFactory
 from application.model.motion import Motion
 from application.model.retarget import Retarget
-from application.task.make_animation import MakeAnimation
-from application.task.save_capsule_skin import SaveCapsuleSkin
-from application.task.send_notification import SendNotification
 
 
 class AnimationQueueController:
@@ -25,9 +25,6 @@ class AnimationQueueController:
         self.celery_work_queue_name = 'makeAnimation.queue'
         self.celery_success_queue_name = 'saveCapsuleSkin.queue'
         self.celery_send_notification_queue_name = 'sendNotification.queue'
-        self.make_animation_task = MakeAnimation()
-        self.save_capsule_skin_task = SaveCapsuleSkin()
-        self.send_notification_task = SendNotification()
         self.output_file_path = output_file_path
         self.logger = LoggerFactory.get_logger(__name__)
 
@@ -44,7 +41,7 @@ class AnimationQueueController:
         with connections[connection].acquire(block=True) as conn:
             with conn.Consumer(queues=[capsule_skin_queue],
                                callbacks=[self.callback],
-                               accept=['json']) as consumer:
+                               accept=['json']):
                 self.logger.info('메시지 수신 시작')
                 while True:
                     conn.drain_events()
@@ -65,16 +62,16 @@ class AnimationQueueController:
             filename = f"capsuleSkin/{json_object['memberId']}/{uuid.uuid4()}.gif"
 
             chain(
-                self.make_animation_task.s(input_data=json_object,
-                                           filename=filename)
+                create_animation.s(input_data=json_object,
+                                   filename=filename)
                 .set(queue=self.celery_work_queue_name),
 
-                self.save_capsule_skin_task.s(input_data=json_object,
-                                              filename=filename)
+                save_capsule_skin.s(input_data=json_object,
+                                    filename=filename)
                 .set(queue=self.celery_success_queue_name),
 
-                self.send_notification_task.s(input_data=json_object,
-                                              filename=filename)
+                send_notification.s(input_data=json_object,
+                                    filename=filename)
                 .set(queue=self.celery_send_notification_queue_name)
             ).apply_async(
                 ignore_result=True
