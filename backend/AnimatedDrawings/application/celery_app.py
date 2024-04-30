@@ -8,7 +8,7 @@ from application.task.send_notification import SendNotification
 
 queue_config = QueueConfig()
 celery = Celery('application',
-                broker=queue_config.get_queue_url(),
+                broker=queue_config.get_celery_broker_url(),
                 include=['application.task'])
 
 celery.conf.result_expires = 300
