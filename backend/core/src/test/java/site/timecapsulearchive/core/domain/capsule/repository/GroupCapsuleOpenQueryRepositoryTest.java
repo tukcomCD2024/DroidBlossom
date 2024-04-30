@@ -1,6 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.repository;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +29,9 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final GroupCapsuleOpenQueryRepository groupCapsuleOpenRepository;
     private Capsule capsule;
-    private Member groupLeader;
     private List<Member> groupMembers;
     private List<GroupCapsuleOpen> groupCapsuleOpens;
 
@@ -38,17 +39,17 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         JdbcTemplate jdbcTemplate,
         DataSource dataSource
     ) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate);
     }
 
-    @BeforeEach
     @Transactional
+    @BeforeEach
     void setUp(@Autowired EntityManager entityManager) {
         groupMembers = MemberFixture.members(1, 5);
         groupMembers.forEach(entityManager::persist);
 
-        groupLeader = groupMembers.get(0);
+        Member groupLeader = groupMembers.get(0);
 
         CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(groupLeader);
         entityManager.persist(capsuleSkin);
@@ -57,7 +58,6 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         entityManager.persist(capsule);
 
         groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(false, capsule, groupMembers);
-        groupCapsuleOpens.forEach(entityManager::persist);
     }
 
     @Test
@@ -69,16 +69,18 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         // when
         groupCapsuleOpenRepository.bulkSave(groupMemberIds, capsule);
 
-        Integer actualCounts = jdbcTemplate.queryForObject(
-            """
-                SELECT count(*) FROM group_capsule_open WHERE group_capsule_open.capsule_id = ? and group_capsule_open.member_id in (?)
-                """,
-            new Object[]{capsuleId, groupMemberIds},
+        //then
+        String sql = "SELECT count(*) from group_capsule_open WHERE capsule_id = (:capsuleId) and member_id in (:groupMemberIds)";
+        MapSqlParameterSource parameters = new MapSqlParameterSource("groupMemberIds",
+            groupMemberIds);
+        parameters.addValue("capsuleId", capsuleId);
+
+        Integer actualGroupMemberCount = namedParameterJdbcTemplate.queryForObject(
+            sql,
+            parameters,
             Integer.class
         );
 
-        //then
-        assertThat(actualCounts).isEqualTo(0);
+        assertThat(actualGroupMemberCount).isEqualTo(groupCapsuleOpens.size());
     }
-
 }
