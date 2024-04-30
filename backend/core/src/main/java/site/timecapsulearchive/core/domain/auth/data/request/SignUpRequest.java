@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
 @Schema(description = "소셜 프로바이더의 인증 아이디로 회원가입 요청")
@@ -26,5 +27,14 @@ public record SignUpRequest(
     @NotNull(message = "소셜 프로바이더 타입은 필수입니다.")
     SocialType socialType
 ) {
+
+    public SignUpRequestDto toDto() {
+        return new SignUpRequestDto(
+            authId,
+            email,
+            profileUrl,
+            socialType
+        );
+    }
 
 }

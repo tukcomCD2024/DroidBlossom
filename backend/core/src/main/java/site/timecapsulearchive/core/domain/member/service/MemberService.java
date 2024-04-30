@@ -19,6 +19,7 @@ import site.timecapsulearchive.core.domain.member.data.response.MemberNotificati
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
 import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
@@ -26,6 +27,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 
 @Slf4j
 @Service
@@ -34,6 +36,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberTemporaryRepository memberTemporaryRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -41,9 +44,9 @@ public class MemberService {
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
-        final Member member = memberMapper.signUpRequestDtoToEntity(dto);
+        final MemberTemporary member = dto.toMemberTemporary();
 
-        final Member savedMember = memberRepository.save(member);
+        final MemberTemporary savedMember =  memberTemporaryRepository.save(member);
 
         return savedMember.getId();
     }
