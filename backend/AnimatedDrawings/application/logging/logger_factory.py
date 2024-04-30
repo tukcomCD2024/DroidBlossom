@@ -29,8 +29,6 @@ class LoggerFactory:
         파라미터로 받은 로거에 포맷터를 설정한다.
         :param logger: 설정할 로거
         :param output_file_path: 로그를 기록할 파일의 경로
-        :param level: 로깅의 레벨
-        :param format_string: 로깅의 포맷팅
         """
         LoggerFactory._setup_handler(LoggerConfig.FORMAT_STRING,
                                      LoggerConfig.LOGGING_LEVEL,

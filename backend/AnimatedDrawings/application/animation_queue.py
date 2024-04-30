@@ -18,12 +18,16 @@ class AnimationQueueController:
         self.queue_config = QueueConfig()
         self.require_keys = ['memberId', 'memberName', 'skinName', 'imageUrl',
                              'retarget', 'motionName']
-        self.celery_work_queue_name = 'makeAnimation.queue'
-        self.celery_success_queue_name = 'saveCapsuleSkin.queue'
-        self.celery_send_notification_queue_name = 'sendNotification.queue'
+        self.celery_work_queue_name = 'task.makeAnimation.queue'
+        self.celery_success_queue_name = 'task.saveCapsuleSkin.queue'
+        self.celery_send_notification_queue_name = 'task.sendNotification.queue'
         self.logger = LoggerFactory.get_logger(__name__)
 
     def run(self):
+        """
+        큐 메시지 리스닝
+        :return:
+        """
         capsule_skin_exchange = Exchange(
             name=QueueConfig.CAPSULE_SKIN_REQUEST_EXCHANGE_NAME,
             type='direct',
@@ -47,8 +51,10 @@ class AnimationQueueController:
         message: any
     ) -> None:
         """
-        queue에서 message consume 시 동작하는 callback
-        celery worker한테 animation 생성 작업을 실행한다
+        큐에 메시지가 도착했을 때 동작하는 콜백 함수
+        :param body:
+        :param message:
+        :return:
         """
         try:
             self.logger.debug('메시지 수신 완료, 콜백 동작')
@@ -78,7 +84,12 @@ class AnimationQueueController:
             self.logger.exception('작업 큐 메시지 처리 오류 %r', e)
             message.reject()
 
-    def parse_body(self, body: [dict, str, bytes]):
+    def parse_body(self, body: [dict, str, bytes]) -> dict:
+        """
+        큐로부터 온 메시지 파싱 함수
+        :param body: 큐에서 온 메시지
+        :return: 파싱된 메시지 dict
+        """
         try:
             if isinstance(body, str):
                 dict_data = literal_eval(body)

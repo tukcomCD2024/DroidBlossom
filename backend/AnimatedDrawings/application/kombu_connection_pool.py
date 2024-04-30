@@ -5,6 +5,10 @@ from application.logging.logger_factory import LoggerFactory
 
 logger = LoggerFactory.get_logger(__name__)
 
+"""
+kombu 커넥션 풀 설정 및 큐, 익스체인지 선언
+"""
+
 
 def errback(exc, interval):
     logger.error('레빗 엠큐 커넥션 풀 연결 에러 발생 : %r', exc)
