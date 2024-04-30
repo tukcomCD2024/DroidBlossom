@@ -93,7 +93,7 @@ def image_to_annotations(img_bytes: bytes, outdir: Path) -> None:
 
     # send cropped image to pose estimator
     data_file = {'data': cv2.imencode('.png', cropped)[1].tobytes()}
-    resp = requests.post(f'http://{TorchserveConfig.TORCHSERVE_HOST}:8080/predictions/drawn_humanoid_detector', files=data_file, verify=False)
+    resp = requests.post(f'http://{TorchserveConfig.TORCHSERVE_HOST}:8080/predictions/drawn_humanoid_pose_estimator', files=data_file, verify=False)
     if resp is None or resp.status_code >= 300:
         raise Exception(f"Failed to get skeletons, please check if the 'docker_torchserve' is running and healthy, resp: {resp}")
 
