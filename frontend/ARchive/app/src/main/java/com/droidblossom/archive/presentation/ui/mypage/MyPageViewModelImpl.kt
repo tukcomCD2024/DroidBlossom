@@ -8,6 +8,7 @@ import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
@@ -39,12 +40,12 @@ class MyPageViewModelImpl @Inject constructor(
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
-    private val _myCapsules = MutableStateFlow(listOf<MyCapsule>())
-    override val myCapsules: StateFlow<List<MyCapsule>>
+    private val _myCapsules = MutableStateFlow(listOf<CapsuleData>())
+    override val myCapsules: StateFlow<List<CapsuleData>>
         get() = _myCapsules
 
-    private val _myCapsulesUI = MutableStateFlow(listOf<MyCapsule>())
-    override val myCapsulesUI: StateFlow<List<MyCapsule>>
+    private val _myCapsulesUI = MutableStateFlow(listOf<CapsuleData>())
+    override val myCapsulesUI: StateFlow<List<CapsuleData>>
         get() = _myCapsulesUI
 
     private val _hasNextPage = MutableStateFlow(true)

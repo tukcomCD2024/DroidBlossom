@@ -8,9 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemMyPageCapsuleBinding
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment.Companion.CAPSULE_TYPE
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.util.CapsuleTypeUtils
 
 class CapsuleRVA(
-
+    private val goDetail: (Long, HomeFragment.CapsuleType) -> Unit,
+    private val goSummary: (Int, Long, HomeFragment.CapsuleType) -> Unit
 ) :
     ListAdapter<CapsuleData, CapsuleRVA.ItemViewHolder>(differ) {
 
@@ -20,8 +23,13 @@ class CapsuleRVA(
         fun bind(data: CapsuleData) {
             binding.data = data
             binding.root.setOnClickListener {
-
-
+                if (data.isOpened) {
+                    goDetail(data.capsuleId, CapsuleTypeUtils.stringToEnum(data.capsuleType))
+                } else {
+                    goSummary(bindingAdapterPosition, data.capsuleId,
+                        CapsuleTypeUtils.stringToEnum(data.capsuleType)
+                    )
+                }
             }
         }
     }

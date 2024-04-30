@@ -8,7 +8,7 @@ data class SecretCapsulePageResponseDto(
     val hasPrevious: Boolean
 ){
     fun toModel() = SecretCapsulePage(
-        capsules = this.capsules.map { it.toModel() },
+        capsules = this.capsules.map { it.toUIModel() },
         hasNext = this.hasNext,
         hasPrevious = this.hasPrevious,
     )
