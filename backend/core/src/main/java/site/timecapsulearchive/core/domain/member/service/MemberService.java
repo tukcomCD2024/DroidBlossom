@@ -46,7 +46,7 @@ public class MemberService {
     public Long createMember(final SignUpRequestDto dto) {
         final MemberTemporary member = dto.toMemberTemporary();
 
-        final MemberTemporary savedMember =  memberTemporaryRepository.save(member);
+        final MemberTemporary savedMember = memberTemporaryRepository.save(member);
 
         return savedMember.getId();
     }
