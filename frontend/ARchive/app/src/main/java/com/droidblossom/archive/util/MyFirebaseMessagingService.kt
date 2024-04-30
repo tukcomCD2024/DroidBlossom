@@ -95,11 +95,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
 
             FcmTopic.FRIEND_REQUEST.name -> {
-                intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_REQUEST_DIALOG.name)
+                intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_REQUEST_ACTIVITY.name)
             }
 
             FcmTopic.FRIEND_ACCEPT.name -> {
-                intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_ACCEPT_DIALOG.name)
+                intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_ACCEPT_ACTIVITY.name)
             }
 
             else -> {
@@ -178,8 +178,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     enum class FragmentDestination {
         SKIN_FRAGMENT,
-        FRIEND_REQUEST_DIALOG,
-        FRIEND_ACCEPT_DIALOG,
+        FRIEND_REQUEST_ACTIVITY,
+        FRIEND_ACCEPT_ACTIVITY,
     }
     enum class  FcmTopic{
         CAPSULE_SKIN,

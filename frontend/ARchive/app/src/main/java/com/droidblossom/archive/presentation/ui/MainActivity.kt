@@ -13,6 +13,8 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import com.droidblossom.archive.util.DataStoreUtils
@@ -126,18 +128,19 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
     // 현재 포그라운드에서만 이동 됨 - 서버와 얘기해야함
     private fun handleIntent(intent: Intent) {
         val destination = intent.getStringExtra("fragmentDestination")
+        Log.d("알림", destination.toString())
 
         when (destination) {
             MyFirebaseMessagingService.FragmentDestination.SKIN_FRAGMENT.name -> {
                 showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
             }
 
-            MyFirebaseMessagingService.FragmentDestination.FRIEND_REQUEST_DIALOG.name -> {
-
+            MyFirebaseMessagingService.FragmentDestination.FRIEND_REQUEST_ACTIVITY.name -> {
+                startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.FRIEND))
             }
 
-            MyFirebaseMessagingService.FragmentDestination.FRIEND_ACCEPT_DIALOG.name -> {
-
+            MyFirebaseMessagingService.FragmentDestination.FRIEND_ACCEPT_ACTIVITY.name -> {
+                startActivity(FriendActivity.newIntent(this, FriendActivity.FRIEND))
             }
 
             else -> {
