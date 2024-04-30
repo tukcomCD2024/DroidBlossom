@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.common.fixture;
+package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

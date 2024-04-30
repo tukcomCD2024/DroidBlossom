@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.TransactionTemplate;
-import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
@@ -19,7 +19,6 @@ import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRe
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
-import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
 
 class FriendServiceTest {

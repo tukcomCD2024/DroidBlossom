@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import site.timecapsulearchive.core.common.RepositoryTest;
-import site.timecapsulearchive.core.common.fixture.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 

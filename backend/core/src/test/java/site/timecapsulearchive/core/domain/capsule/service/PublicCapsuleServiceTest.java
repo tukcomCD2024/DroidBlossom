@@ -5,11 +5,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
-import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.common.fixture.dto.CapsuleDetailDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.service.PublicCapsuleService;
@@ -34,7 +33,8 @@ class PublicCapsuleServiceTest {
         Long capsuleId = 1L;
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(getCapsuleDetailDto(capsuleId, true, ZonedDateTime.now()));
+            .willReturn(
+                CapsuleDetailDtoFixture.getCapsuleDetailDto(capsuleId, true, ZonedDateTime.now()));
 
         //when
         CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
@@ -50,16 +50,6 @@ class PublicCapsuleServiceTest {
         });
     }
 
-    private Optional<CapsuleDetailDto> getCapsuleDetailDto(Long capsuleId, Boolean isOpened,
-        ZonedDateTime dueDate) {
-        ZonedDateTime now = ZonedDateTime.now();
-
-        return Optional.of(
-            new CapsuleDetailDto(capsuleId, "test", dueDate, "test", "test", now, "address",
-                "roadName", "title", "content", "images", "videos", isOpened, CapsuleType.PUBLIC)
-        );
-    }
-
     @Test
     void 개봉일이_없고_개봉된_캡슐을_조회하면_모든_내용을_볼_수_있다() {
         //given
@@ -67,7 +57,7 @@ class PublicCapsuleServiceTest {
         Long capsuleId = 1L;
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(getCapsuleDetailDto(capsuleId, true, null));
+            .willReturn(CapsuleDetailDtoFixture.getCapsuleDetailDto(capsuleId, true, null));
 
         //when
         CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
@@ -90,7 +80,7 @@ class PublicCapsuleServiceTest {
         Long capsuleId = 1L;
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(getCapsuleDetailDto(capsuleId, false, null));
+            .willReturn(CapsuleDetailDtoFixture.getCapsuleDetailDto(capsuleId, false, null));
 
         //when
         CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
@@ -113,7 +103,8 @@ class PublicCapsuleServiceTest {
         Long capsuleId = 1L;
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(getCapsuleDetailDto(capsuleId, false, ZonedDateTime.now().minusDays(5)));
+            .willReturn(CapsuleDetailDtoFixture.getCapsuleDetailDto(capsuleId, false,
+                ZonedDateTime.now().minusDays(5)));
 
         //when
         CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
@@ -135,7 +126,8 @@ class PublicCapsuleServiceTest {
         Long capsuleId = 1L;
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(getCapsuleDetailDto(capsuleId, false, ZonedDateTime.now().plusDays(5)));
+            .willReturn(CapsuleDetailDtoFixture.getCapsuleDetailDto(capsuleId, false,
+                ZonedDateTime.now().plusDays(5)));
 
         //when
         CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
@@ -157,7 +149,8 @@ class PublicCapsuleServiceTest {
         Long capsuleId = 1L;
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(getCapsuleDetailDto(capsuleId, true, ZonedDateTime.now().plusDays(5)));
+            .willReturn(CapsuleDetailDtoFixture.getCapsuleDetailDto(capsuleId, true,
+                ZonedDateTime.now().plusDays(5)));
 
         //when
         CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
