@@ -75,9 +75,24 @@ class MyPageFragment :
             }
         )
     }
-    private lateinit var spinnerA: SpinnerAdapter
 
-    private lateinit var concatAdapter: ConcatAdapter
+    private val capsuleTypes = arrayOf(
+        SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP
+    )
+
+    private val spinnerA: SpinnerAdapter by lazy {
+        SpinnerAdapter(requireContext(), capsuleTypes)
+    }
+
+    private val concatAdapter: ConcatAdapter by lazy {
+        val config = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(true)
+            .setStableIdMode(ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS)
+            .build()
+        ConcatAdapter(config, profileRVA, spinnerA, capsuleRVA)
+    }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,25 +111,10 @@ class MyPageFragment :
             }
         }
 
-        initAdapters()
         initMyPageRVA()
         val layoutParams = binding.myPageRV.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.myPageRV.layoutParams = layoutParams
-    }
-
-    private fun initAdapters() {
-        val capsuleTypes = arrayOf(
-            SpinnerCapsuleType.SECRET, SpinnerCapsuleType.PUBLIC, SpinnerCapsuleType.GROUP
-        )
-        spinnerA = SpinnerAdapter(requireContext(), capsuleTypes)
-
-        val config = ConcatAdapter.Config.Builder()
-            .setIsolateViewTypes(true)
-            .setStableIdMode(ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS)
-            .build()
-
-        concatAdapter = ConcatAdapter(config, profileRVA, spinnerA, capsuleRVA)
     }
 
     private fun initMyPageRVA() {
