@@ -14,19 +14,20 @@ public interface NotificationServiceListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "capsuleSkin.queue", durable = "true"),
-            exchange = @Exchange(value = "capsuleSkin.exchange"),
-            key = "capsuleSkin.queue"
+            value = @Queue(value = "notification.createCapsuleSkin.queue", durable = "true"),
+            exchange = @Exchange(value = "notification.createCapsuleSkin.exchange"),
+            key = "notification.createCapsuleSkin.queue"
         ),
-        returnExceptions = "false"
+        returnExceptions = "false",
+        messageConverter = "jsonMessageConverter"
     )
     void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto);
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "friendRequest.queue", durable = "true"),
-            exchange = @Exchange(value = "friendRequest.exchange"),
-            key = "friendRequest.queue"
+            value = @Queue(value = "notification.friendRequest.queue", durable = "true"),
+            exchange = @Exchange(value = "notification.friendRequest.exchange"),
+            key = "notification.friendRequest.queue"
         ),
         returnExceptions = "false",
         messageConverter = "jsonMessageConverter"
@@ -35,9 +36,9 @@ public interface NotificationServiceListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "friendAccept.queue", durable = "true"),
-            exchange = @Exchange(value = "friendAccept.exchange"),
-            key = "friendAccept.queue"
+            value = @Queue(value = "notification.friendAccept.queue", durable = "true"),
+            exchange = @Exchange(value = "notification.friendAccept.exchange"),
+            key = "notification.friendAccept.queue"
         ),
         returnExceptions = "false",
         messageConverter = "jsonMessageConverter"
@@ -47,9 +48,9 @@ public interface NotificationServiceListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "friendRequests.queue", durable = "true"),
-            exchange = @Exchange(value = "friendRequests.exchange"),
-            key = "friendRequests.queue"
+            value = @Queue(value = "notification.friendRequests.queue", durable = "true"),
+            exchange = @Exchange(value = "notification.friendRequests.exchange"),
+            key = "notification.friendRequests.queue"
         ),
         returnExceptions = "false",
         messageConverter = "jsonMessageConverter"
@@ -59,11 +60,12 @@ public interface NotificationServiceListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "groupInvite.queue", durable = "true"),
+            value = @Queue(value = "notification.groupInvite.queue", durable = "true"),
             exchange = @Exchange(value = "groupInvite.exchange"),
-            key = "groupInvite.queue"
+            key = "notification.groupInvite.queue"
         ),
-        returnExceptions = "false"
+        returnExceptions = "false",
+        messageConverter = "jsonMessageConverter"
     )
     void sendGroupInviteNotification(final GroupInviteNotificationDto dto);
 

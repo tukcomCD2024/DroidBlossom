@@ -10,6 +10,8 @@ public enum RabbitmqComponentConstants {
     CAPSULE_SKIN_EXCHANGE("notification.createCapsuleSkin.exchange", "fail.notification.createCapsuleSkin.exchange"),
     FRIEND_REQUEST_NOTIFICATION_QUEUE("notification.friendRequest.queue", "fail.notification.friendRequest.queue"),
     FRIEND_REQUEST_NOTIFICATION_EXCHANGE("notification.friendRequest.exchange", "fail.notification.friendRequest.exchange"),
+    FRIEND_REQUESTS_NOTIFICATION_QUEUE("notification.friendRequests.queue", "fail.notification.friendRequests.queue"),
+    FRIEND_REQUESTS_NOTIFICATION_EXCHANGE("notification.friendRequests.exchange", "fail.notification.friendRequests.exchange"),
     FRIEND_ACCEPT_NOTIFICATION_QUEUE("notification.friendAccept.queue", "fail.notification.friendAccept.queue"),
     FRIEND_ACCEPT_NOTIFICATION_EXCHANGE("notification.friendAccept.exchange", "fail.notification.friendAccept.exchange"),
     GROUP_INVITE_QUEUE("notification.groupInvite.queue", "fail.notification.groupInvite.queue"),
