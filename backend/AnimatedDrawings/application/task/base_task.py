@@ -5,9 +5,9 @@ from celery import Task
 from celery.utils.log import get_task_logger
 from kombu import Queue, Exchange
 
-from application.kombu_connection_pool import producers, connection
 from application.config.logger_config import LoggerConfig
 from application.config.queue_config import QueueConfig
+from application.kombu_connection_pool import producers, connection
 from application.logging.logger_factory import LoggerFactory
 from application.model.notification_status import NotificationStatus
 
@@ -53,6 +53,7 @@ class LogErrorsTask(Task):
                 request_data,
                 declare=[queue],
                 exchange=exchange,
+                content_type='application/json',
                 routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME,
             )
 

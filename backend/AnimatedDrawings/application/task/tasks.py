@@ -109,5 +109,6 @@ def send_notification(_, input_data: dict, filename: str):
             request_data,
             declare=[queue],
             exchange=exchange,
+            content_type='application/json',
             routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME,
         )
