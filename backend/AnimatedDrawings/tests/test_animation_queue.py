@@ -29,7 +29,7 @@ class TestParseJson(unittest.TestCase):
             "motionName": Motion.DAB.value
         }
 
-        result = self.controller.parse_json(test_json)
+        result = self.controller.parse_body(test_json)
         self.assertEqual(result, expected_result)
 
     def test_parse_json_invalid_enum(self):
@@ -43,7 +43,7 @@ class TestParseJson(unittest.TestCase):
         }).encode('utf-8')
 
         with self.assertRaises(KeyError):
-            self.controller.parse_json(test_json)
+            self.controller.parse_body(test_json)
 
     def test_parse_json_invalid_format(self):
         test_json = """{"memberId": 123,
@@ -55,7 +55,7 @@ class TestParseJson(unittest.TestCase):
                      """.encode('utf-8')
 
         with self.assertRaises(json.JSONDecodeError):
-            self.controller.parse_json(test_json)
+            self.controller.parse_body(test_json)
 
 
 # 테스트 실행
