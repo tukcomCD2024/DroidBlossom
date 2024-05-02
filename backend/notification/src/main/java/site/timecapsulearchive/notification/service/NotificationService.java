@@ -1,80 +1,130 @@
 package site.timecapsulearchive.notification.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSendDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationDto;
-import site.timecapsulearchive.notification.data.mapper.NotificationMapper;
+import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
+import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
 import site.timecapsulearchive.notification.infra.fcm.FCMManager;
 import site.timecapsulearchive.notification.repository.MemberRepository;
 import site.timecapsulearchive.notification.repository.NotificationCategoryRepository;
+import site.timecapsulearchive.notification.repository.NotificationQueryRepository;
 import site.timecapsulearchive.notification.repository.NotificationRepository;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationService implements NotificationServiceListener {
 
     private final FCMManager fcmManager;
     private final NotificationRepository notificationRepository;
+    private final NotificationQueryRepository notificationQueryRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
-    private final NotificationMapper notificationMapper;
+    private final TransactionTemplate transactionTemplate;
 
-    @Transactional
     public void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto) {
-        final CategoryName categoryName = CategoryName.CAPSULE_SKIN;
-        final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
-            categoryName);
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.CAPSULE_SKIN);
 
-        final Notification notification = notificationMapper.capsuleSkinNotificationSendDtoToEntity(
-            dto,
-            notificationCategory);
+                final Notification notification = dto.toNotification(notificationCategory);
 
-        notificationRepository.save(notification);
+                notificationRepository.save(notification);
+            }
+        });
 
         final String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        if (!fcmToken.isBlank()) {
-            fcmManager.sendCapsuleSkinNotification(dto, categoryName, fcmToken);
-        }
+        fcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN, fcmToken);
     }
 
-    @Transactional
-    public void sendFriendRequestsNotification(final FriendNotificationDto dto) {
-        final CategoryName categoryName = CategoryName.FRIEND_REQUEST;
-        saveFriendNotification(categoryName, dto);
+    public void sendFriendRequestNotification(final FriendNotificationDto dto) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.FRIEND_REQUEST);
 
-        sendFCM(dto, categoryName);
-    }
+                final Notification notification = dto.toNotification(notificationCategory);
 
-    private void saveFriendNotification(
-        final CategoryName categoryName,
-        final FriendNotificationDto dto
-    ) {
-        final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
-            categoryName);
+                notificationRepository.save(notification);
+            }
+        });
 
-        final Notification notification = notificationMapper.friendNotificationDtoToEntity(dto,
-            notificationCategory);
-
-        notificationRepository.save(notification);
-    }
-
-    private void sendFCM(FriendNotificationDto dto, CategoryName categoryName) {
         final String fcmToken = memberRepository.findFCMToken(dto.targetId());
-        if (!fcmToken.isBlank()) {
-            fcmManager.sendFriendNotification(dto, categoryName, fcmToken);
+        if (fcmToken != null && !fcmToken.isBlank()) {
+            fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
         }
     }
 
-    @Transactional
     public void sendFriendAcceptNotification(final FriendNotificationDto dto) {
-        final CategoryName categoryName = CategoryName.FRIEND_ACCEPT;
-        saveFriendNotification(categoryName, dto);
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.FRIEND_ACCEPT);
 
-        sendFCM(dto, categoryName);
+                final Notification notification = dto.toNotification(notificationCategory);
+
+                notificationRepository.save(notification);
+            }
+        });
+
+        final String fcmToken = memberRepository.findFCMToken(dto.targetId());
+        if (fcmToken != null && !fcmToken.isBlank()) {
+            fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
+        }
+    }
+
+
+    public void sendFriendRequestNotifications(final FriendNotificationsDto dto) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.FRIEND_ACCEPT);
+
+                final List<Notification> notifications = dto.toNotification(notificationCategory);
+                notificationQueryRepository.bulkSave(notifications);
+            }
+        });
+
+        final List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
+        if (fcmTokens != null && !fcmTokens.isEmpty()) {
+            fcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
+        }
+    }
+
+    private List<String> getTargetFcmTokens(List<Long> targetIds) {
+        return memberRepository.findFCMTokens(targetIds)
+            .stream()
+            .toList();
+    }
+
+    public void sendGroupInviteNotification(final GroupInviteNotificationDto dto) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final NotificationCategory notificationCategory = notificationCategoryRepository.findByCategoryName(
+                    CategoryName.GROUP_INVITE);
+                List<Notification> notifications = dto.toNotification(notificationCategory);
+                notificationQueryRepository.bulkSave(notifications);
+            }
+        });
+
+
+        List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
+        if (fcmTokens != null && !fcmTokens.isEmpty()) {
+            fcmManager.sendGroupInviteNotifications(dto, CategoryName.GROUP_INVITE, fcmTokens);
+        }
     }
 }
