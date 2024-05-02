@@ -9,4 +9,6 @@ public interface MemberTemporaryRepository extends Repository<MemberTemporary, L
     MemberTemporary save(MemberTemporary memberTemporary);
 
     Optional<MemberTemporary> findById(Long id);
+
+    void delete(MemberTemporary memberTemporary);
 }

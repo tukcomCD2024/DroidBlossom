@@ -107,6 +107,8 @@ public class MessageVerificationService {
         final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
+        memberTemporaryRepository.delete(memberTemporary);
+
         final Member member = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
             aesEncryptionManager.encryptWithPrefixIV(plain));
 
