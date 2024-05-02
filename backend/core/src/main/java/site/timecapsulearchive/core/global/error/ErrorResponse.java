@@ -18,7 +18,7 @@ public record ErrorResponse(
     List<Error> result
 ) {
 
-    public static ErrorResponse create(final ErrorCode errorCode) {
+    public static ErrorResponse fromErrorCode(final ErrorCode errorCode) {
         return new ErrorResponse(
             errorCode.getCode(),
             errorCode.getMessage(),
@@ -26,23 +26,35 @@ public record ErrorResponse(
         );
     }
 
-    public static ErrorResponse create(final ErrorCode errorCode,
+    public static ErrorResponse ofBindingResult(final ErrorCode errorCode,
         final BindingResult bindingResult) {
         return new ErrorResponse(
             errorCode.getCode(),
             errorCode.getMessage(),
-            Error.from(bindingResult)
+            Error.fromBindingResult(bindingResult)
         );
     }
 
-    public static ErrorResponse parameter(
+    public static ErrorResponse fromParameter(
         final ErrorCode errorCode,
         final String parameterName
     ) {
         return new ErrorResponse(
             errorCode.getCode(),
             errorCode.getMessage(),
-            List.of(Error.parameter(parameterName))
+            List.of(Error.fromParameter(parameterName))
+        );
+    }
+
+    public static ErrorResponse fromType(
+        final ErrorCode errorCode,
+        final String parameterName,
+        final String value
+    ) {
+        return new ErrorResponse(
+            errorCode.getCode(),
+            errorCode.getMessage(),
+            List.of(Error.fromType(parameterName, value))
         );
     }
 
@@ -52,17 +64,21 @@ public record ErrorResponse(
         String reason
     ) {
 
-        public static Error parameter(final String parameterName) {
+        public static Error fromType(final String parameterName, final String value) {
+            return new Error(parameterName, value, "입력 파라미터의 타입이 올바르지 않습니다.");
+        }
+
+        public static Error fromParameter(final String parameterName) {
             return new Error(parameterName, null, "필수 입력 파라미터를 포함하지 않았습니다.");
         }
 
-        public static List<Error> from(final BindingResult bindingResult) {
+        public static List<Error> fromBindingResult(final BindingResult bindingResult) {
             return bindingResult.getFieldErrors().stream()
-                .map(Error::from)
+                .map(Error::fromFieldError)
                 .toList();
         }
 
-        private static Error from(final FieldError fieldError) {
+        private static Error fromFieldError(final FieldError fieldError) {
             return new Error(
                 fieldError.getField(),
                 String.valueOf(fieldError.getRejectedValue()),

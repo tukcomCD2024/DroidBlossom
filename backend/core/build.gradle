@@ -41,8 +41,8 @@ dependencies {
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.3'
 
     //flyway
-    implementation 'org.flywaydb:flyway-core:9.5.1'
-    implementation 'org.flywaydb:flyway-mysql:9.5.1'
+    implementation 'org.flywaydb:flyway-core:9.5.0'
+    implementation 'org.flywaydb:flyway-mysql:9.5.0'
 
     //s3
     implementation 'software.amazon.awssdk:s3:2.21.46'
@@ -71,6 +71,12 @@ dependencies {
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
+    //aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    //jnanoid
+    implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
@@ -78,6 +84,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.flywaydb.flyway-test-extensions:flyway-spring-test:9.5.0'
+    testImplementation 'org.testcontainers:testcontainers:1.19.1'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
+    testImplementation 'org.testcontainers:mysql:1.19.1'
 }
 
 tasks.named('test') {

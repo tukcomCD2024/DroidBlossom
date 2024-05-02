@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,5 +44,11 @@ public class Video extends BaseEntity {
         this.videoUrl = videoUrl;
         this.capsule = capsule;
         this.member = member;
+    }
+
+    public static List<Video> createOf(List<String> urls, Capsule capsule, Member member) {
+        return urls.stream()
+            .map(url -> new Video(url, capsule, member))
+            .toList();
     }
 }

@@ -1,18 +1,17 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto;
 
 import java.time.ZonedDateTime;
-import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 
 public record CapsuleSummaryDto(
-    Long id,
-    Point point,
     String nickname,
+    String profileUrl,
     String skinUrl,
     String title,
     ZonedDateTime dueDate,
+    String address,
+    String roadName,
     Boolean isOpened,
-    CapsuleType capsuleType
+    ZonedDateTime createdAt
 ) {
 
 }

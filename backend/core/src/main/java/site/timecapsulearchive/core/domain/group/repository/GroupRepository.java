@@ -1,8 +1,13 @@
 package site.timecapsulearchive.core.domain.group.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 
-public interface GroupRepository extends JpaRepository<Group, Long> {
+public interface GroupRepository extends Repository<Group, Long> {
+
+    void save(Group group);
+
+    Optional<Group> findGroupById(Long groupId);
 
 }
