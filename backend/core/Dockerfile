@@ -18,4 +18,4 @@ COPY --from=build ${EXTRACTED}/spring-boot-loader/ ./
 COPY --from=build ${EXTRACTED}/snapshot-dependencies/ ./
 COPY --from=build ${EXTRACTED}/application/ ./
 
-ENTRYPOINT ["java","-Dspring.profiles.active=container","org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT java -Dspring.profiles.active=$ENVIRONMENT org.springframework.boot.loader.JarLauncher

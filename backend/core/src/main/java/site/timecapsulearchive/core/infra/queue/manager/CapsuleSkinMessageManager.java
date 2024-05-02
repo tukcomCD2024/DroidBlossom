@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsuleskin.service;
+package site.timecapsulearchive.core.infra.queue.manager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -11,7 +11,7 @@ import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqComponentCons
 @RequiredArgsConstructor
 public class CapsuleSkinMessageManager {
 
-    private final RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate publisherConfirmsRabbitTemplate;
     private final CapsuleSkinMapper capsuleSkinMapper;
 
     public void sendSkinCreateMessage(
@@ -19,9 +19,9 @@ public class CapsuleSkinMessageManager {
         final String nickname,
         final CapsuleSkinCreateDto dto
     ) {
-        rabbitTemplate.convertAndSend(
-            RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getValue(),
-            "",
+        publisherConfirmsRabbitTemplate.convertAndSend(
+            RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getSuccessComponent(),
+            RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getSuccessComponent(),
             capsuleSkinMapper.createDtoToMessageDto(memberId, nickname, dto)
         );
     }

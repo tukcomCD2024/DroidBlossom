@@ -15,7 +15,8 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long> {
         + "from FriendInvite fi "
         + "join fetch fi.owner "
         + "join fetch fi.friend "
-        + "where (fi.owner.id =:friendId and fi.friend.id =:memberId) or (fi.owner.id =: memberId and fi.friend.id =: friendId)")
+        + "where (fi.owner.id =:friendId and fi.friend.id =:memberId) "
+        + "or (fi.owner.id =: memberId and fi.friend.id =: friendId)")
     List<FriendInvite> findFriendInviteWithMembersByOwnerIdAndFriendId(
         @Param(value = "memberId") Long memberId,
         @Param(value = "friendId") Long friendId

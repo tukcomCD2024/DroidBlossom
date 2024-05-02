@@ -86,7 +86,8 @@ public class FriendApiController implements FriendApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                FriendRequestsSliceResponse.createOf(friendRequestsSlice.getContent(), friendRequestsSlice.hasNext())
+                FriendRequestsSliceResponse.createOf(friendRequestsSlice.getContent(),
+                    friendRequestsSlice.hasNext())
             )
         );
     }
