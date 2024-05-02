@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,8 @@ import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 
 class SpinnerAdapter(
     private val context: Context,
-    private val spinnerItems: Array<MyPageFragment.SpinnerCapsuleType>
+    private val spinnerItems: Array<MyPageFragment.SpinnerCapsuleType>,
+    private val selectedCapsuleType: (MyPageFragment.SpinnerCapsuleType) -> Unit
 ) : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(
@@ -29,7 +31,7 @@ class SpinnerAdapter(
                         position: Int,
                         id: Long
                     ) {
-
+                        selectedCapsuleType(spinnerItems[position])
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
