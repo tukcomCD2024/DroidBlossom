@@ -81,7 +81,13 @@ class MyPageFragment :
     )
 
     private val spinnerA: SpinnerAdapter by lazy {
-        SpinnerAdapter(requireContext(), capsuleTypes)
+        SpinnerAdapter(
+            requireContext(),
+            capsuleTypes
+        ) { capsuleTypes ->
+            viewModel.selectSpinnerItem(capsuleTypes)
+
+        }
     }
 
     private val concatAdapter: ConcatAdapter by lazy {
@@ -112,9 +118,9 @@ class MyPageFragment :
         }
 
         initMyPageRVA()
-        val layoutParams = binding.myPageRV.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.myPageSwipeRefreshLayout.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.myPageRV.layoutParams = layoutParams
+        binding.myPageSwipeRefreshLayout.layoutParams = layoutParams
     }
 
     private fun initMyPageRVA() {
@@ -140,6 +146,9 @@ class MyPageFragment :
         }
         binding.myPageRV.layoutManager = layoutManager
         binding.myPageRV.adapter = concatAdapter
+        binding.myPageSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.load()
+        }
 
         binding.myPageRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -151,7 +160,7 @@ class MyPageFragment :
                 val threshold = 6
 
                 if (lastVisibleItemPosition >= totalItemCount - threshold) {
-                    viewModel.getSecretCapsulePage()
+                    viewModel.getCapsulePage()
                 }
             }
         })
@@ -172,6 +181,10 @@ class MyPageFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsulesUI.collect { capsule ->
                     capsuleRVA.submitList(capsule)
+                    if (binding.myPageSwipeRefreshLayout.isRefreshing){
+                        binding.myPageSwipeRefreshLayout.isRefreshing = false
+                        binding.myPageRV.scrollToPosition(0)
+                    }
                 }
             }
         }
@@ -201,7 +214,6 @@ class MyPageFragment :
                 }
             }
         }
-
     }
 
     override fun onResume() {

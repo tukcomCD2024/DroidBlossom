@@ -1,28 +1,22 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.model.common.MyCapsule
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,6 +49,10 @@ class MyPageViewModelImpl @Inject constructor(
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
 
+    private val _capsuleType =  MutableStateFlow(MyPageFragment.SpinnerCapsuleType.SECRET)
+    override val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
+        get() = _capsuleType
+
     override var reloadMyInfo = false
 
     init {
@@ -80,7 +78,21 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getSecretCapsulePage() {
+    override fun getCapsulePage(){
+        when(capsuleType.value){
+            MyPageFragment.SpinnerCapsuleType.SECRET -> {
+                getSecretCapsulePage()
+            }
+            MyPageFragment.SpinnerCapsuleType.PUBLIC -> {
+                getPublicCapsulePage()
+            }
+            MyPageFragment.SpinnerCapsuleType.GROUP -> {
+                getGroupCapsulePage()
+            }
+        }
+    }
+
+    private fun getSecretCapsulePage() {
         viewModelScope.launch {
             if (hasNextPage.value) {
                 secretCapsulePageUseCase(
@@ -101,6 +113,22 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
+    private fun getPublicCapsulePage() {
+        viewModelScope.launch {
+            if (hasNextPage.value){
+
+            }
+        }
+    }
+
+    private fun getGroupCapsulePage() {
+        viewModelScope.launch {
+            if (hasNextPage.value) {
+
+            }
+        }
+    }
+
 
     override fun updateMyCapsulesUI() {
         viewModelScope.launch {
@@ -113,7 +141,7 @@ class MyPageViewModelImpl @Inject constructor(
             _myCapsules.value = listOf()
             _lastCreatedTime.value = DateUtils.dataServerString
             _hasNextPage.value = true
-            getSecretCapsulePage()
+            getCapsulePage()
         }
     }
 
@@ -130,6 +158,11 @@ class MyPageViewModelImpl @Inject constructor(
         viewModelScope.launch {
             _myPageEvents.emit(MyPageViewModel.MyPageEvent.ClickSetting)
         }
+    }
+
+    override fun selectSpinnerItem(item:MyPageFragment.SpinnerCapsuleType) {
+        _capsuleType.value = item
+        clearCapsules()
     }
 
 }

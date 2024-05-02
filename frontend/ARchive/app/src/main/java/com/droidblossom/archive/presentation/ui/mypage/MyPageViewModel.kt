@@ -14,16 +14,19 @@ interface MyPageViewModel {
     val myCapsulesUI : StateFlow<List<CapsuleData>>
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
+    val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
     var reloadMyInfo:Boolean
 
     fun getMe()
-    fun getSecretCapsulePage()
     fun clearCapsules()
     fun updateMyCapsulesUI()
     fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long)
     fun clickSetting()
 
+    fun getCapsulePage()
     fun load()
+    fun selectSpinnerItem(item:MyPageFragment.SpinnerCapsuleType)
+
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
 

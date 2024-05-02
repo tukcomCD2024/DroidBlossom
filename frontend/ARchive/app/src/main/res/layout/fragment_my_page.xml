@@ -11,18 +11,26 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_1">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/myPageRV"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/myPageSwipeRefreshLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:paddingHorizontal="16dp"
-            android:clipToPadding="false"
-            android:paddingBottom="70dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myPageRV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="70dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
