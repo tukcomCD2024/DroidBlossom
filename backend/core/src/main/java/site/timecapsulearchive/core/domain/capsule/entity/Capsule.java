@@ -89,7 +89,8 @@ public class Capsule extends BaseEntity {
         Address address,
         Point point,
         Member member,
-        CapsuleSkin capsuleSkin
+        CapsuleSkin capsuleSkin,
+        Group group
     ) {
         this.dueDate = dueDate;
         this.title = title;
@@ -98,7 +99,7 @@ public class Capsule extends BaseEntity {
         this.type = type;
         this.isOpened = Boolean.FALSE;
         this.address = address;
-        this.group = null;
+        this.group = group;
         this.member = member;
         this.capsuleSkin = capsuleSkin;
     }

@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.member.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum SocialType {
-    KAKAO, GOOGLE;
+    KAKAO, GOOGLE, EMAIL;
 
     @JsonCreator
     public static SocialType from(String s) {

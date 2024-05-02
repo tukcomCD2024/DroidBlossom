@@ -27,11 +27,33 @@ public class FriendInvite extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "friend_id", nullable = false)
     private Member friend;
 
+    private FriendInvite(Member owner, Member friend) {
+        this.owner = owner;
+        this.friend = friend;
+    }
+
+    public static FriendInvite createOf(Member owner, Member friend) {
+        return new FriendInvite(owner, friend);
+    }
+
+    public MemberFriend friendRelation() {
+        return MemberFriend.builder()
+            .owner(owner)
+            .friend(friend)
+            .build();
+    }
+
+    public MemberFriend ownerRelation() {
+        return MemberFriend.builder()
+            .owner(friend)
+            .friend(owner)
+            .build();
+    }
 }

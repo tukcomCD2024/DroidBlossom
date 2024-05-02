@@ -86,7 +86,10 @@ public class SecurityConfig {
             antMatcher(HttpMethod.POST, "/auth/sign-in"),
             antMatcher(HttpMethod.GET, "/auth/login/**"),
             antMatcher(HttpMethod.GET, "/health"),
-            antMatcher(HttpMethod.POST, "/auth/temporary-token/re-issue")
+            antMatcher(HttpMethod.POST, "/auth/temporary-token/re-issue"),
+            antMatcher(HttpMethod.POST, "/auth/sign-up/email"),
+            antMatcher(HttpMethod.POST, "/auth/sign-in/email"),
+            antMatcher(HttpMethod.POST, "/me/check-duplication/email")
         );
     }
 
