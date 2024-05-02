@@ -4,3 +4,6 @@
 [submodule "backend/notification/src/main/resources/config"]
 	path = backend/notification/src/main/resources/config
 	url = https://github.com/seokho-1116/DroidBlossom-config-notification.git
+[submodule "backend/AnimatedDrawings/application/config/yml"]
+	path = backend/AnimatedDrawings/application/config/yml
+	url = https://github.com/seokho-1116/DroidBlosson-config-animation.git

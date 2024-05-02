@@ -4,25 +4,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import site.timecapsulearchive.notification.entity.NotificationStatus;
 
-public record CapsuleSkinNotificationSendRequest(
+public record FriendNotificationRequest(
 
     @NotNull(message = "멤버 아이디는 필수 입니다.")
-    Long memberId,
+    Long targetId,
 
     @NotNull(message = "알림 상태는 필수 입니다.")
     NotificationStatus status,
 
-    @NotBlank(message = "스킨 이름은 필수 입니다.")
-    String skinName,
-
-    @NotBlank(message = "알림 내용은 필수 입니다.")
-    String title,
-
-    @NotBlank(message = "알림 내용은 필수 입니다.")
+    @NotBlank(message = "알림 제목은 필수 입니다.")
     String text,
 
-    @NotBlank(message = "스킨 URL은 필수 입니다.")
-    String skinUrl
+    @NotBlank(message = "알림 내용은 필수 입니다.")
+    String title
 ) {
 
 }
