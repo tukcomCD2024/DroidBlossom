@@ -1,13 +1,12 @@
 package site.timecapsulearchive.core.domain.group.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupInviteMessageDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
@@ -16,35 +15,25 @@ import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepositor
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
+@RequiredArgsConstructor
 public class GroupService {
 
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
     private final MemberGroupRepository memberGroupRepository;
     private final TransactionTemplate transactionTemplate;
-    private final GroupInviteMessageManager groupInviteMessageManager;
-
-    public GroupService(GroupRepository groupRepository,
-        MemberRepository memberRepository,
-        MemberGroupRepository memberGroupRepository,
-        PlatformTransactionManager platformTransactionManager,
-        GroupInviteMessageManager groupInviteMessageManager) {
-        this.groupRepository = groupRepository;
-        this.transactionTemplate = new TransactionTemplate(platformTransactionManager);
-        this.groupInviteMessageManager = groupInviteMessageManager;
-        this.memberRepository = memberRepository;
-        this.memberGroupRepository = memberGroupRepository;
-    }
+    private final SocialNotificationManager socialNotificationManager;
 
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
-        Member member = memberRepository.findMemberById(memberId)
+        final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        Group group = dto.toEntity();
+        final Group group = dto.toEntity();
 
-        MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
+        final MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -54,8 +43,8 @@ public class GroupService {
             }
         });
 
-        GroupInviteMessageDto groupInviteMessageDto = dto.toInviteMessageDto(member.getNickname());
-        groupInviteMessageManager.sendGroupInviteMessage(groupInviteMessageDto);
+        socialNotificationManager.sendGroupInviteMessage(member.getNickname(),
+            dto.groupProfileUrl(), dto.targetIds());
     }
 
     @Transactional(readOnly = true)
@@ -63,5 +52,4 @@ public class GroupService {
         return groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
     }
-
 }
