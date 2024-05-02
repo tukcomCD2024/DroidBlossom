@@ -1,19 +1,20 @@
 package site.timecapsulearchive.core.domain.member.data.mapper;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
-import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.oauth.dto.OAuth2UserInfo;
+import site.timecapsulearchive.core.global.util.nickname.MakeRandomNickNameUtil;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Component
@@ -30,9 +31,11 @@ public class MemberMapper {
     ) {
         return Member.builder()
             .authId(authId)
-            .socialType(socialType)
+            .nickname(MakeRandomNickNameUtil.makeRandomNickName())
             .email(oAuth2UserInfo.getEmail())
             .profileUrl(oAuth2UserInfo.getImageUrl())
+            .socialType(socialType)
+            .tag(NanoIdUtils.randomNanoId())
             .build();
     }
 
@@ -48,17 +51,12 @@ public class MemberMapper {
     public Member signUpRequestDtoToEntity(final SignUpRequestDto dto) {
         return Member.builder()
             .authId(dto.authId())
+            .nickname(MakeRandomNickNameUtil.makeRandomNickName())
             .email(dto.email())
             .profileUrl(dto.profileUrl())
             .socialType(dto.socialType())
+            .tag(NanoIdUtils.randomNanoId())
             .build();
-    }
-
-    public MemberDetailResponse memberDetailResponseDtoToResponse(
-        final MemberDetailResponseDto dto,
-        final String decryptedPhone
-    ) {
-        return new MemberDetailResponse(dto.nickname(), dto.profileUrl(), decryptedPhone);
     }
 
     public MemberNotificationSliceResponse notificationSliceToResponse(
@@ -66,15 +64,35 @@ public class MemberMapper {
         final boolean hasNext
     ) {
         List<MemberNotificationResponse> responses = content.stream()
-            .map(dto -> MemberNotificationResponse.builder()
-                .title(dto.title())
-                .text(dto.text())
-                .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
-                .imageUrl(s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.imageUrl()))
-                .build()
+            .map(dto -> {
+                    String imageUrl = "";
+                    if (dto.imageUrl() != null) {
+                        imageUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(dto.imageUrl());
+                    }
+
+                    return MemberNotificationResponse.builder()
+                        .title(dto.title())
+                        .text(dto.text())
+                        .createdAt(dto.createdAt().withZoneSameInstant(ASIA_SEOUL))
+                        .imageUrl(imageUrl)
+                        .categoryName(dto.categoryName())
+                        .status(dto.status())
+                        .build();
+                }
             )
             .toList();
 
         return new MemberNotificationSliceResponse(responses, hasNext);
+    }
+
+    public Member createMemberWithEmail(String email, String password) {
+        return Member.builder()
+            .email(email)
+            .password(password)
+            .authId(String.valueOf(UUID.randomUUID()))
+            .profileUrl("")
+            .socialType(SocialType.EMAIL)
+            .tag(NanoIdUtils.randomNanoId())
+            .build();
     }
 }

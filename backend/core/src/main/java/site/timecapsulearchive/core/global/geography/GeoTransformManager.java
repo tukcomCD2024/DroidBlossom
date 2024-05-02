@@ -73,10 +73,10 @@ public class GeoTransformManager {
     }
 
     /**
-     * SRID 4326 좌표를 받아서 SRID 3857 좌표로 변환한다.
+     * SRID 3857 좌표를 받아서 SRID 4326 좌표로 변환한다.
      *
-     * @param point SRID 4326 좌표인 Point 객체
-     * @return Point SRID 3857 좌표인 Point 객체
+     * @param point SRID 3857 좌표인 Point 객체
+     * @return Point SRID 4326 좌표인 Point 객체
      * @throws GeoTransformException 잘못된 값의 범위로 인해 오류가 발생할 수 있다.
      */
     public Point changePoint3857To4326(final Point point) {

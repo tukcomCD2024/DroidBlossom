@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 
 public interface GroupCapsuleApi {
@@ -33,19 +35,29 @@ public interface GroupCapsuleApi {
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = """
+                요청이 잘못되어 발생하는 오류이다.
+                <ul>
+                <li>회원을 찾을 수 없는 경우 발생한다.</li>
+                <li>캡슐 스킨을 찾을 수 없는 경우 발생한다.</li>
+                <li>그룹을 찾을 수 없는 경우 발생한다.</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PostMapping(
-        value = "/groups/{group_id}/capsules",
-        consumes = {"multipart/form-data"}
-    )
-    ResponseEntity<GroupCapsuleSummaryResponse> createGroupCapsule(
-        @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> createGroupCapsule(
+        Long memberId,
 
-        @ModelAttribute GroupCapsuleCreateRequest request
+        @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true)
+        Long groupId,
+
+        GroupCapsuleCreateRequest request
     );
 
     @Operation(

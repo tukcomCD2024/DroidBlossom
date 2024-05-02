@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -27,11 +28,21 @@ public class MemberFriend extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "friend_id", nullable = false)
     private Member friend;
+
+    @Builder
+    private MemberFriend(Member owner, Member friend) {
+        this.owner = owner;
+        this.friend = friend;
+    }
+
+    public String getOwnerNickname() {
+        return owner.getNickname();
+    }
 
 }
