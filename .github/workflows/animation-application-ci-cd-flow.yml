@@ -82,7 +82,7 @@ jobs:
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker pull ${{ steps.meta.outputs.tags }}
             docker image prune -f
-            docker run -d -p 5555:5555 -p 9001:9001 --name animated_drawings -e ENVIRONMENT='container' ${{ steps.meta.outputs.tags }}
+            docker run -d -p 5555:5555 -p 9001:9001 --name animated_drawings -e ENVIRONMENT='dev' ${{ steps.meta.outputs.tags }}
 
       - name: Remove Github Actions IP from security group
         if: always()
