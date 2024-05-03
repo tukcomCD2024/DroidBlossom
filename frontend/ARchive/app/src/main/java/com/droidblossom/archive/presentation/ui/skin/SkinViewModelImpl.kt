@@ -10,12 +10,14 @@ import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -60,9 +62,16 @@ class SkinViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        _hasNextSkins.value = it.hasNext
-                        _skins.emit(skins.value + it.skins)
-                        _lastCreatedSkinTime.value = skins.value.last().createdAt
+                        withContext(Dispatchers.Default) {
+                            val currentIds = skins.value.map { skin -> skin.id }.toSet()
+                            val newCapsules = it.skins.filter { skin -> skin.id !in currentIds }
+                            withContext(Dispatchers.Main) {
+                                _skins.emit(skins.value + newCapsules)
+                                _hasNextSkins.value = it.hasNext
+                                _lastCreatedSkinTime.value = skins.value.last().createdAt
+                            }
+                        }
+
                     }.onFail {
                         _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
                     }
