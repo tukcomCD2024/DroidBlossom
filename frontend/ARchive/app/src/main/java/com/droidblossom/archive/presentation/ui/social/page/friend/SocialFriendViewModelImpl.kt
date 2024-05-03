@@ -92,6 +92,7 @@ class SocialFriendViewModelImpl @Inject constructor(
 
     override fun getLatestPublicCapsule(){
         viewModelScope.launch {
+            _publicCapsules.emit(listOf())
             publicCapsulePageUseCase(
                 PublicCapsuleSliceRequestDto(
                     15,
