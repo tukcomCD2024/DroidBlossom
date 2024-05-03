@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
@@ -27,10 +28,10 @@ class MyPageViewModelImpl @Inject constructor(
 
     private val _myPageEvents = MutableSharedFlow<MyPageViewModel.MyPageEvent>()
     override val myPageEvents: SharedFlow<MyPageViewModel.MyPageEvent>
-        get() =_myPageEvents.asSharedFlow()
+        get() = _myPageEvents.asSharedFlow()
 
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "",0,0))
+    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", 0, 0))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
@@ -49,19 +50,26 @@ class MyPageViewModelImpl @Inject constructor(
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
 
-    private val _capsuleType =  MutableStateFlow(MyPageFragment.SpinnerCapsuleType.SECRET)
+    private val _capsuleType = MutableStateFlow(MyPageFragment.SpinnerCapsuleType.SECRET)
     override val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
         get() = _capsuleType
 
     override var reloadMyInfo = false
+    override var clearCapsule = false
 
     init {
         load()
     }
 
-    override fun load(){
+    override fun load() {
         getMe()
         clearCapsules()
+    }
+
+    override fun myPageEvent(event: MyPageViewModel.MyPageEvent) {
+        viewModelScope.launch {
+            _myPageEvents.emit(event)
+        }
     }
 
 
@@ -72,20 +80,22 @@ class MyPageViewModelImpl @Inject constructor(
                     _myInfo.emit(it)
                     reloadMyInfo = false
                 }.onFail {
-                    _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                 }
             }
         }
     }
 
-    override fun getCapsulePage(){
-        when(capsuleType.value){
+    override fun getCapsulePage() {
+        when (capsuleType.value) {
             MyPageFragment.SpinnerCapsuleType.SECRET -> {
                 getSecretCapsulePage()
             }
+
             MyPageFragment.SpinnerCapsuleType.PUBLIC -> {
                 getPublicCapsulePage()
             }
+
             MyPageFragment.SpinnerCapsuleType.GROUP -> {
                 getGroupCapsulePage()
             }
@@ -106,17 +116,19 @@ class MyPageViewModelImpl @Inject constructor(
                         _myCapsules.emit(myCapsules.value + it.capsules)
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }.onFail {
-                        _myPageEvents.emit(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                        myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
                 }
+                myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }
     }
 
     private fun getPublicCapsulePage() {
         viewModelScope.launch {
-            if (hasNextPage.value){
-
+            if (hasNextPage.value) {
+                _myCapsules.emit(listOf())
+                myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }
     }
@@ -124,7 +136,8 @@ class MyPageViewModelImpl @Inject constructor(
     private fun getGroupCapsulePage() {
         viewModelScope.launch {
             if (hasNextPage.value) {
-
+                _myCapsules.emit(listOf())
+                myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }
     }
@@ -137,6 +150,7 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     override fun clearCapsules() {
+        clearCapsule = true
         viewModelScope.launch {
             _myCapsules.value = listOf()
             _lastCreatedTime.value = DateUtils.dataServerString
@@ -156,11 +170,11 @@ class MyPageViewModelImpl @Inject constructor(
 
     override fun clickSetting() {
         viewModelScope.launch {
-            _myPageEvents.emit(MyPageViewModel.MyPageEvent.ClickSetting)
+            myPageEvent(MyPageViewModel.MyPageEvent.ClickSetting)
         }
     }
 
-    override fun selectSpinnerItem(item:MyPageFragment.SpinnerCapsuleType) {
+    override fun selectSpinnerItem(item: MyPageFragment.SpinnerCapsuleType) {
         _capsuleType.value = item
         clearCapsules()
     }

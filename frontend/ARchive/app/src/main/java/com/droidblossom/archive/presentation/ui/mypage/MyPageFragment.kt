@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -171,7 +172,10 @@ class MyPageFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsules.collect { capsule ->
-                    if (capsule.isNotEmpty()) {
+                    if (viewModel.clearCapsule){
+                        viewModel.clearCapsule = false
+                    }else{
+                        Log.d("캡슐","{$capsule}")
                         viewModel.updateMyCapsulesUI()
                     }
                 }
@@ -199,6 +203,10 @@ class MyPageFragment :
 
                         is MyPageViewModel.MyPageEvent.ClickSetting -> {
                             startActivity(SettingActivity.newIntent(requireContext()))
+                        }
+
+                        is MyPageViewModel.MyPageEvent.HideLoading -> {
+                            binding.myPageSwipeRefreshLayout.isRefreshing = false
                         }
 
                         else -> {}

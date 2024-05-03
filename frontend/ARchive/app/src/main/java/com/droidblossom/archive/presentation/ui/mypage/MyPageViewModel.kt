@@ -1,6 +1,5 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import com.droidblossom.archive.domain.model.common.MyCapsule
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,6 +15,7 @@ interface MyPageViewModel {
     val lastCreatedTime : StateFlow<String>
     val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
     var reloadMyInfo:Boolean
+    var clearCapsule:Boolean
 
     fun getMe()
     fun clearCapsules()
@@ -26,9 +26,12 @@ interface MyPageViewModel {
     fun getCapsulePage()
     fun load()
     fun selectSpinnerItem(item:MyPageFragment.SpinnerCapsuleType)
+    fun myPageEvent(event: MyPageEvent)
 
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
+
+        object HideLoading : MyPageEvent()
 
         object ClickSetting : MyPageEvent()
 
