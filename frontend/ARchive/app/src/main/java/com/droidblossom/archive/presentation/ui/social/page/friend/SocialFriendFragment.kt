@@ -76,6 +76,9 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                         is SocialFriendViewModel.SocialFriendEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
+                        is SocialFriendViewModel.SocialFriendEvent.HideLoading -> {
+                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                        }
 
                         else -> {}
                     }
@@ -86,10 +89,33 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.publicCapsules.collect{ publicCapsules ->
-                    socialFriendCapsuleRVA.submitList(publicCapsules){
-                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                    if (viewModel.clearCapsule){
+                        viewModel.clearCapsule = false
+                    }else{
+                        socialFriendCapsuleRVA.submitList(publicCapsules){
+                            if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                                binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                                binding.socialFriendRV.scrollToPosition(0)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.socialFriendEvents.collect{  event->
+                    when (event){
+                        is SocialFriendViewModel.SocialFriendEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
+                        is SocialFriendViewModel.SocialFriendEvent.HideLoading ->{
                             binding.socialFriendSwipeRefreshLayout.isRefreshing = false
-                            binding.socialFriendRV.scrollToPosition(0)
+                        }
+                        else -> {
+
                         }
                     }
                 }

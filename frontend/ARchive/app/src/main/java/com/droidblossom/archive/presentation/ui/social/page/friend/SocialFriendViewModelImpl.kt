@@ -25,11 +25,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SocialFriendViewModelImpl @Inject constructor(
     private val publicCapsulePageUseCase: PublicCapsulePageUseCase
-): BaseViewModel(), SocialFriendViewModel {
+) : BaseViewModel(), SocialFriendViewModel {
 
     private val _socialFriendEvents = MutableSharedFlow<SocialFriendViewModel.SocialFriendEvent>()
     override val socialFriendEvents: SharedFlow<SocialFriendViewModel.SocialFriendEvent>
-        get() =_socialFriendEvents.asSharedFlow()
+        get() = _socialFriendEvents.asSharedFlow()
 
     private val _publicCapsules = MutableStateFlow(listOf<SocialCapsules>())
     override val publicCapsules: StateFlow<List<SocialCapsules>>
@@ -45,6 +45,8 @@ class SocialFriendViewModelImpl @Inject constructor(
     private val _lastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
+    override var clearCapsule = false
+
 
     init {
         getPublicCapsulePage()
@@ -69,7 +71,7 @@ class SocialFriendViewModelImpl @Inject constructor(
     }
 
 
-    override fun getPublicCapsulePage(){
+    override fun getPublicCapsulePage() {
         viewModelScope.launch {
             if (hasNextPage.value) {
                 publicCapsulePageUseCase(
@@ -79,38 +81,29 @@ class SocialFriendViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
+                        val currentIds = publicCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
+                        val newCapsules = it.publicCapsules.filter { capsule -> capsule.capsuleId !in currentIds }
+                        _publicCapsules.emit(publicCapsules.value + newCapsules)
                         _hasNextPage.value = it.hasNext
-                        _publicCapsules.emit(publicCapsules.value + it.publicCapsules)
-                        _lastCreatedTime.value = publicCapsules.value.last().createdDate
+                        _lastCreatedTime.value = newCapsules.last().createdDate
                     }.onFail {
                         socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
                     }
                 }
+                socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.HideLoading)
             }
         }
     }
 
-    override fun getLatestPublicCapsule(){
-        viewModelScope.launch {
-            _publicCapsules.emit(listOf())
-            publicCapsulePageUseCase(
-                PublicCapsuleSliceRequestDto(
-                    15,
-                    DateUtils.dataServerString
-                )
-            ).collect { result ->
-                result.onSuccess {
-                    _hasNextPage.value = it.hasNext
-                    _publicCapsules.emit(it.publicCapsules)
-                    _lastCreatedTime.value = publicCapsules.value.last().createdDate
-                }.onFail {
-                    socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
-                }
-            }
-        }
+    override fun getLatestPublicCapsule() {
+        clearCapsule = true
+        _publicCapsules.value = listOf()
+        _hasNextPage.value = true
+        _lastCreatedTime.value = DateUtils.dataServerString
+        getPublicCapsulePage()
     }
 
-    override fun searchFriendCapsule(){
+    override fun searchFriendCapsule() {
 
     }
 

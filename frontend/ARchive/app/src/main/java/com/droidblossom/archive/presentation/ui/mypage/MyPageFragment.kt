@@ -175,7 +175,6 @@ class MyPageFragment :
                     if (viewModel.clearCapsule){
                         viewModel.clearCapsule = false
                     }else{
-                        Log.d("캡슐","{$capsule}")
                         viewModel.updateMyCapsulesUI()
                     }
                 }

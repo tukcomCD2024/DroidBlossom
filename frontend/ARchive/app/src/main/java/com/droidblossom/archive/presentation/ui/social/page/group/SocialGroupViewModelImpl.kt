@@ -1,16 +1,16 @@
 package com.droidblossom.archive.presentation.ui.social.page.group
 
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.open.request.PublicCapsuleSliceRequestDto
 import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendViewModel
 import com.droidblossom.archive.util.DateUtils
-import com.droidblossom.archive.util.onFail
-import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +19,9 @@ class SocialGroupViewModelImpl @Inject constructor(
 
 ): BaseViewModel(), SocialGroupViewModel {
 
+    private val _socialGroupEvents = MutableSharedFlow<SocialGroupViewModel.SocialGroupEvent>()
+    override val socialGroupEvents: SharedFlow<SocialGroupViewModel.SocialGroupEvent>
+        get() =_socialGroupEvents.asSharedFlow()
 
     private val _isSearchOpen = MutableStateFlow(false)
     override val isSearchOpen: StateFlow<Boolean>
@@ -34,9 +37,16 @@ class SocialGroupViewModelImpl @Inject constructor(
     private val _lastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
+    override var clearCapsule = false
 
     init {
         //getGroupCapsulePage()
+    }
+
+    override fun socialGroupEvent(event: SocialGroupViewModel.SocialGroupEvent) {
+        viewModelScope.launch {
+            _socialGroupEvents.emit(event)
+        }
     }
 
     override fun openSearchGroupCapsule() {
@@ -58,47 +68,17 @@ class SocialGroupViewModelImpl @Inject constructor(
     override fun getGroupCapsulePage(){
         viewModelScope.launch {
             if (hasNextPage.value) {
-                /*
-                publicCapsulePageUseCase(
-                    PublicCapsuleSliceRequestDto(
-                        15,
-                        lastCreatedTime.value
-                    )
-                ).collect { result ->
-                    result.onSuccess {
-                        _hasNextPage.value = it.hasNext
-                        _publicCapsules.emit(publicCapsules.value + it.publicCapsules)
-                        _lastCreatedTime.value = publicCapsules.value.last().createdDate
-                    }.onFail {
-                        socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
-                    }
-                }
 
-                */
             }
         }
     }
 
     override fun getLatestGroupCapsule(){
-        viewModelScope.launch {
-            /*
-            publicCapsulePageUseCase(
-                PublicCapsuleSliceRequestDto(
-                    15,
-                    DateUtils.dataServerString
-                )
-            ).collect { result ->
-                result.onSuccess {
-                    _hasNextPage.value = it.hasNext
-                    _publicCapsules.emit(it.publicCapsules)
-                    _lastCreatedTime.value = publicCapsules.value.last().createdDate
-                }.onFail {
-                    socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
-                }
-            }
-
-             */
-        }
+        clearCapsule = true
+        _groupCapsules.value = listOf()
+        _hasNextPage.value = true
+        _lastCreatedTime.value = DateUtils.dataServerString
+        getGroupCapsulePage()
     }
 
 }

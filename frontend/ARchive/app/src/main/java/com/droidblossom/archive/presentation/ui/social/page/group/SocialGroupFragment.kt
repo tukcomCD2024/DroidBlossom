@@ -24,6 +24,7 @@ import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
 import com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel
+import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendViewModel
 import com.droidblossom.archive.util.SpaceItemDecoration
 import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,10 +76,33 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.groupCapsules.collect{ groupCapsules ->
-                    socialFriendCapsuleRVA.submitList(groupCapsules){
-                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                    if (viewModel.clearCapsule){
+                        viewModel.clearCapsule = false
+                    }else{
+                        socialFriendCapsuleRVA.submitList(groupCapsules){
+                            if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                                binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                                binding.socialGroupRV.scrollToPosition(0)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.socialGroupEvents.collect{  event->
+                    when (event){
+                        is SocialGroupViewModel.SocialGroupEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
+                        is SocialGroupViewModel.SocialGroupEvent.HideLoading ->{
                             binding.socialFriendSwipeRefreshLayout.isRefreshing = false
-                            binding.socialGroupRV.scrollToPosition(0)
+                        }
+                        else -> {
+
                         }
                     }
                 }
