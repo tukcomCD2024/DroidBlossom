@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Near
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
+import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
@@ -26,6 +27,7 @@ public class CapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
+    private final MemberFriendQueryRepository memberFriendQueryRepository;
     private final GeoTransformManager geoTransformManager;
 
     /**
@@ -89,5 +91,52 @@ public class CapsuleService {
         capsuleRepository.save(capsule);
 
         return capsule;
+    }
+
+    /**
+     * 지도에서 캡슐을 찾기 위해 사용자의 현재 위치에서 특정 반경에서 친구들의 캡슐들을 요약 조회한다
+     * @param memberId 사용자 아이디
+     * @param dto 현재 위치와 반경
+     * @return 지도용 캡슐 요약 조회들
+     */
+    @Transactional(readOnly = true)
+    public List<NearbyCapsuleSummaryDto> findFriendsCapsulesByCurrentLocation(
+        Long memberId,
+        CoordinateRangeDto dto
+    ) {
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
+
+        final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
+
+        List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
+
+        return capsuleQueryRepository.findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+            friendIds,
+            mbr
+        );
+    }
+
+    /**
+     * AR로 캡슐을 찾기 위해 사용자의 현재 위치에서 특정 반경에서 친구들의 캡슐들을 요약 조회한다
+     * @param memberId 사용자 아이디
+     * @param dto 현재 위치와 반경
+     * @return AR용 캡슐 요약 조회들
+     */
+    public List<NearbyARCapsuleSummaryDto> findFriendsARCapsulesByCurrentLocation(
+        Long memberId,
+        CoordinateRangeDto dto
+    ) {
+        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+            dto.longitude());
+
+        final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
+
+        List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
+
+        return capsuleQueryRepository.findFriendsARCapsulesByCurrentLocation(
+            friendIds,
+            mbr
+        );
     }
 }

@@ -1,9 +1,19 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository;
 
+import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
+import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
+import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
+
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ComparablePath;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
@@ -15,6 +25,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Near
 public class CapsuleQueryRepository {
 
     private final EntityManager entityManager;
+    private final JPAQueryFactory jpaQueryFactory;
 
     /**
      * 캡슐 타입에 따라 현재 위치에서 범위 내의 캡슐을 조회한다.
@@ -124,5 +135,56 @@ public class CapsuleQueryRepository {
         if (capsuleType != CapsuleType.ALL) {
             query.setParameter("capsuleType", capsuleType);
         }
+    }
+
+    public List<NearbyCapsuleSummaryDto> findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+        List<Long> friendIds,
+        Polygon mbr
+    ) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    NearbyCapsuleSummaryDto.class,
+                    capsule.id,
+                    capsule.point,
+                    capsule.type
+                )
+            )
+            .from(capsule)
+            .join(capsule.capsuleSkin, capsuleSkin)
+            .join(capsule.member, member)
+            .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.in(friendIds))
+                .and(capsule.type.eq(CapsuleType.PUBLIC)))
+            .fetch();
+    }
+
+    private BooleanExpression ST_Contains(Polygon mbr, ComparablePath<Point> point) {
+        return Expressions.booleanTemplate("ST_Contains({0}, {1})", mbr, point);
+    }
+
+    public List<NearbyARCapsuleSummaryDto> findFriendsARCapsulesByCurrentLocation(
+        List<Long> friendIds,
+        Polygon mbr
+    ) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    NearbyARCapsuleSummaryDto.class,
+                    capsule.id,
+                    capsule.point,
+                    member.nickname,
+                    capsuleSkin.imageUrl,
+                    capsule.title,
+                    capsule.dueDate,
+                    capsule.isOpened,
+                    capsule.type
+                )
+            )
+            .from(capsule)
+            .join(capsule.capsuleSkin, capsuleSkin)
+            .join(capsule.member, member)
+            .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.in(friendIds))
+                .and(capsule.type.eq(CapsuleType.PUBLIC)))
+            .fetch();
     }
 }

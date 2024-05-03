@@ -1,10 +1,10 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.api;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,10 +29,13 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
+@Validated
 @RestController
 @RequestMapping("/capsules")
 @RequiredArgsConstructor
 public class CapsuleApiController implements CapsuleApi {
+
+    private static final int AR_SEARCH_DISTANCE = 100;
 
     private final CapsuleService capsuleService;
     private final CapsuleFacade capsuleFacade;
@@ -95,6 +98,51 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
+    @GetMapping(value = "/friends/map/nearby", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyFriendsCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance
+    ) {
+        List<NearbyCapsuleSummaryDto> capsules = capsuleService.findFriendsCapsulesByCurrentLocation(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance)
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                NearbyCapsuleResponse.createOf(capsules, geoTransformManager::changePoint3857To4326)
+            )
+        );
+    }
+
+    @GetMapping(value = "/friends/ar/nearby", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyFriendsCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude
+    ) {
+        List<NearbyARCapsuleSummaryDto> capsules = capsuleService.findFriendsARCapsulesByCurrentLocation(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, AR_SEARCH_DISTANCE)
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                NearbyARCapsuleResponse.createOf(
+                    capsules,
+                    geoTransformManager::changePoint3857To4326,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
+            )
+        );
+    }
+
     @PatchMapping(value = "/{capsule_id}/opened", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
@@ -113,7 +161,7 @@ public class CapsuleApiController implements CapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<String>> createSecretCapsule(
         @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final CapsuleCreateRequest request
+        @RequestBody final CapsuleCreateRequest request
     ) {
         capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.SECRET);
 
@@ -128,7 +176,7 @@ public class CapsuleApiController implements CapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<String>> createPublicCapsule(
         @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final CapsuleCreateRequest request) {
+        @RequestBody final CapsuleCreateRequest request) {
         capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.PUBLIC);
 
         return ResponseEntity.ok(
