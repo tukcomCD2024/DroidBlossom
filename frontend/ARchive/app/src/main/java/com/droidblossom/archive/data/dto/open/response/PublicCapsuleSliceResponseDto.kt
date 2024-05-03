@@ -10,6 +10,6 @@ data class PublicCapsuleSliceResponseDto(
 ){
     fun toModel()= PublicCapsuleSliceResponse(
         publicCapsules = this.publicCapsules.map { it.toModel() },
-        hasNext = false
+        hasNext = this.hasNext
     )
 }
