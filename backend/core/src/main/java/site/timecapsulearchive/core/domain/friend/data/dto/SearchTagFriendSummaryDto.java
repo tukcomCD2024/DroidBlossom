@@ -9,7 +9,8 @@ public record SearchTagFriendSummaryDto(
     String profileUrl,
     String nickname,
     Boolean isFriend,
-    Boolean isFriendRequest
+    Boolean isFriendInviteToFriend,
+    Boolean isFriendInviteToMe
 ) {
 
     public SearchTagFriendSummaryResponse toResponse() {
@@ -18,7 +19,8 @@ public record SearchTagFriendSummaryDto(
             .profileUrl(profileUrl)
             .nickname(nickname)
             .isFriend(isFriend)
-            .isFriendRequest(isFriendRequest)
+            .isFriendInviteToFriend(isFriendInviteToFriend)
+            .isFriendInviteToMe(isFriendInviteToMe)
             .build();
     }
 
