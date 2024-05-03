@@ -45,7 +45,7 @@ public class CapsuleApiController implements CapsuleApi {
         return null;
     }
 
-    @GetMapping(value = "/nearby/ar", produces = {"application/json"})
+    @GetMapping(value = "/my/ar/nearby", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
         @AuthenticationPrincipal final Long memberId,
@@ -72,7 +72,7 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    @GetMapping(value = "/nearby", produces = {"application/json"})
+    @GetMapping(value = "/my/map/nearby", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
         @AuthenticationPrincipal final Long memberId,
