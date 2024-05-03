@@ -1,25 +1,22 @@
 package com.droidblossom.archive.presentation.ui.social.page.friend
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.open.request.PublicCapsuleSliceRequestDto
-import com.droidblossom.archive.domain.model.common.MyCapsule
 import com.droidblossom.archive.domain.model.common.SocialCapsules
-import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.usecase.open.PublicCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModel
-import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,11 +78,15 @@ class SocialFriendViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        val currentIds = publicCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
-                        val newCapsules = it.publicCapsules.filter { capsule -> capsule.capsuleId !in currentIds }
-                        _publicCapsules.emit(publicCapsules.value + newCapsules)
-                        _hasNextPage.value = it.hasNext
-                        _lastCreatedTime.value = newCapsules.last().createdDate
+                        viewModelScope.launch(Dispatchers.IO) {
+                            val currentIds = publicCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
+                            val newCapsules = it.publicCapsules.filter { capsule -> capsule.capsuleId !in currentIds }
+                            withContext(Dispatchers.Main) {
+                                _publicCapsules.emit(publicCapsules.value + newCapsules)
+                                _hasNextPage.value = it.hasNext
+                                _lastCreatedTime.value = publicCapsules.value.last().createdDate
+                            }
+                        }
                     }.onFail {
                         socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
                     }
