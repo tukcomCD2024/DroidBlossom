@@ -93,7 +93,7 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        updateMemberData(memberId, plain);
+        updateToVerifiedMember(memberId, plain);
 
         return tokenManager.createNewToken(memberId);
     }
@@ -103,7 +103,7 @@ public class MessageVerificationService {
         return !certificationNumber.equals(findCertificationNumber);
     }
 
-    private void updateMemberData(final Long memberId, final byte[] plain) {
+    private void updateToVerifiedMember(final Long memberId, final byte[] plain) {
         final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
