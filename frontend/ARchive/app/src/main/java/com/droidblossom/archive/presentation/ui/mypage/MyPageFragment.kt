@@ -1,7 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -183,10 +182,11 @@ class MyPageFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsulesUI.collect { capsule ->
-                    capsuleRVA.submitList(capsule)
-                    if (binding.myPageSwipeRefreshLayout.isRefreshing){
-                        binding.myPageSwipeRefreshLayout.isRefreshing = false
-                        binding.myPageRV.scrollToPosition(0)
+                    capsuleRVA.submitList(capsule){
+                        if (binding.myPageSwipeRefreshLayout.isRefreshing){
+                            binding.myPageSwipeRefreshLayout.isRefreshing = false
+                            binding.myPageRV.scrollToPosition(0)
+                        }
                     }
                 }
             }
@@ -221,6 +221,15 @@ class MyPageFragment :
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.capsuleType.collect {
+                    viewModel.clearCapsules()
+                }
+            }
+        }
+
     }
 
     override fun onResume() {

@@ -12,12 +12,14 @@ import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,7 +60,8 @@ class MyPageViewModelImpl @Inject constructor(
     override var clearCapsule = false
 
     init {
-        load()
+        getMe()
+        getCapsulePage()
     }
 
     override fun load() {
@@ -103,6 +106,7 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     private fun getSecretCapsulePage() {
+        Log.d("흠","엥")
         viewModelScope.launch {
             if (hasNextPage.value) {
                 secretCapsulePageUseCase(
@@ -112,9 +116,16 @@ class MyPageViewModelImpl @Inject constructor(
                     ).toDto()
                 ).collect { result ->
                     result.onSuccess {
-                        _hasNextPage.value = it.hasNext
-                        _myCapsules.emit(myCapsules.value + it.capsules)
-                        _lastCreatedTime.value = myCapsules.value.last().createdDate
+                        viewModelScope.launch(Dispatchers.IO) {
+                            val currentIds = myCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
+                            val newCapsules = it.capsules.filter { capsule -> capsule.capsuleId !in currentIds }
+                            Log.d("뭐냐", "${myCapsules.value + newCapsules}")
+                            withContext(Dispatchers.Main) {
+                                _myCapsules.emit(myCapsules.value + newCapsules)
+                                _hasNextPage.value = it.hasNext
+                                _lastCreatedTime.value = myCapsules.value.last().createdDate
+                            }
+                        }
                     }.onFail {
                         myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
@@ -150,6 +161,7 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     override fun clearCapsules() {
+        Log.d("유아이","클리어")
         clearCapsule = true
         viewModelScope.launch {
             _myCapsules.value = listOf()
@@ -176,7 +188,6 @@ class MyPageViewModelImpl @Inject constructor(
 
     override fun selectSpinnerItem(item: MyPageFragment.SpinnerCapsuleType) {
         _capsuleType.value = item
-        clearCapsules()
     }
 
 }
