@@ -47,7 +47,7 @@ public class CapsuleApiController implements CapsuleApi {
 
     @GetMapping(value = "/my/ar/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyMyCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
         @RequestParam(value = "longitude") final double longitude,
@@ -74,7 +74,7 @@ public class CapsuleApiController implements CapsuleApi {
 
     @GetMapping(value = "/my/map/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyMyCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
         @RequestParam(value = "longitude") final double longitude,

@@ -56,7 +56,7 @@ public interface CapsuleApi {
             description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
-    ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+    ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyMyCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
@@ -88,7 +88,7 @@ public interface CapsuleApi {
             description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
-    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
+    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyMyCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
