@@ -74,7 +74,8 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(e.getMessage(), e);
 
-        final ErrorResponse response = ErrorResponse.fromParameter(REQUEST_PARAMETER_NOT_FOUND_ERROR, e.getMessage());
+        final ErrorResponse response = ErrorResponse.fromParameter(
+            REQUEST_PARAMETER_NOT_FOUND_ERROR, e.getMessage());
         return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
             .body(response);
     }
