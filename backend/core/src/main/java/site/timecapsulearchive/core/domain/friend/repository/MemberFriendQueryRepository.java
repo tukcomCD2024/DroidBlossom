@@ -16,7 +16,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.entity.QFriendInvite;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
@@ -119,7 +119,7 @@ public class MemberFriendQueryRepository {
             .fetch();
     }
 
-    public Optional<SearchTagFriendSummaryDto> findFriendsByTag(
+    public Optional<SearchFriendSummaryDtoByTag> findFriendsByTag(
         final Long memberId,
         final String tag
     ) {
@@ -129,7 +129,7 @@ public class MemberFriendQueryRepository {
         return Optional.ofNullable(jpaQueryFactory
             .select(
                 Projections.constructor(
-                    SearchTagFriendSummaryDto.class,
+                    SearchFriendSummaryDtoByTag.class,
                     member.id,
                     member.profileUrl,
                     member.nickname,

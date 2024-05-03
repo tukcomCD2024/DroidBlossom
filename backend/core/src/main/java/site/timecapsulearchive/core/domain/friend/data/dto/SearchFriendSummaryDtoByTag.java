@@ -4,7 +4,7 @@ import lombok.Builder;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 
 @Builder
-public record SearchTagFriendSummaryDto(
+public record SearchFriendSummaryDtoByTag(
     Long id,
     String profileUrl,
     String nickname,
