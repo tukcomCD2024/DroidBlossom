@@ -18,7 +18,7 @@ interface MyPageViewModel {
     var clearCapsule:Boolean
 
     fun getMe()
-    fun clearCapsules()
+    fun clearCapsules(setting:Boolean)
     fun updateMyCapsulesUI()
     fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long)
     fun clickSetting()

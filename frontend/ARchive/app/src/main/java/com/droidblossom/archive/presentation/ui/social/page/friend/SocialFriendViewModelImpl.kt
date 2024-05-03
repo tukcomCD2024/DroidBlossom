@@ -78,7 +78,7 @@ class SocialFriendViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        viewModelScope.launch(Dispatchers.IO) {
+                        withContext(Dispatchers.Default) {
                             val currentIds = publicCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
                             val newCapsules = it.publicCapsules.filter { capsule -> capsule.capsuleId !in currentIds }
                             withContext(Dispatchers.Main) {

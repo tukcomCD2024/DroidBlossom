@@ -61,12 +61,10 @@ class MyPageViewModelImpl @Inject constructor(
 
     init {
         getMe()
-        getCapsulePage()
     }
-
     override fun load() {
         getMe()
-        clearCapsules()
+        clearCapsules(true)
     }
 
     override fun myPageEvent(event: MyPageViewModel.MyPageEvent) {
@@ -106,7 +104,6 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     private fun getSecretCapsulePage() {
-        Log.d("흠","엥")
         viewModelScope.launch {
             if (hasNextPage.value) {
                 secretCapsulePageUseCase(
@@ -116,7 +113,7 @@ class MyPageViewModelImpl @Inject constructor(
                     ).toDto()
                 ).collect { result ->
                     result.onSuccess {
-                        viewModelScope.launch(Dispatchers.IO) {
+                        withContext(Dispatchers.Default) {
                             val currentIds = myCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
                             val newCapsules = it.capsules.filter { capsule -> capsule.capsuleId !in currentIds }
                             Log.d("뭐냐", "${myCapsules.value + newCapsules}")
@@ -160,9 +157,8 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun clearCapsules() {
-        Log.d("유아이","클리어")
-        clearCapsule = true
+    override fun clearCapsules(setting:Boolean) {
+        clearCapsule = setting
         viewModelScope.launch {
             _myCapsules.value = listOf()
             _lastCreatedTime.value = DateUtils.dataServerString
@@ -189,5 +185,4 @@ class MyPageViewModelImpl @Inject constructor(
     override fun selectSpinnerItem(item: MyPageFragment.SpinnerCapsuleType) {
         _capsuleType.value = item
     }
-
 }

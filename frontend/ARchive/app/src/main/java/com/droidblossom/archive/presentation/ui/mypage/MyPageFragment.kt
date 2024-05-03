@@ -225,11 +225,10 @@ class MyPageFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleType.collect {
-                    viewModel.clearCapsules()
+                    viewModel.clearCapsules(false)
                 }
             }
         }
-
     }
 
     override fun onResume() {
