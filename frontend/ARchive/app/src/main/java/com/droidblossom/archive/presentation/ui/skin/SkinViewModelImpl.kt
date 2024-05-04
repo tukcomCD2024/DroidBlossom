@@ -66,7 +66,11 @@ class SkinViewModelImpl @Inject constructor(
                             val currentIds = skins.value.map { skin -> skin.id }.toSet()
                             val newCapsules = it.skins.filter { skin -> skin.id !in currentIds }
                             withContext(Dispatchers.Main) {
-                                _skins.emit(skins.value + newCapsules)
+                                if (skins.value.isEmpty()){
+                                    _skins.emit(newCapsules)
+                                }else{
+                                    _skins.emit(skins.value + newCapsules)
+                                }
                                 _hasNextSkins.value = it.hasNext
                                 _lastCreatedSkinTime.value = skins.value.last().createdAt
                             }
