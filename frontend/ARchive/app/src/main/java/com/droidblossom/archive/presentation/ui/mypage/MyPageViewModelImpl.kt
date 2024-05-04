@@ -118,7 +118,11 @@ class MyPageViewModelImpl @Inject constructor(
                             val newCapsules = it.capsules.filter { capsule -> capsule.capsuleId !in currentIds }
                             Log.d("뭐냐", "${myCapsules.value + newCapsules}")
                             withContext(Dispatchers.Main) {
-                                _myCapsules.emit(myCapsules.value + newCapsules)
+                                if (myCapsules.value.isEmpty()) {
+                                    _myCapsules.emit(newCapsules)
+                                } else {
+                                    _myCapsules.emit(myCapsules.value + newCapsules)
+                                }
                                 _hasNextPage.value = it.hasNext
                                 _lastCreatedTime.value = myCapsules.value.last().createdDate
                             }

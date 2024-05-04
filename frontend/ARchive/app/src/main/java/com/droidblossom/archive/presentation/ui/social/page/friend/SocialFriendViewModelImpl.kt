@@ -82,7 +82,11 @@ class SocialFriendViewModelImpl @Inject constructor(
                             val currentIds = publicCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
                             val newCapsules = it.publicCapsules.filter { capsule -> capsule.capsuleId !in currentIds }
                             withContext(Dispatchers.Main) {
-                                _publicCapsules.emit(publicCapsules.value + newCapsules)
+                                if (publicCapsules.value.isEmpty()) {
+                                    _publicCapsules.emit(newCapsules)
+                                } else {
+                                    _publicCapsules.emit(publicCapsules.value + newCapsules)
+                                }
                                 _hasNextPage.value = it.hasNext
                                 _lastCreatedTime.value = publicCapsules.value.last().createdDate
                             }

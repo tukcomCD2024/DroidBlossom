@@ -78,8 +78,13 @@ class FriendViewModelImpl @Inject constructor(
                 friendsPageUseCase(15, friendLastCreatedTime.value).collect { result ->
                     result.onSuccess {
                         friendHasNextPage.value = it.hasNext
-                        _friendListUI.emit(_friendListUI.value + it.friends)
-                        _friendList.emit(friendList.value + it.friends)
+                        if (friendListUI.value.isEmpty()){
+                            _friendListUI.emit(it.friends)
+                            _friendList.emit(it.friends)
+                        } else {
+                            _friendListUI.emit(_friendListUI.value + it.friends)
+                            _friendList.emit(friendList.value + it.friends)
+                        }
                         friendLastCreatedTime.value = it.friends.last().createdAt
                     }.onFail {
                         _friendEvent.emit(
