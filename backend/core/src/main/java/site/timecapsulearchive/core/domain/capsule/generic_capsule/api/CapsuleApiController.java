@@ -4,7 +4,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +28,10 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
-@Validated
 @RestController
 @RequestMapping("/capsules")
 @RequiredArgsConstructor
 public class CapsuleApiController implements CapsuleApi {
-
-    private static final int AR_SEARCH_DISTANCE = 100;
 
     private final CapsuleService capsuleService;
     private final CapsuleFacade capsuleFacade;
@@ -106,7 +102,7 @@ public class CapsuleApiController implements CapsuleApi {
         @RequestParam(value = "longitude") final double longitude,
         @RequestParam(value = "distance") final double distance
     ) {
-        List<NearbyCapsuleSummaryDto> capsules = capsuleService.findFriendsCapsulesByCurrentLocation(
+        final List<NearbyCapsuleSummaryDto> capsules = capsuleService.findFriendsCapsulesByCurrentLocation(
             memberId,
             CoordinateRangeDto.from(latitude, longitude, distance)
         );
@@ -124,11 +120,12 @@ public class CapsuleApiController implements CapsuleApi {
     public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyFriendsCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
-        @RequestParam(value = "longitude") final double longitude
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance
     ) {
-        List<NearbyARCapsuleSummaryDto> capsules = capsuleService.findFriendsARCapsulesByCurrentLocation(
+        final List<NearbyARCapsuleSummaryDto> capsules = capsuleService.findFriendsARCapsulesByCurrentLocation(
             memberId,
-            CoordinateRangeDto.from(latitude, longitude, AR_SEARCH_DISTANCE)
+            CoordinateRangeDto.from(latitude, longitude, distance)
         );
 
         return ResponseEntity.ok(

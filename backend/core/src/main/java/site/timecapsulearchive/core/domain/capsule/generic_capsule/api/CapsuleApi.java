@@ -168,7 +168,10 @@ public interface CapsuleApi {
 
         @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
         @Range(min = -180, max = 180, message = "경도는 -180과 180 사이여야 합니다.")
-        double longitude
+        double longitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
+        double distance
     );
 
     @Operation(

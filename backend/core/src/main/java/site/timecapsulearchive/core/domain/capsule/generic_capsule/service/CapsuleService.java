@@ -109,7 +109,7 @@ public class CapsuleService {
 
         final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
-        List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
+        final List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
 
         return capsuleQueryRepository.findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
             friendIds,
@@ -127,12 +127,12 @@ public class CapsuleService {
         Long memberId,
         CoordinateRangeDto dto
     ) {
-        Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
+        final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),
             dto.longitude());
 
         final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
-        List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
+        final List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
 
         return capsuleQueryRepository.findFriendsARCapsulesByCurrentLocation(
             friendIds,
