@@ -23,9 +23,9 @@ public class GroupCapsuleQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Slice<MyGroupCapsuleDto> findMyGroupCapsuleSlice(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
         final List<MyGroupCapsuleDto> groupCapsules = jpaQueryFactory
             .select(

@@ -10,9 +10,9 @@ public record MyGroupCapsuleSliceResponse(
 ) {
 
     public static MyGroupCapsuleSliceResponse createOf(
-        List<MyGroupCapsuleDto> groupCapsules,
-        boolean hasNext,
-        Function<String, String> singlePreSignUrlFunction
+        final List<MyGroupCapsuleDto> groupCapsules,
+        final boolean hasNext,
+        final Function<String, String> singlePreSignUrlFunction
     ) {
         List<MyGroupCapsuleResponse> groupCapsuleResponses = groupCapsules.stream()
             .map(capsule -> capsule.toResponse(singlePreSignUrlFunction))

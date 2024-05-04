@@ -70,9 +70,9 @@ public class PublicCapsuleService {
      * @return 사용자가 생성한 공개 캡슐 목록
      */
     public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
         return publicCapsuleQueryRepository.findMyPublicCapsuleSlice(memberId, size, createdAt);
     }

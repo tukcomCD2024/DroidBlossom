@@ -170,9 +170,9 @@ public class PublicCapsuleQueryRepository {
     }
 
     public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
         final List<MyPublicCapsuleDto> publicCapsules = jpaQueryFactory
             .select(

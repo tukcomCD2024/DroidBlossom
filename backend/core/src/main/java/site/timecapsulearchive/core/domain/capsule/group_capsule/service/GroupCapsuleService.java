@@ -49,9 +49,9 @@ public class GroupCapsuleService {
      * @return 사용자가 생성한 그룹 캡슐 목록
      */
     public Slice<MyGroupCapsuleDto> findMyGroupCapsuleSlice(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
     ) {
         return groupCapsuleQueryRepository.findMyGroupCapsuleSlice(memberId, size, createdAt);
     }

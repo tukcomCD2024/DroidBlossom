@@ -133,7 +133,7 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        Slice<MyPublicCapsuleDto> publicCapsules = publicCapsuleService.findMyPublicCapsuleSlice(
+        final Slice<MyPublicCapsuleDto> publicCapsules = publicCapsuleService.findMyPublicCapsuleSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(

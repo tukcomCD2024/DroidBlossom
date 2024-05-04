@@ -16,9 +16,9 @@ public record MyPublicCapsuleSliceResponse(
 ) {
 
     public static MyPublicCapsuleSliceResponse createOf(
-        List<MyPublicCapsuleDto> publicCapsules,
-        boolean hasNext,
-        Function<String, String> singlePreSignUrlFunction
+        final List<MyPublicCapsuleDto> publicCapsules,
+        final boolean hasNext,
+        final Function<String, String> singlePreSignUrlFunction
     ) {
         List<MyPublicCapsuleResponse> publicCapsuleResponses = publicCapsules.stream()
             .map(capsule -> capsule.toResponse(singlePreSignUrlFunction))

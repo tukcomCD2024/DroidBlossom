@@ -15,7 +15,8 @@ public record MyPublicCapsuleDto(
     CapsuleType capsuleType
 ) {
 
-    public MyPublicCapsuleResponse toResponse(Function<String, String> singlePreSignUrlFunction) {
+    public MyPublicCapsuleResponse toResponse(
+        final Function<String, String> singlePreSignUrlFunction) {
         return MyPublicCapsuleResponse.builder()
             .capsuleId(capsuleId)
             .skinUrl(singlePreSignUrlFunction.apply(skinUrl))

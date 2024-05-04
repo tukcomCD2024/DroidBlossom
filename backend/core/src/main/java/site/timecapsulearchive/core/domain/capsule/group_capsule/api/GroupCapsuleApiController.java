@@ -68,7 +68,7 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     @GetMapping(value = "/my", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<MyGroupCapsuleSliceResponse>> getMyGroupCapsules(
-        @AuthenticationPrincipal Long memberId,
+        @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
