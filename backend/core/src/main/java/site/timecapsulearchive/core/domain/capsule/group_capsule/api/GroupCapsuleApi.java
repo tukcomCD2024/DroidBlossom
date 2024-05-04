@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,12 +23,13 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.Gr
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 
+@Validated
 public interface GroupCapsuleApi {
 
     @Operation(
@@ -60,7 +62,7 @@ public interface GroupCapsuleApi {
         @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true)
         Long groupId,
 
-        GroupCapsuleCreateRequest request
+        @Valid GroupCapsuleCreateRequest request
     );
 
     @Operation(

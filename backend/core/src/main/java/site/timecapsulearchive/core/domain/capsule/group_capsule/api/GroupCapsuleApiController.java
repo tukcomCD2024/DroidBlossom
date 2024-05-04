@@ -27,7 +27,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/groups-capsules")
 @RequiredArgsConstructor
 public class GroupCapsuleApiController implements GroupCapsuleApi {
 
@@ -36,7 +36,7 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @PostMapping(
-        value = "/{group_id}/capsules",
+        value = "/{group_id}",
         consumes = {"application/json"}
     )
     @Override
@@ -65,7 +65,7 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         return null;
     }
 
-    @GetMapping(value = "/my/capsules", produces = {"application/json"})
+    @GetMapping(value = "/my", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<MyGroupCapsuleSliceResponse>> getMyGroupCapsules(
         @AuthenticationPrincipal Long memberId,
