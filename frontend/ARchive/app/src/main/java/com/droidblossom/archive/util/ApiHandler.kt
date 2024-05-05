@@ -2,6 +2,8 @@ package com.droidblossom.archive.util
 
 import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.di.RetrofitModule
+import com.droidblossom.archive.presentation.model.AppEvent
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Response
 
 suspend fun <T : Any, R : Any> apiHandler(
@@ -9,6 +11,7 @@ suspend fun <T : Any, R : Any> apiHandler(
     mapper: (T) -> R
 ): RetrofitResult<R> {
     if (ARchiveApplication.isOnline().not()) {
+        EventBus.getDefault().post(AppEvent.NetworkDisconnectedEvent)
         return RetrofitResult.Error(Exception(RetrofitModule.NETWORK_EXCEPTION_OFFLINE))
     }
 
