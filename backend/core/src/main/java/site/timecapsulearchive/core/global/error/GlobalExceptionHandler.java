@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
+import site.timecapsulearchive.core.global.error.exception.NullCheckValidateException;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
 @RestControllerAdvice
@@ -64,6 +65,18 @@ public class GlobalExceptionHandler {
 
         final ErrorResponse response = ErrorResponse.fromErrorCode(INPUT_INVALID_TYPE_ERROR);
         return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
+            .body(response);
+    }
+
+    @ExceptionHandler(NullCheckValidateException.class)
+    protected ResponseEntity<ErrorResponse> handleNullCheckValidException(
+        NullCheckValidateException e
+    ) {
+        log.warn(e.getMessage(), e);
+
+        final ErrorResponse response = ErrorResponse.fromParameter(
+            REQUEST_PARAMETER_NOT_FOUND_ERROR, e.getMessage());
+        return ResponseEntity.status(REQUEST_PARAMETER_NOT_FOUND_ERROR.getStatus())
             .body(response);
     }
 

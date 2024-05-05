@@ -35,11 +35,8 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         owner = MemberFixture.member(0);
         entityManager.persist(owner);
 
-        for (int i = 1; i < 21; i++) {
-            Member friend = MemberFixture.member(i);
-            friends.add(friend);
-            entityManager.persist(friend);
-        }
+        friends.addAll(MemberFixture.members(1, 11));
+        friends.forEach(entityManager::persist);
     }
 
     @Test
