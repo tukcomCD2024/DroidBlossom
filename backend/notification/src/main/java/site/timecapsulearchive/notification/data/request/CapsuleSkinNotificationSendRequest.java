@@ -6,22 +6,22 @@ import site.timecapsulearchive.notification.entity.NotificationStatus;
 
 public record CapsuleSkinNotificationSendRequest(
 
-    @NotNull
+    @NotNull(message = "멤버 아이디는 필수 입니다.")
     Long memberId,
 
-    @NotNull
+    @NotNull(message = "알림 상태는 필수 입니다.")
     NotificationStatus status,
 
-    @NotBlank
+    @NotBlank(message = "스킨 이름은 필수 입니다.")
     String skinName,
 
-    @NotBlank
+    @NotBlank(message = "알림 내용은 필수 입니다.")
     String title,
 
-    @NotBlank
+    @NotBlank(message = "알림 내용은 필수 입니다.")
     String text,
 
-    @NotBlank
+    @NotBlank(message = "스킨 URL은 필수 입니다.")
     String skinUrl
 ) {
 

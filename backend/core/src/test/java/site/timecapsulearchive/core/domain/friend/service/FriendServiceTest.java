@@ -19,8 +19,7 @@ import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRe
 import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
-import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
-import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
+import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 class FriendServiceTest {
 
@@ -33,7 +32,8 @@ class FriendServiceTest {
         FriendInviteRepository.class);
     private final FriendInviteQueryRepository friendInviteQueryRepository = mock(
         FriendInviteQueryRepository.class);
-    private final NotificationManager notificationManager = mock(NotificationManager.class);
+    private final SocialNotificationManager notificationManager = mock(
+        SocialNotificationManager.class);
     private final TransactionTemplate transactionTemplate = mock(TransactionTemplate.class);
 
     private final FriendService friendService = new FriendService(

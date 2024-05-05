@@ -55,6 +55,7 @@ public class Notification extends BaseEntity {
         this.text = text;
         this.imageUrl = imageUrl;
         this.memberId = memberId;
+        this.status = status;
         this.notificationCategory = notificationCategory;
     }
 }

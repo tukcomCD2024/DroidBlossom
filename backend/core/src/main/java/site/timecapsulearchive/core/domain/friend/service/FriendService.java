@@ -27,7 +27,7 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
-import site.timecapsulearchive.core.infra.notification.manager.NotificationManager;
+import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class FriendService {
     private final MemberRepository memberRepository;
     private final FriendInviteRepository friendInviteRepository;
     private final FriendInviteQueryRepository friendInviteQueryRepository;
-    private final NotificationManager notificationManager;
+    private final SocialNotificationManager socialNotificationManager;
     private final TransactionTemplate transactionTemplate;
 
     public FriendReqStatusResponse requestFriend(final Long memberId, final Long friendId) {
@@ -60,7 +60,7 @@ public class FriendService {
             }
         });
 
-        notificationManager.sendFriendReqMessage(friendId, owner.getNickname());
+        socialNotificationManager.sendFriendReqMessage(owner.getNickname(), friendId);
 
         return FriendReqStatusResponse.success();
     }
@@ -94,7 +94,7 @@ public class FriendService {
             }
         });
 
-        notificationManager.sendFriendAcceptMessage(friendId, ownerNickname[0]);
+        socialNotificationManager.sendFriendAcceptMessage(ownerNickname[0], friendId);
     }
 
     @Transactional
