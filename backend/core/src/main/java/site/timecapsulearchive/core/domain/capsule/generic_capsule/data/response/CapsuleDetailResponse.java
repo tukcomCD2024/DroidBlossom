@@ -74,29 +74,7 @@ public record CapsuleDetailResponse(
         final Function<String, List<String>> multiplePreSignUrlFunction,
         final Function<Point, Point> changePointFunction
     ) {
-        final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
-            detailDto.images());
-        final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
-            detailDto.videos());
-
-        final Point changePoint = changePointFunction.apply(detailDto.point());
-
-        return new CapsuleDetailResponse(
-            singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
-            detailDto.dueDate(),
-            detailDto.nickname(),
-            detailDto.profileUrl(),
-            detailDto.createdAt(),
-            changePoint.getX(),
-            changePoint.getY(),
-            detailDto.address(),
-            detailDto.roadName(),
-            detailDto.title(),
-            detailDto.content(),
-            preSignedImageUrls,
-            preSignedVideoUrls,
-            detailDto.isOpened(),
-            detailDto.capsuleType()
-        );
+        return detailDto.toResponse(singlePreSignUrlFunction, multiplePreSignUrlFunction,
+            changePointFunction);
     }
 }

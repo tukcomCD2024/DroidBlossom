@@ -64,8 +64,9 @@ public class PublicCapsuleService {
 
     /**
      * 사용자가 생성한 공개 캡슐 목록을 반환한다
-     * @param memberId 조회할 사용자
-     * @param size 조회할 캡슐의 개수
+     *
+     * @param memberId  조회할 사용자
+     * @param size      조회할 캡슐의 개수
      * @param createdAt 조회를 시작할 캡슐의 생성 시간, 첫 조회라면 현재 시간, 이후 조회라면 맨 마지막 데이터의 시간
      * @return 사용자가 생성한 공개 캡슐 목록
      */

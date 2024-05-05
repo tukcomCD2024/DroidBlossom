@@ -59,20 +59,6 @@ public record CapsuleSummaryResponse(
         final Function<String, String> preSignUrlFunction,
         final Function<Point, Point> changePointFunction
     ) {
-        final Point changePoint = changePointFunction.apply(summaryDto.point());
-
-        return new CapsuleSummaryResponse(
-            summaryDto.nickname(),
-            summaryDto.profileUrl(),
-            preSignUrlFunction.apply(summaryDto.skinUrl()),
-            summaryDto.title(),
-            summaryDto.dueDate(),
-            changePoint.getX(),
-            changePoint.getY(),
-            summaryDto.address(),
-            summaryDto.roadName(),
-            summaryDto.isOpened(),
-            summaryDto.createdAt()
-        );
+        return summaryDto.toResponse(preSignUrlFunction, changePointFunction);
     }
 }

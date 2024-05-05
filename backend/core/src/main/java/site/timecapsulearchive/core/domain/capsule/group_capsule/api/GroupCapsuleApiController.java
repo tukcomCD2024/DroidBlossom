@@ -20,8 +20,8 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.Gr
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;

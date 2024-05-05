@@ -29,9 +29,9 @@ public class CapsuleQueryRepository {
      *
      * @param memberId    범위 내의 캡슙을 조회할 멤버 id
      * @param mbr         캡슐을 조회할 범위(최소사각형)
-     * @see site.timecapsulearchive.core.global.geography.GeoTransformManager
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
+     * @see site.timecapsulearchive.core.global.geography.GeoTransformManager
      */
     public List<NearbyARCapsuleSummaryDto> findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final Long memberId,
@@ -99,11 +99,11 @@ public class CapsuleQueryRepository {
             .fetch();
     }
 
-     /**
+    /**
      * 지도에서 사용자의 친구들의 캡슐을 찾기 위해 현재 위치에서 범위 내의 사용자의 친구가 만든 캡슐을 조회한다.
      *
      * @param friendIds 범위 내의 조회할 사용자 목록
-     * @param mbr 캡슐을 조회할 범위(최소사각형), <code>GeoTransformManager</code> 참조
+     * @param mbr       캡슐을 조회할 범위(최소사각형), <code>GeoTransformManager</code> 참조
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
     public List<NearbyCapsuleSummaryDto> findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
@@ -131,11 +131,11 @@ public class CapsuleQueryRepository {
         return Expressions.booleanTemplate("ST_Contains({0}, {1})", mbr, point);
     }
 
-     /**
+    /**
      * AR에서 사용자의 친구들의 캡슐을 찾기 위해 현재 위치에서 범위 내의 사용자의 친구가 만든 캡슐을 조회한다.
      *
      * @param friendIds 범위 내의 조회할 사용자 목록
-     * @param mbr 캡슐을 조회할 범위(최소사각형), <code>GeoTransformManager</code> 참조
+     * @param mbr       캡슐을 조회할 범위(최소사각형), <code>GeoTransformManager</code> 참조
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
     public List<NearbyARCapsuleSummaryDto> findFriendsARCapsulesByCurrentLocation(

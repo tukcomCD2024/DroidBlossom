@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
 import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
@@ -65,22 +64,6 @@ public record GroupCapsuleSummaryResponse(
         final Function<String, String> preSignUrlFunction,
         final Function<Point, Point> changePointFunction
     ) {
-        final CapsuleSummaryDto capsuleSummaryDto = summaryDto.capsuleSummaryDto();
-        final Point changePoint = changePointFunction.apply(capsuleSummaryDto.point());
-
-        return new GroupCapsuleSummaryResponse(
-            summaryDto.toGroupMemberSummaryResponse(),
-            capsuleSummaryDto.nickname(),
-            capsuleSummaryDto.profileUrl(),
-            preSignUrlFunction.apply(capsuleSummaryDto.skinUrl()),
-            capsuleSummaryDto.title(),
-            capsuleSummaryDto.dueDate(),
-            changePoint.getX(),
-            changePoint.getY(),
-            capsuleSummaryDto.address(),
-            capsuleSummaryDto.roadName(),
-            capsuleSummaryDto.isOpened(),
-            capsuleSummaryDto.createdAt()
-        );
+        return summaryDto.toResponse(preSignUrlFunction, changePointFunction);
     }
 }

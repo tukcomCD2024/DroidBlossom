@@ -112,9 +112,11 @@ public class MemberFriendQueryRepository {
             .leftJoin(memberFriend)
             .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
             .leftJoin(friendInviteToFriend)
-            .on(friendInviteToFriend.friend.id.eq(member.id).and(friendInviteToFriend.owner.id.eq(memberId)))
+            .on(friendInviteToFriend.friend.id.eq(member.id)
+                .and(friendInviteToFriend.owner.id.eq(memberId)))
             .leftJoin(friendInviteToMe)
-            .on(friendInviteToMe.friend.id.eq(memberId).and(friendInviteToMe.owner.id.eq(member.id)))
+            .on(friendInviteToMe.friend.id.eq(memberId)
+                .and(friendInviteToMe.owner.id.eq(member.id)))
             .where(member.phone_hash.in(hashes))
             .fetch();
     }
