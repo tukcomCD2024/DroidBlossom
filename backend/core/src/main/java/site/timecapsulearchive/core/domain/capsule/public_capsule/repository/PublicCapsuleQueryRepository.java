@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 
 @Repository
@@ -166,5 +167,41 @@ public class PublicCapsuleQueryRepository {
 
     private boolean canMoreRead(final int size, final int capsuleSize) {
         return capsuleSize > size;
+    }
+
+    public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        final List<MyPublicCapsuleDto> publicCapsules = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    MyPublicCapsuleDto.class,
+                    capsule.id,
+                    capsuleSkin.imageUrl,
+                    capsule.dueDate,
+                    capsule.createdAt,
+                    capsule.title,
+                    capsule.isOpened,
+                    capsule.type
+                )
+            )
+            .from(capsule)
+            .join(member).on(capsule.member.id.eq(member.id))
+            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .where(capsule.member.id.eq(memberId)
+                .and(capsule.createdAt.lt(createdAt))
+                .and(capsule.type.eq(CapsuleType.PUBLIC)))
+            .orderBy(capsule.createdAt.desc())
+            .limit(size + 1)
+            .fetch();
+
+        final boolean hasNext = publicCapsules.size() > size;
+        if (hasNext) {
+            publicCapsules.remove(size);
+        }
+
+        return new SliceImpl<>(publicCapsules, Pageable.ofSize(size), hasNext);
     }
 }
