@@ -1,8 +1,9 @@
-package site.timecapsulearchive.core.common.fixture;
+package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -22,6 +23,8 @@ public class MemberFixture {
      * @return <code>dataPrefix</code>가 붙어서 생성된 <code>Member</code>
      */
     public static Member member(int dataPrefix) {
+        byte[] number = getPhoneBytes(dataPrefix);
+
         Member member = Member.builder()
             .socialType(SocialType.GOOGLE)
             .nickname(dataPrefix + "testNickname")
@@ -29,10 +32,8 @@ public class MemberFixture {
             .authId(dataPrefix + "test")
             .profileUrl(dataPrefix + "test.com")
             .tag(dataPrefix + "testTag")
+            .phone_hash(hashEncryptionManager.encrypt(number))
             .build();
-
-        byte[] number = getPhoneBytes(dataPrefix);
-        member.updatePhoneHash(hashEncryptionManager.encrypt(number));
 
         return member;
     }
@@ -41,17 +42,10 @@ public class MemberFixture {
         return ("0" + (1000000000 + dataPrefix)).getBytes(StandardCharsets.UTF_8);
     }
 
-    public static List<ByteArrayWrapper> getPhones() {
-        return List.of(
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341234")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341235")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341236")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341237")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341238")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341239")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341240")),
-            new ByteArrayWrapper(MemberFixture.getPhoneBytes("01012341241"))
-        );
+    public static List<ByteArrayWrapper> getPhones(int count) {
+        return IntStream.range(0, count)
+            .mapToObj(i -> new ByteArrayWrapper(MemberFixture.getPhoneBytes(count)))
+            .toList();
     }
 
     private static byte[] getPhoneBytes(String phone) {
