@@ -7,19 +7,24 @@ import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,16 +61,33 @@ class MyPageViewModelImpl @Inject constructor(
     override val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
         get() = _capsuleType
 
+    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getCapsuleListJob: Job? = null
+
     override var reloadMyInfo = false
     override var clearCapsule = false
 
     init {
         getMe()
+        viewModelScope.launch {
+            scrollEventFlow.collect {
+                getCapsulePage()
+            }
+        }
     }
+
     override fun load() {
         getMe()
         clearCapsules(true)
     }
+
+    override fun onScrollNearBottom() {
+        scrollEventChannel.trySend(Unit)
+    }
+
 
     override fun myPageEvent(event: MyPageViewModel.MyPageEvent) {
         viewModelScope.launch {
@@ -104,8 +126,9 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     private fun getSecretCapsulePage() {
-        viewModelScope.launch {
-            if (hasNextPage.value) {
+        if (hasNextPage.value){
+            getCapsuleListJob?.cancel()
+            getCapsuleListJob = viewModelScope.launch{
                 secretCapsulePageUseCase(
                     SecretCapsulePageRequest(
                         15,
@@ -113,19 +136,10 @@ class MyPageViewModelImpl @Inject constructor(
                     ).toDto()
                 ).collect { result ->
                     result.onSuccess {
-                        withContext(Dispatchers.Default) {
-                            val currentIds = myCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
-                            val newCapsules = it.capsules.filter { capsule -> capsule.capsuleId !in currentIds }
-                            Log.d("뭐냐", "${myCapsules.value + newCapsules}")
-                            withContext(Dispatchers.Main) {
-                                if (myCapsules.value.isEmpty()) {
-                                    _myCapsules.emit(newCapsules)
-                                } else {
-                                    _myCapsules.emit(myCapsules.value + newCapsules)
-                                }
-                                _hasNextPage.value = it.hasNext
-                                _lastCreatedTime.value = myCapsules.value.last().createdDate
-                            }
+                        _hasNextPage.value = it.hasNext
+                        _myCapsules.emit(myCapsules.value + it.capsules)
+                        if (myCapsules.value.isNotEmpty()){
+                            _lastCreatedTime.value = myCapsules.value.last().createdDate
                         }
                     }.onFail {
                         myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
@@ -161,7 +175,7 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun clearCapsules(setting:Boolean) {
+    override fun clearCapsules(setting: Boolean) {
         clearCapsule = setting
         viewModelScope.launch {
             _myCapsules.value = listOf()

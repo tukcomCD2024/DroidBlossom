@@ -160,7 +160,7 @@ class MyPageFragment :
                 val threshold = 6
 
                 if (lastVisibleItemPosition >= totalItemCount - threshold) {
-                    viewModel.getCapsulePage()
+                    viewModel.onScrollNearBottom()
                 }
             }
         })

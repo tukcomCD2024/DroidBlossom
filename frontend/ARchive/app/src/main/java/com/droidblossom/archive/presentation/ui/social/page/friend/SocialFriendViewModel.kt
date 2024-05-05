@@ -20,7 +20,7 @@ interface SocialFriendViewModel {
 
     fun searchFriendCapsule()
     fun getPublicCapsulePage()
-
+    fun onScrollNearBottom()
     fun getLatestPublicCapsule()
     sealed class SocialFriendEvent{
         data class ShowToastMessage(val message : String) : SocialFriendEvent()

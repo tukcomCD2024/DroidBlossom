@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friendaccept.page
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -50,8 +51,8 @@ class FriendAcceptFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
-                    if (totalItemCount - lastVisibleItemPosition <= 1) {
-                        viewModel.getFriendAcceptList()
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }

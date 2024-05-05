@@ -81,7 +81,7 @@ class NotificationActivity :
                 if (newState == 2 && !recyclerView.canScrollVertically(1)
                     && lastVisibleItemPosition == totalItemViewCount
                 ) {
-                    viewModel.getNotificationPage()
+                    viewModel.onScrollNearBottom()
                 }
             }
         })

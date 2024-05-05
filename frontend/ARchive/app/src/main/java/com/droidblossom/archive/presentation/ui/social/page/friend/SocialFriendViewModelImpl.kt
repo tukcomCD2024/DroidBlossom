@@ -5,18 +5,23 @@ import com.droidblossom.archive.data.dto.open.request.PublicCapsuleSliceRequestD
 import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.domain.usecase.open.PublicCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,9 +49,24 @@ class SocialFriendViewModelImpl @Inject constructor(
         get() = _lastCreatedTime
     override var clearCapsule = false
 
+    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getSecretCapsuleListJob: Job? = null
+
 
     init {
+        viewModelScope.launch {
+            scrollEventFlow.collect {
+                getPublicCapsulePage()
+            }
+        }
         getPublicCapsulePage()
+    }
+
+    override fun onScrollNearBottom() {
+        scrollEventChannel.trySend(Unit)
     }
 
     override fun socialFriendEvent(event: SocialFriendViewModel.SocialFriendEvent) {
@@ -69,8 +89,9 @@ class SocialFriendViewModelImpl @Inject constructor(
 
 
     override fun getPublicCapsulePage() {
-        viewModelScope.launch {
-            if (hasNextPage.value) {
+        if (hasNextPage.value){
+            getSecretCapsuleListJob?.cancel()
+            getSecretCapsuleListJob = viewModelScope.launch {
                 publicCapsulePageUseCase(
                     PublicCapsuleSliceRequestDto(
                         15,
@@ -78,19 +99,9 @@ class SocialFriendViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        withContext(Dispatchers.Default) {
-                            val currentIds = publicCapsules.value.map { capsule -> capsule.capsuleId }.toSet()
-                            val newCapsules = it.publicCapsules.filter { capsule -> capsule.capsuleId !in currentIds }
-                            withContext(Dispatchers.Main) {
-                                if (publicCapsules.value.isEmpty()) {
-                                    _publicCapsules.emit(newCapsules)
-                                } else {
-                                    _publicCapsules.emit(publicCapsules.value + newCapsules)
-                                }
-                                _hasNextPage.value = it.hasNext
-                                _lastCreatedTime.value = publicCapsules.value.last().createdDate
-                            }
-                        }
+                        _hasNextPage.value = it.hasNext
+                        _publicCapsules.emit(publicCapsules.value + it.publicCapsules)
+                        _lastCreatedTime.value = publicCapsules.value.last().createdDate
                     }.onFail {
                         socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
                     }

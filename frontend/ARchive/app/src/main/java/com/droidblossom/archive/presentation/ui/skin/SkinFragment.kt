@@ -65,7 +65,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.getSkinList()
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }

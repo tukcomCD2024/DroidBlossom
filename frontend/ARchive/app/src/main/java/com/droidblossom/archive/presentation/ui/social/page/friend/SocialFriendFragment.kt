@@ -148,7 +148,7 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.getPublicCapsulePage()
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }

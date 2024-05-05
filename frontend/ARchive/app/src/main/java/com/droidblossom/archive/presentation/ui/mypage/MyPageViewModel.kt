@@ -27,6 +27,7 @@ interface MyPageViewModel {
     fun load()
     fun selectSpinnerItem(item:MyPageFragment.SpinnerCapsuleType)
     fun myPageEvent(event: MyPageEvent)
+    fun onScrollNearBottom()
 
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
