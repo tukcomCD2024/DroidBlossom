@@ -8,11 +8,11 @@ data class FriendResponseDto(
     val nickname: String,
     val profileUrl: String
 ) {
-     fun toModel() = Friend(
-         createdAt = this.createdAt,
-         id = this.id,
-         nickname = this.nickname,
-         profileUrl = this.profileUrl,
-         isOpenDelete = false
-     )
+    fun toModel() = Friend(
+        createdAt = this.createdAt,
+        id = this.id,
+        nickname = this.nickname,
+        profileUrl = this.profileUrl,
+        isOpenDelete = false
+    )
 }

@@ -1,17 +1,14 @@
 package com.droidblossom.archive.presentation.ui.skin
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -79,7 +75,7 @@ class SkinViewModelImpl @Inject constructor(
             getSkinLstJob?.cancel()
             getSkinLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
-                    CapsuleSkinsPageRequestDto(
+                    PagingRequestDto(
                         15,
                         lastCreatedSkinTime.value
                     )

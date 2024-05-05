@@ -3,7 +3,7 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
@@ -17,7 +17,6 @@ import com.droidblossom.archive.domain.usecase.open.PublicCapsuleCreateUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.S3Util
 import com.droidblossom.archive.util.onFail
@@ -270,7 +269,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
             getLstJob?.cancel()
             getLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
-                    CapsuleSkinsPageRequestDto(
+                    PagingRequestDto(
                         15,
                         _lastCreatedSkinTime.value
                     )

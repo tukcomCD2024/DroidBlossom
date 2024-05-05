@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.repository
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageResponseDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.friend.request.FriendAcceptRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendReqRequestDto
@@ -46,12 +47,12 @@ class FriendRepositoryImpl @Inject constructor(
         return apiHandler({ api.postFriendsSearchPhoneApi(request) }) {response: ResponseBody<FriendsSearchPhoneResponseDto> -> response.result.toModel()}
     }
 
-    override suspend fun getFriendsPage(size: Int, createdAt: String): RetrofitResult<FriendsPage> {
-        return apiHandler({api.getFriendsPageApi(size, createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
+    override suspend fun getFriendsPage(request: PagingRequestDto): RetrofitResult<FriendsPage> {
+        return apiHandler({api.getFriendsPageApi(request.size, request.createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
     }
 
-    override suspend fun getFriendsRequestsPage(size: Int, createdAt: String): RetrofitResult<FriendsPage> {
-        return apiHandler({api.getFriendsRequestsPageApi(size, createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
+    override suspend fun getFriendsRequestsPage(request: PagingRequestDto): RetrofitResult<FriendsPage> {
+        return apiHandler({api.getFriendsRequestsPageApi(request.size, request.createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun deleteFriend(friendId: Long): RetrofitResult<String> {

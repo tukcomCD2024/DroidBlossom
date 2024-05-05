@@ -1,19 +1,17 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.MemberDetail
-import com.droidblossom.archive.domain.model.secret.SecretCapsulePageRequest
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
+import com.droidblossom.archive.domain.usecase.open.MyPublicCapsulePageUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,14 +21,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModelImpl @Inject constructor(
     private val memberUseCase: MemberUseCase,
-    private val secretCapsulePageUseCase: SecretCapsulePageUseCase
+    private val secretCapsulePageUseCase: SecretCapsulePageUseCase,
+    private val myPublicCapsulePageUseCase: MyPublicCapsulePageUseCase
 ) : BaseViewModel(), MyPageViewModel {
 
     private val _myPageEvents = MutableSharedFlow<MyPageViewModel.MyPageEvent>()
@@ -130,10 +128,10 @@ class MyPageViewModelImpl @Inject constructor(
             getCapsuleListJob?.cancel()
             getCapsuleListJob = viewModelScope.launch {
                 secretCapsulePageUseCase(
-                    SecretCapsulePageRequest(
+                    PagingRequestDto(
                         15,
                         lastCreatedTime.value
-                    ).toDto()
+                    )
                 ).collect { result ->
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
@@ -151,9 +149,25 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     private fun getPublicCapsulePage() {
-        viewModelScope.launch {
-            if (hasNextPage.value) {
-                _myCapsules.emit(listOf())
+        if (hasNextPage.value) {
+            getCapsuleListJob?.cancel()
+            getCapsuleListJob = viewModelScope.launch {
+                myPublicCapsulePageUseCase(
+                    PagingRequestDto(
+                        15,
+                        lastCreatedTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        _hasNextPage.value = it.hasNext
+                        _myCapsules.emit(myCapsules.value + it.capsules)
+                        if (myCapsules.value.isNotEmpty()) {
+                            _lastCreatedTime.value = myCapsules.value.last().createdDate
+                        }
+                    }.onFail {
+                        myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                    }
+                }
                 myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }

@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.usecase.member
 
 import android.util.Log
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.domain.model.member.NotificationPage
@@ -15,10 +16,10 @@ import javax.inject.Inject
 class GetNotificationsUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(size: Int, createdAt : String) =
+    suspend operator fun invoke(request: PagingRequestDto) =
         flow<RetrofitResult<NotificationPage>> {
             try {
-                emit(repository.getNotifications(size = size, createdAt = createdAt)
+                emit(repository.getNotifications(request)
                     .onSuccess {
 
                     }.onFail {

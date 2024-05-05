@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.notification
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.NotificationModel
 import com.droidblossom.archive.domain.usecase.member.GetNotificationsUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -44,12 +45,13 @@ class NotificationViewModelImpl @Inject constructor(
         get() = _lastCreatedTime
 
     private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
-    private val scrollEventFlow = scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
     private var getNotificationListJob: Job? = null
 
     init {
-        viewModelScope.launch{
+        viewModelScope.launch {
             scrollEventFlow.collect {
                 getNotificationPage()
             }
@@ -59,11 +61,17 @@ class NotificationViewModelImpl @Inject constructor(
     override fun onScrollNearBottom() {
         scrollEventChannel.trySend(Unit)
     }
+
     override fun getNotificationPage() {
-        if (hasNextPage.value){
+        if (hasNextPage.value) {
             getNotificationListJob?.cancel()
             getNotificationListJob = viewModelScope.launch {
-                getNotificationsUseCase(15, lastCreatedTime.value).collect { result ->
+                getNotificationsUseCase(
+                    PagingRequestDto(
+                        15,
+                        lastCreatedTime.value
+                    )
+                ).collect { result ->
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
                         _notifications.emit(notifications.value + it.notifications)

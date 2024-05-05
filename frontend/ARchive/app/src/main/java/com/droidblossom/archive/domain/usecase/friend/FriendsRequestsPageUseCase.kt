@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.usecase.friend
 
 import android.util.Log
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.repository.FriendRepository
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
@@ -11,10 +12,10 @@ import javax.inject.Inject
 class FriendsRequestsPageUseCase @Inject constructor(
     private val repository: FriendRepository
 ) {
-    suspend operator fun invoke(size: Int, createdAt: String) =
+    suspend operator fun invoke(request: PagingRequestDto) =
         flow {
             try {
-                emit(repository.getFriendsRequestsPage(size, createdAt).onSuccess {
+                emit(repository.getFriendsRequestsPage(request).onSuccess {
 
                 }.onFail {
 

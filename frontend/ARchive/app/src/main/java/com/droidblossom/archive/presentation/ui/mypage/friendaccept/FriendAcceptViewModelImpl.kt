@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friendaccept
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendAcceptRequest
 import com.droidblossom.archive.domain.usecase.friend.FriendDenyRequestUseCase
@@ -68,7 +69,12 @@ class FriendAcceptViewModelImpl @Inject constructor(
         getAcceptRequestListJob?.cancel()
         getAcceptRequestListJob = viewModelScope.launch {
             if (friendHasNextPage.value) {
-                friendsRequestsPageUseCase(15, friendLastCreatedTime.value).collect { result ->
+                friendsRequestsPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        friendLastCreatedTime.value
+                    )
+                ).collect { result ->
                     result.onSuccess {
                         friendHasNextPage.value = it.hasNext
                         _friendAcceptList.emit(friendAcceptList.value + it.friends)

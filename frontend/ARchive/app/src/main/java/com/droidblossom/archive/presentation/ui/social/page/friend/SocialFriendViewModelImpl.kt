@@ -1,16 +1,14 @@
 package com.droidblossom.archive.presentation.ui.social.page.friend
 
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.open.request.PublicCapsuleSliceRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.domain.usecase.open.PublicCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -93,7 +90,7 @@ class SocialFriendViewModelImpl @Inject constructor(
             getSecretCapsuleListJob?.cancel()
             getSecretCapsuleListJob = viewModelScope.launch {
                 publicCapsulePageUseCase(
-                    PublicCapsuleSliceRequestDto(
+                    PagingRequestDto(
                         15,
                         lastCreatedTime.value
                     )

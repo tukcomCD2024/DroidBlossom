@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.usecase.friend.FriendDeleteUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsPageUseCase
@@ -99,7 +100,12 @@ class FriendViewModelImpl @Inject constructor(
         if (friendHasNextPage.value) {
             getFriendLstJob?.cancel()
             getFriendLstJob = viewModelScope.launch {
-                friendsPageUseCase(15, friendLastCreatedTime.value).collect { result ->
+                friendsPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        friendLastCreatedTime.value
+                    )
+                ).collect { result ->
                     result.onSuccess {
                         friendHasNextPage.value = it.hasNext
                         if (friendListUI.value.isEmpty()) {
