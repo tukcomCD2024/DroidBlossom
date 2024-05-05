@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -8,8 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -40,6 +44,35 @@ public class GroupCapsuleService {
         return capsule;
     }
 
+    public GroupCapsuleDetailDto findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        final Long capsuleId
+    ) {
+        final GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+                capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+
+        if (capsuleNotOpened(detailDto)) {
+            return detailDto.excludeDetailContents();
+        }
+
+        return detailDto;
+    }
+
+    private boolean capsuleNotOpened(final GroupCapsuleDetailDto detailDto) {
+        if (detailDto.capsuleDetailDto().dueDate() == null) {
+            return false;
+        }
+
+        return !detailDto.capsuleDetailDto().isOpened() || detailDto.capsuleDetailDto().dueDate()
+            .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
+    }
+
+    public GroupCapsuleSummaryDto findGroupCapsuleSummaryByGroupIDAndCapsuleId(
+        final Long capsuleId) {
+        return groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+    }
+
     /**
      * 사용자가 만든 모든 그룹 캡슐을 조회한다.
      *
@@ -56,3 +89,4 @@ public class GroupCapsuleService {
         return groupCapsuleQueryRepository.findMyGroupCapsuleSlice(memberId, size, createdAt);
     }
 }
+

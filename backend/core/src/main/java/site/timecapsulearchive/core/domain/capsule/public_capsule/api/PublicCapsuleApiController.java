@@ -72,8 +72,11 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                CapsuleSummaryResponse.createOf(summaryDto,
-                    s3PreSignedUrlManager::getS3PreSignedUrlForGet)
+                CapsuleSummaryResponse.createOf(
+                    summaryDto,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet,
+                    geoTransformManager::changePoint3857To4326
+                )
             )
         );
     }
@@ -96,7 +99,8 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
                 CapsuleDetailResponse.createOf(
                     detailDto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
-                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet
+                    s3PreSignedUrlManager::getS3PreSignedUrlsForGet,
+                    geoTransformManager::changePoint3857To4326
                 )
             )
         );

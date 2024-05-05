@@ -95,8 +95,9 @@ public class CapsuleService {
 
     /**
      * 지도에서 캡슐을 찾기 위해 사용자의 현재 위치에서 특정 반경에서 친구들의 캡슐들을 요약 조회한다
+     *
      * @param memberId 사용자 아이디
-     * @param dto 현재 위치와 반경
+     * @param dto      현재 위치와 반경
      * @return 지도용 캡슐 요약 조회들
      */
     @Transactional(readOnly = true)
@@ -119,8 +120,9 @@ public class CapsuleService {
 
     /**
      * AR로 캡슐을 찾기 위해 사용자의 현재 위치에서 특정 반경에서 친구들의 캡슐들을 요약 조회한다
+     *
      * @param memberId 사용자 아이디
-     * @param dto 현재 위치와 반경
+     * @param dto      현재 위치와 반경
      * @return AR용 캡슐 요약 조회들
      */
     public List<NearbyARCapsuleSummaryDto> findFriendsARCapsulesByCurrentLocation(
