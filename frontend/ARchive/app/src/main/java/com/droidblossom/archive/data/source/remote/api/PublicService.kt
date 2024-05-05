@@ -4,6 +4,7 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.common.CapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.common.CapsuleSummaryResponseDto
+import com.droidblossom.archive.data.dto.open.response.MyPublicCapsulePageResponseDto
 import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
@@ -35,4 +36,9 @@ interface PublicService {
         @Query("created_at") createdAt: String
     ) : Response<ResponseBody<PublicCapsuleSliceResponseDto>>
 
+    @GET("public-capsules/my")
+    suspend fun getMyPublicCapsulePageApi(
+        @Query("size") size : Int,
+        @Query("created_at") createdAt: String
+    ) : Response<ResponseBody<MyPublicCapsulePageResponseDto>>
 }
