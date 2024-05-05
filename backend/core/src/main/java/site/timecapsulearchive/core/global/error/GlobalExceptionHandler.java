@@ -7,6 +7,7 @@ import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAME
 import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR;
 
 import jakarta.transaction.TransactionalException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -140,6 +141,19 @@ public class GlobalExceptionHandler {
 
         ErrorCode errorCode = INTERNAL_SERVER_ERROR;
         final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
+
+        return ResponseEntity.status(errorCode.getStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<ErrorResponse> handleConstraintViolationException(
+        ConstraintViolationException e) {
+        log.warn(e.getMessage(), e);
+
+        ErrorCode errorCode = INPUT_INVALID_VALUE_ERROR;
+        final ErrorResponse errorResponse = ErrorResponse.ofConstraints(errorCode,
+            e.getConstraintViolations());
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);

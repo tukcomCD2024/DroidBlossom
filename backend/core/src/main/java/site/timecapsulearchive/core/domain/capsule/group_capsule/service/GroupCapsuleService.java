@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -13,6 +14,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.Ca
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -42,7 +44,7 @@ public class GroupCapsuleService {
         return capsule;
     }
 
-    public GroupCapsuleDetailDto findGroupCapsuleDetailByGroupIDAndCapsuleId(
+    public GroupCapsuleDetailDto findGroupCapsuleDetailByGroupIdAndCapsuleId(
         final Long capsuleId
     ) {
         final GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
@@ -69,6 +71,22 @@ public class GroupCapsuleService {
         final Long capsuleId) {
         return groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
+    }
+
+    /**
+     * 사용자가 만든 모든 그룹 캡슐을 조회한다.
+     *
+     * @param memberId  조회할 사용자 아이디
+     * @param size      조회할 캡슐 크기
+     * @param createdAt 조회를 시작할 캡슐의 생성 시간, 첫 조회라면 현재 시간, 이후 조회라면 맨 마지막 데이터의 시간
+     * @return 사용자가 생성한 그룹 캡슐 목록
+     */
+    public Slice<MyGroupCapsuleDto> findMyGroupCapsuleSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        return groupCapsuleQueryRepository.findMyGroupCapsuleSlice(memberId, size, createdAt);
     }
 }
 

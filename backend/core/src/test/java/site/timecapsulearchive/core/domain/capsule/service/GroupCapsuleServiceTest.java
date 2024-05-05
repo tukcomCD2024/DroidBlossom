@@ -39,7 +39,7 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
 
@@ -66,7 +66,7 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
 
@@ -93,7 +93,7 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
 
@@ -120,7 +120,7 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
 
@@ -145,7 +145,7 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
 
@@ -170,7 +170,7 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIDAndCapsuleId(
+        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
 

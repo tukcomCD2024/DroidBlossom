@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.api;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +14,6 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
@@ -109,32 +105,4 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    @PostMapping(value = "/secret", consumes = {"application/json"})
-    @Override
-    public ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final CapsuleCreateRequest request
-    ) {
-        capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.SECRET);
-
-        return ResponseEntity.ok(
-            ApiSpec.empty(
-                SuccessCode.SUCCESS
-            )
-        );
-    }
-
-    @PostMapping(value = "/public", consumes = {"application/json"})
-    @Override
-    public ResponseEntity<ApiSpec<String>> createPublicCapsule(
-        @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final CapsuleCreateRequest request) {
-        capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.PUBLIC);
-
-        return ResponseEntity.ok(
-            ApiSpec.empty(
-                SuccessCode.SUCCESS
-            )
-        );
-    }
 }

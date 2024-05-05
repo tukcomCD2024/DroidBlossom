@@ -14,6 +14,14 @@ public class MemberFixture {
 
     private static final HashEncryptionManager hashEncryptionManager = UnitTestDependency.hashEncryptionManager();
 
+    /**
+     * <code>Member</code> 에 <code>dataPrefix</code> 를 붙여서 만들어진 Member를 반환한다
+     * <p>
+     * <b><u>주의</u> </b> - 하나의 테스트에서 여러 개의 멤버를 생성한다면 서로 다른 <code>dataPrefix</code> 필요
+     *
+     * @param dataPrefix 생성될 <code>Member</code> 에 붙일 prefix
+     * @return <code>dataPrefix</code>가 붙어서 생성된 <code>Member</code>
+     */
     public static Member member(int dataPrefix) {
         byte[] number = getPhoneBytes(dataPrefix);
 
@@ -44,6 +52,16 @@ public class MemberFixture {
         return hashEncryptionManager.encrypt(phone.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * <code>Member</code> 에 <code>start</code>가 <code>count</code>까지
+     * 하나씩 증가된 것을 붙여서 만들어진 Member를 반환한다
+     * <p>
+     * <b><u>주의</u> </b> - 하나의 테스트에서 여러 개의 멤버를 생성한다면 서로 다른 <code>dataPrefix</code> 필요
+     *
+     * @param start 시작할 prefix
+     * @param count 반환받을 <code>Member</code> 개수
+     * @return start가 하나씩 증가되어 붙여서 만들어진 <code>Member</code>들
+     */
     public static List<Member> members(int start, int count) {
         List<Member> result = new ArrayList<>();
         for (int index = start; index < start + count; index++) {

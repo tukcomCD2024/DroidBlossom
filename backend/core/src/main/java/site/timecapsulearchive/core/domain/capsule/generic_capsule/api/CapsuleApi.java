@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
@@ -126,60 +125,6 @@ public interface CapsuleApi {
 
         @Parameter(in = ParameterIn.PATH, description = "캡슐 아이디", required = true)
         Long capsuleId
-    );
-
-    @Operation(
-        summary = "비밀 캡슐 생성",
-        description = "사용자만 볼 수 있는 비밀 캡슐을 생성한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"secret capsule"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "좌표변환을 할 수 없을 때 발생하는 예외, 입력좌표 확인 요망",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "캡슐 스킨을 찾을 수 없을 경우 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        )
-    })
-    ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        Long memberId,
-        CapsuleCreateRequest request
-    );
-
-    @Operation(
-        summary = "공개 캡슐 생성",
-        description = "사용자의 친구들만 볼 수 있는 공개 캡슐을 생성한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"public capsule"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "좌표변환을 할 수 없을 때 발생하는 예외, 입력좌표 확인 요망",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "캡슐 스킨을 찾을 수 없을 경우 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        )
-    })
-    ResponseEntity<ApiSpec<String>> createPublicCapsule(
-        Long memberId,
-        CapsuleCreateRequest request
     );
 }
 
