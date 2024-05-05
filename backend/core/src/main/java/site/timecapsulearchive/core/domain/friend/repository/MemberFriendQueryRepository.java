@@ -151,4 +151,12 @@ public class MemberFriendQueryRepository {
             .fetchOne()
         );
     }
+
+    public List<Long> findFriendIdsByOwnerId(Long memberId) {
+        return jpaQueryFactory
+            .select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(memberFriend.owner.id.eq(memberId))
+            .fetch();
+    }
 }

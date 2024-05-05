@@ -8,7 +8,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
@@ -18,6 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
+@Validated
 public interface CapsuleApi {
 
     @Operation(
@@ -56,14 +60,16 @@ public interface CapsuleApi {
             description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
-    ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+    ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyMyCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
-        double longitude,
+        @Range(min = -90, max = 90, message = "위도는 -90과 90 사이여야 합니다.")
+        double latitude,
 
         @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
-        double latitude,
+        @Range(min = -180, max = 180, message = "경도는 -180과 180 사이여야 합니다.")
+        double longitude,
 
         @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
         double distance,
@@ -88,20 +94,84 @@ public interface CapsuleApi {
             description = "잘못된 요청 파라미터에 의해 발생"
         )
     })
-    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
+    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyMyCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
-        double longitude,
+        @Range(min = -90, max = 90, message = "위도는 -90과 90 사이여야 합니다.")
+        double latitude,
 
         @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
-        double latitude,
+        @Range(min = -180, max = 180, message = "경도는 -180과 180 사이여야 합니다.")
+        double longitude,
 
         @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
         double distance,
 
         @Parameter(in = ParameterIn.QUERY, description = "캡슐 필터링 타입", schema = @Schema(defaultValue = "ALL"))
         CapsuleType capsuleType
+    );
+
+    @Operation(
+        summary = "현재 사용자 위치 기준으로 사용자의 친구들의 지도용 캡슐 목록 조회",
+        description = "지도에서 캡슐을 보기 위해 현재 사용자 위치를 바탕으로 반경 distance km만큼 친구들의 캡슐을 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "잘못된 요청 파라미터에 의해 발생"
+        )
+    })
+    ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyFriendsCapsules(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
+        @Range(min = -90, max = 90, message = "위도는 -90과 90 사이여야 합니다.")
+        double latitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
+        @Range(min = -180, max = 180, message = "경도는 -180과 180 사이여야 합니다.")
+        double longitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
+        double distance
+    );
+
+    @Operation(
+        summary = "현재 사용자 위치 기준으로 사용자의 친구들의 AR용 캡슐 목록 조회",
+        description = "AR 카메라로 캡슐을 보기 위해 현재 사용자 위치를 바탕으로 반경 distance km만큼 친구들의 캡슐을 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "잘못된 요청 파라미터에 의해 발생"
+        )
+    })
+    ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyFriendsCapsules(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "위도(wsg84)", required = true)
+        @Range(min = -90, max = 90, message = "위도는 -90과 90 사이여야 합니다.")
+        double latitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "경도(wsg84)", required = true)
+        @Range(min = -180, max = 180, message = "경도는 -180과 180 사이여야 합니다.")
+        double longitude,
+
+        @Parameter(in = ParameterIn.QUERY, description = "조회 거리(km)", required = true)
+        double distance
     );
 
     @Operation(
@@ -152,7 +222,7 @@ public interface CapsuleApi {
     })
     ResponseEntity<ApiSpec<String>> createSecretCapsule(
         Long memberId,
-        CapsuleCreateRequest request
+        @Valid CapsuleCreateRequest request
     );
 
     @Operation(
@@ -179,7 +249,7 @@ public interface CapsuleApi {
     })
     ResponseEntity<ApiSpec<String>> createPublicCapsule(
         Long memberId,
-        CapsuleCreateRequest request
+        @Valid CapsuleCreateRequest request
     );
 }
 
