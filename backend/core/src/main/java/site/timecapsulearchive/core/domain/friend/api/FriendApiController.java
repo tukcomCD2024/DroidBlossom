@@ -40,18 +40,6 @@ public class FriendApiController implements FriendApi {
     private final FriendFacade friendFacade;
     private final HashEncryptionManager hashEncryptionManager;
 
-
-    @PostMapping(value = "/{friend_id}/accept-request")
-    @Override
-    public ResponseEntity<ApiSpec<String>> acceptFriendRequest(
-        @AuthenticationPrincipal final Long memberId,
-        @PathVariable("friend_id") final Long friendId
-    ) {
-        friendService.acceptFriend(memberId, friendId);
-
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
-    }
-
     @GetMapping
     @Override
     public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
@@ -142,6 +130,17 @@ public class FriendApiController implements FriendApi {
 
         return ResponseEntity.accepted()
             .body(ApiSpec.empty(SuccessCode.ACCEPTED));
+    }
+
+    @PostMapping(value = "/{friend_id}/accept-request")
+    @Override
+    public ResponseEntity<ApiSpec<String>> acceptFriendRequest(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("friend_id") final Long friendId
+    ) {
+        friendService.acceptFriend(memberId, friendId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @PostMapping(

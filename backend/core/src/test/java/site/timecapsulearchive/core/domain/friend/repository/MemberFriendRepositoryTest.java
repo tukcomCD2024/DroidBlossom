@@ -12,8 +12,8 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
-import site.timecapsulearchive.core.common.fixture.MemberFixture;
-import site.timecapsulearchive.core.common.fixture.MemberFriendFixture;
+import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.domain.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 

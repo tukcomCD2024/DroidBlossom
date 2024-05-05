@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.common.fixture;
+package site.timecapsulearchive.core.common.fixture.domain;
 
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.Motion;
