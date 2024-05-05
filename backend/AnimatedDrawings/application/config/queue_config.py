@@ -1,24 +1,27 @@
 from application.config.root_config import RootConfig
 
 
-class QueueConfig(RootConfig):
-    def __init__(self):
-        self._queue_username = self._config_file['spring']['rabbitmq']['username']
-        self._queue_host = self._config_file['spring']['rabbitmq']['host']
-        self._queue_password = self._config_file['spring']['rabbitmq']['password']
-        self._queue_virtual_host = self._config_file['spring']['rabbitmq']['virtual-host']
-        self._queue_name = 'capsuleSkin_delay.queue'
+class QueueConfig:
+    USERNAME = RootConfig.CONFIG_FILE['rabbitmq']['username']
+    BROKER_HOST = RootConfig.CONFIG_FILE['rabbitmq']['host']
+    PASSWORD = RootConfig.CONFIG_FILE['rabbitmq']['password']
+    VIRTUAL_HOST = RootConfig.CONFIG_FILE['rabbitmq']['virtual-host']
+    CAPSULE_SKIN_REQUEST_QUEUE_NAME = RootConfig.CONFIG_FILE['rabbitmq'][
+        'queue_name']
+    CAPSULE_SKIN_REQUEST_EXCHANGE_NAME = RootConfig.CONFIG_FILE['rabbitmq'][
+        'exchange_name']
+    NOTIFICATION_EXCHANGE_NAME = RootConfig.CONFIG_FILE['rabbitmq'][
+        'notification_exchange_name']
+    NOTIFICATION_QUEUE_NAME = RootConfig.CONFIG_FILE['rabbitmq'][
+        'notification_queue_name']
 
-    def get_queue_url(self) -> str:
-        return 'pyamqp://%s:%s@%s:5672%s' % (self._queue_username,
-                                             self._queue_password,
-                                             self._queue_host,
-                                             self._queue_virtual_host)
+    @staticmethod
+    def get_celery_broker_url() -> str:
+        return 'pyamqp://%s:%s@%s:5672%s' % (QueueConfig.USERNAME,
+                                             QueueConfig.PASSWORD,
+                                             QueueConfig.BROKER_HOST,
+                                             QueueConfig.VIRTUAL_HOST)
 
-    @property
-    def queue_name(self) -> str:
-        return self._queue_name
-
-    @property
-    def queue_host(self) -> str:
-        return self._queue_host
+    @staticmethod
+    def get_kombu_broker_url() -> str:
+        return f'amqp://{QueueConfig.USERNAME}:{QueueConfig.PASSWORD}@{QueueConfig.BROKER_HOST}/{QueueConfig.VIRTUAL_HOST}'
