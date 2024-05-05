@@ -164,7 +164,7 @@ class AddFriendViewModelImpl @Inject constructor(
             it.id == id
         }
         if (index != -1) {
-            newList[index].isFriendRequest = true
+            newList[index].isFriendInviteToFriend = true
             newList[index].isChecked = false
             viewModelScope.launch {
                 _addFriendListUI.emit(newList)

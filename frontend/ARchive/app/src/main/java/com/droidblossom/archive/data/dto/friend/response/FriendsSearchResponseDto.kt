@@ -9,6 +9,8 @@ data class FriendsSearchResponseDto(
     val originName : String?,
     val nickname: String,
     val isFriend: Boolean,
+    val isFriendInviteToFriend : Boolean,
+    val isFriendInviteToMe : Boolean,
     val isFriendRequest :Boolean,
 ) : Serializable {
 
@@ -17,7 +19,8 @@ data class FriendsSearchResponseDto(
         profileUrl = this.profileUrl,
         nickname = this.nickname,
         isFriend = this.isFriend,
-        isFriendRequest = this.isFriendRequest,
+        isFriendInviteToFriend = this.isFriendInviteToFriend,
+        isFriendInviteToMe = this.isFriendInviteToMe,
         name = this.originName ?: "",
         isChecked = false
     )

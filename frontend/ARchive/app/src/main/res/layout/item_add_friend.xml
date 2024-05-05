@@ -18,7 +18,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="@{item.friend || item.friendRequest ? false : true}">
+        android:clickable="@{item.friend || item.isFriendInviteToMe || item.isFriendInviteToFriend ? false : true}">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
@@ -77,7 +77,8 @@
                     app:layout_constraintTop_toBottomOf="@id/nameT"
                     bind:friendName="@{item.name}"
                     bind:isFriend="@{item.friend}"
-                    bind:isRequest="@{item.friendRequest}" />
+                    bind:isInviteToMe="@{item.friendInviteToMe}"
+                    bind:isInviteToFriend="@{item.friendInviteToFriend}" />
 
 
                 <com.google.android.material.card.MaterialCardView
@@ -86,7 +87,7 @@
                     android:layout_height="32dp"
                     android:layout_marginEnd="20dp"
                     android:backgroundTint="@{item.checked ? @color/main_2 : @color/main_4}"
-                    android:visibility="@{item.friend || item.friendRequest? View.GONE : View.VISIBLE}"
+                    android:visibility="@{item.friend || item.friendInviteToMe || item.friendInviteToFriend? View.GONE : View.VISIBLE}"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="@id/profileImg"

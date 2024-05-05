@@ -99,12 +99,12 @@ fun TextView.displayRemainingTime(totalSeconds: Int) {
 }
 
 @BindingAdapter("bind:culcLastDays")
-fun TextView.culcLastDays(date : String){
+fun TextView.culcLastDays(date: String) {
     this.text = DateUtils.calcLastDate(date)
 }
 
 @BindingAdapter("bind:animateFAB")
-fun CardView.animateFAB(y : Float){
+fun CardView.animateFAB(y: Float) {
     ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
 }
 
@@ -126,7 +126,7 @@ fun TextView.setFormattedDateTime(dateString: String) {
 
 @BindingAdapter("bind:displayCreationDateTimeNullFormatted")
 fun TextView.setFormattedDateTimeNull(dateString: String?) {
-    if (!dateString.isNullOrEmpty()){
+    if (!dateString.isNullOrEmpty()) {
         try {
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
             val date = parser.parse(dateString)
@@ -137,7 +137,7 @@ fun TextView.setFormattedDateTimeNull(dateString: String?) {
         } catch (e: Exception) {
             this.text = "날짜 형식 오류"
         }
-    }else{
+    } else {
         this.text = "일반 캡슐 입니다"
     }
 }
@@ -183,17 +183,20 @@ fun setLayoutHeight(view: View, height: Float) {
 }
 
 @BindingAdapter("bind:setCapsuleType2Img")
-fun ImageView.setCapsuleType2Img(type: String?){
-    when(type) {
+fun ImageView.setCapsuleType2Img(type: String?) {
+    when (type) {
         "SECRET" -> {
             this.setImageResource(R.drawable.ic_secret_marker_24)
         }
+
         "PUBLIC" -> {
             this.setImageResource(R.drawable.ic_public_marker_24)
         }
-        "GROUP" ->{
+
+        "GROUP" -> {
             this.setImageResource(R.drawable.ic_group_marker_24)
         }
+
         else -> {}
     }
 }
@@ -201,7 +204,8 @@ fun ImageView.setCapsuleType2Img(type: String?){
 @BindingAdapter("bind:tabMarginEnd")
 fun TabLayout.setTabItemMargin(marginEndDp: Int) {
     val marginEndPx = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP, marginEndDp.toFloat(), resources.displayMetrics).toInt()
+        TypedValue.COMPLEX_UNIT_DIP, marginEndDp.toFloat(), resources.displayMetrics
+    ).toInt()
 
     val tabs = getChildAt(0) as ViewGroup
     for (i in 0 until tabs.childCount) {
@@ -213,15 +217,25 @@ fun TabLayout.setTabItemMargin(marginEndDp: Int) {
     requestLayout()
 }
 
-@BindingAdapter(value = ["bind:isFriend", "bind:isRequest","bind:friendName"], requireAll = false)
-fun TextView.addFriendText(isFriend: Boolean, isRequest : Boolean, name : String) {
-    if (isFriend || isRequest){
-        if (isFriend){
+@BindingAdapter(
+    value = ["bind:isFriend", "bind:isInviteToMe", "bind:isInviteToFriend", "bind:friendName"],
+    requireAll = false
+)
+fun TextView.addFriendText(
+    isFriend: Boolean,
+    isInviteToMe: Boolean,
+    isInviteToFriend: Boolean,
+    name: String
+) {
+    if (isFriend || isInviteToFriend || isInviteToMe) {
+        if (isFriend) {
             this.text = "이미 친구입니다."
-        } else {
+        } else if (isInviteToFriend) {
             this.text = "요청을 보냈습니다."
+        } else {
+            this.text = "요청을 받았습니다,확인해주세요."
         }
-    }else {
+    } else {
         this.text = name
     }
 }
@@ -232,7 +246,7 @@ fun TextView.formatCountWithK(count: Int, showDecimal: Boolean) {
 
     if (count < 1000) {
         this.text = count.toString()
-    }else{
+    } else {
         if (showDecimal) {
             val thousands = count / 1000
             val remainder = (count % 1000) / 100
