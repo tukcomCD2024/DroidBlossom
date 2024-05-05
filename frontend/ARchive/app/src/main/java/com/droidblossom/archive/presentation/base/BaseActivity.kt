@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.customview.LoadingDialog
+import com.droidblossom.archive.presentation.model.AppEvent
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
@@ -49,15 +50,17 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun printId(event: Map<String, String>) {
-        // 스낵바 호출로 바꾸면 될듯?
-        Log.d("이베", "$event")
-        binding.root.let { rootView ->
-            //HomeSnackBarSmall(rootView).show()
+    @Subscribe
+    fun onEvent(event: AppEvent) {
+        when (event) {
+            is AppEvent.NetworkDisconnectedEvent -> {
+                showToastMessage("네트워크")
+            }
+            is AppEvent.NotificationReceivedEvent -> {
+                showToastMessage("알림")
+            }
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = DataBindingUtil.setContentView(this, layoutResource)
