@@ -19,9 +19,11 @@ public record SearchTagFriendSummaryResponse(
     @Schema(description = "친구 유무")
     Boolean isFriend,
 
-    @Schema(description = "친구 요청 유무")
-    Boolean isFriendRequest
+    @Schema(description = "친구한테 요청 유무")
+    Boolean isFriendInviteToFriend,
 
+    @Schema(description = "친구로부터 요청 유무")
+    Boolean isFriendInviteToMe
 ) {
 
 }

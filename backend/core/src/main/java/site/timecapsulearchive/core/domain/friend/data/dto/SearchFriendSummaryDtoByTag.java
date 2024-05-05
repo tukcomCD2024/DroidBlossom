@@ -4,12 +4,13 @@ import lombok.Builder;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 
 @Builder
-public record SearchTagFriendSummaryDto(
+public record SearchFriendSummaryDtoByTag(
     Long id,
     String profileUrl,
     String nickname,
     Boolean isFriend,
-    Boolean isFriendRequest
+    Boolean isFriendInviteToFriend,
+    Boolean isFriendInviteToMe
 ) {
 
     public SearchTagFriendSummaryResponse toResponse() {
@@ -18,7 +19,8 @@ public record SearchTagFriendSummaryDto(
             .profileUrl(profileUrl)
             .nickname(nickname)
             .isFriend(isFriend)
-            .isFriendRequest(isFriendRequest)
+            .isFriendInviteToFriend(isFriendInviteToFriend)
+            .isFriendInviteToMe(isFriendInviteToMe)
             .build();
     }
 

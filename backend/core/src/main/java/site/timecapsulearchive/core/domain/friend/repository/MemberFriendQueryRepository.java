@@ -16,7 +16,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.data.dto.SearchTagFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
+import site.timecapsulearchive.core.domain.friend.entity.QFriendInvite;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Repository
@@ -88,6 +89,9 @@ public class MemberFriendQueryRepository {
         final Long memberId,
         final List<byte[]> hashes
     ) {
+        final QFriendInvite friendInviteToFriend = new QFriendInvite("friendInviteToFriend");
+        final QFriendInvite friendInviteToMe = new QFriendInvite("friendInviteToMe");
+
         return jpaQueryFactory
             .select(
                 Projections.constructor(
@@ -100,40 +104,59 @@ public class MemberFriendQueryRepository {
                         member.phone_hash
                     ),
                     memberFriend.id.isNotNull(),
-                    friendInvite.id.isNotNull()
+                    friendInviteToFriend.id.isNotNull(),
+                    friendInviteToMe.id.isNotNull()
                 )
             )
             .from(member)
             .leftJoin(memberFriend)
             .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
-            .leftJoin(friendInvite)
-            .on(friendInvite.friend.id.eq(member.id).and(friendInvite.owner.id.eq(memberId)))
+            .leftJoin(friendInviteToFriend)
+            .on(friendInviteToFriend.friend.id.eq(member.id).and(friendInviteToFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInviteToMe)
+            .on(friendInviteToMe.friend.id.eq(memberId).and(friendInviteToMe.owner.id.eq(member.id)))
             .where(member.phone_hash.in(hashes))
             .fetch();
     }
 
-    public Optional<SearchTagFriendSummaryDto> findFriendsByTag(
+    public Optional<SearchFriendSummaryDtoByTag> findFriendsByTag(
         final Long memberId,
         final String tag
     ) {
+        final QFriendInvite friendInviteToFriend = new QFriendInvite("friendInviteToFriend");
+        final QFriendInvite friendInviteToMe = new QFriendInvite("friendInviteToMe");
+
         return Optional.ofNullable(jpaQueryFactory
             .select(
                 Projections.constructor(
-                    SearchTagFriendSummaryDto.class,
+                    SearchFriendSummaryDtoByTag.class,
                     member.id,
                     member.profileUrl,
                     member.nickname,
                     memberFriend.id.isNotNull(),
-                    friendInvite.id.isNotNull()
+                    friendInviteToFriend.id.isNotNull(),
+                    friendInviteToMe.id.isNotNull()
                 )
             )
             .from(member)
             .leftJoin(memberFriend)
             .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
-            .leftJoin(friendInvite)
-            .on(friendInvite.friend.id.eq(member.id).and(friendInvite.owner.id.eq(memberId)))
+            .leftJoin(friendInviteToFriend)
+            .on(friendInviteToFriend.friend.id.eq(member.id)
+                .and(friendInviteToFriend.owner.id.eq(memberId)))
+            .leftJoin(friendInviteToMe)
+            .on(friendInviteToMe.friend.id.eq(memberId)
+                .and(friendInviteToMe.owner.id.eq(member.id)))
             .where(member.tag.eq(tag))
             .fetchOne()
         );
+    }
+
+    public List<Long> findFriendIdsByOwnerId(Long memberId) {
+        return jpaQueryFactory
+            .select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(memberFriend.owner.id.eq(memberId))
+            .fetch();
     }
 }

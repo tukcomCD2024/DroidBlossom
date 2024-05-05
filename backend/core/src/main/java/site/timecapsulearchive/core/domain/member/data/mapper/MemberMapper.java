@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
-import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -35,26 +33,6 @@ public class MemberMapper {
             .email(oAuth2UserInfo.getEmail())
             .profileUrl(oAuth2UserInfo.getImageUrl())
             .socialType(socialType)
-            .tag(NanoIdUtils.randomNanoId())
-            .build();
-    }
-
-    public SignUpRequestDto signUpRequestToDto(final SignUpRequest request) {
-        return new SignUpRequestDto(
-            request.authId(),
-            request.email(),
-            request.profileUrl(),
-            request.socialType()
-        );
-    }
-
-    public Member signUpRequestDtoToEntity(final SignUpRequestDto dto) {
-        return Member.builder()
-            .authId(dto.authId())
-            .nickname(MakeRandomNickNameUtil.makeRandomNickName())
-            .email(dto.email())
-            .profileUrl(dto.profileUrl())
-            .socialType(dto.socialType())
             .tag(NanoIdUtils.randomNanoId())
             .build();
     }
