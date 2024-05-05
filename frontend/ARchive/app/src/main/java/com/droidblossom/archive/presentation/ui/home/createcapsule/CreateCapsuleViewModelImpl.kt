@@ -17,6 +17,7 @@ import com.droidblossom.archive.domain.usecase.open.PublicCapsuleCreateUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.S3Util
 import com.droidblossom.archive.util.onFail
@@ -24,15 +25,19 @@ import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -172,6 +177,25 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private var imageNames = listOf<String>()
     private var videoNames = listOf<String>()
 
+    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getLstJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            scrollEventFlow.collect {
+                getSkinList()
+            }
+        }
+    }
+
+    override fun onScrollNearBottom() {
+        scrollEventChannel.trySend(Unit)
+    }
+
+
     //create1
     override fun move1To2() {
         viewModelScope.launch {
@@ -242,8 +266,9 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     override fun getSkinList() {
-        viewModelScope.launch {
-            if (hasNextSkins.value) {
+        if (hasNextSkins.value) {
+            getLstJob?.cancel()
+            getLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
                     CapsuleSkinsPageRequestDto(
                         15,
@@ -542,12 +567,20 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                             longitude = capsuleLongitude.value,
                             title = capsuleTitle.value,
                         )
-                    ).collect{ result ->
+                    ).collect { result ->
                         result.onSuccess {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성되었습니다."
+                                )
+                            )
                             Log.d("캡슐생성", "$it")
                         }.onFail {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성 실패했습니다.."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성 실패했습니다.."
+                                )
+                            )
                         }
                     }
                 }
@@ -568,10 +601,18 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         )
                     ).collect { result ->
                         result.onSuccess {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성되었습니다."
+                                )
+                            )
                             Log.d("캡슐생성", "$it")
                         }.onFail {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성 실패했습니다.."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성 실패했습니다.."
+                                )
+                            )
                         }
                     }
                 }

@@ -50,7 +50,7 @@ class FriendListFragment :
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 3) {
-                        viewModel.getFriendList()
+                        viewModel.onScrollNearBottomFriend()
                     }
                 }
             }

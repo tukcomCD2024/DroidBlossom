@@ -135,7 +135,7 @@ class CreateCapsule2Fragment :
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.getSkinList()
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }

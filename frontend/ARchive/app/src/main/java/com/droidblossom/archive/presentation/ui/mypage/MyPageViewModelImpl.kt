@@ -126,9 +126,9 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     private fun getSecretCapsulePage() {
-        if (hasNextPage.value){
+        if (hasNextPage.value) {
             getCapsuleListJob?.cancel()
-            getCapsuleListJob = viewModelScope.launch{
+            getCapsuleListJob = viewModelScope.launch {
                 secretCapsulePageUseCase(
                     SecretCapsulePageRequest(
                         15,
@@ -138,7 +138,7 @@ class MyPageViewModelImpl @Inject constructor(
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
                         _myCapsules.emit(myCapsules.value + it.capsules)
-                        if (myCapsules.value.isNotEmpty()){
+                        if (myCapsules.value.isNotEmpty()) {
                             _lastCreatedTime.value = myCapsules.value.last().createdDate
                         }
                     }.onFail {

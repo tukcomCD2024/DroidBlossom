@@ -47,9 +47,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
     private val friendLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
 
     private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
-    private val scrollEventFlow = scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
     private var getAcceptRequestListJob: Job? = null
+
     init {
         viewModelScope.launch {
             scrollEventFlow.collect {

@@ -59,6 +59,7 @@ interface CreateCapsuleViewModel {
     val dueTime : StateFlow<String>
     val address : StateFlow<AddressData>
 
+    fun onScrollNearBottom()
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()

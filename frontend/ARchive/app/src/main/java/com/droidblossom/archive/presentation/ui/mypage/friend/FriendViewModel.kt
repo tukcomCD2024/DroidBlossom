@@ -17,6 +17,7 @@ interface FriendViewModel {
 
     //group
     val isGroupSearchOpen: StateFlow<Boolean>
+    fun onScrollNearBottomFriend()
 
     //friend
     fun openSearchFriend()

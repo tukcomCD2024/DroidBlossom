@@ -5,19 +5,24 @@ import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.usecase.friend.FriendDeleteUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendViewModel
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,6 +60,24 @@ class FriendViewModelImpl @Inject constructor(
     override val isGroupSearchOpen: StateFlow<Boolean>
         get() = _isGroupSearchOpen
 
+    private val scrollFriendEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollFriendEventFlow =
+        scrollFriendEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getFriendLstJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            scrollFriendEventFlow.collect {
+                getFriendList()
+            }
+        }
+    }
+
+    override fun onScrollNearBottomFriend() {
+        scrollFriendEventChannel.trySend(Unit)
+    }
+
     //friend
     override fun openSearchFriend() {
         viewModelScope.launch {
@@ -73,12 +96,13 @@ class FriendViewModelImpl @Inject constructor(
     }
 
     override fun getFriendList() {
-        viewModelScope.launch {
-            if (friendHasNextPage.value) {
+        if (friendHasNextPage.value) {
+            getFriendLstJob?.cancel()
+            getFriendLstJob = viewModelScope.launch {
                 friendsPageUseCase(15, friendLastCreatedTime.value).collect { result ->
                     result.onSuccess {
                         friendHasNextPage.value = it.hasNext
-                        if (friendListUI.value.isEmpty()){
+                        if (friendListUI.value.isEmpty()) {
                             _friendListUI.emit(it.friends)
                             _friendList.emit(it.friends)
                         } else {
