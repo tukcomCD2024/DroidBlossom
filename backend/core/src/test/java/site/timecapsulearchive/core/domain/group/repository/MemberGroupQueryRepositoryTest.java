@@ -78,7 +78,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         }
 
         //그룹원들 설정
-        List<MemberGroup> memberGroups = MemberGroupFixture.membersGroup(members, groups.get(0));
+        List<MemberGroup> memberGroups = MemberGroupFixture.memberGroups(members, groups.get(0));
         memberGroups.forEach(entityManager::persist);
     }
 
