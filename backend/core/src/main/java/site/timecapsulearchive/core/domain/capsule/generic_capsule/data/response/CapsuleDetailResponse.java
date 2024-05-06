@@ -65,7 +65,9 @@ public record CapsuleDetailResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        if (createdDate != null) {
+            createdDate = createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
     }
 
     public static CapsuleDetailResponse createOf(

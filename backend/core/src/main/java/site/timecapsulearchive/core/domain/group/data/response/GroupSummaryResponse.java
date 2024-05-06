@@ -1,7 +1,11 @@
 package site.timecapsulearchive.core.domain.group.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.ZonedDateTime;
+import lombok.Builder;
+import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
+@Builder
 @Schema(description = "그룹 요약 정보")
 public record GroupSummaryResponse(
 
@@ -15,7 +19,18 @@ public record GroupSummaryResponse(
     String profileUrl,
 
     @Schema(description = "그룹 설명")
-    String description
+    String description,
+
+    @Schema(description = "그룹 생성일")
+    ZonedDateTime createdAt,
+
+    @Schema(description = "그룹장 여부")
+    Boolean isOwner
 ) {
 
+    public GroupSummaryResponse {
+        if (createdAt != null) {
+            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
+    }
 }

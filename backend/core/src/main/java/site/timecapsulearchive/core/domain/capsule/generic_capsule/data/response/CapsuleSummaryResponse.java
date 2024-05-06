@@ -51,7 +51,9 @@ public record CapsuleSummaryResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        if (createdAt != null) {
+            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
     }
 
     public static CapsuleSummaryResponse createOf(

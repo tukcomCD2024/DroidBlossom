@@ -34,7 +34,6 @@ public record NearbyARCapsuleSummaryResponse(
     @Schema(description = "캡슐 타입")
     CapsuleType capsuleType
 ) {
-
     public NearbyARCapsuleSummaryResponse {
         if (dueDate != null) {
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);

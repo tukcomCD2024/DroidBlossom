@@ -11,9 +11,9 @@ public class GroupFixture {
      */
     public static Group group() {
         return Group.builder()
-            .groupName("test-group")
-            .groupDescription("test-group-description")
-            .groupProfileUrl("test-group-profile")
+            .groupName("test_group")
+            .groupDescription("test_group")
+            .groupProfileUrl("test_group")
             .build();
     }
 }
