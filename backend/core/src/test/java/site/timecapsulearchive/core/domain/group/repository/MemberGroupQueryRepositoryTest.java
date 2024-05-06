@@ -52,9 +52,9 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         memberId = member.getId();
 
         //그룹이 없는 사용자
-        Member memberWithNoGroup = MemberFixture.member(1);
-        entityManager.persist(memberWithNoGroup);
-        memberIdWithNoGroup = memberWithNoGroup.getId();
+        Member memberNotInGroup = MemberFixture.member(1);
+        entityManager.persist(memberNotInGroup);
+        memberIdWithNoGroup = memberNotInGroup.getId();
 
         //그룹
         List<Group> groups = new ArrayList<>();
