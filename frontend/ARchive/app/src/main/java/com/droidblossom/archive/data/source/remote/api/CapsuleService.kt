@@ -19,7 +19,7 @@ interface CapsuleService {
     ) : Response<ResponseBody<CapsuleOpenedResponseDto>>
 
     @GET("capsules/my/map/nearby")
-    suspend fun getNearbyCapsulesHomeApi(
+    suspend fun getNearbyMyCapsulesHomeApi(
         @Query("latitude") latitude : Double,
         @Query("longitude") longitude : Double,
         @Query("distance") distance : Double,
@@ -27,7 +27,7 @@ interface CapsuleService {
     ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
 
     @GET("capsules/my/ar/nearby")
-    suspend fun getNearbyCapsulesARApi(
+    suspend fun getNearbyMyCapsulesARApi(
         @Query("latitude") latitude : Double,
         @Query("longitude") longitude : Double,
         @Query("distance") distance : Double,

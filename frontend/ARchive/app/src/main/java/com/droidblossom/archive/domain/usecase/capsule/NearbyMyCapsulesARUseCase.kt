@@ -8,14 +8,14 @@ import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class NearbyCapsulesARUseCase @Inject constructor(
+class NearbyMyCapsulesARUseCase @Inject constructor(
     private val repository: CapsuleRepository
 ) {
 
     suspend operator fun invoke(latitude: Double, longitude: Double, distance: Double, capsuleType: String) =
         flow {
             try {
-                emit(repository.nearbyCapsulesAR(latitude, longitude, distance, capsuleType).onSuccess {
+                emit(repository.nearbyMyCapsulesAR(latitude, longitude, distance, capsuleType).onSuccess {
                     Log.d("성패", "$it")
                 }.onFail {
                     Log.d("실패", "$it")

@@ -23,22 +23,22 @@ class CapsuleRepositoryImpl @Inject constructor(
         return apiHandler({ api.patchCapsuleOpenApi(capsuleId = capsuleId) }) { response: ResponseBody<CapsuleOpenedResponseDto> -> response.result.toModel() }
     }
 
-    override suspend fun nearbyCapsulesHome(
+    override suspend fun nearbyMyCapsulesHome(
         latitude: Double,
         longitude: Double,
         distance: Double,
         capsuleType: String
     ): RetrofitResult<CapsuleMarkers> {
-        return apiHandler({ api.getNearbyCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
+        return apiHandler({ api.getNearbyMyCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
     }
 
-    override suspend fun nearbyCapsulesAR(
+    override suspend fun nearbyMyCapsulesAR(
         latitude: Double,
         longitude: Double,
         distance: Double,
         capsuleType: String
     ): RetrofitResult<CapsuleAnchors> {
-        return apiHandler({ api.getNearbyCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
+        return apiHandler({ api.getNearbyMyCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
     }
 
     override suspend fun getAddress(

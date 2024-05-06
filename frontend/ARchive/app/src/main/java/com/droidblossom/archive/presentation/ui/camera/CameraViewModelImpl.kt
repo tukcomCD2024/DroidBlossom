@@ -2,7 +2,7 @@ package com.droidblossom.archive.presentation.ui.camera
 
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
-import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesARUseCase
+import com.droidblossom.archive.domain.usecase.capsule.NearbyMyCapsulesARUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModelImpl@Inject constructor(
-    private val nearbyCapsulesARUseCase: NearbyCapsulesARUseCase
+    private val nearbyMyCapsulesARUseCase: NearbyMyCapsulesARUseCase
 ) : BaseViewModel(), CameraViewModel {
 
     private val _cameraEvents = MutableSharedFlow<CameraViewModel.CameraEvent>()
@@ -55,7 +55,7 @@ class CameraViewModelImpl@Inject constructor(
 
     override fun getCapsules(latitude: Double, longitude: Double) : List<CapsuleAnchor> {
         viewModelScope.launch {
-            nearbyCapsulesARUseCase(latitude,longitude,0.1,"ALL").collect{ result->
+            nearbyMyCapsulesARUseCase(latitude,longitude,0.1,"ALL").collect{ result->
                 result.onSuccess {
                     _capsuleList.emit(it.capsuleAnchors)
                     _capsuleListSize.value = _capsuleList.value.size

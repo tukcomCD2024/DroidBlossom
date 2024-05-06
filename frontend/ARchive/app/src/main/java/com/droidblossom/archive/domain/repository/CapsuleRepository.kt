@@ -13,13 +13,13 @@ interface CapsuleRepository {
         capsuleId : Long
     ): RetrofitResult<CapsuleOpenedResponse>
 
-    suspend fun nearbyCapsulesHome(
+    suspend fun nearbyMyCapsulesHome(
         latitude: Double,
         longitude: Double,
         distance: Double,
         capsuleType: String
     ): RetrofitResult<CapsuleMarkers>
-    suspend fun nearbyCapsulesAR(
+    suspend fun nearbyMyCapsulesAR(
         latitude: Double,
         longitude: Double,
         distance: Double,
