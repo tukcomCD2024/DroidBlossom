@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class GroupService {
@@ -33,6 +34,7 @@ public class GroupService {
     private final GroupInviteMessageManager groupInviteMessageManager;
     private final GroupQueryRepository groupQueryRepository;
 
+    @Transactional
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
         Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -53,13 +55,11 @@ public class GroupService {
         groupInviteMessageManager.sendGroupInviteMessage(groupInviteMessageDto);
     }
 
-    @Transactional(readOnly = true)
     public Group findGroupById(Long groupId) {
         return groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
     public Slice<GroupSummaryDto> findGroupsSlice(
         final Long memberId,
         final int size,
@@ -68,9 +68,18 @@ public class GroupService {
         return groupQueryRepository.findGroupsSlice(memberId, size, createdAt);
     }
 
-    @Transactional(readOnly = true)
-    public GroupDetailDto findGroupDetailByGroupId(final Long groupId) {
-        return groupQueryRepository.findGroupDetailByGroupId(groupId)
+    public GroupDetailDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
+        final GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);
+
+        final boolean isGroupMember = groupDetailDto.members()
+            .stream()
+            .anyMatch(m -> m.memberId().equals(memberId));
+
+        if (!isGroupMember) {
+            throw new GroupNotFoundException();
+        }
+
+        return groupDetailDto;
     }
 }

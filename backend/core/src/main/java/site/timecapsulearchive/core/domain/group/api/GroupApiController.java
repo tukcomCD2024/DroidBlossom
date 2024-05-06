@@ -84,7 +84,7 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId
     ) {
-        GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(groupId);
+        GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(memberId, groupId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
