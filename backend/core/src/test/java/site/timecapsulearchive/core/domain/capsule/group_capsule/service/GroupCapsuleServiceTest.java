@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.service;
+package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;

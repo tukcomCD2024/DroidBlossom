@@ -56,7 +56,7 @@ public class MemberGroupFixture {
      * @param group 그룹
      * @return {@code List<MemberGroup>} 테스트 픽스처들
      */
-    public static List<MemberGroup> membersGroup(List<Member> members, Group group) {
+    public static List<MemberGroup> memberGroups(List<Member> members, Group group) {
         return members.stream()
             .map(m -> memberGroup(m, group, Boolean.FALSE))
             .toList();
