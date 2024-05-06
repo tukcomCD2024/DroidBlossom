@@ -41,9 +41,9 @@ public class CapsuleApiController implements CapsuleApi {
         return null;
     }
 
-    @GetMapping(value = "/nearby/ar", produces = {"application/json"})
+    @GetMapping(value = "/my/ar/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyMyCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
         @RequestParam(value = "longitude") final double longitude,
@@ -68,9 +68,9 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    @GetMapping(value = "/nearby", produces = {"application/json"})
+    @GetMapping(value = "/my/map/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyMyCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
         @RequestParam(value = "longitude") final double longitude,
@@ -87,6 +87,52 @@ public class CapsuleApiController implements CapsuleApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 NearbyCapsuleResponse.createOf(dtos, geoTransformManager::changePoint3857To4326)
+            )
+        );
+    }
+
+    @GetMapping(value = "/friends/map/nearby", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyFriendsCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance
+    ) {
+        final List<NearbyCapsuleSummaryDto> capsules = capsuleService.findFriendsCapsulesByCurrentLocation(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance)
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                NearbyCapsuleResponse.createOf(capsules, geoTransformManager::changePoint3857To4326)
+            )
+        );
+    }
+
+    @GetMapping(value = "/friends/ar/nearby", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyFriendsCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance
+    ) {
+        final List<NearbyARCapsuleSummaryDto> capsules = capsuleService.findFriendsARCapsulesByCurrentLocation(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance)
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                NearbyARCapsuleResponse.createOf(
+                    capsules,
+                    geoTransformManager::changePoint3857To4326,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
             )
         );
     }
