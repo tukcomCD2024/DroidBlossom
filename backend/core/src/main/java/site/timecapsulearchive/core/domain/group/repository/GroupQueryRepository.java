@@ -31,7 +31,7 @@ public class GroupQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        List<GroupSummaryDto> groups = jpaQueryFactory
+        final List<GroupSummaryDto> groups = jpaQueryFactory
             .select(
                 Projections.constructor(
                     GroupSummaryDto.class,
@@ -49,7 +49,7 @@ public class GroupQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        boolean hasNext = groups.size() > size;
+        final boolean hasNext = groups.size() > size;
         if (hasNext) {
             groups.remove(size);
         }

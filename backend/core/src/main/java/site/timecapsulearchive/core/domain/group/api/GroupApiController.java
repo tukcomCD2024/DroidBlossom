@@ -84,7 +84,7 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId
     ) {
-        GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(memberId, groupId);
+        final GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(memberId, groupId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -103,7 +103,7 @@ public class GroupApiController implements GroupApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        Slice<GroupSummaryDto> groupsSlice = groupService.findGroupsSlice(memberId, size,
+        final Slice<GroupSummaryDto> groupsSlice = groupService.findGroupsSlice(memberId, size,
             createdAt);
 
         return ResponseEntity.ok(
