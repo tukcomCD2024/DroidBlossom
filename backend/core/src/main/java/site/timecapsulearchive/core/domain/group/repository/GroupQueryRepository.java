@@ -60,18 +60,7 @@ public class GroupQueryRepository {
     public Optional<GroupDetailDto> findGroupDetailByGroupId(final Long groupId) {
         return Optional.ofNullable(
             jpaQueryFactory
-                .select(
-                    group.groupName,
-                    group.groupDescription,
-                    group.groupProfileUrl,
-                    group.createdAt,
-                    member.id,
-                    member.profileUrl,
-                    member.nickname,
-                    member.tag,
-                    memberGroup.isOwner
-                )
-                .from(group)
+                .selectFrom(group)
                 .join(memberGroup).on(memberGroup.group.id.eq(group.id))
                 .join(member).on(member.id.eq(memberGroup.member.id))
                 .where(group.id.eq(groupId))
