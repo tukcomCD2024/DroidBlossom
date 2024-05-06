@@ -8,6 +8,7 @@ import site.timecapsulearchive.core.global.common.response.ResponseMappingConsta
 @Builder
 @Schema(description = "친구 요약 정보")
 public record FriendSummaryResponse(
+
     @Schema(description = "친구 아이디")
     Long id,
 

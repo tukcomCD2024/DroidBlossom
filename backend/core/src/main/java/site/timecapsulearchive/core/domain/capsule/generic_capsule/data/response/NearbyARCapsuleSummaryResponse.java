@@ -13,11 +13,11 @@ public record NearbyARCapsuleSummaryResponse(
     @Schema(description = "캡슐 아이디")
     Long id,
 
-    @Schema(description = "캡슐 경도 좌표")
-    Double longitude,
-
     @Schema(description = "캡슐 위도 좌표")
     Double latitude,
+
+    @Schema(description = "캡슐 경도 좌표")
+    Double longitude,
 
     @Schema(description = "생성자 닉네임")
     String nickname,

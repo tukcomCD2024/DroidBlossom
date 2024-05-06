@@ -23,28 +23,48 @@ import site.timecapsulearchive.core.global.error.ErrorResponse;
 public interface FriendApi {
 
     @Operation(
-        summary = "소셜 친구 요청 수락",
-        description = "상대방으로부터 온 친구 요청을 수락한다.",
+        summary = "소셜 친구 목록 조회",
+        description = "사용자의 소셜 친구 목록을 보여준다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
     )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
-            description = "처리 완료"
-        ),
-        @ApiResponse(
-            responseCode = "500",
-            description = "외부 API 요청 실패"
+            description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<String>> acceptFriendRequest(
+    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
         Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema())
-        Long friendId
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
+        ZonedDateTime createdAt
     );
 
+    @Operation(
+        summary = "소셜 친구 요청 목록 조회",
+        description = "사용자의 소셜 친구 요청 목록을 보여준다. 수락 대기 중인 요청만 해당한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
+        ZonedDateTime createdAt
+    );
 
     @Operation(
         summary = "소셜 친구 삭제",
@@ -92,50 +112,6 @@ public interface FriendApi {
         Long friendId
     );
 
-    @Operation(
-        summary = "소셜 친구 목록 조회",
-        description = "사용자의 소셜 친구 목록을 보여준다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"friend"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriends(
-        Long memberId,
-
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
-        int size,
-
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
-        ZonedDateTime createdAt
-    );
-
-    @Operation(
-        summary = "소셜 친구 요청 목록 조회",
-        description = "사용자의 소셜 친구 요청 목록을 보여준다. 수락 대기 중인 요청만 해당한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"friend"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
-        Long memberId,
-
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
-        int size,
-
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
-        ZonedDateTime createdAt
-    );
-
 
     @Operation(
         summary = "소셜 친구 요청",
@@ -180,6 +156,33 @@ public interface FriendApi {
         Long memberId,
 
         SendFriendRequest request
+    );
+
+    @Operation(
+        summary = "소셜 친구 요청 수락",
+        description = "상대방으로부터 온 친구 요청을 수락한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "친구 요청이 존재하지 않는 경우 발생"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
+        )
+    })
+    ResponseEntity<ApiSpec<String>> acceptFriendRequest(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema())
+        Long friendId
     );
 
 

@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.friend.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 
 @Schema(description = "친구 요청 리스트")
 public record FriendRequestsSliceResponse(
@@ -12,4 +13,14 @@ public record FriendRequestsSliceResponse(
     Boolean hasNext
 ) {
 
+    public static FriendRequestsSliceResponse createOf(
+        List<FriendSummaryDto> content,
+        boolean hasNext
+    ) {
+        List<FriendSummaryResponse> friends = content.stream()
+            .map(FriendSummaryDto::toResponse)
+            .toList();
+
+        return new FriendRequestsSliceResponse(friends, hasNext);
+    }
 }

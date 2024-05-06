@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.group.service;
 
+import lombok.RequiredArgsConstructor;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -21,6 +22,7 @@ import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepositor
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Transactional(readOnly = true)
 @Service
@@ -31,17 +33,19 @@ public class GroupService {
     private final MemberRepository memberRepository;
     private final MemberGroupRepository memberGroupRepository;
     private final TransactionTemplate transactionTemplate;
+    private final SocialNotificationManager socialNotificationManager;
+
     private final GroupInviteMessageManager groupInviteMessageManager;
     private final GroupQueryRepository groupQueryRepository;
 
     @Transactional
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
-        Member member = memberRepository.findMemberById(memberId)
+        final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        Group group = dto.toEntity();
+        final Group group = dto.toEntity();
 
-        MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
+        final MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
 
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -51,8 +55,8 @@ public class GroupService {
             }
         });
 
-        GroupInviteMessageDto groupInviteMessageDto = dto.toInviteMessageDto(member.getNickname());
-        groupInviteMessageManager.sendGroupInviteMessage(groupInviteMessageDto);
+        socialNotificationManager.sendGroupInviteMessage(member.getNickname(),
+            dto.groupProfileUrl(), dto.targetIds());
     }
 
     public Group findGroupById(Long groupId) {

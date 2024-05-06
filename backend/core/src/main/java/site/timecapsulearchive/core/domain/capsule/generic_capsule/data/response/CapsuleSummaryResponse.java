@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 import lombok.Builder;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
@@ -25,6 +26,12 @@ public record CapsuleSummaryResponse(
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
+
+    @Schema(description = "캡슐 위도 좌표")
+    Double latitude,
+
+    @Schema(description = "캡슐 경도 좌표")
+    Double longitude,
 
     @Schema(description = "캡슐 생성 주소")
     String address,
@@ -51,18 +58,9 @@ public record CapsuleSummaryResponse(
 
     public static CapsuleSummaryResponse createOf(
         final CapsuleSummaryDto summaryDto,
-        final Function<String, String> preSignUrlFunction
+        final Function<String, String> preSignUrlFunction,
+        final Function<Point, Point> changePointFunction
     ) {
-        return new CapsuleSummaryResponse(
-            summaryDto.nickname(),
-            summaryDto.profileUrl(),
-            preSignUrlFunction.apply(summaryDto.skinUrl()),
-            summaryDto.title(),
-            summaryDto.dueDate(),
-            summaryDto.address(),
-            summaryDto.roadName(),
-            summaryDto.isOpened(),
-            summaryDto.createdAt()
-        );
+        return summaryDto.toResponse(preSignUrlFunction, changePointFunction);
     }
 }
