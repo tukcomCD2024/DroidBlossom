@@ -157,7 +157,7 @@ public class S3PreSignedUrlManager {
      * @return 구분자 ,로 구분된 각각의 서명된 이미지 url
      */
     public List<String> getS3PreSignedUrlsForGet(final String fileNames) {
-        if (fileNames == null) {
+        if (fileNames == null || fileNames.isEmpty()) {
             return Collections.emptyList();
         }
 
