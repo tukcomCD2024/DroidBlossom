@@ -8,8 +8,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import site.timecapsulearchive.core.global.config.JpaAuditingConfig;
+import site.timecapsulearchive.core.global.config.QueryDSLConfig;
 
-@Import(JpaAuditingConfig.class)
+@Import(value = {JpaAuditingConfig.class, QueryDSLConfig.class})
 @DataJpaTest
 @FlywayTestExtension
 @FlywayTest

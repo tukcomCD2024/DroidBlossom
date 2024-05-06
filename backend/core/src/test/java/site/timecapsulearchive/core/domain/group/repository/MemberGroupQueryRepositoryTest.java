@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,6 +22,7 @@ import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.MemberGroupFixture;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
@@ -29,45 +31,55 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberGroupQueryRepositoryTest extends RepositoryTest {
 
-    private final MemberGroupQueryRepository memberGroupQueryRepository;
+    private final static int GROUP_COUNT = 20;
+
+    private final GroupQueryRepository groupQueryRepository;
 
     private Long memberId;
     private Long memberIdWithNoGroup;
+    private Long ownerGroupId;
 
-    MemberGroupQueryRepositoryTest(EntityManager entityManager) {
-        this.memberGroupQueryRepository = new MemberGroupQueryRepository(
-            new JPAQueryFactory(entityManager));
+    MemberGroupQueryRepositoryTest(JPAQueryFactory jpaQueryFactory) {
+        this.groupQueryRepository = new GroupQueryRepository(jpaQueryFactory);
     }
 
     @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
+        //사용자
         Member member = MemberFixture.member(0);
         entityManager.persist(member);
         memberId = member.getId();
 
+        //그룹이 없는 사용자
         Member memberWithNoGroup = MemberFixture.member(1);
         entityManager.persist(memberWithNoGroup);
         memberIdWithNoGroup = memberWithNoGroup.getId();
 
+        //그룹
         List<Group> groups = new ArrayList<>();
-        for (int count = 0; count < 20; count++) {
+        for (int count = 0; count < GROUP_COUNT; count++) {
             Group group = GroupFixture.group();
             entityManager.persist(group);
             groups.add(group);
         }
+        //사용자가 그룹장인 그룹
+        ownerGroupId = groups.get(0).getId();
 
-        for (int count = 0; count < 10; count++) {
-            MemberGroup memberGroup = MemberGroupFixture.memberGroup(member, groups.get(count),
-                Boolean.FALSE);
-            entityManager.persist(memberGroup);
-        }
+        //그룹원들
+        List<Member> members = MemberFixture.members(4, 2);
+        members.forEach(entityManager::persist);
 
-        for (int count = 0; count < 10; count++) {
+        //그룹에 사용자를 그룹장으로 설정
+        for (int count = 0; count < GROUP_COUNT; count++) {
             MemberGroup memberGroup = MemberGroupFixture.memberGroup(member, groups.get(count),
                 Boolean.TRUE);
             entityManager.persist(memberGroup);
         }
+
+        //그룹원들 설정
+        List<MemberGroup> memberGroups = MemberGroupFixture.membersGroup(members, groups.get(0));
+        memberGroups.forEach(entityManager::persist);
     }
 
     @ParameterizedTest
@@ -77,7 +89,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(3);
 
         //when
-        Slice<GroupSummaryDto> groupsSlice = memberGroupQueryRepository.findGroupsSlice(memberId,
+        Slice<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(memberId,
             size, now);
 
         //then
@@ -91,7 +103,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(3);
 
         //when
-        List<GroupSummaryDto> groupsSlice = memberGroupQueryRepository.findGroupsSlice(memberId,
+        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(memberId,
             size, now).getContent();
 
         //then
@@ -111,9 +123,11 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(3);
 
         //when
-        List<GroupSummaryDto> groupsSlice = memberGroupQueryRepository.findGroupsSlice(
-            memberIdWithNoGroup,
-            size, now).getContent();
+        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(
+                memberIdWithNoGroup,
+                size,
+                now)
+            .getContent();
 
         //then
         assertThat(groupsSlice.isEmpty()).isTrue();
@@ -126,10 +140,71 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().minusDays(5);
 
         //when
-        List<GroupSummaryDto> groupsSlice = memberGroupQueryRepository.findGroupsSlice(memberId,
+        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(memberId,
             size, now).getContent();
 
         //then
         assertThat(groupsSlice.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 그룹_아이디로_그룹을_조회하면_그룹_상세가_반환된다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
+            ownerGroupId).orElseThrow();
+
+        //then
+        assertThat(groupDetail).isNotNull();
+    }
+
+    @Test
+    void 그룹_아이디로_그룹을_조회하면_그룹_정보를_볼_수_있다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
+            ownerGroupId).orElseThrow();
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(groupDetail.groupName()).isNotBlank();
+            assertThat(groupDetail.groupDescription()).isNotBlank();
+            assertThat(groupDetail.groupProfileUrl()).isNotBlank();
+            assertThat(groupDetail.createdAt()).isNotNull();
+        });
+    }
+
+    @Test
+    void 그룹_아이디로_그룹을_조회하면_그룹원들의_정보를_볼_수_있다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
+            ownerGroupId).orElseThrow();
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(groupDetail.members()).isNotEmpty();
+            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.memberId()).isNotNull());
+            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.tag()).isNotBlank());
+            assertThat(groupDetail.members()).allSatisfy(
+                m -> assertThat(m.nickname()).isNotBlank());
+            assertThat(groupDetail.members()).allSatisfy(
+                m -> assertThat(m.profileUrl()).isNotBlank());
+            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.isOwner()).isNotNull());
+        });
+    }
+
+    @Test
+    void 그룹_아이디로_그룹을_조회하면_한_명의_그룹장만_존재한다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
+            ownerGroupId).orElseThrow();
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(groupDetail.members()).satisfiesOnlyOnce(
+                m -> assertThat(m.isOwner()).isTrue());
+        });
     }
 }
