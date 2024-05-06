@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 
 public record GroupDetailDto(
@@ -11,12 +12,12 @@ public record GroupDetailDto(
     String groupDescription,
     String groupProfileUrl,
     ZonedDateTime createdAt,
-    List<GroupMemberSummaryDto> members
+    List<GroupMemberDto> members
 ) {
 
     public GroupDetailResponse toResponse(Function<String, String> singlePreSignUrlFunction) {
-        List<GroupMemberSummaryResponse> members = this.members.stream()
-            .map(GroupMemberSummaryDto::toResponse)
+        List<GroupMemberResponse> members = this.members.stream()
+            .map(GroupMemberDto::toResponse)
             .toList();
 
         return GroupDetailResponse.builder()

@@ -17,7 +17,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 
 @Repository
@@ -85,7 +85,7 @@ public class GroupQueryRepository {
                             group.createdAt,
                             list(
                                 Projections.constructor(
-                                    GroupMemberSummaryDto.class,
+                                    GroupMemberDto.class,
                                     member.id,
                                     member.profileUrl,
                                     member.nickname,

@@ -23,7 +23,7 @@ public record GroupDetailResponse(
     ZonedDateTime createdAt,
 
     @Schema(description = "그룹원 리스트")
-    List<GroupMemberSummaryResponse> members
+    List<GroupMemberResponse> members
 ) {
 
     public GroupDetailResponse {

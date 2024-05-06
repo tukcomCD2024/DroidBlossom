@@ -11,7 +11,6 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupInviteMessageDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
@@ -24,7 +23,6 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
-@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class GroupService {
@@ -34,11 +32,8 @@ public class GroupService {
     private final MemberGroupRepository memberGroupRepository;
     private final TransactionTemplate transactionTemplate;
     private final SocialNotificationManager socialNotificationManager;
-
-    private final GroupInviteMessageManager groupInviteMessageManager;
     private final GroupQueryRepository groupQueryRepository;
 
-    @Transactional
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
         final Member member = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -59,11 +54,13 @@ public class GroupService {
             dto.groupProfileUrl(), dto.targetIds());
     }
 
+    @Transactional(readOnly = true)
     public Group findGroupById(Long groupId) {
         return groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
     }
 
+    @Transactional(readOnly = true)
     public Slice<GroupSummaryDto> findGroupsSlice(
         final Long memberId,
         final int size,
@@ -72,6 +69,7 @@ public class GroupService {
         return groupQueryRepository.findGroupsSlice(memberId, size, createdAt);
     }
 
+    @Transactional(readOnly = true)
     public GroupDetailDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
         final GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);

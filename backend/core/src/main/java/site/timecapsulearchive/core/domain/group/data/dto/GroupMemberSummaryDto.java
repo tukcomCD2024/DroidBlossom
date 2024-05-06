@@ -3,20 +3,13 @@ package site.timecapsulearchive.core.domain.group.data.dto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 
 public record GroupMemberSummaryDto(
-    Long memberId,
-    String profileUrl,
     String nickname,
-    String tag,
-    Boolean isOwner
+    String profileUrl,
+    Boolean isOpened
 ) {
 
     public GroupMemberSummaryResponse toResponse() {
-        return GroupMemberSummaryResponse.builder()
-            .memberId(memberId)
-            .profileUrl(profileUrl)
-            .nickname(nickname)
-            .tag(tag)
-            .isOwner(isOwner)
-            .build();
+        return new GroupMemberSummaryResponse(nickname, profileUrl, isOpened);
     }
+
 }
