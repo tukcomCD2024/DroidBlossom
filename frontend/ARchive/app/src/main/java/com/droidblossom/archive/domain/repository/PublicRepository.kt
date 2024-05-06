@@ -12,7 +12,7 @@ interface PublicRepository {
 
     suspend fun createPublicCapsule (request: CapsuleCreateRequestDto) : RetrofitResult<String>
 
-    suspend fun getPublicCapsuleSummary (capsuleId: Int) : RetrofitResult<CapsuleSummaryResponse>
+    suspend fun getPublicCapsuleSummary (capsuleId: Long) : RetrofitResult<CapsuleSummaryResponse>
 
     suspend fun getPublicCapsuleDetail (capsuleId: Long) : RetrofitResult<CapsuleDetail>
 

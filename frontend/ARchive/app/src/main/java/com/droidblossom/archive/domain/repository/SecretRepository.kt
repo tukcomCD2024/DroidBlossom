@@ -17,6 +17,6 @@ interface SecretRepository {
 
     suspend fun getSecretCapsuleDetail (capsuleId: Long) : RetrofitResult<CapsuleDetail>
 
-    suspend fun getSecretCapsuleSummary (capsuleId: Int) : RetrofitResult<CapsuleSummaryResponse>
-    suspend fun modifySecretCapsule (capsuleId: Int, request: SecretCapsuleModifyRequestDto) : RetrofitResult<SecretCapsuleModify>
+    suspend fun getSecretCapsuleSummary (capsuleId: Long) : RetrofitResult<CapsuleSummaryResponse>
+    suspend fun modifySecretCapsule (capsuleId: Long, request: SecretCapsuleModifyRequestDto) : RetrofitResult<SecretCapsuleModify>
 }

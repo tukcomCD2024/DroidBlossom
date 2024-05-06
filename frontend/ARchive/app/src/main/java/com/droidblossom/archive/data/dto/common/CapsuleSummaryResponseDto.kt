@@ -8,8 +8,10 @@ data class CapsuleSummaryResponseDto(
     val skinUrl: String,
     val title: String,
     val dueDate: String?,
+    val latitude: Double,
+    val longitude: Double,
     val address: String,
-    val roadName: String,
+    val roadName: String?,
     val isOpened: Boolean,
     val createdAt: String
 ){
@@ -20,7 +22,7 @@ data class CapsuleSummaryResponseDto(
         title = this.title,
         dueDate = this.dueDate ?: "",
         address = this.address,
-        roadName = this.roadName,
+        roadName = this.roadName ?: "",
         isOpened = this.isOpened,
         createdAt = this.createdAt,
     )

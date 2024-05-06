@@ -5,10 +5,12 @@ import com.droidblossom.archive.domain.model.common.SocialCapsules
 
 data class CapsuleDetailResponseDto(
     val address: String,
-    val roadName: String,
+    val roadName: String?,
     val capsuleSkinUrl: String,
     val content: String?,
     val createdDate: String,
+    val latitude: Double,
+    val longitude: Double,
     val profileUrl: String,
     val dueDate: String?,
     val isOpened: Boolean,
@@ -20,7 +22,7 @@ data class CapsuleDetailResponseDto(
 ){
     fun toModel() = CapsuleDetail(
         address = this.address,
-        roadName = this.roadName,
+        roadName = this.roadName ?: "",
         capsuleSkinUrl = this.capsuleSkinUrl,
         content = this.content ?: "",
         createdDate = this.createdDate,

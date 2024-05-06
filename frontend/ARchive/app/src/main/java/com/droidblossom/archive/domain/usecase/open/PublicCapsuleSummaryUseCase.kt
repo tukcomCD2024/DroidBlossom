@@ -11,7 +11,7 @@ import javax.inject.Inject
 class PublicCapsuleSummaryUseCase @Inject constructor(
     private val repository: PublicRepository
 ) {
-    suspend operator fun invoke(capsuleId :Int) =
+    suspend operator fun invoke(capsuleId :Long) =
         flow {
             try {
                 emit(repository.getPublicCapsuleSummary(capsuleId).onSuccess {

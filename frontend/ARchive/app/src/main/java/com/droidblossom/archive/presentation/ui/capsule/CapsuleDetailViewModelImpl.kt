@@ -21,11 +21,11 @@ import javax.inject.Inject
 class CapsuleDetailViewModelImpl @Inject constructor(
     private val secretCapsuleDetailUseCase: SecretCapsuleDetailUseCase,
     private val publicCapsuleDetailUseCase: PublicCapsuleDetailUseCase
-): BaseViewModel(), CapsuleDetailViewModel {
+) : BaseViewModel(), CapsuleDetailViewModel {
 
     private val _detailEvent = MutableSharedFlow<CapsuleDetailViewModel.DetailEvent>()
     override val detailEvents: SharedFlow<CapsuleDetailViewModel.DetailEvent>
-        get() =  _detailEvent.asSharedFlow()
+        get() = _detailEvent.asSharedFlow()
 
     private val _capsuleDetail = MutableStateFlow(CapsuleDetail())
     override val capsuleDetail: StateFlow<CapsuleDetail>
@@ -33,12 +33,12 @@ class CapsuleDetailViewModelImpl @Inject constructor(
 
     override fun getSecretCapsuleDetail(id: Long) {
         viewModelScope.launch {
-            secretCapsuleDetailUseCase(id).collect{ result ->
+            secretCapsuleDetailUseCase(id).collect { result ->
                 result.onSuccess { detail ->
-                    Log.d("디테일","${detail}")
+                    Log.d("디테일", "${detail}")
                     _capsuleDetail.emit(detail)
-                     }.onFail {
-                    Log.d("디테일","${it}")
+                }.onFail {
+                    Log.d("디테일", "${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }
             }
@@ -47,12 +47,12 @@ class CapsuleDetailViewModelImpl @Inject constructor(
 
     override fun getPublicCapsuleDetail(id: Long) {
         viewModelScope.launch {
-            publicCapsuleDetailUseCase(id).collect{ result ->
+            publicCapsuleDetailUseCase(id).collect { result ->
                 result.onSuccess { detail ->
-                    Log.d("디테일","${detail}")
+                    Log.d("디테일", "${detail}")
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    Log.d("디테일","${it}")
+                    Log.d("디테일", "${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }
             }

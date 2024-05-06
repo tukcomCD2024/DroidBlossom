@@ -36,8 +36,8 @@ class CapsulePreviewDialogFragment :
     }
 
 
-    val capsuleId: Int by lazy {
-        arguments?.getString("capsule_id")!!.toInt()
+    val capsuleId: Long by lazy {
+        arguments?.getString("capsule_id")!!.toLong()
     }
 
     val capsuleType by lazy {

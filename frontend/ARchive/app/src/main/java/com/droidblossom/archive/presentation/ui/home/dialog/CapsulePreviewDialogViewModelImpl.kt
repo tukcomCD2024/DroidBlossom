@@ -86,7 +86,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override fun setCalledFromCamera(calledFromCamera : Boolean){
         _calledFromCamera.value = calledFromCamera
     }
-    override fun getSecretCapsuleSummary(capsuleId: Int) {
+    override fun getSecretCapsuleSummary(capsuleId: Long) {
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
@@ -102,7 +102,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getPublicCapsuleSummary(capsuleId: Int) {
+    override fun getPublicCapsuleSummary(capsuleId: Long) {
         viewModelScope.launch {
             publicCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {

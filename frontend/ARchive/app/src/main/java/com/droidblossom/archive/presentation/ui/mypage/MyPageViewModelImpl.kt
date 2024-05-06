@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.MemberDetail

@@ -33,8 +33,8 @@ interface CapsulePreviewDialogViewModel {
 
     fun setCalledFromCamera(calledFromCamera : Boolean)
 
-    fun getSecretCapsuleSummary(capsuleId: Int)
-    fun getPublicCapsuleSummary(capsuleId: Int)
+    fun getSecretCapsuleSummary(capsuleId: Long)
+    fun getPublicCapsuleSummary(capsuleId: Long)
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
 

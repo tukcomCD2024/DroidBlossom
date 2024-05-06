@@ -35,12 +35,12 @@ class SecretRepositoryImpl @Inject constructor(
         return apiHandler({ api.getSecretCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel() }
     }
 
-    override suspend fun getSecretCapsuleSummary (capsuleId: Int) : RetrofitResult<CapsuleSummaryResponse> {
+    override suspend fun getSecretCapsuleSummary (capsuleId: Long) : RetrofitResult<CapsuleSummaryResponse> {
         return apiHandler({ api.getSecretCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<CapsuleSummaryResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun modifySecretCapsule(
-        capsuleId: Int,
+        capsuleId: Long,
         request: SecretCapsuleModifyRequestDto
     ): RetrofitResult<SecretCapsuleModify> {
         return apiHandler({ api.modifySecretCapsuleApi(capsuleId , request) }) { response: ResponseBody<SecretCapsuleModifyResponseDto> -> response.result.toModel() }

@@ -25,7 +25,7 @@ class PublicRepositoryImpl @Inject constructor(
         return apiHandler({ api.postPublicCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
-    override suspend fun getPublicCapsuleSummary(capsuleId: Int): RetrofitResult<CapsuleSummaryResponse> {
+    override suspend fun getPublicCapsuleSummary(capsuleId: Long): RetrofitResult<CapsuleSummaryResponse> {
         return apiHandler({ api.getPublicCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<CapsuleSummaryResponseDto> -> response.result.toModel()}
     }
 

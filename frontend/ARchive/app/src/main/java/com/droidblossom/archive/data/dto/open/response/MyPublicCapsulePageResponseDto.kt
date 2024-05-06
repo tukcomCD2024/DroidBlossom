@@ -4,7 +4,7 @@ import com.droidblossom.archive.data.dto.secret.response.SecretCapsuleResponseDt
 import com.droidblossom.archive.domain.model.secret.CapsulePageList
 
 data class MyPublicCapsulePageResponseDto (
-    val publicCapsules: List<SecretCapsuleResponseDto>,
+    val publicCapsules: List<MyPublicCapsuleResponseDto>,
     val hasNext: Boolean,
 ){
     fun toModel() = CapsulePageList(

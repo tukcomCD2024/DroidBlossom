@@ -15,22 +15,22 @@ import retrofit2.http.Query
 
 interface PublicService {
 
-    @POST("capsules/public")
+    @POST("public-capsules")
     suspend fun postPublicCapsuleApi(
         @Body request : CapsuleCreateRequestDto
     ) : Response<ResponseBody<String>>
 
-    @GET("public/capsules/{capsule_id}/summary")
+    @GET("public-capsules/{capsule_id}/summary")
     suspend fun getPublicCapsuleSummaryApi(
-        @Path("capsule_id") capsuleId : Int,
+        @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<CapsuleSummaryResponseDto>>
 
-    @GET("public/capsules/{capsule_id}/detail")
+    @GET("public-capsules/{capsule_id}/detail")
     suspend fun getPublicCapsuleDetailApi(
         @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<CapsuleDetailResponseDto>>
 
-    @GET("public/capsules")
+    @GET("public-capsules")
     suspend fun getPublicCapsulesPageApi(
         @Query("size") size : Int,
         @Query("created_at") createdAt: String
