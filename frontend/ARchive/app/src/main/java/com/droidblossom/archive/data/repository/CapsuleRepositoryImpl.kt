@@ -41,6 +41,14 @@ class CapsuleRepositoryImpl @Inject constructor(
         return apiHandler({ api.getNearbyMyCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
     }
 
+    override suspend fun nearbyFriendsCapsulesAR(
+        latitude: Double,
+        longitude: Double,
+        distance: Double,
+    ): RetrofitResult<CapsuleAnchors> {
+        return apiHandler({ api.getNearbyFriendsCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
+    }
+
     override suspend fun getAddress(
         latitude: Double,
         longitude: Double

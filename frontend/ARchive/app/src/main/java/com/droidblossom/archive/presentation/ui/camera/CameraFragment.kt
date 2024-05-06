@@ -58,6 +58,10 @@ class CameraFragment :
                             sheet.show(parentFragmentManager, "CapsulePreviewDialog")
                         }
 
+                        is CameraViewModel.CameraEvent.DismissLoading -> {
+                            dismissLoading()
+                        }
+
                         else -> {}
                     }
                 }

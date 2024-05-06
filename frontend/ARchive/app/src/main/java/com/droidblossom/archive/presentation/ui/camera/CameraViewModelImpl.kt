@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.camera
 
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
+import com.droidblossom.archive.domain.usecase.capsule.NearbyFriendsCapsulesARUseCase
 import com.droidblossom.archive.domain.usecase.capsule.NearbyMyCapsulesARUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModelImpl@Inject constructor(
-    private val nearbyMyCapsulesARUseCase: NearbyMyCapsulesARUseCase
+    private val nearbyMyCapsulesARUseCase: NearbyMyCapsulesARUseCase,
+    private val nearbyFriendsCapsulesARUseCase: NearbyFriendsCapsulesARUseCase
 ) : BaseViewModel(), CameraViewModel {
 
     private val _cameraEvents = MutableSharedFlow<CameraViewModel.CameraEvent>()
@@ -53,17 +55,39 @@ class CameraViewModelImpl@Inject constructor(
         }
     }
 
-    override fun getCapsules(latitude: Double, longitude: Double) : List<CapsuleAnchor> {
+    override fun getCapsules(latitude: Double, longitude: Double){
+        if (true) getMyCapsules(latitude, longitude)
+        else getFriendsCapsules(latitude, longitude)
+    }
+
+    private fun getMyCapsules(latitude: Double, longitude: Double){
         viewModelScope.launch {
             nearbyMyCapsulesARUseCase(latitude,longitude,0.1,"ALL").collect{ result->
                 result.onSuccess {
                     _capsuleList.emit(it.capsuleAnchors)
                     _capsuleListSize.value = _capsuleList.value.size
+                    if (capsuleList.value.isEmpty()){
+                        cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                    }
                 }.onFail {
-
+                    cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }
         }
-        return capsuleList.value
+    }
+    private fun getFriendsCapsules(latitude: Double, longitude: Double){
+        viewModelScope.launch {
+            nearbyFriendsCapsulesARUseCase(latitude,longitude,0.1).collect{ result->
+                result.onSuccess {
+                    _capsuleList.emit(it.capsuleAnchors)
+                    _capsuleListSize.value = _capsuleList.value.size
+                    if (capsuleList.value.isEmpty()) {
+                        cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                    }
+                }.onFail {
+                    cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                }
+            }
+        }
     }
 }

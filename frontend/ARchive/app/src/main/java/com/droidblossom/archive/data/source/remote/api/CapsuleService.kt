@@ -34,6 +34,13 @@ interface CapsuleService {
         @Query("capsule_type") capsuleType : String
     ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
 
+    @GET("capsules/friends/ar/nearby")
+    suspend fun getNearbyFriendsCapsulesARApi(
+        @Query("latitude") latitude : Double,
+        @Query("longitude") longitude : Double,
+        @Query("distance") distance : Double,
+    ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
+
     @GET("map/full-address")
     suspend fun getAddressApi(
         @Query("latitude") latitude : Double,

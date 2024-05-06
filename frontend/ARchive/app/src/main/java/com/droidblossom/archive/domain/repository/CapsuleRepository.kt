@@ -26,6 +26,12 @@ interface CapsuleRepository {
         capsuleType: String
     ): RetrofitResult<CapsuleAnchors>
 
+    suspend fun nearbyFriendsCapsulesAR(
+        latitude: Double,
+        longitude: Double,
+        distance: Double,
+    ): RetrofitResult<CapsuleAnchors>
+
     suspend fun getAddress(
         latitude: Double,
         longitude: Double,
