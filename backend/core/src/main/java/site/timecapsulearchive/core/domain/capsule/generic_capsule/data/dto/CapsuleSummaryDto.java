@@ -33,6 +33,7 @@ public record CapsuleSummaryDto(
             .latitude(changePoint.getX())
             .longitude(changePoint.getY())
             .address(address)
+            .roadName(roadName)
             .isOpened(isOpened)
             .createdAt(createdAt)
             .build();
