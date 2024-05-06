@@ -25,10 +25,13 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -39,26 +42,21 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
 
     private Long groupLeaderId;
-    private Long groupMemberId;
     private Long capsuleId;
+    private Capsule capsule;
 
-    GroupCapsuleQueryRepositoryTest(EntityManager entityManager) {
-        this.groupCapsuleQueryRepository = new GroupCapsuleQueryRepository(
-            new JPAQueryFactory(entityManager));
+    GroupCapsuleQueryRepositoryTest(JPAQueryFactory jpaQueryFactory) {
+        this.groupCapsuleQueryRepository = new GroupCapsuleQueryRepository(jpaQueryFactory);
     }
 
     @BeforeEach
     @Transactional
     void setup(@Autowired EntityManager entityManager) {
-        //사용자
-        Member owner = MemberFixture.member(0);
-        groupLeaderId = owner.getId();
-
         // 그룹원
         List<Member> groupMember = MemberFixture.members(1, 5);
-        groupMember.add(owner);
         groupMember.forEach(entityManager::persist);
-        groupMemberId = groupMember.get(0).getId();
+        Member owner = groupMember.get(0);
+        groupLeaderId = owner.getId();
 
         //캡슐 스킨
         CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(owner);
@@ -73,7 +71,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         memberGroups.forEach(entityManager::persist);
 
         //그룹 캡슐
-        Capsule capsule = CapsuleFixture.groupCapsule(owner, capsuleSkin, group);
+        capsule = CapsuleFixture.groupCapsule(owner, capsuleSkin, group);
         entityManager.persist(capsule);
         capsuleId = capsule.getId();
 
@@ -84,14 +82,41 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 그룹장은_그룹_캡슐의_상세_내용을_조회할_수_있다() {
+    void 그룹캡슐_아이디로_그룹_캡슐의_상세_조회_하면_상세_내용을_조회할_수_있다() {
         // given
+        //when
+        GroupCapsuleDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+            capsuleId).orElseThrow();
+        CapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.capsuleDetailDto();
+
+        //then
+        SoftAssertions.assertSoftly(
+            softly -> {
+                softly.assertThat(capsuleDetailDto).isNotNull();
+                softly.assertThat(capsuleDetailDto.capsuleType()).isEqualTo(capsule.getType());
+                softly.assertThat(capsuleDetailDto.title()).isEqualTo(capsule.getTitle());
+                softly.assertThat(capsuleDetailDto.content()).isEqualTo(capsule.getContent());
+                softly.assertThat(capsuleDetailDto.capsuleId()).isEqualTo(capsule.getId());
+            }
+        );
+    }
+
+    @Test
+    void 그룹캡슐_아이디로_그룹_캡슐의_상세_조회_하면_그룹원_정보를_조회할_수_있다() {
+        //given
         //when
         GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsuleId).orElseThrow();
+        List<GroupMemberSummaryDto> summaryDto = detailDto.members();
 
         //then
-        assertThat(detailDto).isNotNull();
+        SoftAssertions.assertSoftly(
+            softly -> {
+                softly.assertThat(summaryDto).isNotEmpty();
+                softly.assertThat(summaryDto).allMatch(dto -> !dto.isOpened());
+                softly.assertThat(summaryDto).allMatch(dto -> !dto.profileUrl().isEmpty());
+                softly.assertThat(summaryDto).allMatch(dto -> !dto.nickname().isEmpty());
+            });
     }
 
     @Test
@@ -108,14 +133,39 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 그룹장은_그룹_캡슐의_요약_내용을_조회할_수_있다() {
+    void 그룹캡슐_아이디로_그룹_캡슐의_요약_조회_하면_요약_내용을_조회할_수_있다() {
         // given
         //when
-        Optional<GroupCapsuleSummaryDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            capsuleId);
+        GroupCapsuleSummaryDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
+            capsuleId).orElseThrow();
+        CapsuleSummaryDto capsuleSummaryDto = detailDto.capsuleSummaryDto();
 
         //then
-        assertThat(detailDto).isPresent();
+        SoftAssertions.assertSoftly(
+            softly -> {
+                softly.assertThat(capsuleSummaryDto).isNotNull();
+                softly.assertThat(capsuleSummaryDto.title()).isEqualTo(capsule.getTitle());
+                softly.assertThat(capsuleSummaryDto.point()).isEqualTo(capsule.getPoint());
+            }
+        );
+    }
+
+    @Test
+    void 그룹캡슐_아이디로_그룹_캡슐의_요약_조회_하면_그룹원_정보를_조회할_수_있다() {
+        // given
+        //when
+        GroupCapsuleSummaryDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
+            capsuleId).orElseThrow();
+        List<GroupMemberSummaryDto> summaryDto = detailDto.members();
+
+        //then
+        SoftAssertions.assertSoftly(
+            softly -> {
+                softly.assertThat(summaryDto).isNotEmpty();
+                softly.assertThat(summaryDto).allMatch(dto -> !dto.isOpened());
+                softly.assertThat(summaryDto).allMatch(dto -> !dto.profileUrl().isEmpty());
+                softly.assertThat(summaryDto).allMatch(dto -> !dto.nickname().isEmpty());
+            });
     }
 
     @Test
