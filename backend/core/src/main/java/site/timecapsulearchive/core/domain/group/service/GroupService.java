@@ -69,11 +69,7 @@ public class GroupService {
     }
 
     @Transactional(readOnly = true)
-    public GroupDetailDto findGroupDetailByMemberIdAndGroupId(
-        final Long memberId,
-        final Long groupId
-    ) {
-        //TODO: 그룹 상세에서 그룹원 목록에서 내가 조회 가능해야 하는가?
+    public GroupDetailDto findGroupDetailByGroupId(final Long groupId) {
         return groupQueryRepository.findGroupDetailByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);
     }

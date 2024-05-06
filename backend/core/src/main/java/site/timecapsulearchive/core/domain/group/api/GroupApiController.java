@@ -84,13 +84,12 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId
     ) {
-        GroupDetailDto groupDetailDto = groupService.findGroupDetailByMemberIdAndGroupId(
-            memberId, groupId);
+        GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(groupId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                groupDetailDto.toResponse()
+                groupDetailDto.toResponse(s3PreSignedUrlManager::getS3PreSignedUrlForGet)
             )
         );
     }

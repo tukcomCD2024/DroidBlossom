@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.group.data.dto;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.Function;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 
@@ -13,7 +14,7 @@ public record GroupDetailDto(
     List<GroupMemberSummaryDto> members
 ) {
 
-    public GroupDetailResponse toResponse() {
+    public GroupDetailResponse toResponse(Function<String, String> singlePreSignUrlFunction) {
         List<GroupMemberSummaryResponse> members = this.members.stream()
             .map(GroupMemberSummaryDto::toResponse)
             .toList();
@@ -21,7 +22,7 @@ public record GroupDetailDto(
         return GroupDetailResponse.builder()
             .groupName(groupName)
             .groupDescription(groupDescription)
-            .groupProfileUrl(groupProfileUrl)
+            .groupProfileUrl(singlePreSignUrlFunction.apply(groupProfileUrl))
             .createdAt(createdAt)
             .members(members)
             .build();
