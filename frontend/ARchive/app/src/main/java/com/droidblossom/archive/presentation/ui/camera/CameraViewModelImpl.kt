@@ -55,7 +55,7 @@ class CameraViewModelImpl@Inject constructor(
 
     override fun getCapsules(latitude: Double, longitude: Double) : List<CapsuleAnchor> {
         viewModelScope.launch {
-            nearbyCapsulesARUseCase(latitude,longitude,0.5,"ALL").collect{ result->
+            nearbyCapsulesARUseCase(latitude,longitude,0.1,"ALL").collect{ result->
                 result.onSuccess {
                     _capsuleList.emit(it.capsuleAnchors)
                     _capsuleListSize.value = _capsuleList.value.size
