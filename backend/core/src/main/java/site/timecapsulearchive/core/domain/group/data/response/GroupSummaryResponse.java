@@ -21,8 +21,10 @@ public record GroupSummaryResponse(
     @Schema(description = "그룹 설명")
     String description,
 
+    @Schema(description = "그룹 생성일")
     ZonedDateTime createdAt,
 
+    @Schema(description = "그룹장 여부")
     Boolean isOwner
 ) {
 

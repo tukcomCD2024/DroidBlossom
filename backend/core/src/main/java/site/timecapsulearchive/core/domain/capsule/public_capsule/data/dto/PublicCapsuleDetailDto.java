@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.PublicCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 
 public record PublicCapsuleDetailDto(
     Long capsuleId,
@@ -34,23 +34,23 @@ public record PublicCapsuleDetailDto(
         final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(images);
         final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(videos);
 
-        return new PublicCapsuleDetailResponse(
-            capsuleId,
-            singlePreSignUrlFunction.apply(capsuleSkinUrl),
-            dueDate,
-            nickname,
-            profileUrl,
-            createdAt,
-            changePoint.getX(),
-            changePoint.getY(),
-            address,
-            roadName,
-            title,
-            content,
-            preSignedImageUrls,
-            preSignedVideoUrls,
-            isOpened,
-            capsuleType
-        );
+        return PublicCapsuleDetailResponse.builder()
+            .capsuleId(capsuleId)
+            .capsuleSkinUrl(singlePreSignUrlFunction.apply(capsuleSkinUrl))
+            .dueDate(dueDate)
+            .nickname(nickname)
+            .profileUrl(profileUrl)
+            .createdDate(createdAt)
+            .latitude(changePoint.getX())
+            .longitude(changePoint.getY())
+            .address(address)
+            .roadName(roadName)
+            .title(title)
+            .content(content)
+            .imageUrls(preSignedImageUrls)
+            .videoUrls(preSignedVideoUrls)
+            .isOpened(isOpened)
+            .capsuleType(capsuleType)
+            .build();
     }
 }

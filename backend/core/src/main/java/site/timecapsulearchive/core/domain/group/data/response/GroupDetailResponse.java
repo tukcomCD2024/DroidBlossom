@@ -28,7 +28,7 @@ public record GroupDetailResponse(
 
     public GroupDetailResponse {
         if (createdAt != null) {
-            createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
     }
 }

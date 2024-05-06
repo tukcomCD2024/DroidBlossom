@@ -5,7 +5,6 @@ import java.util.function.Function;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleSummaryResponse;
-import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 public record NearbyARCapsuleSummaryDto(
     Long id,
@@ -17,12 +16,6 @@ public record NearbyARCapsuleSummaryDto(
     Boolean isOpened,
     CapsuleType capsuleType
 ) {
-
-    public NearbyARCapsuleSummaryDto {
-        if (dueDate != null) {
-            dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
-        }
-    }
 
     public NearbyARCapsuleSummaryResponse toResponse(
         final Function<Point, Point> geoTransformFunction,
