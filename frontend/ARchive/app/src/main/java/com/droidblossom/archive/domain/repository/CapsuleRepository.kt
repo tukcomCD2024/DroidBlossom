@@ -19,6 +19,13 @@ interface CapsuleRepository {
         distance: Double,
         capsuleType: String
     ): RetrofitResult<CapsuleMarkers>
+
+    suspend fun nearbyFriendsCapsulesHome(
+        latitude: Double,
+        longitude: Double,
+        distance: Double,
+    ): RetrofitResult<CapsuleMarkers>
+
     suspend fun nearbyMyCapsulesAR(
         latitude: Double,
         longitude: Double,
