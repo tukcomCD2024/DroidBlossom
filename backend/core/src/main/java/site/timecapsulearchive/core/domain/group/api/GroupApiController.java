@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,8 +61,12 @@ public class GroupApiController implements GroupApi {
         );
     }
 
+    @DeleteMapping(value = "/groups/{group_id}")
     @Override
-    public ResponseEntity<Void> deleteGroupById(Long groupId) {
+    public ResponseEntity<Void> deleteGroupById(
+        @AuthenticationPrincipal Long memberId,
+        @PathVariable("group_id") Long groupId
+    ) {
         return null;
     }
 
