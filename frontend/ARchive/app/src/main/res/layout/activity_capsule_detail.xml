@@ -206,9 +206,19 @@
                     android:textAppearance="@style/TextAppearance.App.caption4"
                     android:textColor="@color/gray_700"
                     app:layout_constraintBottom_toBottomOf="@id/userProfileImg"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/capsuleMenuImg"
                     app:layout_constraintStart_toEndOf="@id/userProfileImg"
                     app:layout_constraintTop_toTopOf="@id/userProfileImg" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/capsuleMenuImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_menu_24"
+                    app:layout_constraintTop_toTopOf="@id/userProfileImg"
+                    app:layout_constraintBottom_toBottomOf="@id/userProfileImg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="16dp"/>
 
 
                 <androidx.viewpager2.widget.ViewPager2

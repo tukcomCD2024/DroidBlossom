@@ -121,6 +121,7 @@ class CapsulePreviewDialogFragment :
             }
         }
     }
+
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -138,7 +139,7 @@ class CapsulePreviewDialogFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsulePreviewDialogEvents.collect { event ->
                     when (event) {
@@ -197,14 +198,19 @@ class CapsulePreviewDialogFragment :
         constraintSet.applyTo(constraintLayout)
     }
 
-    private fun moveCapsuleDetail(){
-        val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
+    private fun moveCapsuleDetail() {
+        val intent =
+            CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
         startActivity(intent)
     }
 
 
     private fun animateProgressBar() {
-        viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐이 열리는 중입니다."))
+        viewModel.capsulePreviewDialogEvent(
+            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                "캡슐이 열리는 중입니다."
+            )
+        )
         val animator = ObjectAnimator.ofInt(binding.openProgressBar, "progress", 0, 100).apply {
             duration = 2000 // 2초 동안
             interpolator = LinearInterpolator() // 여기에 LinearInterpolator 적용
@@ -220,39 +226,40 @@ class CapsulePreviewDialogFragment :
     }
 
     private fun showPopupMenu(view: View) {
-        val binding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        val popupMenuBinding =
+            PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         val density = requireContext().resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
 
-        val popupWindow = PopupWindow(binding.root,
+        val popupWindow = PopupWindow(
+            popupMenuBinding.root,
             widthPixels,
             LinearLayout.LayoutParams.WRAP_CONTENT,
-            true)
+            true
+        )
 
         popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWidth = popupWindow.contentView.measuredWidth
 
-        binding.menuMap.setOnClickListener {
-
+        popupMenuBinding.menuMap.setOnClickListener {
             popupWindow.dismiss()
         }
-        binding.menuModify.setOnClickListener {
-
+        popupMenuBinding.menuModify.setOnClickListener {
             popupWindow.dismiss()
         }
-        binding.menuDelete.setOnClickListener {
-
+        popupMenuBinding.menuDelete.setOnClickListener {
             popupWindow.dismiss()
         }
 
         val xOffset = (view.width / 2) - (popupWidth / 2) - 200
         popupWindow.showAsDropDown(view, xOffset, -view.height)
     }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val capsuleState = Bundle().apply {
-            putInt("capsuleIndex",capsuleIndex)
+            putInt("capsuleIndex", capsuleIndex)
             putLong("capsuleId", capsuleId.toLong())
             putBoolean("isOpened", viewModel.capsuleOpenState.value)
         }
@@ -260,7 +267,12 @@ class CapsulePreviewDialogFragment :
     }
 
     companion object {
-        fun newInstance(capsuleIndex: String, capsuleId: String, capsuleType: String, calledFromCamera : Boolean): CapsulePreviewDialogFragment {
+        fun newInstance(
+            capsuleIndex: String,
+            capsuleId: String,
+            capsuleType: String,
+            calledFromCamera: Boolean
+        ): CapsulePreviewDialogFragment {
             val args = Bundle().apply {
                 putString("capsule_index", capsuleIndex)
                 putString("capsule_id", capsuleId)
