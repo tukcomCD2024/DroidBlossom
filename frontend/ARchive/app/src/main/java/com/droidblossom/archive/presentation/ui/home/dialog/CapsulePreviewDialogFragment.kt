@@ -6,10 +6,18 @@ import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.PopupWindow
+import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
+import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -105,6 +114,10 @@ class CapsulePreviewDialogFragment :
                 } else {
                     viewModel.openCapsule(capsuleId.toLong())
                 }
+            }
+
+            capsuleMenuImg.setOnClickListener { view ->
+                showPopupMenu(view)
             }
         }
     }
@@ -206,6 +219,36 @@ class CapsulePreviewDialogFragment :
         animator.start()
     }
 
+    private fun showPopupMenu(view: View) {
+        val binding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+
+        val density = requireContext().resources.displayMetrics.density
+        val widthPixels = (120 * density).toInt()
+
+        val popupWindow = PopupWindow(binding.root,
+            widthPixels,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true)
+
+        popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWidth = popupWindow.contentView.measuredWidth
+
+        binding.menuMap.setOnClickListener {
+
+            popupWindow.dismiss()
+        }
+        binding.menuModify.setOnClickListener {
+
+            popupWindow.dismiss()
+        }
+        binding.menuDelete.setOnClickListener {
+
+            popupWindow.dismiss()
+        }
+
+        val xOffset = (view.width / 2) - (popupWidth / 2) - 200
+        popupWindow.showAsDropDown(view, xOffset, -view.height)
+    }
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val capsuleState = Bundle().apply {
