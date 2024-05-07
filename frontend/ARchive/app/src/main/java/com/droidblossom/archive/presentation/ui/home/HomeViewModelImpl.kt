@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.home
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
+import com.droidblossom.archive.domain.usecase.capsule.NearbyFriendsCapsulesHomeUseCase
 import com.droidblossom.archive.domain.usecase.capsule.NearbyMyCapsulesHomeUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModelImpl @Inject constructor(
-    private val nearbyMyCapsulesHomeUseCase: NearbyMyCapsulesHomeUseCase
+    private val nearbyMyCapsulesHomeUseCase: NearbyMyCapsulesHomeUseCase,
+    private val nearbyFriendsCapsulesHomeUseCase: NearbyFriendsCapsulesHomeUseCase,
 ) : BaseViewModel(), HomeViewModel {
 
     private val _homeEvents = MutableSharedFlow<HomeViewModel.HomeEvent>()
@@ -39,7 +41,11 @@ class HomeViewModelImpl @Inject constructor(
     private val _followLocation: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val followLocation: StateFlow<Boolean>
         get() = _followLocation
-    private val _capsuleList=  MutableStateFlow<List<CapsuleMarker>>(listOf())
+
+    private val _isFriendsCapsuleDisplay = MutableStateFlow(false)
+    override val isFriendsCapsuleDisplay: StateFlow<Boolean>
+        get() = _isFriendsCapsuleDisplay
+    private val _capsuleList = MutableStateFlow<List<CapsuleMarker>>(listOf())
     override val capsuleList: StateFlow<List<CapsuleMarker>>
         get() = _capsuleList
 
@@ -64,7 +70,8 @@ class HomeViewModelImpl @Inject constructor(
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.GROUP)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
             else
-                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.GROUP) }
+                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.GROUP)
+        }
     }
 
     override fun selectSecret() {
@@ -73,7 +80,8 @@ class HomeViewModelImpl @Inject constructor(
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.SECRET)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
             else
-                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.SECRET) }
+                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.SECRET)
+        }
     }
 
     override fun selectHotPlace() {
@@ -81,7 +89,8 @@ class HomeViewModelImpl @Inject constructor(
             if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.HOT)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
             else
-                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.HOT) }
+                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.HOT)
+        }
     }
 
     override fun clickFollowBtn() {
@@ -100,20 +109,50 @@ class HomeViewModelImpl @Inject constructor(
         viewModelScope.launch { _isClickedFAB.emit(!isClickedFAB.value) }
     }
 
-    override fun resetNearbyCapsules(){
+    override fun clickFriendsDisplay() {
+        viewModelScope.launch { _isFriendsCapsuleDisplay.emit(!isFriendsCapsuleDisplay.value) }
+    }
+
+    override fun resetNearbyCapsules() {
         viewModelScope.launch {
             _capsuleList.emit(emptyList())
         }
     }
 
-    override fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String) {
-        Log.d("티티","$latitude, $longitude, $distance, $capsuleType")
+    override fun getNearbyMyCapsules(
+        latitude: Double,
+        longitude: Double,
+        distance: Double,
+        capsuleType: String
+    ) {
+        Log.d("티티", "$latitude, $longitude, $distance, $capsuleType")
         viewModelScope.launch {
-            nearbyMyCapsulesHomeUseCase(latitude,longitude, distance, capsuleType ).collect{ result->
+            nearbyMyCapsulesHomeUseCase(
+                latitude,
+                longitude,
+                distance,
+                capsuleType
+            ).collect { result ->
                 result.onSuccess {
                     _capsuleList.emit(it.capsuleMarkers)
                 }.onFail {
-                    Log.d("티티","getNearbyCapsules 실패")
+                    Log.d("티티", "getNearbyCapsules 실패")
+                }
+            }
+        }
+    }
+
+    override fun getNearbyFriendsCapsules(latitude: Double, longitude: Double, distance: Double) {
+        viewModelScope.launch {
+            nearbyFriendsCapsulesHomeUseCase(
+                latitude,
+                longitude,
+                distance,
+            ).collect { result ->
+                result.onSuccess {
+                    _capsuleList.emit(capsuleList.value + it.capsuleMarkers)
+                }.onFail {
+                    Log.d("티티", "getNearbyCapsules 실패")
                 }
             }
         }

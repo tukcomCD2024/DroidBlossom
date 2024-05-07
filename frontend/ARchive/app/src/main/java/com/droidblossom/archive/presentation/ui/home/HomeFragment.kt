@@ -188,6 +188,24 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isFriendsCapsuleDisplay.collect { state ->
+                    if (state && ( viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
+                                || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC )){
+                        clusterer.map?.let { map ->
+                            val cameraTarget = map.cameraPosition.target
+                            viewModel.getNearbyFriendsCapsules(
+                                cameraTarget.latitude,
+                                cameraTarget.longitude,
+                                getRadiusForCurrentZoom(),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect {
                     clusterer.map?.let{ _ ->
                         // 마커 지우는 로직
@@ -247,7 +265,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun fetchCapsulesNearUser() {
         locationUtil.getCurrentLocation { latitude, longitude ->
             val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else DEFATULTRADIUS
-            viewModel.getNearbyCapsules(
+            viewModel.getNearbyMyCapsules(
                 latitude,
                 longitude,
                 radius,
@@ -259,7 +277,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun fetchCapsulesInCameraFocus() {
         clusterer.map?.let { map ->
             val cameraTarget = map.cameraPosition.target
-            viewModel.getNearbyCapsules(
+            viewModel.getNearbyMyCapsules(
                 cameraTarget.latitude,
                 cameraTarget.longitude,
                 getRadiusForCurrentZoom(),

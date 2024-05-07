@@ -10,6 +10,7 @@ interface HomeViewModel {
     val isClickedFAB : StateFlow<Boolean>
     val existsNotification : StateFlow<Boolean>
     val followLocation : StateFlow<Boolean>
+    val isFriendsCapsuleDisplay : StateFlow<Boolean>
     val capsuleList: StateFlow<List<CapsuleMarker>>
 
     val homeEvents: SharedFlow<HomeEvent>
@@ -21,9 +22,11 @@ interface HomeViewModel {
     fun clickFollowBtn()
     fun clickNotificationBtn()
     fun clickFAB()
+    fun clickFriendsDisplay()
 
     fun resetNearbyCapsules()
-    fun getNearbyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String)
+    fun getNearbyMyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String)
+    fun getNearbyFriendsCapsules(latitude: Double, longitude: Double, distance: Double)
 
     fun homeEvent(event:HomeEvent)
 
