@@ -50,41 +50,43 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     // https://navermaps.github.io/android-map-sdk/guide-ko/5-8.html
     private val clusterer: Clusterer<CapsuleClusteringKey> =
-        Clusterer.Builder<CapsuleClusteringKey>().clusterMarkerUpdater(object : DefaultClusterMarkerUpdater(){
-            override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
-                super.updateClusterMarker(info, marker)
-                marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker_46)
-                marker.captionColor = Color.BLACK
-                marker.captionHaloColor = ContextCompat.getColor(requireContext(), R.color.main_bg_1)
-                marker.captionTextSize = if (info.size >= 100)  15f else 18f
-                marker.onClickListener = Overlay.OnClickListener{
-                    // 클러스터된 거 클릭이벤트 - 나중에 클러스터에 행당된 캡슐들 사이드에 보여주거나 하면 좋을듯?
-                    true
+        Clusterer.Builder<CapsuleClusteringKey>()
+            .clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
+                override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
+                    super.updateClusterMarker(info, marker)
+                    marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker_46)
+                    marker.captionColor = Color.BLACK
+                    marker.captionHaloColor =
+                        ContextCompat.getColor(requireContext(), R.color.main_bg_1)
+                    marker.captionTextSize = if (info.size >= 100) 15f else 18f
+                    marker.onClickListener = Overlay.OnClickListener {
+                        // 클러스터된 거 클릭이벤트 - 나중에 클러스터에 행당된 캡슐들 사이드에 보여주거나 하면 좋을듯?
+                        true
+                    }
                 }
-            }
-        }).leafMarkerUpdater(object : DefaultLeafMarkerUpdater(){
-            override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
-                super.updateLeafMarker(info, marker)
-                val key = info.key as CapsuleClusteringKey
-                marker.icon = when (key.capsuleType) {
-                    CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
-                    CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
-                    CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
-                }
-                marker.onClickListener = Overlay.OnClickListener {
-                    viewModel.homeEvent(
-                        HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
-                            key.id.toString(),
-                            key.capsuleType.toString()
+            }).leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
+                override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
+                    super.updateLeafMarker(info, marker)
+                    val key = info.key as CapsuleClusteringKey
+                    marker.icon = when (key.capsuleType) {
+                        CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
+                        CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
+                        CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
+                    }
+                    marker.onClickListener = Overlay.OnClickListener {
+                        viewModel.homeEvent(
+                            HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
+                                key.id.toString(),
+                                key.capsuleType.toString()
+                            )
                         )
-                    )
-                    true
+                        true
+                    }
                 }
-            }
-        })
-        .minZoom(MINZOOM.toInt()+2)
-        .maxZoom(MAXZOOM.toInt()-2)
-        .build()
+            })
+            .minZoom(MINZOOM.toInt() + 2)
+            .maxZoom(MAXZOOM.toInt() - 2)
+            .build()
 
 
     private val zoomToRadiusMap: Map<Double, Double> by lazy {
@@ -285,7 +287,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             )
             if (viewModel.isFriendsCapsuleDisplay.value && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
                         || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
-            ){
+            ) {
                 viewModel.getNearbyFriendsCapsules(
                     latitude,
                     longitude,
@@ -306,7 +308,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             )
             if (viewModel.isFriendsCapsuleDisplay.value && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
                         || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
-            ){
+            ) {
                 viewModel.getNearbyFriendsCapsules(
                     cameraTarget.latitude,
                     cameraTarget.longitude,

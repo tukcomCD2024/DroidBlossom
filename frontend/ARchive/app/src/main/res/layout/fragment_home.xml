@@ -147,6 +147,7 @@
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@{vm.isFriendsCapsuleDisplay ? @color/main_alpha85 : @color/white_alpha60}"
             android:gravity="center"
+            android:visibility="@{vm.filterCapsuleSelect==filter.PUBLIC || vm.filterCapsuleSelect == filter.ALL ? View.VISIBLE : View.GONE }"
             android:onClick="@{()->vm.clickFriendsDisplay()}"
             android:scaleType="center"
             android:text="@{vm.isFriendsCapsuleDisplay ? `친구\nON` : `친구\nOFF` }"
