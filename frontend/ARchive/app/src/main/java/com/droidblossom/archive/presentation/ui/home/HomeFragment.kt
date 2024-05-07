@@ -66,7 +66,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
                 super.updateLeafMarker(info, marker)
                 val key = info.key as CapsuleClusteringKey
-                marker.icon = when(key.capsuleType){
+                marker.icon = when (key.capsuleType) {
                     CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
                     CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
                     CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
@@ -97,6 +97,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         }
         map.toMap()
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         locationUtil = LocationUtil(requireContext())
@@ -189,14 +190,21 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isFriendsCapsuleDisplay.collect { state ->
-                    if (state && ( viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
-                                || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC )){
-                        clusterer.map?.let { map ->
-                            val cameraTarget = map.cameraPosition.target
+                    clusterer.map?.let { map ->
+                        if (state && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
+                                    || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+                        ) {
                             viewModel.getNearbyFriendsCapsules(
-                                cameraTarget.latitude,
-                                cameraTarget.longitude,
+                                map.cameraPosition.target.latitude,
+                                map.cameraPosition.target.longitude,
                                 getRadiusForCurrentZoom(),
+                            )
+                        } else {
+                            viewModel.getNearbyMyCapsules(
+                                map.cameraPosition.target.latitude,
+                                map.cameraPosition.target.longitude,
+                                getRadiusForCurrentZoom(),
+                                viewModel.filterCapsuleSelect.value.name
                             )
                         }
                     }
@@ -207,7 +215,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect {
-                    clusterer.map?.let{ _ ->
+                    clusterer.map?.let { _ ->
                         // 마커 지우는 로직
                         clusterer.clear()
                         // 마커 찍는 로직
@@ -256,7 +264,11 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun addMarker(capsuleList: List<CapsuleMarker>) {
 
         val keyTagMap: Map<CapsuleClusteringKey, *> = capsuleList.associate {
-            CapsuleClusteringKey(id = it.id, capsuleType = it.capsuleType, position = LatLng(it.latitude, it.longitude)) to null
+            CapsuleClusteringKey(
+                id = it.id,
+                capsuleType = it.capsuleType,
+                position = LatLng(it.latitude, it.longitude)
+            ) to null
         }
 
         clusterer.addAll(keyTagMap)
@@ -271,6 +283,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 radius,
                 viewModel.filterCapsuleSelect.value.toString()
             )
+            if (viewModel.isFriendsCapsuleDisplay.value && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
+                        || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+            ){
+                viewModel.getNearbyFriendsCapsules(
+                    latitude,
+                    longitude,
+                    getRadiusForCurrentZoom()
+                )
+            }
         }
     }
 
@@ -283,6 +304,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 getRadiusForCurrentZoom(),
                 viewModel.filterCapsuleSelect.value.toString()
             )
+            if (viewModel.isFriendsCapsuleDisplay.value && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
+                        || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+            ){
+                viewModel.getNearbyFriendsCapsules(
+                    cameraTarget.latitude,
+                    cameraTarget.longitude,
+                    getRadiusForCurrentZoom()
+                )
+            }
         }
     }
 
@@ -290,9 +320,11 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun getRadiusForCurrentZoom(): Double {
         val currentZoom = clusterer.map?.cameraPosition?.zoom ?: return FIXZOOM
 
-        val closestZoomLevel = zoomToRadiusMap.keys.minByOrNull { kotlin.math.abs(it - currentZoom) }
+        val closestZoomLevel =
+            zoomToRadiusMap.keys.minByOrNull { kotlin.math.abs(it - currentZoom) }
 
-        return zoomToRadiusMap[closestZoomLevel] ?: throw IllegalArgumentException("Invalid zoom level: $currentZoom")
+        return zoomToRadiusMap[closestZoomLevel]
+            ?: throw IllegalArgumentException("Invalid zoom level: $currentZoom")
     }
 
     override fun onRequestPermissionsResult(
@@ -327,7 +359,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden){
+        if (!hidden) {
             fetchCapsulesInCameraFocus()
         }
     }
