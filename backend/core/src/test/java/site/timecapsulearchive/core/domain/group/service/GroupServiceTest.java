@@ -148,8 +148,7 @@ class GroupServiceTest {
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
         given(memberGroupRepository.findMemberGroupsByGroupId(groupCapsuleExistGroupId)).willReturn(
             ownerGroupMember());
-        given(groupCapsuleQueryRepository.findGroupCapsuleCountByGroupId(anyLong())).willReturn(
-            notZeroGroupCapsuleCount());
+        given(groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(anyLong())).willReturn(true);
 
         //when
         //then
@@ -180,8 +179,7 @@ class GroupServiceTest {
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
         given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(
             ownerGroupMember());
-        given(groupCapsuleQueryRepository.findGroupCapsuleCountByGroupId(anyLong())).willReturn(
-            Optional.of(0L));
+        given(groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(anyLong())).willReturn(false);
 
         //when
         //then
