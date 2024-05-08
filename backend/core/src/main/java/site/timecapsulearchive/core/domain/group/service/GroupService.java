@@ -104,17 +104,17 @@ public class GroupService {
             .orElseThrow(GroupNotFoundException::new);
 
         List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(groupId);
-        boolean groupMemberExist = groupMembers.size() > 1;
-        if (groupMemberExist) {
-            throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
-        }
-        groupMembers.forEach(memberGroupRepository::delete);
-
         boolean isGroupOwner = groupMembers.stream()
             .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
         if (!isGroupOwner) {
             throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
         }
+
+        boolean groupMemberExist = groupMembers.size() > 1;
+        if (groupMemberExist) {
+            throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
+        }
+        groupMembers.forEach(memberGroupRepository::delete);
 
         Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCountByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);
