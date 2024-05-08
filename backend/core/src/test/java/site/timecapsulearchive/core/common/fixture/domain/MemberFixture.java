@@ -100,4 +100,19 @@ public class MemberFixture {
 
         return result;
     }
+
+    /**
+     * 테스트 픽스처 - 리스트의 {@code Member}의 {@code id}가 주어진 {@code memberId}로 설정된 멤버 엔티티 리스트를 생성한다.
+     * @param startDataPrefix 시작 id
+     * @param count 크기
+     * @return 리스트의 각 {@code Member}의 {@code id}가 {@code memberId}로 설정된 {@code List<Member>} 테스트 픽스처
+     */
+    public static List<Member> membersWithMemberId(int startDataPrefix, int count) {
+        List<Member> result = new ArrayList<>();
+        for (int index = startDataPrefix; index < startDataPrefix + count; index++) {
+            result.add(memberWithMemberId(index));
+        }
+
+        return result;
+    }
 }

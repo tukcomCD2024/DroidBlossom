@@ -32,8 +32,8 @@ import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManage
  * <li>모든 분기 테스트</li>
  * <ul>
  *    <li>그룹이 없는 경우</li>
- *    <li>그룹원이 있는 경우</li>
  *    <li>그룹장이 아닌 경우</li>
+ *    <li>그룹원이 있는 경우</li>
  *    <li>그룹 캡슐이 존재하는 경우</li>
  *    <li>그룹을 삭제할 수 있는 모든 조건(그룹 존재, 그룹에 속한 그룹원 없음, 요청한 사용자가 그룹장, 그룹 캡슐 없음)을 만족한 경우</li>
  * </ul>
@@ -77,6 +77,32 @@ class GroupServiceTest {
     }
 
     @Test
+    void 그룹장이_아닌_사용자가_그룹_아이디로_삭제를_시도하면_예외가_발생한다() {
+        //given
+        Long groupMemberId = 1L;
+        Long groupId = 1L;
+
+        given(groupRepository.findGroupById(anyLong())).willReturn(group());
+        given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(notOwnerGroupMember());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupService.deleteGroup(groupMemberId, groupId))
+            .isExactlyInstanceOf(GroupDeleteFailException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    private List<MemberGroup> notOwnerGroupMember() {
+        return List.of(
+            MemberGroupFixture.memberGroup(
+                MemberFixture.memberWithMemberId(1),
+                GroupFixture.group(),
+                false
+            )
+        );
+    }
+
+    @Test
     void 그룹원이_존재하는_그룹_아이디로_삭제를_시도하면_예외가_발생한다() {
         //given
         Long groupOwnerId = 1L;
@@ -101,42 +127,16 @@ class GroupServiceTest {
 
     private List<MemberGroup> groupMembers() {
         Group group = GroupFixture.group();
-        MemberGroup groupOwner = MemberGroupFixture.groupOwner(MemberFixture.member(1), group);
+        MemberGroup groupOwner = MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L), group);
 
         List<MemberGroup> memberGroups = MemberGroupFixture.memberGroups(
-            MemberFixture.members(2, 4),
+            MemberFixture.membersWithMemberId(2, 2),
             group
         );
 
         List<MemberGroup> result = new ArrayList<>(memberGroups);
         result.add(groupOwner);
         return result;
-    }
-
-    @Test
-    void 그룹장이_아닌_사용자가_그룹_아이디로_삭제를_시도하면_예외가_발생한다() {
-        //given
-        Long groupMemberId = 1L;
-        Long groupId = 1L;
-
-        given(groupRepository.findGroupById(anyLong())).willReturn(group());
-        given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(notOwnerGroupMember());
-
-        //when
-        //then
-        assertThatThrownBy(() -> groupService.deleteGroup(groupMemberId, groupId))
-            .isExactlyInstanceOf(GroupDeleteFailException.class)
-            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
-    }
-
-    private List<MemberGroup> notOwnerGroupMember() {
-        return List.of(
-            MemberGroupFixture.memberGroup(
-                MemberFixture.memberWithMemberId(1),
-                GroupFixture.group(),
-                false
-            )
-        );
     }
 
     @Test
