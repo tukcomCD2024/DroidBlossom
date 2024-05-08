@@ -116,9 +116,7 @@ public class GroupService {
         }
         groupMembers.forEach(memberGroupRepository::delete);
 
-        final Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCountByGroupId(groupId)
-            .orElseThrow(GroupNotFoundException::new);
-        final boolean groupCapsuleExist = groupCapsuleCount != 0;
+        final boolean groupCapsuleExist = groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(groupId);
         if (groupCapsuleExist) {
             throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
         }
