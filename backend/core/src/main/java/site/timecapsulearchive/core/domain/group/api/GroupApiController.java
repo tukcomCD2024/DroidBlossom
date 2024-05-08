@@ -84,7 +84,8 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId
     ) {
-        final GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(memberId, groupId);
+        final GroupDetailDto groupDetailDto = groupService.findGroupDetailByGroupId(memberId,
+            groupId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -118,9 +119,20 @@ public class GroupApiController implements GroupApi {
         );
     }
 
+    @PostMapping(value = "/invite/{group_id}/member/{target_id}")
     @Override
-    public ResponseEntity<Void> inviteGroup(Long groupId, Long memberId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> inviteGroup(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId,
+        @PathVariable("target_id") final Long targetId
+    ) {
+        groupService.inviteGroup(memberId, groupId, targetId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 
     @Override

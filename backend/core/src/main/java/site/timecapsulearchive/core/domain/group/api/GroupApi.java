@@ -181,13 +181,14 @@ public interface GroupApi {
             description = "처리 시작"
         )
     })
-    @PostMapping(value = "/groups/{group_id}/members/{member_id}/invitation")
-    ResponseEntity<Void> inviteGroup(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> inviteGroup(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true)
+        Long targetId
     );
 
     @Operation(
