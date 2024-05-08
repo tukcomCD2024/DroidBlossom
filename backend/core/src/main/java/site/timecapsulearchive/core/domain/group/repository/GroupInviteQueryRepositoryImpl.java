@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.group.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,34 +13,36 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class FriendInviteQueryRepository {
+public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void bulkSave(final Long ownerId, final List<Long> friendIds) {
+    @Override
+    public void bulkSave(Long groupOwnerId, List<Long> groupMemberIds) {
         jdbcTemplate.batchUpdate(
             """
-                INSERT INTO friend_invite (
-                friend_invite_id, owner_id, friend_id, created_at, updated_at
+                INSERT INTO group_invite (
+                group_invite_id, group_owner_id, group_member_id, created_at, updated_at
                 ) values (?, ?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
 
                 @Override
                 public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                    final Long friendId = friendIds.get(i);
+                    final Long groupMember = groupMemberIds.get(i);
                     ps.setNull(1, Types.BIGINT);
-                    ps.setLong(2, ownerId);
-                    ps.setLong(3, friendId);
+                    ps.setLong(2, groupOwnerId);
+                    ps.setLong(3, groupMember);
                     ps.setTimestamp(4, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                 }
 
                 @Override
                 public int getBatchSize() {
-                    return friendIds.size();
+                    return groupMemberIds.size();
                 }
             }
         );
     }
+
 }

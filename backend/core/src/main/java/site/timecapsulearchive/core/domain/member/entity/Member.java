@@ -78,9 +78,6 @@ public class Member extends BaseEntity {
     private List<Capsule> capsules;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupInvite> groupInvites;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberGroup> groups;
 
     @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)

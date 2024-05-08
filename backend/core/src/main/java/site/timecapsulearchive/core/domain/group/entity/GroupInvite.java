@@ -27,7 +27,20 @@ public class GroupInvite extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @JoinColumn(name = "group_owner_id", nullable = false)
+    private Member groupOwner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_member_id", nullable = false)
+    private Member groupMember;
+
+    private GroupInvite(Member groupOwner, Member groupMember) {
+        this.groupOwner = groupOwner;
+        this.groupMember = groupMember;
+    }
+
+    public static GroupInvite createOf(Member groupOwner, Member groupMember) {
+        return new GroupInvite(groupOwner, groupMember);
+    }
 
 }

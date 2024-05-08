@@ -9,9 +9,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
+import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
+import site.timecapsulearchive.core.domain.group.repository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -23,9 +25,10 @@ import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManage
 @RequiredArgsConstructor
 public class GroupWriteServiceImpl implements GroupWriteService {
 
-    private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
+    private final GroupRepository groupRepository;
     private final MemberGroupRepository memberGroupRepository;
+    private final GroupInviteRepository groupInviteRepository;
     private final TransactionTemplate transactionTemplate;
     private final SocialNotificationManager socialNotificationManager;
 
@@ -42,6 +45,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 groupRepository.save(group);
                 memberGroupRepository.save(memberGroup);
+                groupInviteRepository.bulkSave(memberId, dto.targetIds());
             }
         });
 
@@ -51,15 +55,32 @@ public class GroupWriteServiceImpl implements GroupWriteService {
 
     @Override
     public void inviteGroup(final Long memberId, final Long groupId, final Long targetId) {
-        final GroupOwnerSummaryDto summaryDto = memberGroupRepository.findOwnerInMemberGroup(
-            groupId, memberId).orElseThrow(GroupNotFoundException::new);
+        final Member groupOwner = memberRepository.findMemberById(memberId).orElseThrow(
+            MemberNotFoundException::new);
 
-        if (!summaryDto.isOwner()) {
-            throw new GroupOwnerAuthenticateException();
-        }
+        final Member groupMember = memberRepository.findMemberById(targetId).orElseThrow(
+            MemberNotFoundException::new);
 
-        socialNotificationManager.sendGroupInviteMessage(summaryDto.nickname(),
-            summaryDto.groupProfileUrl(), List.of(targetId));
+        final GroupInvite groupInvite = GroupInvite.createOf(groupOwner, groupMember);
+
+        final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                summaryDto[0] = memberGroupRepository.findOwnerInMemberGroup(
+                    groupId, memberId).orElseThrow(GroupNotFoundException::new);
+
+                if (!summaryDto[0].isOwner()) {
+                    throw new GroupOwnerAuthenticateException();
+                }
+
+                groupInviteRepository.save(groupInvite);
+            }
+        });
+
+        socialNotificationManager.sendGroupInviteMessage(summaryDto[0].nickname(),
+            summaryDto[0].groupProfileUrl(), List.of(targetId));
     }
 
 }
