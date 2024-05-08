@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.common.fixture.domain;
 
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,28 @@ import site.timecapsulearchive.core.global.security.encryption.HashEncryptionMan
 public class MemberFixture {
 
     private static final HashEncryptionManager hashEncryptionManager = UnitTestDependency.hashEncryptionManager();
+
+    /**
+     * 테스트 픽스처 - {@code Member}의 {@code id}가 주어진 {@code memberId}로 설정된 멤버 엔티티를 생성한다.
+     * @param memberId 설정할 멤버 아이디
+     * @return {@code Member}의 {@code id}가 {@code memberId}로 설정된 {@code Member} 테스트 픽스처
+     */
+    public static Member memberWithMemberId(long memberId) {
+        try {
+            Member member = member((int) memberId);
+            setFieldValue(member, "id", memberId);
+            return member;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setFieldValue(Object instance, String fieldName, Object value)
+        throws NoSuchFieldException, IllegalAccessException {
+        Field field = instance.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(instance, value);
+    }
 
     /**
      * 테스트 픽스처 - 멤버 마다 상이한 값을 위한 dataPrefix를 주면 멤버를 생성한다.
