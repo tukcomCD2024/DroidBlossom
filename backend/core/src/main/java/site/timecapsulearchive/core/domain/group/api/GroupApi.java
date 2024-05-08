@@ -64,8 +64,16 @@ public interface GroupApi {
         summary = "그룹 삭제",
         description = """
             그룹 삭제를 요청한 사용자가 해당 그룹의 그룹장인 경우 그룹을 삭제한다.<br>
-            <b><u>주의</u></b> - 그룹에 포함된 멤버가 아무도 존재하지 않아야 그룹을 삭제할 수 있다. 만약
-            그룹 멤버가 한 명이라도 존재하면 그룹을 삭제할 수 없다.<br> 이를 먼저 삭제 후 그룹을 삭제할 수 있다.
+            <b><u>주의</u></b>
+            <ul>
+                <li>
+                그룹에 포함된 멤버가 아무도 존재하지 않아야 그룹을 삭제할 수 있다. 만약
+                그룹 멤버가 한 명이라도 존재하면 그룹을 삭제할 수 없다.<br> 이를 먼저 삭제 후 그룹을 삭제할 수 있다.
+                </li>
+                <li>
+                그룹에 그룹 캡슐이 남아있는 경우 삭제할 수 없다.
+                </li>
+            </ul>
             """,
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group"}
@@ -76,7 +84,7 @@ public interface GroupApi {
             description = "처리완료"
         )
     })
-    ResponseEntity<Void> deleteGroupById(
+    ResponseEntity<ApiSpec<String>> deleteGroupById(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "삭제할 그룹 아이디", required = true)
