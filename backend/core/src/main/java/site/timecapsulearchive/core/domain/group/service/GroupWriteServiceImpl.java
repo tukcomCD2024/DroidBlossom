@@ -1,13 +1,17 @@
 package site.timecapsulearchive.core.domain.group.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
+import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -46,8 +50,16 @@ public class GroupWriteServiceImpl implements GroupWriteService {
     }
 
     @Override
-    public void inviteGroup(Long memberId, Long groupId, Long targetId) {
+    public void inviteGroup(final Long memberId, final Long groupId, final Long targetId) {
+        final GroupOwnerSummaryDto summaryDto = memberGroupRepository.findOwnerInMemberGroup(
+            groupId, memberId).orElseThrow(GroupNotFoundException::new);
 
+        if (!summaryDto.isOwner()) {
+            throw new GroupOwnerAuthenticateException();
+        }
+
+        socialNotificationManager.sendGroupInviteMessage(summaryDto.nickname(),
+            summaryDto.groupProfileUrl(), List.of(targetId));
     }
 
 }

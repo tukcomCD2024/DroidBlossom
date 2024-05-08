@@ -130,7 +130,7 @@ public class GroupApiController implements GroupApi {
 
         return ResponseEntity.ok(
             ApiSpec.empty(
-                SuccessCode.SUCCESS
+                SuccessCode.ACCEPTED
             )
         );
     }

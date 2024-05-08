@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 
-public interface GroupRepository extends Repository<Group, Long> {
+public interface GroupRepository extends Repository<Group, Long>, GroupQueryRepository {
 
     void save(Group group);
 

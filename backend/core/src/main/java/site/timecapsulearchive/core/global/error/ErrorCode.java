@@ -60,6 +60,7 @@ public enum ErrorCode {
     //group
     GROUP_CREATE_ERROR(400, "GROUP-001", "그룹 생성에 실패하였습니다."),
     GROUP_NOT_FOUND_ERROR(404, "GROUP-002", "그룹을 찾을 수 없습니다"),
+    GROUP_OWNER_AUTHENTICATE_ERROR(400, "GROUP-003", "그룹장이 아닙니다."),
 
     //friend invite
     FRIEND_INVITE_NOT_FOUND_ERROR(404, "FRIEND-INVITE-001", "친구 요청을 찾지 못하였습니다."),

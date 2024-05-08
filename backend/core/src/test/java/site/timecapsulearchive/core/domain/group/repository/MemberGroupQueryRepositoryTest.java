@@ -40,7 +40,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
     private Long ownerGroupId;
 
     MemberGroupQueryRepositoryTest(JPAQueryFactory jpaQueryFactory) {
-        this.groupQueryRepository = new GroupQueryRepository(jpaQueryFactory);
+        this.groupQueryRepository = new GroupQueryRepositoryImpl(jpaQueryFactory);
     }
 
     @Transactional
