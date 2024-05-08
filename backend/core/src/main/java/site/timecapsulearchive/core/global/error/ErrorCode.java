@@ -60,6 +60,9 @@ public enum ErrorCode {
     //group
     GROUP_CREATE_ERROR(400, "GROUP-001", "그룹 생성에 실패하였습니다."),
     GROUP_NOT_FOUND_ERROR(404, "GROUP-002", "그룹을 찾을 수 없습니다"),
+    GROUP_MEMBER_EXIST_ERROR(400, "GROUP-003", "다른 그룹 멤버가 존재해 그룹을 삭제할 수 없습니다."),
+    NO_GROUP_AUTHORITY_ERROR(403, "GROUP-004", "그룹에 대한 권한이 존재하지 않습니다."),
+    GROUP_CAPSULE_EXIST_ERROR(400, "GROUP-005", "그룹 캡슐이 존재해 그룹을 삭제할 수 없습니다."),
 
     //friend invite
     FRIEND_INVITE_NOT_FOUND_ERROR(404, "FRIEND-INVITE-001", "친구 요청을 찾지 못하였습니다."),
