@@ -100,25 +100,25 @@ public class GroupService {
      */
     @Transactional
     public void deleteGroup(final Long memberId, final Long groupId) {
-        Group group = groupRepository.findGroupById(groupId)
+        final Group group = groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
 
-        List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(groupId);
-        boolean isGroupOwner = groupMembers.stream()
+        final List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(groupId);
+        final boolean isGroupOwner = groupMembers.stream()
             .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
         if (!isGroupOwner) {
             throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
         }
 
-        boolean groupMemberExist = groupMembers.size() > 1;
+        final boolean groupMemberExist = groupMembers.size() > 1;
         if (groupMemberExist) {
             throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
         }
         groupMembers.forEach(memberGroupRepository::delete);
 
-        Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCountByGroupId(groupId)
+        final Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCountByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);
-        boolean groupCapsuleExist = groupCapsuleCount != 0;
+        final boolean groupCapsuleExist = groupCapsuleCount != 0;
         if (groupCapsuleExist) {
             throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
         }
