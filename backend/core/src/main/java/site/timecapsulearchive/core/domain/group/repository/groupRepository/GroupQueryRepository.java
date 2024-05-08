@@ -1,14 +1,13 @@
-package site.timecapsulearchive.core.domain.group.service;
+package site.timecapsulearchive.core.domain.group.repository.groupRepository;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
-import site.timecapsulearchive.core.domain.group.entity.Group;
 
-public interface GroupReadService {
 
-    Group findGroupById(final Long groupId);
+public interface GroupQueryRepository {
 
     Slice<GroupSummaryDto> findGroupsSlice(
         final Long memberId,
@@ -16,5 +15,6 @@ public interface GroupReadService {
         final ZonedDateTime createdAt
     );
 
-    GroupDetailDto findGroupDetailByGroupId(final Long memberId, final Long groupId);
+    Optional<GroupDetailDto> findGroupDetailByGroupId(final Long groupId);
+
 }

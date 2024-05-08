@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.service;
+package site.timecapsulearchive.core.domain.group.service.read;
 
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
-import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
+import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupRepository;
 
 @Service
 @RequiredArgsConstructor

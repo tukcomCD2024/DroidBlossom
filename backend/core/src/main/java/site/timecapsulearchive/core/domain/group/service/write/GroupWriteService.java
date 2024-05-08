@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.service;
+package site.timecapsulearchive.core.domain.group.service.write;
 
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 

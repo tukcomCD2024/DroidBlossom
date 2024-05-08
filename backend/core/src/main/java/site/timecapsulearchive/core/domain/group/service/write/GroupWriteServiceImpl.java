@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.service;
+package site.timecapsulearchive.core.domain.group.service.write;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,9 @@ import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
-import site.timecapsulearchive.core.domain.group.repository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
-import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupRepository;
+import site.timecapsulearchive.core.domain.group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;

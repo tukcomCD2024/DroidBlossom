@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.repository;
+package site.timecapsulearchive.core.domain.group.repository.groupRepository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;

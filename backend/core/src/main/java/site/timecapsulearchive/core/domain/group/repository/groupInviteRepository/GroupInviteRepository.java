@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.repository;
+package site.timecapsulearchive.core.domain.group.repository.groupInviteRepository;
 
 import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.core.domain.group.entity.GroupInvite;

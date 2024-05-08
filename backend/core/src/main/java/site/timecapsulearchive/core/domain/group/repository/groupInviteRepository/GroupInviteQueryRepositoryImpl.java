@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.repository;
+package site.timecapsulearchive.core.domain.group.repository.groupInviteRepository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
