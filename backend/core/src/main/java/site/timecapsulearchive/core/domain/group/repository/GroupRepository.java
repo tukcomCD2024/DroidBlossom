@@ -10,4 +10,5 @@ public interface GroupRepository extends Repository<Group, Long> {
 
     Optional<Group> findGroupById(Long groupId);
 
+    void delete(Group group);
 }
