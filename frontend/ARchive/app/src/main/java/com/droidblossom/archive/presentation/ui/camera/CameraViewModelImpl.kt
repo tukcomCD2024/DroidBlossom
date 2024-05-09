@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.camera
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.domain.usecase.capsule.NearbyFriendsCapsulesARUseCase
@@ -38,6 +39,11 @@ class CameraViewModelImpl@Inject constructor(
     private val _anchorNodes = MutableStateFlow<MutableList<AnchorNode>>(mutableListOf())
     override val anchorNodes get() =  _anchorNodes
 
+    private val _isFriendsCapsuleDisplay = MutableStateFlow(false)
+    override val isFriendsCapsuleDisplay: StateFlow<Boolean>
+        get() = _isFriendsCapsuleDisplay
+
+
     override fun addAnchorNode(anchorNode: AnchorNode) {
         val updatedList = _anchorNodes.value.toMutableList()
         updatedList.add(anchorNode)
@@ -46,6 +52,7 @@ class CameraViewModelImpl@Inject constructor(
 
     override fun clearAnchorNode() {
         _anchorNodes.value = mutableListOf()
+        _capsuleListSize.value = 0
     }
 
 
@@ -56,7 +63,7 @@ class CameraViewModelImpl@Inject constructor(
     }
 
     override fun getCapsules(latitude: Double, longitude: Double){
-        if (true) getMyCapsules(latitude, longitude)
+        if (!isFriendsCapsuleDisplay.value) getMyCapsules(latitude, longitude)
         else getFriendsCapsules(latitude, longitude)
     }
 
@@ -83,11 +90,16 @@ class CameraViewModelImpl@Inject constructor(
                     _capsuleListSize.value = _capsuleList.value.size
                     if (capsuleList.value.isEmpty()) {
                         cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                        _capsuleList.emit(listOf())
                     }
                 }.onFail {
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }
         }
+    }
+
+    override fun clickFriendsDisplay() {
+        viewModelScope.launch { _isFriendsCapsuleDisplay.emit(!isFriendsCapsuleDisplay.value) }
     }
 }
