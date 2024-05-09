@@ -4,10 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="view"
+            type="com.droidblossom.archive.presentation.ui.camera.CameraFragment" />
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.camera.CameraViewModel" />
+        <variable
+            name="filter"
+            type="com.droidblossom.archive.presentation.ui.camera.CameraViewModel.CapsuleFilterType" />
 
     </data>
 
@@ -22,25 +27,85 @@
             android:layout_height="match_parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/friendsCapsuleBtn"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="46dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="22dp"
-            android:background="@drawable/corner_radius_22"
-            android:backgroundTint="@{vm.isFriendsCapsuleDisplay ? @color/main_alpha85 : @color/white_alpha60}"
+            android:id="@+id/filterAll"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@{vm.selectedCapsuleFilter== filter.FILTER_ALL ? @color/main_alpha85 : @color/white_alpha60}"
             android:gravity="center"
-            android:onClick="@{()->vm.clickFriendsDisplay()}"
-            android:scaleType="center"
-            android:text="@{vm.isFriendsCapsuleDisplay ? `친구\nON` : `친구\nOFF` }"
-            android:textAppearance="@style/TextAppearance.App.caption3"
-            android:textColor="@{vm.isFriendsCapsuleDisplay ?  @color/white : @color/gray_700}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/sceneView"
-            tools:backgroundTint="@color/main_1"/>
+            android:onClick="@{()->view.onClickFilter(filter.FILTER_ALL)}"
+            android:paddingHorizontal="14dp"
+            android:text="전체"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_ALL ? @color/white : @color/gray_700 }"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/filterSecret"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_SECRET ? @color/main_alpha85 : @color/white_alpha60}"
+            android:gravity="center"
+            android:onClick="@{()->view.onClickFilter(filter.FILTER_SECRET)}"
+            android:paddingHorizontal="14dp"
+            android:text="비밀"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_SECRET ? @color/white : @color/gray_700 }"
+            app:layout_constraintStart_toEndOf="@id/filterAll"
+            app:layout_constraintTop_toTopOf="@id/filterAll" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/filterGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_GROUP ? @color/main_alpha85 : @color/white_alpha60}"
+            android:gravity="center"
+            android:onClick="@{()->view.onClickFilter(filter.FILTER_GROUP)}"
+            android:paddingHorizontal="14dp"
+            android:text="그룹"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_GROUP ? @color/white : @color/gray_700 }"
+            app:layout_constraintStart_toEndOf="@id/filterSecret"
+            app:layout_constraintTop_toTopOf="@id/filterAll" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/filterPublicMy"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_MY ? @color/main_alpha85 : @color/white_alpha60}"
+            android:gravity="center"
+            android:onClick="@{()->view.onClickFilter(filter.FILTER_PUBLIC_MY)}"
+            android:paddingHorizontal="14dp"
+            android:text="공개(나)"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_MY ? @color/white : @color/gray_700 }"
+            app:layout_constraintStart_toEndOf="@id/filterGroup"
+            app:layout_constraintTop_toTopOf="@id/filterAll" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/filterPublicFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/corner_radius_18"
+            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_FRIEND ? @color/main_alpha85 : @color/white_alpha60}"
+            android:gravity="center"
+            android:onClick="@{()->view.onClickFilter(filter.FILTER_PUBLIC_FRIEND)}"
+            android:paddingHorizontal="14dp"
+            android:text="공개(친구)"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_FRIEND ? @color/white : @color/gray_700 }"
+            app:layout_constraintStart_toEndOf="@id/filterPublicMy"
+            app:layout_constraintTop_toTopOf="@id/filterAll" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -33,8 +33,7 @@ class CameraViewModelImpl@Inject constructor(
     override val capsuleList: StateFlow<List<CapsuleAnchor>>
         get() = _capsuleList
 
-    private val _capsuleListSize = MutableStateFlow(-1)
-    override val capsuleListSize = _capsuleListSize.asStateFlow()
+    override var capsuleListSize = -1
 
     private val _anchorNodes = MutableStateFlow<MutableList<AnchorNode>>(mutableListOf())
     override val anchorNodes get() =  _anchorNodes
@@ -43,16 +42,23 @@ class CameraViewModelImpl@Inject constructor(
     override val isFriendsCapsuleDisplay: StateFlow<Boolean>
         get() = _isFriendsCapsuleDisplay
 
+    private val _selectedCapsuleFilter = MutableStateFlow(CameraViewModel.CapsuleFilterType.FILTER_ALL)
+    override val selectedCapsuleFilter: StateFlow<CameraViewModel.CapsuleFilterType>
+        get() = _selectedCapsuleFilter
+    override var isCapsulesAdded = false
+
 
     override fun addAnchorNode(anchorNode: AnchorNode) {
         val updatedList = _anchorNodes.value.toMutableList()
         updatedList.add(anchorNode)
         _anchorNodes.value = updatedList
     }
-
     override fun clearAnchorNode() {
+        isCapsulesAdded = false
+        capsuleListSize = -1
+        _capsuleList.value = mutableListOf()
         _anchorNodes.value = mutableListOf()
-        _capsuleListSize.value = 0
+        capsuleListSize = 0
     }
 
 
@@ -63,18 +69,40 @@ class CameraViewModelImpl@Inject constructor(
     }
 
     override fun getCapsules(latitude: Double, longitude: Double){
-        if (!isFriendsCapsuleDisplay.value) getMyCapsules(latitude, longitude)
-        else getFriendsCapsules(latitude, longitude)
+        when(selectedCapsuleFilter.value){
+            CameraViewModel.CapsuleFilterType.FILTER_ALL -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_SECRET -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_GROUP -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_PUBLIC_MY -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_PUBLIC_FRIEND -> {
+                getFriendsCapsules(latitude, longitude)
+            }
+        }
+
     }
+    override fun selectFilter(capsuleFilterType: CameraViewModel.CapsuleFilterType, latitude: Double, longitude: Double){
+        _selectedCapsuleFilter.value = capsuleFilterType
+        getCapsules(latitude, longitude)
+    }
+
 
     private fun getMyCapsules(latitude: Double, longitude: Double){
         viewModelScope.launch {
-            nearbyMyCapsulesARUseCase(latitude,longitude,0.1,"ALL").collect{ result->
+            nearbyMyCapsulesARUseCase(latitude,longitude,0.1,selectedCapsuleFilter.value.description).collect{ result->
                 result.onSuccess {
-                    _capsuleList.emit(it.capsuleAnchors)
-                    _capsuleListSize.value = _capsuleList.value.size
+                    capsuleListSize = it.capsuleAnchors.size
+                    _capsuleList.value = it.capsuleAnchors
                     if (capsuleList.value.isEmpty()){
                         cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                        capsuleListSize = 0
                     }
                 }.onFail {
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
@@ -86,11 +114,11 @@ class CameraViewModelImpl@Inject constructor(
         viewModelScope.launch {
             nearbyFriendsCapsulesARUseCase(latitude,longitude,0.1).collect{ result->
                 result.onSuccess {
-                    _capsuleList.emit(it.capsuleAnchors)
-                    _capsuleListSize.value = _capsuleList.value.size
+                    capsuleListSize = it.capsuleAnchors.size
+                    _capsuleList.value = it.capsuleAnchors
                     if (capsuleList.value.isEmpty()) {
                         cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
-                        _capsuleList.emit(listOf())
+                        capsuleListSize = 0
                     }
                 }.onFail {
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
@@ -99,7 +127,4 @@ class CameraViewModelImpl@Inject constructor(
         }
     }
 
-    override fun clickFriendsDisplay() {
-        viewModelScope.launch { _isFriendsCapsuleDisplay.emit(!isFriendsCapsuleDisplay.value) }
-    }
 }
