@@ -11,6 +11,8 @@ interface CameraViewModel {
     val cameraEvents: SharedFlow<CameraEvent>
     val capsuleListSize: SharedFlow<Int>
     val anchorNodes: StateFlow<List<AnchorNode>>
+    val isFriendsCapsuleDisplay : StateFlow<Boolean>
+
 
     fun getCapsules(latitude: Double, longitude: Double)
 
@@ -19,6 +21,8 @@ interface CameraViewModel {
     fun addAnchorNode(anchorNode: AnchorNode)
 
     fun clearAnchorNode()
+    fun clickFriendsDisplay()
+
 
     sealed class CameraEvent{
         data class ShowCapsulePreviewDialog(val capsuleId: String, val capsuleType: String) : CameraEvent()

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.camera.CameraViewModel" />
+
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.ui.camera.CameraFragment">
@@ -16,5 +21,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </FrameLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/friendsCapsuleBtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="46dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/corner_radius_22"
+            android:backgroundTint="@{vm.isFriendsCapsuleDisplay ? @color/main_alpha85 : @color/white_alpha60}"
+            android:gravity="center"
+            android:onClick="@{()->vm.clickFriendsDisplay()}"
+            android:scaleType="center"
+            android:text="@{vm.isFriendsCapsuleDisplay ? `친구\nON` : `친구\nOFF` }"
+            android:textAppearance="@style/TextAppearance.App.caption3"
+            android:textColor="@{vm.isFriendsCapsuleDisplay ?  @color/white : @color/gray_700}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/sceneView"
+            tools:backgroundTint="@color/main_1"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
