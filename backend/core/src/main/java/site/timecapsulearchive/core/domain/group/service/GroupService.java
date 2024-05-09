@@ -1,8 +1,8 @@
 package site.timecapsulearchive.core.domain.group.service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import java.time.ZonedDateTime;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -16,7 +16,9 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
+import site.timecapsulearchive.core.domain.group.exception.GroupMemberNotfoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
+import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
@@ -95,15 +97,17 @@ public class GroupService {
      * <br>1. 그룹에 멤버가 존재하는 경우
      * <br>2. 그룹 삭제를 요청한 사용자가 그룹장이 아닌 경우
      * <br>3. 그룹에 그룹 캡슐이 남아있는 경우
+     *
      * @param memberId 그룹에 속한 그룹장 아이디
-     * @param groupId 그룹 아이디
+     * @param groupId  그룹 아이디
      */
     @Transactional
     public void deleteGroup(final Long memberId, final Long groupId) {
         final Group group = groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
 
-        final List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(groupId);
+        final List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(
+            groupId);
         final boolean isGroupOwner = groupMembers.stream()
             .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
         if (!isGroupOwner) {
@@ -122,5 +126,25 @@ public class GroupService {
         }
 
         groupRepository.delete(group);
+    }
+
+    /**
+     * 사용자는 사용자가 속한 그룹을 탈퇴한다.
+     * <br><u><b>주의</b></u> - 그룹 탈퇴 시 아래 조건에 해당하면 예외가 발생한다.
+     * <br>1. 그룹원이 그룹장인 경우
+     *
+     * @param memberId 그룹에서 탈퇴할 사용자
+     * @param groupId  탈퇴할 그룹 아이디
+     */
+    @Transactional
+    public void quitGroup(Long memberId, Long groupId) {
+        MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
+            memberId, groupId)
+            .orElseThrow(GroupMemberNotfoundException::new);
+        if (groupMember.getIsOwner()) {
+            throw new GroupQuitException(ErrorCode.GROUP_OWNER_QUIT_ERROR);
+        }
+
+        memberGroupRepository.delete(groupMember);
     }
 }
