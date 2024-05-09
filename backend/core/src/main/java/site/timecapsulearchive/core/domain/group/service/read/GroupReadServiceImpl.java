@@ -13,17 +13,16 @@ import site.timecapsulearchive.core.domain.group.repository.groupRepository.Grou
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GroupReadServiceImpl implements GroupReadService {
 
     private final GroupRepository groupRepository;
 
-    @Transactional(readOnly = true)
     public Group findGroupById(final Long groupId) {
         return groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
     public Slice<GroupSummaryDto> findGroupsSlice(
         final Long memberId,
         final int size,
@@ -32,7 +31,6 @@ public class GroupReadServiceImpl implements GroupReadService {
         return groupRepository.findGroupsSlice(memberId, size, createdAt);
     }
 
-    @Transactional(readOnly = true)
     public GroupDetailDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
         final GroupDetailDto groupDetailDto = groupRepository.findGroupDetailByGroupId(groupId)
             .orElseThrow(GroupNotFoundException::new);

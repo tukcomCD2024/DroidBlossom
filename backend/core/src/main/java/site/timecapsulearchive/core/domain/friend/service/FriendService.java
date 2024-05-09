@@ -114,7 +114,7 @@ public class FriendService {
     }
 
     @Transactional
-    public void denyRequestFriend(Long memberId, Long friendId) {
+    public void denyRequestFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
         final FriendInvite friendInvite = friendInviteRepository
             .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
@@ -127,7 +127,7 @@ public class FriendService {
     public void deleteFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
 
-        List<MemberFriend> memberFriends = memberFriendRepository
+        final List<MemberFriend> memberFriends = memberFriendRepository
             .findMemberFriendByOwnerIdAndFriendId(memberId, friendId);
 
         memberFriends.forEach(memberFriendRepository::delete);

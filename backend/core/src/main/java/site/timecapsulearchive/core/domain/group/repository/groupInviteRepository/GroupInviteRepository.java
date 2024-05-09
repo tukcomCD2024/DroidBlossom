@@ -7,5 +7,7 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
     GroupInviteQueryRepository {
 
     void save(GroupInvite groupInvite);
+
+    int deleteGroupInviteByGroupOwnerIdAndGroupMemberId(Long groupOwnerId, Long groupMemberId);
 }
 

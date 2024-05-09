@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
@@ -11,6 +12,7 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group.exception.GroupInviteNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
 import site.timecapsulearchive.core.domain.group.repository.groupInviteRepository.GroupInviteRepository;
@@ -53,7 +55,6 @@ public class GroupWriteServiceImpl implements GroupWriteService {
             dto.groupProfileUrl(), dto.targetIds());
     }
 
-    @Override
     public void inviteGroup(final Long memberId, final Long groupId, final Long targetId) {
         final Member groupOwner = memberRepository.findMemberById(memberId).orElseThrow(
             MemberNotFoundException::new);
@@ -81,6 +82,16 @@ public class GroupWriteServiceImpl implements GroupWriteService {
 
         socialNotificationManager.sendGroupInviteMessage(summaryDto[0].nickname(),
             summaryDto[0].groupProfileUrl(), List.of(targetId));
+    }
+
+    @Transactional
+    public void denyRequestGroup(final Long groupMemberId, final Long groupOwnerId) {
+        final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
+            groupOwnerId, groupMemberId);
+
+        if (isDenyRequest != 1) {
+            throw new GroupInviteNotFoundException();
+        }
     }
 
 }
