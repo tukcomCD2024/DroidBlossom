@@ -69,12 +69,7 @@ public class GroupApiController implements GroupApi {
     ) {
         groupService.deleteGroup(memberId, groupId);
 
-        return ResponseEntity.accepted()
-            .body(
-                ApiSpec.empty(
-                    SuccessCode.ACCEPTED
-                )
-            );
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @Override
