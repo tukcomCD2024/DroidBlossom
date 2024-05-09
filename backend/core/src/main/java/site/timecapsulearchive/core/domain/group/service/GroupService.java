@@ -137,8 +137,8 @@ public class GroupService {
      * @param groupId  탈퇴할 그룹 아이디
      */
     @Transactional
-    public void quitGroup(Long memberId, Long groupId) {
-        MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
+    public void quitGroup(final Long memberId, final Long groupId) {
+        final MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
             memberId, groupId)
             .orElseThrow(GroupMemberNotfoundException::new);
         if (groupMember.getIsOwner()) {
