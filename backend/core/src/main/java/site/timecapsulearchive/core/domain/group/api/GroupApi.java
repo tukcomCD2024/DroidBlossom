@@ -111,13 +111,11 @@ public interface GroupApi {
             description = "처리 완료"
         )
     })
-    @PostMapping(value = "/groups/{group_id}/members/{member_id}/deny-invitation")
-    ResponseEntity<Void> denyGroupInvitation(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 초대 대상 아이디", required = true)
+        Long groupOwnerId
     );
 
     @Operation(

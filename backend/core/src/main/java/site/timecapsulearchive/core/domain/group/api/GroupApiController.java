@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,9 +71,14 @@ public class GroupApiController implements GroupApi {
         return null;
     }
 
-    @Override
-    public ResponseEntity<Void> denyGroupInvitation(Long groupId, Long memberId) {
-        return null;
+    @DeleteMapping(value = "/reject/{group_owner_id}")
+    public ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_owner_id") final Long groupOwnerId) {
+
+        groupService.denyRequestGroup(memberId, groupOwnerId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @GetMapping(
