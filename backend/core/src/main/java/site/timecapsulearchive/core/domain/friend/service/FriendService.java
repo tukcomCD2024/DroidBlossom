@@ -44,7 +44,6 @@ public class FriendService {
     private final TransactionTemplate transactionTemplate;
 
     public FriendReqStatusResponse requestFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
         validateTwoWayInvite(memberId, friendId);
 
         final Member owner = memberRepository.findMemberById(memberId).orElseThrow(
@@ -67,12 +66,6 @@ public class FriendService {
         return FriendReqStatusResponse.success();
     }
 
-    private void validateFriendDuplicateId(final Long memberId, final Long friendId) {
-        if (memberId.equals(friendId)) {
-            throw new FriendDuplicateIdException();
-        }
-    }
-
     private void validateTwoWayInvite(final Long memberId, final Long friendId) {
         final Optional<FriendInvite> friendInvite = friendInviteRepository.findFriendInviteByOwnerIdAndFriendId(
             friendId, memberId);
@@ -84,8 +77,6 @@ public class FriendService {
 
 
     public void acceptFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
-
         final String[] ownerNickname = new String[1];
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -115,18 +106,15 @@ public class FriendService {
 
     @Transactional
     public void denyRequestFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
-        final FriendInvite friendInvite = friendInviteRepository
-            .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
-                FriendNotFoundException::new);
+        int isDenyRequest = friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(friendId, memberId);
 
-        friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
+        if (isDenyRequest != 1) {
+            throw new FriendTwoWayInviteException();
+        }
     }
 
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
-
         final List<MemberFriend> memberFriends = memberFriendRepository
             .findMemberFriendByOwnerIdAndFriendId(memberId, friendId);
 
