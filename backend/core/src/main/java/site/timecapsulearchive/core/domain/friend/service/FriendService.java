@@ -17,7 +17,6 @@ import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusR
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
-import site.timecapsulearchive.core.domain.friend.exception.FriendDuplicateIdException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteNotFoundException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendTwoWayInviteException;
@@ -106,7 +105,8 @@ public class FriendService {
 
     @Transactional
     public void denyRequestFriend(final Long memberId, final Long friendId) {
-        int isDenyRequest = friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(friendId, memberId);
+        int isDenyRequest = friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(friendId,
+            memberId);
 
         if (isDenyRequest != 1) {
             throw new FriendTwoWayInviteException();
