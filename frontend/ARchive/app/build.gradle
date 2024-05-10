@@ -189,6 +189,9 @@ dependencies {
     // ConcatAdapter
     implementation "androidx.recyclerview:recyclerview:1.3.2"
 
+    // TedPermission : https://github.com/ParkSangGwon/TedPermission
+    implementation("io.github.ParkSangGwon:tedpermission-normal:3.3.0")
+
 }
 kapt {
     correctErrorTypes true

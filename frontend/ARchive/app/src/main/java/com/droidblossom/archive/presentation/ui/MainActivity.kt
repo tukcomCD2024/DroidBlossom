@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,12 +20,14 @@ import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
+import com.droidblossom.archive.util.PermissionsUtil
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,7 +42,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     override val viewModel: Nothing? = null
     lateinit var viewBinding: ActivityMainBinding
-
+    
     override fun observeData() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,8 +80,20 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     private fun initBottomNav(){
         binding.fab.setOnClickListener {
-            showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-            binding.bottomNavigation.selectedItemId = R.id.menuCamera
+
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener{
+                    override fun onPermissionGranted() {
+                        showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
+                        binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                    }
+                    override fun onPermissionDenied(p0: MutableList<String>?) {
+                        showToastMessage("카메라 권한이 없으면 AR 기능을 사용할 수 없습니다.")
+                    }
+                })
+                .setDeniedMessage("카메라 권한이 필요해요. '설정'에서 권한을 허용하면 AR 기능을 이용할 수 있습니다.")
+                .setPermissions(Manifest.permission.CAMERA)
+                .check()
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
