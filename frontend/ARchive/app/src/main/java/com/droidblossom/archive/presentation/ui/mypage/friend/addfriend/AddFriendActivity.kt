@@ -18,19 +18,19 @@ class AddFriendActivity : BaseActivity<AddFriendViewModelImpl, ActivityAddFriend
 
     override fun observeData() {}
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            viewModel.contactsSearch(ContactsUtils.getContacts(this))
-        } else {
-            //showToastMessage("권한이 필요합니다.")
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//
+//        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            //viewModel.contactsSearch(ContactsUtils.getContacts(this))
+//        } else {
+//            //showToastMessage("권한이 필요합니다.")
+//        }
+//    }
 
     companion object {
         const val ADDFRIEND = "add_friend"

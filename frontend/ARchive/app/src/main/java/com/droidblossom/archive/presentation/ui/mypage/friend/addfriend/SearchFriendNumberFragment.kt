@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Rect
@@ -48,7 +49,8 @@ class SearchFriendNumberFragment :
 
         navController = Navigation.findNavController(view)
         initView()
-        permissionCheck()
+        viewModel.contactsSearch(ContactsUtils.getContacts(requireContext()))
+        //permissionCheck()
     }
 
     @SuppressLint("ClickableViewAccessibility", "NotifyDataSetChanged")
@@ -153,18 +155,28 @@ class SearchFriendNumberFragment :
     }
 
     private fun permissionCheck() {
-        val status = ContextCompat.checkSelfPermission(
+        val contactStatus = ContextCompat.checkSelfPermission(
             requireContext(),
             "android.permission.READ_CONTACTS"
         )
-        if (status == PackageManager.PERMISSION_GRANTED) {
+        val numberStatus = ContextCompat.checkSelfPermission(
+            requireContext(),
+            "android.permission.READ_PHONE_NUMBERS"
+        )
+        if (contactStatus == PackageManager.PERMISSION_GRANTED
+            && numberStatus == PackageManager.PERMISSION_GRANTED
+        ) {
             viewModel.contactsSearch(ContactsUtils.getContacts(requireContext()))
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf<String>("android.permission.READ_CONTACTS"),
+                arrayOf<String>(
+                    "android.permission.READ_PHONE_NUMBERS",
+                    "android.permission.READ_CONTACTS",
+                ),
                 100
             )
+
         }
     }
 }

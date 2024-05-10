@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
 import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,12 +41,14 @@ class SearchFriendNicknameFragment :
     }
 
     private val requestContactsPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.all { it.value }) {
                 navController.navigate(R.id.action_searchFriendNicknameFragment_to_searchFriendNumberFragment)
             } else {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                    showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다. 권한을 허용해 주세요.")
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_NUMBERS)
+                ) {
+                    showToastMessage("앱에서 친구를 찾기 위해 연락처와 전화 접근 권한이 필요합니다. 권한을 허용해 주세요.")
                 } else {
                     showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS)
                 }
@@ -87,7 +90,12 @@ class SearchFriendNicknameFragment :
         }
 
         binding.addCV.setOnClickListener {
-            requestContactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+            requestContactsPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.READ_CONTACTS,
+                    Manifest.permission.READ_PHONE_NUMBERS
+                )
+            )
         }
 
         binding.searchOpenBtnT.setOnClickListener {

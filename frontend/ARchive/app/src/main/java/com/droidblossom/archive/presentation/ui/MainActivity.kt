@@ -1,24 +1,18 @@
 package com.droidblossom.archive.presentation.ui
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.databinding.ActivityMainBinding
-import com.droidblossom.archive.databinding.DialogPermissionBinding
 import com.droidblossom.archive.domain.usecase.member.FcmTokenUseCase
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
-import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
@@ -30,8 +24,6 @@ import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.normal.TedPermission
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

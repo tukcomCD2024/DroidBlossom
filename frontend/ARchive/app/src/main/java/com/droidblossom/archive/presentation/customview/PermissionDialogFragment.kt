@@ -26,23 +26,32 @@ class PermissionDialogFragment(
 
         val permissionType = arguments?.getString("permission")
 
-        when(permissionType){
+        when (permissionType) {
             PermissionType.LOCATION.name -> {
                 binding.messageT.text = "ARchive 은 위치 권한이 필수입니다. 앱을 사용하려면 위치 권한을 허용해 주세요."
                 binding.permissionImg.setImageResource(R.drawable.ic_location_outline)
                 binding.leftBtn.text = "앱 종료"
             }
+
             PermissionType.CAMERA.name -> {
                 binding.messageT.text = "AR 기능을 사용하려면 카메라 권한이 필요합니다. '권한'에서 카메라 권한을 허용해 주세요."
                 binding.permissionImg.setImageResource(R.drawable.ic_camera_outline)
             }
+
             PermissionType.CONTACTS.name -> {
-                binding.messageT.text = "연락처를 통해 앱 내에서 친구를 찾아보세요. 권한을 허용하면 친구 찾기가 가능합니다."
+                binding.messageT.text = "연락처를 통해 앱 내에서 친구를 찾아보세요. 연락처와 전화 권한을 허용하면 친구 찾기가 가능합니다."
                 binding.permissionImg.setImageResource(R.drawable.ic_concats_outline)
             }
+
             PermissionType.NOTIFICATIONS.name -> {
-                binding.messageT.text = "ARchive 앱의 알림을 받기 위해서는 알림 권한이 필요합니다. 알림을 통해 중요한 정보와 업데이트를 놓치지 마세요."
+                binding.messageT.text =
+                    "ARchive 앱의 알림을 받기 위해서는 알림 권한이 필요합니다. 알림을 통해 중요한 정보와 업데이트를 놓치지 마세요."
                 binding.permissionImg.setImageResource(R.drawable.ic_alarm_24)
+            }
+
+            PermissionType.CALL.name -> {
+                binding.messageT.text = "연락처를 통해 앱 내에서 친구를 찾아보세요. 전화 권한을 허용하면 친구 찾기가 가능합니다."
+                binding.permissionImg.setImageResource(R.drawable.ic_call_24)
             }
         }
 
@@ -72,10 +81,11 @@ class PermissionDialogFragment(
         }
     }
 
-    enum class PermissionType(val description: String){
+    enum class PermissionType(val description: String) {
         LOCATION("위치"),
         CAMERA("카메라"),
         CONTACTS("연락처"),
-        NOTIFICATIONS("알람")
+        NOTIFICATIONS("알람"),
+        CALL("전화"),
     }
 }
