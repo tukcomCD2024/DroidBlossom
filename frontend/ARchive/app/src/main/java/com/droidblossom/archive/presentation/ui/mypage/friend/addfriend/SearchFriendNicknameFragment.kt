@@ -1,11 +1,13 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
+import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +19,8 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentFriendSearchNicknameBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
+import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -30,10 +34,25 @@ class SearchFriendNicknameFragment :
     lateinit var navController: NavController
 
     private val addFriendRVA by lazy {
-        AddFriendRVA{ position ->
+        AddFriendRVA { position ->
             viewModel.checkAddFriendList(position)
         }
     }
+
+    private val requestContactsPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                navController.navigate(R.id.action_searchFriendNicknameFragment_to_searchFriendNumberFragment)
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                    showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다. 권한을 허용해 주세요.")
+                } else {
+                    showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS)
+                }
+            }
+        }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
@@ -68,8 +87,7 @@ class SearchFriendNicknameFragment :
         }
 
         binding.addCV.setOnClickListener {
-            //viewModel.resetList()
-            navController.navigate(R.id.action_searchFriendNicknameFragment_to_searchFriendNumberFragment)
+            requestContactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
         }
 
         binding.searchOpenBtnT.setOnClickListener {
@@ -100,7 +118,7 @@ class SearchFriendNicknameFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addFriendListUI.collect{ friends ->
+                viewModel.addFriendListUI.collect { friends ->
                     addFriendRVA.submitList(friends)
                 }
             }

@@ -28,7 +28,7 @@ class AddFriendActivity : BaseActivity<AddFriendViewModelImpl, ActivityAddFriend
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             viewModel.contactsSearch(ContactsUtils.getContacts(this))
         } else {
-            showToastMessage("권한이 필요합니다.")
+            //showToastMessage("권한이 필요합니다.")
         }
     }
 
