@@ -1,16 +1,24 @@
 package com.droidblossom.archive.presentation.ui
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.databinding.ActivityMainBinding
+import com.droidblossom.archive.databinding.DialogPermissionBinding
 import com.droidblossom.archive.domain.usecase.member.FcmTokenUseCase
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.customview.CommonDialogFragment
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
+import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
@@ -20,7 +28,6 @@ import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
-import com.droidblossom.archive.util.PermissionsUtil
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import com.gun0912.tedpermission.PermissionListener
@@ -42,7 +49,22 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     override val viewModel: Nothing? = null
     lateinit var viewBinding: ActivityMainBinding
-    
+
+    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
+            binding.bottomNavigation.selectedItemId = R.id.menuCamera
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                showToastMessage("AR 기능을 사용하려면 카메라 권한이 필요합니다.")
+            } else {
+                showSettingsDialog(PermissionDialogFragment.PermissionType.CAMERA)
+            }
+        }
+    }
+
+
+
     override fun observeData() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,20 +102,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     private fun initBottomNav(){
         binding.fab.setOnClickListener {
-
-            TedPermission.create()
-                .setPermissionListener(object : PermissionListener{
-                    override fun onPermissionGranted() {
-                        showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-                        binding.bottomNavigation.selectedItemId = R.id.menuCamera
-                    }
-                    override fun onPermissionDenied(p0: MutableList<String>?) {
-                        showToastMessage("카메라 권한이 없으면 AR 기능을 사용할 수 없습니다.")
-                    }
-                })
-                .setDeniedMessage("카메라 권한이 필요해요. '설정'에서 권한을 허용하면 AR 기능을 이용할 수 있습니다.")
-                .setPermissions(Manifest.permission.CAMERA)
-                .check()
+            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {

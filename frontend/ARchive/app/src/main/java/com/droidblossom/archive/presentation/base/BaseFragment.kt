@@ -1,8 +1,11 @@
 package com.droidblossom.archive.presentation.base
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
 
@@ -65,6 +69,20 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
     fun showToastMessage(message: String) {
         val toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT)
         toast.show()
+    }
+
+    fun showSettingsDialog(permissionType : PermissionDialogFragment.PermissionType) {
+
+        val sheet = PermissionDialogFragment.newIntent(
+            permissionType.name
+        ) {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", requireContext().packageName, null)
+            }
+            startActivity(intent)
+        }
+        sheet.show(parentFragmentManager, "PermissionDialog")
+
     }
 
     fun showLoading(context: Context) {

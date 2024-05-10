@@ -3,9 +3,12 @@ package com.droidblossom.archive.presentation.base
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -16,6 +19,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.customview.LoadingDialog
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.model.AppEvent
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
@@ -113,5 +117,19 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     fun showToastMessage(message: String) {
         val toast = Toast.makeText(this, message, Toast.LENGTH_SHORT)
         toast.show()
+    }
+
+    fun showSettingsDialog(permissionType : PermissionDialogFragment.PermissionType) {
+
+        val sheet = PermissionDialogFragment.newIntent(
+            permissionType.name
+        ) {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", packageName, null)
+            }
+            startActivity(intent)
+        }
+        sheet.show(supportFragmentManager, "PermissionDialog")
+
     }
 }
