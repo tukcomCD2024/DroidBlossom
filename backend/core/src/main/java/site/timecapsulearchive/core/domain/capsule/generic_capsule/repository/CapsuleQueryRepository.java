@@ -56,8 +56,7 @@ public class CapsuleQueryRepository {
             .join(capsule.capsuleSkin, capsuleSkin)
             .join(capsule.member, member)
             .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.eq(memberId)
-                    .and(eqCapsuleType(capsuleType)))
-                .and(capsule.type.eq(CapsuleType.PUBLIC)))
+                    .and(eqCapsuleType(capsuleType))))
             .fetch();
     }
 
