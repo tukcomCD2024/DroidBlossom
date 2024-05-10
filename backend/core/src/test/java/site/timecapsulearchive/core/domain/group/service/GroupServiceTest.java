@@ -19,6 +19,7 @@ import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
+import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
@@ -29,13 +30,19 @@ import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManage
 /**
  * 테스트 케이스
  * <ol>
- * <li>모든 분기 테스트</li>
+ * <li>그룹 삭제 - 모든 분기 테스트</li>
  * <ul>
  *    <li>그룹이 없는 경우</li>
  *    <li>그룹장이 아닌 경우</li>
  *    <li>그룹원이 있는 경우</li>
  *    <li>그룹 캡슐이 존재하는 경우</li>
  *    <li>그룹을 삭제할 수 있는 모든 조건(그룹 존재, 그룹에 속한 그룹원 없음, 요청한 사용자가 그룹장, 그룹 캡슐 없음)을 만족한 경우</li>
+ * </ul>
+ *
+ * <li>그룹 탈퇴 - 모든 분기 테스트</li>
+ * <ul>
+ *    <li>그룹장이 아닌 경우</li>
+ *    <li>그룹을 탈퇴할 수 있는 모든 조건 만족한 경우</li>
  * </ul>
  * </ol>
  */
@@ -83,7 +90,8 @@ class GroupServiceTest {
         Long groupId = 1L;
 
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
-        given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(notOwnerGroupMember());
+        given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(
+            notOwnerGroupMember());
 
         //when
         //then
@@ -127,7 +135,8 @@ class GroupServiceTest {
 
     private List<MemberGroup> groupMembers() {
         Group group = GroupFixture.group();
-        MemberGroup groupOwner = MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L), group);
+        MemberGroup groupOwner = MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
+            group);
 
         List<MemberGroup> memberGroups = MemberGroupFixture.memberGroups(
             MemberFixture.membersWithMemberId(2, 2),
@@ -148,7 +157,8 @@ class GroupServiceTest {
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
         given(memberGroupRepository.findMemberGroupsByGroupId(groupCapsuleExistGroupId)).willReturn(
             ownerGroupMember());
-        given(groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(anyLong())).willReturn(true);
+        given(groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(anyLong())).willReturn(
+            true);
 
         //when
         //then
@@ -166,10 +176,6 @@ class GroupServiceTest {
         );
     }
 
-    private Optional<Long> notZeroGroupCapsuleCount() {
-        return Optional.of(999L);
-    }
-
     @Test
     void 그룹을_삭제할_조건을_만족한_그룹_아이디로_삭제를_시도하면_그룹이_삭제된다() {
         //given
@@ -179,10 +185,58 @@ class GroupServiceTest {
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
         given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(
             ownerGroupMember());
-        given(groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(anyLong())).willReturn(false);
+        given(groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(anyLong())).willReturn(
+            false);
 
         //when
         //then
-        assertThatCode(() -> groupService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
+        assertThatCode(
+            () -> groupService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void 그룹장인_사용자가_그룹_탈퇴를_시도하면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
+            groupId)).willReturn(ownerGroupMemberOnly());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupService.quitGroup(groupOwnerId, groupId))
+            .isInstanceOf(GroupQuitException.class)
+            .hasMessageContaining(ErrorCode.GROUP_OWNER_QUIT_ERROR.getMessage());
+    }
+
+    private Optional<MemberGroup> ownerGroupMemberOnly() {
+        return Optional.of(
+            MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
+                GroupFixture.group())
+        );
+    }
+
+    @Test
+    void 그룹장이_아닌_사용자가_그룹_탈퇴를_시도하면_그룹을_탈퇴한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
+            groupId)).willReturn(notOwnerGroupMemberOnly());
+
+        //when
+        //then
+        assertThatCode(() -> groupService.quitGroup(groupOwnerId, groupId))
+            .doesNotThrowAnyException();
+    }
+
+    private Optional<MemberGroup> notOwnerGroupMemberOnly() {
+        return Optional.of(
+            MemberGroupFixture.memberGroup(
+                MemberFixture.memberWithMemberId(2L),
+                GroupFixture.group(),
+                false
+            )
+        );
     }
 }
