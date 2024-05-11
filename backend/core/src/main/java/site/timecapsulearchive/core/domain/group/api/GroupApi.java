@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
@@ -266,18 +264,16 @@ public interface GroupApi {
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
+            responseCode = "200",
+            description = "처리 완료"
         )
     })
-    @PatchMapping(
-        value = "/groups/{group_id}",
-        consumes = {"multipart/form-data"}
-    )
-    ResponseEntity<Void> updateGroupById(
-        @Parameter(in = ParameterIn.PATH, description = "수정할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> updateGroupById(
+        Long memberId,
 
-        @ModelAttribute GroupUpdateRequest request
+        @Parameter(in = ParameterIn.PATH, description = "수정할 그룹 아이디", required = true, schema = @Schema())
+        Long groupId,
+
+        GroupUpdateRequest request
     );
 }

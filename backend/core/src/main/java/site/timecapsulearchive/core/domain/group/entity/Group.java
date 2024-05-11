@@ -51,4 +51,16 @@ public class Group extends BaseEntity {
         this.groupDescription = groupDescription;
         this.groupProfileUrl = groupProfileUrl;
     }
+
+    public void updateGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void updateGroupDescription(String groupDescription) {
+        this.groupDescription = groupDescription;
+    }
+
+    public void updateGroupProfileUrl(String groupProfileUrl) {
+        this.groupProfileUrl = groupProfileUrl;
+    }
 }
