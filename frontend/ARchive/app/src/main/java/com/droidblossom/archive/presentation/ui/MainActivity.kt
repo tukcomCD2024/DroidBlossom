@@ -6,12 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.domain.usecase.member.FcmTokenUseCase
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -42,19 +44,35 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
     override val viewModel: Nothing? = null
     lateinit var viewBinding: ActivityMainBinding
 
-    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-            binding.bottomNavigation.selectedItemId = R.id.menuCamera
-        } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                showToastMessage("AR 기능을 사용하려면 카메라 권한이 필요합니다.")
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
+                binding.bottomNavigation.selectedItemId = R.id.menuCamera
             } else {
-                showSettingsDialog(PermissionDialogFragment.PermissionType.CAMERA)
+                handlePermissionsDenied()
             }
         }
-    }
 
+    private fun handlePermissionsDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            showToastMessage("AR 기능을 사용하려면 카메라 권한이 필요합니다. '권한'에서 카메라 권한을 허용해 주세요.")
+        } else {
+            showSettingsDialog(PermissionDialogFragment.PermissionType.CAMERA, object :
+                PermissionDialogButtonClickListener {
+                override fun onLeftButtonClicked() {
+                    showToastMessage("AR 기능을 사용하려면 카메라 권한이 필요합니다. '권한'에서 카메라 권한을 허용해 주세요.")
+                }
+
+                override fun onRightButtonClicked() {
+                    navigateToAppSettings {
+                        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                }
+
+            })
+        }
+    }
 
 
     override fun observeData() {}
@@ -78,7 +96,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
-    private fun initFCM(){
+    private fun initFCM() {
         CoroutineScope(Dispatchers.IO).launch {
             fcmTokenUseCase(
                 FcmTokenRequsetDto(MyFirebaseMessagingService().getFirebaseToken())
@@ -92,7 +110,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
-    private fun initBottomNav(){
+    private fun initBottomNav() {
         binding.fab.setOnClickListener {
             requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
@@ -164,6 +182,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
             }
         }
     }
+
     companion object {
         fun goMain(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
