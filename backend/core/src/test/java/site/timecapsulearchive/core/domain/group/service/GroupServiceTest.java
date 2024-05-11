@@ -216,6 +216,7 @@ class GroupServiceTest {
 
         //when
         //then
+        verify(groupRepository, times(1)).delete(any(Group.class));
         assertThatCode(
             () -> groupService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
     }
@@ -252,8 +253,7 @@ class GroupServiceTest {
 
         //when
         //then
-        assertThatCode(() -> groupService.quitGroup(groupOwnerId, groupId))
-            .doesNotThrowAnyException();
+        verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
     }
 
     private Optional<MemberGroup> notOwnerGroupMemberOnly() {
