@@ -33,7 +33,7 @@ class PermissionDialogFragment(
         val permissionType = arguments?.getString("permission") ?: ""
         setupPermissionInfo(permissionType)
 
-        binding.leftBtn.text = if (permissionType == PermissionType.LOCATION.name) "앱 종료" else "취소"
+        binding.leftBtn.text = if (permissionType == PermissionType.ESSENTIAL.name) "앱 종료" else "취소"
 
         binding.leftBtn.setOnClickListener {
             listener.onLeftButtonClicked()
@@ -76,6 +76,10 @@ class PermissionDialogFragment(
                 "AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다. '권한'에서 카메라, 위치 권한을 허용해 주세요.",
                 R.drawable.ic_ar_outline
             )
+            PermissionType.ESSENTIAL.name -> Pair(
+                "ARchive 앱을 사용하려면 카메라, 위치 권한이 필수입니다. '권한'에서 카메라, 위치 권한을 허용해 주세요.",
+                R.drawable.ic_essential_outline
+            )
             else -> Pair("", R.drawable.ic_default_outline)
         }
 
@@ -106,6 +110,7 @@ class PermissionDialogFragment(
         NOTIFICATIONS("알람"),
         CALL("전화"),
         CONTACTS_AND_CALL("연락처, 전화"),
-        AR("카메라, 위치")
+        AR("카메라, 위치"),
+        ESSENTIAL("필수")
     }
 }

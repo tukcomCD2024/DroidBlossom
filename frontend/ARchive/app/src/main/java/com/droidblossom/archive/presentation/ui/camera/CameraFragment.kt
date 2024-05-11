@@ -1,10 +1,15 @@
 package com.droidblossom.archive.presentation.ui.camera
 
 import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +19,9 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
+import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
@@ -40,6 +48,110 @@ class CameraFragment :
     private lateinit var config: Config
     private lateinit var viewAttachmentManager: ViewAttachmentManager
     private val locationUtil by lazy { LocationUtil(requireContext()) }
+
+    private val arPermissionList = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions.all { it.value } -> {
+                    locationUtil.getCurrentLocation { latitude, longitude ->
+                        viewModel.getCapsules(latitude = latitude, longitude = longitude)
+                    }
+                }
+
+                permissions.none { it.value } -> {
+                    handleAllPermissionsDenied()
+                }
+
+                else -> {
+                    handlePartialPermissionsDenied(permissions)
+                }
+            }
+        }
+
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                viewAttachmentManager.onResume()
+                requestPermissionLauncher.launch(arPermissionList)
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    showToastMessage("AR 기능을 사용하려면 카메라 권한이 필요합니다.")
+                } else {
+                    requestPermissionLauncher.launch(arPermissionList)
+                }
+
+            }
+        }
+
+    private fun handleAllPermissionsDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        ) {
+            showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+        } else {
+            showSettingsDialog(
+                PermissionDialogFragment.PermissionType.AR,
+                object : PermissionDialogButtonClickListener {
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+                        //requireActivity().finish()
+
+                    }
+
+                    override fun onRightButtonClicked() {
+                        navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                    }
+
+                })
+        }
+    }
+
+    private fun handlePartialPermissionsDenied(permissions: Map<String, Boolean>) {
+        permissions.forEach { (permission, granted) ->
+            if (!granted) {
+                when (permission) {
+                    Manifest.permission.CAMERA -> showPermissionDialog(PermissionDialogFragment.PermissionType.CAMERA)
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                        if (!permissions.getValue(Manifest.permission.ACCESS_FINE_LOCATION) ||
+                            !permissions.getValue(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        ) {
+                            showPermissionDialog(PermissionDialogFragment.PermissionType.LOCATION)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showPermissionDialog(permissionType: PermissionDialogFragment.PermissionType) {
+
+        if (shouldShowRequestPermissionRationale(permissionType.toString())) {
+            showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
+        } else {
+            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener {
+                override fun onLeftButtonClicked() {
+                    showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
+                    //requireActivity().finish()
+                }
+
+                override fun onRightButtonClicked() {
+                    navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                }
+
+            })
+        }
+
+    }
+
+
     override fun provideFragmentManager(): FragmentManager {
         return parentFragmentManager
     }
@@ -81,6 +193,7 @@ class CameraFragment :
                     }
                     .collect {
                         dismissLoading()
+                        showToastMessage("${it.size}개의 캡슐을 찾았습니다.")
                     }
             }
         }
@@ -128,11 +241,6 @@ class CameraFragment :
 
     }
 
-    val permissionList = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading(requireContext())
@@ -150,7 +258,15 @@ class CameraFragment :
         binding.filterAll.layoutParams = layoutParams
 
         initView()
-        createSession()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            createSession()
+        }else{
+            MainActivity.goMain(requireContext())
+        }
     }
 
     private fun initView() {
@@ -201,26 +317,32 @@ class CameraFragment :
 
     override fun onResume() {
         super.onResume()
-        viewAttachmentManager.onResume()
-        locationUtil.getCurrentLocation { latitude, longitude ->
-            viewModel.getCapsules(latitude = latitude, longitude = longitude)
-        }
+        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
             dismissLoading()
-            arSceneView.clearChildNodes()
-            viewModel.clearAnchorNode()
-            viewAttachmentManager.onPause()
-            arSceneView.session?.pause()
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED
+            ){
+                arSceneView.clearChildNodes()
+                viewModel.clearAnchorNode()
+                viewAttachmentManager.onPause()
+                arSceneView.session?.pause()
+            }
         } else {
-            showLoading(requireContext())
-            arSceneView.session?.resume()
-            viewAttachmentManager.onResume()
-            locationUtil.getCurrentLocation { latitude, longitude ->
-                viewModel.getCapsules(latitude = latitude, longitude = longitude)
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                arSceneView.session?.resume()
+                viewAttachmentManager.onResume()
+                requestPermissionLauncher.launch(arPermissionList)
             }
         }
     }

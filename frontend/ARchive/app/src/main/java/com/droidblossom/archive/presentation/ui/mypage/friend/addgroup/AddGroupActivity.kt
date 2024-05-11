@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addgroup
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
@@ -28,8 +29,19 @@ class AddGroupActivity :
     }
 
     private fun initView() {
+        val layoutParams = binding.appBar.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.appBar.layoutParams = layoutParams
+
+        val layoutParamsToolBar = binding.toolBar.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.toolBar.layoutParams = layoutParamsToolBar
+
         binding.vp.adapter = addGroupVPA
         binding.vp. currentItem = 0
+        binding.closeBtn.setOnClickListener {
+            finish()
+        }
     }
 
     companion object {
