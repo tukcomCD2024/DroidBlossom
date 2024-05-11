@@ -79,7 +79,8 @@ class SearchFriendNumberFragment :
     private fun handleAllPermissionsDenied() {
         if (permissionsToRequest.size > 1) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) ||
-                shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_NUMBERS)) {
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_NUMBERS)
+            ) {
                 showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
             } else {
                 showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS_AND_CALL, object : PermissionDialogButtonClickListener{
@@ -91,7 +92,6 @@ class SearchFriendNumberFragment :
                     override fun onRightButtonClicked() {
                         navigateToAppSettings{requestContactsCallPermissionLauncher.launch(permissionsToRequest)}
                     }
-
                 })
             }
         } else {
@@ -117,10 +117,11 @@ class SearchFriendNumberFragment :
         permissions.forEach { (perm, granted) ->
             if (!granted) {
                 when (perm) {
-                    Manifest.permission.READ_CONTACTS -> showPermissionDialog(
-                        PermissionDialogFragment.PermissionType.CONTACTS)
-                    Manifest.permission.READ_PHONE_NUMBERS -> showPermissionDialog(
-                        PermissionDialogFragment.PermissionType.CALL)
+                    Manifest.permission.READ_CONTACTS ->
+                        showPermissionDialog( PermissionDialogFragment.PermissionType.CONTACTS )
+
+                    Manifest.permission.READ_PHONE_NUMBERS ->
+                        showPermissionDialog( PermissionDialogFragment.PermissionType.CALL )
                 }
             }
         }

@@ -10,6 +10,8 @@ import com.droidblossom.archive.databinding.ActivityFriendBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendVPA
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupViewModelImpl
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
@@ -41,6 +43,10 @@ class FriendActivity :
 
         binding.vp.adapter = friendVPA
 
+        binding.addCV.setOnClickListener {
+            startActivity(AddGroupActivity.newIntent(this@FriendActivity))
+        }
+
         binding.closeBtn.setOnClickListener {
             finish()
         }
@@ -58,7 +64,7 @@ class FriendActivity :
                 if (tab.position == 0) {
                     binding.addT.text = "그룹 추가"
                     binding.addCV.setOnClickListener {
-
+                        startActivity(AddGroupActivity.newIntent(this@FriendActivity))
                     }
                 } else {
                     binding.addT.text = "친구 추가"
