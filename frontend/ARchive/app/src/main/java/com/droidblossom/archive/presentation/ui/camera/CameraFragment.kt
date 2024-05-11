@@ -2,14 +2,12 @@ package com.droidblossom.archive.presentation.ui.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -35,7 +33,6 @@ import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.node.AnchorNode
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import java.util.Date
 
 @AndroidEntryPoint
 class CameraFragment :
@@ -90,9 +87,9 @@ class CameraFragment :
         }
 
     private fun handleAllPermissionsDenied() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
         ) {
             showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
         } else {
@@ -257,14 +254,22 @@ class CameraFragment :
         layoutParams.topMargin += getStatusBarHeight()
         binding.filterAll.layoutParams = layoutParams
 
-        initView()
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            initView()
             createSession()
-        }else{
+        } else {
             MainActivity.goMain(requireContext())
         }
     }
@@ -328,7 +333,7 @@ class CameraFragment :
                     requireContext(),
                     Manifest.permission.CAMERA
                 ) == PackageManager.PERMISSION_GRANTED
-            ){
+            ) {
                 arSceneView.clearChildNodes()
                 viewModel.clearAnchorNode()
                 viewAttachmentManager.onPause()

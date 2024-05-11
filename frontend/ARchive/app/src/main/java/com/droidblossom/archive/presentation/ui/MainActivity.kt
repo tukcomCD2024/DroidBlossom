@@ -236,6 +236,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
+
     companion object {
         fun goMain(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
