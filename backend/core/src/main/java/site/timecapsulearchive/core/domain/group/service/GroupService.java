@@ -183,8 +183,7 @@ public class GroupService {
         }
 
         final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
-                groupId,
-                groupMemberId)
+                groupMemberId, groupId)
             .orElseThrow(GroupMemberNotfoundException::new);
 
         memberGroupRepository.delete(memberGroup);
