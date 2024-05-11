@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundExceptio
 import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
+import site.timecapsulearchive.core.domain.group.repository.MemberGroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
@@ -57,6 +58,8 @@ class GroupServiceTest {
     private final GroupQueryRepository groupQueryRepository = mock(GroupQueryRepository.class);
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository = mock(
         GroupCapsuleQueryRepository.class);
+    private final MemberGroupQueryRepository memberGroupQueryRepository = mock(
+        MemberGroupQueryRepository.class);
 
     private final GroupService groupService = new GroupService(
         groupRepository,
@@ -65,7 +68,8 @@ class GroupServiceTest {
         transactionTemplate,
         socialNotificationManager,
         groupQueryRepository,
-        groupCapsuleQueryRepository
+        groupCapsuleQueryRepository,
+        memberGroupQueryRepository
     );
 
     @Test

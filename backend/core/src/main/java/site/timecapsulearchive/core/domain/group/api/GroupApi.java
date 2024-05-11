@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,23 +107,24 @@ public interface GroupApi {
 
     @Operation(
         summary = "그룹원 삭제",
-        description = "그룹장인 경우 특정 그룹원을 삭제한다.",
+        description = "요청한 사용자가 그룹장인 경우 특정 그룹원을 그룹에서 삭제한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "204",
+            responseCode = "200",
             description = "처리 완료"
         )
     })
-    @DeleteMapping(value = "/groups/{group_id}/members/{member_id}")
-    ResponseEntity<Void> deleteGroupMember(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> deleteGroupMember(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "삭제할 멤버 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "삭제할 그룹원 멤버 아이디", required = true)
+        Long groupMemberId
     );
 
     @Operation(
