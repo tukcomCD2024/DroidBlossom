@@ -2,9 +2,12 @@ package site.timecapsulearchive.core.domain.group.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +21,11 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.Grou
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
+import site.timecapsulearchive.core.domain.group.exception.GroupMemberDuplicatedIdException;
+import site.timecapsulearchive.core.domain.group.exception.GroupMemberNotfoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
+import site.timecapsulearchive.core.domain.group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupQueryRepository;
@@ -44,6 +50,14 @@ import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManage
  * <ul>
  *    <li>그룹장이 아닌 경우</li>
  *    <li>그룹을 탈퇴할 수 있는 모든 조건 만족한 경우</li>
+ * </ul>
+ *
+ * <li>그룹원 삭제 - 모든 분기 테스트</li>
+ * <ul>
+ *    <li>자신을 삭제하려한 경우</li>
+ *    <li>요청한 사용자를 그룹에서 찾을 수 없는 경우</li>
+ *    <li>요청한 사용자가 그룹장이 아닌 경우</li>
+ *    <li>삭제할 그룹원이 없는 경우</li>
  * </ul>
  * </ol>
  */
@@ -242,5 +256,90 @@ class GroupServiceTest {
                 false
             )
         );
+    }
+
+    @Test
+    void 나_자신을_그룹에서_삭제하려하면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupService.deleteGroupMember(groupOwnerId, groupId, groupOwnerId))
+            .isInstanceOf(GroupMemberDuplicatedIdException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_DUPLICATED_ID_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹_삭제를_요청한_사용자를_그룹에서_찾을_수_없으면_예외가_발생한다() {
+        //given
+        Long notExistGroupOwnerId = 1L;
+        Long groupId = 1L;
+        Long groupMemberId = 2L;
+        given(memberGroupQueryRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupService.deleteGroupMember(notExistGroupOwnerId, groupId, groupMemberId))
+            .isInstanceOf(GroupMemberNotfoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹_삭제를_요청한_사용자가_그룹에서_그룹장이_아니면_예외가_발생한다() {
+        //given
+        Long notGroupOwnerId = 1L;
+        Long groupId = 1L;
+        Long groupMemberId = 2L;
+        given(memberGroupQueryRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.of(Boolean.FALSE));
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupService.deleteGroupMember(notGroupOwnerId, groupId, groupMemberId))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹_삭제의_대상_그룹원이_그룹에_존재하지_않으면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        Long notExistGroupMemberId = 2L;
+        given(memberGroupQueryRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.of(Boolean.TRUE));
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupService.deleteGroupMember(groupOwnerId, groupId, notExistGroupMemberId))
+            .isInstanceOf(GroupMemberNotfoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹장이_그룹원을_삭제하면_그룹에서_삭제된다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        Long groupMemberId = 2L;
+        given(memberGroupQueryRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.of(Boolean.TRUE));
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(notOwnerGroupMemberOnly());
+
+        //when
+        groupService.deleteGroupMember(groupOwnerId, groupId, groupMemberId);
+
+        //then
+        verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
     }
 }
