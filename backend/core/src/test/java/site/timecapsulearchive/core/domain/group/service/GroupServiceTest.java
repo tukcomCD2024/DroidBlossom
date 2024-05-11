@@ -2,9 +2,12 @@ package site.timecapsulearchive.core.domain.group.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,10 +169,6 @@ class GroupServiceTest {
         );
     }
 
-    private Optional<Long> notZeroGroupCapsuleCount() {
-        return Optional.of(999L);
-    }
-
     @Test
     void 그룹을_삭제할_조건을_만족한_그룹_아이디로_삭제를_시도하면_그룹이_삭제된다() {
         //given
@@ -184,5 +183,6 @@ class GroupServiceTest {
         //when
         //then
         assertThatCode(() -> groupService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
+        verify(groupRepository, times(1)).delete(any(Group.class));
     }
 }
