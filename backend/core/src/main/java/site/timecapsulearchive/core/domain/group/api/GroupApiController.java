@@ -37,9 +37,20 @@ public class GroupApiController implements GroupApi {
     private final S3UrlGenerator s3UrlGenerator;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
+    @PostMapping(value = "/accept/{group_id}/member/{target_id}")
     @Override
-    public ResponseEntity<Void> acceptGroupInvitation(Long groupId, Long memberId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId,
+        @PathVariable("target_id") final Long targetId
+    ) {
+        groupService.acceptGroupInvite(memberId, groupId, targetId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.ACCEPTED
+            )
+        );
     }
 
     @Override
@@ -56,7 +67,7 @@ public class GroupApiController implements GroupApi {
 
         return ResponseEntity.ok(
             ApiSpec.empty(
-                SuccessCode.SUCCESS
+                SuccessCode.ACCEPTED
             )
         );
     }
@@ -78,7 +89,11 @@ public class GroupApiController implements GroupApi {
 
         groupService.denyRequestGroup(memberId, groupOwnerId);
 
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 
     @GetMapping(
