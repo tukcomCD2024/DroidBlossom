@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
+import android.Manifest
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -44,6 +45,12 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
 
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private lateinit var onSettingsResult: () -> Unit
+
+    val essentialPermissionList = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
     abstract fun observeData()
 
     protected fun getStatusBarHeight(): Int {

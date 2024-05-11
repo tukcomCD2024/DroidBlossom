@@ -54,12 +54,6 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
-    private val essentialPermissionList = arrayOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-
     private val arPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             when {
