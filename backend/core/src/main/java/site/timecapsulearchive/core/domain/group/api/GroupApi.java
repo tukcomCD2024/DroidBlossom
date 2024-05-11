@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
@@ -34,13 +33,14 @@ public interface GroupApi {
             description = "처리 완료"
         )
     })
-    @PostMapping(value = "/groups/{group_id}/members/{member_id}/accept-invitation")
-    ResponseEntity<Void> acceptGroupInvitation(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true)
+        Long targetId
     );
 
     @Operation(

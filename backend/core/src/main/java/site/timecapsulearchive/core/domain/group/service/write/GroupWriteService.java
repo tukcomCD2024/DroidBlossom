@@ -9,4 +9,7 @@ public interface GroupWriteService {
     void inviteGroup(final Long memberId, final Long groupId, final Long targetId);
 
     void denyRequestGroup(final Long groupMemberId, final Long groupOwnerId);
+
+    void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId);
+
 }

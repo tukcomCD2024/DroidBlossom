@@ -94,4 +94,28 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         }
     }
 
+    public void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId) {
+        final Member groupMember = memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+        final Group group = groupRepository.findGroupById(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
+                    targetId, groupMember.getId());
+
+                if (isDenyRequest != 1) {
+                    throw new GroupInviteNotFoundException();
+                }
+
+                memberGroupRepository.save(MemberGroup.createGroupMember(groupMember, group));
+            }
+        });
+
+        socialNotificationManager.sendGroupAcceptMessage(groupMember.getNickname(), targetId);
+    }
+
+
 }
