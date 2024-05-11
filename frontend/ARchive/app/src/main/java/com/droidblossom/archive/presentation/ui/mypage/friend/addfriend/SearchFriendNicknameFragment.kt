@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentFriendSearchNicknameBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
@@ -40,20 +42,103 @@ class SearchFriendNicknameFragment :
         }
     }
 
-    private val requestContactsPermissionLauncher =
+    private val permissionsToRequest: Array<String> by lazy {
+        val permissionsList = mutableListOf<String>()
+        permissionsList.add(Manifest.permission.READ_CONTACTS)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            permissionsList.add(Manifest.permission.READ_PHONE_NUMBERS)
+        }
+
+        permissionsList.toTypedArray()
+    }
+
+    private val requestContactsCallPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.all { it.value }) {
-                navController.navigate(R.id.action_searchFriendNicknameFragment_to_searchFriendNumberFragment)
-            } else {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) &&
-                    shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_NUMBERS)
-                ) {
-                    showToastMessage("앱에서 친구를 찾기 위해 연락처와 전화 접근 권한이 필요합니다. 권한을 허용해 주세요.")
-                } else {
-                    showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS)
+            when {
+                permissions.all { it.value } -> {
+                    navController.navigate(R.id.action_searchFriendNicknameFragment_to_searchFriendNumberFragment)
+                }
+                permissions.none { it.value } -> {
+                    handleAllPermissionsDenied()
+                }
+                else -> {
+                    handlePartialPermissionsDenied(permissions)
                 }
             }
         }
+
+    private fun handleAllPermissionsDenied() {
+        if (permissionsToRequest.size > 1) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_NUMBERS)) {
+                showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
+            } else {
+                showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS_AND_CALL, object :
+                    PermissionDialogButtonClickListener{
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
+                    }
+
+                    override fun onRightButtonClicked() {
+                        navigateToAppSettings{
+                            requestContactsCallPermissionLauncher.launch(permissionsToRequest)
+                        }
+                    }
+
+                })
+            }
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다.")
+            } else {
+                showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS, object : PermissionDialogButtonClickListener{
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다.")
+                    }
+
+                    override fun onRightButtonClicked() {
+                        navigateToAppSettings{
+                            requestContactsCallPermissionLauncher.launch(permissionsToRequest)
+                        }
+                    }
+
+                })
+            }
+        }
+    }
+
+    private fun handlePartialPermissionsDenied(permissions: Map<String, Boolean>) {
+        permissions.forEach { (perm, granted) ->
+            if (!granted) {
+                when (perm) {
+                    Manifest.permission.READ_CONTACTS -> showPermissionDialog(
+                        PermissionDialogFragment.PermissionType.CONTACTS)
+                    Manifest.permission.READ_PHONE_NUMBERS -> showPermissionDialog(
+                        PermissionDialogFragment.PermissionType.CALL)
+                }
+            }
+        }
+    }
+
+    private fun showPermissionDialog(permissionType: PermissionDialogFragment.PermissionType) {
+        if (shouldShowRequestPermissionRationale(permissionType.toString())) {
+            showToastMessage("앱에서 친구를 찾기 위해 ${permissionType.description} 권한이 필요합니다.")
+        } else {
+            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener{
+                override fun onLeftButtonClicked() {
+                    showToastMessage("앱에서 친구를 찾기 위해 ${permissionType.description} 권한이 필요합니다.")
+                }
+
+                override fun onRightButtonClicked() {
+                    navigateToAppSettings{
+                        requestContactsCallPermissionLauncher.launch(permissionsToRequest)
+                    }
+                }
+
+            })
+        }
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,12 +175,7 @@ class SearchFriendNicknameFragment :
         }
 
         binding.addCV.setOnClickListener {
-            requestContactsPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.READ_CONTACTS,
-                    Manifest.permission.READ_PHONE_NUMBERS
-                )
-            )
+            requestContactsCallPermissionLauncher.launch(permissionsToRequest)
         }
 
         binding.searchOpenBtnT.setOnClickListener {
