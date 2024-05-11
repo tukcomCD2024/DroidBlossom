@@ -72,6 +72,10 @@ class PermissionDialogFragment(
                 "연락처를 통해 앱 내에서 친구를 찾아보세요. 전화, 연락처 권한을 허용하면 친구 찾기가 가능합니다.",
                 R.drawable.ic_contact_phone_outline
             )
+            PermissionType.AR.name -> Pair(
+                "AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다. '권한'에서 카메라, 위치 권한을 허용해 주세요.",
+                R.drawable.ic_ar_outline
+            )
             else -> Pair("", R.drawable.ic_default_outline)
         }
 
@@ -102,5 +106,6 @@ class PermissionDialogFragment(
         NOTIFICATIONS("알람"),
         CALL("전화"),
         CONTACTS_AND_CALL("연락처, 전화"),
+        AR("카메라, 위치")
     }
 }
