@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -13,12 +14,15 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.customview.LoadingDialog
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.model.AppEvent
 import com.droidblossom.archive.util.ClipboardUtil
@@ -38,6 +42,8 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     private lateinit var loadingDialog: LoadingDialog
     private var loadingState = false
 
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var onSettingsResult: () -> Unit
     abstract fun observeData()
 
     protected fun getStatusBarHeight(): Int {
@@ -72,6 +78,11 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         setContentView(binding.root)
         fetchJob = viewModel?.fetchData()
         observeData()
+
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onSettingsResult()
+        }
+
         window.apply {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -119,17 +130,16 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         toast.show()
     }
 
-    fun showSettingsDialog(permissionType : PermissionDialogFragment.PermissionType) {
-
-        val sheet = PermissionDialogFragment.newIntent(
-            permissionType.name
-        ) {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", packageName, null)
-            }
-            startActivity(intent)
+    fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, listener: PermissionDialogButtonClickListener) {
+        val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
+        dialog.show(supportFragmentManager, "PermissionDialog")
+    }
+    fun navigateToAppSettings(onComplete: () -> Unit) {
+        onSettingsResult = onComplete  // 저장된 콜백 설정
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            val uri = Uri.fromParts("package", packageName, null)
+            data = uri
         }
-        sheet.show(supportFragmentManager, "PermissionDialog")
-
+        resultLauncher.launch(intent)  // 설정 화면으로 이동
     }
 }

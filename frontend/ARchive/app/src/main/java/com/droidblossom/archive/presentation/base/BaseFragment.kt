@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,11 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
@@ -30,11 +34,14 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
     private lateinit var loadingDialog: LoadingDialog
     private var loadingState = false
 
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
     protected fun getStatusBarHeight(): Int {
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
     }
 
+    private lateinit var onSettingsResult: () -> Unit
     abstract fun observeData()
 
     override fun onCreateView(
@@ -56,6 +63,9 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchJob = viewModel.fetchData()
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            onSettingsResult()
+        }
         observeData()
     }
 
@@ -71,18 +81,18 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
         toast.show()
     }
 
-    fun showSettingsDialog(permissionType : PermissionDialogFragment.PermissionType) {
+    fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, listener: PermissionDialogButtonClickListener) {
+        val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
+        dialog.show(parentFragmentManager, "PermissionDialog")
+    }
 
-        val sheet = PermissionDialogFragment.newIntent(
-            permissionType.name
-        ) {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", requireContext().packageName, null)
-            }
-            startActivity(intent)
+    fun navigateToAppSettings(onComplete: () -> Unit) {
+        onSettingsResult = onComplete  // 저장된 콜백 설정
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            val uri = Uri.fromParts("package", requireContext().packageName, null)
+            data = uri
         }
-        sheet.show(parentFragmentManager, "PermissionDialog")
-
+        resultLauncher.launch(intent)  // 설정 화면으로 이동
     }
 
     fun showLoading(context: Context) {
