@@ -1,5 +1,8 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
+import static site.timecapsulearchive.core.domain.capsule.entity.QGroupCapsuleOpen.groupCapsuleOpen;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -17,6 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 public class GroupCapsuleOpenQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final JPAQueryFactory jpaQueryFactory;
 
     public void bulkSave(final List<Long> groupMemberIds, final Capsule capsule) {
         jdbcTemplate.batchUpdate(
@@ -42,5 +46,13 @@ public class GroupCapsuleOpenQueryRepository {
                 }
             }
         );
+    }
+
+    public List<Boolean> findIsOpenedByMemberIdAndCapsuleId(final Long capsuleId) {
+        return jpaQueryFactory
+            .select(groupCapsuleOpen.isOpened)
+            .from(groupCapsuleOpen)
+            .where(groupCapsuleOpen.capsule.id.eq(capsuleId))
+            .fetch();
     }
 }

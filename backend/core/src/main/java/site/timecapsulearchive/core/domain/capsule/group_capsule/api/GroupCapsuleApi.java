@@ -154,6 +154,32 @@ public interface GroupCapsuleApi {
     );
 
     @Operation(
+        summary = "그룹 캡슐 개봉",
+        description = """
+        그룹원이 그룹 캡슐을 개봉한다.<br> 캡슐을 만들 때의 그룹원 모두가 캡슐을 개봉해야만 캡슐이 개봉된다.
+        """,
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹 캡슐의 개봉 상태를 찾을 수 없는 경우 예외가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> openCapsule(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "개봉할 그룹 캡슐 아이디", required = true)
+        @PathVariable("capsule_id") Long capsuleId
+    );
+
+    @Operation(
         summary = "그룹 캡슐 24시간 이내 수정",
         description = "사용자가 생성한 그룹 캡슐의 생성 시간이 24시간 이내라면 수정한다.",
         security = {@SecurityRequirement(name = "user_token")},

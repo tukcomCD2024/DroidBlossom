@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
@@ -9,12 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
+import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -27,6 +32,8 @@ public class GroupCapsuleService {
 
     private final CapsuleRepository capsuleRepository;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
+    private final GroupCapsuleOpenRepository groupCapsuleOpenRepository;
+    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository;
 
     @Transactional
     public Capsule saveGroupCapsule(
@@ -87,6 +94,30 @@ public class GroupCapsuleService {
         final ZonedDateTime createdAt
     ) {
         return groupCapsuleQueryRepository.findMyGroupCapsuleSlice(memberId, size, createdAt);
+    }
+
+    /**
+     * 해당 그룹원이 그룹 캡슐을 개봉한다. 모든 그룹원이 개봉하면 캡슐이 개봉된다.
+     *
+     * @param memberId  캡슐을 개봉할 그룹원
+     * @param capsuleId 개봉할 캡슐 아이디
+     */
+    @Transactional
+    public void openGroupCapsule(final Long memberId, final Long capsuleId) {
+        GroupCapsuleOpen groupCapsuleOpen = groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(
+            memberId,
+            capsuleId)
+            .orElseThrow(GroupCapsuleOpenNotFoundException::new);
+        groupCapsuleOpen.open();
+
+        List<Boolean> capsuleOpens = groupCapsuleOpenQueryRepository.findIsOpenedByMemberIdAndCapsuleId(
+            capsuleId);
+
+        boolean allGroupMemberOpened = capsuleOpens.stream()
+            .allMatch(isOpened -> isOpened.equals(Boolean.TRUE));
+        if (allGroupMemberOpened) {
+            capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+        }
     }
 }
 

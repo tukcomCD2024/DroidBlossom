@@ -45,4 +45,12 @@ public class GroupCapsuleOpen extends BaseEntity {
         this.capsule = Objects.requireNonNull(capsule);
         this.member = Objects.requireNonNull(member);
     }
+
+    public static GroupCapsuleOpen createOf(Member member, Capsule capsule, Boolean isOpened) {
+        return new GroupCapsuleOpen(isOpened, capsule, member);
+    }
+
+    public void open() {
+        this.isOpened = Boolean.TRUE;
+    }
 }
