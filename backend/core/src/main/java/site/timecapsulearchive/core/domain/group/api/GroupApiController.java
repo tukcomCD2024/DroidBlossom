@@ -34,7 +34,6 @@ import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 public class GroupApiController implements GroupApi {
 
     private final GroupService groupService;
-    private final S3UrlGenerator s3UrlGenerator;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @Override
@@ -48,7 +47,7 @@ public class GroupApiController implements GroupApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody GroupCreateRequest request
     ) {
-        final String groupProfileUrl = s3UrlGenerator.generateFileName(memberId,
+        final String groupProfileUrl = S3UrlGenerator.generateFileName(memberId,
             request.groupDirectory(), request.groupImage());
         final GroupCreateDto dto = request.toDto(groupProfileUrl);
 

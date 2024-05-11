@@ -18,7 +18,7 @@ public class UnitTestDependency {
     public static S3PreSignedUrlManager s3PreSignedUrlManager() {
         S3Config s3Config = new S3Config(
             new S3Properties("a".repeat(32), "b".repeat(32), "origin", "temporary", "us-east"));
-        return new S3PreSignedUrlManager(s3Config, new S3UrlGenerator());
+        return new S3PreSignedUrlManager(s3Config);
     }
 
     public static GeoTransformManager geoTransformManager() {

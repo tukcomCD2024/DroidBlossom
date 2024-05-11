@@ -22,16 +22,14 @@ public class S3PreSignedUrlManager {
     private static final String IMAGE_CONTENT_TYPE = "image/png";
     private static final String VIDEO_CONTENT_TYPE = "video/mp4";
 
-    private final S3UrlGenerator s3UrlGenerator;
     private final S3Presigner s3Presigner;
     private final String temporaryBucketName;
     private final String bucketName;
 
-    public S3PreSignedUrlManager(S3Config s3config, S3UrlGenerator s3UrlGenerator) {
+    public S3PreSignedUrlManager(S3Config s3config) {
         this.s3Presigner = s3config.s3Presigner();
         this.temporaryBucketName = s3config.getTemporaryBucketName();
         this.bucketName = s3config.getBucketName();
-        this.s3UrlGenerator = s3UrlGenerator;
     }
 
     /**
@@ -103,7 +101,7 @@ public class S3PreSignedUrlManager {
         final String contentType,
         final String bucketName
     ) {
-        final String newFileName = s3UrlGenerator.generateFileName(memberId, directory, fileName);
+        final String newFileName = S3UrlGenerator.generateFileName(memberId, directory, fileName);
 
         final PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
             .signatureDuration(Duration.ofMinutes(PRE_SIGNED_URL_EXPIRATION_TIME))
