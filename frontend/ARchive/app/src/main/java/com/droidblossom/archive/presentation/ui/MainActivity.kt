@@ -3,9 +3,11 @@ package com.droidblossom.archive.presentation.ui
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.R
@@ -44,41 +46,105 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
     override val viewModel: Nothing? = null
     lateinit var viewBinding: ActivityMainBinding
 
+    private var isPermissionRequested = false
+
     private val arPermissionList = arrayOf(
         Manifest.permission.CAMERA,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        when {
-            permissions.all { it.value } -> {
-                showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-                binding.bottomNavigation.selectedItemId = R.id.menuCamera
+    private val essentialPermissionList = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
+    private val arPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions.all { it.value } -> {
+                    showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
+                    binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                }
+
+                permissions.none { it.value } -> {
+                    handleAllPermissionsDenied()
+                }
+
+                else -> {
+                    handlePartialPermissionsDenied(permissions)
+                }
             }
-            permissions.none { it.value } -> {
-                handleAllPermissionsDenied()
+        }
+
+    private val essentialPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions.all { it.value } -> {
+
+                }
+
+                else -> {
+                    handleEssentialPermissionsDenied()
+                }
             }
-            else -> {
-                handlePartialPermissionsDenied(permissions)
-            }
+
+        }
+
+    private fun handleEssentialPermissionsDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        ) {
+            showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+        } else {
+            showSettingsDialog(
+                PermissionDialogFragment.PermissionType.ESSENTIAL,
+                object : PermissionDialogButtonClickListener {
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                        finish()
+                    }
+
+                    override fun onRightButtonClicked() {
+                        isPermissionRequested = false
+                        navigateToAppSettings {
+                            if (essentialPermissionList.any {
+                                    ActivityCompat.checkSelfPermission(
+                                        this@MainActivity,
+                                        it
+                                    ) != PackageManager.PERMISSION_GRANTED
+                                }) {
+                                showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                                goMain(this@MainActivity)
+                            }
+                        }
+                    }
+
+                })
         }
     }
 
     private fun handleAllPermissionsDenied() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        ) {
             showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
-        }else{
-            showSettingsDialog(PermissionDialogFragment.PermissionType.AR, object : PermissionDialogButtonClickListener{
-                override fun onLeftButtonClicked() {
-                    showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
-                }
+        } else {
+            showSettingsDialog(
+                PermissionDialogFragment.PermissionType.AR,
+                object : PermissionDialogButtonClickListener {
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+                    }
 
-                override fun onRightButtonClicked() {
-                    navigateToAppSettings{requestPermissionLauncher.launch(arPermissionList)}
-                }
+                    override fun onRightButtonClicked() {
+                        navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
+                    }
 
-            })
+                })
         }
     }
 
@@ -86,12 +152,13 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         permissions.forEach { (permission, granted) ->
             if (!granted) {
                 when (permission) {
-                    Manifest.permission.CAMERA -> showPermissionDialog(PermissionDialogFragment.PermissionType.CAMERA)
+                    Manifest.permission.CAMERA -> showARPermissionDialog(PermissionDialogFragment.PermissionType.CAMERA)
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION -> {
                         if (!permissions.getValue(Manifest.permission.ACCESS_FINE_LOCATION) ||
-                            !permissions.getValue(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                            showPermissionDialog(PermissionDialogFragment.PermissionType.LOCATION)
+                            !permissions.getValue(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        ) {
+                            showARPermissionDialog(PermissionDialogFragment.PermissionType.LOCATION)
                         }
                     }
                 }
@@ -99,23 +166,21 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
-    private fun showPermissionDialog(permissionType: PermissionDialogFragment.PermissionType) {
-
+    private fun showARPermissionDialog(permissionType: PermissionDialogFragment.PermissionType) {
         if (shouldShowRequestPermissionRationale(permissionType.toString())) {
             showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
         } else {
-            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener{
+            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener {
                 override fun onLeftButtonClicked() {
                     showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
                 }
 
                 override fun onRightButtonClicked() {
-                    navigateToAppSettings{requestPermissionLauncher.launch(arPermissionList)}
+                    navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
                 }
 
             })
         }
-
     }
 
 
@@ -156,7 +221,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     private fun initBottomNav() {
         binding.fab.setOnClickListener {
-            requestPermissionLauncher.launch(arPermissionList)
+            arPermissionLauncher.launch(arPermissionList)
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
@@ -189,7 +254,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     }
 
-    private fun showFragment(fragment: Fragment, tag: String) {
+    fun showFragment(fragment: Fragment, tag: String) {
         val findFragment = supportFragmentManager.findFragmentByTag(tag)
         supportFragmentManager.fragments.forEach {
             supportFragmentManager.beginTransaction().hide(it).commitAllowingStateLoss()
@@ -223,6 +288,23 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
             else -> {
 
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isPermissionRequested) {
+            isPermissionRequested = true
+            essentialPermissionLauncher.launch(essentialPermissionList)
+        } else {
+            if (essentialPermissionList.any {
+                    ActivityCompat.checkSelfPermission(
+                        this,
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
+                }) {
+                isPermissionRequested = false
             }
         }
     }
