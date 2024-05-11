@@ -193,6 +193,7 @@ class GroupServiceTest {
 
         //when
         //then
+        verify(groupRepository, times(1)).delete(any(Group.class));
         assertThatCode(
             () -> groupService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
     }
