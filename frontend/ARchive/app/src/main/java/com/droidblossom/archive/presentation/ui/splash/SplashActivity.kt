@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivitySplashBinding
@@ -11,6 +12,7 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
+import com.droidblossom.archive.presentation.ui.MainViewModelImpl
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.util.DataStoreUtils
 import dagger.hilt.android.AndroidEntryPoint

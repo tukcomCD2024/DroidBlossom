@@ -1,9 +1,7 @@
-package com.droidblossom.archive.presentation
+package com.droidblossom.archive.presentation.ui
 
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.ui.MainActivity
-import com.droidblossom.archive.presentation.ui.MainViewModel
 import com.droidblossom.archive.util.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

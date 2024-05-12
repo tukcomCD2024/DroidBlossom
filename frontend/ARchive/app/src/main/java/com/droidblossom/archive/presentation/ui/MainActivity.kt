@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,11 +17,9 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.domain.usecase.member.FcmTokenUseCase
-import com.droidblossom.archive.presentation.MainViewModelImpl
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
-import com.droidblossom.archive.presentation.ui.auth.AuthViewModelImpl
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
@@ -95,7 +92,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         }
 
 
-
     private fun handleAllPermissionsDenied() {
         if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
@@ -137,14 +133,13 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
     }
 
     private fun handleEssentialPermissionsDenied() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
         ) {
             showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
         } else {
-            showSettingsDialog(
-                PermissionDialogFragment.PermissionType.ESSENTIAL,
+            showSettingsDialog(PermissionDialogFragment.PermissionType.ESSENTIAL,
                 object : PermissionDialogButtonClickListener {
                     override fun onLeftButtonClicked() {
                         showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
@@ -197,26 +192,35 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                     .filterNotNull()
                     .collect { tab ->
                         dataStoreUtils.saveSelectedTab(tab.name)
+                        Log.d("알림", tab.name)
                         when (tab) {
                             MainPage.HOME -> {
                                 showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
                                 binding.bottomNavigation.selectedItemId = R.id.menuHome
                             }
+
                             MainPage.SKIN -> {
                                 showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
                                 binding.bottomNavigation.selectedItemId = R.id.menuSkin
                             }
+
                             MainPage.AR -> {
                                 showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
                                 binding.bottomNavigation.selectedItemId = R.id.menuCamera
                             }
+
                             MainPage.SOCIAL -> {
                                 showFragment(SocialFragment.newIntent(), SocialFragment.TAG)
                                 binding.bottomNavigation.selectedItemId = R.id.menuSocial
                             }
+
                             MainPage.MY_PAGE -> {
                                 showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
                                 binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                            }
+
+                            MainPage.NULL -> {
+
                             }
                         }
                     }
@@ -292,36 +296,29 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
     private fun initBottomNav() {
         binding.fab.setOnClickListener {
             viewModel.mainEvent(MainViewModel.MainEvent.NavigateToCamera)
-
-            //requestPermissionLauncher.launch(arPermissionList)
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
+            viewModel.setMainTab(MainPage.NULL)
+
             when (it.itemId) {
                 R.id.menuHome -> {
                     viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
-                    //showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.menuSkin -> {
                     viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
-
-                    //showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.menuSocial -> {
                     viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
-
-                    //showFragment(SocialFragment(), SocialFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.menuMyPage -> {
                     viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
-
-                    //showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
@@ -353,8 +350,12 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         Log.d("알림", destination.toString())
 
         when (destination) {
+            MyFirebaseMessagingService.FragmentDestination.HOME_FRAGMENT.name -> {
+                viewModel.setMainTab(MainPage.HOME)
+            }
+
             MyFirebaseMessagingService.FragmentDestination.SKIN_FRAGMENT.name -> {
-                showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
+                viewModel.setMainTab(MainPage.HOME)
             }
 
             MyFirebaseMessagingService.FragmentDestination.FRIEND_REQUEST_ACTIVITY.name -> {
@@ -392,6 +393,10 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
     companion object {
         fun goMain(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(
+                "fragmentDestination",
+                MyFirebaseMessagingService.FragmentDestination.HOME_FRAGMENT.name
+            )
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(intent)
         }
@@ -402,7 +407,7 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         SKIN,
         AR,
         SOCIAL,
-        MY_PAGE
+        MY_PAGE,
+        NULL,
     }
-
 }

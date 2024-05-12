@@ -177,6 +177,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     enum class FragmentDestination {
+        HOME_FRAGMENT,
         SKIN_FRAGMENT,
         FRIEND_REQUEST_ACTIVITY,
         FRIEND_ACCEPT_ACTIVITY,
