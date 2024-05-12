@@ -17,6 +17,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
+import site.timecapsulearchive.core.common.spy.FakeTransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
@@ -48,7 +49,7 @@ class GroupServiceTest {
     private final GroupRepository groupRepository = mock(GroupRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
-    private final TransactionTemplate transactionTemplate = mock(TransactionTemplate.class);
+    private final TransactionTemplate transactionTemplate = FakeTransactionTemplate.spied();
     private final SocialNotificationManager socialNotificationManager = mock(
         SocialNotificationManager.class);
     private final GroupQueryRepository groupQueryRepository = mock(GroupQueryRepository.class);
