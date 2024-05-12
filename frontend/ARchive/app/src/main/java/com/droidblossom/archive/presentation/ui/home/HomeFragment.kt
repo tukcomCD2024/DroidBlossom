@@ -84,8 +84,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     }
                 }
             })
-            .minZoom(MINZOOM.toInt() + 2)
-            .maxZoom(MAXZOOM.toInt() - 2)
+            .minZoom(FIXZOOM.toInt() - 6)
+            .maxZoom(FIXZOOM.toInt() + 2)
             .build()
 
 
