@@ -279,19 +279,22 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun fetchCapsulesNearUser() {
         locationUtil.getCurrentLocation { latitude, longitude ->
             val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else DEFATULTRADIUS
-            viewModel.getNearbyMyCapsules(
-                latitude,
-                longitude,
-                radius,
-                viewModel.filterCapsuleSelect.value.toString()
-            )
-            if (viewModel.isFriendsCapsuleDisplay.value && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
-                        || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+            if (viewModel.isFriendsCapsuleDisplay.value &&
+                (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL ||
+                        viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
             ) {
-                viewModel.getNearbyFriendsCapsules(
+                viewModel.getNearbyMyAndFriendsCapsules(
                     latitude,
                     longitude,
-                    getRadiusForCurrentZoom()
+                    radius,
+                    viewModel.filterCapsuleSelect.value.toString()
+                )
+            } else {
+                viewModel.getNearbyMyCapsules(
+                    latitude,
+                    longitude,
+                    radius,
+                    viewModel.filterCapsuleSelect.value.toString()
                 )
             }
         }
@@ -300,19 +303,22 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun fetchCapsulesInCameraFocus() {
         clusterer.map?.let { map ->
             val cameraTarget = map.cameraPosition.target
-            viewModel.getNearbyMyCapsules(
-                cameraTarget.latitude,
-                cameraTarget.longitude,
-                getRadiusForCurrentZoom(),
-                viewModel.filterCapsuleSelect.value.toString()
-            )
-            if (viewModel.isFriendsCapsuleDisplay.value && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
-                        || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+            if (viewModel.isFriendsCapsuleDisplay.value &&
+                (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL ||
+                        viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
             ) {
-                viewModel.getNearbyFriendsCapsules(
+                viewModel.getNearbyMyAndFriendsCapsules(
                     cameraTarget.latitude,
                     cameraTarget.longitude,
-                    getRadiusForCurrentZoom()
+                    getRadiusForCurrentZoom(),
+                    viewModel.filterCapsuleSelect.value.toString()
+                )
+            } else {
+                viewModel.getNearbyMyCapsules(
+                    cameraTarget.latitude,
+                    cameraTarget.longitude,
+                    getRadiusForCurrentZoom(),
+                    viewModel.filterCapsuleSelect.value.toString()
                 )
             }
         }
