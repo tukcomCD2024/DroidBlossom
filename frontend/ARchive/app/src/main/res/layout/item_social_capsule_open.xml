@@ -140,7 +140,7 @@
                             android:layout_height="match_parent"
                             bind:baseImg="@{@drawable/img}"
                             bind:url="@{item.thumbnailImage}"
-                            android:scaleType="fitXY"/>
+                            android:scaleType="centerCrop"/>
 
                     </com.google.android.material.card.MaterialCardView>
 

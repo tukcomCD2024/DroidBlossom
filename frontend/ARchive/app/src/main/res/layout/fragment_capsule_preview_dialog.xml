@@ -171,27 +171,27 @@
                 android:layout_marginEnd="16dp"/>
 
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/skinCardView"
-                android:layout_width="186dp"
-                android:layout_height="186dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/progressBar"
                 app:layout_constraintBottom_toBottomOf="@id/progressBar"
-                app:cardCornerRadius="93dp">
+                app:cardCornerRadius="75dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/skinImg"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:scaleType="centerInside"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
                     android:alpha="@{vm.visibleCapsuleOpenMessage ? 1.0F : 0.2F}"
                     android:layout_gravity="center"
                     bind:baseImg="@{@drawable/sample_skin}"
                     bind:url="@{vm.capsuleSummaryResponse.skinUrl}" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <ProgressBar
                 android:id="@+id/progressBar"
