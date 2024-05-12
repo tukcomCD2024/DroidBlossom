@@ -281,6 +281,20 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),@ApiResponse(
+            responseCode = "400",
+            description = "잘못된 타입이나 값을 입력하는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹장이 아니여서 그룹 수정에 대한 권한이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "권한을 확인할 수 있는 그룹원이 없는 경우, 수정하려는 그룹이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<String>> updateGroupById(
