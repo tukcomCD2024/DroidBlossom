@@ -1,8 +1,8 @@
 package site.timecapsulearchive.core.domain.group.service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import java.time.ZonedDateTime;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -25,6 +25,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class GroupService {
     private final SocialNotificationManager socialNotificationManager;
     private final GroupQueryRepository groupQueryRepository;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
+    private final S3ObjectManager s3ObjectManager;
 
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
         final Member member = memberRepository.findMemberById(memberId)
@@ -95,32 +97,41 @@ public class GroupService {
      * <br>1. 그룹에 멤버가 존재하는 경우
      * <br>2. 그룹 삭제를 요청한 사용자가 그룹장이 아닌 경우
      * <br>3. 그룹에 그룹 캡슐이 남아있는 경우
+     *
      * @param memberId 그룹에 속한 그룹장 아이디
-     * @param groupId 그룹 아이디
+     * @param groupId  그룹 아이디
      */
-    @Transactional
     public void deleteGroup(final Long memberId, final Long groupId) {
-        final Group group = groupRepository.findGroupById(groupId)
-            .orElseThrow(GroupNotFoundException::new);
+        final String[] groupProfilePath = new String[1];
 
-        final List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(groupId);
-        final boolean isGroupOwner = groupMembers.stream()
-            .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
-        if (!isGroupOwner) {
-            throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
-        }
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            final Group group = groupRepository.findGroupById(groupId)
+                .orElseThrow(GroupNotFoundException::new);
+            groupProfilePath[0] = group.getGroupProfileUrl();
 
-        final boolean groupMemberExist = groupMembers.size() > 1;
-        if (groupMemberExist) {
-            throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
-        }
-        groupMembers.forEach(memberGroupRepository::delete);
+            final List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(
+                groupId);
+            final boolean isGroupOwner = groupMembers.stream()
+                .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
+            if (!isGroupOwner) {
+                throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
+            }
 
-        final boolean groupCapsuleExist = groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(groupId);
-        if (groupCapsuleExist) {
-            throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
-        }
+            final boolean groupMemberExist = groupMembers.size() > 1;
+            if (groupMemberExist) {
+                throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
+            }
+            groupMembers.forEach(memberGroupRepository::delete);
 
-        groupRepository.delete(group);
+            final boolean groupCapsuleExist = groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(
+                groupId);
+            if (groupCapsuleExist) {
+                throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
+            }
+
+            groupRepository.delete(group);
+        });
+
+        s3ObjectManager.deleteObject(groupProfilePath[0]);
     }
 }
