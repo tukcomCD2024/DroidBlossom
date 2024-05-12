@@ -3,10 +3,6 @@ package site.timecapsulearchive.notification.infra.fcm;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.MulticastMessage;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,21 +16,18 @@ import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
-import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
-import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
+import site.timecapsulearchive.notification.infra.fcm.capsuleskin.CapsuleSkinFcmManager;
+import site.timecapsulearchive.notification.infra.fcm.friend.FriendFcmManager;
+import site.timecapsulearchive.notification.infra.fcm.group.GroupFcmManager;
 
 @Component
 @RequiredArgsConstructor
 public class FCMManager {
 
-    private static final String TOPIC_DATA_NAME = "topic";
-    private static final String STATUS_DATA_NAME = "status";
-    private static final String TEXT_DATA_NAME = "text";
-    private static final String TITLE_DATA_NAME = "title";
-    private static final String IMAGE_DATA_NAME = "imageUrl";
-
     private final FCMProperties fcmProperties;
-    private final S3PreSignedUrlManager s3PreSignedUrlManager;
+    private final CapsuleSkinFcmManager capsuleSkinFcmManager;
+    private final FriendFcmManager friendFcmManager;
+    private final GroupFcmManager groupFcmManager;
 
     @PostConstruct
     public void initialize() throws IOException {
@@ -55,22 +48,7 @@ public class FCMManager {
         final CategoryName categoryName,
         final String fcmToken
     ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .send(
-                    Message.builder()
-                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
-                        .putData(STATUS_DATA_NAME, String.valueOf(dto.status()))
-                        .putData(TITLE_DATA_NAME, dto.title())
-                        .putData(TEXT_DATA_NAME, dto.text())
-                        .setToken(fcmToken)
-                        .putData(IMAGE_DATA_NAME,
-                            s3PreSignedUrlManager.createS3PreSignedUrlForGet(dto.skinUrl()))
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+        capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, categoryName, fcmToken);
     }
 
     public void sendFriendNotification(
@@ -78,20 +56,7 @@ public class FCMManager {
         final CategoryName categoryName,
         final String fcmToken
     ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .send(
-                    Message.builder()
-                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
-                        .putData(STATUS_DATA_NAME, String.valueOf(dto.notificationStatus()))
-                        .putData(TITLE_DATA_NAME, dto.title())
-                        .putData(TEXT_DATA_NAME, dto.text())
-                        .setToken(fcmToken)
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+        friendFcmManager.sendFriendNotification(dto, categoryName, fcmToken);
     }
 
     public void sendFriendNotifications(
@@ -99,20 +64,7 @@ public class FCMManager {
         final CategoryName categoryName,
         final List<String> fcmTokens
     ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .sendEachForMulticast(
-                    MulticastMessage.builder()
-                        .addAllTokens(fcmTokens)
-                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
-                        .putData(STATUS_DATA_NAME, String.valueOf(dto.notificationStatus()))
-                        .putData(TITLE_DATA_NAME, dto.title())
-                        .putData(TEXT_DATA_NAME, dto.text())
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+        friendFcmManager.sendFriendNotifications(dto, categoryName, fcmTokens);
     }
 
     public void sendGroupInviteNotifications(
@@ -120,20 +72,7 @@ public class FCMManager {
         final CategoryName categoryName,
         final List<String> fcmTokens
     ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .sendEachForMulticast(
-                    MulticastMessage.builder()
-                        .addAllTokens(fcmTokens)
-                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
-                        .putData(STATUS_DATA_NAME, String.valueOf(dto.notificationStatus()))
-                        .putData(TITLE_DATA_NAME, dto.title())
-                        .putData(TEXT_DATA_NAME, dto.text())
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+        groupFcmManager.sendGroupInviteNotifications(dto, categoryName, fcmTokens);
     }
 
     public void sendGroupAcceptNotification(
@@ -141,19 +80,6 @@ public class FCMManager {
         final CategoryName categoryName,
         final String fcmToken
     ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .send(
-                    Message.builder()
-                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
-                        .putData(STATUS_DATA_NAME, String.valueOf(dto.notificationStatus()))
-                        .putData(TITLE_DATA_NAME, dto.title())
-                        .putData(TEXT_DATA_NAME, dto.text())
-                        .setToken(fcmToken)
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+        groupFcmManager.sendGroupAcceptNotification(dto, categoryName, fcmToken);
     }
 }
