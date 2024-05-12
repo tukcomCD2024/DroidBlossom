@@ -31,6 +31,14 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹 초대 찾기 실패"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
     ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
@@ -53,6 +61,10 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리완료"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
     ResponseEntity<ApiSpec<String>> createGroup(
