@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -236,6 +237,7 @@ class MyPageFragment :
         if (viewModel.reloadMyInfo) {
             viewModel.getMe()
         }
+        viewModel.clearCapsules(false)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

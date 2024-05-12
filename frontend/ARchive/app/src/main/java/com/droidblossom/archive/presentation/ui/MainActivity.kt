@@ -3,18 +3,26 @@ package com.droidblossom.archive.presentation.ui
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.domain.usecase.member.FcmTokenUseCase
+import com.droidblossom.archive.presentation.MainViewModelImpl
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
+import com.droidblossom.archive.presentation.ui.auth.AuthViewModelImpl
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
@@ -29,11 +37,12 @@ import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activity_main) {
+class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layout.activity_main) {
 
     @Inject
     lateinit var fcmTokenUseCase: FcmTokenUseCase
@@ -41,8 +50,10 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
     @Inject
     lateinit var dataStoreUtils: DataStoreUtils
 
-    override val viewModel: Nothing? = null
-    lateinit var viewBinding: ActivityMainBinding
+    override val viewModel: MainViewModelImpl by viewModels()
+
+    private var isPermissionRequested = false
+
 
     private val arPermissionList = arrayOf(
         Manifest.permission.CAMERA,
@@ -50,12 +61,13 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
-    private val requestPermissionLauncher =
+    private val arPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             when {
                 permissions.all { it.value } -> {
-                    showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-                    binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                    viewModel.setMainTab(MainPage.AR)
+                    //showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
+                    //binding.bottomNavigation.selectedItemId = R.id.menuCamera
                 }
 
                 permissions.none { it.value } -> {
@@ -67,6 +79,22 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
                 }
             }
         }
+
+    private val essentialPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions.all { it.value } -> {
+
+                }
+
+                else -> {
+                    handleEssentialPermissionsDenied()
+                }
+            }
+
+        }
+
+
 
     private fun handleAllPermissionsDenied() {
         if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
@@ -83,7 +111,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
                     }
 
                     override fun onRightButtonClicked() {
-                        navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                        navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
                     }
 
                 })
@@ -108,6 +136,40 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
+    private fun handleEssentialPermissionsDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        ) {
+            showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+        } else {
+            showSettingsDialog(
+                PermissionDialogFragment.PermissionType.ESSENTIAL,
+                object : PermissionDialogButtonClickListener {
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                        finish()
+                    }
+
+                    override fun onRightButtonClicked() {
+                        isPermissionRequested = false
+                        navigateToAppSettings {
+                            if (essentialPermissionList.any {
+                                    ActivityCompat.checkSelfPermission(
+                                        this@MainActivity,
+                                        it
+                                    ) != PackageManager.PERMISSION_GRANTED
+                                }) {
+                                showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                                goMain(this@MainActivity)
+                            }
+                        }
+                    }
+
+                })
+        }
+    }
+
     private fun showPermissionDialog(permissionType: PermissionDialogFragment.PermissionType) {
 
         if (shouldShowRequestPermissionRationale(permissionType.toString())) {
@@ -119,7 +181,7 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
                 }
 
                 override fun onRightButtonClicked() {
-                    navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                    navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
                 }
 
             })
@@ -128,13 +190,77 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
     }
 
 
-    override fun observeData() {}
+    override fun observeData() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.selectedMainTab
+                    .filterNotNull()
+                    .collect { tab ->
+                        dataStoreUtils.saveSelectedTab(tab.name)
+                        when (tab) {
+                            MainPage.HOME -> {
+                                showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
+                                binding.bottomNavigation.selectedItemId = R.id.menuHome
+                            }
+                            MainPage.SKIN -> {
+                                showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
+                                binding.bottomNavigation.selectedItemId = R.id.menuSkin
+                            }
+                            MainPage.AR -> {
+                                showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
+                                binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                            }
+                            MainPage.SOCIAL -> {
+                                showFragment(SocialFragment.newIntent(), SocialFragment.TAG)
+                                binding.bottomNavigation.selectedItemId = R.id.menuSocial
+                            }
+                            MainPage.MY_PAGE -> {
+                                showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
+                                binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                            }
+                        }
+                    }
+            }
+        }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mainEvents.collect { event ->
+                    when (event) {
+                        MainViewModel.MainEvent.NavigateToHome -> {
+                            viewModel.setMainTab(MainPage.HOME)
+                        }
+
+                        MainViewModel.MainEvent.NavigateToSkin -> {
+                            viewModel.setMainTab(MainPage.SKIN)
+                        }
+
+                        MainViewModel.MainEvent.NavigateToCamera -> {
+                            arPermissionLauncher.launch(arPermissionList)
+                        }
+
+                        MainViewModel.MainEvent.NavigateToSocial -> {
+                            viewModel.setMainTab(MainPage.SOCIAL)
+                        }
+
+                        MainViewModel.MainEvent.NavigateToMyPage -> {
+                            viewModel.setMainTab(MainPage.MY_PAGE)
+                        }
+
+                        is MainViewModel.MainEvent.ShowToastMessage -> {
+
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewBinding = binding
-        showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
+        //showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
+        Log.d("흠", "온 크리에이트 ${viewModel.selectedMainTab.value}")
 
         initBottomNav()
         initFCM()
@@ -165,28 +291,37 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
 
     private fun initBottomNav() {
         binding.fab.setOnClickListener {
-            requestPermissionLauncher.launch(arPermissionList)
+            viewModel.mainEvent(MainViewModel.MainEvent.NavigateToCamera)
+
+            //requestPermissionLauncher.launch(arPermissionList)
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menuHome -> {
-                    showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
+                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
+                    //showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.menuSkin -> {
-                    showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
+                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
+
+                    //showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.menuSocial -> {
-                    showFragment(SocialFragment(), SocialFragment.TAG)
+                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
+
+                    //showFragment(SocialFragment(), SocialFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.menuMyPage -> {
-                    showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
+                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
+
+                    //showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
                     return@setOnItemSelectedListener true
                 }
 
@@ -236,6 +371,23 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!isPermissionRequested) {
+            isPermissionRequested = true
+            essentialPermissionLauncher.launch(essentialPermissionList)
+        } else {
+            if (essentialPermissionList.any {
+                    ActivityCompat.checkSelfPermission(
+                        this,
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
+                }) {
+                isPermissionRequested = false
+            }
+        }
+    }
+
 
     companion object {
         fun goMain(context: Context) {
@@ -243,6 +395,14 @@ class MainActivity : BaseActivity<Nothing?, ActivityMainBinding>(R.layout.activi
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(intent)
         }
+    }
+
+    enum class MainPage {
+        HOME,
+        SKIN,
+        AR,
+        SOCIAL,
+        MY_PAGE
     }
 
 }
