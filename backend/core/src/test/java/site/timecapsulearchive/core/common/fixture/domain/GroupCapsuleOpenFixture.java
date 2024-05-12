@@ -18,4 +18,8 @@ public class GroupCapsuleOpenFixture {
             ).toList();
     }
 
+    public static GroupCapsuleOpen groupCapsuleOpen(Member member, Capsule capsule,
+        Boolean isOpened) {
+        return GroupCapsuleOpen.createOf(member, capsule, isOpened);
+    }
 }
