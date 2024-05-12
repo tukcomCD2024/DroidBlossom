@@ -59,7 +59,8 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue groupAcceptQueue() {
-        return new Queue(RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(), true);
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(), true);
     }
 
     @Bean

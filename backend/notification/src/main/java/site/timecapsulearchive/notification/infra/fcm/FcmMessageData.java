@@ -9,11 +9,11 @@ public enum FcmMessageData {
     TITLE("title"),
     IMAGE("imageUrl");
 
+    private final String data;
+
     FcmMessageData(String data) {
         this.data = data;
     }
-
-    private final String data;
 
     public String getData() {
         return data;

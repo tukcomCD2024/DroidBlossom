@@ -15,7 +15,7 @@ import site.timecapsulearchive.notification.entity.NotificationStatus;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationQueryRepositoryImpl implements NotificationQueryRepository{
+public class NotificationQueryRepositoryImpl implements NotificationQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

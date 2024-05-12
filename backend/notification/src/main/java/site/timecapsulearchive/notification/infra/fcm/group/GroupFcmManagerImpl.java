@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
-import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 import site.timecapsulearchive.notification.infra.fcm.FcmMessageData;
 
 @Component
@@ -19,43 +18,36 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
         final GroupInviteNotificationDto dto,
         final CategoryName categoryName,
         final List<String> fcmTokens
-    ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .sendEachForMulticast(
-                    MulticastMessage.builder()
-                        .addAllTokens(fcmTokens)
-                        .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
-                        .putData(FcmMessageData.STATUS.getData(),
-                            String.valueOf(dto.notificationStatus()))
-                        .putData(FcmMessageData.TITLE.getData(), dto.title())
-                        .putData(FcmMessageData.TEXT.getData(), dto.text())
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+    ) throws FirebaseMessagingException {
+        FirebaseMessaging.getInstance()
+            .sendEachForMulticast(
+                MulticastMessage.builder()
+                    .addAllTokens(fcmTokens)
+                    .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
+                    .putData(FcmMessageData.STATUS.getData(),
+                        String.valueOf(dto.notificationStatus()))
+                    .putData(FcmMessageData.TITLE.getData(), dto.title())
+                    .putData(FcmMessageData.TEXT.getData(), dto.text())
+                    .build()
+            );
     }
 
     public void sendGroupAcceptNotification(
         final GroupAcceptNotificationDto dto,
         final CategoryName categoryName,
         final String fcmToken
-    ) {
-        try {
-            FirebaseMessaging.getInstance()
-                .send(
-                    Message.builder()
-                        .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
-                        .putData(FcmMessageData.STATUS.getData(),
-                            String.valueOf(dto.notificationStatus()))
-                        .putData(FcmMessageData.TITLE.getData(), dto.title())
-                        .putData(FcmMessageData.TEXT.getData(), dto.text())
-                        .setToken(fcmToken)
-                        .build()
-                );
-        } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendAbleException(e);
-        }
+    ) throws FirebaseMessagingException {
+        FirebaseMessaging.getInstance()
+            .send(
+                Message.builder()
+                    .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
+                    .putData(FcmMessageData.STATUS.getData(),
+                        String.valueOf(dto.notificationStatus()))
+                    .putData(FcmMessageData.TITLE.getData(), dto.title())
+                    .putData(FcmMessageData.TEXT.getData(), dto.text())
+                    .setToken(fcmToken)
+                    .build()
+            );
+
     }
 }
