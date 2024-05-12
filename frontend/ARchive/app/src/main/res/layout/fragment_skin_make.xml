@@ -62,6 +62,8 @@
                     android:hint="@string/skinMakeHint"
                     android:text="@={vm.skinName}"
                     android:maxLines="1"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
                     android:textAppearance="@style/TextAppearance.App.h2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
