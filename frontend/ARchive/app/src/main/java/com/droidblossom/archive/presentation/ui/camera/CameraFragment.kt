@@ -11,6 +11,8 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
@@ -21,6 +23,7 @@ import com.droidblossom.archive.presentation.customview.PermissionDialogButtonCl
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.CustomLifecycleOwner
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
@@ -45,6 +48,10 @@ class CameraFragment :
     private lateinit var config: Config
     private lateinit var viewAttachmentManager: ViewAttachmentManager
     private val locationUtil by lazy { LocationUtil(requireContext()) }
+
+    private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
+        CustomLifecycleOwner()
+    }
 
     private val arPermissionList = arrayOf(
         Manifest.permission.CAMERA,
@@ -75,6 +82,9 @@ class CameraFragment :
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 viewAttachmentManager.onResume()
+                if (this.isHidden) {
+                    onHidden()
+                }
                 requestPermissionLauncher.launch(arPermissionList)
             } else {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
@@ -154,8 +164,8 @@ class CameraFragment :
     }
 
     override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.cameraEvents.collect { event ->
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
@@ -182,8 +192,8 @@ class CameraFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.anchorNodes
                     .filter { anchorNodes ->
                         anchorNodes.size == viewModel.capsuleListSize
@@ -195,8 +205,8 @@ class CameraFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
                     arSceneView.onSessionUpdated = { session, frame ->
                         if (viewModel.capsuleList.value.isNotEmpty() && !viewModel.isCapsulesAdded) {
@@ -253,6 +263,8 @@ class CameraFragment :
         val layoutParams = binding.filterAll.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.filterAll.layoutParams = layoutParams
+
+        initCustomLifeCycle()
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -320,6 +332,22 @@ class CameraFragment :
         session.configure(config)
     }
 
+    private fun initCustomLifeCycle() {
+        viewLifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    else -> {
+                        if (isHidden) {
+                            visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+                        } else {
+                            visibleLifecycleOwner.handleLifecycleEvent(event)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     override fun onResume() {
         super.onResume()
         requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -328,27 +356,35 @@ class CameraFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
-            dismissLoading()
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.CAMERA
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                arSceneView.clearChildNodes()
-                viewModel.clearAnchorNode()
-                viewAttachmentManager.onPause()
-                arSceneView.session?.pause()
-            }
+            onHidden()
         } else {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.CAMERA
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                arSceneView.session?.resume()
-                viewAttachmentManager.onResume()
-                requestPermissionLauncher.launch(arPermissionList)
-            }
+            onShow()
+        }
+    }
+
+    private fun onHidden() {
+        dismissLoading()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            arSceneView.clearChildNodes()
+            viewModel.clearAnchorNode()
+            viewAttachmentManager.onPause()
+            arSceneView.session?.pause()
+        }
+    }
+
+    private fun onShow() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            arSceneView.session?.resume()
+            viewAttachmentManager.onResume()
+            requestPermissionLauncher.launch(arPermissionList)
         }
     }
 
