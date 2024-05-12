@@ -17,9 +17,10 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSendDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
+import site.timecapsulearchive.notification.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
-import site.timecapsulearchive.notification.infra.exception.MessageNotSendableException;
+import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 
 @Component
@@ -68,7 +69,7 @@ public class FCMManager {
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendableException(e);
+            throw new MessageNotSendAbleException(e);
         }
     }
 
@@ -89,7 +90,7 @@ public class FCMManager {
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendableException(e);
+            throw new MessageNotSendAbleException(e);
         }
     }
 
@@ -110,7 +111,7 @@ public class FCMManager {
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendableException(e);
+            throw new MessageNotSendAbleException(e);
         }
     }
 
@@ -131,7 +132,28 @@ public class FCMManager {
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
-            throw new MessageNotSendableException(e);
+            throw new MessageNotSendAbleException(e);
+        }
+    }
+
+    public void sendGroupAcceptNotification(
+        final GroupAcceptNotificationDto dto,
+        final CategoryName categoryName,
+        final String fcmToken
+    ) {
+        try {
+            FirebaseMessaging.getInstance()
+                .send(
+                    Message.builder()
+                        .putData(TOPIC_DATA_NAME, String.valueOf(categoryName))
+                        .putData(STATUS_DATA_NAME, String.valueOf(dto.notificationStatus()))
+                        .putData(TITLE_DATA_NAME, dto.title())
+                        .putData(TEXT_DATA_NAME, dto.text())
+                        .setToken(fcmToken)
+                        .build()
+                );
+        } catch (FirebaseMessagingException e) {
+            throw new MessageNotSendAbleException(e);
         }
     }
 }

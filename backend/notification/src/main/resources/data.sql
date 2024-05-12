@@ -13,3 +13,7 @@ WHERE NOT EXISTS(SELECT * FROM notification_category where category_name='FRIEND
 INSERT INTO notification_category (category_name, category_description, created_at, updated_at)
 SELECT 'GROUP_INVITE', '그룹 초대 관련', now(), now()
 WHERE NOT EXISTS(SELECT * FROM notification_category where category_name='GROUP_INVITE');
+
+INSERT INTO notification_category (category_name, category_description, created_at, updated_at)
+SELECT 'GROUP_ACCEPT', '그룹 수락 관련', now(), now()
+WHERE NOT EXISTS(SELECT * FROM notification_category where category_name='GROUP_ACCEPT');

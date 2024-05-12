@@ -15,7 +15,9 @@ public enum RabbitmqComponentConstants {
     FRIEND_ACCEPT_NOTIFICATION_QUEUE("notification.friendAccept.queue", "fail.notification.friendAccept.queue"),
     FRIEND_ACCEPT_NOTIFICATION_EXCHANGE("notification.friendAccept.exchange", "fail.notification.friendAccept.exchange"),
     GROUP_INVITE_QUEUE("notification.groupInvite.queue", "fail.notification.groupInvite.queue"),
-    GROUP_INVITE_EXCHANGE("notification.groupInvite.exchange", "fail.notification.groupInvite.exchange");
+    GROUP_INVITE_EXCHANGE("notification.groupInvite.exchange", "fail.notification.groupInvite.exchange"),
+    GROUP_ACCEPT_NOTIFICATION_QUEUE("notification.groupAccept.queue", "fail.notification.groupAccept.queue"),
+    GROUP_ACCEPT_NOTIFICATION_EXCHANGE("notification.groupAccept.exchange", "fail.notification.groupAccept.exchange");
 
     private final String successComponent;
     private final String failComponent;
