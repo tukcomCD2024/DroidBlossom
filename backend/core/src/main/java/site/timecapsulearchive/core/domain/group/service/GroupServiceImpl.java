@@ -48,8 +48,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void denyRequestGroup(final Long groupMemberId, final Long groupOwnerId) {
-        groupWriteService.denyRequestGroup(groupMemberId, groupOwnerId);
+    public void rejectRequestGroup(final Long groupMemberId, final Long targetId) {
+        groupWriteService.rejectRequestGroup(groupMemberId, targetId);
     }
 
     @Override

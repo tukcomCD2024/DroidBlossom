@@ -85,9 +85,9 @@ public class GroupWriteServiceImpl implements GroupWriteService {
     }
 
     @Transactional
-    public void denyRequestGroup(final Long groupMemberId, final Long groupOwnerId) {
+    public void rejectRequestGroup(final Long memberId, final Long targetId) {
         final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-            groupOwnerId, groupMemberId);
+            targetId, memberId);
 
         if (isDenyRequest != 1) {
             throw new GroupInviteNotFoundException();
