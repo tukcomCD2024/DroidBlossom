@@ -355,7 +355,7 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             }
 
             MyFirebaseMessagingService.FragmentDestination.SKIN_FRAGMENT.name -> {
-                viewModel.setMainTab(MainPage.HOME)
+                viewModel.setMainTab(MainPage.SKIN)
             }
 
             MyFirebaseMessagingService.FragmentDestination.FRIEND_REQUEST_ACTIVITY.name -> {
