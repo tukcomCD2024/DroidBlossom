@@ -113,6 +113,21 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "그룹장과 삭제하려는 대상 그룹원 아이디가 같은 경우에 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹장이 아니여서 그룹 수정에 대한 권한이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "삭제하려는 그룹원이 존재하지 않는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<String>> deleteGroupMember(
