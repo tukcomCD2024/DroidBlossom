@@ -17,6 +17,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
+import site.timecapsulearchive.core.common.spy.FakeTransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
@@ -33,6 +34,7 @@ import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepositor
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
 
 /**
  * 테스트 케이스
@@ -66,7 +68,7 @@ class GroupServiceTest {
     private final GroupRepository groupRepository = mock(GroupRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
-    private final TransactionTemplate transactionTemplate = mock(TransactionTemplate.class);
+    private final TransactionTemplate transactionTemplate = FakeTransactionTemplate.spied();
     private final SocialNotificationManager socialNotificationManager = mock(
         SocialNotificationManager.class);
     private final GroupQueryRepository groupQueryRepository = mock(GroupQueryRepository.class);
@@ -74,6 +76,7 @@ class GroupServiceTest {
         GroupCapsuleQueryRepository.class);
     private final MemberGroupQueryRepository memberGroupQueryRepository = mock(
         MemberGroupQueryRepository.class);
+    private final S3ObjectManager s3ObjectManager = mock(S3ObjectManager.class);
 
     private final GroupService groupService = new GroupService(
         groupRepository,
@@ -83,7 +86,8 @@ class GroupServiceTest {
         socialNotificationManager,
         groupQueryRepository,
         groupCapsuleQueryRepository,
-        memberGroupQueryRepository
+        memberGroupQueryRepository,
+        s3ObjectManager
     );
 
     @Test
