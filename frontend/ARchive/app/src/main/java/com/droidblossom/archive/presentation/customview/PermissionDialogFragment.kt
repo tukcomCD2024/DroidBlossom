@@ -90,6 +90,8 @@ class PermissionDialogFragment(
     }
 
     companion object {
+
+        const val TAG = "PERMISSION_DIALOG"
         fun newInstance(
             permission: String,
             listener: PermissionDialogButtonClickListener

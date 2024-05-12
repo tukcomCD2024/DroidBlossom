@@ -21,6 +21,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.DialogFragment
 import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.customview.LoadingDialog
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
@@ -138,8 +139,11 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     }
 
     fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, listener: PermissionDialogButtonClickListener) {
-        val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
-        dialog.show(supportFragmentManager, "PermissionDialog")
+        val existingDialog = supportFragmentManager.findFragmentByTag(PermissionDialogFragment.TAG) as DialogFragment?
+        if (existingDialog == null) {
+            val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
+            dialog.show(supportFragmentManager, PermissionDialogFragment.TAG)
+        }
     }
     fun navigateToAppSettings(onComplete: () -> Unit) {
         onSettingsResult = onComplete  // 저장된 콜백 설정

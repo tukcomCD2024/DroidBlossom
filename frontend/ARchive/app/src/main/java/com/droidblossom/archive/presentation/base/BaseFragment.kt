@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
@@ -88,8 +89,14 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
     }
 
     fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, listener: PermissionDialogButtonClickListener) {
-        val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
-        dialog.show(parentFragmentManager, "PermissionDialog")
+
+        val existingDialog = parentFragmentManager.findFragmentByTag(PermissionDialogFragment.TAG) as DialogFragment?
+
+        if (existingDialog == null) {
+            val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
+            dialog.show(parentFragmentManager, PermissionDialogFragment.TAG)
+        }
+
     }
 
     fun navigateToAppSettings(onComplete: () -> Unit) {
