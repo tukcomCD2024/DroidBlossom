@@ -28,6 +28,7 @@ import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepositor
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
 
 /**
  * 테스트 케이스
@@ -53,6 +54,7 @@ class GroupServiceTest {
     private final GroupQueryRepository groupQueryRepository = mock(GroupQueryRepository.class);
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository = mock(
         GroupCapsuleQueryRepository.class);
+    private final S3ObjectManager s3ObjectManager = mock(S3ObjectManager.class);
 
     private final GroupService groupService = new GroupService(
         groupRepository,
@@ -61,7 +63,8 @@ class GroupServiceTest {
         transactionTemplate,
         socialNotificationManager,
         groupQueryRepository,
-        groupCapsuleQueryRepository
+        groupCapsuleQueryRepository,
+        s3ObjectManager
     );
 
     @Test
