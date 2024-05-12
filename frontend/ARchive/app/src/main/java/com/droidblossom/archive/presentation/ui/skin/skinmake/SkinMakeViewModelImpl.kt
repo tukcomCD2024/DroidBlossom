@@ -160,6 +160,7 @@ class SkinMakeViewModelImpl @Inject constructor(
                     Log.d("getUploadUrls", "$it")
                     uploadFilesToS3(skinImgFile.value!!, it.preSignedImageUrls[0])
                 }.onFail {
+                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
                     Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
             }
@@ -185,7 +186,7 @@ class SkinMakeViewModelImpl @Inject constructor(
             if (uploadSuccess) {
                 submitSkin()
             } else {
-
+                skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
             }
         }
     }
@@ -209,6 +210,7 @@ class SkinMakeViewModelImpl @Inject constructor(
                     skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
                     Log.d("스킨 생성", "생성 성공")
                 }.onFail {
+                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
                     Log.d("스킨 생성", "생성 실패")
                 }
             }

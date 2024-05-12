@@ -108,6 +108,8 @@ interface CreateCapsuleViewModel {
         object ClickImgUpLoad : Create3Event()
         object CLickSingleImgUpLoad : Create3Event()
         object ClickVideoUpLoad : Create3Event()
+
+        object DismissLoading : Create3Event()
         data class ShowToastMessage(val message : String) : Create3Event()
     }
 

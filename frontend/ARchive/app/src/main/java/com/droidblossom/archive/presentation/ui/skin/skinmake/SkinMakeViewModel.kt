@@ -27,6 +27,8 @@ interface SkinMakeViewModel {
 
     sealed class SkinMakeEvent {
         object SuccessSkinMake : SkinMakeEvent()
+
+        object DismissLoading : SkinMakeEvent()
         data class ShowToastMessage(val message : String) : SkinMakeEvent()
     }
 }

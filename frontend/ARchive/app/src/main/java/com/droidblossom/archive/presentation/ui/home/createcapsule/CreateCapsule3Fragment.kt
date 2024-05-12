@@ -218,7 +218,12 @@ class CreateCapsule3Fragment :
                             showToastMessage(it.message)
                         }
 
+
                         CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {}
+
+                        CreateCapsuleViewModel.Create3Event.DismissLoading -> {
+                            dismissLoading()
+                        }
 
                         else -> {}
                     }

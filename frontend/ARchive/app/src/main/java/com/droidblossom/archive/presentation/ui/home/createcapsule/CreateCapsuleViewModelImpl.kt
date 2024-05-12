@@ -481,6 +481,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         it.preSignedVideoUrls
                     )
                 }.onFail {
+                    _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
                     Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
             }
@@ -543,6 +544,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 Log.d("uploadFilesToS3", "All files uploaded successfully")
                 createCapsule()
             } else {
+                _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
                 Log.e("uploadFilesToS3", "One or more file uploads failed")
 
             }
