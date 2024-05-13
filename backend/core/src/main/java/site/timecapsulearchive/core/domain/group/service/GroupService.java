@@ -31,8 +31,8 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
-import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Service
 @RequiredArgsConstructor
@@ -115,31 +115,44 @@ public class GroupService {
         transactionTemplate.executeWithoutResult(transactionStatus -> {
             final Group group = groupRepository.findGroupById(groupId)
                 .orElseThrow(GroupNotFoundException::new);
-            groupProfilePath[0] = group.getGroupProfileUrl();
 
             final List<MemberGroup> groupMembers = memberGroupRepository.findMemberGroupsByGroupId(
                 groupId);
-            final boolean isGroupOwner = groupMembers.stream()
-                .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
-            if (!isGroupOwner) {
-                throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
-            }
-
-            final boolean groupMemberExist = groupMembers.size() > 1;
-            if (groupMemberExist) {
-                throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
-            }
+            checkGroupOwnership(memberId, groupMembers);
+            checkGroupMemberExist(groupMembers);
             groupMembers.forEach(memberGroupRepository::delete);
 
-        final boolean groupCapsuleExist = groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(groupId);
-        if (groupCapsuleExist) {
-            throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
-        }
+            checkGroupCapsuleExist(groupId);
 
             groupRepository.delete(group);
+
+            groupProfilePath[0] = group.getGroupProfileUrl();
         });
 
         s3ObjectManager.deleteObject(groupProfilePath[0]);
+    }
+
+    private void checkGroupOwnership(Long memberId, List<MemberGroup> groupMembers) {
+        final boolean isGroupOwner = groupMembers.stream()
+            .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
+        if (!isGroupOwner) {
+            throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
+        }
+    }
+
+    private void checkGroupMemberExist(List<MemberGroup> groupMembers) {
+        final boolean groupMemberExist = groupMembers.size() > 1;
+        if (groupMemberExist) {
+            throw new GroupDeleteFailException(ErrorCode.GROUP_MEMBER_EXIST_ERROR);
+        }
+    }
+
+    private void checkGroupCapsuleExist(Long groupId) {
+        final boolean groupCapsuleExist = groupCapsuleQueryRepository.findGroupCapsuleExistByGroupId(
+            groupId);
+        if (groupCapsuleExist) {
+            throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
+        }
     }
 
     /**
@@ -183,6 +196,16 @@ public class GroupService {
             throw new GroupMemberDuplicatedIdException();
         }
 
+        checkGroupOwnership(groupOwnerId, groupId);
+
+        final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
+                groupMemberId, groupId)
+            .orElseThrow(GroupMemberNotfoundException::new);
+
+        memberGroupRepository.delete(memberGroup);
+    }
+
+    private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
         final Boolean isOwner = memberGroupQueryRepository.findIsOwnerByMemberIdAndGroupId(
                 groupOwnerId,
                 groupId)
@@ -190,12 +213,6 @@ public class GroupService {
         if (!isOwner) {
             throw new NoGroupAuthorityException();
         }
-
-        final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
-                groupMemberId, groupId)
-            .orElseThrow(GroupMemberNotfoundException::new);
-
-        memberGroupRepository.delete(memberGroup);
     }
 
     /**
@@ -211,13 +228,7 @@ public class GroupService {
      */
     @Transactional
     public void updateGroup(Long groupOwnerId, Long groupId, GroupUpdateDto dto) {
-        final Boolean isOwner = memberGroupQueryRepository.findIsOwnerByMemberIdAndGroupId(
-                groupOwnerId, groupId)
-            .orElseThrow(GroupMemberNotfoundException::new);
-
-        if (!isOwner) {
-            throw new NoGroupAuthorityException();
-        }
+        checkGroupOwnership(groupOwnerId, groupId);
 
         Group group = groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
