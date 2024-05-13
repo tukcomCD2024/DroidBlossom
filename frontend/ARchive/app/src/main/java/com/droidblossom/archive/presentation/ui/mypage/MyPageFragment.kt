@@ -282,7 +282,6 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
     }
 
     private fun onHidden() {
-        Log.d("라이프","히든 히든 - const : $reload, viewmodel : ${viewModel.viewModelReload}")
         viewModel.viewModelReload = false
         reloadState = true
     }
@@ -290,6 +289,12 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
     private fun onShow() {
         visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (reload){
+            viewModel.load()
+            reload = false
+            viewModel.viewModelReload = false
+            binding.myPageRV.scrollToPosition(0)
+        }
+        if (!reload && !reloadState){
             viewModel.load()
             reload = false
             viewModel.viewModelReload = false
