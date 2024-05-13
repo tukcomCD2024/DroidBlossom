@@ -336,12 +336,18 @@ class CameraFragment :
         viewLifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
-                    else -> {
+                    Lifecycle.Event.ON_START,
+                    Lifecycle.Event.ON_CREATE,
+                    Lifecycle.Event.ON_RESUME,
+                    Lifecycle.Event.ON_PAUSE, -> {
                         if (isHidden) {
                             visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
                         } else {
                             visibleLifecycleOwner.handleLifecycleEvent(event)
                         }
+                    }
+                    else -> {
+                        visibleLifecycleOwner.handleLifecycleEvent(event)
                     }
                 }
             }
@@ -377,6 +383,7 @@ class CameraFragment :
     }
 
     private fun onShow() {
+        visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.CAMERA
