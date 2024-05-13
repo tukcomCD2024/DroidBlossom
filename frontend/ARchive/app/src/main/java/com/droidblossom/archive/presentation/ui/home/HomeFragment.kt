@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -151,13 +152,16 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                         }
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment.newInstance(
-                                "-1",
-                                event.capsuleId,
-                                event.capsuleType,
-                                false
-                            )
-                            sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            if (existingDialog == null) {
+                                val dialog = CapsulePreviewDialogFragment.newInstance(
+                                    "-1",
+                                    event.capsuleId,
+                                    event.capsuleType,
+                                    false
+                                )
+                                dialog.show(parentFragmentManager, CapsulePreviewDialogFragment.TAG)
+                            }
                         }
 
                         else -> {}

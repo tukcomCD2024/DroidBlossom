@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -169,13 +170,18 @@ class CameraFragment :
                 viewModel.cameraEvents.collect { event ->
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment.newInstance(
-                                "-1",
-                                event.capsuleId,
-                                event.capsuleType,
-                                true
-                            )
-                            sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+
+                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            if (existingDialog == null) {
+                                val dialog = CapsulePreviewDialogFragment.newInstance(
+                                    "-1",
+                                    event.capsuleId,
+                                    event.capsuleType,
+                                    true
+                                )
+                                dialog.show(parentFragmentManager, CapsulePreviewDialogFragment.TAG)
+                            }
+
                         }
 
                         is CameraViewModel.CameraEvent.ShowLoading -> {

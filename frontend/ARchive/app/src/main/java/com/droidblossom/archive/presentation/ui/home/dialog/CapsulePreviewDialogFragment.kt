@@ -267,6 +267,8 @@ class CapsulePreviewDialogFragment :
     }
 
     companion object {
+
+        const val TAG = "CapsulePreView"
         fun newInstance(
             capsuleIndex: String,
             capsuleId: String,

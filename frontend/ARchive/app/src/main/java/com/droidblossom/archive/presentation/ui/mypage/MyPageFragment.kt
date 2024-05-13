@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -66,13 +67,18 @@ class MyPageFragment :
                 )
             },
             { capsuleIndex, id, type ->
-                val sheet = CapsulePreviewDialogFragment.newInstance(
-                    capsuleIndex.toString(),
-                    id.toString(),
-                    type.toString(),
-                    false
-                )
-                sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+
+                val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                if (existingDialog == null) {
+                    val dialog = CapsulePreviewDialogFragment.newInstance(
+                        capsuleIndex.toString(),
+                        id.toString(),
+                        type.toString(),
+                        false
+                    )
+                    dialog.show(parentFragmentManager, CapsulePreviewDialogFragment.TAG)
+                }
+
             }
         )
     }
