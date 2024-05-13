@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
 
     override val viewModel: MyPageViewModelImpl by viewModels()
+    private var reloadMyInfo = false
 
     private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
         CustomLifecycleOwner()
@@ -47,9 +48,11 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         ProfileRVA(
             {
                 startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
+                reloadMyInfo = true
             },
             {
                 startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
+                reloadMyInfo = true
             },
             {
                 startActivity(
@@ -58,6 +61,7 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
                         FriendAcceptActivity.FRIEND
                     )
                 )
+                reloadMyInfo = true
             },
             {
                 startActivity(SettingActivity.newIntent(requireContext()))
@@ -101,7 +105,6 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
             requireContext(),
             capsuleTypes
         ) { capsuleTypes ->
-            Log.d("라이프", "스피너 어댑터 안 ${viewModel.capsuleType.value} vs $capsuleTypes")
             viewModel.selectSpinnerItem(capsuleTypes)
 
         }
@@ -299,6 +302,10 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
             reload = false
             viewModel.viewModelReload = false
             binding.myPageRV.scrollToPosition(0)
+        }
+
+        if (reloadMyInfo){
+            viewModel.getMe()
         }
     }
 
