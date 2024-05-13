@@ -38,8 +38,14 @@ class SpinnerAdapter(
                         selectedPosition = position
                     }
 
-                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
                 }
+            binding.capsuleTypeSpinner.viewTreeObserver.addOnWindowFocusChangeListener { hasFocus ->
+                spinnerAdapter.spinnerIsOpened = hasFocus
+                spinnerAdapter.notifyDataSetChanged()
+            }
         }
     }
 
