@@ -163,6 +163,7 @@ class SearchFriendNumberFragment :
         binding.closeBtn.layoutParams = layoutParams
 
         binding.recycleView.adapter = addFriendRVA
+        binding.recycleView.setHasFixedSize(true)
 
         binding.closeBtn.setOnClickListener {
             navController.popBackStack()

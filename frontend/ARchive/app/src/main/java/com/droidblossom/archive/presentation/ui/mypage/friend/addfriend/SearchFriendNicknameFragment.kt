@@ -157,6 +157,7 @@ class SearchFriendNicknameFragment :
         binding.closeBtn.layoutParams = layoutParams
 
         binding.recycleView.adapter = addFriendRVA
+        binding.recycleView.setHasFixedSize(true)
 
         binding.closeBtn.setOnClickListener {
             (activity as AddFriendActivity).finish()
