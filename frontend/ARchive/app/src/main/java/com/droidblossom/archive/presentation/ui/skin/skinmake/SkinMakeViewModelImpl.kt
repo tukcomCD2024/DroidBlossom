@@ -60,42 +60,42 @@ class SkinMakeViewModelImpl @Inject constructor(
         listOf(
             SkinMotion(
                 1L,
-                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                "https://github.com/comst19/GradProjectHub/blob/main/db7457be-b654-48ac-8b20-b47c3644fcab_1.gif?raw=true",
                 Motion.JUMPING_JACKS,
                 Retarget.CMU,
                 false
             ),
             SkinMotion(
                 2L,
-                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                "https://github.com/comst19/GradProjectHub/blob/main/7a87f9b0-19dd-4ae8-b88e-3e1e142c5122_2.gif?raw=true",
                 Motion.DAB,
                 Retarget.FAIR,
                 false
             ),
             SkinMotion(
                 3L,
-                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                "https://github.com/comst19/GradProjectHub/blob/main/45696698-7cad-4838-a947-2b07cb5b2c05_3.gif?raw=true",
                 Motion.JUMPING,
                 Retarget.FAIR,
                 false
             ),
             SkinMotion(
                 4L,
-                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                "https://github.com/comst19/GradProjectHub/blob/main/b8112cd6-48fb-42de-b326-80efa4d20150_4.gif?raw=true",
                 Motion.WAVE_HELLO,
                 Retarget.FAIR,
                 false
             ),
             SkinMotion(
                 5L,
-                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                "https://github.com/comst19/GradProjectHub/blob/main/02a9fb2b-f126-461c-886a-5f232e93c12b_5.gif?raw=true",
                 Motion.ZOMBIE,
                 Retarget.FAIR,
                 false
             ),
             SkinMotion(
                 6L,
-                "https://cdn.pixabay.com/animation/2022/10/11/09/05/09-05-26-529_512.gif",
+                "https://github.com/comst19/GradProjectHub/blob/main/fd145d45-ba3b-41b3-9e58-6f089a4267a0_6.gif?raw=true",
                 Motion.JESSE_DANCE,
                 Retarget.ROKOKO,
                 false
