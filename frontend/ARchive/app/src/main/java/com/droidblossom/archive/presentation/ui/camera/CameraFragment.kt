@@ -397,7 +397,7 @@ class CameraFragment :
         ) {
             arSceneView.session?.resume()
             viewAttachmentManager.onResume()
-            requestPermissionLauncher.launch(arPermissionList)
+            //requestPermissionLauncher.launch(arPermissionList)
         }
     }
 
