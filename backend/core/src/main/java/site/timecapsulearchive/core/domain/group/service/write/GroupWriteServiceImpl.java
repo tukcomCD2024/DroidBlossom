@@ -104,7 +104,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-                    targetId, groupMember.getId());
+                    targetId, memberId);
 
                 if (isDenyRequest != 1) {
                     throw new GroupInviteNotFoundException();

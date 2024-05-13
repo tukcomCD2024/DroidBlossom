@@ -4,6 +4,7 @@ package site.timecapsulearchive.core.domain.group.service;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.dependency.TestTransactionTemplate;
+import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
@@ -59,7 +61,7 @@ class GroupWriteServiceTest {
         List<Long> targetIds = List.of(2L, 3L, 4L, 5L);
         GroupCreateDto dto = GroupDtoFixture.groupCreateDto(targetIds);
         given(memberRepository.findMemberById(memberId)).willReturn(
-            Optional.ofNullable(MemberFixture.member(1)));
+            Optional.of(MemberFixture.member(1)));
 
         //when
         groupWriteService.createGroup(memberId, dto);
@@ -152,7 +154,7 @@ class GroupWriteServiceTest {
     }
 
     @Test
-    void 그룹원은_그룹초대를_1을_반환하면_거부할_수_있다() {
+    void 그룹원은_그룹초대_삭제에서_1을_반환하면_거부할_수_있다() {
         //given
         Long memberId = 1L;
         Long targetId = 2L;
@@ -162,12 +164,12 @@ class GroupWriteServiceTest {
 
         //when
         // then
-        assertThatCode(() -> groupWriteService.denyRequestGroup(memberId, targetId))
+        assertThatCode(() -> groupWriteService.rejectRequestGroup(memberId, targetId))
             .doesNotThrowAnyException();
     }
 
     @Test
-    void 그룹원은_그룹초대를_0을_반환하면_거부가_실패_한다() {
+    void 그룹원은_그룹초대_삭제에서_0을_반환하면_거부가_실패_한다() {
         //given
         Long memberId = 1L;
         Long targetId = 2L;
@@ -177,7 +179,49 @@ class GroupWriteServiceTest {
 
         //when
         // then
-        assertThatThrownBy(() -> groupWriteService.denyRequestGroup(memberId, targetId))
+        assertThatThrownBy(() -> groupWriteService.rejectRequestGroup(memberId, targetId))
+            .isInstanceOf(GroupInviteNotFoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹원은_그룹초대를_수락하면_그룹장에게_알림이_전송된다() {
+        //given
+        Long memberId = 1L;
+        Long groupId = 1L;
+        Long targetId = 2L;
+        Member groupMember = MemberFixture.member(1);
+
+        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
+        given(groupRepository.findGroupById(groupId)).willReturn(
+            Optional.of(GroupFixture.group()));
+        given(groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
+            targetId, memberId)).willReturn(1);
+
+        //when
+        groupWriteService.acceptGroupInvite(memberId, groupId, targetId);
+
+        //then
+        verify(socialNotificationManager, times(1)).sendGroupAcceptMessage(anyString(), anyLong());
+    }
+
+    @Test
+    void 그룹원은_그룹초대를_수락할_때_그룹초대가_존재하지_않으면_예외가_발생한다() {
+        //given
+        Long memberId = 1L;
+        Long groupId = 1L;
+        Long targetId = 2L;
+        Member groupMember = MemberFixture.member(1);
+
+        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
+        given(groupRepository.findGroupById(groupId)).willReturn(
+            Optional.of(GroupFixture.group()));
+        given(groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
+            targetId, memberId)).willReturn(0);
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupWriteService.acceptGroupInvite(memberId, groupId, targetId))
             .isInstanceOf(GroupInviteNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
