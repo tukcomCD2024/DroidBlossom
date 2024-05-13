@@ -34,6 +34,7 @@ class SettingNoticeFragment :
 
     private fun initView() {
         binding.adapter.adapter = noticeAdapter
+        binding.adapter.setHasFixedSize(true)
         noticeAdapter.submitList(
             listOf(
                 Notice(

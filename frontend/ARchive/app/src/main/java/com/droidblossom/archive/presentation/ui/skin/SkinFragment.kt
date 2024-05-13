@@ -55,6 +55,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     private fun initRVA() {
         binding.skinRV.adapter = mySkinRVA
+        binding.skinRV.setHasFixedSize(true)
         binding.skinRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)

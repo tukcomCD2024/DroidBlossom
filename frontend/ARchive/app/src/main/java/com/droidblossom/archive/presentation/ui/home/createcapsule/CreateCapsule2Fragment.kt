@@ -125,6 +125,7 @@ class CreateCapsule2Fragment :
 
     private fun initRVA() {
         binding.recycleView.adapter = skinRVA
+        binding.recycleView.setHasFixedSize(true)
         binding.recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
