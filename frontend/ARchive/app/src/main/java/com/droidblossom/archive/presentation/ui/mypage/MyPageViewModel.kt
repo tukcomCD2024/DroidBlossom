@@ -14,7 +14,7 @@ interface MyPageViewModel {
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
     val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
-    var reloadMyInfo:Boolean
+    var viewModelReload:Boolean
     var clearCapsule:Boolean
 
     fun getMe()

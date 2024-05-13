@@ -66,11 +66,11 @@ class MyPageViewModelImpl @Inject constructor(
 
     private var getCapsuleListJob: Job? = null
 
-    override var reloadMyInfo = false
+    override var viewModelReload = false
     override var clearCapsule = false
 
     init {
-        getMe()
+        load()
         viewModelScope.launch {
             scrollEventFlow.collect {
                 getCapsulePage()
@@ -100,7 +100,6 @@ class MyPageViewModelImpl @Inject constructor(
             memberUseCase().collect { result ->
                 result.onSuccess {
                     _myInfo.emit(it)
-                    reloadMyInfo = false
                 }.onFail {
                     myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                 }
@@ -216,6 +215,9 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     override fun selectSpinnerItem(item: MyPageFragment.SpinnerCapsuleType) {
-        _capsuleType.value = item
+        if (capsuleType.value != item){
+            viewModelReload = true
+            _capsuleType.value = item
+        }
     }
 }

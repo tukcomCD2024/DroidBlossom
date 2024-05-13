@@ -1,12 +1,17 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
@@ -24,14 +29,19 @@ import com.droidblossom.archive.presentation.ui.mypage.adapter.SpinnerAdapter
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
+import com.droidblossom.archive.util.CustomLifecycleOwner
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class MyPageFragment :
-    BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
+class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
+
     override val viewModel: MyPageViewModelImpl by viewModels()
+
+    private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
+        CustomLifecycleOwner()
+    }
 
     private val profileRVA: ProfileRVA by lazy {
         ProfileRVA(
@@ -42,7 +52,6 @@ class MyPageFragment :
                 startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
             },
             {
-                viewModel.reloadMyInfo = true
                 startActivity(
                     FriendAcceptActivity.newIntent(
                         requireContext(),
@@ -67,8 +76,8 @@ class MyPageFragment :
                 )
             },
             { capsuleIndex, id, type ->
-
-                val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                val existingDialog =
+                    parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                 if (existingDialog == null) {
                     val dialog = CapsulePreviewDialogFragment.newInstance(
                         capsuleIndex.toString(),
@@ -92,6 +101,7 @@ class MyPageFragment :
             requireContext(),
             capsuleTypes
         ) { capsuleTypes ->
+            Log.d("라이프", "스피너 어댑터 안 ${viewModel.capsuleType.value} vs $capsuleTypes")
             viewModel.selectSpinnerItem(capsuleTypes)
 
         }
@@ -104,8 +114,6 @@ class MyPageFragment :
             .build()
         ConcatAdapter(config, profileRVA, spinnerA, capsuleRVA)
     }
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -123,9 +131,10 @@ class MyPageFragment :
                 capsuleRVA.notifyItemChanged(capsuleIndex)
             }
         }
-
+        initCustomLifeCycle()
         initMyPageRVA()
-        val layoutParams = binding.myPageSwipeRefreshLayout.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams =
+            binding.myPageSwipeRefreshLayout.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.myPageSwipeRefreshLayout.layoutParams = layoutParams
     }
@@ -175,22 +184,22 @@ class MyPageFragment :
     }
 
     override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsules.collect { capsule ->
-                    if (viewModel.clearCapsule){
+                    if (viewModel.clearCapsule) {
                         viewModel.clearCapsule = false
-                    }else{
+                    } else {
                         viewModel.updateMyCapsulesUI()
                     }
                 }
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsulesUI.collect { capsule ->
-                    capsuleRVA.submitList(capsule){
-                        if (binding.myPageSwipeRefreshLayout.isRefreshing){
+                    capsuleRVA.submitList(capsule) {
+                        if (binding.myPageSwipeRefreshLayout.isRefreshing) {
                             binding.myPageSwipeRefreshLayout.isRefreshing = false
                             binding.myPageRV.scrollToPosition(0)
                         }
@@ -199,8 +208,8 @@ class MyPageFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myPageEvents.collect { event ->
                     when (event) {
                         is MyPageViewModel.MyPageEvent.ShowToastMessage -> {
@@ -221,36 +230,77 @@ class MyPageFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myInfo.collect { memberDetail ->
                     profileRVA.submitList(listOf(memberDetail.toUIModel()))
                 }
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleType.collect {
-                    viewModel.clearCapsules(false)
+                    if (viewModel.viewModelReload){
+                        viewModel.clearCapsules(false)
+                    }
+
                 }
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (viewModel.reloadMyInfo) {
-            viewModel.getMe()
-        }
-        viewModel.clearCapsules(false)
+    private fun initCustomLifeCycle() {
+        viewLifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_START,
+                    Lifecycle.Event.ON_CREATE,
+                    Lifecycle.Event.ON_RESUME,
+                    Lifecycle.Event.ON_PAUSE, -> {
+                        if (isHidden) {
+                            visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+                        } else {
+                            visibleLifecycleOwner.handleLifecycleEvent(event)
+                        }
+                    }
+                    else -> {
+                        visibleLifecycleOwner.handleLifecycleEvent(event)
+                    }
+                }
+            }
+        })
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden) {
-            viewModel.load()
+        if (hidden) {
+            onHidden()
+        } else {
+            onShow()
         }
+    }
+
+    private fun onHidden() {
+        Log.d("라이프","히든 히든 - const : $reload, viewmodel : ${viewModel.viewModelReload}")
+        viewModel.viewModelReload = false
+        reloadState = true
+    }
+
+    private fun onShow() {
+        visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        if (reload){
+            viewModel.load()
+            reload = false
+            viewModel.viewModelReload = false
+            binding.myPageRV.scrollToPosition(0)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reloadState = false
+        reload = false
     }
 
     companion object {
@@ -260,7 +310,15 @@ class MyPageFragment :
         const val STORY_TYPE = 2
         const val SPINNER_TYPE = 3
         const val CAPSULE_TYPE = 4
-        fun newIntent() = MyPageFragment()
+
+        private var reloadState = true
+        private var reload = false
+        fun newIntent() : MyPageFragment{
+            if (reloadState){
+                reload = true
+            }
+            return MyPageFragment()
+        }
     }
 
     enum class SpinnerCapsuleType(val description: String) {

@@ -16,13 +16,16 @@ class SpinnerAdapter(
     private val selectedCapsuleType: (MyPageFragment.SpinnerCapsuleType) -> Unit
 ) : RecyclerView.Adapter<SpinnerAdapter.ItemViewHolder>() {
 
+    private var selectedPosition = 0
+
     inner class ItemViewHolder(
         private val binding: ItemMyPageSpinnerBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(spinnerItems: Array<MyPageFragment.SpinnerCapsuleType>) {
+        fun bind(spinnerItems: Array<MyPageFragment.SpinnerCapsuleType>, position: Int) {
             val spinnerAdapter = CapsuleTypeSpinner(context, spinnerItems)
             binding.capsuleTypeSpinner.adapter = spinnerAdapter
+            binding.capsuleTypeSpinner.setSelection(selectedPosition, false)
             binding.capsuleTypeSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(
@@ -32,16 +35,11 @@ class SpinnerAdapter(
                         id: Long
                     ) {
                         selectedCapsuleType(spinnerItems[position])
+                        selectedPosition = position
                     }
 
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
                 }
-            binding.capsuleTypeSpinner.viewTreeObserver.addOnWindowFocusChangeListener { hasFocus ->
-                spinnerAdapter.spinnerIsOpened = hasFocus
-                spinnerAdapter.notifyDataSetChanged()
-            }
         }
     }
 
@@ -49,14 +47,9 @@ class SpinnerAdapter(
         setHasStableIds(true)
     }
 
-    override fun getItemId(position: Int): Long {
-        return 1L
-    }
+    override fun getItemId(position: Int): Long = position.toLong()
 
-
-    override fun getItemViewType(position: Int): Int {
-        return MyPageFragment.SPINNER_TYPE
-    }
+    override fun getItemViewType(position: Int): Int = MyPageFragment.SPINNER_TYPE
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
@@ -69,7 +62,7 @@ class SpinnerAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(spinnerItems)
+        holder.bind(spinnerItems, position)
     }
 
     override fun getItemCount(): Int = 1
