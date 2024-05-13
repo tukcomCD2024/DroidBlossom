@@ -82,12 +82,13 @@ public class GroupApiController implements GroupApi {
         return null;
     }
 
-    @DeleteMapping(value = "/reject/{target_id}")
+    @DeleteMapping(value = "/reject/{group_id}/member/{target_id}")
     public ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
         @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId,
         @PathVariable("target_id") final Long targetId) {
 
-        groupService.rejectRequestGroup(memberId, targetId);
+        groupService.rejectRequestGroup(memberId, groupId, targetId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(

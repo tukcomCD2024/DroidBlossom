@@ -8,7 +8,7 @@ public interface GroupWriteService {
 
     void inviteGroup(final Long memberId, final Long groupId, final Long targetId);
 
-    void rejectRequestGroup(final Long memberId, final Long targetId);
+    void rejectRequestGroup(final Long memberId, final Long groupId, final Long targetId);
 
     void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId);
 

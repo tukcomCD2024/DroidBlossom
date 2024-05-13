@@ -62,7 +62,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         final Member groupMember = memberRepository.findMemberById(targetId).orElseThrow(
             MemberNotFoundException::new);
 
-        final GroupInvite groupInvite = GroupInvite.createOf(groupOwner, groupMember);
+        final GroupInvite groupInvite = GroupInvite.createOf(groupId, groupOwner, groupMember);
 
         final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];
 
@@ -85,9 +85,9 @@ public class GroupWriteServiceImpl implements GroupWriteService {
     }
 
     @Transactional
-    public void rejectRequestGroup(final Long memberId, final Long targetId) {
-        final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-            targetId, memberId);
+    public void rejectRequestGroup(final Long memberId, final Long groupId, final Long targetId) {
+        final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, targetId, memberId);
 
         if (isDenyRequest != 1) {
             throw new GroupInviteNotFoundException();
@@ -103,8 +103,8 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-                    targetId, memberId);
+                final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+                    groupId, targetId, memberId);
 
                 if (isDenyRequest != 1) {
                     throw new GroupInviteNotFoundException();

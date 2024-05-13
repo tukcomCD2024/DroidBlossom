@@ -157,14 +157,15 @@ class GroupWriteServiceTest {
     void 그룹원은_그룹초대_삭제에서_1을_반환하면_거부할_수_있다() {
         //given
         Long memberId = 1L;
+        Long groupId = 1L;
         Long targetId = 2L;
 
-        given(groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-            targetId, memberId)).willReturn(1);
+        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, targetId, memberId)).willReturn(1);
 
         //when
         // then
-        assertThatCode(() -> groupWriteService.rejectRequestGroup(memberId, targetId))
+        assertThatCode(() -> groupWriteService.rejectRequestGroup(memberId, groupId, targetId))
             .doesNotThrowAnyException();
     }
 
@@ -172,14 +173,15 @@ class GroupWriteServiceTest {
     void 그룹원은_그룹초대_삭제에서_0을_반환하면_거부가_실패_한다() {
         //given
         Long memberId = 1L;
+        Long groupId = 1L;
         Long targetId = 2L;
 
-        given(groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-            targetId, memberId)).willReturn(0);
+        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, targetId, memberId)).willReturn(0);
 
         //when
         // then
-        assertThatThrownBy(() -> groupWriteService.rejectRequestGroup(memberId, targetId))
+        assertThatThrownBy(() -> groupWriteService.rejectRequestGroup(memberId, groupId, targetId))
             .isInstanceOf(GroupInviteNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
@@ -195,8 +197,8 @@ class GroupWriteServiceTest {
         given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
         given(groupRepository.findGroupById(groupId)).willReturn(
             Optional.of(GroupFixture.group()));
-        given(groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-            targetId, memberId)).willReturn(1);
+        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, targetId, memberId)).willReturn(1);
 
         //when
         groupWriteService.acceptGroupInvite(memberId, groupId, targetId);
@@ -216,8 +218,8 @@ class GroupWriteServiceTest {
         given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
         given(groupRepository.findGroupById(groupId)).willReturn(
             Optional.of(GroupFixture.group()));
-        given(groupInviteRepository.deleteGroupInviteByGroupOwnerIdAndGroupMemberId(
-            targetId, memberId)).willReturn(0);
+        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, targetId, memberId)).willReturn(0);
 
         //when
         //then
