@@ -158,4 +158,36 @@ class HomeViewModelImpl @Inject constructor(
         }
     }
 
+    override fun getNearbyMyAndFriendsCapsules(
+        latitude: Double,
+        longitude: Double,
+        distance: Double,
+        capsuleType: String
+    ) {
+        viewModelScope.launch {
+            nearbyMyCapsulesHomeUseCase(
+                latitude,
+                longitude,
+                distance,
+                capsuleType
+            ).collect { result ->
+                result.onSuccess {
+                    _capsuleList.emit(it.capsuleMarkers)
+                    nearbyFriendsCapsulesHomeUseCase(
+                        latitude,
+                        longitude,
+                        distance,
+                    ).collect { result ->
+                        result.onSuccess {
+                            _capsuleList.emit(capsuleList.value + it.capsuleMarkers)
+                        }.onFail {
+                            Log.d("티티", "getNearbyCapsules 실패")
+                        }
+                    }
+                }.onFail {
+                    Log.d("티티", "getNearbyCapsules 실패")
+                }
+            }
+        }
+    }
 }

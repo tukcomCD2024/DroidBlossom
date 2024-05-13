@@ -27,6 +27,8 @@ interface HomeViewModel {
     fun resetNearbyCapsules()
     fun getNearbyMyCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String)
     fun getNearbyFriendsCapsules(latitude: Double, longitude: Double, distance: Double)
+    fun getNearbyMyAndFriendsCapsules(latitude: Double, longitude: Double, distance: Double, capsuleType: String)
+
 
     fun homeEvent(event:HomeEvent)
 
