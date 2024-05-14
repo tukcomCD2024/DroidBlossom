@@ -18,7 +18,9 @@ import site.timecapsulearchive.notification.repository.notification.Notification
 @RequiredArgsConstructor
 public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
 
+
     private final CapsuleSkinFcmManager capsuleSkinFcmManager;
+
     private final NotificationRepository notificationRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
@@ -40,4 +42,5 @@ public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
         final String fcmToken = memberRepository.findFCMToken(dto.memberId());
         capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN, fcmToken);
     }
+
 }

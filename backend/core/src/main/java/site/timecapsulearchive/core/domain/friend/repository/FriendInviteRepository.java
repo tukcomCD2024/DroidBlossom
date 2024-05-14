@@ -22,7 +22,7 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long> {
         @Param(value = "friendId") Long friendId
     );
 
-    Optional<FriendInvite> findFriendInviteByOwnerIdAndFriendId(Long memberId, Long friendId);
+    Optional<FriendInvite> findFriendInviteByOwnerIdAndFriendId(Long memberId, Long targetId);
 
     void deleteFriendInviteById(Long id);
 

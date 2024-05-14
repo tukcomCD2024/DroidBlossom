@@ -1,0 +1,76 @@
+package site.timecapsulearchive.core.domain.member.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import site.timecapsulearchive.core.global.entity.BaseEntity;
+import site.timecapsulearchive.core.global.util.NullCheck;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "MEMBER_TEMPORARY")
+public class MemberTemporary extends BaseEntity {
+
+    @Id
+    @Column(name = "member_temporary_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "profile_url", nullable = false)
+    private String profileUrl;
+
+    @Column(name = "nickname", nullable = false)
+    private String nickname;
+
+    @Column(name = "social_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    @Email
+    @Column(name = "email", nullable = false)
+    private String email;
+    @Column(name = "is_verified", nullable = false)
+    private Boolean isVerified;
+
+    @Column(name = "auth_id", nullable = false, unique = true)
+    private String authId;
+
+    @Column(name = "tag", nullable = false, unique = true)
+    private String tag;
+
+    @Builder
+    public MemberTemporary(String profileUrl, String nickname, SocialType socialType, String email,
+        String authId, String tag) {
+        this.profileUrl = NullCheck.validate(profileUrl, "Entity: profile");
+        this.nickname = NullCheck.validate(nickname, "Entity: nickname");
+        this.socialType = NullCheck.validate(socialType, "Entity: socialType");
+        this.email = NullCheck.validate(email, "Entity: email");
+        this.isVerified = false;
+        this.authId = NullCheck.validate(authId, "Entity: authId");
+        this.tag = NullCheck.validate(tag, "Entity: tag");
+    }
+
+    public Member toMember(final byte[] phone_hash, final byte[] phone) {
+        return Member.builder()
+            .profileUrl(profileUrl)
+            .nickname(nickname)
+            .socialType(socialType)
+            .email(email)
+            .authId(authId)
+            .tag(tag)
+            .phone_hash(phone_hash)
+            .phone(phone)
+            .build();
+    }
+}

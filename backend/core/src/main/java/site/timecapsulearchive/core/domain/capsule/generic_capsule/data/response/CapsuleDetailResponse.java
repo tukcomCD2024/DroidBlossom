@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
 import lombok.Builder;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
@@ -27,6 +28,12 @@ public record CapsuleDetailResponse(
 
     @Schema(description = "생성일")
     ZonedDateTime createdDate,
+
+    @Schema(description = "캡슐 위도 좌표")
+    Double latitude,
+
+    @Schema(description = "캡슐 경도 좌표")
+    Double longitude,
 
     @Schema(description = "캡슐 생성 주소")
     String address,
@@ -58,33 +65,18 @@ public record CapsuleDetailResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        if (createdDate != null) {
+            createdDate = createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
     }
 
     public static CapsuleDetailResponse createOf(
         final CapsuleDetailDto detailDto,
         final Function<String, String> singlePreSignUrlFunction,
-        final Function<String, List<String>> multiplePreSignUrlFunction
+        final Function<String, List<String>> multiplePreSignUrlFunction,
+        final Function<Point, Point> changePointFunction
     ) {
-        final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
-            detailDto.images());
-        final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
-            detailDto.videos());
-
-        return new CapsuleDetailResponse(
-            singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
-            detailDto.dueDate(),
-            detailDto.nickname(),
-            detailDto.profileUrl(),
-            detailDto.createdAt(),
-            detailDto.address(),
-            detailDto.roadName(),
-            detailDto.title(),
-            detailDto.content(),
-            preSignedImageUrls,
-            preSignedVideoUrls,
-            detailDto.isOpened(),
-            detailDto.capsuleType()
-        );
+        return detailDto.toResponse(singlePreSignUrlFunction, multiplePreSignUrlFunction,
+            changePointFunction);
     }
 }

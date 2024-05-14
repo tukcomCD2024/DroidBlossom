@@ -6,10 +6,18 @@ import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.PopupWindow
+import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
+import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -31,8 +40,13 @@ class CapsulePreviewDialogFragment :
 
     private val viewModel: CapsulePreviewDialogViewModelImpl by viewModels()
 
-    val capsuleId: Int by lazy {
-        arguments?.getString("capsule_id")!!.toInt()
+    val capsuleIndex: Int by lazy {
+        arguments?.getString("capsule_index")!!.toInt()
+    }
+
+
+    val capsuleId: Long by lazy {
+        arguments?.getString("capsule_id")!!.toLong()
     }
 
     val capsuleType by lazy {
@@ -72,7 +86,8 @@ class CapsulePreviewDialogFragment :
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-
+                viewModel.getPublicCapsuleSummary(capsuleId)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_public_marker_24)
             }
 
             HomeFragment.CapsuleType.GROUP -> {
@@ -100,8 +115,13 @@ class CapsulePreviewDialogFragment :
                     viewModel.openCapsule(capsuleId.toLong())
                 }
             }
+
+            capsuleMenuImg.setOnClickListener { view ->
+                showPopupMenu(view)
+            }
         }
     }
+
     private fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -119,7 +139,7 @@ class CapsulePreviewDialogFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsulePreviewDialogEvents.collect { event ->
                     when (event) {
@@ -178,14 +198,19 @@ class CapsulePreviewDialogFragment :
         constraintSet.applyTo(constraintLayout)
     }
 
-    private fun moveCapsuleDetail(){
-        val intent = CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
+    private fun moveCapsuleDetail() {
+        val intent =
+            CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
         startActivity(intent)
     }
 
 
     private fun animateProgressBar() {
-        viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐이 열리는 중입니다."))
+        viewModel.capsulePreviewDialogEvent(
+            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                "캡슐이 열리는 중입니다."
+            )
+        )
         val animator = ObjectAnimator.ofInt(binding.openProgressBar, "progress", 0, 100).apply {
             duration = 2000 // 2초 동안
             interpolator = LinearInterpolator() // 여기에 LinearInterpolator 적용
@@ -200,9 +225,41 @@ class CapsulePreviewDialogFragment :
         animator.start()
     }
 
+    private fun showPopupMenu(view: View) {
+        val popupMenuBinding =
+            PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+
+        val density = requireContext().resources.displayMetrics.density
+        val widthPixels = (120 * density).toInt()
+
+        val popupWindow = PopupWindow(
+            popupMenuBinding.root,
+            widthPixels,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWidth = popupWindow.contentView.measuredWidth
+
+        popupMenuBinding.menuMap.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupMenuBinding.menuModify.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupMenuBinding.menuDelete.setOnClickListener {
+            popupWindow.dismiss()
+        }
+
+        val xOffset = (view.width / 2) - (popupWidth / 2) - 200
+        popupWindow.showAsDropDown(view, xOffset, -view.height)
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val capsuleState = Bundle().apply {
+            putInt("capsuleIndex", capsuleIndex)
             putLong("capsuleId", capsuleId.toLong())
             putBoolean("isOpened", viewModel.capsuleOpenState.value)
         }
@@ -210,8 +267,16 @@ class CapsulePreviewDialogFragment :
     }
 
     companion object {
-        fun newInstance(capsuleId: String, capsuleType: String, calledFromCamera : Boolean): CapsulePreviewDialogFragment {
+
+        const val TAG = "CapsulePreView"
+        fun newInstance(
+            capsuleIndex: String,
+            capsuleId: String,
+            capsuleType: String,
+            calledFromCamera: Boolean
+        ): CapsulePreviewDialogFragment {
             val args = Bundle().apply {
+                putString("capsule_index", capsuleIndex)
                 putString("capsule_id", capsuleId)
                 putString("capsule_type", capsuleType)
                 putBoolean("called_from_camera", calledFromCamera)

@@ -20,12 +20,19 @@
     <color name="gray_700">#FF424242</color>
     <color name="gray_800">#FF2E2E2E</color>
     <color name="gray_900">#FF1C1C1C</color>
+    <color name="kakao">#FEE500</color>
 
 
     <color name="main_1_alpha20">#324263F7</color>
     <color name="main_dark_alpha50">#801B3AC4</color>
+    <color name="white_alpha90">#E6FFFFFF</color>
+    <color name="white_alpha80">#CCFFFFFF</color>
     <color name="white_alpha70">#B3FFFFFF</color>
     <color name="white_alpha60">#99FFFFFF</color>
+    <color name="white_alpha50">#80FFFFFF</color>
+    <color name="white_alpha40">#66FFFFFF</color>
+    <color name="white_alpha30">#4DFFFFFF</color>
+    <color name="white_alpha20">#33FFFFFF</color>
     <color name="main_alpha85">#D94263F7</color>
     <color name="main_bg_alpha70">#B3ECEFFE</color>
     <color name="main_alpha70">#B31B3AC4</color>

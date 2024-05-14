@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 
@@ -59,5 +60,21 @@ public class PublicCapsuleService {
     ) {
         return publicCapsuleQueryRepository.findPublicCapsulesDtoMadeByFriend(memberId, size,
             createdAt);
+    }
+
+    /**
+     * 사용자가 생성한 공개 캡슐 목록을 반환한다
+     *
+     * @param memberId  조회할 사용자
+     * @param size      조회할 캡슐의 개수
+     * @param createdAt 조회를 시작할 캡슐의 생성 시간, 첫 조회라면 현재 시간, 이후 조회라면 맨 마지막 데이터의 시간
+     * @return 사용자가 생성한 공개 캡슐 목록
+     */
+    public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        return publicCapsuleQueryRepository.findMyPublicCapsuleSlice(memberId, size, createdAt);
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_dropdown_item_background"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height=".1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/gray_700" />
+
+        <TextView
+            android:id="@+id/dropdownItemName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/common_spinner_height"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/padding"
+            android:paddingEnd="@dimen/padding"
+            android:singleLine="true"
+            android:text="TEXT"
+            android:textAppearance="@style/TextAppearance.App.caption2"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</layout>

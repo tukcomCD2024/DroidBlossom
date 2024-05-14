@@ -80,7 +80,7 @@ object RetrofitModule {
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl("${BuildConfig.BASE_URL}api/")
             .addConverterFactory(gsonConverterFactory)
             .client(client)
             .build()

@@ -24,7 +24,7 @@ public record FriendSummaryResponse(
 
     public FriendSummaryResponse {
         if (createdAt != null) {
-            createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
     }
 }

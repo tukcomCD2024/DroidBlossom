@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.droidblossom.archive.presentation.ui.MainActivity
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
@@ -20,6 +21,18 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("RefreshToken")
         private val FCM_TOKEN_KEY = stringPreferencesKey("FcmToken")
         private val NOTIFICATIONS_ENABLED_KEY = booleanPreferencesKey("NotificationsEnabled")
+        private val SELECTED_TAB_KEY = stringPreferencesKey("SelectedTab")
+    }
+
+    suspend fun saveSelectedTab(tabName: String) {
+        context.dataStore.edit { preferences ->
+            preferences[SELECTED_TAB_KEY] = tabName
+        }
+    }
+
+    suspend fun fetchSelectedTab(): String {
+        val preferences = context.dataStore.data.first()
+        return preferences[SELECTED_TAB_KEY] ?: MainActivity.MainPage.HOME.name
     }
 
     suspend fun saveAccessToken(accessToken: String) {
@@ -28,7 +41,7 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
             preferences[ACCESS_TOKEN_KEY] = encryptedData.toBase64() + ":" + iv.toBase64()
         }
     }
-     
+
     suspend fun fetchAccessToken(): String {
         val preferences = context.dataStore.data.first()
         val combined = preferences[ACCESS_TOKEN_KEY] ?: return ""
@@ -83,5 +96,8 @@ class DataStoreUtils @Inject constructor(private val context: Context) {
     }
 }
 
-private fun ByteArray.toBase64(): String = android.util.Base64.encodeToString(this, android.util.Base64.NO_WRAP)
-private fun String.fromBase64(): ByteArray = android.util.Base64.decode(this, android.util.Base64.NO_WRAP)
+private fun ByteArray.toBase64(): String =
+    android.util.Base64.encodeToString(this, android.util.Base64.NO_WRAP)
+
+private fun String.fromBase64(): ByteArray =
+    android.util.Base64.decode(this, android.util.Base64.NO_WRAP)

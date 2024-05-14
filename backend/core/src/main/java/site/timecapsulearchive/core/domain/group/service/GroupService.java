@@ -1,15 +1,21 @@
 package site.timecapsulearchive.core.domain.group.service;
 
 import lombok.RequiredArgsConstructor;
+import java.time.ZonedDateTime;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
+import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -26,6 +32,7 @@ public class GroupService {
     private final MemberGroupRepository memberGroupRepository;
     private final TransactionTemplate transactionTemplate;
     private final SocialNotificationManager socialNotificationManager;
+    private final GroupQueryRepository groupQueryRepository;
 
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
         final Member member = memberRepository.findMemberById(memberId)
@@ -51,5 +58,30 @@ public class GroupService {
     public Group findGroupById(Long groupId) {
         return groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<GroupSummaryDto> findGroupsSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        return groupQueryRepository.findGroupsSlice(memberId, size, createdAt);
+    }
+
+    @Transactional(readOnly = true)
+    public GroupDetailDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
+        final GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupId(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        final boolean isGroupMember = groupDetailDto.members()
+            .stream()
+            .anyMatch(m -> m.memberId().equals(memberId));
+
+        if (!isGroupMember) {
+            throw new GroupNotFoundException();
+        }
+
+        return groupDetailDto;
     }
 }

@@ -66,8 +66,9 @@
                 android:layout_marginTop="32dp"
                 android:textAppearance="@style/TextAppearance.App.h4"
                 android:textColor="@color/gray_600"
+                android:gravity="center"
                 android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
-                android:text="모션이 적용되면 알림이 울려요"
+                android:text="스킨을 생성하는 데 약 50초가 소요됩니다.\n 모션이 적용되면 알림을 보내드릴게요!"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/skinMakeMessage" />

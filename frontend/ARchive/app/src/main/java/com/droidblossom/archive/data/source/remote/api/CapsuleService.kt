@@ -18,12 +18,34 @@ interface CapsuleService {
         @Path("capsule_id") capsuleId : Long,
     ) : Response<ResponseBody<CapsuleOpenedResponseDto>>
 
-    @GET("capsules/nearby")
-    suspend fun getNearbyCapsulesApi(
+    @GET("capsules/my/map/nearby")
+    suspend fun getNearbyMyCapsulesHomeApi(
         @Query("latitude") latitude : Double,
         @Query("longitude") longitude : Double,
         @Query("distance") distance : Double,
-        @Query("capsule_type") capsule_type : String
+        @Query("capsule_type") capsuleType : String
+    ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
+
+    @GET("capsules/friends/map/nearby")
+    suspend fun getNearbyFriendsCapsulesHomeApi(
+        @Query("latitude") latitude : Double,
+        @Query("longitude") longitude : Double,
+        @Query("distance") distance : Double,
+    ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
+
+    @GET("capsules/my/ar/nearby")
+    suspend fun getNearbyMyCapsulesARApi(
+        @Query("latitude") latitude : Double,
+        @Query("longitude") longitude : Double,
+        @Query("distance") distance : Double,
+        @Query("capsule_type") capsuleType : String
+    ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
+
+    @GET("capsules/friends/ar/nearby")
+    suspend fun getNearbyFriendsCapsulesARApi(
+        @Query("latitude") latitude : Double,
+        @Query("longitude") longitude : Double,
+        @Query("distance") distance : Double,
     ) : Response<ResponseBody<NearbyCapsuleResponseDto>>
 
     @GET("map/full-address")
