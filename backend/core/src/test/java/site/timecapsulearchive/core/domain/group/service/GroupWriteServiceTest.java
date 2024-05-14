@@ -30,7 +30,8 @@ import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
 import site.timecapsulearchive.core.domain.group.exception.GroupInviteNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
-import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
+import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
+import site.timecapsulearchive.core.domain.group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.memberGroupRepository.MemberGroupRepository;
@@ -164,8 +165,8 @@ class GroupWriteServiceTest {
         //when
         //then
         assertThatThrownBy(() -> groupWriteService.inviteGroup(memberId, groupId, targetId))
-            .isInstanceOf(GroupOwnerAuthenticateException.class)
-            .hasMessageContaining(ErrorCode.GROUP_OWNER_AUTHENTICATE_ERROR.getMessage());
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
 
     @Test
@@ -271,7 +272,7 @@ class GroupWriteServiceTest {
         //when
         //then
         assertThatThrownBy(() -> groupWriteService.deleteGroup(groupMemberId, groupId))
-            .isExactlyInstanceOf(GroupDeleteFailException.class)
+            .isExactlyInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
 
@@ -370,6 +371,51 @@ class GroupWriteServiceTest {
         assertThatCode(
             () -> groupWriteService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
         verify(groupRepository, times(1)).delete(any(Group.class));
+    }
+
+    @Test
+    void 그룹장인_사용자가_그룹_탈퇴를_시도하면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
+            groupId)).willReturn(ownerGroupMemberOnly());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupWriteService.quitGroup(groupOwnerId, groupId))
+            .isInstanceOf(GroupQuitException.class)
+            .hasMessageContaining(ErrorCode.GROUP_OWNER_QUIT_ERROR.getMessage());
+    }
+
+    private Optional<MemberGroup> ownerGroupMemberOnly() {
+        return Optional.of(
+            MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
+                GroupFixture.group())
+        );
+    }
+
+    @Test
+    void 그룹장이_아닌_사용자가_그룹_탈퇴를_시도하면_그룹을_탈퇴한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
+            groupId)).willReturn(notOwnerGroupMemberOnly());
+
+        //when
+        //then
+        verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
+    }
+
+    private Optional<MemberGroup> notOwnerGroupMemberOnly() {
+        return Optional.of(
+            MemberGroupFixture.memberGroup(
+                MemberFixture.memberWithMemberId(2L),
+                GroupFixture.group(),
+                false
+            )
+        );
     }
 }
 
