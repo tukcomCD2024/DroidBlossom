@@ -11,7 +11,10 @@ import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNot
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
+import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
@@ -28,7 +31,8 @@ public class MessageVerificationService {
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
     private final SmsApiManager smsApiManager;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
+    private final MemberTemporaryRepository memberTemporaryRepository;
     private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
@@ -47,12 +51,13 @@ public class MessageVerificationService {
         final String appHashKey
     ) {
         final String code = generateRandomCode();
-
         final String message = generateMessage(code, appHashKey);
-
         final SmsApiResponse apiResponse = smsApiManager.sendMessage(receiver, message);
 
-        messageAuthenticationCacheRepository.save(memberId, code);
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        byte[] encrypt = hashEncryptionManager.encrypt(plain);
+
+        messageAuthenticationCacheRepository.save(memberId, encrypt, code);
 
         return VerificationMessageSendResponse.success(apiResponse.resultCode(),
             apiResponse.message());
@@ -77,17 +82,20 @@ public class MessageVerificationService {
         final String certificationNumber,
         final String receiver
     ) {
-        final String findCertificationNumber = messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
-                memberId)
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        byte[] encrypt = hashEncryptionManager.encrypt(plain);
+
+        final String findCertificationNumber = messageAuthenticationCacheRepository
+            .findMessageAuthenticationCodeByMemberId(memberId, encrypt)
             .orElseThrow(CertificationNumberNotFoundException::new);
 
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
             throw new CertificationNumberNotMatchException();
         }
 
-        updateMemberData(memberId, receiver);
+        final Long verifiedMemberId = updateToVerifiedMember(memberId, plain);
 
-        return tokenManager.createNewToken(memberId);
+        return tokenManager.createNewToken(verifiedMemberId);
     }
 
     private boolean isNotMatch(final String certificationNumber,
@@ -95,14 +103,17 @@ public class MessageVerificationService {
         return !certificationNumber.equals(findCertificationNumber);
     }
 
-    private void updateMemberData(final Long memberId, final String receiver) {
-        final Member findMember = memberService.findMemberByMemberId(memberId);
+    private Long updateToVerifiedMember(final Long memberId, final byte[] plain) {
+        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
 
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        memberTemporaryRepository.delete(memberTemporary);
 
-        findMember.updatePhoneHash(hashEncryptionManager.encrypt(plain));
-        findMember.updatePhoneNumber(aesEncryptionManager.encryptWithPrefixIV(plain));
-        findMember.updateNickName();
-        findMember.updateVerification();
+        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
+            aesEncryptionManager.encryptWithPrefixIV(plain));
+
+        memberRepository.save(verifiedMember);
+
+        return verifiedMember.getId();
     }
 }

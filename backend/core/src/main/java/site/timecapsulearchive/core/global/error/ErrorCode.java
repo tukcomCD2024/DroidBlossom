@@ -12,6 +12,7 @@ public enum ErrorCode {
     INPUT_INVALID_VALUE_ERROR(400, "GLOBAL-002", "잘못된 입력 값입니다."),
     INPUT_INVALID_TYPE_ERROR(400, "GLOBAL-003", "잘못된 입력 타입입니다."),
     REQUEST_PARAMETER_NOT_FOUND_ERROR(400, "GLOBAL-004", "입력 파라미터가 존재하지 않습니다."),
+    REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR(400, "GLOBAL-005", "입력 파라미터의 타입이 올바르지 않습니다."),
 
     //jwt
     INVALID_TOKEN_ERROR(400, "AUTH-001", "jwt 토큰이 유효하지 않습니다."),
@@ -20,6 +21,7 @@ public enum ErrorCode {
     //auth
     AUTHENTICATION_ERROR(401, "AUTH-003", "인증에 실패했습니다. 인증 수단이 유효한지 확인하세요."),
     AUTHORIZATION_ERROR(403, "AUTH-004", "권한이 존재하지 않습니다."),
+    CREDENTIALS_NOT_MATCHED_ERROR(401, "AUTH-005", "이메일과 비밀번호 인증에 실패했습니다."),
 
     //message
     TOO_MANY_REQUEST_ERROR(429, "MESSAGE-001", "너무 많은 인증 메시지를 요청했습니다. 24시간 후 요청해주세요."),
@@ -48,7 +50,20 @@ public enum ErrorCode {
     CAPSULE_SKIN_NOT_FOUND_ERROR(404, "SKIN-001", "캡슐 스킨을 찾지 못하였습니다."),
 
     //capsule
-    CAPSULE_NOT_FOUND_ERROR(404, "CAPSULE-001", "캡슐을 찾지 못하였습니다.");
+    CAPSULE_NOT_FOUND_ERROR(404, "CAPSULE-001", "캡슐을 찾지 못하였습니다."),
+    NO_CAPSULE_AUTHORITY_ERROR(403, "CAPSULE-002", "캡슐에 접근 권한이 없습니다."),
+
+    //friend
+    FRIEND_NOT_FOUND_ERROR(404, "FRIEND-001", "친구를 찾지 못하였습니다"),
+    FRIEND_DUPLICATE_ID_ERROR(404, "FRIEND-002", "친구 아이디가 중복되었습니다."),
+
+    //group
+    GROUP_CREATE_ERROR(400, "GROUP-001", "그룹 생성에 실패하였습니다."),
+    GROUP_NOT_FOUND_ERROR(404, "GROUP-002", "그룹을 찾을 수 없습니다"),
+
+    //friend invite
+    FRIEND_INVITE_NOT_FOUND_ERROR(404, "FRIEND-INVITE-001", "친구 요청을 찾지 못하였습니다."),
+    FRIEND_TWO_WAY_INVITE_ERROR(400, "FRIEND-INVITE-002", "친구 요청을 받은 상태입니다.");
 
     private final int status;
     private final String code;

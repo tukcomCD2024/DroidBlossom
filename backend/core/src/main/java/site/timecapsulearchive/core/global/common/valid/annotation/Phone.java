@@ -9,13 +9,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import site.timecapsulearchive.core.global.common.valid.PhoneValidator;
 
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PhoneValidator.class)
 @Documented
 public @interface Phone {
 
-    String message() default "Invalid Phone";
+    String message() default "유효하지 않은 전화번호 형식입니다.";
 
     Class<?>[] groups() default {};
 

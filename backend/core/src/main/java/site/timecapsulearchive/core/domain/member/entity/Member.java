@@ -12,7 +12,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +23,7 @@ import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.history.entity.History;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
-import site.timecapsulearchive.core.global.util.nickname.MakeRandomNickNameUtil;
+import site.timecapsulearchive.core.global.util.NullCheck;
 
 @Entity
 @Getter
@@ -69,6 +68,12 @@ public class Member extends BaseEntity {
     @Column(name = "auth_id", nullable = false, unique = true)
     private String authId;
 
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "tag", nullable = false, unique = true)
+    private String tag;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Capsule> capsules;
 
@@ -91,29 +96,19 @@ public class Member extends BaseEntity {
     private List<History> histories;
 
     @Builder
-    private Member(String profileUrl, SocialType socialType, String email, String authId) {
-        this.profileUrl = profileUrl;
-        this.nickname = String.valueOf(UUID.randomUUID());
-        this.socialType = socialType;
-        this.email = email;
-        this.isVerified = false;
-        this.notificationEnabled = false;
-        this.authId = authId;
-    }
-
-    public void updateVerification() {
+    private Member(String profileUrl, String nickname, SocialType socialType, String email,
+        String authId, String password, String tag, byte[] phone, byte[] phone_hash) {
+        this.profileUrl = NullCheck.validate(profileUrl, "Entity: profile");
+        this.nickname = NullCheck.validate(nickname, "Entity: nickname");
+        this.socialType = NullCheck.validate(socialType, "Entity: socialType");
+        this.email = NullCheck.validate(email, "Entity: email");
+        this.tag = NullCheck.validate(tag, "Entity: tag");
+        this.authId = NullCheck.validate(authId, "Entity: authId");
         this.isVerified = true;
-    }
-
-    public void updatePhoneNumber(byte[] phone) {
+        this.notificationEnabled = false;
+        this.password = password;
         this.phone = phone;
-    }
-
-    public void updatePhoneHash(byte[] phone_hash) {
         this.phone_hash = phone_hash;
     }
 
-    public void updateNickName() {
-        this.nickname = MakeRandomNickNameUtil.makeRandomNickName();
-    }
 }

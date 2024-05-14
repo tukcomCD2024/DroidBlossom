@@ -5,6 +5,9 @@ on:
     branches:
       - develop_back_animation
       - 'hotfix/[0-9a-zA-z]+-B-animation-#[0-9a-zA-z]+'
+  pull_request:
+    branches:
+      - develop_back_animation
 
 jobs:
   deploy-animation:
@@ -80,8 +83,8 @@ jobs:
             docker ps -q --filter "name=animated_drawings" | xargs -r docker stop
             docker ps -aq --filter "name=animated_drawings" | xargs -r docker rm
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull ${{ steps.meta.outputs.tags }}
             docker image prune -f
+            docker pull ${{ steps.meta.outputs.tags }}
             docker run -d -p 5555:5555 -p 9001:9001 --name animated_drawings -e ENVIRONMENT='dev' ${{ steps.meta.outputs.tags }}
 
       - name: Remove Github Actions IP from security group

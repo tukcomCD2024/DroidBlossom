@@ -53,7 +53,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         } catch (final Exception exception) {
             log.info("oauth2 인증 실패", exception);
 
-            final ErrorResponse errorResponse = ErrorResponse.create(
+            final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(
                 ErrorCode.INTERNAL_SERVER_ERROR
             );
 
