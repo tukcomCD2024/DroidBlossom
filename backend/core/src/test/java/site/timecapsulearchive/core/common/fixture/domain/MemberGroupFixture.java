@@ -16,7 +16,7 @@ public class MemberGroupFixture {
      * @param group 대상 그룹
      * @return 그룹 멤버 테스트 픽스처
      */
-    public static MemberGroup memberGroup(Member member, Group group) {
+    public static MemberGroup groupOwner(Member member, Group group) {
         return MemberGroup.createGroupOwner(member, group);
     }
 
