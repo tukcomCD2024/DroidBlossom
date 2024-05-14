@@ -15,11 +15,19 @@ public class MessageAuthenticationCacheRepository {
 
     private final StringRedisTemplate redisTemplate;
 
-    public void save(final Long memberId, final String code) {
-        redisTemplate.opsForValue().set(PREFIX + memberId, code, MINUTE, TimeUnit.MINUTES);
+    public void save(final Long memberId, final byte[] receiver, final String code) {
+        redisTemplate.opsForHash().put(PREFIX + memberId, receiver, code);
+        redisTemplate.expire(PREFIX + memberId, MINUTE, TimeUnit.MINUTES);
     }
 
-    public Optional<String> findMessageAuthenticationCodeByMemberId(final Long memberId) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + memberId));
+    public Optional<String> findMessageAuthenticationCodeByMemberId(final Long memberId,
+        final byte[] encrypt) {
+        String code = (String) redisTemplate.opsForHash().get(PREFIX + memberId, encrypt);
+
+        if (code == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(code);
     }
 }

@@ -1,27 +1,33 @@
 package site.timecapsulearchive.core.domain.member.service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailResponseDto;
+import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
-import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
+import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
+import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 
 @Slf4j
 @Service
@@ -30,16 +36,17 @@ import site.timecapsulearchive.core.global.security.encryption.AESEncryptionMana
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberTemporaryRepository memberTemporaryRepository;
     private final MemberQueryRepository memberQueryRepository;
-    private final AESEncryptionManager aesEncryptionManager;
+    private final PasswordEncoder passwordEncoder;
 
     private final MemberMapper memberMapper;
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
-        final Member member = memberMapper.signUpRequestDtoToEntity(dto);
+        final MemberTemporary member = dto.toMemberTemporary();
 
-        final Member savedMember = memberRepository.save(member);
+        final MemberTemporary savedMember = memberTemporaryRepository.save(member);
 
         return savedMember.getId();
     }
@@ -68,11 +75,6 @@ public class MemberService {
         return MemberStatusResponse.from(isVerified);
     }
 
-    public Member findMemberByMemberId(final Long memberId) {
-        return memberRepository.findMemberById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-    }
-
     /**
      * 인증 아이디와 소셜 프로바이더 타입을 받아 인증된 회원을 조회한다.
      *
@@ -89,15 +91,11 @@ public class MemberService {
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
-        if (isNotVerified(dto)) {
+        if (!dto.isVerified()) {
             throw new NotVerifiedMemberException();
         }
 
         return dto.memberId();
-    }
-
-    private boolean isNotVerified(final VerifiedCheckDto dto) {
-        return !dto.isVerified();
     }
 
     /**
@@ -116,25 +114,16 @@ public class MemberService {
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
-        if (isVerified(dto)) {
+        if (dto.isVerified()) {
             throw new AlreadyVerifiedException();
         }
 
         return dto.memberId();
     }
 
-    private boolean isVerified(final VerifiedCheckDto dto) {
-        return dto.isVerified();
-    }
-
-    public MemberDetailResponse findMemberDetailById(final Long memberId) {
-        final MemberDetailResponseDto dto = memberQueryRepository.findMemberDetailResponseDtoById(
-                memberId)
+    public MemberDetailDto findMemberDetailById(final Long memberId) {
+        return memberQueryRepository.findMemberDetailResponseDtoById(memberId)
             .orElseThrow(MemberNotFoundException::new);
-
-        final String decryptedPhone = aesEncryptionManager.decryptWithPrefixIV(dto.phone());
-
-        return memberMapper.memberDetailResponseDtoToResponse(dto, decryptedPhone);
     }
 
     @Transactional
@@ -171,5 +160,64 @@ public class MemberService {
             notifications.getContent(),
             notifications.hasNext()
         );
+    }
+
+    @Transactional
+    public Long createMemberWithEmailAndPassword(final String email, final String password) {
+        final String encodedPassword = passwordEncoder.encode(password);
+        final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
+
+        final Member savedMember = memberRepository.save(member);
+
+        return savedMember.getId();
+    }
+
+    public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
+        final EmailVerifiedCheckDto dto = memberQueryRepository.findEmailVerifiedCheckDtoByEmail(
+                email)
+            .orElseThrow(MemberNotFoundException::new);
+
+        if (!dto.isVerified()) {
+            throw new NotVerifiedMemberException();
+        }
+
+        if (isNotMatched(email, password, dto.email(), dto.password())) {
+            throw new CredentialsNotMatchedException();
+        }
+
+        return dto.memberId();
+    }
+
+    private boolean isNotMatched(
+        final String inputEmail,
+        final String inputPassword,
+        final String email,
+        final String password
+    ) {
+        return !inputEmail.equals(email) ||
+            password == null ||
+            !passwordEncoder.matches(inputPassword, password);
+    }
+
+    public CheckEmailDuplicationResponse checkEmailDuplication(final String email) {
+        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(email);
+
+        return new CheckEmailDuplicationResponse(isDuplicated);
+    }
+
+    public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
+        final Boolean isAlarm = memberQueryRepository.findIsAlarmByMemberId(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        return new MemberNotificationStatusResponse(isAlarm);
+    }
+
+    public Member findMemberById(final Long memberId) {
+        return memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public List<Long> findMemberIdsByIds(List<Long> ids) {
+        return memberQueryRepository.findMemberIdsByIds(ids);
     }
 }

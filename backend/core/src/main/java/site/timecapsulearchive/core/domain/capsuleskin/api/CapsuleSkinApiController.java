@@ -45,7 +45,7 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
     public ResponseEntity<ApiSpec<CapsuleSkinsSliceResponse>> getCapsuleSkins(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "size", defaultValue = "20") final int size,
-        @RequestParam(value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(

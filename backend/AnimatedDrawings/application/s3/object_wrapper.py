@@ -20,7 +20,7 @@ class ObjectWrapper:
         try:
             self.object.put(Body=put_data)
             self.object.wait_until_exists()
-            logging.info(
+            logging.debug(
                 "버킷 '%s'에 '%s'를 저장합니다.",
                 self.object.bucket_name,
                 self.object.key,

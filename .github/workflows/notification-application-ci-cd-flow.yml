@@ -1,12 +1,49 @@
-name: ci/cd
+name: notification-ci/cd
 
 on:
   push:
     branches:
       - develop_back_notification
       - 'hotfix/[0-9a-zA-z]+-B-notification-#[0-9a-zA-z]+'
+  pull_request:
+    branches:
+      - develop_back_notification
 
 jobs:
+  build_and_test:
+    name: build and test
+    if: ${{github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend/core
+
+    steps:
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: formatting
+        uses: axel-op/googlejavaformat-action@v3
+        with:
+          args: "--replace"
+          skip-commit: true
+
+      - name: grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: test
+        run: ./gradlew clean test
+
   deploy-notification:
     name: notification application deploy
     if: ${{ github.event_name == 'push' }}
@@ -80,14 +117,14 @@ jobs:
 
       - name: Add Github Actions IP to Security group
         run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_EC2_NOTIFICATION_SG_ID }} --group-name ${{secrets.AWS_EC2_NOTIFICATION_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - name: Connect ec2 and Run Docker Container
         uses: appleboy/ssh-action@v0.1.6
         env:
           AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
-          host: ${{ secrets.SSH_NOTIFICATION_HOST }}
+          host: ${{ secrets.SSH_CORE_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_CORE_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
@@ -95,13 +132,14 @@ jobs:
             docker ps -q --filter "name=notification" | xargs -r docker stop
             docker ps -aq --filter "name=notification" | xargs -r docker rm
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            docker image prune -f
             docker pull ${{ steps.meta.outputs.tags }}
-            docker run -d -p 8080:8080 --name notification --network test_backend ${{ steps.meta.outputs.tags }}
+            docker run -d -p 8081:8081 -e ENVIRONMENT=dev --name notification --network test_backend ${{ steps.meta.outputs.tags }}
 
       - name: Remove Github Actions IP from security group
         if: always()
         run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_NOTIFICATION_SG_ID }} --group-name ${{secrets.AWS_EC2_NOTIFICATION_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - uses: sarisia/actions-status-discord@v1
         if: success()

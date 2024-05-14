@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.infra.s3.manager;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -56,6 +57,15 @@ public class S3PreSignedUrlManager {
                     VIDEO_CONTENT_TYPE, temporaryBucketName)
             )
         );
+    }
+
+    public String getImageS3PreSignedUrlsForPut(
+        final Long memberId,
+        final String directory,
+        final String fileName
+    ) {
+        return createS3PreSignedUrlForPut(memberId, directory, fileName, IMAGE_CONTENT_TYPE,
+            bucketName);
     }
 
     private List<String> getPreSignedImageUrls(
@@ -138,5 +148,28 @@ public class S3PreSignedUrlManager {
 
     public String getS3PreSignedUrlForGet(final String fileName) {
         return createS3PreSignedUrlForGet(fileName);
+    }
+
+    /**
+     * 구분자 ,로 이루어진 히나의 파일 이름들을 받아서 s3 presign url을 반환한다
+     *
+     * @param fileNames 구분자 ,로 이루어진 하나의 파일 이름들
+     * @return 구분자 ,로 구분된 각각의 서명된 이미지 url
+     */
+    public List<String> getS3PreSignedUrlsForGet(final String fileNames) {
+        if (fileNames == null || fileNames.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        if (!fileNames.contains(",")) {
+            return List.of(
+                createS3PreSignedUrlForGet(fileNames)
+            );
+        }
+
+        return Arrays.stream(fileNames.split(","))
+            .filter(url -> !url.isBlank())
+            .map(this::createS3PreSignedUrlForGet)
+            .toList();
     }
 }

@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
+import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
+import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
+import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -34,10 +38,12 @@ public class MemberApiController implements MemberApi {
     public ResponseEntity<ApiSpec<MemberDetailResponse>> getMemberDetail(
         @AuthenticationPrincipal final Long memberId
     ) {
+        final MemberDetailDto detailDto = memberService.findMemberDetailById(memberId);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                memberService.findMemberDetailById(memberId)
+                MemberDetailResponse.createOf(detailDto)
             )
         );
     }
@@ -87,17 +93,42 @@ public class MemberApiController implements MemberApi {
     }
 
     @Override
+    @GetMapping(value = "/notification_enabled")
+    public ResponseEntity<ApiSpec<MemberNotificationStatusResponse>> checkMemberNotificationStatus(
+        @AuthenticationPrincipal Long memberId) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.checkNotificationStatus(memberId)
+            )
+        );
+    }
+
+    @Override
     @GetMapping(value = "/notifications")
     public ResponseEntity<ApiSpec<MemberNotificationSliceResponse>> getMemberNotifications(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
-        @RequestParam(defaultValue = "0", value = "createdAt") final ZonedDateTime createdAt
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 memberService.findNotificationSliceByMemberId(memberId, size, createdAt)
             )
-       );
+        );
+    }
+
+    @PostMapping("/check-duplication/email")
+    @Override
+    public ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
+        @Valid @RequestBody CheckEmailDuplicationRequest request
+    ) {
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                memberService.checkEmailDuplication(request.email())
+            )
+        );
     }
 }

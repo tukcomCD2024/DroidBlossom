@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.data.request.EmailSignInRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.EmailSignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.TemporaryTokenReIssueRequest;
@@ -22,7 +24,6 @@ import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
 import site.timecapsulearchive.core.domain.auth.service.TokenManager;
-import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -38,7 +39,6 @@ public class AuthApiController implements AuthApi {
     private final TokenManager tokenService;
     private final MessageVerificationService messageVerificationService;
     private final MemberService memberService;
-    private final MemberMapper memberMapper;
 
 
     @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
@@ -124,7 +124,7 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
         @Valid @RequestBody final SignUpRequest request
     ) {
-        final Long id = memberService.createMember(memberMapper.signUpRequestToDto(request));
+        final Long id = memberService.createMember(request.toDto());
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -198,6 +198,46 @@ public class AuthApiController implements AuthApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 response
+            )
+        );
+    }
+
+    @PostMapping(
+        value = "/sign-up/email",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
+        @Valid @RequestBody final EmailSignUpRequest request
+    ) {
+        final Long id = memberService.createMemberWithEmailAndPassword(request.email(),
+            request.password());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createTemporaryToken(id)
+            )
+        );
+    }
+
+    @PostMapping(
+        value = "/sign-in/email",
+        produces = {"application/json"},
+        consumes = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<TokenResponse>> signInWithEmail(
+        @Valid @RequestBody final EmailSignInRequest request
+    ) {
+        final Long id = memberService.findVerifiedMemberIdByEmailAndPassword(request.email(),
+            request.password());
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                tokenService.createNewToken(id)
             )
         );
     }

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Builder
 @Schema(description = "내 비밀 캡슐 응답")
@@ -30,4 +31,13 @@ public record MySecreteCapsuleResponse(
     CapsuleType type
 ) {
 
+    public MySecreteCapsuleResponse {
+        if (dueDate != null) {
+            dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
+
+        if (createdAt != null) {
+            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
+    }
 }
