@@ -74,7 +74,11 @@ public class CapsuleService {
 
     @Transactional
     public void updateIsOpenedTrue(final Long memberId, final Long capsuleId) {
-        capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+        int isOpenedTrue = capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+
+        if (isOpenedTrue != 1) {
+            throw new CapsuleNotFondException();
+        }
     }
 
     @Transactional

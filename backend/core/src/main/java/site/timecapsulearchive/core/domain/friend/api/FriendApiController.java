@@ -19,7 +19,6 @@ import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
@@ -89,7 +88,9 @@ public class FriendApiController implements FriendApi {
         friendService.deleteFriend(memberId, friendId);
 
         return ResponseEntity.ok(
-            ApiSpec.empty(SuccessCode.SUCCESS)
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
         );
     }
 
@@ -101,23 +102,26 @@ public class FriendApiController implements FriendApi {
 
         friendService.denyRequestFriend(memberId, friendId);
 
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
-
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 
     @PostMapping(value = "/{friend_id}/request")
     @Override
-    public ResponseEntity<ApiSpec<FriendReqStatusResponse>> requestFriend(
+    public ResponseEntity<ApiSpec<String>> requestFriend(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("friend_id") final Long friendId) {
 
-        return ResponseEntity.accepted()
-            .body(
-                ApiSpec.success(
-                    SuccessCode.SUCCESS,
-                    friendService.requestFriend(memberId, friendId)
-                )
-            );
+        friendService.requestFriend(memberId, friendId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.ACCEPTED
+            )
+        );
     }
 
     @PostMapping(value = "/requests")
@@ -128,8 +132,11 @@ public class FriendApiController implements FriendApi {
     ) {
         friendFacade.requestFriends(memberId, request.friendIds());
 
-        return ResponseEntity.accepted()
-            .body(ApiSpec.empty(SuccessCode.ACCEPTED));
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.ACCEPTED
+            )
+        );
     }
 
     @PostMapping(value = "/{friend_id}/accept-request")
@@ -140,7 +147,11 @@ public class FriendApiController implements FriendApi {
     ) {
         friendService.acceptFriend(memberId, friendId);
 
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 
     @PostMapping(
@@ -173,12 +184,11 @@ public class FriendApiController implements FriendApi {
         @AuthenticationPrincipal Long memberId,
         @RequestParam(value = "friend_tag") final String tag
     ) {
-        return ResponseEntity.ok()
-            .body(
-                ApiSpec.success(
-                    SuccessCode.SUCCESS,
-                    friendService.searchFriend(memberId, tag)
-                )
-            );
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                friendService.searchFriend(memberId, tag)
+            )
+        );
     }
 }

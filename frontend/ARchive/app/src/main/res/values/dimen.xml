@@ -24,4 +24,7 @@
 
     <dimen name="capsule_first_type_h">104dp</dimen>
     <dimen name="capsule_type_h">60dp</dimen>
+
+    <dimen name="common_spinner_width">300dp</dimen>
+    <dimen name="common_spinner_height">50dp</dimen>
 </resources>

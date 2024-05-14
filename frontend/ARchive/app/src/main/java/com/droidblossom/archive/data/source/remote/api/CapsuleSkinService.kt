@@ -24,7 +24,7 @@ interface CapsuleSkinService {
     @GET("capsule-skins")
     suspend fun getCapsuleSkinsPageApi(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt: String
+        @Query("created_at") createdAt: String
     ) : Response<ResponseBody<CapsuleSkinsPageResponseDto>>
 
     @POST("capsule-skins")

@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +24,8 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
+import com.droidblossom.archive.presentation.ui.skin.adapter.SkinMotionRVA
+import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -36,7 +39,9 @@ class CreateCapsule2Fragment :
     private lateinit var callback: OnBackPressedCallback
 
     private val skinRVA by lazy {
-        SkinRVA { viewModel.changeSkin(it) }
+        SkinRVA { previousPosition, currentPosition ->
+            viewModel.changeSkin(previousPosition, currentPosition)
+        }
     }
 
     //그룹캡슐이 아닐 경우 바로 엑티비티 닫기
@@ -47,7 +52,8 @@ class CreateCapsule2Fragment :
                 if (viewModel.groupTypeInt != 1) {
                     requireActivity().finish()
                 } else {
-                    super.remove()
+                    isEnabled =false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
         }
@@ -95,6 +101,14 @@ class CreateCapsule2Fragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
+                    val layoutParams = binding.recycleView.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.updateTopConstraintsForSearch(
+                        isSearchOpen = it,
+                        searchOpenView = binding.searchOpenBtn,
+                        searchView = binding.searchBtn,
+                        additionalMarginDp = 16f,
+                        resources = resources
+                    )
                     if (it){
                         binding.searchOpenEditT.requestFocus()
                         val imm = requireActivity().getSystemService(InputMethodManager::class.java)
@@ -108,25 +122,24 @@ class CreateCapsule2Fragment :
 
     }
 
-    private fun initRVA(){
+
+    private fun initRVA() {
         binding.recycleView.adapter = skinRVA
-        val defaultItemAnimator = DefaultItemAnimator()
-        defaultItemAnimator.changeDuration = 100
-        binding.recycleView.itemAnimator = defaultItemAnimator
+        binding.recycleView.setHasFixedSize(true)
         binding.recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
-                    viewModel.getSkinList()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.onScrollNearBottom()
+                    }
                 }
             }
-
         })
     }
 

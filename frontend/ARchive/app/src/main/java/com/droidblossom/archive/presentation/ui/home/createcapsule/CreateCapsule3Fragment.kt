@@ -120,6 +120,15 @@ class CreateCapsule3Fragment :
 
             nextBtn.setOnClickListener {
 
+                if (viewModel.isSelectTimeCapsule.value && (viewModel.capsuleLatitude.value == 0.0 || viewModel.capsuleTitle.value.isEmpty() || viewModel.capsuleContent.value.isEmpty() || viewModel.dueTime.value.isEmpty())) {
+                    showToastMessage("타임캡슐은 시간, 제목, 내용이 필수 입니다.")
+                    return@setOnClickListener
+                }
+                if (!viewModel.isSelectTimeCapsule.value && (viewModel.capsuleLatitude.value == 0.0 || viewModel.capsuleTitle.value.isEmpty() || viewModel.capsuleContent.value.isEmpty())) {
+                    showToastMessage("캡슐은 제목, 내용이 필수 입니다.")
+                    return@setOnClickListener
+                }
+                showLoading(requireContext())
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
                 CoroutineScope(Dispatchers.IO).launch {
@@ -209,7 +218,14 @@ class CreateCapsule3Fragment :
                             showToastMessage(it.message)
                         }
 
+
                         CreateCapsuleViewModel.Create3Event.ClickVideoUpLoad -> {}
+
+                        CreateCapsuleViewModel.Create3Event.DismissLoading -> {
+                            dismissLoading()
+                        }
+
+                        else -> {}
                     }
                 }
             }

@@ -6,12 +6,16 @@ import java.io.Serializable
 data class MemberDetailResponseDto(
     val nickname : String,
     val profileUrl : String,
-    val phone : String
+    val tag : String,
+    val friendCount: Int,
+    val groupCount: Int
 ) : Serializable {
 
     fun toModel() = MemberDetail(
         nickname = this.nickname,
         profileUrl = this.profileUrl,
-        phone = this.phone
+        tag = this.tag,
+        friendCount = this.friendCount,
+        groupCount = this.groupCount,
     )
 }

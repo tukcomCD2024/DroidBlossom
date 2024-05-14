@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
@@ -32,15 +31,24 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹 초대 찾기 실패"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
-    @PostMapping(value = "/groups/{group_id}/members/{member_id}/accept-invitation")
-    ResponseEntity<Void> acceptGroupInvitation(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true)
+        Long targetId
     );
 
     @Operation(
@@ -53,6 +61,10 @@ public interface GroupApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리완료"
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "외부 API 요청 실패"
         )
     })
     ResponseEntity<ApiSpec<String>> createGroup(
@@ -111,13 +123,13 @@ public interface GroupApi {
             description = "처리 완료"
         )
     })
-    @PostMapping(value = "/groups/{group_id}/members/{member_id}/deny-invitation")
-    ResponseEntity<Void> denyGroupInvitation(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "그룹 초대 대상 아이디", required = true)
+        Long groupOwnerId
     );
 
     @Operation(
@@ -181,13 +193,14 @@ public interface GroupApi {
             description = "처리 시작"
         )
     })
-    @PostMapping(value = "/groups/{group_id}/members/{member_id}/invitation")
-    ResponseEntity<Void> inviteGroup(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> inviteGroup(
+        Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true)
+        Long targetId
     );
 
     @Operation(

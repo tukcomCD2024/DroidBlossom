@@ -1,7 +1,6 @@
 package com.droidblossom.archive.domain.usecase.capsule_skin
 
 import android.util.Log
-import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
 import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsSearchPageRequestDto
 import com.droidblossom.archive.domain.repository.CapsuleSkinRepository
 import com.droidblossom.archive.util.onException

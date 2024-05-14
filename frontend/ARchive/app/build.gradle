@@ -6,6 +6,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 Properties properties = new Properties()
@@ -141,7 +142,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 
     //네이버 지도 : https://navermaps.github.io/android-map-sdk/guide-ko/1.html
-    implementation 'com.naver.maps:map-sdk:3.17.0'
+    implementation 'com.naver.maps:map-sdk:3.18.0'
 
     // Jetpack Security
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha06'
@@ -178,6 +179,16 @@ dependencies {
 
     // Event Bus : https://github.com/greenrobot/EventBus
     implementation("org.greenrobot:eventbus:3.3.1")
+
+    // oss-licenses : https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+
+    // Swiperefreshlayout: https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=ko#kts
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // ConcatAdapter
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
+
 }
 kapt {
     correctErrorTypes true

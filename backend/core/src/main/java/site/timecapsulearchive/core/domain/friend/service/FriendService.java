@@ -13,7 +13,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -43,7 +42,7 @@ public class FriendService {
     private final SocialNotificationManager socialNotificationManager;
     private final TransactionTemplate transactionTemplate;
 
-    public FriendReqStatusResponse requestFriend(final Long memberId, final Long friendId) {
+    public void requestFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
         validateTwoWayInvite(memberId, friendId);
 
@@ -63,8 +62,6 @@ public class FriendService {
         });
 
         socialNotificationManager.sendFriendReqMessage(owner.getNickname(), friendId);
-
-        return FriendReqStatusResponse.success();
     }
 
     private void validateFriendDuplicateId(final Long memberId, final Long friendId) {
@@ -114,20 +111,22 @@ public class FriendService {
     }
 
     @Transactional
-    public void denyRequestFriend(Long memberId, Long friendId) {
+    public void denyRequestFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
-        final FriendInvite friendInvite = friendInviteRepository
-            .findFriendInviteByOwnerIdAndFriendId(memberId, friendId).orElseThrow(
-                FriendNotFoundException::new);
 
-        friendInviteRepository.deleteFriendInviteById(friendInvite.getId());
+        int isDenyRequest = friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(friendId,
+            memberId);
+
+        if (isDenyRequest != 1) {
+            throw new FriendTwoWayInviteException();
+        }
     }
 
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
 
-        List<MemberFriend> memberFriends = memberFriendRepository
+        final List<MemberFriend> memberFriends = memberFriendRepository
             .findMemberFriendByOwnerIdAndFriendId(memberId, friendId);
 
         memberFriends.forEach(memberFriendRepository::delete);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.droidblossom.archive.presentation.model.mypage.SpinnerData" />
+    </data>
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/capsuleTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_spinner_height"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="@dimen/margin"
+        android:background="@null"
+        android:popupBackground="@null"
+        android:dropDownWidth="match_parent"
+        android:dropDownVerticalOffset="@dimen/common_spinner_height"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/storyLayout" />
+
+
+</layout>
