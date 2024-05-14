@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,6 +26,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.skin.adapter.MySkinRVA
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity
 import com.droidblossom.archive.util.LocationUtil
+import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -39,7 +41,6 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        viewModel.getSkinList()
         initRVA()
         initSearchEdit()
         binding.createCapsuleLayout.setOnClickListener {
@@ -51,19 +52,22 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         binding.viewHeaderTitle.layoutParams = layoutParams
     }
 
+
     private fun initRVA() {
         binding.skinRV.adapter = mySkinRVA
+        binding.skinRV.setHasFixedSize(true)
         binding.skinRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
-                    viewModel.getSkinList()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.onScrollNearBottom()
+                    }
                 }
             }
         })
@@ -106,6 +110,14 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
+                    val layoutParams = binding.skinRV.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.updateTopConstraintsForSearch(
+                        isSearchOpen = it,
+                        searchOpenView = binding.searchOpenBtn,
+                        searchView = binding.searchBtn,
+                        additionalMarginDp = 16f,
+                        resources = resources
+                    )
                     if (it){
                         binding.searchOpenEditT.requestFocus()
                         val imm = requireActivity().getSystemService(InputMethodManager::class.java)
@@ -119,9 +131,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (hidden) {
-
-        } else {
+        if (!hidden) {
             viewModel.clearSkins()
             viewModel.closeSearchSkin()
         }

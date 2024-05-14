@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.repository
 
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
@@ -20,7 +21,7 @@ interface MemberRepository {
 
     suspend fun patchFcmToken(request: FcmTokenRequsetDto): RetrofitResult<String>
 
-    suspend fun getNotifications(size:Int, createdAt: String) : RetrofitResult<NotificationPage>
+    suspend fun getNotifications(request: PagingRequestDto) : RetrofitResult<NotificationPage>
 
     suspend fun getText() : RetrofitResult<Health>
 }

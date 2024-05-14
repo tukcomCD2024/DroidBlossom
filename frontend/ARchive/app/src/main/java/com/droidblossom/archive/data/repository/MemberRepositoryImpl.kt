@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.repository
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
@@ -39,13 +40,12 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getNotifications(
-        size: Int,
-        createdAt: String
+        request: PagingRequestDto
     ): RetrofitResult<NotificationPage> {
         return apiHandler({
             api.getNotifications(
-                size = size,
-                createdAt = createdAt
+                size = request.size,
+                createdAt = request.createdAt
             )
         }) { response: ResponseBody<NotificationResponseDto> -> response.result.toModel() }
     }

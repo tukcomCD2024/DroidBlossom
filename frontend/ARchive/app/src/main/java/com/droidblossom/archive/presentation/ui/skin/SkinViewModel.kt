@@ -23,6 +23,7 @@ interface SkinViewModel {
 
     fun updateMySkinsUI()
     fun clearSkins()
+    fun onScrollNearBottom()
 
     sealed class SkinEvent {
         object ToSkinMake : SkinEvent()

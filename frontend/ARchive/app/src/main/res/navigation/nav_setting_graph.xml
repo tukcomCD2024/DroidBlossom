@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_setting_graph"
+    app:startDestination="@id/settingMainFragment">
+
+    <fragment
+        android:id="@+id/settingMainFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.SettingMainFragment"
+        android:label="SettingMainFragment"
+        tools:layout="@layout/fragment_setting_main">
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingNotificationFragment"
+            app:destination="@id/settingNotificationFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingAgreeFragment"
+            app:destination="@id/settingAgreeFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingNoticeFragment"
+            app:destination="@id/settingNoticeFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingUserFragment"
+            app:destination="@id/settingUserFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingNotificationFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingNotificationFragment"
+        android:label="SettingNotificationFragment"
+        tools:layout="@layout/fragment_setting_notification" />
+    <fragment
+        android:id="@+id/settingAgreeFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingAgreeFragment"
+        android:label="SettingAgreeFragment"
+        tools:layout="@layout/fragment_setting_agree" />
+    <fragment
+        android:id="@+id/settingNoticeFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingNoticeFragment"
+        android:label="SettingNoticeFragment"
+        tools:layout="@layout/fragment_setting_notice"/>
+    <fragment
+        android:id="@+id/settingUserFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingUserFragment"
+        android:label="SettingUserFragment"
+        tools:layout="@layout/fragment_setting_user"/>
+
+</navigation>

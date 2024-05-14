@@ -56,10 +56,9 @@ class AuthViewModelImpl @Inject constructor(
     private val _signUpEvents = MutableSharedFlow<AuthViewModel.SignUpEvent>()
     override val signUpEvents: SharedFlow<AuthViewModel.SignUpEvent> = _signUpEvents.asSharedFlow()
 
-    private val _phoneNumber = MutableStateFlow("")
-    override val phoneNumber: MutableStateFlow<String> = _phoneNumber
+    override val phoneNumber = MutableStateFlow("")
 
-    private val _rawPhoneNumber = _phoneNumber
+    private val _rawPhoneNumber = phoneNumber
         .map { it.replace("-", "") }
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val rawPhoneNumber: StateFlow<String> = _rawPhoneNumber
@@ -104,7 +103,7 @@ class AuthViewModelImpl @Inject constructor(
         certificationNumber3.value = ""
         certificationNumber2.value = ""
         certificationNumber1.value = ""
-        _phoneNumber.value = ""
+        phoneNumber.value = ""
     }
 
     override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
@@ -193,7 +192,7 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun clearPhoneNumber(){
         viewModelScope.launch {
-            _phoneNumber.emit("")
+            phoneNumber.emit("")
         }
     }
 
@@ -241,7 +240,9 @@ class AuthViewModelImpl @Inject constructor(
 
     override fun submitCertificationNumber(){
         viewModelScope.launch {
-            validMessageUseCase(VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()).collect{ result ->
+            validMessageUseCase(
+                VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()
+            ).collect{ result ->
                 result.onSuccess {
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)

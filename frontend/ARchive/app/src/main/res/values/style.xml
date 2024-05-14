@@ -14,7 +14,7 @@
 
     <style name="TextAppearance.App.h1" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_h1</item>
-        <item name="fontFamily">@font/notosans_bold</item>
+        <item name="fontFamily">@font/suit_bold</item>
     </style>
 
     <style name="TextAppearance.App.h1.suit" parent="TextAppearance.AppCompat">
@@ -24,7 +24,7 @@
 
     <style name="TextAppearance.App.h2" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_h2</item>
-        <item name="fontFamily">@font/notosans_bold</item>
+        <item name="fontFamily">@font/suit_bold</item>
     </style>
 
     <style name="TextAppearance.App.h3" parent="TextAppearance.AppCompat">
@@ -34,47 +34,47 @@
 
     <style name="TextAppearance.App.h4" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_h4</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/suit_medium</item>
     </style>
 
     <style name="TextAppearance.App.subtitle1" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_subtitle1</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/suit_medium</item>
     </style>
 
     <style name="TextAppearance.App.body1" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_body1</item>
-        <item name="fontFamily">@font/notosans_bold</item>
+        <item name="fontFamily">@font/suit_bold</item>
     </style>
 
     <style name="TextAppearance.App.body2" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_body2</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/suit_medium</item>
     </style>
 
     <style name="TextAppearance.App.button" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_button</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/suit_medium</item>
     </style>
 
     <style name="TextAppearance.App.caption1" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_caption1</item>
-        <item name="fontFamily">@font/notosans_bold</item>
+        <item name="fontFamily">@font/suit_bold</item>
     </style>
 
     <style name="TextAppearance.App.caption2" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_caption2</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/suit_medium</item>
     </style>
 
     <style name="TextAppearance.App.caption3" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_caption3</item>
-        <item name="fontFamily">@font/notosans_bold</item>
+        <item name="fontFamily">@font/suit_bold</item>
     </style>
 
     <style name="TextAppearance.App.caption4" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/text_caption4</item>
-        <item name="fontFamily">@font/notosans_medium</item>
+        <item name="fontFamily">@font/suit_medium</item>
     </style>
 
     <style name="NumberPickerTextAppearance">
@@ -84,5 +84,29 @@
         <item name="android:cacheColorHint">@color/gray_400</item>
         <item name="fontFamily">@font/suit_medium</item>
         <item name="android:editTextColor">@color/main_1</item>
+    </style>
+
+
+    <style name="ARchiveTabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.App.body1</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabBackground">@drawable/tab_selector_background</item>
+        <item name="tabPaddingStart">22dp</item>
+        <item name="tabPaddingEnd">22dp</item>
+        <item name="tabPaddingTop">13dp</item>
+        <item name="tabPaddingBottom">13dp</item>
+        <item name="tabIndicator">@null</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="tabRippleColor">@null</item>
+    </style>
+
+    <style name="FriendTabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.App.body2</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/main_1</item>
+        <item name="tabBackground">@drawable/tab_selector_background</item>
+        <item name="tabIndicator">@null</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="tabRippleColor">@null</item>
     </style>
 </resources>

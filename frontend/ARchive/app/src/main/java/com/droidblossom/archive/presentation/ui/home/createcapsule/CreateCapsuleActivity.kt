@@ -6,9 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.navigation.findNavController
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCreateCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseActivity

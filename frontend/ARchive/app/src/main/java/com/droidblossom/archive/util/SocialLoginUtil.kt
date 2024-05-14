@@ -91,6 +91,7 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
             val authId = account.id.toString()
             val email = account.email ?: ""
             val profileUrl = account.photoUrl.toString() ?: ""
+            val token = account.idToken ?: ""
             callback.onLoginSuccess(CheckStatus(authId,AuthViewModel.Social.GOOGLE),SignUp(authId, email, profileUrl, AuthViewModel.Social.GOOGLE))
             googleSignOut()
         } catch (e: ApiException) {

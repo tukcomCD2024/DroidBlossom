@@ -76,9 +76,9 @@
                 app:layout_constraintBottom_toTopOf="@id/googleLoginBtn"
                 android:text="@string/kakaoLogin"
                 android:textAppearance="@style/TextAppearance.App.button"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:background="@drawable/rectangle_solid_corner_8dp"
-                android:backgroundTint="@color/main_1"
+                android:backgroundTint="@color/kakao"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginHorizontal="@dimen/margin"/>
 
