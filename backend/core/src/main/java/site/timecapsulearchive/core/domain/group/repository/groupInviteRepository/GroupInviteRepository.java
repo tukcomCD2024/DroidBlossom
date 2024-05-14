@@ -16,7 +16,7 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
         Long groupMemberId);
 
     @Query("delete from GroupInvite gi where gi.id in :groupInviteIds")
-    @Modifying(clearAutomatically = true)
+    @Modifying
     void bulkDelete(@Param("groupInviteIds") List<Long> groupInviteIds);
 }
 
