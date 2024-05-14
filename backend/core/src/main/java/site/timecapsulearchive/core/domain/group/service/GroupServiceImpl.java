@@ -62,4 +62,9 @@ public class GroupServiceImpl implements GroupService {
     public void deleteGroup(final Long memberId, final Long groupId) {
         groupWriteService.deleteGroup(memberId, groupId);
     }
+
+    @Override
+    public void quitGroup(final Long memberId, final Long groupId) {
+        groupWriteService.quitGroup(memberId, groupId);
+    }
 }

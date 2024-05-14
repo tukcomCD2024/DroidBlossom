@@ -163,9 +163,15 @@ public class GroupApiController implements GroupApi {
         );
     }
 
+    @DeleteMapping(value = "/{group_id}/members/quit")
     @Override
-    public ResponseEntity<Void> quitGroup(Long groupId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> quitGroup(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId
+    ) {
+        groupService.quitGroup(memberId, groupId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @Override

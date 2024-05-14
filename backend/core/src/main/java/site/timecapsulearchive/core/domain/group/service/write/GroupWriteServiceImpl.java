@@ -15,8 +15,10 @@ import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
 import site.timecapsulearchive.core.domain.group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.group.exception.GroupMemberNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
-import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
+import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
+import site.timecapsulearchive.core.domain.group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.repository.memberGroupRepository.MemberGroupRepository;
@@ -82,7 +84,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
                     groupId, memberId).orElseThrow(GroupNotFoundException::new);
 
                 if (!summaryDto[0].isOwner()) {
-                    throw new GroupOwnerAuthenticateException();
+                    throw new NoGroupAuthorityException();
                 }
 
                 groupInviteRepository.save(groupInvite);
@@ -166,7 +168,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         final boolean isGroupOwner = groupMembers.stream()
             .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
         if (!isGroupOwner) {
-            throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
+            throw new NoGroupAuthorityException();
         }
     }
 
@@ -184,5 +186,25 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         if (groupCapsuleExist) {
             throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
         }
+    }
+
+    /**
+     * 사용자는 사용자가 속한 그룹을 탈퇴한다.
+     * <br><u><b>주의</b></u> - 그룹 탈퇴 시 아래 조건에 해당하면 예외가 발생한다.
+     * <br>1. 그룹원이 그룹장인 경우
+     *
+     * @param memberId 그룹에서 탈퇴할 사용자
+     * @param groupId  탈퇴할 그룹 아이디
+     */
+    @Transactional
+    public void quitGroup(final Long memberId, final Long groupId) {
+        final MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
+            memberId, groupId)
+            .orElseThrow(GroupMemberNotFoundException::new);
+        if (groupMember.getIsOwner()) {
+            throw new GroupQuitException(ErrorCode.GROUP_OWNER_QUIT_ERROR);
+        }
+
+        memberGroupRepository.delete(groupMember);
     }
 }
