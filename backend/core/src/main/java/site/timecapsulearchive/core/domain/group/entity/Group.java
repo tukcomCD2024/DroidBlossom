@@ -38,12 +38,6 @@ public class Group extends BaseEntity {
     @Column(name = "group_profile_url", nullable = false)
     private String groupProfileUrl;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Capsule> capsules;
-
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberGroup> members;
-
     @Builder
     private Group(String groupName, String groupDescription, String groupProfileUrl) {
         if (Objects.isNull(groupName)
