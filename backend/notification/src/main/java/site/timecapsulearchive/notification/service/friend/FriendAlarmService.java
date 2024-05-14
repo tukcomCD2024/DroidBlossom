@@ -11,7 +11,7 @@ import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
-import site.timecapsulearchive.notification.infra.fcm.FCMManager;
+import site.timecapsulearchive.notification.infra.fcm.friend.FriendFcmManager;
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationRepository;
@@ -20,7 +20,7 @@ import site.timecapsulearchive.notification.repository.notification.Notification
 @RequiredArgsConstructor
 public class FriendAlarmService implements FriendAlarmListener {
 
-    private final FCMManager fcmManager;
+    private final FriendFcmManager friendFcmManager;
     private final NotificationRepository notificationRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
@@ -42,7 +42,7 @@ public class FriendAlarmService implements FriendAlarmListener {
 
         final String fcmToken = memberRepository.findFCMToken(dto.targetId());
         if (fcmToken != null && !fcmToken.isBlank()) {
-            fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
+            friendFcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
         }
     }
 
@@ -61,7 +61,7 @@ public class FriendAlarmService implements FriendAlarmListener {
 
         final String fcmToken = memberRepository.findFCMToken(dto.targetId());
         if (fcmToken != null && !fcmToken.isBlank()) {
-            fcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
+            friendFcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
         }
     }
 
@@ -80,7 +80,7 @@ public class FriendAlarmService implements FriendAlarmListener {
 
         final List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
         if (fcmTokens != null && !fcmTokens.isEmpty()) {
-            fcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
+            friendFcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
         }
     }
 
