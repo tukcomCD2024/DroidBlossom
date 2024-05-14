@@ -58,6 +58,26 @@ public class RabbitmqConfig {
     }
 
     @Bean
+    public Queue groupAcceptQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(), true);
+    }
+
+    @Bean
+    public DirectExchange groupAcceptExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getSuccessComponent());
+    }
+
+    @Bean
+    public Binding groupAcceptBinding() {
+        return BindingBuilder
+            .bind(groupAcceptQueue())
+            .to(groupAcceptExchange())
+            .withQueueName();
+    }
+
+    @Bean
     public Queue friendRequestQueue() {
         return new Queue(
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
