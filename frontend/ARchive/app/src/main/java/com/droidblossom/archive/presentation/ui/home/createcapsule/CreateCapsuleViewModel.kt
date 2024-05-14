@@ -59,13 +59,14 @@ interface CreateCapsuleViewModel {
     val dueTime : StateFlow<String>
     val address : StateFlow<AddressData>
 
+    fun onScrollNearBottom()
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()
     fun openSearchSkin()
     fun closeSearchSkin()
     fun searchSkin()
-    fun changeSkin(skin: CapsuleSkinSummary)
+    fun changeSkin(previousPosition: Int?, currentPosition: Int)
     fun getSkinList()
     fun moveFinish()
     fun moveLocation()
@@ -85,7 +86,6 @@ interface CreateCapsuleViewModel {
     fun coordToAddress(latitude: Double, longitude: Double)
     fun getDueTime(tiem:String)
     fun getUploadUrls(getS3UrlData : S3UrlRequest)
-
     fun setFiles(imageFiles: List<File>, videoFiles: List<File>)
     fun closeTimeSetting()
     fun openTimeSetting()
@@ -108,6 +108,8 @@ interface CreateCapsuleViewModel {
         object ClickImgUpLoad : Create3Event()
         object CLickSingleImgUpLoad : Create3Event()
         object ClickVideoUpLoad : Create3Event()
+
+        object DismissLoading : Create3Event()
         data class ShowToastMessage(val message : String) : Create3Event()
     }
 

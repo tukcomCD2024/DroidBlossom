@@ -31,3 +31,4 @@ class GetCapsuleImagesUseCase @Inject constructor(
 
         }
 }
+

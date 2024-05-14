@@ -62,6 +62,8 @@
                     android:hint="@string/skinMakeHint"
                     android:text="@={vm.skinName}"
                     android:maxLines="1"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
                     android:textAppearance="@style/TextAppearance.App.h2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +136,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/skinMotionAddCardView"
                     android:layout_width="0dp"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin"
                     android:backgroundTint="@color/white"
                     app:cardCornerRadius="16dp"
@@ -146,20 +148,19 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:paddingVertical="20dp">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/addMotionTextView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="28dp"
-                            android:layout_marginEnd="4dp"
                             android:ellipsize="middle"
                             android:maxLines="1"
                             android:text="@string/addMotion"
+                            android:layout_marginStart="20dp"
                             android:textAppearance="@style/TextAppearance.App.body2"
                             android:textColor="@color/main_1"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -167,26 +168,29 @@
                             android:id="@+id/imagePlusBtn"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_marginEnd="18dp"
                             android:background="@drawable/corner_radius_12"
                             android:backgroundTint="@color/main_2"
                             android:tint="@color/white"
+                            android:layout_marginEnd="20dp"
                             bind:minus_plus="@{vm.addMotion}"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="@id/addMotionTextView" />
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/skinRV"
+                            android:id="@+id/skinMotionRV"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="36dp"
+                            android:layout_marginTop="20dp"
                             android:orientation="vertical"
+                            android:layout_marginHorizontal="16dp"
+                            android:clipToPadding="false"
                             android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
+                            android:elevation="1dp"
                             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/addMotionTextView" />
+                            app:layout_constraintTop_toBottomOf="@id/addMotionTextView"
+                            app:spanCount="3"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>

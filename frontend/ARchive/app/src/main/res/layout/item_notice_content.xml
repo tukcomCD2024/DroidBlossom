@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.droidblossom.archive.domain.model.setting.NoticeContent" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="•"
+            android:textAppearance="@style/TextAppearance.App.caption1"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/announcement_content_detail_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.App.caption4"
+            android:textColor="@color/black"
+            android:text="@{item.content}"
+            tools:text="1줄\n2줄 길게!~~~!~!@!@#$@#$%#@$#$#@하하ㅏ하하ㅏ하하ㅏ하ㅏ하ㅏ하ㅏ하하ㅏ하ㅏㅎ" />
+    </LinearLayout>
+</layout>

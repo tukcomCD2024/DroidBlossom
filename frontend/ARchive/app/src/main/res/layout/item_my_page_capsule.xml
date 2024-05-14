@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.droidblossom.archive.presentation.model.mypage.CapsuleData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/capsuleImg"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/corner_radius_8"
+            android:backgroundTint="@color/main_bg_2"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/capsuleT"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:foreground="@{data.isOpened ? @color/Transparency : @color/main_alpha70}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            bind:baseImg="@{@drawable/sample_skin}"
+            bind:url="@{data.capsuleSkinUrl}"
+            tools:ignore="UnusedAttribute"
+            tools:src="@drawable/sample_skin" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/capsuleImg"
+            app:layout_constraintBottom_toBottomOf="@id/capsuleImg"
+            app:layout_constraintStart_toStartOf="@id/capsuleImg"
+            app:layout_constraintEnd_toEndOf="@id/capsuleImg"
+            android:text="@{data.isOpened ? `` : `CLOSE`}"
+            android:textAppearance="@style/TextAppearance.App.h1"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/capsuleT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:text="@{data.title}"
+            android:textAppearance="@style/TextAppearance.App.body2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/capsuleImg" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

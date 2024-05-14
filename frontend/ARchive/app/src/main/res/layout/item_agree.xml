@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.droidblossom.archive.domain.model.setting.Agree" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/agreeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="16dp"
+            android:text="@{item.title}"
+            android:textAppearance="@style/TextAppearance.App.body2"
+            android:textColor="@color/gray_700"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/moreBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_plus_24"
+            app:layout_constraintBottom_toBottomOf="@id/agreeTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/agreeTitle"
+            app:tint="@color/gray_700" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/contentSV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/corner_radius_12_stroke_1"
+            android:fillViewport="true"
+            android:nestedScrollingEnabled="true"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/moreBtn">
+
+            <TextView
+                android:id="@+id/agreeContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{item.content}"
+                android:textAppearance="@style/TextAppearance.App.caption4" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

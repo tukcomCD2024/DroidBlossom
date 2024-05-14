@@ -12,7 +12,7 @@ class SecretCapsuleSummaryUseCase @Inject constructor(
     private val repository : SecretRepository
 ) {
 
-    suspend operator fun invoke(capsuleId :Int) =
+    suspend operator fun invoke(capsuleId :Long) =
         flow {
             try {
                 emit(repository.getSecretCapsuleSummary(capsuleId).onSuccess {

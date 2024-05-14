@@ -3,13 +3,19 @@ package com.droidblossom.archive.presentation.ui.capsule
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCapsuleDetailBinding
+import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.domain.model.common.ContentType
 import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.presentation.base.BaseActivity
@@ -66,13 +72,16 @@ class CapsuleDetailActivity :
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-
+                viewModel.getPublicCapsuleDetail(capsuleInd)
             }
 
             null -> {}
         }
         binding.closeBtn.setOnClickListener {
             finish()
+        }
+        binding.capsuleMenuImg.setOnClickListener { view ->
+            showPopupMenu(view)
         }
     }
 
@@ -81,6 +90,34 @@ class CapsuleDetailActivity :
         binding.postImgVP.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.postImgVP)
 
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(this), null, false)
+
+        val density = this.resources.displayMetrics.density
+        val widthPixels = (120 * density).toInt()
+
+        val popupWindow = PopupWindow(popupMenuBinding.root,
+            widthPixels,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true)
+
+        popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWidth = popupWindow.contentView.measuredWidth
+
+        val xOffset = (view.width / 2) - (popupWidth / 2) - 213
+        popupWindow.showAsDropDown(view, xOffset, -view.height)
+
+        popupMenuBinding.menuMap.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupMenuBinding.menuModify.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupMenuBinding.menuDelete.setOnClickListener {
+            popupWindow.dismiss()
+        }
     }
 
     override fun observeData() {

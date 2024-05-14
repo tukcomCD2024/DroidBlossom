@@ -5,11 +5,13 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -17,9 +19,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.droidblossom.archive.R
+import com.google.android.material.tabs.TabLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Locale
+
+@BindingAdapter("textInt")
+fun AppCompatTextView.textInt(int: Int) {
+    this.text = int.toString()
+}
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
@@ -90,8 +98,13 @@ fun TextView.displayRemainingTime(totalSeconds: Int) {
     this.text = String.format("%02d분 %02d초", minutes, seconds)
 }
 
+@BindingAdapter("bind:culcLastDays")
+fun TextView.culcLastDays(date: String) {
+    this.text = DateUtils.calcLastDate(date)
+}
+
 @BindingAdapter("bind:animateFAB")
-fun CardView.animateFAB(y : Float){
+fun CardView.animateFAB(y: Float) {
     ObjectAnimator.ofFloat(this, "translationY", y).apply { start() }
 }
 
@@ -113,7 +126,7 @@ fun TextView.setFormattedDateTime(dateString: String) {
 
 @BindingAdapter("bind:displayCreationDateTimeNullFormatted")
 fun TextView.setFormattedDateTimeNull(dateString: String?) {
-    if (!dateString.isNullOrEmpty()){
+    if (!dateString.isNullOrEmpty()) {
         try {
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
             val date = parser.parse(dateString)
@@ -124,7 +137,7 @@ fun TextView.setFormattedDateTimeNull(dateString: String?) {
         } catch (e: Exception) {
             this.text = "날짜 형식 오류"
         }
-    }else{
+    } else {
         this.text = "일반 캡슐 입니다"
     }
 }
@@ -170,17 +183,80 @@ fun setLayoutHeight(view: View, height: Float) {
 }
 
 @BindingAdapter("bind:setCapsuleType2Img")
-fun ImageView.setCapsuleType2Img(type: String?){
-    when(type) {
+fun ImageView.setCapsuleType2Img(type: String?) {
+    when (type) {
         "SECRET" -> {
             this.setImageResource(R.drawable.ic_secret_marker_24)
         }
+
         "PUBLIC" -> {
             this.setImageResource(R.drawable.ic_public_marker_24)
         }
-        "GROUP" ->{
+
+        "GROUP" -> {
             this.setImageResource(R.drawable.ic_group_marker_24)
         }
+
         else -> {}
+    }
+}
+
+@BindingAdapter("bind:tabMarginEnd")
+fun TabLayout.setTabItemMargin(marginEndDp: Int) {
+    val marginEndPx = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, marginEndDp.toFloat(), resources.displayMetrics
+    ).toInt()
+
+    val tabs = getChildAt(0) as ViewGroup
+    for (i in 0 until tabs.childCount) {
+        val tab = tabs.getChildAt(i)
+        val layoutParams = tab.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.marginEnd = marginEndPx
+        tab.layoutParams = layoutParams
+    }
+    requestLayout()
+}
+
+@BindingAdapter(
+    value = ["bind:isFriend", "bind:isInviteToMe", "bind:isInviteToFriend", "bind:friendName"],
+    requireAll = false
+)
+fun TextView.addFriendText(
+    isFriend: Boolean,
+    isInviteToMe: Boolean,
+    isInviteToFriend: Boolean,
+    name: String
+) {
+    if (isFriend || isInviteToFriend || isInviteToMe) {
+        if (isFriend) {
+            this.text = "이미 친구입니다."
+        } else if (isInviteToFriend) {
+            this.text = "요청을 보냈습니다."
+        } else {
+            this.text = "요청을 받았습니다,확인해주세요."
+        }
+    } else {
+        this.text = name
+    }
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter(value = ["bind:count", "bind:showDecimal"], requireAll = true)
+fun TextView.formatCountWithK(count: Int, showDecimal: Boolean) {
+
+    if (count < 1000) {
+        this.text = count.toString()
+    } else {
+        if (showDecimal) {
+            val thousands = count / 1000
+            val remainder = (count % 1000) / 100
+            if (remainder == 0) {
+                this.text = "${thousands}K"
+            } else {
+                this.text = "${thousands}.${remainder}K"
+            }
+        } else {
+            this.text = "${count / 1000}K"
+        }
     }
 }
