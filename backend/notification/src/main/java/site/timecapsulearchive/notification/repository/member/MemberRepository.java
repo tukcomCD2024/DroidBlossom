@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.repository;
+package site.timecapsulearchive.notification.repository.member;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
