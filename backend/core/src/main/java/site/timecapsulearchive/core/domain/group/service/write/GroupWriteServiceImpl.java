@@ -10,6 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupUpdateDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
@@ -29,6 +30,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Service
 @RequiredArgsConstructor
@@ -230,7 +232,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
             throw new GroupMemberDuplicatedIdException();
         }
 
-        checkGroupOwnerShip(groupOwnerId, groupId);
+        checkGroupOwnership(groupOwnerId, groupId);
 
         final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
                 groupMemberId, groupId)
@@ -239,7 +241,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         memberGroupRepository.delete(memberGroup);
     }
 
-    private void checkGroupOwnerShip(Long groupOwnerId, Long groupId) {
+    private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
         final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
                 groupOwnerId,
                 groupId)
@@ -247,5 +249,34 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         if (!isOwner) {
             throw new NoGroupAuthorityException();
         }
+    }
+
+    /**
+     * 그룹 정보를 업데이트한다.
+     * <br><u><b>주의</b></u> - 그룹 정보 변경 시 아래 조건에 해당하면 예외가 발생한다.
+     * <br>1. 해당 그룹원을 찾을 수 없는 경우
+     * <br>2. 그룹장이 아닌 경우
+     * <br>3. 그룹을 찾을 수 없는 경우
+     *
+     * @param groupOwnerId 그룹장 아이디
+     * @param groupId      그룹 아이디
+     * @param dto          업데이트할 그룹 정보
+     */
+    @Transactional
+    public void updateGroup(Long groupOwnerId, Long groupId, GroupUpdateDto dto) {
+        checkGroupOwnership(groupOwnerId, groupId);
+
+        Group group = groupRepository.findGroupById(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        group.updateGroupName(dto.groupName());
+        group.updateGroupDescription(dto.groupDescription());
+
+        final String groupProfileUrl = S3UrlGenerator.generateFileName(
+            groupOwnerId,
+            dto.groupImageDirectory(),
+            dto.groupImageProfileFileName()
+        );
+        group.updateGroupProfileUrl(groupProfileUrl);
     }
 }

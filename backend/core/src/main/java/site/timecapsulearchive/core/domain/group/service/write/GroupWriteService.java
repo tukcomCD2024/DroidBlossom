@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.group.service.write;
 
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupUpdateDto;
 
 public interface GroupWriteService {
 
@@ -17,4 +18,6 @@ public interface GroupWriteService {
     void quitGroup(final Long memberId, final Long groupId);
 
     void kickGroupMember(final Long groupOwnerId, final Long groupId, final Long groupMemberId);
+
+    void updateGroup(final Long memberId, final Long groupId, final GroupUpdateDto dto);
 }

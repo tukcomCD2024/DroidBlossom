@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupUpdateDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.service.read.GroupReadService;
 import site.timecapsulearchive.core.domain.group.service.write.GroupWriteService;
@@ -75,5 +76,10 @@ public class GroupServiceImpl implements GroupService {
         final Long groupMemberId
     ) {
         groupWriteService.kickGroupMember(groupOwnerId, groupId, groupMemberId);
+    }
+
+    @Override
+    public void updateGroup(Long memberId, Long groupId, GroupUpdateDto dto) {
+        groupWriteService.updateGroup(memberId, groupId, dto);
     }
 }

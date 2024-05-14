@@ -57,7 +57,7 @@ public class CapsuleSkinMapper {
         return CapsuleSkin.builder()
             .skinName(dto.skinName())
             .imageUrl(
-                s3UrlGenerator.generateFileName(member.getId(), dto.directory(), dto.imageUrl()))
+                S3UrlGenerator.generateFileName(member.getId(), dto.directory(), dto.imageUrl()))
             .member(member)
             .build();
     }
@@ -73,7 +73,7 @@ public class CapsuleSkinMapper {
             .skinName(dto.skinName())
             .imageUrl(
                 s3PreSignedUrlManager.getS3PreSignedUrlForGet(
-                    s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl())
+                    S3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl())
                 ))
             .motionName(dto.motionName())
             .retarget(dto.retarget())
