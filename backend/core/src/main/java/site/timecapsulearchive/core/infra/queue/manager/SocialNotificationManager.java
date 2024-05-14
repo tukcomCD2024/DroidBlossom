@@ -8,6 +8,7 @@ import site.timecapsulearchive.core.global.config.rabbitmq.RabbitmqComponentCons
 import site.timecapsulearchive.core.infra.queue.data.dto.FriendAcceptNotificationDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.FriendReqNotificationDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.FriendsReqNotificationsDto;
+import site.timecapsulearchive.core.infra.queue.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupInviteNotificationDto;
 
 @Component
@@ -71,9 +72,20 @@ public class SocialNotificationManager {
         final List<Long> targetIds
     ) {
         basicRabbitTemplate.convertAndSend(
-            RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent(),
-            RabbitmqComponentConstants.GROUP_INVITE_QUEUE.getSuccessComponent(),
+            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getSuccessComponent(),
+            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getSuccessComponent(),
             GroupInviteNotificationDto.createOf(ownerNickname, groupProfileUrl, targetIds)
+        );
+    }
+
+    public void sendGroupAcceptMessage(
+        final String groupMemberNickname,
+        final Long targetId
+    ) {
+        basicRabbitTemplate.convertAndSend(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getSuccessComponent(),
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
+            GroupAcceptNotificationDto.createOf(targetId, groupMemberNickname)
         );
     }
 }

@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.repository;
+package site.timecapsulearchive.core.domain.group.repository.groupRepository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
@@ -22,7 +22,7 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 
 @Repository
 @RequiredArgsConstructor
-public class GroupQueryRepository {
+public class GroupQueryRepositoryImpl implements GroupQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

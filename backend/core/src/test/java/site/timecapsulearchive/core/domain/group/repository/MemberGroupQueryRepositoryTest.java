@@ -26,6 +26,8 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupQueryRepository;
+import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
@@ -40,7 +42,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
     private Long ownerGroupId;
 
     MemberGroupQueryRepositoryTest(JPAQueryFactory jpaQueryFactory) {
-        this.groupQueryRepository = new GroupQueryRepository(jpaQueryFactory);
+        this.groupQueryRepository = new GroupQueryRepositoryImpl(jpaQueryFactory);
     }
 
     @Transactional

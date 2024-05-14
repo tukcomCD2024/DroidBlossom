@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendReqStatusResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
@@ -129,7 +128,7 @@ public interface FriendApi {
             description = "외부 API 요청 실패"
         )
     })
-    ResponseEntity<ApiSpec<FriendReqStatusResponse>> requestFriend(
+    ResponseEntity<ApiSpec<String>> requestFriend(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "친구 아이디", required = true, schema = @Schema())

@@ -24,7 +24,7 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long> {
 
     Optional<FriendInvite> findFriendInviteByOwnerIdAndFriendId(Long memberId, Long targetId);
 
-    void deleteFriendInviteById(Long id);
+    int deleteFriendInviteByOwnerIdAndFriendId(Long memberId, Long targetId);
 
     void delete(FriendInvite friendInvite);
 }

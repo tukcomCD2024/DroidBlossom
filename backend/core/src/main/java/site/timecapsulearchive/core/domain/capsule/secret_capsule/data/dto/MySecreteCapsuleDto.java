@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.util.function.Function;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecreteCapsuleResponse;
-import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 public record MySecreteCapsuleDto(
     Long capsuleId,

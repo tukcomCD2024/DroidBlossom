@@ -46,4 +46,8 @@ public class MemberGroup extends BaseEntity {
     public static MemberGroup createGroupOwner(Member member, Group group) {
         return new MemberGroup(true, member, group);
     }
+
+    public static MemberGroup createGroupMember(Member member, Group group) {
+        return new MemberGroup(false, member, group);
+    }
 }
