@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -119,24 +118,40 @@ public interface GroupApi {
     );
 
     @Operation(
-        summary = "그룹원 삭제",
-        description = "그룹장인 경우 특정 그룹원을 삭제한다.",
+        summary = "그룹원 추방",
+        description = "요청한 사용자가 그룹장인 경우 특정 그룹원을 그룹에서 추방한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "204",
+            responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "그룹장과 삭제하려는 대상 그룹원 아이디가 같은 경우에 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹장이 아니여서 그룹 수정에 대한 권한이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "삭제하려는 그룹원이 존재하지 않는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @DeleteMapping(value = "/groups/{group_id}/members/{member_id}")
-    ResponseEntity<Void> deleteGroupMember(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> kickGroupMember(
+        Long groupOwnerId,
 
-        @Parameter(in = ParameterIn.PATH, description = "삭제할 멤버 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "추방할 그룹원 멤버 아이디", required = true)
+        Long groupMemberId
     );
 
     @Operation(

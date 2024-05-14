@@ -7,4 +7,5 @@ public interface MemberGroupQueryRepository {
 
     Optional<GroupOwnerSummaryDto> findOwnerInMemberGroup(Long groupId, Long memberId);
 
+    Optional<Boolean> findIsOwnerByMemberIdAndGroupId(Long memberId, Long groupId);
 }

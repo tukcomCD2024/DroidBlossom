@@ -67,4 +67,13 @@ public class GroupServiceImpl implements GroupService {
     public void quitGroup(final Long memberId, final Long groupId) {
         groupWriteService.quitGroup(memberId, groupId);
     }
+
+    @Override
+    public void kickGroupMember(
+        final Long groupOwnerId,
+        final Long groupId,
+        final Long groupMemberId
+    ) {
+        groupWriteService.kickGroupMember(groupOwnerId, groupId, groupMemberId);
+    }
 }

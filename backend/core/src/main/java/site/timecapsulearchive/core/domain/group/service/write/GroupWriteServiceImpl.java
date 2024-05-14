@@ -15,6 +15,7 @@ import site.timecapsulearchive.core.domain.group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
 import site.timecapsulearchive.core.domain.group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.group.exception.GroupMemberDuplicatedIdException;
 import site.timecapsulearchive.core.domain.group.exception.GroupMemberNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupQuitException;
@@ -34,13 +35,13 @@ import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
 public class GroupWriteServiceImpl implements GroupWriteService {
 
     private final MemberRepository memberRepository;
-    private final GroupRepository groupRepository;
     private final MemberGroupRepository memberGroupRepository;
+    private final GroupRepository groupRepository;
     private final GroupInviteRepository groupInviteRepository;
-    private final TransactionTemplate transactionTemplate;
-    private final SocialNotificationManager socialNotificationManager;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
+    private final SocialNotificationManager socialNotificationManager;
     private final S3ObjectManager s3ObjectManager;
+    private final TransactionTemplate transactionTemplate;
 
     public void createGroup(final Long memberId, final GroupCreateDto dto) {
         final Member member = memberRepository.findMemberById(memberId)
@@ -206,5 +207,45 @@ public class GroupWriteServiceImpl implements GroupWriteService {
         }
 
         memberGroupRepository.delete(groupMember);
+    }
+
+    /**
+     * 그룹의 회원을 그룹에서 삭제한다.
+     * <br><u><b>주의</b></u> - 그룹원 삭제 시 아래 조건에 해당하면 예외가 발생한다.
+     * <br>1. 자신을 삭제하려한 경우
+     * <br>2. 삭제를 요청한 사용자가 그룹장이 아닌 경우
+     * <br>3. 삭제할 대상이 없는 경우
+     *
+     * @param groupOwnerId  그룹장 여부 조회할 대상 사용자
+     * @param groupId       해당 그룹 아이디
+     * @param groupMemberId 삭제할 그룹원 아이디
+     */
+    @Transactional
+    public void kickGroupMember(
+        final Long groupOwnerId,
+        final Long groupId,
+        final Long groupMemberId
+    ) {
+        if (groupOwnerId.equals(groupMemberId)) {
+            throw new GroupMemberDuplicatedIdException();
+        }
+
+        checkGroupOwnerShip(groupOwnerId, groupId);
+
+        final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
+                groupMemberId, groupId)
+            .orElseThrow(GroupMemberNotFoundException::new);
+
+        memberGroupRepository.delete(memberGroup);
+    }
+
+    private void checkGroupOwnerShip(Long groupOwnerId, Long groupId) {
+        final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
+                groupOwnerId,
+                groupId)
+            .orElseThrow(GroupMemberNotFoundException::new);
+        if (!isOwner) {
+            throw new NoGroupAuthorityException();
+        }
     }
 }

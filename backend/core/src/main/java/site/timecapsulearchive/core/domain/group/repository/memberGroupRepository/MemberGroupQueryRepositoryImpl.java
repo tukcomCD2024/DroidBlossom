@@ -37,4 +37,17 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .fetchFirst()
         );
     }
+
+    public Optional<Boolean> findIsOwnerByMemberIdAndGroupId(
+        final Long memberId,
+        final Long groupId
+    ) {
+        return Optional.ofNullable(
+            jpaQueryFactory
+                .select(memberGroup.isOwner)
+                .from(memberGroup)
+                .where(memberGroup.member.id.eq(memberId).and(memberGroup.group.id.eq(groupId)))
+                .fetchOne()
+        );
+    }
 }

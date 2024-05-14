@@ -15,4 +15,6 @@ public interface GroupWriteService {
     void deleteGroup(final Long memberId, final Long groupId);
 
     void quitGroup(final Long memberId, final Long groupId);
+
+    void kickGroupMember(final Long groupOwnerId, final Long groupId, final Long groupMemberId);
 }

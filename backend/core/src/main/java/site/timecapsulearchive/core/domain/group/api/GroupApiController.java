@@ -83,9 +83,16 @@ public class GroupApiController implements GroupApi {
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
+    @DeleteMapping(value = "/{group_id}/members/{group_member_id}")
     @Override
-    public ResponseEntity<Void> deleteGroupMember(Long groupId, Long memberId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> kickGroupMember(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId,
+        @PathVariable("group_member_id") final Long groupMemberId
+    ) {
+        groupService.kickGroupMember(memberId, groupId, groupMemberId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @DeleteMapping(value = "/reject/{group_id}/member/{target_id}")
