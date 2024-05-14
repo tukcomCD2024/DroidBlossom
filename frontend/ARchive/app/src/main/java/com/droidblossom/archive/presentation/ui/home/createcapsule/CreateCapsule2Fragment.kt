@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
 import com.droidblossom.archive.presentation.ui.skin.adapter.SkinMotionRVA
+import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -99,6 +101,14 @@ class CreateCapsule2Fragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
+                    val layoutParams = binding.recycleView.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.updateTopConstraintsForSearch(
+                        isSearchOpen = it,
+                        searchOpenView = binding.searchOpenBtn,
+                        searchView = binding.searchBtn,
+                        additionalMarginDp = 16f,
+                        resources = resources
+                    )
                     if (it){
                         binding.searchOpenEditT.requestFocus()
                         val imm = requireActivity().getSystemService(InputMethodManager::class.java)
@@ -115,6 +125,7 @@ class CreateCapsule2Fragment :
 
     private fun initRVA() {
         binding.recycleView.adapter = skinRVA
+        binding.recycleView.setHasFixedSize(true)
         binding.recycleView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -125,7 +136,7 @@ class CreateCapsule2Fragment :
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.getSkinList()
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }

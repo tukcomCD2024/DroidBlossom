@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/closeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:paddingBottom="12dp"
+            android:src="@drawable/ic_close_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginTop="12dp"
+            android:text="친구를 검색하여 추가해주세요"
+            android:textAppearance="@style/TextAppearance.App.h2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/closeBtn" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/searchOpenBtn"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="21dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleT">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/searchOpenBtnLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/searchOpenEditT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:ellipsize="start"
+                    android:imeOptions="actionDone"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@={vm.tagT}"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/searchOpenBtnT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="검색"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@color/main_1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="85dp"
+            android:clipToPadding="false"
+            android:paddingBottom="140dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleT"
+            app:spanCount="3"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_add_friend" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/addCV"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/rectangle_solid_corner_30dp"
+            android:backgroundTint="#B21B3AC4"
+            android:elevation="2dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="1dp"
+            app:layout_constraintBottom_toTopOf="@id/addBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeColor="@color/main_3">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/addT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="12dp"
+                    android:text="주소록으로 추가"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/createCapsuleCardView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/createCapsuleCardView"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginVertical="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:backgroundTint="@color/main_bg_1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/capsuleTypeImageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_plus_24_blue" />
+
+                </androidx.cardview.widget.CardView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/main_bg_1_alpha20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/addBtn" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/addBtn"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:alpha="@{vm.checkedList.size() == 0 ? 0.5f : 1f}"
+            android:background="@drawable/corner_radius_8"
+            android:backgroundTint="@color/main_1"
+            android:gravity="center"
+            android:onClick="@{()->vm.requestFriends()}"
+            android:text="추가하기"
+            android:textAppearance="@style/TextAppearance.App.subtitle1"
+            android:textColor="@color/white"
+            app:circularflow_radiusInDP="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:alpha="0.5" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

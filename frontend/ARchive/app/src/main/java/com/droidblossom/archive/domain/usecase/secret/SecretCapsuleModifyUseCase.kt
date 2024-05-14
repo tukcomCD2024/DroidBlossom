@@ -14,7 +14,7 @@ import javax.inject.Inject
 data class SecretCapsuleModifyUseCase @Inject constructor(
     private val repository: SecretRepository
 ) {
-    suspend operator fun invoke(capsuleId :Int,request: SecretCapsuleModifyRequestDto) =
+    suspend operator fun invoke(capsuleId :Long,request: SecretCapsuleModifyRequestDto) =
         flow<RetrofitResult<SecretCapsuleModify>> {
             try {
                 emit(repository.modifySecretCapsule(capsuleId, request).onSuccess {

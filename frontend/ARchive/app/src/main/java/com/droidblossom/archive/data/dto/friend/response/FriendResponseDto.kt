@@ -4,14 +4,15 @@ import com.droidblossom.archive.domain.model.friend.Friend
 
 data class FriendResponseDto(
     val createdAt: String,
-    val id: Int,
+    val id: Long,
     val nickname: String,
     val profileUrl: String
 ) {
-     fun toModel() = Friend(
-         createdAt = this.createdAt,
-         id = this.id,
-         nickname = this.nickname,
-         profileUrl = this.profileUrl
-     )
+    fun toModel() = Friend(
+        createdAt = this.createdAt,
+        id = this.id,
+        nickname = this.nickname,
+        profileUrl = this.profileUrl,
+        isOpenDelete = false
+    )
 }

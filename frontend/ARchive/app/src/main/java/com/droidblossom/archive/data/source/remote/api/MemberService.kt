@@ -44,7 +44,7 @@ interface MemberService {
     @GET("me/notifications")
     suspend fun getNotifications(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt : String
+        @Query("created_at") createdAt : String
     ): Response<ResponseBody<NotificationResponseDto>>
 
 

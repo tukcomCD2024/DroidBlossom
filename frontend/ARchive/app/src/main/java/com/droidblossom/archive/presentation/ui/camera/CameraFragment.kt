@@ -1,20 +1,30 @@
 package com.droidblossom.archive.presentation.ui.camera
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
+import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.CustomLifecycleOwner
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
 import com.google.ar.core.Anchor
@@ -34,30 +44,152 @@ class CameraFragment :
     FragmentManagerProvider {
 
     override val viewModel: CameraViewModelImpl by viewModels<CameraViewModelImpl>()
-
-    // private val capsules: MutableList<CapsuleMarker> = mutableListOf()
     lateinit var arSceneView: ARSceneView
     private lateinit var session: Session
     private lateinit var config: Config
     private lateinit var viewAttachmentManager: ViewAttachmentManager
+    private val locationUtil by lazy { LocationUtil(requireContext()) }
+
+    private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
+        CustomLifecycleOwner()
+    }
+
+    private val arPermissionList = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions.all { it.value } -> {
+                    locationUtil.getCurrentLocation { latitude, longitude ->
+                        viewModel.getCapsules(latitude = latitude, longitude = longitude)
+                    }
+                }
+
+                permissions.none { it.value } -> {
+                    handleAllPermissionsDenied()
+                }
+
+                else -> {
+                    handlePartialPermissionsDenied(permissions)
+                }
+            }
+        }
+
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                viewAttachmentManager.onResume()
+                if (this.isHidden) {
+                    onHidden()
+                }
+                requestPermissionLauncher.launch(arPermissionList)
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    showToastMessage("AR 기능을 사용하려면 카메라 권한이 필요합니다.")
+                } else {
+                    requestPermissionLauncher.launch(arPermissionList)
+                }
+
+            }
+        }
+
+    private fun handleAllPermissionsDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        ) {
+            showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+        } else {
+            showSettingsDialog(
+                PermissionDialogFragment.PermissionType.AR,
+                object : PermissionDialogButtonClickListener {
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+                        //requireActivity().finish()
+
+                    }
+
+                    override fun onRightButtonClicked() {
+                        navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                    }
+
+                })
+        }
+    }
+
+    private fun handlePartialPermissionsDenied(permissions: Map<String, Boolean>) {
+        permissions.forEach { (permission, granted) ->
+            if (!granted) {
+                when (permission) {
+                    Manifest.permission.CAMERA -> showPermissionDialog(PermissionDialogFragment.PermissionType.CAMERA)
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                        if (!permissions.getValue(Manifest.permission.ACCESS_FINE_LOCATION) ||
+                            !permissions.getValue(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        ) {
+                            showPermissionDialog(PermissionDialogFragment.PermissionType.LOCATION)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showPermissionDialog(permissionType: PermissionDialogFragment.PermissionType) {
+
+        if (shouldShowRequestPermissionRationale(permissionType.toString())) {
+            showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
+        } else {
+            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener {
+                override fun onLeftButtonClicked() {
+                    showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
+                    //requireActivity().finish()
+                }
+
+                override fun onRightButtonClicked() {
+                    navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                }
+
+            })
+        }
+
+    }
+
 
     override fun provideFragmentManager(): FragmentManager {
         return parentFragmentManager
     }
 
     override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.cameraEvents.collect { event ->
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
-                            val sheet = CapsulePreviewDialogFragment.newInstance(
-                                "-1",
-                                event.capsuleId,
-                                event.capsuleType,
-                                true
-                            )
-                            sheet.show(parentFragmentManager, "CapsulePreviewDialog")
+
+                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            if (existingDialog == null) {
+                                val dialog = CapsulePreviewDialogFragment.newInstance(
+                                    "-1",
+                                    event.capsuleId,
+                                    event.capsuleType,
+                                    true
+                                )
+                                dialog.show(parentFragmentManager, CapsulePreviewDialogFragment.TAG)
+                            }
+
+                        }
+
+                        is CameraViewModel.CameraEvent.ShowLoading -> {
+                            showLoading(requireContext())
+                        }
+
+                        is CameraViewModel.CameraEvent.DismissLoading -> {
+                            dismissLoading()
                         }
 
                         else -> {}
@@ -66,23 +198,24 @@ class CameraFragment :
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.anchorNodes
                     .filter { anchorNodes ->
-                        anchorNodes.size == viewModel.capsuleListSize.value
+                        anchorNodes.size == viewModel.capsuleListSize
                     }
                     .collect {
                         dismissLoading()
+                        showToastMessage("${it.size}개의 캡슐을 찾았습니다.")
                     }
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        visibleLifecycleOwner.lifecycleScope.launch {
+            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
                     arSceneView.onSessionUpdated = { session, frame ->
-                        if (viewModel.anchorNodes.value.isEmpty()) {
+                        if (viewModel.capsuleList.value.isNotEmpty() && !viewModel.isCapsulesAdded) {
                             Log.d("CameraFragmentAR", "earth setting start")
                             val earth = session.earth
                             if (earth == null) {
@@ -109,6 +242,7 @@ class CameraFragment :
                                         )
                                         addAnchorNode(earthAnchor, capsule)
                                     }
+                                    viewModel.isCapsulesAdded = true
                                 }
                             }
                         }
@@ -117,28 +251,45 @@ class CameraFragment :
                 }
             }
         }
-    }
 
-    val permissionList = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading(requireContext())
-        val locationUtil = LocationUtil(requireContext())
-        locationUtil.getCurrentLocation { latitude, longitude ->
-            viewModel.getCapsules(latitude = latitude, longitude = longitude)
-        }
+        binding.vm = viewModel
+        binding.view = this
         arSceneView = binding.sceneView
 
         viewAttachmentManager = ViewAttachmentManager(
             arSceneView.context,
             arSceneView
         )
-        initView()
-        createSession()
+
+        val layoutParams = binding.filterAll.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.topMargin += getStatusBarHeight()
+        binding.filterAll.layoutParams = layoutParams
+
+        initCustomLifeCycle()
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            initView()
+            createSession()
+        } else {
+            MainActivity.goMain(requireContext())
+        }
     }
 
     private fun initView() {
@@ -146,11 +297,12 @@ class CameraFragment :
             config.geospatialMode = Config.GeospatialMode.ENABLED
             config.planeFindingMode = Config.PlaneFindingMode.DISABLED
         }
+
     }
 
 
-    private fun addAnchorNode(anchor: Anchor, capsule: CapsuleMarker) {
-        Log.d("CameraFragmentAR", "addAnchorNode added")
+    private fun addAnchorNode(anchor: Anchor, capsule: CapsuleAnchor) {
+        Log.d("CameraFragmentAR", "${capsule.id} addAnchorNode added")
         arSceneView.let { sceneView ->
             viewAttachmentManager.let { attachManager ->
                 ARContentNode(
@@ -176,6 +328,7 @@ class CameraFragment :
                 )
             }
         }
+
     }
 
     private fun createSession() {
@@ -185,29 +338,75 @@ class CameraFragment :
         session.configure(config)
     }
 
+    private fun initCustomLifeCycle() {
+        viewLifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_START,
+                    Lifecycle.Event.ON_CREATE,
+                    Lifecycle.Event.ON_RESUME,
+                    Lifecycle.Event.ON_PAUSE, -> {
+                        if (isHidden) {
+                            visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+                        } else {
+                            visibleLifecycleOwner.handleLifecycleEvent(event)
+                        }
+                    }
+                    else -> {
+                        visibleLifecycleOwner.handleLifecycleEvent(event)
+                    }
+                }
+            }
+        })
+    }
+
     override fun onResume() {
         super.onResume()
-        viewAttachmentManager.onResume()
+        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
-            dismissLoading()
-            for (anchorNode in viewModel.anchorNodes.value) {
-                arSceneView.removeChildNode(anchorNode)
-            }
+            onHidden()
+        } else {
+            onShow()
+        }
+    }
+
+    private fun onHidden() {
+        dismissLoading()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            arSceneView.clearChildNodes()
             viewModel.clearAnchorNode()
             viewAttachmentManager.onPause()
             arSceneView.session?.pause()
-        } else {
-            showLoading(requireContext())
+        }
+    }
+
+    private fun onShow() {
+        visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             arSceneView.session?.resume()
             viewAttachmentManager.onResume()
-            val locationUtil = LocationUtil(requireContext())
-            locationUtil.getCurrentLocation { latitude, longitude ->
-                viewModel.getCapsules(latitude = latitude, longitude = longitude)
-            }
+            //requestPermissionLauncher.launch(arPermissionList)
+        }
+    }
+
+    fun onClickFilter(capsuleFilterType: CameraViewModel.CapsuleFilterType) {
+        showLoading(requireContext())
+        arSceneView.clearChildNodes()
+        viewModel.clearAnchorNode()
+        locationUtil.getCurrentLocation { latitude, longitude ->
+            viewModel.selectFilter(capsuleFilterType, latitude = latitude, longitude = longitude)
         }
     }
 
@@ -216,4 +415,5 @@ class CameraFragment :
         const val TAG = "CAMERA"
         fun newIntent() = CameraFragment()
     }
+
 }

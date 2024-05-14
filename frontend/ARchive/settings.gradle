@@ -13,7 +13,7 @@ dependencyResolutionManagement {
         maven { url "https://jitpack.io" }
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' } // 카카오 로그인
         maven {
-            url 'https://naver.jfrog.io/artifactory/maven/'
+            url 'https://repository.map.naver.com/archive/maven'
         }
     }
 }

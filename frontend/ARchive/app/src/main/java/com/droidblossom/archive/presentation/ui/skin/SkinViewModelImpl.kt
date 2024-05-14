@@ -1,8 +1,7 @@
 package com.droidblossom.archive.presentation.ui.skin
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -10,12 +9,16 @@ import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,12 +52,30 @@ class SkinViewModelImpl @Inject constructor(
     override val isSearchOpen: StateFlow<Boolean>
         get() = _isSearchOpen
 
+    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollEventFlow = scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getSkinLstJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            scrollEventFlow.collect{
+                getSkinList()
+            }
+        }
+    }
+
+    override fun onScrollNearBottom() {
+        scrollEventChannel.trySend(Unit)
+    }
+
 
     override fun getSkinList() {
-        viewModelScope.launch {
-            if (hasNextSkins.value) {
+        if (hasNextSkins.value){
+            getSkinLstJob?.cancel()
+            getSkinLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
-                    CapsuleSkinsPageRequestDto(
+                    PagingRequestDto(
                         15,
                         lastCreatedSkinTime.value
                     )
@@ -62,7 +83,9 @@ class SkinViewModelImpl @Inject constructor(
                     result.onSuccess {
                         _hasNextSkins.value = it.hasNext
                         _skins.emit(skins.value + it.skins)
-                        _lastCreatedSkinTime.value = skins.value.last().createdAt
+                        if (skins.value.isNotEmpty()) {
+                            _lastCreatedSkinTime.value = skins.value.last().createdAt
+                        }
                     }.onFail {
                         _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
                     }

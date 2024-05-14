@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import android.Manifest
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,8 @@ import com.droidblossom.archive.databinding.FragmentSignInBinding
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
+import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -35,6 +38,43 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             socialLoginUtil.handleGoogleSignInResult(task)
+        }
+    }
+
+    private val essentialPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions.all { it.value } -> {
+                    MainActivity.goMain(requireContext())
+                }
+
+                else -> {
+                    handleEssentialPermissionsDenied()
+                }
+            }
+
+        }
+
+    private fun handleEssentialPermissionsDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+        ) {
+            showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+        } else {
+            showSettingsDialog(
+                PermissionDialogFragment.PermissionType.ESSENTIAL,
+                object : PermissionDialogButtonClickListener {
+                    override fun onLeftButtonClicked() {
+                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                        requireActivity().finish()
+                    }
+
+                    override fun onRightButtonClicked() {
+                        navigateToAppSettings{essentialPermissionLauncher.launch(essentialPermissionList)}
+                    }
+
+                })
         }
     }
 
@@ -71,7 +111,7 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                     when (event) {
 
                         is AuthViewModel.SignInEvent.NavigateToMain -> {
-                            MainActivity.goMain(requireContext())
+                            essentialPermissionLauncher.launch(essentialPermissionList)
                         }
 
                         is AuthViewModel.SignInEvent.NavigateToSignUp -> {

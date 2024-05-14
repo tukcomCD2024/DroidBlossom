@@ -1,9 +1,10 @@
 package com.droidblossom.archive.presentation.ui.camera
 
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
-import com.droidblossom.archive.domain.usecase.capsule.NearbyCapsulesUseCase
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
+import com.droidblossom.archive.domain.usecase.capsule.NearbyFriendsCapsulesARUseCase
+import com.droidblossom.archive.domain.usecase.capsule.NearbyMyCapsulesARUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -20,31 +21,44 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModelImpl@Inject constructor(
-    private val nearbyCapsulesUseCase: NearbyCapsulesUseCase
+    private val nearbyMyCapsulesARUseCase: NearbyMyCapsulesARUseCase,
+    private val nearbyFriendsCapsulesARUseCase: NearbyFriendsCapsulesARUseCase
 ) : BaseViewModel(), CameraViewModel {
 
     private val _cameraEvents = MutableSharedFlow<CameraViewModel.CameraEvent>()
     override val cameraEvents: SharedFlow<CameraViewModel.CameraEvent>
         get() = _cameraEvents.asSharedFlow()
 
-    private val _capsuleList = MutableStateFlow(listOf<CapsuleMarker>())
-    override val capsuleList: StateFlow<List<CapsuleMarker>>
+    private val _capsuleList = MutableStateFlow(listOf<CapsuleAnchor>())
+    override val capsuleList: StateFlow<List<CapsuleAnchor>>
         get() = _capsuleList
 
-    private val _capsuleListSize = MutableStateFlow(-1)
-    override val capsuleListSize = _capsuleListSize.asStateFlow()
+    override var capsuleListSize = -1
 
     private val _anchorNodes = MutableStateFlow<MutableList<AnchorNode>>(mutableListOf())
     override val anchorNodes get() =  _anchorNodes
+
+    private val _isFriendsCapsuleDisplay = MutableStateFlow(false)
+    override val isFriendsCapsuleDisplay: StateFlow<Boolean>
+        get() = _isFriendsCapsuleDisplay
+
+    private val _selectedCapsuleFilter = MutableStateFlow(CameraViewModel.CapsuleFilterType.FILTER_ALL)
+    override val selectedCapsuleFilter: StateFlow<CameraViewModel.CapsuleFilterType>
+        get() = _selectedCapsuleFilter
+    override var isCapsulesAdded = false
+
 
     override fun addAnchorNode(anchorNode: AnchorNode) {
         val updatedList = _anchorNodes.value.toMutableList()
         updatedList.add(anchorNode)
         _anchorNodes.value = updatedList
     }
-
     override fun clearAnchorNode() {
+        isCapsulesAdded = false
+        capsuleListSize = -1
+        _capsuleList.value = mutableListOf()
         _anchorNodes.value = mutableListOf()
+        capsuleListSize = 0
     }
 
 
@@ -54,17 +68,63 @@ class CameraViewModelImpl@Inject constructor(
         }
     }
 
-    override fun getCapsules(latitude: Double, longitude: Double) : List<CapsuleMarker> {
-        viewModelScope.launch {
-            nearbyCapsulesUseCase(latitude,longitude,1.0,"ALL").collect{ result->
-                result.onSuccess {
-                    _capsuleList.emit(it.capsules)
-                    _capsuleListSize.value = _capsuleList.value.size
-                }.onFail {
+    override fun getCapsules(latitude: Double, longitude: Double){
+        when(selectedCapsuleFilter.value){
+            CameraViewModel.CapsuleFilterType.FILTER_ALL -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_SECRET -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_GROUP -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_PUBLIC_MY -> {
+                getMyCapsules(latitude, longitude)
+            }
+            CameraViewModel.CapsuleFilterType.FILTER_PUBLIC_FRIEND -> {
+                getFriendsCapsules(latitude, longitude)
+            }
+        }
 
+    }
+    override fun selectFilter(capsuleFilterType: CameraViewModel.CapsuleFilterType, latitude: Double, longitude: Double){
+        _selectedCapsuleFilter.value = capsuleFilterType
+        getCapsules(latitude, longitude)
+    }
+
+
+    private fun getMyCapsules(latitude: Double, longitude: Double){
+        viewModelScope.launch {
+            nearbyMyCapsulesARUseCase(latitude,longitude,0.1,selectedCapsuleFilter.value.description).collect{ result->
+                result.onSuccess {
+                    capsuleListSize = it.capsuleAnchors.size
+                    _capsuleList.value = it.capsuleAnchors
+                    if (capsuleList.value.isEmpty()){
+                        cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                        capsuleListSize = 0
+                    }
+                }.onFail {
+                    cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }
         }
-        return capsuleList.value
     }
+    private fun getFriendsCapsules(latitude: Double, longitude: Double){
+        viewModelScope.launch {
+            nearbyFriendsCapsulesARUseCase(latitude,longitude,0.1).collect{ result->
+                result.onSuccess {
+                    capsuleListSize = it.capsuleAnchors.size
+                    _capsuleList.value = it.capsuleAnchors
+                    if (capsuleList.value.isEmpty()) {
+                        cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                        capsuleListSize = 0
+                    }
+                }.onFail {
+                    cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
+                }
+            }
+        }
+    }
+
 }

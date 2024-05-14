@@ -5,6 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Response
 import com.droidblossom.archive.data.dto.ResponseBody
+import com.droidblossom.archive.data.dto.friend.request.FriendsReqRequestDto
 import com.droidblossom.archive.data.dto.friend.request.FriendsSearchPhoneRequestDto
 import com.droidblossom.archive.data.dto.friend.response.FriendReqStatusResponseDto
 import com.droidblossom.archive.data.dto.friend.response.FriendsPageResponseDto
@@ -17,19 +18,19 @@ import retrofit2.http.Query
 
 interface FriendService {
 
-    @POST("friends/{friend_id/request}")
+    @POST("friends/{friend_id}/request")
     suspend fun postFriendsRequestApi(
-        @Path("friend_id") friendId : Double,
+        @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<FriendReqStatusResponseDto>>
 
-    @POST("friends/{friend_id/accept-request}")
+    @POST("friends/{friend_id}/accept-request")
     suspend fun postFriendsAcceptRequestApi(
-        @Path("friend_id") friendId : Double,
+        @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<String>>
 
-    @POST("friends/search")
+    @GET("friends/search")
     suspend fun postFriendsSearchApi(
-        @Query("friend-tag") friendTag : String
+        @Query("friend_tag") friendTag : String
     ) : Response<ResponseBody<FriendsSearchResponseDto>>
 
     @POST("friends/search/phone")
@@ -40,14 +41,19 @@ interface FriendService {
     @GET("friends")
     suspend fun getFriendsPageApi(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt : String,
+        @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
 
     @GET("friends/requests")
     suspend fun getFriendsRequestsPageApi(
         @Query("size") size : Int,
-        @Query("createdAt") createdAt : String,
+        @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
+
+    @POST("friends/requests")
+    suspend fun postFriendListRequestsPageApi(
+        @Body request : FriendsReqRequestDto
+    ) : Response<ResponseBody<String>>
 
     @DELETE("friends/{friend_id}")
     suspend fun deleteFriendApi(

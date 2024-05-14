@@ -2,10 +2,11 @@ package com.droidblossom.archive.presentation.ui.camera
 
 import android.content.Context
 import android.view.LayoutInflater
+import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemCapsuleSkinBinding
-import com.droidblossom.archive.domain.model.common.CapsuleMarker
+import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.google.ar.sceneform.rendering.ViewAttachmentManager
@@ -18,7 +19,7 @@ class ARContentNode(
     val arscene: ARSceneView,
     val viewAttManager: ViewAttachmentManager,
     val fragmentManagerProvider: FragmentManagerProvider,
-    val capsule: CapsuleMarker,
+    val capsule: CapsuleAnchor,
     val layoutInflater: LayoutInflater,
     val context: Context,
     val onLoaded: (node: ViewNode) -> Unit
@@ -53,9 +54,17 @@ class ARContentNode(
                         isEditable = true
                     }
                     onSingleTapConfirmed = {
-                        val sheet = CapsulePreviewDialogFragment.newInstance("-1",capsule.id.toString(), capsule.capsuleType.toString(), true)
-                        sheet.show(fragmentManagerProvider.provideFragmentManager(), "CapsulePreviewDialog")
-                        false
+                        val existingDialog = fragmentManagerProvider.provideFragmentManager().findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                        if (existingDialog == null) {
+                            val dialog = CapsulePreviewDialogFragment.newInstance(
+                                "-1",
+                                capsule.id.toString(),
+                                capsule.capsuleType.toString(),
+                                true
+                            )
+                            dialog.show(fragmentManagerProvider.provideFragmentManager(), CapsulePreviewDialogFragment.TAG)
+                        }
+                        true
                     }
                 }
                 onLoaded(viewNode)

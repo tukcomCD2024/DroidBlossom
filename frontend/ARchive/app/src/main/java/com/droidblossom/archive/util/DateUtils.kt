@@ -1,5 +1,7 @@
 package com.droidblossom.archive.util
 
+import android.annotation.SuppressLint
+import android.util.Log
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -148,7 +150,18 @@ object DateUtils {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println(getAfterYears(1, "yyyyMMdd"))
+
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun calcLastDate(date: String): String {
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val date = format.parse(date)
+        val currentDate = format.parse(dataServerString)
+
+        val difference = currentDate.time - date.time
+        val daysDifference = difference / (24 * 60 * 60 * 1000)
+        return if (daysDifference == 0.toLong()) "오늘" else "${daysDifference}일전"
     }
 
     fun getAfterSeconds(date1: Date, date2: Date): Int {

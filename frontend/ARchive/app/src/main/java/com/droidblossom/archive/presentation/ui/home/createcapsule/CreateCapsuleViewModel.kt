@@ -59,6 +59,7 @@ interface CreateCapsuleViewModel {
     val dueTime : StateFlow<String>
     val address : StateFlow<AddressData>
 
+    fun onScrollNearBottom()
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()
@@ -107,6 +108,8 @@ interface CreateCapsuleViewModel {
         object ClickImgUpLoad : Create3Event()
         object CLickSingleImgUpLoad : Create3Event()
         object ClickVideoUpLoad : Create3Event()
+
+        object DismissLoading : Create3Event()
         data class ShowToastMessage(val message : String) : Create3Event()
     }
 

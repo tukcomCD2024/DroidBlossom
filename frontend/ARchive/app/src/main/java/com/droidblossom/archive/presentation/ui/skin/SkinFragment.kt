@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,6 +26,7 @@ import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.skin.adapter.MySkinRVA
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity
 import com.droidblossom.archive.util.LocationUtil
+import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -53,6 +55,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     private fun initRVA() {
         binding.skinRV.adapter = mySkinRVA
+        binding.skinRV.setHasFixedSize(true)
         binding.skinRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -63,7 +66,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.getSkinList()
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }
@@ -107,6 +110,14 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
+                    val layoutParams = binding.skinRV.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.updateTopConstraintsForSearch(
+                        isSearchOpen = it,
+                        searchOpenView = binding.searchOpenBtn,
+                        searchView = binding.searchBtn,
+                        additionalMarginDp = 16f,
+                        resources = resources
+                    )
                     if (it){
                         binding.searchOpenEditT.requestFocus()
                         val imm = requireActivity().getSystemService(InputMethodManager::class.java)

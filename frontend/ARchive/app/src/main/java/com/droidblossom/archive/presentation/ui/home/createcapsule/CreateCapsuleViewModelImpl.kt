@@ -3,27 +3,22 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsPageRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
-import com.droidblossom.archive.domain.model.common.Skin
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
-import com.droidblossom.archive.domain.model.secret.SecretCapsuleCreateRequest
+import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
-import com.droidblossom.archive.domain.usecase.kakao.ToAddressUseCase
+import com.droidblossom.archive.domain.usecase.open.PublicCapsuleCreateUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleViewModelImpl.Companion.S3DIRECTORY
 import com.droidblossom.archive.util.DateUtils
-import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
-import com.droidblossom.archive.util.onError
-import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,20 +27,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
+    private val publicCapsuleCreateUseCase: PublicCapsuleCreateUseCase,
     private val s3UrlsGetUseCase: S3UrlsGetUseCase,
     private val capsuleSkinsPageUseCase: CapsuleSkinsPageUseCase,
     private val s3Util: S3Util,
@@ -178,6 +176,25 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private var imageNames = listOf<String>()
     private var videoNames = listOf<String>()
 
+    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getLstJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            scrollEventFlow.collect {
+                getSkinList()
+            }
+        }
+    }
+
+    override fun onScrollNearBottom() {
+        scrollEventChannel.trySend(Unit)
+    }
+
+
     //create1
     override fun move1To2() {
         viewModelScope.launch {
@@ -248,17 +265,22 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     }
 
     override fun getSkinList() {
-        viewModelScope.launch {
-            if (hasNextSkins.value) {
+        if (hasNextSkins.value) {
+            getLstJob?.cancel()
+            getLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
-                    CapsuleSkinsPageRequestDto(
+                    PagingRequestDto(
                         15,
                         _lastCreatedSkinTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
                         _hasNextSkins.emit(it.hasNext)
-                        _skins.emit(skins.value + it.skins)
+                        if (skins.value.isEmpty()) {
+                            _skins.emit(it.skins)
+                        } else {
+                            _skins.emit(skins.value + it.skins)
+                        }
                         _lastCreatedSkinTime.value = _skins.value.last().createdAt
                     }.onFail {
                         _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨 불러오기 실패."))
@@ -459,6 +481,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         it.preSignedVideoUrls
                     )
                 }.onFail {
+                    _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
                     Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
             }
@@ -521,6 +544,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 Log.d("uploadFilesToS3", "All files uploaded successfully")
                 createCapsule()
             } else {
+                _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
                 Log.e("uploadFilesToS3", "One or more file uploads failed")
 
             }
@@ -531,12 +555,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch {
             when (capsuleTypeCreateIs.value) {
                 CreateCapsuleViewModel.CapsuleTypeCreate.PUBLIC -> {
-
-                }
-
-                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
-                    secretCapsuleCreateUseCase(
-                        SecretCapsuleCreateRequest(
+                    publicCapsuleCreateUseCase(
+                        CapsuleCreateRequest(
                             capsuleSkinId = skinId.value,
                             content = capsuleContent.value,
                             directory = S3DIRECTORY,
@@ -550,10 +570,50 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         )
                     ).collect { result ->
                         result.onSuccess {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성되었습니다."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성되었습니다."
+                                )
+                            )
                             Log.d("캡슐생성", "$it")
                         }.onFail {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐이 생성 실패했습니다.."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성 실패했습니다.."
+                                )
+                            )
+                        }
+                    }
+                }
+
+                CreateCapsuleViewModel.CapsuleTypeCreate.SECRET -> {
+                    secretCapsuleCreateUseCase(
+                        CapsuleCreateRequest(
+                            capsuleSkinId = skinId.value,
+                            content = capsuleContent.value,
+                            directory = S3DIRECTORY,
+                            dueDate = dueTime.value,
+                            imageNames = imageNames,
+                            videoNames = videoNames,
+                            addressData = address.value,
+                            latitude = capsuleLatitude.value,
+                            longitude = capsuleLongitude.value,
+                            title = capsuleTitle.value,
+                        )
+                    ).collect { result ->
+                        result.onSuccess {
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성되었습니다."
+                                )
+                            )
+                            Log.d("캡슐생성", "$it")
+                        }.onFail {
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성 실패했습니다.."
+                                )
+                            )
                         }
                     }
                 }

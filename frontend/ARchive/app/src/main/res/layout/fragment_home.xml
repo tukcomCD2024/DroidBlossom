@@ -27,13 +27,13 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map_fragment"
+            android:name="com.naver.maps.map.MapFragment"
             android:layout_width="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_height="0dp"
-            android:name="com.naver.maps.map.MapFragment" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/secretBtn"
@@ -131,8 +131,30 @@
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@color/white_alpha60"
             android:scaleType="center"
+            android:src="@drawable/ic_refresh_24"
+            android:tint="@color/main_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/notificationBtn" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/friendsCapsuleBtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/corner_radius_22"
+            android:backgroundTint="@{vm.isFriendsCapsuleDisplay ? @color/main_alpha85 : @color/white_alpha60}"
+            android:gravity="center"
+            android:visibility="@{vm.filterCapsuleSelect==filter.PUBLIC || vm.filterCapsuleSelect == filter.ALL ? View.VISIBLE : View.GONE }"
+            android:onClick="@{()->vm.clickFriendsDisplay()}"
+            android:scaleType="center"
+            android:text="@{vm.isFriendsCapsuleDisplay ? `친구\nON` : `친구\nOFF` }"
+            android:textAppearance="@style/TextAppearance.App.caption3"
+            android:textColor="@{vm.isFriendsCapsuleDisplay ?  @color/white : @color/gray_700}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/refreshBtn" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/makeSecretCapsuleBtn"
@@ -288,8 +310,8 @@
             android:layout_marginBottom="22dp"
             android:background="@drawable/corner_radius_22"
             android:backgroundTint="@color/white_alpha70"
-            android:scaleType="center"
             android:onClick="@{()->vm.clickFollowBtn()}"
+            android:scaleType="center"
             android:src="@{vm.followLocation ? @drawable/ic_location_on_24 : @drawable/ic_location_off_24}"
             app:layout_constraintBottom_toTopOf="@id/place"
             app:layout_constraintStart_toStartOf="parent" />

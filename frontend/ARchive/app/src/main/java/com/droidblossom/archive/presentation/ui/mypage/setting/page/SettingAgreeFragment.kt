@@ -33,6 +33,7 @@ class SettingAgreeFragment :
 
     private fun initRVA() {
         binding.adapter.adapter = agreeAdapter
+        binding.adapter.setHasFixedSize(true)
         agreeAdapter.submitList(
             listOf(
                 Agree("이용약관 1장", getString(R.string.agree_content)),

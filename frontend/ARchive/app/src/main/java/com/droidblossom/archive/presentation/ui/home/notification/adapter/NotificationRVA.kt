@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemNotificationBinding
 import com.droidblossom.archive.domain.model.member.NotificationModel
 
-class NotificationRVA(val onClick: () -> Unit) :
+class NotificationRVA(val onClick: (NotificationModel) -> Unit) :
     ListAdapter<NotificationModel, NotificationRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -17,7 +17,7 @@ class NotificationRVA(val onClick: () -> Unit) :
         fun bind(data: NotificationModel) {
             binding.item = data
             binding.root.setOnClickListener {
-                onClick()
+                onClick(data)
             }
         }
     }
