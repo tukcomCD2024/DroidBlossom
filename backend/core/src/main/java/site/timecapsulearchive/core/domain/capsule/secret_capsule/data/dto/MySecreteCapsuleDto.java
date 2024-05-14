@@ -16,14 +16,6 @@ public record MySecreteCapsuleDto(
     CapsuleType type
 ) {
 
-    public MySecreteCapsuleDto {
-        if (dueDate != null) {
-            dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
-        }
-
-        createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
-    }
-
     public MySecreteCapsuleResponse toResponse(
         final Function<String, String> preSignUrlFunction
     ) {

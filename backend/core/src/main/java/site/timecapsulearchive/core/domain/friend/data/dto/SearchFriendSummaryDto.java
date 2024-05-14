@@ -11,7 +11,8 @@ public record SearchFriendSummaryDto(
     String nickname,
     ByteArrayWrapper phoneHash,
     Boolean isFriend,
-    Boolean isFriendRequest
+    Boolean isFriendInviteToFriend,
+    Boolean isFriendInviteToMe
 ) {
 
     public SearchFriendSummaryResponse toResponse(
@@ -24,7 +25,8 @@ public record SearchFriendSummaryDto(
             .nickname(nickname)
             .phone(phoneBook.originPhone())
             .isFriend(isFriend)
-            .isFriendRequest(isFriendRequest)
+            .isFriendInviteToFriend(isFriendInviteToFriend)
+            .isFriendInviteToMe(isFriendInviteToMe)
             .build();
     }
 }

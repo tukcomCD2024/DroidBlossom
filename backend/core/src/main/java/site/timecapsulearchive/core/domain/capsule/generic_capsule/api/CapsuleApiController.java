@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.api;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +14,6 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.CapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleOpenedResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.ImagesPageResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.NearbyARCapsuleResponse;
@@ -45,9 +41,9 @@ public class CapsuleApiController implements CapsuleApi {
         return null;
     }
 
-    @GetMapping(value = "/nearby/ar", produces = {"application/json"})
+    @GetMapping(value = "/my/ar/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getNearbyARCapsules(
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyMyCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
         @RequestParam(value = "longitude") final double longitude,
@@ -72,9 +68,9 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    @GetMapping(value = "/nearby", produces = {"application/json"})
+    @GetMapping(value = "/my/map/nearby", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getNearbyCapsules(
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyMyCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(value = "latitude") final double latitude,
         @RequestParam(value = "longitude") final double longitude,
@@ -95,6 +91,52 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
+    @GetMapping(value = "/friends/map/nearby", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyCapsuleResponse>> getMapNearbyFriendsCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance
+    ) {
+        final List<NearbyCapsuleSummaryDto> capsules = capsuleService.findFriendsCapsulesByCurrentLocation(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance)
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                NearbyCapsuleResponse.createOf(capsules, geoTransformManager::changePoint3857To4326)
+            )
+        );
+    }
+
+    @GetMapping(value = "/friends/ar/nearby", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<NearbyARCapsuleResponse>> getARNearbyFriendsCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "latitude") final double latitude,
+        @RequestParam(value = "longitude") final double longitude,
+        @RequestParam(value = "distance") final double distance
+    ) {
+        final List<NearbyARCapsuleSummaryDto> capsules = capsuleService.findFriendsARCapsulesByCurrentLocation(
+            memberId,
+            CoordinateRangeDto.from(latitude, longitude, distance)
+        );
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                NearbyARCapsuleResponse.createOf(
+                    capsules,
+                    geoTransformManager::changePoint3857To4326,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
+            )
+        );
+    }
+
     @PatchMapping(value = "/{capsule_id}/opened", produces = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<CapsuleOpenedResponse>> updateCapsuleOpened(
@@ -109,32 +151,4 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
-    @PostMapping(value = "/secret", consumes = {"application/json"})
-    @Override
-    public ResponseEntity<ApiSpec<String>> createSecretCapsule(
-        @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final CapsuleCreateRequest request
-    ) {
-        capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.SECRET);
-
-        return ResponseEntity.ok(
-            ApiSpec.empty(
-                SuccessCode.SUCCESS
-            )
-        );
-    }
-
-    @PostMapping(value = "/public", consumes = {"application/json"})
-    @Override
-    public ResponseEntity<ApiSpec<String>> createPublicCapsule(
-        @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody final CapsuleCreateRequest request) {
-        capsuleFacade.saveCapsule(memberId, request.toDto(), CapsuleType.PUBLIC);
-
-        return ResponseEntity.ok(
-            ApiSpec.empty(
-                SuccessCode.SUCCESS
-            )
-        );
-    }
 }

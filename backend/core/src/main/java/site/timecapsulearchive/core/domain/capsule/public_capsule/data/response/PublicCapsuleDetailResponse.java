@@ -3,10 +3,8 @@ package site.timecapsulearchive.core.domain.capsule.public_capsule.data.response
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "공개 캡슐 상세 정보")
@@ -67,36 +65,8 @@ public record PublicCapsuleDetailResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
-    }
-
-    public static PublicCapsuleDetailResponse createOf(
-        final PublicCapsuleDetailDto detailDto,
-        final Function<String, String> singlePreSignUrlFunction,
-        final Function<String, List<String>> multiplePreSignUrlFunction
-    ) {
-        final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
-            detailDto.images());
-        final List<String> preSignedVideoUrls = multiplePreSignUrlFunction.apply(
-            detailDto.videos());
-
-        return new PublicCapsuleDetailResponse(
-            detailDto.capsuleId(),
-            singlePreSignUrlFunction.apply(detailDto.capsuleSkinUrl()),
-            detailDto.dueDate(),
-            detailDto.nickname(),
-            detailDto.profileUrl(),
-            detailDto.createdAt(),
-            detailDto.point().getX(),
-            detailDto.point().getY(),
-            detailDto.address(),
-            detailDto.roadName(),
-            detailDto.title(),
-            detailDto.content(),
-            preSignedImageUrls,
-            preSignedVideoUrls,
-            detailDto.isOpened(),
-            detailDto.capsuleType()
-        );
+        if (createdDate != null) {
+            createdDate = createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        }
     }
 }

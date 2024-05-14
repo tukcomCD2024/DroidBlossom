@@ -8,6 +8,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.ImageService;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.VideoService;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleOpenService;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleService;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.service.CapsuleSkinService;
@@ -28,6 +29,7 @@ public class GroupCapsuleFacade {
     private final VideoService videoService;
     private final GeoTransformManager geoTransformManager;
     private final CapsuleSkinService capsuleSkinService;
+    private final GroupCapsuleOpenService groupCapsuleOpenService;
 
     @Transactional
     public void saveGroupCapsule(
@@ -48,5 +50,7 @@ public class GroupCapsuleFacade {
 
         imageService.bulkSave(dto.imageNames(), capsule, member);
         videoService.bulkSave(dto.videoNames(), capsule, member);
+
+        groupCapsuleOpenService.bulkSave(dto.groupMemberIds(), capsule);
     }
 }
