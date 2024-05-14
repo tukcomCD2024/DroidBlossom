@@ -25,6 +25,7 @@ import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupUpdateDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
@@ -505,6 +506,82 @@ class GroupWriteServiceTest {
 
         //then
         verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
+    }
+
+
+    @Test
+    void 그룹원이_아닌_경우_그룹_정보를_업데이트하면_예외가_발생한다() {
+        //given
+        Long notGroupMemberId = 1L;
+        Long groupId = 1L;
+        GroupUpdateDto groupUpdateDto = getGroupUpdateDto();
+        given(memberGroupRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupWriteService.updateGroup(notGroupMemberId, groupId, groupUpdateDto))
+            .isInstanceOf(GroupMemberNotFoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
+    }
+
+    private GroupUpdateDto getGroupUpdateDto() {
+        return GroupUpdateDto.builder()
+            .groupName("updated_name")
+            .groupDescription("updated_description")
+            .groupImageDirectory("updated_image_directory")
+            .groupImageProfileFileName("updated_group_image_profile_file_name")
+            .build();
+    }
+
+    @Test
+    void 그룹장이_아닌_경우_그룹_정보를_업데이트하면_예외가_발생한다() {
+        //given
+        Long notGroupOwnerId = 1L;
+        Long groupId = 1L;
+        GroupUpdateDto groupUpdateDto = getGroupUpdateDto();
+        given(memberGroupRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.of(Boolean.FALSE));
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupWriteService.updateGroup(notGroupOwnerId, groupId, groupUpdateDto))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹이_없는_경우_그룹_정보를_업데이트하면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        GroupUpdateDto groupUpdateDto = getGroupUpdateDto();
+        given(memberGroupRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.of(Boolean.TRUE));
+        given(groupRepository.findGroupById(anyLong())).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupWriteService.updateGroup(groupOwnerId, groupId, groupUpdateDto))
+            .isInstanceOf(GroupNotFoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹장이_그룹_정보를_업데이트하면_그룹_정보가_업데이트된다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        GroupUpdateDto groupUpdateDto = getGroupUpdateDto();
+        given(memberGroupRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
+            .willReturn(Optional.of(Boolean.TRUE));
+        given(groupRepository.findGroupById(anyLong())).willReturn(group());
+
+        //when
+        //then
+        assertThatCode(() -> groupWriteService.updateGroup(groupOwnerId, groupId,
+            groupUpdateDto)).doesNotThrowAnyException();
     }
 }
 
