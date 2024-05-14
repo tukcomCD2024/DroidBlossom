@@ -93,9 +93,9 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        updateToVerifiedMember(memberId, plain);
+        final Long verifiedMemberId = updateToVerifiedMember(memberId, plain);
 
-        return tokenManager.createNewToken(memberId);
+        return tokenManager.createNewToken(verifiedMemberId);
     }
 
     private boolean isNotMatch(final String certificationNumber,
@@ -103,15 +103,17 @@ public class MessageVerificationService {
         return !certificationNumber.equals(findCertificationNumber);
     }
 
-    private void updateToVerifiedMember(final Long memberId, final byte[] plain) {
+    private Long updateToVerifiedMember(final Long memberId, final byte[] plain) {
         final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         memberTemporaryRepository.delete(memberTemporary);
 
-        final Member member = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
+        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
             aesEncryptionManager.encryptWithPrefixIV(plain));
 
-        memberRepository.save(member);
+        memberRepository.save(verifiedMember);
+
+        return verifiedMember.getId();
     }
 }

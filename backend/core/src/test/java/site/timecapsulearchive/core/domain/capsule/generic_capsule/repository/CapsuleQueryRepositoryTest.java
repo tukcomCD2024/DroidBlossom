@@ -134,6 +134,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
             assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
             assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
@@ -153,6 +154,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
             assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
             assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
@@ -172,6 +174,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
             assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
             assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
@@ -191,6 +194,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
             assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
             assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
@@ -210,6 +214,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(
                 c -> c.capsuleType().equals(CapsuleType.PUBLIC) ||
                     c.capsuleType().equals(CapsuleType.SECRET) ||
@@ -233,6 +238,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(
                 c -> c.capsuleType().equals(CapsuleType.PUBLIC) ||
                     c.capsuleType().equals(CapsuleType.SECRET) ||
@@ -255,6 +261,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(c -> friendCapsuleIds.contains(c.id()));
             assertThat(capsules).allMatch(c -> c.capsuleType().equals(CapsuleType.PUBLIC));
             assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
@@ -268,11 +275,12 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //when
         List<NearbyARCapsuleSummaryDto> capsules = capsuleQueryRepository.findFriendsARCapsulesByCurrentLocation(
-            friendCapsuleIds, mbr
+            friendIds, mbr
         );
 
         //then
         SoftAssertions.assertSoftly(softly -> {
+            assertThat(capsules).isNotEmpty();
             assertThat(capsules).allMatch(c -> friendCapsuleIds.contains(c.id()));
             assertThat(capsules).allMatch(c -> c.capsuleType().equals(CapsuleType.PUBLIC));
             assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
