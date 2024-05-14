@@ -24,6 +24,50 @@ import site.timecapsulearchive.core.global.error.ErrorResponse;
 public interface GroupApi {
 
     @Operation(
+        summary = "그룹 삭제",
+        description = """
+            그룹 삭제를 요청한 사용자가 해당 그룹의 그룹장인 경우 그룹을 삭제한다.<br>
+            <b><u>주의</u></b>
+            <ul>
+                <li>그룹장이 아닌 경우 그룹을 삭제할 수 없다.</li>
+                <li>그룹에 포함된 멤버가 그룹장을 제외하고 존재하면 그룹을 삭제할 수 없다.</li>
+                <li>그룹에 그룹 캡슐이 남아있는 경우 삭제할 수 없다.</li>
+            </ul>
+            """,
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "202",
+            description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                다음의 경우 예외가 발생한다.
+                <ul>
+                <li>삭제를 요청한 그룹에서 요청한 사용자가 그룹장이 아닌 경우</li>
+                <li>삭제를 요청한 그룹에 그룹장을 제외한 그룹원이 존재하는 경우</li>
+                <li>삭제를 요청한 그룹에 그룹 캡슐이 존재하는 경우</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹이 존재하지 않으면 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<String>> deleteGroupById(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "삭제할 그룹 아이디", required = true)
+        Long groupId
+    );
+
+    @Operation(
         summary = "그룹 요청 수락",
         description = "특정 그룹으로부터 그룹 요청을 수락한다.",
         security = {@SecurityRequirement(name = "user_token")},
@@ -72,50 +116,6 @@ public interface GroupApi {
     ResponseEntity<ApiSpec<String>> createGroup(
         Long memberId,
         GroupCreateRequest request
-    );
-
-    @Operation(
-        summary = "그룹 삭제",
-        description = """
-            그룹 삭제를 요청한 사용자가 해당 그룹의 그룹장인 경우 그룹을 삭제한다.<br>
-            <b><u>주의</u></b>
-            <ul>
-                <li>그룹에 포함된 멤버가 그룹장을 제외하고 존재하면 그룹을 삭제할 수 없다.</li>
-                <li>그룹장이 아닌 경우 그룹을 삭제할 수 없다.</li>
-                <li>그룹에 그룹 캡슐이 남아있는 경우 삭제할 수 없다.</li>
-            </ul>
-            """,
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = """
-                다음의 경우 예외가 발생한다.
-                <ul>
-                <li>삭제를 요청한 그룹에 그룹장을 제외한 그룹원이 존재하는 경우</li>
-                <li>삭제를 요청한 그룹에서 요청한 사용자가 그룹장이 아닌 경우</li>
-                <li>삭제를 요청한 그룹에 그룹 캡슐이 존재하는 경우</li>
-                </ul>
-                """,
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "그룹이 존재하지 않으면 발생한다.",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-    })
-    ResponseEntity<ApiSpec<String>> deleteGroupById(
-        Long memberId,
-
-        @Parameter(in = ParameterIn.PATH, description = "삭제할 그룹 아이디", required = true)
-        Long groupId
     );
 
     @Operation(
