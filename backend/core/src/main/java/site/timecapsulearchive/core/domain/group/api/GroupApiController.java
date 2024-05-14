@@ -72,9 +72,15 @@ public class GroupApiController implements GroupApi {
         );
     }
 
+    @DeleteMapping(value = "/{group_id}")
     @Override
-    public ResponseEntity<Void> deleteGroupById(Long groupId) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> deleteGroupById(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId
+    ) {
+        groupService.deleteGroup(memberId, groupId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @Override

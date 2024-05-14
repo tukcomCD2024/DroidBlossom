@@ -26,8 +26,9 @@ public class GroupInvite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "group_id", nullable = false)
-    private Long groupId;
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_owner_id", nullable = false)
@@ -37,14 +38,14 @@ public class GroupInvite extends BaseEntity {
     @JoinColumn(name = "group_member_id", nullable = false)
     private Member groupMember;
 
-    private GroupInvite(Long groupId, Member groupOwner, Member groupMember) {
-        this.groupId = groupId;
+    private GroupInvite(Group group, Member groupOwner, Member groupMember) {
+        this.group = group;
         this.groupOwner = groupOwner;
         this.groupMember = groupMember;
     }
 
-    public static GroupInvite createOf(Long groupId, Member groupOwner, Member groupMember) {
-        return new GroupInvite(groupId, groupOwner, groupMember);
+    public static GroupInvite createOf(Group group, Member groupOwner, Member groupMember) {
+        return new GroupInvite(group, groupOwner, groupMember);
     }
 
 }

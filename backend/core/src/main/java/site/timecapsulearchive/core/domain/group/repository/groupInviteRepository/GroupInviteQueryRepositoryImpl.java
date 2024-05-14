@@ -1,5 +1,8 @@
 package site.timecapsulearchive.core.domain.group.repository.groupInviteRepository;
 
+import static site.timecapsulearchive.core.domain.group.entity.QGroupInvite.groupInvite;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Repository;
 public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public void bulkSave(Long groupOwnerId, List<Long> groupMemberIds) {
@@ -45,4 +49,15 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
         );
     }
 
+    @Override
+    public List<Long> findGroupInviteIdsByGroupIdAndGroupOwnerId(
+        final Long groupId,
+        final Long memberId
+    ) {
+        return jpaQueryFactory
+            .select(groupInvite.id)
+            .from(groupInvite)
+            .where(groupInvite.group.id.eq(groupId).and(groupInvite.groupOwner.id.eq(memberId)))
+            .fetch();
+    }
 }

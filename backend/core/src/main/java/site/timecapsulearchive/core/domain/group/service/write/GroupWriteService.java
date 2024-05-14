@@ -12,4 +12,5 @@ public interface GroupWriteService {
 
     void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId);
 
+    void deleteGroup(final Long memberId, final Long groupId);
 }
