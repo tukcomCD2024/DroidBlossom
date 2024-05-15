@@ -1,9 +1,9 @@
-package site.timecapsulearchive.core.domain.group.repository.groupRepository;
+package site.timecapsulearchive.core.domain.group.repository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
-import static site.timecapsulearchive.core.domain.group.entity.QMemberGroup.memberGroup;
+import static site.timecapsulearchive.core.domain.group_member.entity.QMemberGroup.memberGroup;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.Projections;

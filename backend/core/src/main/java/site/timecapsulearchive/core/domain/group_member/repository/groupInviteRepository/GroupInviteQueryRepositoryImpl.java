@@ -1,6 +1,7 @@
-package site.timecapsulearchive.core.domain.group.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository;
 
-import static site.timecapsulearchive.core.domain.group.entity.QGroupInvite.groupInvite;
+
+import static site.timecapsulearchive.core.domain.group_member.entity.QGroupInvite.groupInvite;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;

@@ -13,7 +13,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCa
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.service.CapsuleSkinService;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.group.service.GroupService;
+import site.timecapsulearchive.core.domain.group.service.query.GroupQueryService;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
@@ -24,7 +24,7 @@ public class GroupCapsuleFacade {
 
     private final MemberService memberService;
     private final GroupCapsuleService groupCapsuleService;
-    private final GroupService groupService;
+    private final GroupQueryService groupQueryService;
     private final ImageService imageService;
     private final VideoService videoService;
     private final GeoTransformManager geoTransformManager;
@@ -38,7 +38,7 @@ public class GroupCapsuleFacade {
         final Long groupId
     ) {
         final Member member = memberService.findMemberById(memberId);
-        final Group group = groupService.findGroupById(groupId);
+        final Group group = groupQueryService.findGroupById(groupId);
         final CapsuleSkin capsuleSkin = capsuleSkinService.findCapsuleSkinById(dto.capsuleSkinId());
 
         final Point point = geoTransformManager.changePoint4326To3857(dto.latitude(),

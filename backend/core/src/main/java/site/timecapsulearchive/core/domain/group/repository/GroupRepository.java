@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group.repository.groupRepository;
+package site.timecapsulearchive.core.domain.group.repository;
 
 import java.util.Optional;
 import org.springframework.data.repository.Repository;
