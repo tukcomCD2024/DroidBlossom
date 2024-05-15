@@ -127,4 +127,41 @@ public interface GroupMemberCommandApi {
         @Parameter(in = ParameterIn.PATH, description = "그룹 초대 대상 아이디", required = true)
         Long groupOwnerId
     );
+
+     @Operation(
+        summary = "그룹원 추방",
+        description = "요청한 사용자가 그룹장인 경우 특정 그룹원을 그룹에서 추방한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "그룹장과 삭제하려는 대상 그룹원 아이디가 같은 경우에 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹장이 아니여서 그룹 수정에 대한 권한이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "삭제하려는 그룹원이 존재하지 않는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> kickGroupMember(
+        Long groupOwnerId,
+
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "추방할 그룹원 멤버 아이디", required = true)
+        Long groupMemberId
+    );
 }

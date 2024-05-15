@@ -76,4 +76,16 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
             )
         );
     }
+
+    @DeleteMapping(value = "/{group_id}/members/{group_member_id}")
+    @Override
+    public ResponseEntity<ApiSpec<String>> kickGroupMember(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId,
+        @PathVariable("group_member_id") final Long groupMemberId
+    ) {
+        groupMemberCommandService.kickGroupMember(memberId, groupId, groupMemberId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+    }
 }
