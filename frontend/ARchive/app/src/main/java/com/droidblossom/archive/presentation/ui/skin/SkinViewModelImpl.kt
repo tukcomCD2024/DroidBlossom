@@ -56,7 +56,11 @@ class SkinViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollEventFlow.collect{
-                getSkinList()
+                if (skins.value.isEmpty()){
+                    getLatestSkinList()
+                }else{
+                    getSkinList()
+                }
             }
         }
     }
@@ -73,7 +77,7 @@ class SkinViewModelImpl @Inject constructor(
                 capsuleSkinsPageUseCase(
                     PagingRequestDto(
                         15,
-                        if (skins.value.isEmpty()) DateUtils.dataServerString else _lastCreatedSkinTime.value
+                        _lastCreatedSkinTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
@@ -81,8 +85,6 @@ class SkinViewModelImpl @Inject constructor(
                         _skins.value = skins.value + it.skins
                         if (skins.value.isNotEmpty()) {
                             _lastCreatedSkinTime.value = skins.value.last().createdAt
-                        }else{
-                            _hasNextSkins.value = true
                         }
                     }.onFail {
                         _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
@@ -107,8 +109,6 @@ class SkinViewModelImpl @Inject constructor(
                     _skins.value = it.skins
                     if (skins.value.isNotEmpty()) {
                         _lastCreatedSkinTime.value = skins.value.last().createdAt
-                    }else{
-                        _hasNextSkins.value = true
                     }
                 }.onFail {
                     _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
@@ -143,7 +143,4 @@ class SkinViewModelImpl @Inject constructor(
             _isSearchOpen.emit(false)
         }
     }
-
-
-
 }

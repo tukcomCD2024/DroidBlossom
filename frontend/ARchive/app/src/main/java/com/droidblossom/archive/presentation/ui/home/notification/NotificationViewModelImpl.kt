@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.home.notification
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.NotificationModel
@@ -52,7 +53,11 @@ class NotificationViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollEventFlow.collect {
-                getNotificationPage()
+                if (notifications.value.isEmpty()){
+                    getLatestNotificationPage()
+                }else{
+                    getNotificationPage()
+                }
             }
         }
     }
@@ -68,7 +73,7 @@ class NotificationViewModelImpl @Inject constructor(
                 getNotificationsUseCase(
                     PagingRequestDto(
                         15,
-                        if (notifications.value.isEmpty()) DateUtils.dataServerString else _lastCreatedTime.value
+                        _lastCreatedTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
@@ -104,8 +109,6 @@ class NotificationViewModelImpl @Inject constructor(
                     _notifications.value = it.notifications
                     if (notifications.value.isNotEmpty()) {
                         _lastCreatedTime.value = it.notifications.last().createdAt
-                    }else{
-                        _hasNextPage.value = true
                     }
                 }.onFail {
                     _notificationEvent.emit(

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -74,7 +75,7 @@ class NotificationActivity :
             requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
         initView()
-        viewModel.getNotificationPage()
+        viewModel.getLatestNotificationPage()
     }
 
     private fun initView() {
@@ -98,15 +99,17 @@ class NotificationActivity :
         binding.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
-                    viewModel.onScrollNearBottom()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.onScrollNearBottom()
+                    }
                 }
+
             }
         })
     }
@@ -138,6 +141,7 @@ class NotificationActivity :
                             if (binding.swipeRefreshLayout.isRefreshing){
                                 binding.swipeRefreshLayout.isRefreshing = false
                             }
+                            binding.rv.scrollToPosition(0)
                         }
 
                         else -> {}

@@ -93,6 +93,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
                             if (binding.swipeRefreshLayout.isRefreshing){
                                 binding.swipeRefreshLayout.isRefreshing = false
                             }
+                            binding.skinRV.scrollToPosition(0)
                         }
                     }
                 }
