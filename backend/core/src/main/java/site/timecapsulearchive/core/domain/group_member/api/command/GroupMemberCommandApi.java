@@ -26,7 +26,7 @@ public interface GroupMemberCommandApi {
             </ul>
             """,
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group"}
+        tags = {"group member"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -132,7 +132,7 @@ public interface GroupMemberCommandApi {
         summary = "그룹원 추방",
         description = "요청한 사용자가 그룹장인 경우 특정 그룹원을 그룹에서 추방한다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group"}
+        tags = {"group member"}
     )
     @ApiResponses(value = {
         @ApiResponse(

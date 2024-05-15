@@ -84,26 +84,32 @@ public interface GroupCommandApi {
         GroupCreateRequest request
     );
 
-    @Operation(
-        summary = "그룹 수정",
-        description = "그룹장인 경우에 그룹의 기본 정보들을 수정한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group"}
-    )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "202",
-            description = "처리 시작"
+            responseCode = "200",
+            description = "처리 완료"
+        ),@ApiResponse(
+            responseCode = "400",
+            description = "잘못된 타입이나 값을 입력하는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹장이 아니여서 그룹 수정에 대한 권한이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "권한을 확인할 수 있는 그룹원이 없는 경우, 수정하려는 그룹이 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @PatchMapping(
-        value = "/groups/{group_id}",
-        consumes = {"multipart/form-data"}
-    )
-    ResponseEntity<Void> updateGroupById(
-        @Parameter(in = ParameterIn.PATH, description = "수정할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+    ResponseEntity<ApiSpec<String>> updateGroupById(
+        Long memberId,
 
-        @ModelAttribute GroupUpdateRequest request
+        @Parameter(in = ParameterIn.PATH, description = "수정할 그룹 아이디", required = true, schema = @Schema())
+        Long groupId,
+
+        GroupUpdateRequest request
     );
 }

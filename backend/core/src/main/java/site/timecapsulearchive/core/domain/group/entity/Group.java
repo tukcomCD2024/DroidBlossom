@@ -1,20 +1,16 @@
 package site.timecapsulearchive.core.domain.group.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.group.exception.GroupCreateException;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
@@ -49,6 +45,18 @@ public class Group extends BaseEntity {
 
         this.groupName = groupName;
         this.groupDescription = groupDescription;
+        this.groupProfileUrl = groupProfileUrl;
+    }
+
+    public void updateGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void updateGroupDescription(String groupDescription) {
+        this.groupDescription = groupDescription;
+    }
+
+    public void updateGroupProfileUrl(String groupProfileUrl) {
         this.groupProfileUrl = groupProfileUrl;
     }
 }

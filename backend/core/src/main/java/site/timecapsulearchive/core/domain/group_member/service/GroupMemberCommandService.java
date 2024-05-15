@@ -143,7 +143,7 @@ public class GroupMemberCommandService {
             throw new GroupMemberDuplicatedIdException();
         }
 
-        checkGroupOwnerShip(groupOwnerId, groupId);
+        checkGroupOwnership(groupOwnerId, groupId);
 
         final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
                 groupMemberId, groupId)
@@ -152,7 +152,7 @@ public class GroupMemberCommandService {
         memberGroupRepository.delete(memberGroup);
     }
 
-    private void checkGroupOwnerShip(Long groupOwnerId, Long groupId) {
+    private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
         final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
                 groupOwnerId,
                 groupId)

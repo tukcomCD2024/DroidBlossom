@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class S3UrlGenerator {
 
-    public String generateFileName(
+    public static String generateFileName(
         final Long memberId,
         final String directory,
         final String fileName

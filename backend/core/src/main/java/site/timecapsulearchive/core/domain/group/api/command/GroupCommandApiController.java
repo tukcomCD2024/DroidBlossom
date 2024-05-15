@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,8 +57,15 @@ public class GroupCommandApiController implements GroupCommandApi {
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
+    @PatchMapping(value = "/{group_id}", consumes = {"application/json"})
     @Override
-    public ResponseEntity<Void> updateGroupById(Long groupId, GroupUpdateRequest request) {
-        return null;
+    public ResponseEntity<ApiSpec<String>> updateGroupById(
+        @AuthenticationPrincipal Long memberId,
+        @PathVariable("group_id") Long groupId,
+        @RequestBody GroupUpdateRequest request
+    ) {
+        groupCommandService.updateGroup(memberId, groupId, request.toDto());
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 }

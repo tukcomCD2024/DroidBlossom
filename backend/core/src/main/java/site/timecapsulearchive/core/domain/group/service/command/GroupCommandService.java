@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.group.service.command;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,11 +9,13 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupUpdateDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group_member.exception.GroupMemberNotFoundException;
 import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
@@ -22,6 +25,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
+import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 
 @Service
 @RequiredArgsConstructor
@@ -112,6 +116,45 @@ public class GroupCommandService {
             groupId);
         if (groupCapsuleExist) {
             throw new GroupDeleteFailException(ErrorCode.GROUP_CAPSULE_EXIST_ERROR);
+        }
+    }
+
+    /**
+     * 그룹 정보를 업데이트한다.
+     * <br><u><b>주의</b></u> - 그룹 정보 변경 시 아래 조건에 해당하면 예외가 발생한다.
+     * <br>1. 해당 그룹원을 찾을 수 없는 경우
+     * <br>2. 그룹장이 아닌 경우
+     * <br>3. 그룹을 찾을 수 없는 경우
+     *
+     * @param groupOwnerId 그룹장 아이디
+     * @param groupId      그룹 아이디
+     * @param dto          업데이트할 그룹 정보
+     */
+    @Transactional
+    public void updateGroup(Long groupOwnerId, Long groupId, GroupUpdateDto dto) {
+        checkGroupOwnership(groupOwnerId, groupId);
+
+        Group group = groupRepository.findGroupById(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        group.updateGroupName(dto.groupName());
+        group.updateGroupDescription(dto.groupDescription());
+
+        final String groupProfileUrl = S3UrlGenerator.generateFileName(
+            groupOwnerId,
+            dto.groupImageDirectory(),
+            dto.groupImageProfileFileName()
+        );
+        group.updateGroupProfileUrl(groupProfileUrl);
+    }
+
+    private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
+        final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
+                groupOwnerId,
+                groupId)
+            .orElseThrow(GroupMemberNotFoundException::new);
+        if (!isOwner) {
+            throw new NoGroupAuthorityException();
         }
     }
 }
