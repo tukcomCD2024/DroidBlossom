@@ -13,14 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
-import site.timecapsulearchive.core.common.fixture.domain.CapsuleSkinFixture;
 import site.timecapsulearchive.core.common.fixture.domain.GroupCapsuleOpenFixture;
-import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
-import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
@@ -28,9 +22,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
-import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 
 class GroupCapsuleServiceTest {
@@ -225,8 +217,9 @@ class GroupCapsuleServiceTest {
         Long memberId = 1L;
         Long capsuleId = 1L;
         given(groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(anyLong(), anyLong()))
-            .willReturn(groupCapsuleOpen());
-        given(groupCapsuleOpenQueryRepository.findIsOpenedByMemberIdAndCapsuleId(anyLong()))
+
+            .willReturn(GroupCapsuleOpenFixture.groupCapsuleOpen(memberId.intValue()));
+        given(groupCapsuleOpenQueryRepository.findIsOpenedByCapsuleId(anyLong()))
             .willReturn(List.of(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE));
 
         //when
@@ -236,27 +229,14 @@ class GroupCapsuleServiceTest {
         verifyNoInteractions(capsuleRepository);
     }
 
-    private Optional<GroupCapsuleOpen> groupCapsuleOpen() {
-        Member member = MemberFixture.member(0);
-        CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(member);
-
-        return Optional.of(
-            GroupCapsuleOpenFixture.groupCapsuleOpen(
-                MemberFixture.member(0),
-                CapsuleFixture.capsule(member, capsuleSkin, CapsuleType.GROUP),
-                Boolean.FALSE
-            )
-        );
-    }
-
     @Test
     void 모든_그룹원이_캡슐을_개봉한_경우_캡슐은_개봉된다() {
         //given
         Long memberId = 1L;
         Long capsuleId = 1L;
         given(groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(anyLong(), anyLong()))
-            .willReturn(groupCapsuleOpen());
-        given(groupCapsuleOpenQueryRepository.findIsOpenedByMemberIdAndCapsuleId(anyLong()))
+            .willReturn(GroupCapsuleOpenFixture.groupCapsuleOpen(memberId.intValue()));
+        given(groupCapsuleOpenQueryRepository.findIsOpenedByCapsuleId(anyLong()))
             .willReturn(List.of(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE));
 
         //when
