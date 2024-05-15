@@ -110,7 +110,7 @@ public class GroupCapsuleService {
             .orElseThrow(GroupCapsuleOpenNotFoundException::new);
         groupCapsuleOpen.open();
 
-        List<Boolean> capsuleOpens = groupCapsuleOpenQueryRepository.findIsOpenedByMemberIdAndCapsuleId(
+        List<Boolean> capsuleOpens = groupCapsuleOpenQueryRepository.findIsOpenedByCapsuleId(
             capsuleId);
 
         boolean allGroupMemberOpened = capsuleOpens.stream()

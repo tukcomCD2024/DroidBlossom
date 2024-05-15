@@ -48,7 +48,7 @@ public class GroupCapsuleOpenQueryRepository {
         );
     }
 
-    public List<Boolean> findIsOpenedByMemberIdAndCapsuleId(final Long capsuleId) {
+    public List<Boolean> findIsOpenedByCapsuleId(final Long capsuleId) {
         return jpaQueryFactory
             .select(groupCapsuleOpen.isOpened)
             .from(groupCapsuleOpen)
