@@ -30,7 +30,7 @@ import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
-@RequestMapping("/groups-capsules")
+@RequestMapping("/group-capsules")
 @RequiredArgsConstructor
 public class GroupCapsuleApiController implements GroupCapsuleApi {
 
@@ -135,6 +135,17 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
                 )
             )
         );
+    }
+
+    @PostMapping("/{capsule_id}/open")
+    @Override
+    public ResponseEntity<ApiSpec<String>> openCapsule(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable(value = "capsule_id") final Long capsuleId
+    ) {
+        groupCapsuleService.openGroupCapsule(memberId, capsuleId);
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @Override
