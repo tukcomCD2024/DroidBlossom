@@ -283,8 +283,8 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
         if (reload){
             viewModel.load()
-            reload = true
         }
+        reload = true
     }
 
     override fun onResume() {
