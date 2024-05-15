@@ -30,6 +30,7 @@ import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundExceptio
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.service.command.GroupCommandService;
 import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
@@ -122,7 +123,7 @@ class GroupCommandServiceTest {
         //when
         //then
         assertThatThrownBy(() -> groupCommandService.deleteGroup(groupMemberId, groupId))
-            .isExactlyInstanceOf(GroupDeleteFailException.class)
+            .isExactlyInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
 

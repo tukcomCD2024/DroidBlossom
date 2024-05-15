@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.group_member.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,12 +17,15 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.dependency.TestTransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group_member.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group_member.exception.GroupInviteNotFoundException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupOwnerAuthenticateException;
+import site.timecapsulearchive.core.domain.group_member.exception.GroupQuitException;
+import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -39,7 +43,7 @@ public class GroupMemberCommandServiceTest {
         SocialNotificationManager.class);
     private final TransactionTemplate transactionTemplate = TestTransactionTemplate.spied();
 
-    private final GroupMemberCommandService groupQueryService = new GroupMemberCommandService(
+    private final GroupMemberCommandService groupMemberCommandService = new GroupMemberCommandService(
         memberRepository,
         groupRepository,
         memberGroupRepository,
@@ -66,7 +70,7 @@ public class GroupMemberCommandServiceTest {
             Optional.of(groupOwnerSummaryDto));
 
         //when
-        groupQueryService.inviteGroup(memberId, groupId, targetId);
+        groupMemberCommandService.inviteGroup(memberId, groupId, targetId);
 
         //then
         verify(socialNotificationManager, times(1)).sendGroupInviteMessage(anyString(), anyString(),
@@ -89,7 +93,7 @@ public class GroupMemberCommandServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupQueryService.inviteGroup(memberId, groupId, targetId))
+        assertThatThrownBy(() -> groupMemberCommandService.inviteGroup(memberId, groupId, targetId))
             .isInstanceOf(GroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_NOT_FOUND_ERROR.getMessage());
     }
@@ -112,9 +116,9 @@ public class GroupMemberCommandServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupQueryService.inviteGroup(memberId, groupId, targetId))
-            .isInstanceOf(GroupOwnerAuthenticateException.class)
-            .hasMessageContaining(ErrorCode.GROUP_OWNER_AUTHENTICATE_ERROR.getMessage());
+        assertThatThrownBy(() -> groupMemberCommandService.inviteGroup(memberId, groupId, targetId))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
 
     @Test
@@ -129,7 +133,8 @@ public class GroupMemberCommandServiceTest {
 
         //when
         // then
-        assertThatCode(() -> groupQueryService.rejectRequestGroup(memberId, groupId, targetId))
+        assertThatCode(
+            () -> groupMemberCommandService.rejectRequestGroup(memberId, groupId, targetId))
             .doesNotThrowAnyException();
     }
 
@@ -146,7 +151,7 @@ public class GroupMemberCommandServiceTest {
         //when
         // then
         assertThatThrownBy(
-            () -> groupQueryService.rejectRequestGroup(memberId, groupId, targetId))
+            () -> groupMemberCommandService.rejectRequestGroup(memberId, groupId, targetId))
             .isInstanceOf(GroupInviteNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
@@ -166,7 +171,7 @@ public class GroupMemberCommandServiceTest {
             groupId, targetId, memberId)).willReturn(1);
 
         //when
-        groupQueryService.acceptGroupInvite(memberId, groupId, targetId);
+        groupMemberCommandService.acceptGroupInvite(memberId, groupId, targetId);
 
         //then
         verify(socialNotificationManager, times(1)).sendGroupAcceptMessage(anyString(), anyLong());
@@ -188,9 +193,57 @@ public class GroupMemberCommandServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupQueryService.acceptGroupInvite(memberId, groupId, targetId))
+        assertThatThrownBy(
+            () -> groupMemberCommandService.acceptGroupInvite(memberId, groupId, targetId))
             .isInstanceOf(GroupInviteNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
 
+
+    @Test
+    void 그룹장인_사용자가_그룹_탈퇴를_시도하면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
+            groupId)).willReturn(ownerGroupMemberOnly());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupMemberCommandService.quitGroup(groupOwnerId, groupId))
+            .isInstanceOf(GroupQuitException.class)
+            .hasMessageContaining(ErrorCode.GROUP_OWNER_QUIT_ERROR.getMessage());
+    }
+
+    private Optional<MemberGroup> ownerGroupMemberOnly() {
+        return Optional.of(
+            MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
+                GroupFixture.group())
+        );
+    }
+
+    @Test
+    void 그룹장이_아닌_사용자가_그룹_탈퇴를_시도하면_그룹을_탈퇴한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupId = 1L;
+        given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
+            groupId)).willReturn(notOwnerGroupMemberOnly());
+
+        //when
+        groupMemberCommandService.quitGroup(groupOwnerId, groupId);
+
+        //then
+        verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
+    }
+
+    private Optional<MemberGroup> notOwnerGroupMemberOnly() {
+        return Optional.of(
+            MemberGroupFixture.memberGroup(
+                MemberFixture.memberWithMemberId(2L),
+                GroupFixture.group(),
+                false
+            )
+        );
+    }
 }
