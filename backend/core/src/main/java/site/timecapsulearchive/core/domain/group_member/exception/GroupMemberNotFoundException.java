@@ -3,9 +3,9 @@ package site.timecapsulearchive.core.domain.group_member.exception;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
 
-public class GroupOwnerAuthenticateException extends BusinessException {
+public class GroupMemberNotFoundException extends BusinessException {
 
-    public GroupOwnerAuthenticateException() {
-        super(ErrorCode.GROUP_OWNER_AUTHENTICATE_ERROR);
+    public GroupMemberNotFoundException() {
+        super(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR);
     }
 }

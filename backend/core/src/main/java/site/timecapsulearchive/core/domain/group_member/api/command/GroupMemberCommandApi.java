@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.group_member.api.command;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,48 +12,49 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface GroupMemberCommandApi {
 
     @Operation(
-        summary = "그룹원 삭제",
-        description = "그룹장인 경우 특정 그룹원을 삭제한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "204",
-            description = "처리 완료"
-        )
-    })
-    @DeleteMapping(value = "/groups/{group_id}/members/{member_id}")
-    ResponseEntity<Void> deleteGroupMember(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
-
-        @Parameter(in = ParameterIn.PATH, description = "삭제할 멤버 아이디", required = true, schema = @Schema())
-        @PathVariable("member_id") Long memberId
-    );
-
-    @Operation(
         summary = "그룹 탈퇴",
-        description = "사용자가 속한 그룹을 탈퇴한다.",
+        description = """
+            그룹 탈퇴를 요청한 사용자가 해당 그룹의 그룹장이 아닌 경우 그룹을 탈퇴한다.<br>
+            <b><u>주의</u></b>
+            <ul>
+                <li>그룹 탈퇴를 요청한 사용자가 해당 그룹의 그룹장인 경우 그룹을 탈퇴할 수 없다.</li>
+            </ul>
+            """,
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
+        tags = {"group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "204",
-            description = "처리 완료"
+            responseCode = "202",
+            description = "처리 시작"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                다음의 경우 예외가 발생한다.
+                <ul>
+                <li>탈퇴를 요청한 사용자가 그룹의 그룹장인 경우</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹에 멤버가 존재하지 않으면 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    @DeleteMapping(value = "/groups/{group_id}/members/quit")
-    ResponseEntity<Void> quitGroup(
-        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId
-    );
+    ResponseEntity<ApiSpec<String>> quitGroup(
+        Long memberId,
 
+        @Parameter(in = ParameterIn.PATH, description = "탈퇴할 그룹 아이디", required = true)
+        Long groupId
+    );
     @Operation(
         summary = "그룹 요청",
         description = "그룹장인 경우 친구에게 그룹 가입 요청을 할 수 있다.",

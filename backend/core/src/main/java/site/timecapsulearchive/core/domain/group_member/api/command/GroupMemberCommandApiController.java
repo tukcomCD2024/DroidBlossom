@@ -19,14 +19,15 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
 
     private final GroupMemberCommandService groupMemberCommandService;
 
+    @DeleteMapping(value = "/{group_id}/members/quit")
     @Override
-    public ResponseEntity<Void> deleteGroupMember(Long groupId, Long memberId) {
-        return null;
-    }
+    public ResponseEntity<ApiSpec<String>> quitGroup(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId
+    ) {
+        groupMemberCommandService.quitGroup(memberId, groupId);
 
-    @Override
-    public ResponseEntity<Void> quitGroup(Long groupId) {
-        return null;
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @PostMapping(value = "/invite/{group_id}/member/{target_id}")

@@ -13,6 +13,7 @@ import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailExcept
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -94,7 +95,7 @@ public class GroupCommandService {
         final boolean isGroupOwner = groupMembers.stream()
             .anyMatch(mg -> mg.getMember().getId().equals(memberId) && mg.getIsOwner());
         if (!isGroupOwner) {
-            throw new GroupDeleteFailException(ErrorCode.NO_GROUP_AUTHORITY_ERROR);
+            throw new NoGroupAuthorityException();
         }
     }
 
