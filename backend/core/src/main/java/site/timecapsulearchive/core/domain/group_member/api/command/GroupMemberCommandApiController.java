@@ -13,7 +13,7 @@ import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
-@RequestMapping("/group-members")
+@RequestMapping("/groups")
 @RequiredArgsConstructor
 public class GroupMemberCommandApiController implements GroupMemberCommandApi {
 
@@ -30,7 +30,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
-    @PostMapping(value = "/invite/{group_id}/member/{target_id}")
+    @PostMapping(value = "/{group_id}/member/{target_id}/invite")
     @Override
     public ResponseEntity<ApiSpec<String>> inviteGroup(
         @AuthenticationPrincipal final Long memberId,
@@ -46,7 +46,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         );
     }
 
-    @PostMapping(value = "/accept/{group_id}/member/{target_id}")
+    @PostMapping(value = "/{group_id}/member/{target_id}/accept")
     @Override
     public ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
         @AuthenticationPrincipal final Long memberId,
@@ -62,7 +62,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         );
     }
 
-    @DeleteMapping(value = "/reject/{group_id}/member/{target_id}")
+    @DeleteMapping(value = "/{group_id}/member/{target_id}/reject")
     public ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId,
