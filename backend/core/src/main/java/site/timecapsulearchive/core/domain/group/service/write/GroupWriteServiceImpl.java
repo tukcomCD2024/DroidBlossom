@@ -138,9 +138,7 @@ public class GroupWriteServiceImpl implements GroupWriteService {
      * @param groupId  그룹 아이디
      */
     public void deleteGroup(final Long memberId, final Long groupId) {
-        final String[] groupProfilePath = new String[1];
-
-        transactionTemplate.executeWithoutResult(transactionStatus -> {
+        final String groupProfilePath = transactionTemplate.execute(transactionStatus -> {
             final Group group = groupRepository.findGroupById(groupId)
                 .orElseThrow(GroupNotFoundException::new);
 
@@ -156,10 +154,10 @@ public class GroupWriteServiceImpl implements GroupWriteService {
             groupInviteRepository.bulkDelete(groupInviteIds);
 
             groupRepository.delete(group);
-            groupProfilePath[0] = group.getGroupProfileUrl();
+            return group.getGroupProfileUrl();
         });
 
-        s3ObjectManager.deleteObject(groupProfilePath[0]);
+        s3ObjectManager.deleteObject(groupProfilePath);
     }
 
     private void checkGroupOwnership(Long memberId, List<MemberGroup> groupMembers) {
