@@ -60,9 +60,7 @@ class SocialFragment : BaseFragment<SocialViewModelImpl, FragmentSocialBinding>(
         fun setReloadTrue() {
             reload = true
         }
-        fun newIntent() : SocialFragment{
-            return SocialFragment()
-        }
+        fun newIntent() : SocialFragment = SocialFragment()
     }
 
 }

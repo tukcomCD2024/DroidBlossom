@@ -45,9 +45,6 @@ class MyPageViewModelImpl @Inject constructor(
     override val myCapsules: StateFlow<List<CapsuleData>>
         get() = _myCapsules
 
-    private val _myCapsulesUI = MutableStateFlow(listOf<CapsuleData>())
-    override val myCapsulesUI: StateFlow<List<CapsuleData>>
-        get() = _myCapsulesUI
 
     private val _hasNextPage = MutableStateFlow(true)
     override val hasNextPage: StateFlow<Boolean>
@@ -67,20 +64,23 @@ class MyPageViewModelImpl @Inject constructor(
     private var getCapsuleListJob: Job? = null
 
     override var viewModelReload = false
-    override var clearCapsule = false
 
     init {
         load()
         viewModelScope.launch {
             scrollEventFlow.collect {
-                getCapsulePage()
+                if (myCapsules.value.isEmpty()){
+                    getLatestCapsulePage()
+                }else{
+                    getCapsulePage()
+                }
             }
         }
     }
 
     override fun load() {
         getMe()
-        clearCapsules(true)
+        getLatestCapsulePage()
     }
 
     override fun onScrollNearBottom() {
@@ -123,6 +123,22 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
+    override fun getLatestCapsulePage(){
+        when (capsuleType.value) {
+            MyPageFragment.SpinnerCapsuleType.SECRET -> {
+                getLatestSecretCapsulePage()
+            }
+
+            MyPageFragment.SpinnerCapsuleType.PUBLIC -> {
+                getLatestPublicCapsulePage()
+            }
+
+            MyPageFragment.SpinnerCapsuleType.GROUP -> {
+                getLatestGroupCapsulePage()
+            }
+        }
+    }
+
     private fun getSecretCapsulePage() {
         if (hasNextPage.value) {
             getCapsuleListJob?.cancel()
@@ -143,7 +159,6 @@ class MyPageViewModelImpl @Inject constructor(
                         myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
                 }
-                myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }
     }
@@ -168,7 +183,6 @@ class MyPageViewModelImpl @Inject constructor(
                         myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
                     }
                 }
-                myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }
     }
@@ -177,34 +191,74 @@ class MyPageViewModelImpl @Inject constructor(
         viewModelScope.launch {
             if (hasNextPage.value) {
                 _myCapsules.emit(listOf())
-                myPageEvent(MyPageViewModel.MyPageEvent.HideLoading)
             }
         }
     }
 
-
-    override fun updateMyCapsulesUI() {
-        viewModelScope.launch {
-            _myCapsulesUI.emit(myCapsules.value)
+    private fun getLatestSecretCapsulePage() {
+        getCapsuleListJob?.cancel()
+        getCapsuleListJob = viewModelScope.launch {
+            secretCapsulePageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _myCapsules.emit(it.capsules)
+                    if (myCapsules.value.isNotEmpty()) {
+                        _lastCreatedTime.value = myCapsules.value.last().createdDate
+                    }
+                }.onFail {
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                }
+            }
+            myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
 
-    override fun clearCapsules(setting: Boolean) {
-        clearCapsule = setting
-        viewModelScope.launch {
-            _myCapsules.value = listOf()
-            _lastCreatedTime.value = DateUtils.dataServerString
-            _hasNextPage.value = true
-            getCapsulePage()
+    private fun getLatestPublicCapsulePage() {
+        getCapsuleListJob?.cancel()
+        getCapsuleListJob = viewModelScope.launch {
+            myPublicCapsulePageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _myCapsules.emit(it.capsules)
+                    if (myCapsules.value.isNotEmpty()) {
+                        _lastCreatedTime.value = myCapsules.value.last().createdDate
+                    }
+                }.onFail {
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                }
+            }
+            myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
+
+    private fun getLatestGroupCapsulePage() {
+        viewModelScope.launch {
+            _myCapsules.emit(listOf())
+            myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
+        }
+    }
+
+
+
+
+
+
 
     override fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long) {
         viewModelScope.launch {
             val newList = _myCapsules.value
             newList[capsuleIndex].isOpened = true
             _myCapsules.emit(newList)
-            _myCapsulesUI.emit(myCapsules.value)
         }
     }
 
