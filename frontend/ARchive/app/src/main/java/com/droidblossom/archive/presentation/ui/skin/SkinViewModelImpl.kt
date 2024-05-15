@@ -93,7 +93,7 @@ class SkinViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getLastSkinList(){
+    override fun getLatestSkinList(){
         getSkinLstJob?.cancel()
         getSkinLstJob = viewModelScope.launch {
             capsuleSkinsPageUseCase(

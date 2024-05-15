@@ -55,7 +55,7 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     private fun initRVA() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getLastSkinList()
+            viewModel.getLatestSkinList()
         }
         binding.skinRV.adapter = mySkinRVA
         binding.skinRV.setHasFixedSize(true)
@@ -137,14 +137,14 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            viewModel.getLastSkinList()
+            viewModel.getLatestSkinList()
             viewModel.closeSearchSkin()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.getLastSkinList()
+        viewModel.getLatestSkinList()
         viewModel.closeSearchSkin()
     }
 

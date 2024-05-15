@@ -16,7 +16,7 @@ interface SkinViewModel {
     val isSearchOpen : StateFlow<Boolean>
 
     fun getSkinList()
-    fun getLastSkinList()
+    fun getLatestSkinList()
     fun goSkinMake()
     fun searchSkin()
     fun openSearchSkin()

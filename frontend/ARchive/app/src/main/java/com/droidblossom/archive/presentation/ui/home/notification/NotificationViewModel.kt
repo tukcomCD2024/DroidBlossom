@@ -12,7 +12,7 @@ interface NotificationViewModel {
     val lastCreatedTime: StateFlow<String>
 
     fun getNotificationPage()
-    fun getLastNotificationPage()
+    fun getLatestNotificationPage()
     fun onScrollNearBottom()
 
     sealed class NotificationEvent {

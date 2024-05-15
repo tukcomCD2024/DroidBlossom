@@ -90,7 +90,7 @@ class NotificationViewModelImpl @Inject constructor(
 
     }
 
-    override fun getLastNotificationPage() {
+    override fun getLatestNotificationPage() {
         getNotificationListJob?.cancel()
         getNotificationListJob = viewModelScope.launch {
             getNotificationsUseCase(

@@ -91,7 +91,7 @@ class NotificationActivity :
     private fun initRV(){
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getLastNotificationPage()
+            viewModel.getLatestNotificationPage()
         }
         binding.rv.adapter = notificationRVA
         binding.rv.setHasFixedSize(true)
