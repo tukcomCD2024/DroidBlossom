@@ -88,4 +88,29 @@ class NotificationViewModelImpl @Inject constructor(
         }
 
     }
+
+    override fun getLastNotificationPage() {
+        getNotificationListJob?.cancel()
+        getNotificationListJob = viewModelScope.launch {
+            getNotificationsUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _notifications.emit(it.notifications)
+                    _lastCreatedTime.value = it.notifications.last().createdAt
+                }.onFail {
+                    _notificationEvent.emit(
+                        NotificationViewModel.NotificationEvent.ShowToastMessage(
+                            "알림 불러오기 실패"
+                        )
+                    )
+                }
+            }
+        }
+    }
+
 }

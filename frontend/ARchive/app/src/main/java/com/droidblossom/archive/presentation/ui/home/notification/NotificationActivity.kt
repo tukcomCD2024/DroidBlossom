@@ -85,6 +85,14 @@ class NotificationActivity :
         binding.backBtn.setOnClickListener {
             finish()
         }
+
+        initRV()
+    }
+    private fun initRV(){
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLastNotificationPage()
+        }
         binding.rv.adapter = notificationRVA
         binding.rv.setHasFixedSize(true)
         binding.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -107,7 +115,12 @@ class NotificationActivity :
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.notifications.collect { notifications ->
-                    notificationRVA.submitList(notifications)
+                    notificationRVA.submitList(notifications){
+                        if (binding.swipeRefreshLayout.isRefreshing){
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            binding.rv.scrollToPosition(0)
+                        }
+                    }
                 }
             }
         }
