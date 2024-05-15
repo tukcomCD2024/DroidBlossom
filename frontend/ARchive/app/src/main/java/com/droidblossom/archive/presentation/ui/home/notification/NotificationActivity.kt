@@ -111,6 +111,7 @@ class NotificationActivity :
         })
     }
 
+
     override fun observeData() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -131,6 +132,12 @@ class NotificationActivity :
                     when (event) {
                         is NotificationViewModel.NotificationEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+
+                        is NotificationViewModel.NotificationEvent.SwipeRefreshLayoutDismissLoading -> {
+                            if (binding.swipeRefreshLayout.isRefreshing){
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
                         }
 
                         else -> {}

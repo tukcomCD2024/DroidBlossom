@@ -17,5 +17,7 @@ interface NotificationViewModel {
 
     sealed class NotificationEvent {
         data class ShowToastMessage(val message: String) : NotificationEvent()
+
+        object SwipeRefreshLayoutDismissLoading : NotificationEvent()
     }
 }
