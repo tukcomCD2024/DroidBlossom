@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.service;
+package site.timecapsulearchive.core.domain.member_group.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -21,21 +21,21 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
-import site.timecapsulearchive.core.domain.group_member.data.GroupOwnerSummaryDto;
-import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupInviteNotFoundException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupMemberDuplicatedIdException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupMemberNotFoundException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupQuitException;
-import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
-import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
-public class GroupMemberCommandServiceTest {
+public class MemberGroupCommandServiceTest {
 
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final GroupRepository groupRepository = mock(GroupRepository.class);
@@ -45,7 +45,7 @@ public class GroupMemberCommandServiceTest {
         SocialNotificationManager.class);
     private final TransactionTemplate transactionTemplate = TestTransactionTemplate.spied();
 
-    private final GroupMemberCommandService groupMemberCommandService = new GroupMemberCommandService(
+    private final MemberGroupCommandService groupMemberCommandService = new MemberGroupCommandService(
         memberRepository,
         groupRepository,
         memberGroupRepository,
@@ -208,7 +208,7 @@ public class GroupMemberCommandServiceTest {
         Long groupOwnerId = 1L;
         Long groupId = 1L;
         given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
-            groupId)).willReturn(ownerGroupMemberOnly());
+            groupId)).willReturn(MemberGroupFixture.owner());
 
         //when
         //then
@@ -217,36 +217,19 @@ public class GroupMemberCommandServiceTest {
             .hasMessageContaining(ErrorCode.GROUP_OWNER_QUIT_ERROR.getMessage());
     }
 
-    private Optional<MemberGroup> ownerGroupMemberOnly() {
-        return Optional.of(
-            MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
-                GroupFixture.group())
-        );
-    }
-
     @Test
     void 그룹장이_아닌_사용자가_그룹_탈퇴를_시도하면_그룹을_탈퇴한다() {
         //given
         Long groupOwnerId = 1L;
         Long groupId = 1L;
         given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(groupOwnerId,
-            groupId)).willReturn(notOwnerGroupMemberOnly());
+            groupId)).willReturn(MemberGroupFixture.notOwner());
 
         //when
         groupMemberCommandService.quitGroup(groupOwnerId, groupId);
 
         //then
         verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
-    }
-
-    private Optional<MemberGroup> notOwnerGroupMemberOnly() {
-        return Optional.of(
-            MemberGroupFixture.memberGroup(
-                MemberFixture.memberWithMemberId(2L),
-                GroupFixture.group(),
-                false
-            )
-        );
     }
 
     @Test
@@ -259,7 +242,7 @@ public class GroupMemberCommandServiceTest {
         //then
         assertThatThrownBy(
             () -> groupMemberCommandService.kickGroupMember(groupOwnerId, groupId, groupOwnerId))
-            .isInstanceOf(GroupMemberDuplicatedIdException.class)
+            .isInstanceOf(MemberGroupKickDuplicatedIdException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_DUPLICATED_ID_ERROR.getMessage());
     }
 
@@ -276,7 +259,7 @@ public class GroupMemberCommandServiceTest {
         //then
         assertThatThrownBy(
             () -> groupMemberCommandService.kickGroupMember(notExistGroupOwnerId, groupId, groupMemberId))
-            .isInstanceOf(GroupMemberNotFoundException.class)
+            .isInstanceOf(MemberGroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
     }
 
@@ -312,7 +295,7 @@ public class GroupMemberCommandServiceTest {
         //then
         assertThatThrownBy(
             () -> groupMemberCommandService.kickGroupMember(groupOwnerId, groupId, notExistGroupMemberId))
-            .isInstanceOf(GroupMemberNotFoundException.class)
+            .isInstanceOf(MemberGroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
     }
 
@@ -325,7 +308,7 @@ public class GroupMemberCommandServiceTest {
         given(memberGroupRepository.findIsOwnerByMemberIdAndGroupId(anyLong(), anyLong()))
             .willReturn(Optional.of(Boolean.TRUE));
         given(memberGroupRepository.findMemberGroupByMemberIdAndGroupId(anyLong(), anyLong()))
-            .willReturn(notOwnerGroupMemberOnly());
+            .willReturn(MemberGroupFixture.notOwner());
 
         //when
         groupMemberCommandService.kickGroupMember(groupOwnerId, groupId, groupMemberId);

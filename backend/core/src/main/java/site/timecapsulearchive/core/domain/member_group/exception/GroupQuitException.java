@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.exception;
+package site.timecapsulearchive.core.domain.member_group.exception;
 
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;

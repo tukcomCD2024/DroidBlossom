@@ -1,11 +1,11 @@
-package site.timecapsulearchive.core.domain.group_member.exception;
+package site.timecapsulearchive.core.domain.member_group.exception;
 
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
 
-public class GroupMemberDuplicatedIdException extends BusinessException {
+public class MemberGroupKickDuplicatedIdException extends BusinessException {
 
-    public GroupMemberDuplicatedIdException() {
+    public MemberGroupKickDuplicatedIdException() {
         super(ErrorCode.GROUP_MEMBER_DUPLICATED_ID_ERROR);
     }
 }

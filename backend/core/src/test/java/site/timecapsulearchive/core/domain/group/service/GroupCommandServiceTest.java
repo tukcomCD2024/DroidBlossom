@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -30,11 +29,11 @@ import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailExcept
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.service.command.GroupCommandService;
-import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupMemberNotFoundException;
-import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
-import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
@@ -120,23 +119,13 @@ class GroupCommandServiceTest {
 
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
         given(memberGroupRepository.findMemberGroupsByGroupId(groupId)).willReturn(
-            notOwnerGroupMember());
+            MemberGroupFixture.memberGroupsWithoutOwner());
 
         //when
         //then
         assertThatThrownBy(() -> groupCommandService.deleteGroup(groupMemberId, groupId))
             .isExactlyInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
-    }
-
-    private List<MemberGroup> notOwnerGroupMember() {
-        return List.of(
-            MemberGroupFixture.memberGroup(
-                MemberFixture.memberWithMemberId(1),
-                GroupFixture.group(),
-                false
-            )
-        );
     }
 
     @Test
@@ -147,7 +136,7 @@ class GroupCommandServiceTest {
 
         given(groupRepository.findGroupById(anyLong())).willReturn(group());
         given(memberGroupRepository.findMemberGroupsByGroupId(groupMemberExistGroupId)).willReturn(
-            groupMembers());
+            MemberGroupFixture.memberGroupsWithOwner());
 
         //when
         //then
@@ -161,21 +150,6 @@ class GroupCommandServiceTest {
         return Optional.of(
             GroupFixture.group()
         );
-    }
-
-    private List<MemberGroup> groupMembers() {
-        Group group = GroupFixture.group();
-        MemberGroup groupOwner = MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
-            group);
-
-        List<MemberGroup> memberGroups = MemberGroupFixture.memberGroups(
-            MemberFixture.membersWithMemberId(2, 2),
-            group
-        );
-
-        List<MemberGroup> result = new ArrayList<>(memberGroups);
-        result.add(groupOwner);
-        return result;
     }
 
     @Test
@@ -240,7 +214,7 @@ class GroupCommandServiceTest {
         //then
         assertThatThrownBy(
             () -> groupCommandService.updateGroup(notGroupMemberId, groupId, groupUpdateDto))
-            .isInstanceOf(GroupMemberNotFoundException.class)
+            .isInstanceOf(MemberGroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
     }
 

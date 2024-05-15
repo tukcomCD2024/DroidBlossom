@@ -1,7 +1,7 @@
-package site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository;
 
 
-import static site.timecapsulearchive.core.domain.group_member.entity.QGroupInvite.groupInvite;
+import static site.timecapsulearchive.core.domain.member_group.entity.QGroupInvite.groupInvite;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
@@ -23,7 +23,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public void bulkSave(Long groupOwnerId, List<Long> groupMemberIds) {
+    public void bulkSave(final Long groupOwnerId, final List<Long> groupMemberIds) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_invite (

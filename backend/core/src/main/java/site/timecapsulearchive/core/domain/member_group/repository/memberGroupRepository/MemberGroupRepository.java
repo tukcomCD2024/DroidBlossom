@@ -1,9 +1,9 @@
-package site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.Repository;
-import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 
 public interface MemberGroupRepository extends Repository<MemberGroup, Long>,
     MemberGroupQueryRepository {

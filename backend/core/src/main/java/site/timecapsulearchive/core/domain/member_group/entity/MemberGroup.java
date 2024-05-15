@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.entity;
+package site.timecapsulearchive.core.domain.member_group.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,34 +19,36 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "GROUP_INVITE")
-public class GroupInvite extends BaseEntity {
+@Table(name = "MEMBER_GROUP")
+public class MemberGroup extends BaseEntity {
 
     @Id
-    @Column(name = "group_invite_id")
+    @Column(name = "member_group_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "is_owner", nullable = false)
+    private Boolean isOwner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_owner_id", nullable = false)
-    private Member groupOwner;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_member_id", nullable = false)
-    private Member groupMember;
-
-    private GroupInvite(Group group, Member groupOwner, Member groupMember) {
+    private MemberGroup(Boolean isOwner, Member member, Group group) {
+        this.isOwner = isOwner;
+        this.member = member;
         this.group = group;
-        this.groupOwner = groupOwner;
-        this.groupMember = groupMember;
     }
 
-    public static GroupInvite createOf(Group group, Member groupOwner, Member groupMember) {
-        return new GroupInvite(group, groupOwner, groupMember);
+    public static MemberGroup createGroupOwner(Member member, Group group) {
+        return new MemberGroup(true, member, group);
     }
 
+    public static MemberGroup createGroupMember(Member member, Group group) {
+        return new MemberGroup(false, member, group);
+    }
 }

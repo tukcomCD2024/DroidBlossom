@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.data;
+package site.timecapsulearchive.core.domain.member_group.data;
 
 public record GroupOwnerSummaryDto(
     String nickname,

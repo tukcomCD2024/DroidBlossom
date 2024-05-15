@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.api.command;
+package site.timecapsulearchive.core.domain.member_group.api.command;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,12 +9,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
-public interface GroupMemberCommandApi {
+public interface MemberGroupCommandApi {
 
     @Operation(
         summary = "그룹 탈퇴",
@@ -26,7 +24,7 @@ public interface GroupMemberCommandApi {
             </ul>
             """,
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
+        tags = {"member group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -59,7 +57,7 @@ public interface GroupMemberCommandApi {
         summary = "그룹 요청",
         description = "그룹장인 경우 친구에게 그룹 가입 요청을 할 수 있다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
+        tags = {"member group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -81,7 +79,7 @@ public interface GroupMemberCommandApi {
         summary = "그룹 요청 수락",
         description = "특정 그룹으로부터 그룹 요청을 수락한다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
+        tags = {"member group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -111,7 +109,7 @@ public interface GroupMemberCommandApi {
         summary = "그룹 요청 거부",
         description = "특정 그룹으로부터 초대 요청을 거부한다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
+        tags = {"member group"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -132,7 +130,7 @@ public interface GroupMemberCommandApi {
         summary = "그룹원 추방",
         description = "요청한 사용자가 그룹장인 경우 특정 그룹원을 그룹에서 추방한다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"group member"}
+        tags = {"member group"}
     )
     @ApiResponses(value = {
         @ApiResponse(

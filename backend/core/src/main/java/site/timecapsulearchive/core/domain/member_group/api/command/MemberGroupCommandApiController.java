@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.api.command;
+package site.timecapsulearchive.core.domain.member_group.api.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.group_member.service.GroupMemberCommandService;
+import site.timecapsulearchive.core.domain.member_group.service.MemberGroupCommandService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
 @RequestMapping("/groups")
 @RequiredArgsConstructor
-public class GroupMemberCommandApiController implements GroupMemberCommandApi {
+public class MemberGroupCommandApiController implements MemberGroupCommandApi {
 
-    private final GroupMemberCommandService groupMemberCommandService;
+    private final MemberGroupCommandService MemberGroupCommandService;
 
     @DeleteMapping(value = "/{group_id}/members/quit")
     @Override
@@ -25,7 +25,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId
     ) {
-        groupMemberCommandService.quitGroup(memberId, groupId);
+        MemberGroupCommandService.quitGroup(memberId, groupId);
 
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
@@ -37,7 +37,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         @PathVariable("group_id") final Long groupId,
         @PathVariable("target_id") final Long targetId
     ) {
-        groupMemberCommandService.inviteGroup(memberId, groupId, targetId);
+        MemberGroupCommandService.inviteGroup(memberId, groupId, targetId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
@@ -53,7 +53,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         @PathVariable("group_id") final Long groupId,
         @PathVariable("target_id") final Long targetId
     ) {
-        groupMemberCommandService.acceptGroupInvite(memberId, groupId, targetId);
+        MemberGroupCommandService.acceptGroupInvite(memberId, groupId, targetId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
@@ -68,7 +68,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         @PathVariable("group_id") final Long groupId,
         @PathVariable("target_id") final Long targetId) {
 
-        groupMemberCommandService.rejectRequestGroup(memberId, groupId, targetId);
+        MemberGroupCommandService.rejectRequestGroup(memberId, groupId, targetId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
@@ -84,7 +84,7 @@ public class GroupMemberCommandApiController implements GroupMemberCommandApi {
         @PathVariable("group_id") final Long groupId,
         @PathVariable("group_member_id") final Long groupMemberId
     ) {
-        groupMemberCommandService.kickGroupMember(memberId, groupId, groupMemberId);
+        MemberGroupCommandService.kickGroupMember(memberId, groupId, groupMemberId);
 
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }

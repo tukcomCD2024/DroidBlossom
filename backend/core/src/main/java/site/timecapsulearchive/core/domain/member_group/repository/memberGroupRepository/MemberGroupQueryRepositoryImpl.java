@@ -1,7 +1,7 @@
-package site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository;
 
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
-import static site.timecapsulearchive.core.domain.group_member.entity.QMemberGroup.memberGroup;
+import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.Projections;
@@ -9,7 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.group_member.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
 
 @Repository
 @RequiredArgsConstructor

@@ -31,7 +31,7 @@ public class GroupCommandApiController implements GroupCommandApi {
     @PostMapping
     public ResponseEntity<ApiSpec<String>> createGroup(
         @AuthenticationPrincipal final Long memberId,
-        @Valid @RequestBody GroupCreateRequest request
+        @Valid @RequestBody final GroupCreateRequest request
     ) {
         final String groupProfileUrl = s3UrlGenerator.generateFileName(memberId,
             request.groupDirectory(), request.groupImage());
@@ -60,9 +60,9 @@ public class GroupCommandApiController implements GroupCommandApi {
     @PatchMapping(value = "/{group_id}", consumes = {"application/json"})
     @Override
     public ResponseEntity<ApiSpec<String>> updateGroupById(
-        @AuthenticationPrincipal Long memberId,
-        @PathVariable("group_id") Long groupId,
-        @RequestBody GroupUpdateRequest request
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId,
+        @Valid @RequestBody final GroupUpdateRequest request
     ) {
         groupCommandService.updateGroup(memberId, groupId, request.toDto());
 

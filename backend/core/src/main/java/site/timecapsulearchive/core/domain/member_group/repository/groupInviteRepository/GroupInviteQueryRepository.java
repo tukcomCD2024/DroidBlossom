@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.group_member.service;
+package site.timecapsulearchive.core.domain.member_group.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +10,16 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
-import site.timecapsulearchive.core.domain.group_member.data.GroupOwnerSummaryDto;
-import site.timecapsulearchive.core.domain.group_member.entity.GroupInvite;
-import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupInviteNotFoundException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupMemberDuplicatedIdException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupMemberNotFoundException;
-import site.timecapsulearchive.core.domain.group_member.exception.GroupQuitException;
-import site.timecapsulearchive.core.domain.group_member.exception.NoGroupAuthorityException;
-import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.entity.GroupInvite;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
@@ -28,7 +28,7 @@ import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManage
 
 @Service
 @RequiredArgsConstructor
-public class GroupMemberCommandService {
+public class MemberGroupCommandService {
 
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
@@ -114,7 +114,7 @@ public class GroupMemberCommandService {
     public void quitGroup(final Long memberId, final Long groupId) {
         final MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
                 memberId, groupId)
-            .orElseThrow(GroupMemberNotFoundException::new);
+            .orElseThrow(MemberGroupNotFoundException::new);
         if (groupMember.getIsOwner()) {
             throw new GroupQuitException(ErrorCode.GROUP_OWNER_QUIT_ERROR);
         }
@@ -140,14 +140,14 @@ public class GroupMemberCommandService {
         final Long groupMemberId
     ) {
         if (groupOwnerId.equals(groupMemberId)) {
-            throw new GroupMemberDuplicatedIdException();
+            throw new MemberGroupKickDuplicatedIdException();
         }
 
         checkGroupOwnership(groupOwnerId, groupId);
 
         final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
                 groupMemberId, groupId)
-            .orElseThrow(GroupMemberNotFoundException::new);
+            .orElseThrow(MemberGroupNotFoundException::new);
 
         memberGroupRepository.delete(memberGroup);
     }
@@ -156,7 +156,7 @@ public class GroupMemberCommandService {
         final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
                 groupOwnerId,
                 groupId)
-            .orElseThrow(GroupMemberNotFoundException::new);
+            .orElseThrow(MemberGroupNotFoundException::new);
         if (!isOwner) {
             throw new NoGroupAuthorityException();
         }

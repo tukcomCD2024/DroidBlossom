@@ -2,9 +2,11 @@ package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 public class MemberGroupFixture {
@@ -60,5 +62,63 @@ public class MemberGroupFixture {
         return members.stream()
             .map(m -> memberGroup(m, group, Boolean.FALSE))
             .toList();
+    }
+
+    /**
+     * 임의로 그룹원들과 그룹장만 만든다.
+     * @return 그룹원들과 그룹장 {@code List<MemberGroup>}
+     */
+    public static List<MemberGroup> memberGroupsWithOwner() {
+        Group group = GroupFixture.group();
+        MemberGroup groupOwner = MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
+            group);
+
+        List<MemberGroup> memberGroups = MemberGroupFixture.memberGroups(
+            MemberFixture.membersWithMemberId(2, 2),
+            group
+        );
+
+        List<MemberGroup> result = new ArrayList<>(memberGroups);
+        result.add(groupOwner);
+        return result;
+    }
+
+    /**
+     * 임의로 그룹원들만 만든다.
+     * @return 그룹원들 {@code List<MemberGroup>}
+     */
+    public static List<MemberGroup> memberGroupsWithoutOwner() {
+        return List.of(
+            MemberGroupFixture.memberGroup(
+                MemberFixture.memberWithMemberId(1),
+                GroupFixture.group(),
+                false
+            )
+        );
+    }
+
+    /**
+     * 테스트픽스처 - 임의로 그룹원을 만든다.
+     * @return 그룹원인 {@code MemberGroup}
+     */
+    public static Optional<MemberGroup> notOwner() {
+        return Optional.of(
+            MemberGroupFixture.memberGroup(
+                MemberFixture.memberWithMemberId(1L),
+                GroupFixture.group(),
+                Boolean.FALSE
+            )
+        );
+    }
+
+    /**
+     * 테스트픽스처 - 임의로 그룹장을 만든다.
+     * @return 그룹장인 {@code MemberGroup}
+     */
+    public static Optional<MemberGroup> owner() {
+        return Optional.of(
+            MemberGroupFixture.groupOwner(MemberFixture.memberWithMemberId(1L),
+                GroupFixture.group())
+        );
     }
 }
