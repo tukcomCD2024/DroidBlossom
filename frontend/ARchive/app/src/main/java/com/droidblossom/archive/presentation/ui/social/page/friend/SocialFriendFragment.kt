@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.social.page.friend
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -19,6 +20,7 @@ import com.droidblossom.archive.databinding.FragmentSocialFriendBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
 import com.droidblossom.archive.util.SpaceItemDecoration
 import com.droidblossom.archive.util.updateTopConstraintsForSearch
@@ -41,6 +43,7 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                         HomeFragment.CapsuleType.PUBLIC
                     )
                 )
+                SocialFragment.setReloadFalse()
             },
             {
                 showToastMessage("개봉되지 않은 캡슐입니다.")
@@ -76,8 +79,11 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                         is SocialFriendViewModel.SocialFriendEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
-                        is SocialFriendViewModel.SocialFriendEvent.HideLoading -> {
-                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                        is SocialFriendViewModel.SocialFriendEvent.SwipeRefreshLayoutDismissLoading -> {
+                            if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                                binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            }
+                            binding.socialFriendRV.scrollToPosition(0)
                         }
 
                         else -> {}
@@ -89,14 +95,10 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.publicCapsules.collect{ publicCapsules ->
-                    if (viewModel.clearCapsule){
-                        viewModel.clearCapsule = false
-                    }else{
-                        socialFriendCapsuleRVA.submitList(publicCapsules){
-                            if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
-                                binding.socialFriendSwipeRefreshLayout.isRefreshing = false
-                                binding.socialFriendRV.scrollToPosition(0)
-                            }
+                    socialFriendCapsuleRVA.submitList(publicCapsules){
+                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            binding.socialFriendRV.scrollToPosition(0)
                         }
                     }
                 }
@@ -111,8 +113,11 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                             showToastMessage(event.message)
                         }
 
-                        is SocialFriendViewModel.SocialFriendEvent.HideLoading ->{
-                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                        is SocialFriendViewModel.SocialFriendEvent.SwipeRefreshLayoutDismissLoading ->{
+                            if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                                binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            }
+                            binding.socialFriendRV.scrollToPosition(0)
                         }
                         else -> {
 
@@ -202,6 +207,22 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         binding.searchOpenBtnT.setOnClickListener {
             val imm = requireActivity().getSystemService(InputMethodManager::class.java)
             imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden){
+        }else{
+            if (SocialFragment.getReload()){
+                viewModel.getLatestPublicCapsule()
+            }else{
+                SocialFragment.setReloadTrue()
+            }
         }
     }
 

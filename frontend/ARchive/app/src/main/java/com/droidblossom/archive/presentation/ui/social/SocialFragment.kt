@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.social
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -50,7 +51,18 @@ class SocialFragment : BaseFragment<SocialViewModelImpl, FragmentSocialBinding>(
     companion object{
 
         const val TAG = "Social"
-        fun newIntent()= SocialFragment()
+        private var reload = true
+
+        fun getReload() = reload
+        fun setReloadFalse() {
+            reload = false
+        }
+        fun setReloadTrue() {
+            reload = true
+        }
+        fun newIntent() : SocialFragment{
+            return SocialFragment()
+        }
     }
 
 }

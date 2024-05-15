@@ -11,7 +11,6 @@ interface SocialGroupViewModel {
     val isSearchOpen : StateFlow<Boolean>
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
-    var clearCapsule:Boolean
 
     fun socialGroupEvent(event: SocialGroupEvent)
 
@@ -24,10 +23,11 @@ interface SocialGroupViewModel {
     fun getGroupCapsulePage()
 
     fun getLatestGroupCapsule()
+    fun onScrollNearBottom()
 
     sealed class SocialGroupEvent{
         data class ShowToastMessage(val message : String) : SocialGroupEvent()
-        object HideLoading : SocialGroupEvent()
+        object SwipeRefreshLayoutDismissLoading : SocialGroupEvent()
 
     }
 }
