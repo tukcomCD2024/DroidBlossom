@@ -54,6 +54,9 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
 
     private fun initRVA() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLastSkinList()
+        }
         binding.skinRV.adapter = mySkinRVA
         binding.skinRV.setHasFixedSize(true)
         binding.skinRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -85,6 +88,12 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
                         SkinViewModel.SkinEvent.ToSkinMake -> {
                             SkinMakeActivity.goSkinMake(requireContext())
                         }
+
+                        SkinViewModel.SkinEvent.SwipeRefreshLayoutDismissLoading -> {
+                            if (binding.swipeRefreshLayout.isRefreshing){
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
+                        }
                     }
                 }
             }
@@ -92,25 +101,21 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.skins.collect { skins ->
-                    if (skins.isNotEmpty()){
-                        viewModel.updateMySkinsUI()
+                    mySkinRVA.submitList(skins){
+                        if (binding.swipeRefreshLayout.isRefreshing){
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            binding.skinRV.scrollToPosition(0)
+                        }
                     }
                 }
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.skinsUI.collect { skins ->
-                    mySkinRVA.submitList(skins)
-                }
-            }
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.skinRV.layoutParams as ConstraintLayout.LayoutParams
+                    val layoutParams = binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.updateTopConstraintsForSearch(
                         isSearchOpen = it,
                         searchOpenView = binding.searchOpenBtn,
@@ -132,14 +137,14 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            viewModel.clearSkins()
+            viewModel.getLastSkinList()
             viewModel.closeSearchSkin()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.clearSkins()
+        viewModel.getLastSkinList()
         viewModel.closeSearchSkin()
     }
 
