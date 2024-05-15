@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 public class MemberGroupFixture {

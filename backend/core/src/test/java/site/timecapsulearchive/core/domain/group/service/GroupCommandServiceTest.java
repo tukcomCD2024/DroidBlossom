@@ -24,26 +24,21 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailException;
-import site.timecapsulearchive.core.domain.group.exception.GroupInviteNotFoundException;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
-import site.timecapsulearchive.core.domain.group.exception.GroupOwnerAuthenticateException;
-import site.timecapsulearchive.core.domain.group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupRepository;
-import site.timecapsulearchive.core.domain.group.repository.memberGroupRepository.MemberGroupRepository;
-import site.timecapsulearchive.core.domain.group.service.write.GroupWriteService;
-import site.timecapsulearchive.core.domain.group.service.write.GroupWriteServiceImpl;
-import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
+import site.timecapsulearchive.core.domain.group.service.command.GroupCommandService;
+import site.timecapsulearchive.core.domain.group_member.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.group_member.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.group_member.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
 
-class GroupWriteServiceTest {
+class GroupCommandServiceTest {
 
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final GroupRepository groupRepository = mock(GroupRepository.class);
@@ -56,7 +51,7 @@ class GroupWriteServiceTest {
         GroupCapsuleQueryRepository.class);
     private final S3ObjectManager s3ObjectManager = mock(S3ObjectManager.class);
 
-    private final GroupWriteService groupWriteService = new GroupWriteServiceImpl(
+    private final GroupCommandService groupCommandService = new GroupCommandService(
         memberRepository,
         groupRepository,
         memberGroupRepository,
@@ -77,7 +72,7 @@ class GroupWriteServiceTest {
             Optional.of(MemberFixture.member(1)));
 
         //when
-        groupWriteService.createGroup(memberId, dto);
+        groupCommandService.createGroup(memberId, dto);
 
         //then
         verify(socialNotificationManager, times(1)).sendGroupInviteMessage(
@@ -94,153 +89,9 @@ class GroupWriteServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupWriteService.createGroup(memberId, dto))
+        assertThatThrownBy(() -> groupCommandService.createGroup(memberId, dto))
             .isInstanceOf(MemberNotFoundException.class)
             .hasMessageContaining(ErrorCode.MEMBER_NOT_FOUND_ERROR.getMessage());
-    }
-
-
-    @Test
-    void 그룹장이_그룹원에게_그룹초대를_하면_그룹초대_알림이_요청된다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-        Member groupOwner = MemberFixture.member(1);
-        GroupOwnerSummaryDto groupOwnerSummaryDto = GroupDtoFixture.groupOwnerSummaryDto(true);
-
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupOwner));
-        given(memberRepository.findMemberById(targetId)).willReturn(
-            Optional.of(MemberFixture.member(2)));
-        given(groupRepository.findGroupById(groupId)).willReturn(Optional.of(GroupFixture.group()));
-        given(memberGroupRepository.findOwnerInMemberGroup(groupId, memberId)).willReturn(
-            Optional.of(groupOwnerSummaryDto));
-
-        //when
-        groupWriteService.inviteGroup(memberId, groupId, targetId);
-
-        //then
-        verify(socialNotificationManager, times(1)).sendGroupInviteMessage(anyString(), anyString(),
-            anyList());
-    }
-
-    @Test
-    void 그룹장이_그룹초대를_할_때_존재하지_않은_그룹_아이디_이면_예외가_발생한다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-        Member groupOwner = MemberFixture.member(1);
-
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupOwner));
-        given(memberRepository.findMemberById(targetId)).willReturn(
-            Optional.of(MemberFixture.member(2)));
-        given(memberGroupRepository.findOwnerInMemberGroup(groupId, memberId)).willReturn(
-            Optional.empty());
-
-        //when
-        //then
-        assertThatThrownBy(() -> groupWriteService.inviteGroup(memberId, groupId, targetId))
-            .isInstanceOf(GroupNotFoundException.class)
-            .hasMessageContaining(ErrorCode.GROUP_NOT_FOUND_ERROR.getMessage());
-    }
-
-    @Test
-    void 그룹장이_아닌_사용자가_그룹원에게_그룹초대를_하면_예외가_발생한다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-        Member groupOwner = MemberFixture.member(1);
-        GroupOwnerSummaryDto groupOwnerSummaryDto = GroupDtoFixture.groupOwnerSummaryDto(false);
-
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupOwner));
-        given(memberRepository.findMemberById(targetId)).willReturn(
-            Optional.of(MemberFixture.member(2)));
-        given(groupRepository.findGroupById(groupId)).willReturn(Optional.of(GroupFixture.group()));
-        given(memberGroupRepository.findOwnerInMemberGroup(groupId, memberId)).willReturn(
-            Optional.of(groupOwnerSummaryDto));
-
-        //when
-        //then
-        assertThatThrownBy(() -> groupWriteService.inviteGroup(memberId, groupId, targetId))
-            .isInstanceOf(GroupOwnerAuthenticateException.class)
-            .hasMessageContaining(ErrorCode.GROUP_OWNER_AUTHENTICATE_ERROR.getMessage());
-    }
-
-    @Test
-    void 그룹원은_그룹초대_삭제에서_1을_반환하면_거부할_수_있다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(1);
-
-        //when
-        // then
-        assertThatCode(() -> groupWriteService.rejectRequestGroup(memberId, groupId, targetId))
-            .doesNotThrowAnyException();
-    }
-
-    @Test
-    void 그룹원은_그룹초대_삭제에서_0을_반환하면_거부가_실패_한다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(0);
-
-        //when
-        // then
-        assertThatThrownBy(() -> groupWriteService.rejectRequestGroup(memberId, groupId, targetId))
-            .isInstanceOf(GroupInviteNotFoundException.class)
-            .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
-    }
-
-    @Test
-    void 그룹원은_그룹초대를_수락하면_그룹장에게_알림이_전송된다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-        Member groupMember = MemberFixture.member(1);
-
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
-        given(groupRepository.findGroupById(groupId)).willReturn(
-            Optional.of(GroupFixture.group()));
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(1);
-
-        //when
-        groupWriteService.acceptGroupInvite(memberId, groupId, targetId);
-
-        //then
-        verify(socialNotificationManager, times(1)).sendGroupAcceptMessage(anyString(), anyLong());
-    }
-
-    @Test
-    void 그룹원은_그룹초대를_수락할_때_그룹초대가_존재하지_않으면_예외가_발생한다() {
-        //given
-        Long memberId = 1L;
-        Long groupId = 1L;
-        Long targetId = 2L;
-        Member groupMember = MemberFixture.member(1);
-
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
-        given(groupRepository.findGroupById(groupId)).willReturn(
-            Optional.of(GroupFixture.group()));
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(0);
-
-        //when
-        //then
-        assertThatThrownBy(() -> groupWriteService.acceptGroupInvite(memberId, groupId, targetId))
-            .isInstanceOf(GroupInviteNotFoundException.class)
-            .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
 
     @Test
@@ -253,7 +104,7 @@ class GroupWriteServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupWriteService.deleteGroup(memberId, notExistGroupId))
+        assertThatThrownBy(() -> groupCommandService.deleteGroup(memberId, notExistGroupId))
             .isExactlyInstanceOf(GroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_NOT_FOUND_ERROR.getMessage());
     }
@@ -270,7 +121,7 @@ class GroupWriteServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupWriteService.deleteGroup(groupMemberId, groupId))
+        assertThatThrownBy(() -> groupCommandService.deleteGroup(groupMemberId, groupId))
             .isExactlyInstanceOf(GroupDeleteFailException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
@@ -298,7 +149,7 @@ class GroupWriteServiceTest {
         //when
         //then
         assertThatThrownBy(
-            () -> groupWriteService.deleteGroup(groupOwnerId, groupMemberExistGroupId))
+            () -> groupCommandService.deleteGroup(groupOwnerId, groupMemberExistGroupId))
             .isExactlyInstanceOf(GroupDeleteFailException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_EXIST_ERROR.getMessage());
     }
@@ -339,7 +190,7 @@ class GroupWriteServiceTest {
         //when
         //then
         assertThatThrownBy(
-            () -> groupWriteService.deleteGroup(groupOwnerId, groupCapsuleExistGroupId))
+            () -> groupCommandService.deleteGroup(groupOwnerId, groupCapsuleExistGroupId))
             .isExactlyInstanceOf(GroupDeleteFailException.class)
             .hasMessageContaining(ErrorCode.GROUP_CAPSULE_EXIST_ERROR.getMessage());
     }
@@ -368,7 +219,8 @@ class GroupWriteServiceTest {
         //when
         //then
         assertThatCode(
-            () -> groupWriteService.deleteGroup(groupOwnerId, groupId)).doesNotThrowAnyException();
+            () -> groupCommandService.deleteGroup(groupOwnerId,
+                groupId)).doesNotThrowAnyException();
         verify(groupRepository, times(1)).delete(any(Group.class));
     }
 }
