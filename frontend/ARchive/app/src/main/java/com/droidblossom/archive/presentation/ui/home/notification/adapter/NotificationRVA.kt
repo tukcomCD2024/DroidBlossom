@@ -27,7 +27,7 @@ class NotificationRVA(val onClick: (NotificationModel) -> Unit) :
             override fun areItemsTheSame(
                 oldItem: NotificationModel, newItem: NotificationModel
             ): Boolean {
-                return oldItem == newItem
+                return oldItem === newItem
             }
 
             override fun areContentsTheSame(
