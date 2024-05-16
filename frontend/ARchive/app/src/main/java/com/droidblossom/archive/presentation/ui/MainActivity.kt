@@ -196,27 +196,38 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                         when (tab) {
                             MainPage.HOME -> {
                                 showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuHome
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuHome){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuHome
+                                }
                             }
 
                             MainPage.SKIN -> {
                                 showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuSkin
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuSkin){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuSkin
+                                }
                             }
 
                             MainPage.AR -> {
                                 showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuCamera){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                                }
                             }
 
                             MainPage.SOCIAL -> {
                                 showFragment(SocialFragment.newIntent(), SocialFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuSocial
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuSocial){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuSocial
+                                }
                             }
 
                             MainPage.MY_PAGE -> {
                                 showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                                //binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuMyPage){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                                }
                             }
 
                             else -> {}
@@ -296,31 +307,54 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             viewModel.mainEvent(MainViewModel.MainEvent.NavigateToCamera)
         }
 
-        binding.bottomNavigation.setOnItemSelectedListener {
-
-            when (it.itemId) {
-                R.id.menuHome -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
-                    return@setOnItemSelectedListener true
+        binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
+            val currentItemId = binding.bottomNavigation.selectedItemId
+            val selectedItemId = menuItem.itemId
+            if (currentItemId == selectedItemId) {
+                // 같음 - 스크롤 추가
+                when (selectedItemId) {
+                    R.id.menuHome -> {
+                        //(supportFragmentManager.findFragmentByTag(HomeFragment.TAG) as? HomeFragment)?.scrollToTop()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSkin -> {
+                        //(supportFragmentManager.findFragmentByTag(SkinFragment.TAG) as? SkinFragment)?.scrollToTop()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSocial -> {
+                        //(supportFragmentManager.findFragmentByTag(SocialFragment.TAG) as? SocialFragment)?.scrollToTop()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuMyPage -> {
+                        //(supportFragmentManager.findFragmentByTag(MyPageFragment.TAG) as? MyPageFragment)?.scrollToTop()
+                        return@setOnItemSelectedListener true
+                    }
+                    else -> {
+                        return@setOnItemSelectedListener false
+                    }
                 }
-
-                R.id.menuSkin -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
-                    return@setOnItemSelectedListener true
-                }
-
-                R.id.menuSocial -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
-                    return@setOnItemSelectedListener true
-                }
-
-                R.id.menuMyPage -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
-                    return@setOnItemSelectedListener true
-                }
-
-                else -> {
-                    return@setOnItemSelectedListener false
+            } else {
+                // 같음 - 스크롤 x
+                when (selectedItemId) {
+                    R.id.menuHome -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSkin -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSocial -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuMyPage -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
+                        return@setOnItemSelectedListener true
+                    }
+                    else -> {
+                        return@setOnItemSelectedListener false
+                    }
                 }
             }
         }
