@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -171,7 +172,8 @@ class CameraFragment :
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
 
-                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            val existingDialog =
+                                parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                             if (existingDialog == null) {
                                 val dialog = CapsulePreviewDialogFragment.newInstance(
                                     "-1",
@@ -345,13 +347,15 @@ class CameraFragment :
                     Lifecycle.Event.ON_START,
                     Lifecycle.Event.ON_CREATE,
                     Lifecycle.Event.ON_RESUME,
-                    Lifecycle.Event.ON_PAUSE, -> {
+                    Lifecycle.Event.ON_PAUSE,
+                    -> {
                         if (isHidden) {
                             visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
                         } else {
                             visibleLifecycleOwner.handleLifecycleEvent(event)
                         }
                     }
+
                     else -> {
                         visibleLifecycleOwner.handleLifecycleEvent(event)
                     }
@@ -397,7 +401,7 @@ class CameraFragment :
         ) {
             arSceneView.session?.resume()
             viewAttachmentManager.onResume()
-            //requestPermissionLauncher.launch(arPermissionList)
+            requestPermissionLauncher.launch(arPermissionList)
         }
     }
 
