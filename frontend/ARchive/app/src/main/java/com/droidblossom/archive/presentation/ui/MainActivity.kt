@@ -219,9 +219,7 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                                 binding.bottomNavigation.selectedItemId = R.id.menuMyPage
                             }
 
-                            MainPage.NULL -> {
-
-                            }
+                            else -> {}
                         }
                     }
             }
@@ -299,7 +297,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
-            viewModel.setMainTab(MainPage.NULL)
 
             when (it.itemId) {
                 R.id.menuHome -> {
@@ -408,6 +405,5 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         AR,
         SOCIAL,
         MY_PAGE,
-        NULL,
     }
 }

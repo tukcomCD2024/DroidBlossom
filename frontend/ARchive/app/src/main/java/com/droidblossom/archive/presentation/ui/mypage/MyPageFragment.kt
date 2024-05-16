@@ -288,9 +288,6 @@ class MyPageFragment :
 
     private fun onShow() {
         visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        if (reload) {
-            viewModel.load()
-        }
         reload = true
     }
 
