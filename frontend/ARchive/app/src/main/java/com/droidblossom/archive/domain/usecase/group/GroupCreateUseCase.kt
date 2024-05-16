@@ -2,8 +2,6 @@ package com.droidblossom.archive.domain.usecase.group
 
 import android.util.Log
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
-import com.droidblossom.archive.domain.model.friend.FriendAcceptRequest
-import com.droidblossom.archive.domain.repository.FriendRepository
 import com.droidblossom.archive.domain.repository.GroupRepository
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
