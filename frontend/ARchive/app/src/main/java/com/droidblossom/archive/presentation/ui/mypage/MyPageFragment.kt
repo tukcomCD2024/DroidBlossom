@@ -238,7 +238,7 @@ class MyPageFragment :
         visibleLifecycleOwner.lifecycleScope.launch {
             visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleType.collect {
-                    if (reload || isActive){
+                    if (reload || isActive) {
                         viewModel.getLatestCapsulePage()
                     }
                 }
@@ -324,7 +324,7 @@ class MyPageFragment :
         private var isActive = false
 
 
-        fun newIntent() : MyPageFragment = MyPageFragment()
+        fun newIntent(): MyPageFragment = MyPageFragment()
     }
 
     enum class SpinnerCapsuleType(val description: String) {
