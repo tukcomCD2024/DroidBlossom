@@ -288,7 +288,7 @@ class MyPageFragment :
 
     private fun onShow() {
         visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        if (reload && isActive) {
+        if (reload) {
             viewModel.load()
         }
         reload = true
