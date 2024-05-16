@@ -84,5 +84,5 @@ object RepositoryModule {
     @Provides
     @ViewModelScoped
     fun providesGroupRepository(api : GroupService) : GroupRepository = GroupRepositoryImpl(api)
-    
+
 }

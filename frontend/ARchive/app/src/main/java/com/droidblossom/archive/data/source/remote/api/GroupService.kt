@@ -9,7 +9,7 @@ import retrofit2.http.POST
 interface GroupService {
 
     @POST("groups")
-    suspend fun postFriendsRequestApi(
+    suspend fun postCrateGroupApi(
         @Body request : CreateGroupRequestDto
     ) : Response<ResponseBody<String>>
 
