@@ -166,4 +166,14 @@ public class GroupCapsuleQueryRepository {
 
         return new SliceImpl<>(groupCapsules, Pageable.ofSize(size), hasNext);
     }
+
+    public boolean findGroupCapsuleExistByGroupId(Long groupId) {
+        Integer count = jpaQueryFactory
+            .selectOne()
+            .from(capsule)
+            .where(capsule.group.id.eq(groupId))
+            .fetchFirst();
+
+        return count != null;
+    }
 }

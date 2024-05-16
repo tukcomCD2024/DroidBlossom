@@ -1,7 +1,7 @@
 package site.timecapsulearchive.core.domain.member.repository;
 
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
-import static site.timecapsulearchive.core.domain.group.entity.QMemberGroup.memberGroup;
+import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member.entity.QNotification.notification;
 import static site.timecapsulearchive.core.domain.member.entity.QNotificationCategory.notificationCategory;

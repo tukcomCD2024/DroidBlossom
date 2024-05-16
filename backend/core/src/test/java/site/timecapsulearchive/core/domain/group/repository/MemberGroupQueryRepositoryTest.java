@@ -25,9 +25,7 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.group.entity.MemberGroup;
-import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupQueryRepository;
-import site.timecapsulearchive.core.domain.group.repository.groupRepository.GroupQueryRepositoryImpl;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
