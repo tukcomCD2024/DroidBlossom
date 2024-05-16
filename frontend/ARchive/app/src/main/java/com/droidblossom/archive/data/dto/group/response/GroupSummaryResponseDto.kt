@@ -5,7 +5,7 @@ import com.droidblossom.archive.domain.model.group.GroupSummary
 data class GroupSummaryResponseDto(
     val createdAt: String,
     val description: String,
-    val id: Int,
+    val id: Long,
     val isOwner: Boolean,
     val name: String,
     val profileUrl: String

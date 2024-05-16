@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GroupService {
@@ -22,5 +23,11 @@ interface GroupService {
         @Query("size") size : Int,
         @Query("created_at") createdAt: String
     ) : Response<ResponseBody<GroupPageResponseDto>>
+
+    @POST("groups/accept/{group_id}/member/{target_id}")
+    suspend fun postAcceptGroupInviteApi(
+        @Path("group_id") groupId : Long,
+        @Path("target_id") targetId : Long,
+    ) : Response<ResponseBody<String>>
 
 }
