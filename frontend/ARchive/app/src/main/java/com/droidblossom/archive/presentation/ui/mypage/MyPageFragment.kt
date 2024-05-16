@@ -269,8 +269,10 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
+            Log.d("생명", "onHiddenChanged - hide")
             onHidden()
         } else {
+            Log.d("생명", "onHiddenChanged - show")
             onShow()
         }
     }
@@ -287,8 +289,21 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         reload = true
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("생명", "onSaveInstanceState")
+    }
+
+
     override fun onResume() {
         super.onResume()
+        Log.d("생명", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onHiddenChanged(false)
+        Log.d("생명", "onPause")
     }
 
     companion object {
