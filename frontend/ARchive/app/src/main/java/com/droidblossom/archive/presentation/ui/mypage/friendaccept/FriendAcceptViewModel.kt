@@ -11,6 +11,7 @@ interface FriendAcceptViewModel {
     val friendAcceptList: StateFlow<List<Friend>>
 
     fun getFriendAcceptList()
+    fun getLastedFriendAcceptList()
     fun onScrollNearBottom()
     fun denyRequest(friend: Friend)
     fun acceptRequest(friend: Friend)

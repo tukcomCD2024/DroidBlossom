@@ -29,12 +29,14 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBinding>(R.layout.fragment_skin_make) {
+class SkinMakeFragment :
+    BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBinding>(R.layout.fragment_skin_make) {
 
-    @Inject lateinit var s3Util: S3Util
+    @Inject
+    lateinit var s3Util: S3Util
 
     lateinit var navController: NavController
-    override val viewModel : SkinMakeViewModelImpl by activityViewModels()
+    override val viewModel: SkinMakeViewModelImpl by activityViewModels()
 
     private val skinMotionRVA by lazy {
         SkinMotionRVA { previousPosition, currentPosition ->
@@ -42,13 +44,14 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
         }
     }
 
-    private val picMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
-        if (uri != null){
-            viewModel.skinImgUri.value = uri
-        }else{
-            Log.d("포토", "No Media selected")
+    private val picMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                viewModel.skinImgUri.value = uri
+            } else {
+                Log.d("포토", "No Media selected")
+            }
         }
-    }
 
     override fun observeData() {
 
@@ -59,12 +62,15 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
                         is SkinMakeViewModel.SkinMakeEvent.ShowToastMessage -> {
                             showToastMessage(it.message)
                         }
+
                         is SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake -> {
                             navController.navigate(R.id.action_skinMakeFragment_to_skinMakeSuccessFragment)
                         }
+
                         is SkinMakeViewModel.SkinMakeEvent.DismissLoading -> {
                             dismissLoading()
                         }
+
                         else -> {}
 
                     }
@@ -90,13 +96,13 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
         initRVA()
     }
 
-    private fun initView(){
+    private fun initView() {
 
         val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
 
-        with(binding){
+        with(binding) {
             skinImageCardView.setOnClickListener {
                 picMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
@@ -107,25 +113,29 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
             completeBtn.setOnClickListener {
 
-                if (viewModel.skinName.value.isBlank()){
+                if (viewModel.skinName.value.isBlank()) {
                     viewModel.skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("스킨의 이름은 필수입니다."))
                     return@setOnClickListener
                 }
 
-                if (viewModel.skinImgUri.value == null){
+                if (viewModel.skinImgUri.value == null) {
                     viewModel.skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("스킨의 이미지는 필수입니다."))
                     return@setOnClickListener
-                }else{
+                } else {
 
                     showLoading(requireContext())
 
                     val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                     val currentTime = dateFormat.format(Date())
 
-                    CoroutineScope(Dispatchers.IO).launch{
+                    CoroutineScope(Dispatchers.IO).launch {
                         //val skinImgFilesDeferred = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
                         //val skinImgFilesDeferredd = FileUtils.convertUriToJpegFile(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
-                        val skinImgFilesDeferred = FileUtils.resizeBitmapFromUri(requireContext(), viewModel.skinImgUri.value!!, "IMG_${currentTime}")
+                        val skinImgFilesDeferred = FileUtils.resizeBitmapFromUri(
+                            requireContext(),
+                            viewModel.skinImgUri.value!!,
+                            "IMG_${currentTime}"
+                        )
                         viewModel.setFile(skinImgFilesDeferred!!)
                         viewModel.makeSkin()
 
@@ -139,7 +149,7 @@ class SkinMakeFragment : BaseFragment<SkinMakeViewModelImpl, FragmentSkinMakeBin
 
     }
 
-    private fun initRVA(){
+    private fun initRVA() {
         binding.skinMotionRV.adapter = skinMotionRVA
     }
 }
