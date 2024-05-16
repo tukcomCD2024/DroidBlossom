@@ -84,6 +84,12 @@ public interface GroupCommandApi {
         GroupCreateRequest request
     );
 
+    @Operation(
+        summary = "그룹 수정",
+        description = "그룹장인 경우에 그룹의 기본 정보들을 수정한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group"}
+    )
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
