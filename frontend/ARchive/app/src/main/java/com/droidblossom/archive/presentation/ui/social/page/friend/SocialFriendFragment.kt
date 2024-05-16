@@ -131,6 +131,7 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
         initRVA()
         initSearchEdit()
     }
@@ -217,12 +218,15 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden){
+
         }else{
-            if (SocialFragment.getReload()){
-                viewModel.getLatestPublicCapsule()
-            }else{
-                SocialFragment.setReloadTrue()
-            }
+//
+//            if (SocialFragment.getReload()){
+//                viewModel.getLatestPublicCapsule()
+//            }else{
+//                SocialFragment.setReloadTrue()
+//            }
+
         }
     }
 

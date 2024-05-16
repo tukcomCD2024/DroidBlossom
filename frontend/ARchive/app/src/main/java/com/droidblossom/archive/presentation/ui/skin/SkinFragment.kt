@@ -138,7 +138,6 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            viewModel.getLatestSkinList()
             viewModel.closeSearchSkin()
         }
     }
