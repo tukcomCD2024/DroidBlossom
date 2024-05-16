@@ -33,7 +33,7 @@ import javax.inject.Inject
 class FriendAcceptViewModelImpl @Inject constructor(
     private val friendsRequestsPageUseCase: FriendsRequestsPageUseCase,
     private val denyRequestUseCase: FriendDenyRequestUseCase,
-    private val acceptRequestUseCase: FriendsAcceptRequestUseCase
+    private val acceptRequestUseCase: FriendsAcceptRequestUseCase,
 ) : BaseViewModel(), FriendAcceptViewModel {
 
     private val _friendAcceptEvent = MutableSharedFlow<FriendViewModel.FriendEvent>()
@@ -92,6 +92,10 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun getLastedFriendAcceptList() {
+
     }
 
     override fun denyRequest(friend: Friend) {

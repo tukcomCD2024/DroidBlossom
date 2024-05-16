@@ -54,7 +54,8 @@ class ARContentNode(
                         isEditable = true
                     }
                     onSingleTapConfirmed = {
-                        val existingDialog = fragmentManagerProvider.provideFragmentManager().findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                        val existingDialog = fragmentManagerProvider.provideFragmentManager()
+                            .findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                         if (existingDialog == null) {
                             val dialog = CapsulePreviewDialogFragment.newInstance(
                                 "-1",
@@ -62,7 +63,10 @@ class ARContentNode(
                                 capsule.capsuleType.toString(),
                                 true
                             )
-                            dialog.show(fragmentManagerProvider.provideFragmentManager(), CapsulePreviewDialogFragment.TAG)
+                            dialog.show(
+                                fragmentManagerProvider.provideFragmentManager(),
+                                CapsulePreviewDialogFragment.TAG
+                            )
                         }
                         true
                     }
