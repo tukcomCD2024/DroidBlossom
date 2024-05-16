@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -26,6 +27,12 @@ interface GroupService {
 
     @POST("groups/accept/{group_id}/member/{target_id}")
     suspend fun postAcceptGroupInviteApi(
+        @Path("group_id") groupId : Long,
+        @Path("target_id") targetId : Long,
+    ) : Response<ResponseBody<String>>
+
+    @DELETE("groups/reject/{group_id}/member/{target_id}")
+    suspend fun deleteRejectGroupInviteApi(
         @Path("group_id") groupId : Long,
         @Path("target_id") targetId : Long,
     ) : Response<ResponseBody<String>>
