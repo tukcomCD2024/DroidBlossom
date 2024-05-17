@@ -211,16 +211,29 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         }
     }
 
+    fun scrollToTop(){
+        binding.socialFriendRV.scrollToPosition(0)
+    }
+
     override fun onResume() {
         super.onResume()
+        Log.d("소셜", "리쥼")
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("소셜", "포즈")
+
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden){
-
+            Log.d("소셜", "히든")
         }else{
-//
+            Log.d("소셜", "쇼")
+        //
 //            if (SocialFragment.getReload()){
 //                viewModel.getLatestPublicCapsule()
 //            }else{

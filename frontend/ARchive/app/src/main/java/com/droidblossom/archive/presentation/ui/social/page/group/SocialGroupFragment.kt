@@ -138,6 +138,10 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         })
     }
 
+    fun scrollToTop(){
+        binding.socialGroupRV.scrollToPosition(0)
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     fun initSearchEdit(){

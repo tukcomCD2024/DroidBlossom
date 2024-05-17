@@ -198,6 +198,11 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         }
     }
 
+    fun scrollToTop(){
+        binding.skinRV.scrollToPosition(0)
+    }
+
+
 
     companion object {
 

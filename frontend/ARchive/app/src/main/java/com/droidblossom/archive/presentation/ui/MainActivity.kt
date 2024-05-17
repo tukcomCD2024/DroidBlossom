@@ -27,6 +27,8 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
+import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendFragment
+import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupFragment
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
 import com.droidblossom.archive.util.onFail
@@ -224,7 +226,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
 
                             MainPage.MY_PAGE -> {
                                 showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
-                                //binding.bottomNavigation.selectedItemId = R.id.menuMyPage
                                 if (binding.bottomNavigation.selectedItemId != R.id.menuMyPage){
                                     binding.bottomNavigation.selectedItemId = R.id.menuMyPage
                                 }
@@ -312,21 +313,22 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             val selectedItemId = menuItem.itemId
             if (currentItemId == selectedItemId) {
                 // 같음 - 스크롤 추가
+                Log.d("생명", "같음")
                 when (selectedItemId) {
                     R.id.menuHome -> {
-                        //(supportFragmentManager.findFragmentByTag(HomeFragment.TAG) as? HomeFragment)?.scrollToTop()
                         return@setOnItemSelectedListener true
                     }
                     R.id.menuSkin -> {
-                        //(supportFragmentManager.findFragmentByTag(SkinFragment.TAG) as? SkinFragment)?.scrollToTop()
+                        (supportFragmentManager.findFragmentByTag(SkinFragment.TAG) as? SkinFragment)?.scrollToTop()
                         return@setOnItemSelectedListener true
                     }
                     R.id.menuSocial -> {
-                        //(supportFragmentManager.findFragmentByTag(SocialFragment.TAG) as? SocialFragment)?.scrollToTop()
+                        val socialFragment = supportFragmentManager.findFragmentByTag(SocialFragment.TAG) as? SocialFragment
+                        socialFragment?.scrollToTopCurrentFragment()
                         return@setOnItemSelectedListener true
                     }
                     R.id.menuMyPage -> {
-                        //(supportFragmentManager.findFragmentByTag(MyPageFragment.TAG) as? MyPageFragment)?.scrollToTop()
+                        (supportFragmentManager.findFragmentByTag(MyPageFragment.TAG) as? MyPageFragment)?.scrollToTop()
                         return@setOnItemSelectedListener true
                     }
                     else -> {
@@ -335,6 +337,7 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                 }
             } else {
                 // 같음 - 스크롤 x
+                Log.d("생명", "다름")
                 when (selectedItemId) {
                     R.id.menuHome -> {
                         viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)

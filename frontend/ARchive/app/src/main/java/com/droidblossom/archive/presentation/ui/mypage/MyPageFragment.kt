@@ -321,7 +321,14 @@ class MyPageFragment :
         private var isActive = false
 
 
-        fun newIntent(): MyPageFragment = MyPageFragment()
+        fun newIntent(): MyPageFragment{
+            Log.d("생명", "뉴 인텐트")
+            return MyPageFragment()
+        }
+    }
+
+    fun scrollToTop(){
+        binding.myPageRV.scrollToPosition(0)
     }
 
     enum class SpinnerCapsuleType(val description: String) {
