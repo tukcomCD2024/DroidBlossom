@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
@@ -52,6 +53,28 @@ public class FriendQueryApiController implements FriendQueryApi {
         );
     }
 
+    @GetMapping("/before/group_invite")
+    @Override
+    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendsBeforeGroupInvite(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(value = "group_id") final Long groupId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
+    ) {
+        final FriendBeforeGroupInviteRequest request = FriendBeforeGroupInviteRequest.of(memberId,
+            groupId, size, createdAt);
+
+        final Slice<FriendSummaryDto> friendsSlice = friendQueryService.findFriendsBeforeGroupInviteSlice(
+            request);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                FriendsSliceResponse.createOf(friendsSlice.getContent(), friendsSlice.hasNext())
+            )
+        );
+    }
+
     @GetMapping(
         value = "/requests",
         produces = {"application/json"}
@@ -62,7 +85,7 @@ public class FriendQueryApiController implements FriendQueryApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        Slice<FriendSummaryDto> friendRequestsSlice = friendQueryService.findFriendRequestsSlice(
+        final Slice<FriendSummaryDto> friendRequestsSlice = friendQueryService.findFriendRequestsSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(

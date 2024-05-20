@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
+import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
@@ -27,6 +28,11 @@ public class FriendQueryService {
         final ZonedDateTime createdAt
     ) {
         return memberFriendRepository.findFriendsSlice(memberId, size, createdAt);
+    }
+
+    public Slice<FriendSummaryDto> findFriendsBeforeGroupInviteSlice(
+        final FriendBeforeGroupInviteRequest request) {
+        return memberFriendRepository.findFriendsBeforeGroupInvite(request);
     }
 
     public Slice<FriendSummaryDto> findFriendRequestsSlice(
@@ -53,5 +59,6 @@ public class FriendQueryService {
 
         return friendSummaryDto.toResponse();
     }
+
 
 }

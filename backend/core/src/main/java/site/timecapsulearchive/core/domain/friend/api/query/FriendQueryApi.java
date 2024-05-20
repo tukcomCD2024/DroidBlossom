@@ -40,6 +40,31 @@ public interface FriendQueryApi {
     );
 
     @Operation(
+        summary = "그룹 초대 전 친구 목록 조회",
+        description = "그룹에 초대할 수 있는 사용자의 소셜 친구 목록을 보여준다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendsBeforeGroupInvite(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "초대할 그룹 ID", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
+        ZonedDateTime createdAt
+    );
+
+    @Operation(
         summary = "소셜 친구 요청 목록 조회",
         description = "사용자의 소셜 친구 요청 목록을 보여준다. 수락 대기 중인 요청만 해당한다.",
         security = {@SecurityRequirement(name = "user_token")},

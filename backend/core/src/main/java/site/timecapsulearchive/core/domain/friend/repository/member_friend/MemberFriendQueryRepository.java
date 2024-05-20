@@ -7,6 +7,7 @@ import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
+import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 
 
 public interface MemberFriendQueryRepository {
@@ -34,4 +35,6 @@ public interface MemberFriendQueryRepository {
     );
 
     List<Long> findFriendIdsByOwnerId(final Long memberId);
+
+    Slice<FriendSummaryDto> findFriendsBeforeGroupInvite(final FriendBeforeGroupInviteRequest request);
 }
