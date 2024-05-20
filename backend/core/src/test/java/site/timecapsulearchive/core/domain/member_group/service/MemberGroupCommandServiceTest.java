@@ -21,17 +21,17 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
+import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
-import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
@@ -258,7 +258,8 @@ public class MemberGroupCommandServiceTest {
         //when
         //then
         assertThatThrownBy(
-            () -> groupMemberCommandService.kickGroupMember(notExistGroupOwnerId, groupId, groupMemberId))
+            () -> groupMemberCommandService.kickGroupMember(notExistGroupOwnerId, groupId,
+                groupMemberId))
             .isInstanceOf(MemberGroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
     }
@@ -275,7 +276,8 @@ public class MemberGroupCommandServiceTest {
         //when
         //then
         assertThatThrownBy(
-            () -> groupMemberCommandService.kickGroupMember(notGroupOwnerId, groupId, groupMemberId))
+            () -> groupMemberCommandService.kickGroupMember(notGroupOwnerId, groupId,
+                groupMemberId))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
@@ -294,7 +296,8 @@ public class MemberGroupCommandServiceTest {
         //when
         //then
         assertThatThrownBy(
-            () -> groupMemberCommandService.kickGroupMember(groupOwnerId, groupId, notExistGroupMemberId))
+            () -> groupMemberCommandService.kickGroupMember(groupOwnerId, groupId,
+                notExistGroupMemberId))
             .isInstanceOf(MemberGroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_MEMBER_NOT_FOUND_ERROR.getMessage());
     }

@@ -9,9 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupCreateRequest;
 import site.timecapsulearchive.core.domain.group.data.reqeust.GroupUpdateRequest;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -94,11 +91,11 @@ public interface GroupCommandApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
-        ),@ApiResponse(
-            responseCode = "400",
-            description = "잘못된 타입이나 값을 입력하는 경우 발생한다.",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
+        ), @ApiResponse(
+        responseCode = "400",
+        description = "잘못된 타입이나 값을 입력하는 경우 발생한다.",
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    ),
         @ApiResponse(
             responseCode = "403",
             description = "그룹장이 아니여서 그룹 수정에 대한 권한이 없는 경우 발생한다.",

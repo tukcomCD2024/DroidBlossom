@@ -53,6 +53,7 @@ public interface MemberGroupCommandApi {
         @Parameter(in = ParameterIn.PATH, description = "탈퇴할 그룹 아이디", required = true)
         Long groupId
     );
+
     @Operation(
         summary = "그룹 요청",
         description = "그룹장인 경우 친구에게 그룹 가입 요청을 할 수 있다.",
@@ -126,7 +127,7 @@ public interface MemberGroupCommandApi {
         Long groupOwnerId
     );
 
-     @Operation(
+    @Operation(
         summary = "그룹원 추방",
         description = "요청한 사용자가 그룹장인 경우 특정 그룹원을 그룹에서 추방한다.",
         security = {@SecurityRequirement(name = "user_token")},

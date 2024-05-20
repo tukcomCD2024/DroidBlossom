@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
-public interface MemberRepository extends Repository<Member, Long> {
+public interface MemberRepository extends Repository<Member, Long>, MemberQueryRepository {
 
     Optional<Member> findMemberByAuthIdAndSocialType(String authId, SocialType socialType);
 

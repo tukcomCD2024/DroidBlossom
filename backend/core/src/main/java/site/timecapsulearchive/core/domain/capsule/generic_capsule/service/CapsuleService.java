@@ -16,7 +16,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Near
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
-import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
+import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
@@ -27,7 +27,7 @@ public class CapsuleService {
 
     private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
-    private final MemberFriendQueryRepository memberFriendQueryRepository;
+    private final MemberFriendRepository memberFriendRepository;
     private final GeoTransformManager geoTransformManager;
 
     /**
@@ -114,7 +114,7 @@ public class CapsuleService {
 
         final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
-        final List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
+        final List<Long> friendIds = memberFriendRepository.findFriendIdsByOwnerId(memberId);
 
         return capsuleQueryRepository.findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
             friendIds,
@@ -138,7 +138,7 @@ public class CapsuleService {
 
         final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
-        final List<Long> friendIds = memberFriendQueryRepository.findFriendIdsByOwnerId(memberId);
+        final List<Long> friendIds = memberFriendRepository.findFriendIdsByOwnerId(memberId);
 
         return capsuleQueryRepository.findFriendsARCapsulesByCurrentLocation(
             friendIds,

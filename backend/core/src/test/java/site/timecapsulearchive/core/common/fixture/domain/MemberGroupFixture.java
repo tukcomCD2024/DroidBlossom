@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 
 public class MemberGroupFixture {
 
@@ -15,7 +15,7 @@ public class MemberGroupFixture {
      * 테스트 픽스처로 그룹장으로 그룹 멤버를 생성한다
      *
      * @param member 그룹장이 될 멤버
-     * @param group 대상 그룹
+     * @param group  대상 그룹
      * @return 그룹 멤버 테스트 픽스처
      */
     public static MemberGroup groupOwner(Member member, Group group) {
@@ -24,8 +24,9 @@ public class MemberGroupFixture {
 
     /**
      * 테스트 픽스처 - 사용자, 그룹, 그룹장 여부를 받아 그룹원을 만들어준다.
-     * @param member 사용자
-     * @param group 그룹
+     *
+     * @param member  사용자
+     * @param group   그룹
      * @param isOwner 그룹장 여부
      * @return MemberGroup 테스트 픽스처
      */
@@ -54,8 +55,9 @@ public class MemberGroupFixture {
 
     /**
      * 테스트 픽스처 - 그룹원들과 그룹을 주면 그룹원들 목록을 만들어준다(그룹장 X)
+     *
      * @param members 그룹원들 목록
-     * @param group 그룹
+     * @param group   그룹
      * @return {@code List<MemberGroup>} 테스트 픽스처들
      */
     public static List<MemberGroup> memberGroups(List<Member> members, Group group) {
@@ -66,6 +68,7 @@ public class MemberGroupFixture {
 
     /**
      * 임의로 그룹원들과 그룹장만 만든다.
+     *
      * @return 그룹원들과 그룹장 {@code List<MemberGroup>}
      */
     public static List<MemberGroup> memberGroupsWithOwner() {
@@ -85,6 +88,7 @@ public class MemberGroupFixture {
 
     /**
      * 임의로 그룹원들만 만든다.
+     *
      * @return 그룹원들 {@code List<MemberGroup>}
      */
     public static List<MemberGroup> memberGroupsWithoutOwner() {
@@ -99,6 +103,7 @@ public class MemberGroupFixture {
 
     /**
      * 테스트픽스처 - 임의로 그룹원을 만든다.
+     *
      * @return 그룹원인 {@code MemberGroup}
      */
     public static Optional<MemberGroup> notOwner() {
@@ -113,6 +118,7 @@ public class MemberGroupFixture {
 
     /**
      * 테스트픽스처 - 임의로 그룹장을 만든다.
+     *
      * @return 그룹장인 {@code MemberGroup}
      */
     public static Optional<MemberGroup> owner() {

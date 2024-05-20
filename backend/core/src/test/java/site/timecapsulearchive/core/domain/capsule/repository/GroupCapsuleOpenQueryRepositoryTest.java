@@ -42,7 +42,8 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         DataSource dataSource
     ) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate, jpaQueryFactory);
+        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate,
+            jpaQueryFactory);
     }
 
     @Transactional

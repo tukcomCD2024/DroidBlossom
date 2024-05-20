@@ -33,8 +33,8 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGrou
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
-import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class GroupCapsuleQueryRepositoryTest extends RepositoryTest {

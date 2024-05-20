@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,11 +13,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class FriendInviteQueryRepository {
+public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     public void bulkSave(final Long ownerId, final List<Long> friendIds) {
+        if (friendIds.isEmpty()) {
+            return;
+        }
+
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO friend_invite (

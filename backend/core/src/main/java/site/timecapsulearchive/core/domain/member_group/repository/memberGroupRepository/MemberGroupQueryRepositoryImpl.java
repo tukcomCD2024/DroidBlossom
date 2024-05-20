@@ -1,8 +1,8 @@
 package site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository;
 
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
-import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
+import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

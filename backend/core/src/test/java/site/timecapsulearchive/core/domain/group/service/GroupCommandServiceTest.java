@@ -29,13 +29,13 @@ import site.timecapsulearchive.core.domain.group.exception.GroupDeleteFailExcept
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.group.service.command.GroupCommandService;
+import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
-import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
@@ -238,7 +238,8 @@ class GroupCommandServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupCommandService.updateGroup(notGroupOwnerId, groupId, groupUpdateDto))
+        assertThatThrownBy(
+            () -> groupCommandService.updateGroup(notGroupOwnerId, groupId, groupUpdateDto))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
@@ -255,7 +256,8 @@ class GroupCommandServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> groupCommandService.updateGroup(groupOwnerId, groupId, groupUpdateDto))
+        assertThatThrownBy(
+            () -> groupCommandService.updateGroup(groupOwnerId, groupId, groupUpdateDto))
             .isInstanceOf(GroupNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_NOT_FOUND_ERROR.getMessage());
     }
