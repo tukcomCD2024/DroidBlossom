@@ -1,7 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
@@ -134,10 +132,10 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
-            assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
+            softly.assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -154,10 +152,10 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
-            assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
+            softly.assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -174,10 +172,10 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
-            assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
+            softly.assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -194,10 +192,10 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
-            assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(c -> c.capsuleType().equals(capsuleType));
+            softly.assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -214,14 +212,14 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(
                 c -> c.capsuleType().equals(CapsuleType.PUBLIC) ||
                     c.capsuleType().equals(CapsuleType.SECRET) ||
                     c.capsuleType().equals(CapsuleType.GROUP)
             );
-            assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -238,14 +236,14 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(
                 c -> c.capsuleType().equals(CapsuleType.PUBLIC) ||
                     c.capsuleType().equals(CapsuleType.SECRET) ||
                     c.capsuleType().equals(CapsuleType.GROUP)
             );
-            assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).allMatch(c -> myCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -261,10 +259,10 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(c -> friendCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> c.capsuleType().equals(CapsuleType.PUBLIC));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(c -> friendCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> c.capsuleType().equals(CapsuleType.PUBLIC));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 
@@ -280,10 +278,10 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(capsules).isNotEmpty();
-            assertThat(capsules).allMatch(c -> friendCapsuleIds.contains(c.id()));
-            assertThat(capsules).allMatch(c -> c.capsuleType().equals(CapsuleType.PUBLIC));
-            assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
+            softly.assertThat(capsules).isNotEmpty();
+            softly.assertThat(capsules).allMatch(c -> friendCapsuleIds.contains(c.id()));
+            softly.assertThat(capsules).allMatch(c -> c.capsuleType().equals(CapsuleType.PUBLIC));
+            softly.assertThat(capsules).allMatch(c -> mbr.contains(c.point()));
         });
     }
 }
