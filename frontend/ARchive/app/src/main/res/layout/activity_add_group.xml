@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="vm"
@@ -19,8 +22,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="wrap_content"
-            android:background="@color/main_bg_1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/main_bg_1">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -74,12 +77,23 @@
                         app:strokeWidth="6dp">
 
                         <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/addProfileIV"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:background="@color/white"
                             android:scaleType="center"
-                            android:src="@drawable/ic_circle_add_36" />
+                            bind:imageUrl="@{vm.groupProfileUri}" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/addIV"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="@color/white"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_circle_add_36"
+                            android:visibility="@{vm.groupProfileUri == null ? View.VISIBLE : View.GONE}" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -100,7 +114,7 @@
                         android:maxLines="1"
                         android:paddingHorizontal="24dp"
                         android:paddingVertical="16dp"
-                        android:text=""
+                        android:text="@={vm.groupTitle}"
                         android:textAppearance="@style/TextAppearance.App.h4"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/groupProfileCV"
@@ -119,6 +133,7 @@
                         android:inputType="textMultiLine"
                         android:minHeight="180dp"
                         android:padding="24dp"
+                        android:text="@={vm.groupContent}"
                         android:textAppearance="@style/TextAppearance.App.body2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +146,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
                     android:background="@color/main_bg_1"
-                    android:visibility="visible"
+                    android:visibility="@{vm.isCollapse() ? View.VISIBLE : View.INVISIBLE}"
                     app:layout_collapseMode="pin">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -153,7 +168,7 @@
                             android:id="@+id/groupProfileCollapsingCV"
                             android:layout_width="0dp"
                             android:layout_height="32dp"
-                            android:backgroundTint="@color/main_bg_1"
+                            android:backgroundTint="@color/main_4"
                             app:cardCornerRadius="16dp"
                             app:layout_constraintBottom_toBottomOf="@id/groupNameCollapsingT"
                             app:layout_constraintDimensionRatio="h,1:1"
@@ -166,21 +181,20 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                tools:src="@color/main_1" />
-
+                                bind:imageUrl="@{vm.groupProfileUri}" />
 
                         </com.google.android.material.card.MaterialCardView>
-
 
                         <TextView
                             android:id="@+id/groupNameCollapsingT"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
+                            android:layout_marginStart="8dp"
                             android:layout_marginEnd="18dp"
                             android:ellipsize="end"
                             android:lines="1"
-                            android:textAppearance="@style/TextAppearance.App.caption1"
+                            android:text="@{vm.groupTitle}"
+                            android:textAppearance="@style/TextAppearance.App.subtitle1"
                             app:layout_constraintBottom_toBottomOf="@id/closeCollapsingBtn"
                             app:layout_constraintEnd_toStartOf="@id/closeCollapsingBtn"
                             app:layout_constraintStart_toEndOf="@id/groupProfileCollapsingCV"
@@ -204,13 +218,15 @@
                                 app:chipSpacing="8dp">
 
                                 <com.google.android.material.chip.Chip
+                                    style="@style/Widget.MaterialComponents.Chip.Entry"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="이름"
                                     android:textAppearance="@style/TextAppearance.App.caption4"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/main_bg_1"
                                     app:chipBackgroundColor="@color/main_1"
-                                    app:chipStrokeColor="@color/main_bg_1" />
+                                    app:chipStrokeColor="@color/main_bg_1"
+                                    app:closeIconTint="@color/white" />
 
 
                             </com.google.android.material.chip.ChipGroup>

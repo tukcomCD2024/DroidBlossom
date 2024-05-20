@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addgroup
 
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
@@ -20,6 +21,9 @@ class AddGroupViewModelImpl @Inject constructor(
     private val _addGroupEvent = MutableSharedFlow<AddGroupViewModel.AddGroupEvent>()
     override val addGroupEvent: SharedFlow<AddGroupViewModel.AddGroupEvent>
         get() = _addGroupEvent.asSharedFlow()
+    override val groupTitle: MutableStateFlow<String> = MutableStateFlow("")
+    override val groupContent: MutableStateFlow<String> = MutableStateFlow("")
+    override val groupProfileUri: MutableStateFlow<Uri?> = MutableStateFlow(null)
 
     private val _isCollapse = MutableStateFlow<Boolean>(false)
     override val isCollapse: MutableStateFlow<Boolean>

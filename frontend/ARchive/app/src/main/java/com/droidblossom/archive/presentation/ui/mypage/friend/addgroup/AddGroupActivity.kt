@@ -3,15 +3,20 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addgroup
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.AddGroupVPA
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.coroutines.launch
 
 class AddGroupActivity :
     BaseActivity<AddGroupViewModelImpl, ActivityAddGroupBinding>(R.layout.activity_add_group) {
@@ -21,8 +26,19 @@ class AddGroupActivity :
         AddGroupVPA(this)
     }
 
-    override fun observeData() {
+    private val picMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                viewModel.groupProfileUri.value = uri
+            } else {
+                Log.d("포토", "No Media selected")
+            }
+        }
 
+    override fun observeData() {
+        lifecycleScope.launch {
+
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +67,10 @@ class AddGroupActivity :
                 viewModel.expandedAppBar()
             }
         })
+
+        binding.groupProfileCV.setOnClickListener {
+            picMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
     }
 
     companion object {
