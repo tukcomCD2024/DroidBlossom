@@ -1,6 +1,7 @@
 package com.droidblossom.archive.data.dto.friend.response
 
 import com.droidblossom.archive.domain.model.friend.Friend
+import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 
 data class FriendResponseDto(
     val createdAt: String,
@@ -14,5 +15,17 @@ data class FriendResponseDto(
         nickname = this.nickname,
         profileUrl = this.profileUrl,
         isOpenDelete = false
+    )
+
+    fun toFriendsSearchModel() = FriendsSearchResponse(
+        createdAt = "",
+        id = this.id,
+        profileUrl = this.profileUrl,
+        nickname = this.nickname,
+        isFriend = false,
+        isFriendInviteToFriend = false,
+        isFriendInviteToMe = false,
+        name = "",
+        isChecked = false
     )
 }
