@@ -4,5 +4,6 @@ public enum CapsuleType {
     SECRET,
     PUBLIC,
     GROUP,
+    TREASURE,
     ALL
 }
