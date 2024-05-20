@@ -25,7 +25,6 @@ import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 public class GroupCommandApiController implements GroupCommandApi {
 
     private final GroupCommandService groupCommandService;
-    private final S3UrlGenerator s3UrlGenerator;
 
     @Override
     @PostMapping
@@ -33,7 +32,7 @@ public class GroupCommandApiController implements GroupCommandApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final GroupCreateRequest request
     ) {
-        final String groupProfileUrl = s3UrlGenerator.generateFileName(memberId,
+        final String groupProfileUrl = S3UrlGenerator.generateFileName(memberId,
             request.groupDirectory(), request.groupImage());
         final GroupCreateDto dto = request.toDto(groupProfileUrl);
 
