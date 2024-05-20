@@ -109,4 +109,5 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="tabRippleColor">@null</item>
     </style>
+
 </resources>
