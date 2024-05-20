@@ -5,10 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.AddGroupVPA
+import com.google.android.material.appbar.AppBarLayout
 
 class AddGroupActivity :
     BaseActivity<AddGroupViewModelImpl, ActivityAddGroupBinding>(R.layout.activity_add_group) {
@@ -29,19 +32,25 @@ class AddGroupActivity :
     }
 
     private fun initView() {
-        val layoutParams = binding.appBar.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.coordinatorLayout.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.appBar.layoutParams = layoutParams
+        binding.coordinatorLayout.layoutParams = layoutParams
 
-        val layoutParamsToolBar = binding.toolBar.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.topMargin += getStatusBarHeight()
-        binding.toolBar.layoutParams = layoutParamsToolBar
+        window.statusBarColor = ContextCompat.getColor(this, R.color.main_bg_1)
 
         binding.vp.adapter = addGroupVPA
         binding.vp. currentItem = 0
         binding.closeBtn.setOnClickListener {
             finish()
         }
+
+        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                viewModel.collapsedAppBar()
+            } else {
+                viewModel.expandedAppBar()
+            }
+        })
     }
 
     companion object {

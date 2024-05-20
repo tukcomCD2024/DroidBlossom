@@ -11,18 +11,20 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="wrap_content"
+            android:background="@color/main_bg_1"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,9 +129,9 @@
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolBar"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:visibility="visible"
+                    android:layout_height="130dp"
                     android:background="@color/main_bg_1"
+                    android:visibility="visible"
                     app:layout_collapseMode="pin">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -163,8 +165,8 @@
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="match_parent"
-                                tools:src="@color/main_1"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent"
+                                tools:src="@color/main_1" />
 
 
                         </com.google.android.material.card.MaterialCardView>
@@ -175,23 +177,23 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
-                            android:ellipsize="end"
-                            tools:text="그룹 이름"
-                            android:lines="1"
                             android:layout_marginEnd="18dp"
+                            android:ellipsize="end"
+                            android:lines="1"
                             android:textAppearance="@style/TextAppearance.App.caption1"
                             app:layout_constraintBottom_toBottomOf="@id/closeCollapsingBtn"
                             app:layout_constraintEnd_toStartOf="@id/closeCollapsingBtn"
                             app:layout_constraintStart_toEndOf="@id/groupProfileCollapsingCV"
-                            app:layout_constraintTop_toTopOf="@id/closeCollapsingBtn" />
+                            app:layout_constraintTop_toTopOf="@id/closeCollapsingBtn"
+                            tools:text="그룹 이름" />
 
                         <HorizontalScrollView
-                            tools:background="@color/white"
-                            app:layout_constraintTop_toBottomOf="@id/groupProfileCollapsingCV"
-                            android:layout_marginTop="16dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:scrollbars="none">
+                            android:layout_marginTop="16dp"
+                            android:scrollbars="none"
+                            app:layout_constraintTop_toBottomOf="@id/groupProfileCollapsingCV"
+                            tools:background="@color/white">
 
                             <com.google.android.material.chip.ChipGroup
                                 android:id="@+id/chipsPrograms"
@@ -205,8 +207,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="이름"
-                                    android:textColor="@color/black"
                                     android:textAppearance="@style/TextAppearance.App.caption4"
+                                    android:textColor="@color/white"
                                     app:chipBackgroundColor="@color/main_1"
                                     app:chipStrokeColor="@color/main_bg_1" />
 
@@ -214,7 +216,7 @@
                             </com.google.android.material.chip.ChipGroup>
                         </HorizontalScrollView>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                    
+
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
