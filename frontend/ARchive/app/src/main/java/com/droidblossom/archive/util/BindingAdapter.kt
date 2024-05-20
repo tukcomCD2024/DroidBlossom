@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -201,6 +202,23 @@ fun ImageView.setCapsuleType2Img(type: String?) {
     }
 }
 
+@BindingAdapter("bind:setArrowImg")
+fun ImageView.setArrowImg(isShowMore: Boolean) {
+    if (isShowMore) this.setImageResource(R.drawable.ic_arrow_up_24) else this.setImageResource(R.drawable.ic_arrow_down_24)
+}
+
+@BindingAdapter("bind:setTextMaxLines")
+fun TextView.setTextMaxLines(isShowMore: Boolean) {
+    if (isShowMore) {
+        this.maxLines = Int.MAX_VALUE
+        this.ellipsize = null
+    }else{
+        this.maxLines = 1
+        this.ellipsize = TextUtils.TruncateAt.END
+    }
+}
+
+
 @BindingAdapter("bind:tabMarginEnd")
 fun TabLayout.setTabItemMargin(marginEndDp: Int) {
     val marginEndPx = TypedValue.applyDimension(
@@ -260,3 +278,4 @@ fun TextView.formatCountWithK(count: Int, showDecimal: Boolean) {
         }
     }
 }
+
