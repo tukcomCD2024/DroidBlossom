@@ -1,16 +1,10 @@
-package com.droidblossom.archive.presentation.ui.mypage.friend.detail
+package com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend
 
 import androidx.lifecycle.viewModelScope
-import com.droidblossom.archive.data.dto.common.PagingRequestDto
-import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.FriendProfileData
-import com.droidblossom.archive.presentation.ui.skin.SkinViewModel
 import com.droidblossom.archive.util.DateUtils
-import com.droidblossom.archive.util.onFail
-import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -27,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendDetailViewModelImpl @Inject constructor(
 
-) : BaseViewModel(), FriendDetailViewModel{
+) : BaseViewModel(), FriendDetailViewModel {
     
     private val _friendDetailEvents = MutableSharedFlow<FriendDetailViewModel.FriendDetailEvent>()
     override val friendDetailEvents: SharedFlow<FriendDetailViewModel.FriendDetailEvent>

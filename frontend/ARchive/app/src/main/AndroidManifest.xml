@@ -34,10 +34,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.ui.mypage.friend.detail.FriendDetailActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".presentation.ui.mypage.friend.FriendActivity"
+            android:name=".presentation.ui.mypage.friend.detail.group.GroupDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".presentation.ui.mypage.friend.detail.friend.FriendDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".presentation.ui.mypage.friend.FriendActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".presentation.ui.mypage.friend.addgroup.AddGroupActivity"
             android:exported="false"

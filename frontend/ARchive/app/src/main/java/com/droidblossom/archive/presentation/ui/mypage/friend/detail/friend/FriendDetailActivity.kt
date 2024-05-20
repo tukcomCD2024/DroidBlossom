@@ -1,11 +1,10 @@
-package com.droidblossom.archive.presentation.ui.mypage.friend.detail
+package com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.activity.viewModels
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -14,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendDetailBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -45,6 +42,9 @@ class FriendDetailActivity :
                 viewModel.friendDetailEvents.collect { event ->
                     when(event){
                         is FriendDetailViewModel.FriendDetailEvent.ShowToastMessage -> {
+
+                        }
+                        FriendDetailViewModel.FriendDetailEvent.SwipeRefreshLayoutDismissLoading -> {
 
                         }
                     }

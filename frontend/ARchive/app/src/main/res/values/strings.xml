@@ -50,6 +50,10 @@
 
     <string name="groupAccept">그룹 요청</string>
     <string name="friendAccept">친구 요청</string>
+    <string name="groupCapsule">그룹 캡슐</string>
+    <string name="groupMember">그룹원</string>
+    <string name="capsule">캡슐</string>
+    <string name="maxMember">정원</string>
 
     <string-array name="spinner_capsule_type">
         <item>Secret</item>

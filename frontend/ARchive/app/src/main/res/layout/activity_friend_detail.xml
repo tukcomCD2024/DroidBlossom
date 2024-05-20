@@ -7,7 +7,7 @@
     <data>
         <variable
             name="vm"
-            type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.FriendDetailViewModel" />
+            type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_1"
-        tools:context=".presentation.ui.mypage.friend.detail.FriendDetailActivity">
+        tools:context=".presentation.ui.mypage.friend.detail.friend.FriendDetailActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"

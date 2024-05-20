@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.mypage.friend.detail
+package com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend
 
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.FriendProfileData
@@ -13,7 +13,7 @@ interface FriendDetailViewModel {
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
 
-    fun friendDetailEvent(event:FriendDetailEvent)
+    fun friendDetailEvent(event: FriendDetailEvent)
 
     fun onScrollNearBottom()
 
@@ -22,6 +22,7 @@ interface FriendDetailViewModel {
 
 
     sealed class FriendDetailEvent{
+        object SwipeRefreshLayoutDismissLoading : FriendDetailEvent()
         data class ShowToastMessage(val message : String) : FriendDetailEvent()
     }
 }
