@@ -14,12 +14,13 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
-import site.timecapsulearchive.core.domain.member_group.entity.GroupInvite;
+import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupOverException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
@@ -37,17 +38,19 @@ public class MemberGroupCommandService {
     private final TransactionTemplate transactionTemplate;
     private final SocialNotificationManager socialNotificationManager;
 
-    public void inviteGroup(final Long memberId, final Long groupId, final Long targetId) {
+    public void inviteGroup(final Long memberId, final SendGroupRequest sendGroupRequest) {
         final Member groupOwner = memberRepository.findMemberById(memberId).orElseThrow(
             MemberNotFoundException::new);
 
-        final Member groupMember = memberRepository.findMemberById(targetId).orElseThrow(
-            MemberNotFoundException::new);
+        final List<Long> friendIds = sendGroupRequest.targetIds();
+        final List<Member> groupMembers = memberRepository.findMemberByIdIsIn(friendIds);
 
-        final Group group = groupRepository.findGroupById(groupId)
+        if (groupMembers.size() + friendIds.size() > 30) {
+            throw new MemberGroupOverException();
+        }
+
+        final Group group = groupRepository.findGroupById(sendGroupRequest.groupId())
             .orElseThrow(GroupNotFoundException::new);
-
-        final GroupInvite groupInvite = GroupInvite.createOf(group, groupOwner, groupMember);
 
         final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];
 
@@ -55,18 +58,18 @@ public class MemberGroupCommandService {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 summaryDto[0] = memberGroupRepository.findOwnerInMemberGroup(
-                    groupId, memberId).orElseThrow(GroupNotFoundException::new);
+                    sendGroupRequest.groupId(), memberId).orElseThrow(GroupNotFoundException::new);
 
                 if (!summaryDto[0].isOwner()) {
                     throw new NoGroupAuthorityException();
                 }
 
-                groupInviteRepository.save(groupInvite);
+                groupInviteRepository.bulkSave(groupOwner.getId(), group.getId(), friendIds);
             }
         });
 
         socialNotificationManager.sendGroupInviteMessage(summaryDto[0].nickname(),
-            summaryDto[0].groupProfileUrl(), List.of(targetId));
+            summaryDto[0].groupProfileUrl(), friendIds);
     }
 
     @Transactional

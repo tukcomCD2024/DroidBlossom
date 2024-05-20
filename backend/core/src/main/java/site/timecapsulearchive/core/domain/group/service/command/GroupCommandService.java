@@ -53,7 +53,7 @@ public class GroupCommandService {
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 groupRepository.save(group);
                 memberGroupRepository.save(memberGroup);
-                groupInviteRepository.bulkSave(memberId, dto.targetIds());
+                groupInviteRepository.bulkSave(memberId, group.getId(), dto.targetIds());
             }
         });
 

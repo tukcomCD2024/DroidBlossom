@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
+import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
@@ -69,11 +70,7 @@ public interface MemberGroupCommandApi {
     ResponseEntity<ApiSpec<String>> inviteGroup(
         Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
-        Long groupId,
-
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true)
-        Long targetId
+        SendGroupRequest sendGroupRequest
     );
 
     @Operation(
