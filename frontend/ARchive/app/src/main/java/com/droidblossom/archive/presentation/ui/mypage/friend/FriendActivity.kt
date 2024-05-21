@@ -50,7 +50,7 @@ class FriendActivity :
         }
 
         binding.closeBtn.setOnClickListener {
-            startActivity(GroupDetailActivity.newIntent(this@FriendActivity,1))
+            //startActivity(GroupDetailActivity.newIntent(this@FriendActivity,1))
             //startActivity(FriendDetailActivity.newIntent(this@FriendActivity,1))
             finish()
         }
