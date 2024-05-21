@@ -108,11 +108,8 @@ public class MemberGroupCommandService {
     @Transactional
     public void quitGroup(final Long memberId, final Long groupId) {
         final MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
-                memberId, groupId)
-            .orElseThrow(MemberGroupNotFoundException::new);
-        if (groupMember.getIsOwner()) {
-            throw new GroupQuitException(ErrorCode.GROUP_OWNER_QUIT_ERROR);
-        }
+                memberId, groupId).orElseThrow(MemberGroupNotFoundException::new);
+        groupMember.checkGroupMemberOwner();
 
         memberGroupRepository.delete(groupMember);
     }
@@ -149,9 +146,8 @@ public class MemberGroupCommandService {
 
     private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
         final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
-                groupOwnerId,
-                groupId)
-            .orElseThrow(MemberGroupNotFoundException::new);
+                groupOwnerId, groupId).orElseThrow(MemberGroupNotFoundException::new);
+
         if (!isOwner) {
             throw new NoGroupAuthorityException();
         }
