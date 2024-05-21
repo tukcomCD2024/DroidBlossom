@@ -168,7 +168,7 @@
                             android:id="@+id/groupProfileCollapsingCV"
                             android:layout_width="0dp"
                             android:layout_height="32dp"
-                            android:backgroundTint="@color/main_4"
+                            android:backgroundTint="@color/white"
                             app:cardCornerRadius="16dp"
                             app:layout_constraintBottom_toBottomOf="@id/groupNameCollapsingT"
                             app:layout_constraintDimensionRatio="h,1:1"
