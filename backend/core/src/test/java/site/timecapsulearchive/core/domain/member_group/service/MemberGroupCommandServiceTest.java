@@ -32,6 +32,7 @@ import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNot
 import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupOverException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
@@ -63,14 +64,10 @@ class MemberGroupCommandServiceTest {
         //given
         Long memberId = 1L;
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
-        Member groupOwner = MemberFixture.member(1);
         GroupOwnerSummaryDto groupOwnerSummaryDto = GroupDtoFixture.groupOwnerSummaryDto(true);
 
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupOwner));
         given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
             List.of(MemberFixture.member(2)));
-        given(groupRepository.findGroupById(request.groupId())).willReturn(
-            Optional.of(GroupFixture.group()));
         given(memberGroupRepository.findOwnerInMemberGroup(request.groupId(), memberId)).willReturn(
             Optional.of(groupOwnerSummaryDto));
 
@@ -83,13 +80,27 @@ class MemberGroupCommandServiceTest {
     }
 
     @Test
+    void 그룹장이_기존_그룹원을_포함하여_최대_수를_초과하여_그룹초대_요청을_하면_예외가_발생한다() {
+        //given
+        Long memberId = 1L;
+        SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
+
+        given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
+            MemberFixture.membersWithMemberId(1, 40));
+
+        //when
+        assertThatThrownBy(() -> groupMemberCommandService.inviteGroup(memberId, request))
+            .isInstanceOf(MemberGroupOverException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_OVER_ERROR.getMessage());
+
+    }
+
+    @Test
     void 그룹장이_그룹초대를_할_때_존재하지_않은_그룹_아이디_이면_예외가_발생한다() {
         //given
         Long memberId = 1L;
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
-        Member groupOwner = MemberFixture.member(1);
 
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupOwner));
         given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
             List.of(MemberFixture.member(2)));
         given(memberGroupRepository.findOwnerInMemberGroup(request.groupId(), memberId)).willReturn(
@@ -107,14 +118,10 @@ class MemberGroupCommandServiceTest {
         //given
         Long memberId = 1L;
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
-        Member groupOwner = MemberFixture.member(1);
         GroupOwnerSummaryDto groupOwnerSummaryDto = GroupDtoFixture.groupOwnerSummaryDto(false);
 
-        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupOwner));
         given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
             List.of(MemberFixture.member(2)));
-        given(groupRepository.findGroupById(request.groupId())).willReturn(
-            Optional.of(GroupFixture.group()));
         given(memberGroupRepository.findOwnerInMemberGroup(request.groupId(),
             memberId)).willReturn(Optional.of(groupOwnerSummaryDto));
 

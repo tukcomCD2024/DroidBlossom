@@ -39,21 +39,13 @@ public class MemberGroupCommandService {
     private final SocialNotificationManager socialNotificationManager;
 
     public void inviteGroup(final Long memberId, final SendGroupRequest sendGroupRequest) {
-        final Member groupOwner = memberRepository.findMemberById(memberId).orElseThrow(
-            MemberNotFoundException::new);
-
         final List<Long> friendIds = sendGroupRequest.targetIds();
         final List<Member> groupMembers = memberRepository.findMemberByIdIsIn(friendIds);
-
         if (groupMembers.size() + friendIds.size() > 30) {
             throw new MemberGroupOverException();
         }
 
-        final Group group = groupRepository.findGroupById(sendGroupRequest.groupId())
-            .orElseThrow(GroupNotFoundException::new);
-
         final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];
-
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
@@ -64,7 +56,7 @@ public class MemberGroupCommandService {
                     throw new NoGroupAuthorityException();
                 }
 
-                groupInviteRepository.bulkSave(groupOwner.getId(), group.getId(), friendIds);
+                groupInviteRepository.bulkSave(memberId, sendGroupRequest.groupId(), friendIds);
             }
         });
 
