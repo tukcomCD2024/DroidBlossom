@@ -9,15 +9,18 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.AddGroupVPA
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class AddGroupActivity :
     BaseActivity<AddGroupViewModelImpl, ActivityAddGroupBinding>(R.layout.activity_add_group) {
     override val viewModel: AddGroupViewModelImpl by viewModels()
@@ -37,14 +40,26 @@ class AddGroupActivity :
 
     override fun observeData() {
         lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addGroupEvent.collect { event ->
+                    when (event) {
+                        is AddGroupViewModel.AddGroupEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
 
+                        else -> {}
+                    }
+                }
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.vm = viewModel
+
         initView()
+        viewModel.getFriendList()
     }
 
     private fun initView() {

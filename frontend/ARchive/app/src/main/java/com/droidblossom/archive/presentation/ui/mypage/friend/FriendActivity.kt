@@ -11,14 +11,10 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendVPA
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupViewModelImpl
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
-import com.kakao.sdk.common.KakaoSdk
-import com.kakao.sdk.common.KakaoSdk.type
 import dagger.hilt.android.AndroidEntryPoint
 
 

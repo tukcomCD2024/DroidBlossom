@@ -16,7 +16,7 @@ interface AddGroupViewModel {
 
     val isCollapse : StateFlow<Boolean>
     val isFriendSearchOpen: StateFlow<Boolean>
-    val friendList: StateFlow<List<FriendsSearchResponse>>
+    val friendListUI: StateFlow<List<FriendsSearchResponse>>
     val checkedList : StateFlow<List<FriendsSearchResponse>>
 
     fun expandedAppBar()

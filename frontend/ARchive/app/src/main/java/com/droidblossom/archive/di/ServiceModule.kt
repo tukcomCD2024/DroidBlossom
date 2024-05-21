@@ -4,6 +4,7 @@ import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
 import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
 import com.droidblossom.archive.data.source.remote.api.FriendService
+import com.droidblossom.archive.data.source.remote.api.GroupService
 import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.data.source.remote.api.S3Service
@@ -51,4 +52,9 @@ object ServiceModule {
     @Singleton
     @Provides
     fun providesPublicService(retrofit: Retrofit) : PublicService = retrofit.create(PublicService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesGroupService(retrofit: Retrofit) : GroupService = retrofit.create(GroupService::class.java)
+
 }
