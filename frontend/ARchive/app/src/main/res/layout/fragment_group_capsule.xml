@@ -15,24 +15,18 @@
         android:background="@color/main_bg_1"
         tools:context=".presentation.ui.mypage.friend.detail.group.page.GroupCapsuleFragment">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupCapsuleRV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="12dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingHorizontal="@dimen/padding">
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+            android:layout_marginHorizontal="@dimen/margin" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingTop="12dp"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3"
-                android:layout_marginHorizontal="@dimen/margin" />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </FrameLayout>
 </layout>

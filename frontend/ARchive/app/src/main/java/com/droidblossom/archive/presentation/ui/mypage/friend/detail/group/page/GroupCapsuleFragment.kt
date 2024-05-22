@@ -69,12 +69,10 @@ class GroupCapsuleFragment :
     }
 
     private fun initRV(){
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            //viewModel.getLatestCapsuleList()
-        }
-        binding.rv.adapter = capsuleRVA
-        binding.rv.setHasFixedSize(true)
-        binding.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+        binding.groupCapsuleRV.adapter = capsuleRVA
+        binding.groupCapsuleRV.setHasFixedSize(true)
+        binding.groupCapsuleRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 

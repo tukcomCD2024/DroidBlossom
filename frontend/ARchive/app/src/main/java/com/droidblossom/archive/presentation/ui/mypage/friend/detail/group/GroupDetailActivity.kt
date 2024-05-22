@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityGroupDetailBinding
@@ -15,6 +16,8 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.adapter.GroupDetailVPA
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupCapsuleFragment
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupMemberFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,6 +27,8 @@ class GroupDetailActivity :
     BaseActivity<GroupDetailViewModelImpl, ActivityGroupDetailBinding>(R.layout.activity_group_detail) {
 
     override val viewModel: GroupDetailViewModelImpl by viewModels<GroupDetailViewModelImpl>()
+
+    var currentPage = 0
 
     private val groupId: Long by lazy {
         intent.getLongExtra(GROUP_ID, -1)
@@ -50,7 +55,7 @@ class GroupDetailActivity :
                 }
             }
         }
-        
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +73,20 @@ class GroupDetailActivity :
 
     private fun initView(){
         with(binding){
+            binding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
+                val fragment = groupVPA.getFragment(binding.vp.currentItem)
+                when (fragment) {
+                    is GroupCapsuleFragment -> {
+                        val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.groupCapsuleRV)
+                        recyclerView != null && recyclerView.canScrollVertically(-1)
+                    }
+                    is GroupMemberFragment -> {
+                        val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.groupMemberRV)
+                        recyclerView != null && recyclerView.canScrollVertically(-1)
+                    }
+                    else -> false
+                }
+            }
             binding.swipeRefreshLayout.setOnRefreshListener {
                 viewModel.getGroupDetail()
             }
@@ -82,7 +101,7 @@ class GroupDetailActivity :
             vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-
+                    currentPage = position
                 }
             })
 
