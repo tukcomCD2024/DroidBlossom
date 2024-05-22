@@ -58,6 +58,11 @@ class AddGroupFragment :
                 return@setOnClickListener
             }
 
+            if (viewModel.groupContent.value.isBlank()) {
+                showToastMessage("그룹 설명은 필수입니다.")
+                return@setOnClickListener
+            }
+
             if (viewModel.groupProfileUri.value == null) {
                 showToastMessage("그룹 프로필 사진은 필수입니다.")
                 return@setOnClickListener
