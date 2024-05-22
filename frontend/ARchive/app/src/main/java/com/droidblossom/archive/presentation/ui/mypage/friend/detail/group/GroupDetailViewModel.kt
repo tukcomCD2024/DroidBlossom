@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface GroupDetailViewModel {
 
+    val groupId: StateFlow<Long>
     val groupInfo: StateFlow<GroupProfileData>
     val groupDetailEvents: SharedFlow<GroupDetailEvent>
     val capsules : StateFlow<List<CapsuleData>>
@@ -17,6 +18,9 @@ interface GroupDetailViewModel {
     fun groupDetailEvent(event: GroupDetailEvent)
 
     fun onCapsuleScrollNearBottom()
+
+    fun setGroupId(groupId: Long)
+    fun getGroupDetail()
 
     fun getCapsuleList()
     fun getLatestCapsuleList()

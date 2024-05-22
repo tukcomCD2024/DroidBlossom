@@ -1,12 +1,15 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.GroupProfileData
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.onFail
+import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -22,12 +25,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GroupDetailViewModelImpl @Inject constructor(
-
+    private val getGroupDetailUseCase: GetGroupDetailUseCase
 ) : BaseViewModel(), GroupDetailViewModel {
 
     private val _groupDetailEvents = MutableSharedFlow<GroupDetailViewModel.GroupDetailEvent>()
     override val groupDetailEvents: SharedFlow<GroupDetailViewModel.GroupDetailEvent>
         get() = _groupDetailEvents.asSharedFlow()
+
+    private val _groupId = MutableStateFlow(-1L)
+    override val groupId: StateFlow<Long>
+        get() = _groupId
 
     private val _capsules = MutableStateFlow(listOf<CapsuleData>())
     override val capsules: StateFlow<List<CapsuleData>>
@@ -98,9 +105,37 @@ class GroupDetailViewModelImpl @Inject constructor(
         _capsules.value = capsules
     }
 
+    override fun setGroupId(groupId: Long) {
+        _groupId.value = groupId
+        getGroupDetail()
+    }
+
     override fun groupDetailEvent(event: GroupDetailViewModel.GroupDetailEvent) {
         viewModelScope.launch {
             _groupDetailEvents.emit(event)
+        }
+    }
+
+    override fun getGroupDetail() {
+        viewModelScope.launch {
+            getGroupDetailUseCase(groupId.value).collect{ result ->
+                result.onSuccess {
+                    val groupProfile = GroupProfileData(
+                        groupId = -1,
+                        groupName = it.groupName,
+                        groupDescription = it.groupDescription,
+                        groupProfileUrl = it.groupProfileUrl,
+                        hasEditPermission = false,
+                        groupCapsuleNum = -1,
+                        groupMemberNum = it.members.size.toString()
+                    )
+                    _groupInfo.emit(groupProfile)
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
+                }.onFail {
+
+                }
+
+            }
         }
     }
 

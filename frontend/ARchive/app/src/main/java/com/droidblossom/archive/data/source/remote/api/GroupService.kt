@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
+import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
@@ -36,5 +37,10 @@ interface GroupService {
         @Path("group_id") groupId : Long,
         @Path("target_id") targetId : Long,
     ) : Response<ResponseBody<String>>
+
+    @GET("groups/{group_id}")
+    suspend fun getGroupsDetailApi(
+        @Path("group_id") groupId : Long,
+    ) : Response<ResponseBody<GroupDetailResponseDto>>
 
 }

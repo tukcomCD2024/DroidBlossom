@@ -2,6 +2,7 @@ package com.droidblossom.archive.domain.repository
 
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
+import com.droidblossom.archive.domain.model.group.GroupDetail
 import com.droidblossom.archive.domain.model.group.GroupPage
 import com.droidblossom.archive.util.RetrofitResult
 
@@ -13,5 +14,7 @@ interface GroupRepository {
     suspend fun postAcceptGroupInviteRequest(groupId: Long, targetId: Long): RetrofitResult<String>
 
     suspend fun deleteRejectGroupInviteRequest(groupId: Long, targetId: Long): RetrofitResult<String>
+
+    suspend fun getGroupDetailRequest(groupId: Long): RetrofitResult<GroupDetail>
 
 }

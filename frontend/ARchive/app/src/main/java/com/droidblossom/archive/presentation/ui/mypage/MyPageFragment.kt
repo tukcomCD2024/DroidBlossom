@@ -1,12 +1,10 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import android.Manifest
-import android.content.pm.PackageManager
+
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -22,12 +20,12 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
-import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity.Companion.CAPSULE_TYPE
 import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.ProfileRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.SpinnerAdapter
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.util.CustomLifecycleOwner
@@ -66,6 +64,9 @@ class MyPageFragment :
             },
             {
                 copyText("tag",it)
+            },
+            {
+                startActivity(GroupDetailActivity.newIntent(requireContext(),3))
             }
         )
     }

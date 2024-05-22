@@ -25,6 +25,10 @@ class GroupDetailActivity :
 
     override val viewModel: GroupDetailViewModelImpl by viewModels<GroupDetailViewModelImpl>()
 
+    private val groupId: Long by lazy {
+        intent.getLongExtra(GROUP_ID, -1)
+    }
+
     private val groupVPA by lazy {
         GroupDetailVPA(this)
     }
@@ -38,12 +42,15 @@ class GroupDetailActivity :
 
                         }
                         GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading -> {
-
+                            if (binding.swipeRefreshLayout.isRefreshing){
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
                         }
                     }
                 }
             }
         }
+        
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,13 +61,17 @@ class GroupDetailActivity :
         val layoutParams = binding.appBarLayout.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.appBarLayout.layoutParams = layoutParams
-
         initView()
         initTab()
+        viewModel.setGroupId(groupId)
     }
 
     private fun initView(){
-
+        with(binding){
+            binding.swipeRefreshLayout.setOnRefreshListener {
+                viewModel.getGroupDetail()
+            }
+        }
     }
 
     private fun initTab(){

@@ -4,8 +4,10 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
+import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.source.remote.api.GroupService
+import com.droidblossom.archive.domain.model.group.GroupDetail
 import com.droidblossom.archive.domain.model.group.GroupPage
 import com.droidblossom.archive.domain.repository.GroupRepository
 import com.droidblossom.archive.util.RetrofitResult
@@ -51,6 +53,10 @@ class GroupRepositoryImpl @Inject constructor(
                 targetId
             )
         }) { response: ResponseBody<String> -> response.result.toModel() }
+    }
+
+    override suspend fun getGroupDetailRequest(groupId: Long): RetrofitResult<GroupDetail> {
+        return apiHandler({ api.getGroupsDetailApi(groupId) }) { response: ResponseBody<GroupDetailResponseDto> -> response.result.toModel() }
     }
 
 }
