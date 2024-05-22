@@ -141,6 +141,7 @@ class AddGroupViewModelImpl @Inject constructor(
     fun setFile(profileImgFile: File) {
         _profileImgFile.value = profileImgFile
     }
+
     fun onCreateGroup() {
         viewModelScope.launch {
             getUploadUrls(S3OneUrlRequestDto(profileImgFile.value!!.name, S3DIRECTORY))
@@ -188,8 +189,8 @@ class AddGroupViewModelImpl @Inject constructor(
         viewModelScope.launch {
             groupCreateUseCase(
                 CreateGroupRequestDto(
-                    description = S3DIRECTORY,
-                    groupDirectory = groupContent.value,
+                    description = groupContent.value,
+                    groupDirectory = S3DIRECTORY,
                     groupImage = profileImgFile.value!!.name,
                     groupName = groupTitle.value,
                     targetIds = checkedList.value.map {
