@@ -1,7 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend
 
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
-import com.droidblossom.archive.presentation.model.mypage.FriendProfileData
+import com.droidblossom.archive.presentation.model.mypage.detail.FriendProfileData
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 

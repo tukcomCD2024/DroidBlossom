@@ -1,12 +1,11 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
-import com.droidblossom.archive.presentation.model.mypage.GroupProfileData
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel
+import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -36,6 +35,10 @@ class GroupDetailViewModelImpl @Inject constructor(
     override val groupId: StateFlow<Long>
         get() = _groupId
 
+    private val _groupMembers = MutableStateFlow(listOf<GroupMember>())
+    override val groupMembers: StateFlow<List<GroupMember>>
+        get() = _groupMembers
+
     private val _capsules = MutableStateFlow(listOf<CapsuleData>())
     override val capsules: StateFlow<List<CapsuleData>>
         get() = _capsules
@@ -57,7 +60,8 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     private var getCapsuleListJob: Job? = null
 
-    private val _groupInfo = MutableStateFlow(GroupProfileData(
+    private val _groupInfo = MutableStateFlow(
+        GroupProfileData(
         groupId = 7778,
         groupName = "Kathrine Turner",
         groupDescription = "추억을 소중하게 여기는 분들을 위한 AR 타임캡슐 앱 ARchive를 소개합니다.\n" +
@@ -70,7 +74,8 @@ class GroupDetailViewModelImpl @Inject constructor(
         hasEditPermission = false,
         groupCapsuleNum = 7090,
         groupMemberNum = "5",
-    ))
+    )
+    )
 
     override val groupInfo: StateFlow<GroupProfileData>
         get() = _groupInfo
@@ -130,6 +135,7 @@ class GroupDetailViewModelImpl @Inject constructor(
                         groupMemberNum = it.members.size.toString()
                     )
                     _groupInfo.emit(groupProfile)
+                    _groupMembers.emit(it.members)
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
                 }.onFail {
 

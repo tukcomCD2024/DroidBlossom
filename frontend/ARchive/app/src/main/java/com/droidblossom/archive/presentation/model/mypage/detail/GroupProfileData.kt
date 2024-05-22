@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.model.mypage
+package com.droidblossom.archive.presentation.model.mypage.detail
 
 data class GroupProfileData (
     val groupId:Long,

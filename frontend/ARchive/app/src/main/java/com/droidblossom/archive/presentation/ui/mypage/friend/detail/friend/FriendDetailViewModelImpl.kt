@@ -3,7 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
-import com.droidblossom.archive.presentation.model.mypage.FriendProfileData
+import com.droidblossom.archive.presentation.model.mypage.detail.FriendProfileData
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -27,12 +27,14 @@ class FriendDetailViewModelImpl @Inject constructor(
     override val friendDetailEvents: SharedFlow<FriendDetailViewModel.FriendDetailEvent>
         get() = _friendDetailEvents.asSharedFlow()
 
-    private val _friendInfo = MutableStateFlow(FriendProfileData(
+    private val _friendInfo = MutableStateFlow(
+        FriendProfileData(
         profileId = 6740,
         nickname = "Gerard Woodard",
         profileUrl = "https://search.yahoo.com/search?p=commodo",
         tag = "cetero"
-    ))
+    )
+    )
     override val friendInfo: StateFlow<FriendProfileData>
         get() = _friendInfo
 

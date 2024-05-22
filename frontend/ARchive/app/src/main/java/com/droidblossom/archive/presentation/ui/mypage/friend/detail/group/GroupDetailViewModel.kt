@@ -1,7 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
+import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
-import com.droidblossom.archive.presentation.model.mypage.GroupProfileData
+import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -10,6 +11,7 @@ interface GroupDetailViewModel {
     val groupId: StateFlow<Long>
     val groupInfo: StateFlow<GroupProfileData>
     val groupDetailEvents: SharedFlow<GroupDetailEvent>
+    val groupMembers: StateFlow<List<GroupMember>>
     val capsules : StateFlow<List<CapsuleData>>
     val capsulesHasNextPage : StateFlow<Boolean>
     val capsulesLastCreatedTime : StateFlow<String>
