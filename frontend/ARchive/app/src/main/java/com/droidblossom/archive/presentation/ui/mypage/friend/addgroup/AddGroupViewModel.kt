@@ -24,10 +24,12 @@ interface AddGroupViewModel {
     fun search()
     fun openSearch()
     fun closeSearch()
+    fun onFinish()
 
     fun getFriendList()
 
     sealed class AddGroupEvent {
         data class ShowToastMessage(val message: String) : AddGroupEvent()
+        object Finish : AddGroupEvent()
     }
 }

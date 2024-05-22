@@ -19,6 +19,7 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.A
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class AddGroupActivity :
@@ -47,6 +48,10 @@ class AddGroupActivity :
                             showToastMessage(event.message)
                         }
 
+                        is AddGroupViewModel.AddGroupEvent.Finish -> {
+                            finish()
+                        }
+
                         else -> {}
                     }
                 }
@@ -71,12 +76,9 @@ class AddGroupActivity :
 
         binding.vp.adapter = addGroupVPA
         binding.vp. currentItem = 0
-        binding.closeBtn.setOnClickListener {
-            finish()
-        }
 
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                 viewModel.collapsedAppBar()
             } else {
                 viewModel.expandedAppBar()

@@ -19,8 +19,15 @@ import com.droidblossom.archive.databinding.FragmentAddGroupBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
+import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel
+import com.droidblossom.archive.util.FileUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AddGroupFragment :
     BaseFragment<AddGroupViewModelImpl, FragmentAddGroupBinding>(R.layout.fragment_add_group) {
@@ -44,6 +51,34 @@ class AddGroupFragment :
 
     private fun initView() {
 
+        binding.addBtn.setOnClickListener {
+
+            if (viewModel.groupTitle.value.isBlank()) {
+                showToastMessage("그룹 이름은 필수입니다.")
+                return@setOnClickListener
+            }
+
+            if (viewModel.groupProfileUri.value == null) {
+                showToastMessage("그룹 프로필 사진은 필수입니다.")
+                return@setOnClickListener
+            } else {
+
+                val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                val currentTime = dateFormat.format(Date())
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val groupProfileFile = FileUtils.resizeBitmapFromUri(
+                        requireContext(),
+                        viewModel.groupProfileUri.value!!,
+                        "IMG_${currentTime}"
+                    )
+                    viewModel.setFile(groupProfileFile!!)
+                    viewModel.onCreateGroup()
+
+                }
+
+            }
+        }
     }
 
     private fun initRV() {

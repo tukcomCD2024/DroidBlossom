@@ -5,5 +5,5 @@ data class CreateGroupRequestDto(
     val groupDirectory: String,
     val groupImage: String,
     val groupName: String,
-    val targetIds: List<Int>
+    val targetIds: List<Long>
 )
