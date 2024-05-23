@@ -26,13 +26,13 @@ interface GroupService {
         @Query("created_at") createdAt: String
     ) : Response<ResponseBody<GroupPageResponseDto>>
 
-    @POST("groups/accept/{group_id}/member/{target_id}")
+    @POST("groups/{group_id}/member/{target_id}/accept")
     suspend fun postAcceptGroupInviteApi(
         @Path("group_id") groupId : Long,
         @Path("target_id") targetId : Long,
     ) : Response<ResponseBody<String>>
 
-    @DELETE("groups/reject/{group_id}/member/{target_id}")
+    @DELETE("groups/{group_id}/member/{target_id}/reject")
     suspend fun deleteRejectGroupInviteApi(
         @Path("group_id") groupId : Long,
         @Path("target_id") targetId : Long,

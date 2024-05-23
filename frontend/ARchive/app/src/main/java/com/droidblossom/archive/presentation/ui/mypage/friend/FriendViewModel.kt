@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend
 
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
+import com.droidblossom.archive.domain.model.group.GroupSummary
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,9 @@ interface FriendViewModel {
 
     //group
     val isGroupSearchOpen: StateFlow<Boolean>
+    val groupListUI: StateFlow<List<GroupSummary>>
     fun onScrollNearBottomFriend()
+    fun onScrollNearBottomGroup()
 
     //friend
     fun openSearchFriend()
@@ -31,6 +34,7 @@ interface FriendViewModel {
     fun openSearchGroup()
     fun closeSearchGroup()
     fun searchGroup()
+    fun getGroupList()
 
     sealed class FriendEvent {
         data class ShowToastMessage(val message: String) : FriendViewModel.FriendEvent()

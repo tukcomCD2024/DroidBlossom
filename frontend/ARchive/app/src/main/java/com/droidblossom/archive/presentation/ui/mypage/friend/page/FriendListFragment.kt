@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentListFriendBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendRVA
 import kotlinx.coroutines.launch
@@ -34,10 +33,11 @@ class FriendListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        initView()
+
+        initRV()
     }
 
-    private fun initView() {
+    private fun initRV() {
         binding.friendRV.adapter = friendRVA
         binding.friendRV.setHasFixedSize(true)
         binding.friendRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -62,20 +62,6 @@ class FriendListFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendListUI.collect { friends ->
                     friendRVA.submitList(friends)
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendEvent.collect { event ->
-                    when (event) {
-                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
-                            showToastMessage(event.message)
-                        }
-
-                        else -> {}
-                    }
                 }
             }
         }

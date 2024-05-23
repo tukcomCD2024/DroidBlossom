@@ -18,6 +18,8 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.GroupRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailActivity
 import kotlinx.coroutines.launch
 
 class GroupListFragment :
@@ -25,28 +27,44 @@ class GroupListFragment :
 
     override val viewModel: FriendViewModelImpl by activityViewModels()
 
+    private val groupAdapter by lazy {
+        GroupRVA { groupId ->
+            startActivity(GroupDetailActivity.newIntent(requireContext(), groupId))
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
-        initView()
+
+        initRV()
     }
 
-    private fun initView() {
+    private fun initRV() {
+        binding.groupRV.adapter = groupAdapter
+        binding.groupRV.setHasFixedSize(true)
+        binding.groupRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
 
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 3) {
+                        viewModel.onScrollNearBottomGroup()
+                    }
+                }
+            }
+        })
     }
 
     override fun observeData() {
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendEvent.collect { event ->
-                    when (event) {
-                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
-                            showToastMessage(event.message)
-                        }
-
-                        else -> {}
-                    }
+                viewModel.groupListUI.collect { groups ->
+                    groupAdapter.submitList(groups)
                 }
             }
         }

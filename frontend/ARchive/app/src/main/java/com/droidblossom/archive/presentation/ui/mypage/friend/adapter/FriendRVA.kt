@@ -18,7 +18,7 @@ import com.droidblossom.archive.domain.model.friend.Friend
 
 class FriendRVA(
     private val context: Context,
-    private val click: (Int?, Int) -> Unit,
+    private val onSlide: (Int?, Int) -> Unit,
     private val delete: (Friend) -> Unit
 ) :
     ListAdapter<Friend, FriendRVA.ItemViewHolder>(differ) {
@@ -43,7 +43,7 @@ class FriendRVA(
                 ): Boolean {
                     val currentClickedPosition = bindingAdapterPosition
                     if (currentClickedPosition != RecyclerView.NO_POSITION) {
-                        click(previousClickedPosition, currentClickedPosition)
+                        onSlide(previousClickedPosition, currentClickedPosition)
                         previousClickedPosition?.let { previousClickedPosition ->
                             notifyItemChanged(previousClickedPosition)
                         }
