@@ -73,7 +73,7 @@ public class GroupCommandService {
      * @param groupId  그룹 아이디
      */
     public void deleteGroup(final Long memberId, final Long groupId) {
-        final String groupProfilePath = transactionTemplate.execute(transactionStatus -> {
+        final String groupProfilePath = transactionTemplate.execute(ignored -> {
             final Group group = groupRepository.findGroupById(groupId)
                 .orElseThrow(GroupNotFoundException::new);
 
