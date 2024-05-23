@@ -1,23 +1,26 @@
 package site.timecapsulearchive.core.domain.group.data.dto;
 
-import java.util.List;
+import lombok.Builder;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberResponse;
 
-public record GroupMemberDto(
+@Builder
+public record GroupMemberWithRelationDto(
     Long memberId,
     String profileUrl,
     String nickname,
     String tag,
-    Boolean isOwner
+    Boolean isOwner,
+    Boolean isFriend
 ) {
 
-    public GroupMemberWithRelationDto toRelationDto(final List<Long> friendIds) {
-        return GroupMemberWithRelationDto.builder()
+    public GroupMemberResponse toResponse() {
+        return GroupMemberResponse.builder()
             .memberId(memberId)
             .profileUrl(profileUrl)
             .nickname(nickname)
             .tag(tag)
             .isOwner(isOwner)
-            .isFriend(friendIds.contains(memberId))
+            .isFriend(isFriend)
             .build();
     }
 }

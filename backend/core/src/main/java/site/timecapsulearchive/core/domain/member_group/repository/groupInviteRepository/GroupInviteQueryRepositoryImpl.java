@@ -29,7 +29,6 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory jpaQueryFactory;
 
-
     public void bulkSave(final Long groupOwnerId, final Long groupId, final List<Long> groupMemberIds) {
         jdbcTemplate.batchUpdate(
             """

@@ -23,6 +23,7 @@ import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -63,7 +64,8 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
             entityManager.persist(group);
             groups.add(group);
         }
-        //사용자가 그룹장인 그룹
+
+        //사용자가 그룹장인 그룹아이디
         ownerGroupId = groups.get(0).getId();
 
         //그룹원들
@@ -148,22 +150,22 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 그룹_아이디로_그룹을_조회하면_그룹_상세가_반환된다() {
+    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_상세가_반환된다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
-            ownerGroupId).orElseThrow();
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            ownerGroupId, memberId).orElseThrow();
 
         //then
         assertThat(groupDetail).isNotNull();
     }
 
     @Test
-    void 그룹_아이디로_그룹을_조회하면_그룹_정보를_볼_수_있다() {
+    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_정보를_볼_수_있다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
-            ownerGroupId).orElseThrow();
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            ownerGroupId, memberId).orElseThrow();
 
         //then
         SoftAssertions.assertSoftly(softly -> {
@@ -175,11 +177,11 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 그룹_아이디로_그룹을_조회하면_그룹원들의_정보를_볼_수_있다() {
+    void 그룹_아이디와_멤버_아이디_그룹을_조회하면_그룹원들의_정보를_볼_수_있다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
-            ownerGroupId).orElseThrow();
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            ownerGroupId, memberId).orElseThrow();
 
         //then
         SoftAssertions.assertSoftly(softly -> {
@@ -195,16 +197,18 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 그룹_아이디로_그룹을_조회하면_한_명의_그룹장만_존재한다() {
+    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_본인은_포함되어_조회되지_않는다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupId(
-            ownerGroupId).orElseThrow();
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            ownerGroupId, memberId).orElseThrow();
+
+        List<GroupMemberDto> groupMemberDtos = groupDetail.members();
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            assertThat(groupDetail.members()).satisfiesOnlyOnce(
-                m -> assertThat(m.isOwner()).isTrue());
+            softly.assertThat(groupMemberDtos)
+                .noneMatch(member -> member.memberId().equals(memberId));
         });
     }
 }

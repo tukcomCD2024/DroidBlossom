@@ -2,6 +2,8 @@ package site.timecapsulearchive.core.domain.group.repository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
+import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
+import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
@@ -57,13 +59,14 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
         return new SliceImpl<>(groups, Pageable.ofSize(size), groups.size() > size);
     }
 
-    public Optional<GroupDetailDto> findGroupDetailByGroupId(final Long groupId) {
+    public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
+        final Long memberId) {
         return Optional.ofNullable(
             jpaQueryFactory
                 .selectFrom(group)
-                .join(memberGroup).on(memberGroup.group.id.eq(group.id))
+                .join(memberGroup).on(memberGroup.group.id.eq(groupId))
                 .join(member).on(member.id.eq(memberGroup.member.id))
-                .where(group.id.eq(groupId))
+                .where(member.id.ne(memberId))
                 .transform(
                     groupBy(group.id).as(
                         Projections.constructor(
@@ -87,5 +90,27 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                 )
                 .get(groupId)
         );
+    }
+
+    public Long findGroupCapsuleCount(final Long groupId) {
+        return jpaQueryFactory.select(capsule.count())
+            .from(capsule)
+            .where(capsule.group.id.eq(groupId))
+            .fetchOne();
+    }
+
+    public Boolean findGroupEditPermission(final Long groupId, final Long memberId) {
+        return jpaQueryFactory.select(memberGroup.isOwner)
+            .from(memberGroup)
+            .where(memberGroup.group.id.eq(groupId).and(memberGroup.member.id.eq(memberId)))
+            .fetchOne();
+    }
+
+    public List<Long> findFriendIds(final List<Long> groupMemberIds, final Long memberId) {
+        return jpaQueryFactory.select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(
+                memberFriend.friend.id.in(groupMemberIds).and(memberFriend.owner.id.eq(memberId)))
+            .fetch();
     }
 }
