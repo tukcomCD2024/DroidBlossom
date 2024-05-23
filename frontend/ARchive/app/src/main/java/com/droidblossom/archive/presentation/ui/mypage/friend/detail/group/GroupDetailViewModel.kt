@@ -16,6 +16,7 @@ interface GroupDetailViewModel {
     val capsulesHasNextPage : StateFlow<Boolean>
     val capsulesLastCreatedTime : StateFlow<String>
     val isShowMore:StateFlow<Boolean>
+    val isAppBarExpanded:StateFlow<Boolean>
 
     fun groupDetailEvent(event: GroupDetailEvent)
 
@@ -27,6 +28,7 @@ interface GroupDetailViewModel {
     fun getCapsuleList()
     fun getLatestCapsuleList()
     fun setShowMore()
+    fun setIsAppBarExpanded(boolean: Boolean)
 
     sealed class GroupDetailEvent{
         object SwipeRefreshLayoutDismissLoading : GroupDetailEvent()

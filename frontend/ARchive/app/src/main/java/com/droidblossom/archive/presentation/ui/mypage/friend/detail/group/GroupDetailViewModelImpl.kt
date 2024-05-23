@@ -54,6 +54,9 @@ class GroupDetailViewModelImpl @Inject constructor(
     private val _isShowMore = MutableStateFlow(false)
     override val isShowMore: StateFlow<Boolean>
         get() = _isShowMore
+    private val _isAppBarExpanded = MutableStateFlow(true)
+    override val isAppBarExpanded: StateFlow<Boolean>
+        get() = _isAppBarExpanded
 
     private val capsuleScrollEventChannel = Channel<Unit>(Channel.CONFLATED)
     private val capsuleScrollEventFlow = capsuleScrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
@@ -168,6 +171,10 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     override fun setShowMore() {
         _isShowMore.value = !_isShowMore.value
+    }
+
+    override fun setIsAppBarExpanded(boolean: Boolean) {
+        _isAppBarExpanded.value = boolean
     }
 
 }

@@ -19,6 +19,7 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.Frie
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.adapter.GroupDetailVPA
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupCapsuleFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupMemberFragment
+import com.droidblossom.archive.util.AppBarStateChangeListener
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,6 +59,14 @@ class GroupDetailActivity :
             }
         }
 
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isAppBarExpanded.collect {
+                    binding.swipeRefreshLayout.isEnabled = it
+                }
+            }
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,56 +89,48 @@ class GroupDetailActivity :
                 when (fragment) {
                     is GroupCapsuleFragment -> {
                         val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.groupCapsuleRV)
-                        recyclerView?.let { !recyclerView.canScrollVertically(-1) } ?: false
+                        recyclerView?.let { recyclerView.canScrollVertically(-1) } ?: true
                     }
                     is GroupMemberFragment -> {
                         val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.groupMemberRV)
-                        recyclerView?.let { !recyclerView.canScrollVertically(-1) } ?: false
+                        recyclerView?.let { recyclerView.canScrollVertically(-1) } ?: true
                     }
-                    else -> false
+                    else -> true
                 }
             }
 
             binding.swipeRefreshLayout.setOnRefreshListener {
-                viewModel.getGroupDetail()
+                if (viewModel.isAppBarExpanded.value){
+                    viewModel.getGroupDetail()
+                }
             }
 
             vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    handleScrollListenersForFragment(position)
+                    currentPage = position
                 }
+            })
+
+            appBarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
+                override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
+                    when (state) {
+                        State.EXPANDED -> {
+                            vm!!.setIsAppBarExpanded(true)
+                        }
+                        State.COLLAPSED -> {
+                            vm!!.setIsAppBarExpanded(false)
+                        }
+                        State.IDLE -> {
+                            vm!!.setIsAppBarExpanded(false)
+                        }
+                    }
+                }
+
             })
         }
     }
 
-    private fun handleScrollListenersForFragment(position: Int) {
-        val fragment = groupVPA.getFragment(position)
-        when (fragment) {
-            is GroupCapsuleFragment -> {
-                val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.groupCapsuleRV)
-                setupRecyclerViewScrollListener(recyclerView)
-            }
-            is GroupMemberFragment -> {
-                val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.groupMemberRV)
-                setupRecyclerViewScrollListener(recyclerView)
-            }
-        }
-    }
-
-    private fun setupRecyclerViewScrollListener(recyclerView: RecyclerView?) {
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                binding.swipeRefreshLayout.isEnabled = !recyclerView.canScrollVertically(-1)
-            }
-        })
-
-        binding.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            if (recyclerView != null) {
-                binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
-            }
-        })
-    }
 
     private fun initTab(){
         with(binding){
@@ -140,7 +141,6 @@ class GroupDetailActivity :
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     currentPage = position
-                    Log.d("페이지",currentPage.toString())
                 }
             })
 
