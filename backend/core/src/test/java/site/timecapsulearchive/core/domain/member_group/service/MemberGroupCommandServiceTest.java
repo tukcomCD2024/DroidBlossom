@@ -25,7 +25,7 @@ import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundExceptio
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;

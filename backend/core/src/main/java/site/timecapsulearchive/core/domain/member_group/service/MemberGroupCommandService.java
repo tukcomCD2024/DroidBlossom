@@ -13,18 +13,16 @@ import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupOverException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
-import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
@@ -108,7 +106,7 @@ public class MemberGroupCommandService {
     @Transactional
     public void quitGroup(final Long memberId, final Long groupId) {
         final MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
-                memberId, groupId).orElseThrow(MemberGroupNotFoundException::new);
+            memberId, groupId).orElseThrow(MemberGroupNotFoundException::new);
         groupMember.checkGroupMemberOwner();
 
         memberGroupRepository.delete(groupMember);
@@ -146,7 +144,7 @@ public class MemberGroupCommandService {
 
     private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
         final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
-                groupOwnerId, groupId).orElseThrow(MemberGroupNotFoundException::new);
+            groupOwnerId, groupId).orElseThrow(MemberGroupNotFoundException::new);
 
         if (!isOwner) {
             throw new NoGroupAuthorityException();

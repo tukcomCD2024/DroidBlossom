@@ -8,6 +8,7 @@ public record FriendBeforeGroupInviteRequest(
     int size,
     ZonedDateTime createdAt
 ) {
+
     public static FriendBeforeGroupInviteRequest of(
         final Long memberId,
         final Long groupId,

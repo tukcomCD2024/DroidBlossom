@@ -14,8 +14,8 @@ public record GroupDetailDto(
     List<GroupMemberDto> members
 ) {
 
-    public GroupDetailResponse toResponse(Function<String, String> singlePreSignUrlFunction) {
-        List<GroupMemberResponse> members = this.members.stream()
+    public GroupDetailResponse toResponse(final Function<String, String> singlePreSignUrlFunction) {
+        final List<GroupMemberResponse> members = this.members.stream()
             .map(GroupMemberDto::toResponse)
             .toList();
 
