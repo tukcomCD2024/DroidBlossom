@@ -143,6 +143,24 @@ fun TextView.setFormattedDateTimeNull(dateString: String?) {
     }
 }
 
+@BindingAdapter("bind:displayGroupCreationDate")
+fun TextView.setGroupCreationDate(dateString: String?) {
+    if (!dateString.isNullOrEmpty()) {
+        try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = parser.parse(dateString)
+
+            val formatter = SimpleDateFormat("yyyy년 MM월 dd일 생성", Locale.getDefault())
+            val formattedDate = date?.let { formatter.format(it) }
+            this.text = formattedDate
+        } catch (e: Exception) {
+            this.text = "날짜 형식 오류"
+        }
+    } else {
+        this.text = "일반 캡슐 입니다"
+    }
+}
+
 @BindingAdapter("bind:displayCreationDateFormatted")
 fun TextView.setFormattedDate(dateString: String) {
     dateString.let {

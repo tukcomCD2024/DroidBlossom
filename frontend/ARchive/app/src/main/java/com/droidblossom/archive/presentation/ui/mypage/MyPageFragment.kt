@@ -66,7 +66,7 @@ class MyPageFragment :
                 copyText("tag",it)
             },
             {
-                startActivity(GroupDetailActivity.newIntent(requireContext(),3))
+                startActivity(GroupDetailActivity.newIntent(requireContext(),21))
             }
         )
     }

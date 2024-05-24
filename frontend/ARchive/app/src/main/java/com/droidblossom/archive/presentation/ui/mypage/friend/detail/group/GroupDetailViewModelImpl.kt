@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.group.GroupMember
+import com.droidblossom.archive.domain.model.group.toGroupProfileData
 import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
@@ -59,25 +60,27 @@ class GroupDetailViewModelImpl @Inject constructor(
         get() = _isAppBarExpanded
 
     private val capsuleScrollEventChannel = Channel<Unit>(Channel.CONFLATED)
-    private val capsuleScrollEventFlow = capsuleScrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+    private val capsuleScrollEventFlow =
+        capsuleScrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
     private var getCapsuleListJob: Job? = null
 
     private val _groupInfo = MutableStateFlow(
         GroupProfileData(
-        groupId = 7778,
-        groupName = "Kathrine Turner",
-        groupDescription = "추억을 소중하게 여기는 분들을 위한 AR 타임캡슐 앱 ARchive를 소개합니다.\n" +
-                "이 앱으로 뜻깊은 순간들을 영원히 저장하세요.\n" +
-                "이미지, 동영상, 텍스트를 활용해 타임캡슐을 생성하고, AR 카메라로 그 기억들을 다시 열어볼 수 있습니다..\n" +
-                "지정된 시간이나 장소에 도착하면 알림이 울려, 친구들과 함께 개인적인 추억을 나누고 즐길 수 있습니다.\n" +
-                "당신만의 매력적인 이미지로 움직이는 귀여운 캐릭터 타임캡슐 스킨을 직접 제작해보세요.\n" +
-                "우리 앱으로 과거와 현재, 미래를 연결하는 특별한 경험을 즐기실 수 있습니다.",
-        groupProfileUrl = "https://www.google.com/#q=quod",
-        hasEditPermission = false,
-        groupCapsuleNum = 7090,
-        groupMemberNum = "5",
-    )
+            groupId = 7778,
+            groupName = "Kathrine Turner",
+            groupDescription = "추억을 소중하게 여기는 분들을 위한 AR 타임캡슐 앱 ARchive를 소개합니다.\n" +
+                    "이 앱으로 뜻깊은 순간들을 영원히 저장하세요.\n" +
+                    "이미지, 동영상, 텍스트를 활용해 타임캡슐을 생성하고, AR 카메라로 그 기억들을 다시 열어볼 수 있습니다..\n" +
+                    "지정된 시간이나 장소에 도착하면 알림이 울려, 친구들과 함께 개인적인 추억을 나누고 즐길 수 있습니다.\n" +
+                    "당신만의 매력적인 이미지로 움직이는 귀여운 캐릭터 타임캡슐 스킨을 직접 제작해보세요.\n" +
+                    "우리 앱으로 과거와 현재, 미래를 연결하는 특별한 경험을 즐기실 수 있습니다.",
+            groupProfileUrl = "https://www.google.com/#q=quod",
+            hasEditPermission = false,
+            groupCapsuleNum = 7090,
+            groupMemberNum = "5",
+            groupCreateTime = ""
+        )
     )
 
     override val groupInfo: StateFlow<GroupProfileData>
@@ -85,10 +88,10 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     init {
         viewModelScope.launch {
-            capsuleScrollEventFlow.collect{
-                if (capsules.value.isEmpty()){
+            capsuleScrollEventFlow.collect {
+                if (capsules.value.isEmpty()) {
                     getLatestCapsuleList()
-                }else{
+                } else {
                     getCapsuleList()
                 }
             }
@@ -96,7 +99,7 @@ class GroupDetailViewModelImpl @Inject constructor(
 
         val capsules = mutableListOf<CapsuleData>()
 
-        for (i in 0 .. 30){
+        for (i in 0..30) {
             capsules.add(
                 CapsuleData(
                     capsuleId = i.toLong(),
@@ -126,17 +129,9 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     override fun getGroupDetail() {
         viewModelScope.launch {
-            getGroupDetailUseCase(groupId.value).collect{ result ->
+            getGroupDetailUseCase(groupId.value).collect { result ->
                 result.onSuccess {
-                    val groupProfile = GroupProfileData(
-                        groupId = -1,
-                        groupName = it.groupName,
-                        groupDescription = it.groupDescription,
-                        groupProfileUrl = it.groupProfileUrl,
-                        hasEditPermission = false,
-                        groupCapsuleNum = -1,
-                        groupMemberNum = it.members.size.toString()
-                    )
+                    val groupProfile = it.toGroupProfileData()
                     _groupInfo.emit(groupProfile)
                     _groupMembers.emit(it.members)
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
@@ -154,7 +149,7 @@ class GroupDetailViewModelImpl @Inject constructor(
 
 
     override fun getCapsuleList() {
-        if (capsulesHasNextPage.value){
+        if (capsulesHasNextPage.value) {
             getCapsuleListJob?.cancel()
             getCapsuleListJob = viewModelScope.launch {
 
@@ -162,7 +157,7 @@ class GroupDetailViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getLatestCapsuleList(){
+    override fun getLatestCapsuleList() {
         getCapsuleListJob?.cancel()
         getCapsuleListJob = viewModelScope.launch {
 

@@ -21,6 +21,7 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupMemberFragment
 import com.droidblossom.archive.util.AppBarStateChangeListener
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -55,6 +56,14 @@ class GroupDetailActivity :
                             }
                         }
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.groupInfo.collect {
+
                 }
             }
         }
@@ -112,6 +121,16 @@ class GroupDetailActivity :
                 }
             })
 
+            groupCapsuleNumLayout.setOnClickListener {
+                appBarLayout.setExpanded(false, true)
+                vp.setCurrentItem(GROUP_CAPSULE, true)
+            }
+
+            groupMemberNumLayout.setOnClickListener {
+                appBarLayout.setExpanded(false, true)
+                vp.setCurrentItem(GROUP_MEMBER, true)
+            }
+
             appBarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
                 override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
                     when (state) {
@@ -152,12 +171,33 @@ class GroupDetailActivity :
                 }
             }.attach()
 
+            tabLayout.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener{
+                override fun onTabSelected(tab: TabLayout.Tab?) {}
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                    val fragment = groupVPA.getFragment(currentPage)
+                    when (fragment) {
+                        is GroupCapsuleFragment -> {
+                            fragment.view?.findViewById<RecyclerView>(R.id.groupCapsuleRV)?.scrollToPosition(0)
+                        }
+                        is GroupMemberFragment -> {
+                            fragment.view?.findViewById<RecyclerView>(R.id.groupMemberRV)?.scrollToPosition(0)
+                        }
+                    }
+                }
+
+            })
+
 
         }
     }
 
     companion object {
         private const val GROUP_ID = "group_id"
+        private const val GROUP_CAPSULE = 0
+        private const val GROUP_MEMBER = 1
         fun newIntent(context: Context, groupId: Long) =
             Intent(context, GroupDetailActivity::class.java).apply {
                 putExtra(GROUP_ID, groupId)

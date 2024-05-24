@@ -77,7 +77,7 @@
                             app:layout_constraintTop_toTopOf="@id/profileImg" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/capsuleNumLayout"
+                            android:id="@+id/groupCapsuleNumLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="46dp"
                             android:background="@drawable/corner_radius_30"
@@ -131,7 +131,7 @@
                             android:paddingHorizontal="@dimen/padding_small"
                             app:layout_constraintBottom_toBottomOf="@id/profileImg"
                             app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/capsuleNumLayout">
+                            app:layout_constraintStart_toEndOf="@id/groupCapsuleNumLayout">
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/groupMemberT"
@@ -169,6 +169,7 @@
                             android:id="@+id/groupDescriptionT"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.App.caption2"
                             android:layout_marginHorizontal="@dimen/margin"
                             android:layout_marginTop="@dimen/margin"
                             bind:setTextMaxLines="@{vm.isShowMore()}"
@@ -176,6 +177,20 @@
                             app:layout_constraintEnd_toStartOf="@id/moreBtn"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/profileImg" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/gray_600"
+                            android:textAppearance="@style/TextAppearance.App.caption4"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/groupDescriptionT"
+                            android:layout_marginStart="@dimen/margin"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:drawableStart="@drawable/ic_calendar_24"
+                            android:drawableTint="@color/gray_600"
+                            bind:displayGroupCreationDate="@{vm.groupInfo.groupCreateTime}"
+                            android:gravity="center"/>
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/moreBtn"
