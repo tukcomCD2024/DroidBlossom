@@ -93,22 +93,19 @@ class CapsuleDetailActivity :
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(this), null, false)
+        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(this@CapsuleDetailActivity), null, false)
 
         val density = this.resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
 
-        val popupWindow = PopupWindow(popupMenuBinding.root,
+        val popupWindow = PopupWindow(
+            popupMenuBinding.root,
             widthPixels,
             LinearLayout.LayoutParams.WRAP_CONTENT,
-            true)
+            true
+        )
 
-        popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWidth = popupWindow.contentView.measuredWidth
-
-        val xOffset = (view.width / 2) - (popupWidth / 2) - 213
-        popupWindow.showAsDropDown(view, xOffset, -view.height)
-
+        // 메뉴 클릭 리스너 설정
         popupMenuBinding.menuMap.setOnClickListener {
             popupWindow.dismiss()
         }
@@ -117,6 +114,19 @@ class CapsuleDetailActivity :
         }
         popupMenuBinding.menuDelete.setOnClickListener {
             popupWindow.dismiss()
+        }
+
+        view.post {
+
+            popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            val popupWidth = popupWindow.contentView.measuredWidth
+            //val popupHeight = popupWindow.contentView.measuredHeight
+
+            val xOff = -(popupWidth + popupWidth/2 + view.width)
+            val yOff = -view.height
+
+            popupWindow.showAsDropDown(view, xOff, yOff)
+
         }
     }
 

@@ -61,16 +61,16 @@ class CapsulePreviewDialogFragment :
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.WRAP_CONTENT
             dialog.window?.setLayout(width, height)
-            dialog.window?.setDimAmount(0f)
-            dialog.window?.setGravity(Gravity.BOTTOM)
+            //dialog.window?.setDimAmount(0f)
+            dialog.window?.setGravity(Gravity.CENTER)
 
-            val marginBottomDp = 120f
-            val density = resources.displayMetrics.density
-            val marginBottomPx = (marginBottomDp * density).toInt()
-
-            val params = dialog.window?.attributes
-            params?.y = marginBottomPx
-            dialog.window?.attributes = params
+//            val marginBottomDp = 120f
+//            val density = resources.displayMetrics.density
+//            val marginBottomPx = (marginBottomDp * density).toInt()
+//
+//            val params = dialog.window?.attributes
+//            params?.y = marginBottomPx
+//            dialog.window?.attributes = params
         }
     }
 
@@ -226,8 +226,7 @@ class CapsulePreviewDialogFragment :
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenuBinding =
-            PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         val density = requireContext().resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
@@ -239,9 +238,7 @@ class CapsulePreviewDialogFragment :
             true
         )
 
-        popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWidth = popupWindow.contentView.measuredWidth
-
+        // 메뉴 클릭 리스너 설정
         popupMenuBinding.menuMap.setOnClickListener {
             popupWindow.dismiss()
         }
@@ -252,8 +249,18 @@ class CapsulePreviewDialogFragment :
             popupWindow.dismiss()
         }
 
-        val xOffset = (view.width / 2) - (popupWidth / 2) - 200
-        popupWindow.showAsDropDown(view, xOffset, -view.height)
+        view.post {
+
+            popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            val popupWidth = popupWindow.contentView.measuredWidth
+            //val popupHeight = popupWindow.contentView.measuredHeight
+
+            val xOff = -(popupWidth + popupWidth/2 + view.width)
+            val yOff = -view.height
+
+            popupWindow.showAsDropDown(view, xOff, yOff)
+
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
