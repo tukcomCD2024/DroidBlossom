@@ -4,6 +4,7 @@ import com.droidblossom.archive.data.repository.AuthRepositoryImpl
 import com.droidblossom.archive.data.repository.CapsuleRepositoryImpl
 import com.droidblossom.archive.data.repository.CapsuleSkinRepositoryImpl
 import com.droidblossom.archive.data.repository.FriendRepositoryImpl
+import com.droidblossom.archive.data.repository.GroupCapsuleRepositoryImpl
 import com.droidblossom.archive.data.repository.GroupRepositoryImpl
 import com.droidblossom.archive.data.repository.MemberRepositoryImpl
 import com.droidblossom.archive.data.repository.KakaoRepositoryImpl
@@ -14,6 +15,7 @@ import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
 import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
 import com.droidblossom.archive.data.source.remote.api.FriendService
+import com.droidblossom.archive.data.source.remote.api.GroupCapsuleService
 import com.droidblossom.archive.data.source.remote.api.GroupService
 import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.KakaoService
@@ -24,6 +26,7 @@ import com.droidblossom.archive.domain.repository.AuthRepository
 import com.droidblossom.archive.domain.repository.CapsuleRepository
 import com.droidblossom.archive.domain.repository.CapsuleSkinRepository
 import com.droidblossom.archive.domain.repository.FriendRepository
+import com.droidblossom.archive.domain.repository.GroupCapsuleRepository
 import com.droidblossom.archive.domain.repository.GroupRepository
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.domain.repository.KakaoRepository
@@ -84,5 +87,9 @@ object RepositoryModule {
     @Provides
     @ViewModelScoped
     fun providesGroupRepository(api : GroupService) : GroupRepository = GroupRepositoryImpl(api)
+
+    @Provides
+    @ViewModelScoped
+    fun providesGroupCapsuleRepository(api : GroupCapsuleService) : GroupCapsuleRepository = GroupCapsuleRepositoryImpl(api)
 
 }
