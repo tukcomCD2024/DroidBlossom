@@ -11,8 +11,12 @@ import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
+import com.droidblossom.archive.domain.model.group.GroupSummary
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleCreateRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
+import com.droidblossom.archive.domain.usecase.group.GetGroupPageUseCase
+import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleCreateUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleCreateUseCase
 import com.droidblossom.archive.domain.usecase.s3.S3UrlsGetUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleCreateUseCase
@@ -44,8 +48,10 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val getAddressUseCase: GetAddressUseCase,
     private val secretCapsuleCreateUseCase: SecretCapsuleCreateUseCase,
     private val publicCapsuleCreateUseCase: PublicCapsuleCreateUseCase,
+    private val groupCapsuleCreateUseCase: GroupCapsuleCreateUseCase,
     private val s3UrlsGetUseCase: S3UrlsGetUseCase,
     private val capsuleSkinsPageUseCase: CapsuleSkinsPageUseCase,
+    private val groupPageUseCase: GetGroupPageUseCase,
     private val s3Util: S3Util,
 ) : BaseViewModel(), CreateCapsuleViewModel {
 
@@ -65,9 +71,17 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private val _create1Events = MutableSharedFlow<CreateCapsuleViewModel.Create1Event>()
     override val create1Events: SharedFlow<CreateCapsuleViewModel.Create1Event>
         get() = _create1Events.asSharedFlow()
-    private val _groupId = MutableStateFlow(0)
-    override val groupId: StateFlow<Int>
+    private val _groupId = MutableStateFlow<Long>(0)
+    override val groupId: StateFlow<Long>
         get() = _groupId
+
+    private val _groups = MutableStateFlow<List<GroupSummary>>(listOf())
+    override val groups: StateFlow<List<GroupSummary>>
+        get() = _groups
+
+    private val groupHasNextPage = MutableStateFlow(true)
+
+    private val groupLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
 
     //create2
     private val _create2Events = MutableSharedFlow<CreateCapsuleViewModel.Create2Event>()
@@ -176,24 +190,64 @@ class CreateCapsuleViewModelImpl @Inject constructor(
     private var imageNames = listOf<String>()
     private var videoNames = listOf<String>()
 
-    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
-    private val scrollEventFlow =
-        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+    private val scrollSkinEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollSkinEventFlow =
+        scrollSkinEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
-    private var getLstJob: Job? = null
+    private var getSkinLstJob: Job? = null
+
+
+    private val scrollGroupEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollGroupEventFlow =
+        scrollGroupEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getGroupLstJob: Job? = null
 
     init {
         viewModelScope.launch {
-            scrollEventFlow.collect {
+            scrollSkinEventFlow.collect {
                 getSkinList()
+            }
+            scrollGroupEventFlow.collect {
+                getGroupList()
             }
         }
     }
 
-    override fun onScrollNearBottom() {
-        scrollEventChannel.trySend(Unit)
+    override fun onScrollSkinNearBottom() {
+        scrollSkinEventChannel.trySend(Unit)
     }
 
+    override fun onScrollGroupNearBottom() {
+        scrollGroupEventChannel.trySend(Unit)
+    }
+
+    override fun getGroupList() {
+        if (groupHasNextPage.value) {
+            getGroupLstJob?.cancel()
+            getGroupLstJob = viewModelScope.launch {
+                groupPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        groupLastCreatedTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        groupHasNextPage.emit(it.hasNext)
+                        if (skins.value.isEmpty()) {
+                            _groups.emit(it.groups)
+                        } else {
+                            _groups.emit(groups.value + it.groups)
+                        }
+                        groupLastCreatedTime.value = it.groups.last().createdAt
+                    }.onFail {
+                        _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨 불러오기 실패."))
+                    }
+
+                }
+            }
+        }
+    }
 
     //create1
     override fun move1To2() {
@@ -266,8 +320,8 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     override fun getSkinList() {
         if (hasNextSkins.value) {
-            getLstJob?.cancel()
-            getLstJob = viewModelScope.launch {
+            getSkinLstJob?.cancel()
+            getSkinLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
                     PagingRequestDto(
                         15,
@@ -619,7 +673,37 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 }
 
                 CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
-
+                    groupCapsuleCreateUseCase(
+                        groupId = groupId.value,
+                        GroupCapsuleCreateRequest(
+                            groupMemberIds = listOf(),
+                            capsuleSkinId = skinId.value,
+                            content = capsuleContent.value,
+                            directory = S3DIRECTORY,
+                            dueDate = dueTime.value,
+                            imageNames = imageNames,
+                            videoNames = videoNames,
+                            addressData = address.value,
+                            latitude = capsuleLatitude.value,
+                            longitude = capsuleLongitude.value,
+                            title = capsuleTitle.value,
+                        )
+                    ).collect { result ->
+                        result.onSuccess {
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성되었습니다."
+                                )
+                            )
+                            Log.d("캡슐생성", "$it")
+                        }.onFail {
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐이 생성 실패했습니다.."
+                                )
+                            )
+                        }
+                    }
                 }
             }
             _create3Events.emit(CreateCapsuleViewModel.Create3Event.ClickFinish)
