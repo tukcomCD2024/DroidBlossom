@@ -64,6 +64,7 @@ interface CreateCapsuleViewModel {
     fun onScrollSkinNearBottom()
     fun onScrollGroupNearBottom()
     fun getGroupList()
+    fun changeGroup(previousPosition: Int?, currentPosition: Int)
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()
@@ -96,6 +97,8 @@ interface CreateCapsuleViewModel {
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
+
+        data class ShowToastMessage(val message : String) : Create1Event()
     }
 
     sealed class Create2Event {

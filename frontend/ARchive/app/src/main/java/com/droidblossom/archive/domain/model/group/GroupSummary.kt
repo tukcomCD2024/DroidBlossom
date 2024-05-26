@@ -6,5 +6,6 @@ data class GroupSummary(
     val id: Long,
     val isOwner: Boolean,
     val name: String,
-    val profileUrl: String
+    val profileUrl: String,
+    var isChecked : Boolean = false,
 )

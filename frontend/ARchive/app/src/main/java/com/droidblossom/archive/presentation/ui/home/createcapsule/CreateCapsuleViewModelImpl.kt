@@ -222,6 +222,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         scrollGroupEventChannel.trySend(Unit)
     }
 
+    //create1
     override fun getGroupList() {
         if (groupHasNextPage.value) {
             getGroupLstJob?.cancel()
@@ -249,10 +250,25 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         }
     }
 
-    //create1
+    override fun changeGroup(previousPosition: Int?, currentPosition: Int) {
+        viewModelScope.launch {
+            val newList = _groups.value
+            previousPosition?.let {
+                newList[it].isChecked = false
+            }
+            newList[currentPosition].isChecked = true
+            _groups.emit(newList)
+        }
+    }
+
     override fun move1To2() {
         viewModelScope.launch {
-            _create1Events.emit(CreateCapsuleViewModel.Create1Event.NavigateTo2)
+            if (_groups.value.find { it.isChecked } == null) {
+                _create1Events.emit(CreateCapsuleViewModel.Create1Event.ShowToastMessage("그룹 선택 필수입니다."))
+            } else {
+                _groupId.emit(_groups.value.find { it.isChecked }!!.id)
+                _create1Events.emit(CreateCapsuleViewModel.Create1Event.NavigateTo2)
+            }
         }
     }
 
