@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -71,7 +72,12 @@ class AddGroupViewModelImpl @Inject constructor(
     override val checkedList: StateFlow<List<FriendsSearchResponse>>
         get() = _checkedList
 
-    private val friendHasNextPage = MutableStateFlow(true)
+    private val _notifyItemChangedPosition = MutableSharedFlow<Int>(0)
+
+    val notifyItemChangedPosition
+        get() = _notifyItemChangedPosition.asSharedFlow()
+
+     private val friendHasNextPage = MutableStateFlow(true)
 
     private val friendLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
 
@@ -126,15 +132,31 @@ class AddGroupViewModelImpl @Inject constructor(
 
     fun checkFriendList(position: Int) {
         viewModelScope.launch {
-            val newAddList = friendListUI.value
-            if (newAddList[position].isChecked) {
-                newAddList[position].isChecked = false
-                _checkedList.emit(newAddList.filter { it.isChecked })
+            val newUIList = friendListUI.value
+            if (newUIList[position].isChecked) {
+                newUIList[position].isChecked = false
+                _checkedList.emit(newUIList.filter { it.isChecked })
             } else {
-                newAddList[position].isChecked = true
-                _checkedList.emit(newAddList.filter { it.isChecked })
+                newUIList[position].isChecked = true
+                _checkedList.emit(newUIList.filter { it.isChecked })
             }
-            _friendListUI.emit(newAddList)
+            _friendListUI.emit(newUIList)
+        }
+    }
+
+    fun onCloseChip(friend: FriendsSearchResponse) {
+        viewModelScope.launch {
+            val newCheckList = checkedList.value.toMutableList()
+            newCheckList.remove(friend)
+            _checkedList.emit(newCheckList)
+            if (friendListUI.value.contains(friend)){
+                val newUIList = friendListUI.value
+                newUIList.indexOf(friend).let {
+                    newUIList[it].isChecked = false
+                    _notifyItemChangedPosition.emit(it)
+                }
+                _friendListUI.emit(newUIList)
+            }
         }
     }
 

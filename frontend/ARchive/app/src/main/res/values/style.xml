@@ -110,4 +110,13 @@
         <item name="tabRippleColor">@null</item>
     </style>
 
+    <style name="Widget.MyApp.EntryChip" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="chipBackgroundColor">@color/main_1</item>
+        <item name="chipStrokeColor">@color/main_bg_1</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.caption1</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="closeIconEnabled">true</item>
+        <item name="closeIconTint">@color/white</item>
+    </style>
+
 </resources>

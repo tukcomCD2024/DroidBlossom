@@ -9,14 +9,18 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.widget.TextViewCompat.setTextAppearance
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
+import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.AddGroupVPA
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -57,6 +61,18 @@ class AddGroupActivity :
                 }
             }
         }
+
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.checkedList.collect { friends ->
+                    binding.chipGroup.removeAllViews()
+                    friends.forEach {
+                        initChip(it)
+                    }
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +91,7 @@ class AddGroupActivity :
         window.statusBarColor = ContextCompat.getColor(this, R.color.main_bg_1)
 
         binding.vp.adapter = addGroupVPA
-        binding.vp. currentItem = 0
+        binding.vp.currentItem = 0
 
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
@@ -88,6 +104,21 @@ class AddGroupActivity :
         binding.groupProfileCV.setOnClickListener {
             picMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+    }
+
+    private fun initChip(friend: FriendsSearchResponse) {
+        val chip = Chip(this, null, R.style.Widget_MyApp_EntryChip).apply {
+            text = friend.nickname
+            setTextColor(ContextCompat.getColor(this@AddGroupActivity, R.color.white))
+            isCloseIconVisible = true
+            setCloseIconTintResource(R.color.white)
+            setChipBackgroundColorResource(R.color.main_1)
+            setChipStrokeColorResource(R.color.main_bg_1)
+            setOnCloseIconClickListener {
+                viewModel.onCloseChip(friend)
+            }
+        }
+        binding.chipGroup.addView(chip)
     }
 
     companion object {

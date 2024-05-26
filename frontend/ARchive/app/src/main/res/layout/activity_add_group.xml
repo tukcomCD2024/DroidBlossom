@@ -204,15 +204,18 @@
                             tools:text="그룹 이름" />
 
                         <HorizontalScrollView
-                            android:layout_width="match_parent"
+                            android:id="@+id/horizonSV"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:scrollbars="none"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/groupProfileCollapsingCV"
                             tools:background="@color/white">
 
                             <com.google.android.material.chip.ChipGroup
-                                android:id="@+id/chipsPrograms"
+                                android:id="@+id/chipGroup"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingStart="8dp"
@@ -229,10 +232,20 @@
                                     app:chipBackgroundColor="@color/main_1"
                                     app:chipStrokeColor="@color/main_bg_1"
                                     app:closeIconTint="@color/white" />
-
-
                             </com.google.android.material.chip.ChipGroup>
                         </HorizontalScrollView>
+
+                        <TextView
+                            android:id="@+id/numberCountT"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@{@string/currentMemberNumber(vm.checkedList.size())}"
+                            app:layout_constraintBottom_toTopOf="@id/horizonSV"
+                            app:layout_constraintEnd_toEndOf="@id/closeCollapsingBtn"
+                            app:layout_constraintTop_toBottomOf="@id/groupProfileCollapsingCV"
+                            tools:text="(02/30)" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.appcompat.widget.Toolbar>

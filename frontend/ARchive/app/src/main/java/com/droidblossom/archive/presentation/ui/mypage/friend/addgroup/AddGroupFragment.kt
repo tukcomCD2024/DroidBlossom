@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addgroup
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -163,6 +164,14 @@ class AddGroupFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendListUI.collect { friends ->
                     friendRVA.submitList(friends)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.notifyItemChangedPosition.collect { position ->
+                    friendRVA.notifyItemChanged(position)
                 }
             }
         }
