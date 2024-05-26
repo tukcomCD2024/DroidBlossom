@@ -33,7 +33,7 @@
                 android:clipToOutline="true"
                 android:alpha="@{item.isClicked ? 1.0F : 0.2F}"
                 android:padding="12dp"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="w,1:1"
                 app:layout_constraintEnd_toEndOf="parent"

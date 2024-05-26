@@ -23,8 +23,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="12dp">
+            android:background="@color/white">
 
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -33,9 +32,10 @@
                 android:layout_height="0dp"
                 android:background="@drawable/corner_radius_8"
                 android:clipToOutline="true"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
+                android:layout_margin="@dimen/margin_small"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="w,4:3"
+                app:layout_constraintDimensionRatio="w,4:3.5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
