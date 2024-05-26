@@ -133,13 +133,15 @@ class AddGroupViewModelImpl @Inject constructor(
     fun checkFriendList(position: Int) {
         viewModelScope.launch {
             val newUIList = friendListUI.value
+            val newCheckedList = checkedList.value.toMutableList()
             if (newUIList[position].isChecked) {
                 newUIList[position].isChecked = false
-                _checkedList.emit(newUIList.filter { it.isChecked })
+                newCheckedList.remove(newUIList[position])
             } else {
                 newUIList[position].isChecked = true
-                _checkedList.emit(newUIList.filter { it.isChecked })
+                newCheckedList.add(newUIList[position])
             }
+            _checkedList.emit(newCheckedList)
             _friendListUI.emit(newUIList)
         }
     }
