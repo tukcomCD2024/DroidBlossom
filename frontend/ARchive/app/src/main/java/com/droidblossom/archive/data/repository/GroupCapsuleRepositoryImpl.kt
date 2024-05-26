@@ -23,6 +23,6 @@ class GroupCapsuleRepositoryImpl @Inject constructor(
                 request
             )
         }) { response: ResponseBody<String> -> response.result.toModel() }
-
     }
+    
 }

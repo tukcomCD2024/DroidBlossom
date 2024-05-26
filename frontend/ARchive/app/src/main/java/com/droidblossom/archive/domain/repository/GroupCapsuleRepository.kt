@@ -9,4 +9,5 @@ interface GroupCapsuleRepository {
         groupId: Long,
         request: GroupCapsuleCreateRequestDto
     ): RetrofitResult<String>
+
 }
