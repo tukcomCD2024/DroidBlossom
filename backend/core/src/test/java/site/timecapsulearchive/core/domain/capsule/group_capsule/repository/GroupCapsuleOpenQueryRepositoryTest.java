@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.repository;
+package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
