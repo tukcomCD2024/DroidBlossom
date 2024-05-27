@@ -32,7 +32,7 @@ import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNot
 import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupOverException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCountLimitException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
@@ -90,8 +90,8 @@ class MemberGroupCommandServiceTest {
 
         //when
         assertThatThrownBy(() -> groupMemberCommandService.inviteGroup(memberId, request))
-            .isInstanceOf(MemberGroupOverException.class)
-            .hasMessageContaining(ErrorCode.GROUP_MEMBER_OVER_ERROR.getMessage());
+            .isInstanceOf(GroupMemberCountLimitException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_COUNT_LIMIT_ERROR.getMessage());
 
     }
 

@@ -68,7 +68,7 @@ public enum ErrorCode {
     GROUP_OWNER_QUIT_ERROR(400, "GROUP-007", "그룹장은 그룹을 탈퇴할 수 없습니다."),
     GROUP_MEMBER_NOT_FOUND_ERROR(404, "GROUP-008", "그룹에서 해당 멤버를 찾을 수 없습니다."),
     GROUP_MEMBER_DUPLICATED_ID_ERROR(400, "GROUP-009", "자신을 추방할 수 없습니다."),
-    GROUP_MEMBER_OVER_ERROR(403, "GROUP-009", "그룹 멤버는 최대 30명까지 입니다."),
+    GROUP_MEMBER_COUNT_LIMIT_ERROR(400, "GROUP-009", "그룹 멤버는 최대 30명까지 입니다."),
 
     //friend invite
     FRIEND_INVITE_NOT_FOUND_ERROR(404, "FRIEND-INVITE-001", "친구 요청을 찾지 못하였습니다."),

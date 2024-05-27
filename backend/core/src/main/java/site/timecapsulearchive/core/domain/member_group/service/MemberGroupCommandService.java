@@ -19,7 +19,7 @@ import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupOverException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCountLimitException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
@@ -40,7 +40,7 @@ public class MemberGroupCommandService {
         final List<Long> friendIds = sendGroupRequest.targetIds();
         final List<Member> groupMembers = memberRepository.findMemberByIdIsIn(friendIds);
         if (groupMembers.size() + friendIds.size() > 30) {
-            throw new MemberGroupOverException();
+            throw new GroupMemberCountLimitException();
         }
 
         final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];

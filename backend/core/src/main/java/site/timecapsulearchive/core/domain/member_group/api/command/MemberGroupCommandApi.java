@@ -65,7 +65,12 @@ public interface MemberGroupCommandApi {
         @ApiResponse(
             responseCode = "202",
             description = "처리 시작"
-        )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "기존의 그룹 멤버와 요청 멤버의 수가 30을 넘은 경우 예외가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
     })
     ResponseEntity<ApiSpec<String>> inviteGroup(
         Long memberId,
@@ -86,11 +91,13 @@ public interface MemberGroupCommandApi {
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "그룹 초대 찾기 실패"
+            description = "그룹 초대 찾기 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
         @ApiResponse(
             responseCode = "500",
-            description = "외부 API 요청 실패"
+            description = "외부 API 요청 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
