@@ -193,4 +193,12 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .where(memberFriend.owner.id.eq(memberId))
             .fetch();
     }
+
+    public List<Long> findFriendIds(final List<Long> groupMemberIds, final Long memberId) {
+        return jpaQueryFactory.select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(
+                memberFriend.friend.id.in(groupMemberIds).and(memberFriend.owner.id.eq(memberId)))
+            .fetch();
+    }
 }

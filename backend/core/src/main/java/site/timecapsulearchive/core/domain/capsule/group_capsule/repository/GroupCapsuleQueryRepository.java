@@ -176,4 +176,11 @@ public class GroupCapsuleQueryRepository {
 
         return count != null;
     }
+
+    public Long findGroupCapsuleCount(final Long groupId) {
+        return jpaQueryFactory.select(capsule.count())
+            .from(capsule)
+            .where(capsule.group.id.eq(groupId))
+            .fetchOne();
+    }
 }
