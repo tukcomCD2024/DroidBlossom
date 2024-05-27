@@ -55,17 +55,16 @@ public class CapsuleQueryRepository {
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
             .join(capsule.member, member)
-            .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.eq(memberId)
-                .and(eqCapsuleType(capsuleType))))
+            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId)))
             .fetch();
     }
 
-    private BooleanExpression eqCapsuleType(CapsuleType capsuleType) {
-        if (capsuleType.equals(CapsuleType.ALL)) {
-            return null;
-        }
-
-        return capsule.type.eq(capsuleType);
+    private BooleanExpression capsuleFilter(CapsuleType capsuleType, Long memberId) {
+        return switch (capsuleType) {
+            case ALL -> capsule.member.id.eq(memberId);
+            case TREASURE -> capsule.type.eq(capsuleType);
+            default -> capsule.type.eq(capsuleType).and(capsule.member.id.eq(memberId));
+        };
     }
 
     /**
@@ -93,8 +92,7 @@ public class CapsuleQueryRepository {
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
             .join(capsule.member, member)
-            .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.eq(memberId))
-                .and(eqCapsuleType(capsuleType)))
+            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId)))
             .fetch();
     }
 
