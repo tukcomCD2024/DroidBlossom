@@ -1,6 +1,6 @@
 package site.timecapsulearchive.core.domain.group.data.dto;
 
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberResponse;
+import java.util.List;
 
 public record GroupMemberDto(
     Long memberId,
@@ -10,13 +10,14 @@ public record GroupMemberDto(
     Boolean isOwner
 ) {
 
-    public GroupMemberResponse toResponse() {
-        return GroupMemberResponse.builder()
+    public GroupMemberWithRelationDto toRelationDto(final List<Long> friendIds) {
+        return GroupMemberWithRelationDto.builder()
             .memberId(memberId)
             .profileUrl(profileUrl)
             .nickname(nickname)
             .tag(tag)
             .isOwner(isOwner)
+            .isFriend(friendIds.contains(memberId))
             .build();
     }
 }

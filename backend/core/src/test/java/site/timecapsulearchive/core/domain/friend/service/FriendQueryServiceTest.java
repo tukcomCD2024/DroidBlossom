@@ -14,45 +14,23 @@ import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.FriendDtoFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
-import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
-import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
-import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
-import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
+import site.timecapsulearchive.core.domain.friend.service.query.FriendQueryService;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
-import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
-class FriendServiceTest {
+class FriendQueryServiceTest {
 
-    private final MemberFriendQueryRepository memberFriendQueryRepository = mock(
-        MemberFriendQueryRepository.class);
     private final MemberFriendRepository memberFriendRepository = mock(
         MemberFriendRepository.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final FriendInviteRepository friendInviteRepository = mock(
-        FriendInviteRepository.class);
-    private final FriendInviteQueryRepository friendInviteQueryRepository = mock(
-        FriendInviteQueryRepository.class);
-    private final SocialNotificationManager notificationManager = mock(
-        SocialNotificationManager.class);
-    private final TransactionTemplate transactionTemplate = mock(TransactionTemplate.class);
 
-    private final FriendService friendService = new FriendService(
-        memberFriendRepository,
-        memberFriendQueryRepository,
-        memberRepository,
-        friendInviteRepository,
-        friendInviteQueryRepository,
-        notificationManager,
-        transactionTemplate
-    );
+    private final FriendQueryService friendQueryService = new FriendQueryService(
+        memberFriendRepository);
 
     @Test
     void 사용자는_주소록_기반_핸드폰_번호로_Ahchive_사용자_리스트를_조회_할_수_있다() {
@@ -60,11 +38,11 @@ class FriendServiceTest {
         Long memberId = 1L;
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(5);
 
-        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
+        given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(FriendDtoFixture.getFriendSummaryDtos(5));
 
         //when
-        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId, phones);
+        List<SearchFriendSummaryDto> dtos = friendQueryService.findFriendsByPhone(memberId, phones);
 
         //then
         assertThat(dtos.size()).isEqualTo(phones.size());
@@ -76,11 +54,11 @@ class FriendServiceTest {
         //given
         Long memberId = 1L;
         List<ByteArrayWrapper> phones = Collections.emptyList();
-        given(memberFriendQueryRepository.findFriendsByPhone(anyLong(), anyList()))
+        given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 
         //when
-        List<SearchFriendSummaryDto> dtos = friendService.findFriendsByPhone(memberId,
+        List<SearchFriendSummaryDto> dtos = friendQueryService.findFriendsByPhone(memberId,
             phones);
 
         //then
@@ -95,11 +73,11 @@ class FriendServiceTest {
         Optional<SearchFriendSummaryDtoByTag> summaryDtoByTag = FriendDtoFixture.getFriendSummaryDtoByTag();
         SearchFriendSummaryDtoByTag expectDto = summaryDtoByTag.get();
 
-        given(memberFriendQueryRepository.findFriendsByTag(anyLong(), anyString()))
+        given(memberFriendRepository.findFriendsByTag(anyLong(), anyString()))
             .willReturn(summaryDtoByTag);
 
         //when
-        SearchTagFriendSummaryResponse actualResponse = friendService.searchFriend(
+        SearchTagFriendSummaryResponse actualResponse = friendQueryService.searchFriend(
             memberId, tag);
 
         //then
@@ -117,11 +95,11 @@ class FriendServiceTest {
         Long memberId = 1L;
         String tag = "testTag";
 
-        given(memberFriendQueryRepository.findFriendsByTag(anyLong(), anyString()))
+        given(memberFriendRepository.findFriendsByTag(anyLong(), anyString()))
             .willReturn(Optional.empty());
 
         //when
-        assertThatThrownBy(() -> friendService.searchFriend(memberId, tag))
+        assertThatThrownBy(() -> friendQueryService.searchFriend(memberId, tag))
             .isInstanceOf(FriendNotFoundException.class);
     }
 }

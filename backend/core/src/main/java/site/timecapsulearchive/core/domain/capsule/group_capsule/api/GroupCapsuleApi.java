@@ -156,8 +156,8 @@ public interface GroupCapsuleApi {
     @Operation(
         summary = "그룹 캡슐 개봉",
         description = """
-        그룹원이 그룹 캡슐을 개봉한다.<br> 캡슐을 만들 때의 그룹원 모두가 캡슐을 개봉해야만 캡슐이 개봉된다.
-        """,
+            그룹원이 그룹 캡슐을 개봉한다.<br> 캡슐을 만들 때의 그룹원 모두가 캡슐을 개봉해야만 캡슐이 개봉된다.
+            """,
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group capsule"}
     )

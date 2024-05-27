@@ -15,6 +15,8 @@ public interface GroupQueryRepository {
         final ZonedDateTime createdAt
     );
 
-    Optional<GroupDetailDto> findGroupDetailByGroupId(final Long groupId);
+    Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
+        final Long memberId);
 
+    Boolean findGroupEditPermission(final Long groupId, final Long memberId);
 }

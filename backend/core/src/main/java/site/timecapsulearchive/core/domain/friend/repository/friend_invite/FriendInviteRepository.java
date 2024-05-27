@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,8 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 
-public interface FriendInviteRepository extends Repository<FriendInvite, Long> {
+public interface FriendInviteRepository extends Repository<FriendInvite, Long>,
+    FriendInviteQueryRepository {
 
     void save(FriendInvite friendInvite);
 

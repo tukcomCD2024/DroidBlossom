@@ -56,13 +56,14 @@ public class CapsuleFixture {
     /**
      * 그룹 캡슐의 테스트 픽스처들을 생성한다
      *
-     * @param size 테스트 픽스처를 만들 캡슐의 개수
+     * @param size        테스트 픽스처를 만들 캡슐의 개수
      * @param member      그룹 캡슐을 생성할 멤버
      * @param capsuleSkin 캡슐 스킨
      * @param group       그룹
      * @return 그룹 캡슐 테스트 픽스처
      */
-    public static List<Capsule> groupCapsules(int size, Member member, CapsuleSkin capsuleSkin, Group group) {
+    public static List<Capsule> groupCapsules(int size, Member member, CapsuleSkin capsuleSkin,
+        Group group) {
         return IntStream
             .range(0, size)
             .mapToObj(i -> groupCapsule(member, capsuleSkin, group))
@@ -72,9 +73,9 @@ public class CapsuleFixture {
     /**
      * 그룹 캡슐의 테스트 픽스처를 생성한다
      *
-     * @param member 그룹 캡슐을 생성할 멤버
+     * @param member      그룹 캡슐을 생성할 멤버
      * @param capsuleSkin 캡슐 스킨
-     * @param group 그룹
+     * @param group       그룹
      * @return 그룹 캡슐 테스트 픽스처
      */
     public static Capsule groupCapsule(Member member, CapsuleSkin capsuleSkin, Group group) {

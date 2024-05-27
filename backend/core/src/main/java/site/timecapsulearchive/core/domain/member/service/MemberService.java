@@ -25,7 +25,6 @@ import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedExcep
 import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
-import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 
@@ -37,7 +36,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-    private final MemberQueryRepository memberQueryRepository;
     private final PasswordEncoder passwordEncoder;
 
     private final MemberMapper memberMapper;
@@ -63,7 +61,7 @@ public class MemberService {
         final SocialType socialType
     ) {
 
-        final Boolean isVerified = memberQueryRepository.findIsVerifiedByAuthIdAndSocialType(
+        final Boolean isVerified = memberRepository.findIsVerifiedByAuthIdAndSocialType(
             authId,
             socialType
         );
@@ -87,7 +85,7 @@ public class MemberService {
         final String authId,
         final SocialType socialType
     ) throws NotVerifiedMemberException {
-        final VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
+        final VerifiedCheckDto dto = memberRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -109,8 +107,8 @@ public class MemberService {
     public Long findNotVerifiedMemberIdByAuthIdAndSocialType(
         final String authId,
         final SocialType socialType
-    ) throws AlreadyVerifiedException {
-        final VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
+    ) {
+        final VerifiedCheckDto dto = memberRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -122,7 +120,7 @@ public class MemberService {
     }
 
     public MemberDetailDto findMemberDetailById(final Long memberId) {
-        return memberQueryRepository.findMemberDetailResponseDtoById(memberId)
+        return memberRepository.findMemberDetailResponseDtoById(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
 
@@ -153,7 +151,7 @@ public class MemberService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final Slice<MemberNotificationDto> notifications = memberQueryRepository.findNotificationSliceByMemberId(
+        final Slice<MemberNotificationDto> notifications = memberRepository.findNotificationSliceByMemberId(
             memberId, size, createdAt);
 
         return memberMapper.notificationSliceToResponse(
@@ -173,7 +171,7 @@ public class MemberService {
     }
 
     public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
-        final EmailVerifiedCheckDto dto = memberQueryRepository.findEmailVerifiedCheckDtoByEmail(
+        final EmailVerifiedCheckDto dto = memberRepository.findEmailVerifiedCheckDtoByEmail(
                 email)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -200,13 +198,13 @@ public class MemberService {
     }
 
     public CheckEmailDuplicationResponse checkEmailDuplication(final String email) {
-        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(email);
+        Boolean isDuplicated = memberRepository.checkEmailDuplication(email);
 
         return new CheckEmailDuplicationResponse(isDuplicated);
     }
 
     public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
-        final Boolean isAlarm = memberQueryRepository.findIsAlarmByMemberId(memberId)
+        final Boolean isAlarm = memberRepository.findIsAlarmByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         return new MemberNotificationStatusResponse(isAlarm);
@@ -218,6 +216,6 @@ public class MemberService {
     }
 
     public List<Long> findMemberIdsByIds(List<Long> ids) {
-        return memberQueryRepository.findMemberIdsByIds(ids);
+        return memberRepository.findMemberIdsByIds(ids);
     }
 }

@@ -1,5 +1,7 @@
 package site.timecapsulearchive.core.common.fixture.domain;
 
+import java.util.List;
+import java.util.stream.IntStream;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 
 public class GroupFixture {
@@ -15,5 +17,15 @@ public class GroupFixture {
             .groupDescription("test_group")
             .groupProfileUrl("test_group")
             .build();
+    }
+
+    public static List<Group> groups(int startDataPrefix, int count) {
+        return IntStream.range(startDataPrefix, count)
+            .mapToObj(idx -> Group.builder()
+                .groupName(idx + "test_group_name")
+                .groupDescription(idx + "test_group_description")
+                .groupProfileUrl(idx + "test+group_profile_url")
+                .build())
+            .toList();
     }
 }

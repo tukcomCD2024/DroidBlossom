@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,13 +9,15 @@ import org.springframework.data.repository.query.Param;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
-public interface MemberRepository extends Repository<Member, Long> {
+public interface MemberRepository extends Repository<Member, Long>, MemberQueryRepository {
 
     Optional<Member> findMemberByAuthIdAndSocialType(String authId, SocialType socialType);
 
     Member save(Member createMember);
 
     Optional<Member> findMemberById(Long memberId);
+
+    List<Member> findMemberByIdIsIn(List<Long> memberIds);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Member m SET m.fcmToken = :fcmToken WHERE m.id = :memberId")
