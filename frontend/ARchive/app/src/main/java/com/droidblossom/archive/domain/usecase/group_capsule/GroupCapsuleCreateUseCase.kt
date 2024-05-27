@@ -1,7 +1,7 @@
 package com.droidblossom.archive.domain.usecase.group_capsule
 
 import android.util.Log
-import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleCreateRequest
+import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
 import com.droidblossom.archive.domain.repository.GroupCapsuleRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onException
@@ -13,7 +13,7 @@ import javax.inject.Inject
 class GroupCapsuleCreateUseCase @Inject constructor(
     private val repository: GroupCapsuleRepository
 ) {
-    suspend operator fun invoke(groupId: Long, request: GroupCapsuleCreateRequest) =
+    suspend operator fun invoke(groupId: Long, request: CapsuleCreateRequest) =
         flow<RetrofitResult<String>> {
             try {
                 emit(repository.createGroupCapsuleCapsule(groupId, request.toDto()).onSuccess {

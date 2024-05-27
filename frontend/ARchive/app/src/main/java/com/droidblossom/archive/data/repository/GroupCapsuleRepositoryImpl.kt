@@ -1,8 +1,8 @@
 package com.droidblossom.archive.data.repository
 
 import com.droidblossom.archive.data.dto.ResponseBody
+import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
-import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleCreateRequestDto
 import com.droidblossom.archive.data.source.remote.api.GroupCapsuleService
 import com.droidblossom.archive.domain.repository.GroupCapsuleRepository
 import com.droidblossom.archive.util.RetrofitResult
@@ -15,7 +15,7 @@ class GroupCapsuleRepositoryImpl @Inject constructor(
 
     override suspend fun createGroupCapsuleCapsule(
         groupId: Long,
-        request: GroupCapsuleCreateRequestDto
+        request: CapsuleCreateRequestDto
     ): RetrofitResult<String> {
         return apiHandler({
             api.postGroupCapsuleApi(

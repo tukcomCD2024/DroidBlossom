@@ -691,8 +691,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 CreateCapsuleViewModel.CapsuleTypeCreate.GROUP -> {
                     groupCapsuleCreateUseCase(
                         groupId = groupId.value,
-                        GroupCapsuleCreateRequest(
-                            groupMemberIds = listOf(),
+                        CapsuleCreateRequest(
                             capsuleSkinId = skinId.value,
                             content = capsuleContent.value,
                             directory = S3DIRECTORY,
