@@ -29,6 +29,8 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
+import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendQueryRepository;
+import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
@@ -42,13 +44,12 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private final List<byte[]> hashedNotMemberPhones = new ArrayList<>();
     private final List<byte[]> hashedFriendPhones = new ArrayList<>();
     private final List<byte[]> hashedNotFriendPhones = new ArrayList<>();
-
+    private final MemberFriendQueryRepository memberFriendQueryRepository;
     private Long ownerId;
     private Long friendId;
-    private final MemberFriendQueryRepository memberFriendQueryRepository;
 
     MemberFriendQueryRepositoryTest(EntityManager entityManager) {
-        this.memberFriendQueryRepository = new MemberFriendQueryRepository(
+        this.memberFriendQueryRepository = new MemberFriendQueryRepositoryImpl(
             new JPAQueryFactory(entityManager));
     }
 

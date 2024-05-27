@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
@@ -6,7 +6,8 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 
-public interface MemberFriendRepository extends Repository<MemberFriend, Long> {
+public interface MemberFriendRepository extends Repository<MemberFriend, Long>,
+    MemberFriendQueryRepository {
 
     @Query("SELECT mf FROM MemberFriend mf "
         + "WHERE (mf.owner.id = :memberId AND mf.friend.id = :friendId) "

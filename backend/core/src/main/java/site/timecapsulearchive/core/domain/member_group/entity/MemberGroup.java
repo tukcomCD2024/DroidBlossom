@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
@@ -50,5 +51,11 @@ public class MemberGroup extends BaseEntity {
 
     public static MemberGroup createGroupMember(Member member, Group group) {
         return new MemberGroup(false, member, group);
+    }
+
+    public void checkGroupMemberOwner() {
+        if (this.isOwner) {
+            throw new GroupQuitException();
+        }
     }
 }

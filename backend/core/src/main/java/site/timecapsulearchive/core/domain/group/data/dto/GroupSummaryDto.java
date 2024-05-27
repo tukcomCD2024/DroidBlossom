@@ -13,7 +13,7 @@ public record GroupSummaryDto(
     Boolean isOwner
 ) {
 
-    public GroupSummaryResponse toResponse(Function<String, String> preSignedUrlFunction) {
+    public GroupSummaryResponse toResponse(final Function<String, String> preSignedUrlFunction) {
         return GroupSummaryResponse.builder()
             .id(id)
             .name(groupName)

@@ -1,46 +1,56 @@
-package site.timecapsulearchive.core.domain.friend.service;
+package site.timecapsulearchive.core.domain.friend.service.command;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
-import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.friend.exception.FriendDuplicateIdException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteNotFoundException;
-import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendTwoWayInviteException;
-import site.timecapsulearchive.core.domain.friend.repository.FriendInviteQueryRepository;
-import site.timecapsulearchive.core.domain.friend.repository.FriendInviteRepository;
-import site.timecapsulearchive.core.domain.friend.repository.MemberFriendQueryRepository;
-import site.timecapsulearchive.core.domain.friend.repository.MemberFriendRepository;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
+import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
 @RequiredArgsConstructor
-public class FriendService {
+public class FriendCommandService {
 
     private final MemberFriendRepository memberFriendRepository;
-    private final MemberFriendQueryRepository memberFriendQueryRepository;
     private final MemberRepository memberRepository;
     private final FriendInviteRepository friendInviteRepository;
-    private final FriendInviteQueryRepository friendInviteQueryRepository;
     private final SocialNotificationManager socialNotificationManager;
     private final TransactionTemplate transactionTemplate;
+
+    public void requestFriends(Long memberId, List<Long> friendIds) {
+        final Member[] owner = new Member[1];
+        final List<Long>[] foundFriendIds = new List[1];
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                owner[0] = memberRepository.findMemberById(memberId)
+                    .orElseThrow(MemberNotFoundException::new);
+                foundFriendIds[0] = memberRepository.findMemberIdsByIds(friendIds);
+
+                friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
+            }
+        });
+
+        socialNotificationManager.sendFriendRequestMessages(
+            owner[0].getNickname(),
+            owner[0].getProfileUrl(),
+            foundFriendIds[0]
+        );
+    }
 
     public void requestFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
@@ -132,50 +142,4 @@ public class FriendService {
         memberFriends.forEach(memberFriendRepository::delete);
     }
 
-    @Transactional(readOnly = true)
-    public Slice<FriendSummaryDto> findFriendsSlice(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        return memberFriendQueryRepository.findFriendsSlice(memberId, size, createdAt);
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<FriendSummaryDto> findFriendRequestsSlice(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        return memberFriendQueryRepository.findFriendRequestsSlice(memberId, size, createdAt);
-    }
-
-    @Transactional(readOnly = true)
-    public List<SearchFriendSummaryDto> findFriendsByPhone(
-        final Long memberId,
-        final List<ByteArrayWrapper> phoneEncryption
-    ) {
-        final List<byte[]> hashes = phoneEncryption.stream().map(ByteArrayWrapper::getData)
-            .toList();
-
-        return memberFriendQueryRepository.findFriendsByPhone(memberId, hashes);
-    }
-
-
-    @Transactional(readOnly = true)
-    public SearchTagFriendSummaryResponse searchFriend(final Long memberId, final String tag) {
-        final SearchFriendSummaryDtoByTag friendSummaryDto = memberFriendQueryRepository
-            .findFriendsByTag(memberId, tag).orElseThrow(FriendNotFoundException::new);
-
-        return friendSummaryDto.toResponse();
-    }
-
-    @Transactional
-    public void bulkSaveFriendInvites(Long ownerId, List<Long> friendIds) {
-        if (friendIds.isEmpty()) {
-            return;
-        }
-
-        friendInviteQueryRepository.bulkSave(ownerId, friendIds);
-    }
 }

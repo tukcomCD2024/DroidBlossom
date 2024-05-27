@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.repository;
+package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,7 +42,8 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         DataSource dataSource
     ) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate, jpaQueryFactory);
+        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate,
+            jpaQueryFactory);
     }
 
     @Transactional

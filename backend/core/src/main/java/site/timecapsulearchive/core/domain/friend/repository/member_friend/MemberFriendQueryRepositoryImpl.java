@@ -1,8 +1,10 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static site.timecapsulearchive.core.domain.friend.entity.QFriendInvite.friendInvite;
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
+import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,12 +19,13 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
+import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.entity.QFriendInvite;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberFriendQueryRepository {
+public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -48,12 +51,46 @@ public class MemberFriendQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = friends.size() > size;
+        return getFriendSummaryDtos(size, friends);
+    }
+
+    private Slice<FriendSummaryDto> getFriendSummaryDtos(final int size,
+        final List<FriendSummaryDto> friendSummaryDtos) {
+        final boolean hasNext = friendSummaryDtos.size() > size;
         if (hasNext) {
-            friends.remove(size);
+            friendSummaryDtos.remove(size);
         }
 
-        return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
+        return new SliceImpl<>(friendSummaryDtos, Pageable.ofSize(size), hasNext);
+    }
+
+    public Slice<FriendSummaryDto> findFriendsBeforeGroupInvite(
+        final FriendBeforeGroupInviteRequest request) {
+        final List<FriendSummaryDto> friends = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    FriendSummaryDto.class,
+                    memberFriend.friend.id,
+                    memberFriend.friend.profileUrl,
+                    memberFriend.friend.nickname,
+                    memberFriend.createdAt
+                )
+            )
+            .from(memberFriend)
+            .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
+            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
+            .where(memberFriend.owner.id.eq(request.memberId())
+                .and(memberFriend.createdAt.lt(request.createdAt()))
+                .and(memberFriend.friend.id.notIn(
+                    select(memberGroup.member.id)
+                        .from(memberGroup)
+                        .where(memberGroup.group.id.eq(request.groupId()))
+                ))
+            )
+            .limit(request.size() + 1)
+            .fetch();
+
+        return getFriendSummaryDtos(request.size(), friends);
     }
 
     public Slice<FriendSummaryDto> findFriendRequestsSlice(
@@ -77,12 +114,7 @@ public class MemberFriendQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = friends.size() > size;
-        if (hasNext) {
-            friends.remove(size);
-        }
-
-        return new SliceImpl<>(friends, Pageable.ofSize(size), hasNext);
+        return getFriendSummaryDtos(size, friends);
     }
 
     public List<SearchFriendSummaryDto> findFriendsByPhone(
@@ -159,6 +191,14 @@ public class MemberFriendQueryRepository {
             .select(memberFriend.friend.id)
             .from(memberFriend)
             .where(memberFriend.owner.id.eq(memberId))
+            .fetch();
+    }
+
+    public List<Long> findFriendIds(final List<Long> groupMemberIds, final Long memberId) {
+        return jpaQueryFactory.select(memberFriend.friend.id)
+            .from(memberFriend)
+            .where(
+                memberFriend.friend.id.in(groupMemberIds).and(memberFriend.owner.id.eq(memberId)))
             .fetch();
     }
 }

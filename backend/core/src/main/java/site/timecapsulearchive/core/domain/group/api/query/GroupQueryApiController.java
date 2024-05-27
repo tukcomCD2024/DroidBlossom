@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailTotalDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
@@ -36,13 +36,14 @@ public class GroupQueryApiController implements GroupQueryApi {
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("group_id") final Long groupId
     ) {
-        final GroupDetailDto groupDetailDto = groupQueryService.findGroupDetailByGroupId(memberId,
+        final GroupDetailTotalDto groupDetailTotalDto = groupQueryService.findGroupDetailByGroupId(
+            memberId,
             groupId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                groupDetailDto.toResponse(s3PreSignedUrlManager::getS3PreSignedUrlForGet)
+                groupDetailTotalDto.toResponse(s3PreSignedUrlManager::getS3PreSignedUrlForGet)
             )
         );
     }

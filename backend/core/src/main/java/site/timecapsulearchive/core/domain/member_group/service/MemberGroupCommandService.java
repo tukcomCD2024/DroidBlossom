@@ -10,20 +10,19 @@ import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
-import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
-import site.timecapsulearchive.core.domain.member_group.entity.GroupInvite;
-import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
-import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
-import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
-import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.error.ErrorCode;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCountLimitException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
+import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
@@ -37,36 +36,30 @@ public class MemberGroupCommandService {
     private final TransactionTemplate transactionTemplate;
     private final SocialNotificationManager socialNotificationManager;
 
-    public void inviteGroup(final Long memberId, final Long groupId, final Long targetId) {
-        final Member groupOwner = memberRepository.findMemberById(memberId).orElseThrow(
-            MemberNotFoundException::new);
-
-        final Member groupMember = memberRepository.findMemberById(targetId).orElseThrow(
-            MemberNotFoundException::new);
-
-        final Group group = groupRepository.findGroupById(groupId)
-            .orElseThrow(GroupNotFoundException::new);
-
-        final GroupInvite groupInvite = GroupInvite.createOf(group, groupOwner, groupMember);
+    public void inviteGroup(final Long memberId, final SendGroupRequest sendGroupRequest) {
+        final List<Long> friendIds = sendGroupRequest.targetIds();
+        final List<Member> groupMembers = memberRepository.findMemberByIdIsIn(friendIds);
+        if (groupMembers.size() + friendIds.size() > 30) {
+            throw new GroupMemberCountLimitException();
+        }
 
         final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];
-
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 summaryDto[0] = memberGroupRepository.findOwnerInMemberGroup(
-                    groupId, memberId).orElseThrow(GroupNotFoundException::new);
+                    sendGroupRequest.groupId(), memberId).orElseThrow(GroupNotFoundException::new);
 
                 if (!summaryDto[0].isOwner()) {
                     throw new NoGroupAuthorityException();
                 }
 
-                groupInviteRepository.save(groupInvite);
+                groupInviteRepository.bulkSave(memberId, sendGroupRequest.groupId(), friendIds);
             }
         });
 
         socialNotificationManager.sendGroupInviteMessage(summaryDto[0].nickname(),
-            summaryDto[0].groupProfileUrl(), List.of(targetId));
+            summaryDto[0].groupProfileUrl(), friendIds);
     }
 
     @Transactional
@@ -113,16 +106,13 @@ public class MemberGroupCommandService {
     @Transactional
     public void quitGroup(final Long memberId, final Long groupId) {
         final MemberGroup groupMember = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
-                memberId, groupId)
-            .orElseThrow(MemberGroupNotFoundException::new);
-        if (groupMember.getIsOwner()) {
-            throw new GroupQuitException(ErrorCode.GROUP_OWNER_QUIT_ERROR);
-        }
+            memberId, groupId).orElseThrow(MemberGroupNotFoundException::new);
+        groupMember.checkGroupMemberOwner();
 
         memberGroupRepository.delete(groupMember);
     }
 
-     /**
+    /**
      * 그룹의 회원을 그룹에서 삭제한다.
      * <br><u><b>주의</b></u> - 그룹원 삭제 시 아래 조건에 해당하면 예외가 발생한다.
      * <br>1. 자신을 삭제하려한 경우
@@ -154,9 +144,8 @@ public class MemberGroupCommandService {
 
     private void checkGroupOwnership(Long groupOwnerId, Long groupId) {
         final Boolean isOwner = memberGroupRepository.findIsOwnerByMemberIdAndGroupId(
-                groupOwnerId,
-                groupId)
-            .orElseThrow(MemberGroupNotFoundException::new);
+            groupOwnerId, groupId).orElseThrow(MemberGroupNotFoundException::new);
+
         if (!isOwner) {
             throw new NoGroupAuthorityException();
         }

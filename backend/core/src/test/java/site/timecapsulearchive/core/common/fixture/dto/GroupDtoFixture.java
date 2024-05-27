@@ -2,7 +2,7 @@ package site.timecapsulearchive.core.common.fixture.dto;
 
 import java.util.List;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
-import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 
 public class GroupDtoFixture {
 

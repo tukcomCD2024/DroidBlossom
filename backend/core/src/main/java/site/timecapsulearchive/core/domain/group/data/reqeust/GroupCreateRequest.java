@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.group.data.reqeust;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
 import site.timecapsulearchive.core.global.common.valid.annotation.Image;
@@ -28,6 +29,7 @@ public record GroupCreateRequest(
 
     @Schema(description = "그룹원 아이디들")
     @NotNull(message = "그룹원 아이디들은 필수 입니다.")
+    @Size(max = 30, message = "그룹 초대원은 최대 30명까지 입니다.")
     List<Long> targetIds
 
 ) {

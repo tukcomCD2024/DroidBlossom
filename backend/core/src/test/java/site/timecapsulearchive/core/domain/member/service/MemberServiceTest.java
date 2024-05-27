@@ -15,22 +15,20 @@ import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
-import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 
 class MemberServiceTest {
 
     private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final MemberTemporaryRepository memberTemporaryRepository = mock(MemberTemporaryRepository.class);
-    private final MemberQueryRepository memberQueryRepository = mock(MemberQueryRepository.class);
+    private final MemberTemporaryRepository memberTemporaryRepository = mock(
+        MemberTemporaryRepository.class);
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final MemberMapper memberMapper = mock(MemberMapper.class);
 
     private final MemberService memberService = new MemberService(
         memberRepository,
         memberTemporaryRepository,
-        memberQueryRepository,
         passwordEncoder,
         memberMapper
     );
@@ -40,7 +38,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(Optional.empty());
 
         //when, then
@@ -54,7 +52,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when
@@ -82,7 +80,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.FALSE, email, password));
 
         //when, then
@@ -96,7 +94,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when, then
@@ -110,7 +108,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when, then
@@ -124,7 +122,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, null));
 
         //when, then
@@ -138,7 +136,7 @@ class MemberServiceTest {
         //given
         String email = "test@google.com";
         String password = "test-password";
-        given(memberQueryRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
+        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when, then

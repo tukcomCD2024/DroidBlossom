@@ -20,7 +20,10 @@ public record GroupMemberResponse(
     String tag,
 
     @Schema(description = "그룹장 여부")
-    Boolean isOwner
+    Boolean isOwner,
+
+    @Schema(description = "친구 여부")
+    Boolean isFriend
 ) {
 
 }

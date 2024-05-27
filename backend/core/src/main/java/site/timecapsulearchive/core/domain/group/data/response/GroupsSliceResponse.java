@@ -16,11 +16,11 @@ public record GroupsSliceResponse(
 ) {
 
     public static GroupsSliceResponse createOf(
-        List<GroupSummaryDto> groups,
-        Boolean hasNext,
-        Function<String, String> preSignedUrlFunction
+        final List<GroupSummaryDto> groups,
+        final Boolean hasNext,
+        final Function<String, String> preSignedUrlFunction
     ) {
-        List<GroupSummaryResponse> responses = groups.stream()
+        final List<GroupSummaryResponse> responses = groups.stream()
             .map(dto -> dto.toResponse(preSignedUrlFunction))
             .toList();
 

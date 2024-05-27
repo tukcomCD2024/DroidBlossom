@@ -11,7 +11,7 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 
 public class CapsuleDtoFixture {
 
-    private static ZonedDateTime now = ZonedDateTime.now();
+    private static final ZonedDateTime now = ZonedDateTime.now();
 
     public static Optional<CapsuleDetailDto> getCapsuleDetailDto(Long capsuleId, Boolean isOpened,
         ZonedDateTime dueDate) {
@@ -24,8 +24,9 @@ public class CapsuleDtoFixture {
 
     public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long capsuleId,
         boolean isOpened, ZonedDateTime now, int count) {
-        return Optional.of(new GroupCapsuleDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
-            getGroupMemberSummaryDtos(count)));
+        return Optional.of(
+            new GroupCapsuleDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
+                getGroupMemberSummaryDtos(count)));
     }
 
     private static List<GroupMemberSummaryDto> getGroupMemberSummaryDtos(int count) {

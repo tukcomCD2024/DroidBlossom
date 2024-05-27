@@ -14,6 +14,8 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteQueryRepository;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
@@ -27,7 +29,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
     FriendInviteQueryRepositoryTest(EntityManager entityManager, JdbcTemplate jdbcTemplate) {
         this.entityManager = entityManager;
-        this.friendInviteQueryRepository = new FriendInviteQueryRepository(jdbcTemplate);
+        this.friendInviteQueryRepository = new FriendInviteQueryRepositoryImpl(jdbcTemplate);
     }
 
     @BeforeEach

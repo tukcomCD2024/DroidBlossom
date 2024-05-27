@@ -105,8 +105,8 @@ public class GroupCapsuleService {
     @Transactional
     public void openGroupCapsule(final Long memberId, final Long capsuleId) {
         GroupCapsuleOpen groupCapsuleOpen = groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(
-            memberId,
-            capsuleId)
+                memberId,
+                capsuleId)
             .orElseThrow(GroupCapsuleOpenNotFoundException::new);
         groupCapsuleOpen.open();
 

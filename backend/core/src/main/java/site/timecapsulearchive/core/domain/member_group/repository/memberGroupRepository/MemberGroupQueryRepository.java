@@ -1,7 +1,7 @@
 package site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository;
 
 import java.util.Optional;
-import site.timecapsulearchive.core.domain.member_group.data.GroupOwnerSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 
 public interface MemberGroupQueryRepository {
 
