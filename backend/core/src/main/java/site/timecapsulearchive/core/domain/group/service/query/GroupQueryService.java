@@ -40,8 +40,7 @@ public class GroupQueryService {
 
     public GroupDetailTotalDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
         final GroupDetailDto groupDetailDto = groupRepository.findGroupDetailByGroupIdAndMemberId(
-            groupId,
-            memberId).orElseThrow(GroupNotFoundException::new);
+            groupId, memberId).orElseThrow(GroupNotFoundException::new);
 
         final Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCount(groupId);
         final Boolean canGroupEdit = groupRepository.findGroupEditPermission(groupId, memberId);
