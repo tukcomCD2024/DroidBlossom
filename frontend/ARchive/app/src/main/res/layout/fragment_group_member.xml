@@ -4,6 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <import type="android.view.View"/>
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModel" />
@@ -21,10 +24,38 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="12dp"
+            android:visibility="@{vm.groupMembers.empty ? View.GONE : View.VISIBLE}"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             tools:listitem="@layout/item_group_member"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="120dp"
+            android:visibility="@{vm.groupMembers.empty ? View.VISIBLE : View.GONE}">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="@style/TextAppearance.App.body1"
+                android:text="친구들을 그룹에 초대해보세요" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/addGroupMemberT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin"
+                android:textAppearance="@style/TextAppearance.App.caption1"
+                android:textColor="@color/main_2"
+                android:text="첫 그룹원을 초대해보세요" />
+
+        </LinearLayout>
 
     </FrameLayout>
 </layout>

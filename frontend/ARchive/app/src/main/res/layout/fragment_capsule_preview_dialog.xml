@@ -186,11 +186,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/skinImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:alpha="@{vm.visibleCapsuleOpenMessage ? 1.0F : 0.2F}"
-                    android:scaleType="centerInside"
+                    android:scaleType="centerCrop"
                     bind:baseImg="@{@drawable/sample_skin}"
                     bind:url="@{vm.capsuleSummaryResponse.skinUrl}" />
 

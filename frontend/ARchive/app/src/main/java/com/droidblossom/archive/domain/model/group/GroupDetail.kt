@@ -14,12 +14,11 @@ data class GroupDetail (
 )
 
 fun GroupDetail.toGroupProfileData() = GroupProfileData(
-    groupId = -1,
     groupName = groupName,
     groupDescription = groupDescription,
     groupProfileUrl = groupProfileUrl,
     hasEditPermission = canGroupEdit,
-    groupCapsuleNum = UITextUtils.bigDecimalUIFormat(groupCapsuleTotalCount+1),
-    groupMemberNum = (members.size - 1).toString(),
+    groupCapsuleNum = UITextUtils.bigDecimalUIFormat(groupCapsuleTotalCount),
+    groupMemberNum = (members.size + 1).toString(),
     groupCreateTime = createdAt
 )

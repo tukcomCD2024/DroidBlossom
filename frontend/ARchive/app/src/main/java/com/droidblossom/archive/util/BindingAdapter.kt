@@ -49,6 +49,7 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
 
     val thumbnailRequest = Glide.with(this.context)
         .load(imageUrl)
+        .override(this.width, this.height)
         .sizeMultiplier(0.1f)
         .transition(DrawableTransitionOptions.withCrossFade(300))
 
@@ -120,6 +121,7 @@ fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
 
     val thumbnailRequest = Glide.with(this.context)
         .load(imageUrl)
+        .override(this.width, this.height)
         .sizeMultiplier(0.1f)
         .transition(DrawableTransitionOptions.withCrossFade(300))
         .apply {
@@ -175,6 +177,7 @@ fun ImageView.setUrlImg(imageUrl: String, placeholder: Drawable?) {
 
     val thumbnailRequest = Glide.with(this.context)
         .load(imageUrl)
+        .override(this.width, this.height)
         .sizeMultiplier(0.1f)
         .transition(DrawableTransitionOptions.withCrossFade(300))
         .listener(object : RequestListener<Drawable> {

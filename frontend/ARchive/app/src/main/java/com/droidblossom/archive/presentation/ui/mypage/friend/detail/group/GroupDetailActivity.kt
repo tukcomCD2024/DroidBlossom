@@ -63,6 +63,16 @@ class GroupDetailActivity :
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupInfo.collect {
+                    binding.tabLayout.getTabAt(GROUP_CAPSULE)?.text = getString(R.string.groupCapsule) + "(${viewModel.groupInfo.value.groupCapsuleNum})"
+
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.groupMembers.collect {
+                    binding.tabLayout.getTabAt(GROUP_MEMBER)?.text = getString(R.string.groupMember) + "(${viewModel.groupMembers.value.size + 1}/30)"
 
                 }
             }
@@ -155,8 +165,8 @@ class GroupDetailActivity :
 
             TabLayoutMediator(tabLayout, vp) { tab, position ->
                 tab.text = when (position) {
-                    0 -> getString(R.string.groupCapsule) + "(${viewModel.groupInfo.value.groupCapsuleNum})"
-                    1 -> getString(R.string.groupMember) + "(${viewModel.groupInfo.value.groupMemberNum}/30)"
+                    0 -> getString(R.string.groupCapsule)
+                    1 -> getString(R.string.groupMember)
                     else -> null
                 }
             }.attach()

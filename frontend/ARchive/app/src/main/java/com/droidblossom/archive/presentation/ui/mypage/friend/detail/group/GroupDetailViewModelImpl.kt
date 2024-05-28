@@ -67,7 +67,6 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     private val _groupInfo = MutableStateFlow(
         GroupProfileData(
-            groupId = 7778,
             groupName = "Kathrine Turner",
             groupDescription = "추억을 소중하게 여기는 분들을 위한 AR 타임캡슐 앱 ARchive를 소개합니다.\n" +
                     "이 앱으로 뜻깊은 순간들을 영원히 저장하세요.\n" +
@@ -78,7 +77,7 @@ class GroupDetailViewModelImpl @Inject constructor(
             groupProfileUrl = "https://www.google.com/#q=quod",
             hasEditPermission = true,
             groupCapsuleNum = "0",
-            groupMemberNum = "5",
+            groupMemberNum = "10",
             groupCreateTime = ""
         )
     )
@@ -96,24 +95,6 @@ class GroupDetailViewModelImpl @Inject constructor(
                 }
             }
         }
-
-        val capsules = mutableListOf<CapsuleData>()
-
-        for (i in 0..30) {
-            capsules.add(
-                CapsuleData(
-                    capsuleId = i.toLong(),
-                    capsuleSkinUrl = "https://avatars.githubusercontent.com/u/69802523?v=4",
-                    createdDate = "quaestio",
-                    dueDate = null,
-                    isOpened = false,
-                    title = "malesuada",
-                    capsuleType = "tempor"
-                )
-            )
-        }
-
-        _capsules.value = capsules
     }
 
     override fun setGroupId(groupId: Long) {
@@ -138,8 +119,9 @@ class GroupDetailViewModelImpl @Inject constructor(
                 }.onFail {
 
                 }
-
+                groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
             }
+
         }
     }
 

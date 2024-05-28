@@ -65,9 +65,6 @@ class MyPageFragment :
             {
                 copyText("tag",it)
             },
-            {
-                startActivity(GroupDetailActivity.newIntent(requireContext(),21))
-            }
         )
     }
     private val capsuleRVA: CapsuleRVA by lazy {
