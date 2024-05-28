@@ -1,12 +1,15 @@
 package com.droidblossom.archive.domain.model.group
 
 import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
+import com.droidblossom.archive.util.UITextUtils
 
 data class GroupDetail (
     val groupName: String,
     val groupProfileUrl: String,
     val groupDescription: String,
     val createdAt: String,
+    val groupCapsuleTotalCount: Int,
+    val canGroupEdit: Boolean,
     val members: List<GroupMember>,
 )
 
@@ -15,8 +18,8 @@ fun GroupDetail.toGroupProfileData() = GroupProfileData(
     groupName = groupName,
     groupDescription = groupDescription,
     groupProfileUrl = groupProfileUrl,
-    hasEditPermission = false,
-    groupCapsuleNum = -1,
-    groupMemberNum = members.size.toString(),
+    hasEditPermission = canGroupEdit,
+    groupCapsuleNum = UITextUtils.bigDecimalUIFormat(groupCapsuleTotalCount+1),
+    groupMemberNum = (members.size - 1).toString(),
     groupCreateTime = createdAt
 )

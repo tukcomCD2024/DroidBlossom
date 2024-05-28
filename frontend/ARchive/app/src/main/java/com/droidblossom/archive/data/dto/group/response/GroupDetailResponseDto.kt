@@ -7,6 +7,8 @@ data class GroupDetailResponseDto(
     val groupProfileUrl: String,
     val groupDescription: String,
     val createdAt: String,
+    val groupCapsuleTotalCount: Int,
+    val canGroupEdit: Boolean,
     val members: List<GroupMemberResponseDto>,
 ){
     fun toModel() = GroupDetail(
@@ -14,6 +16,8 @@ data class GroupDetailResponseDto(
         groupProfileUrl = this.groupProfileUrl,
         groupDescription = this.groupDescription,
         createdAt = this.createdAt,
+        groupCapsuleTotalCount = this.groupCapsuleTotalCount,
+        canGroupEdit = this.canGroupEdit,
         members = this.members.map { it.toModel() }
     )
 }

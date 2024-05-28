@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModel" />
@@ -40,7 +42,7 @@
                     app:expandedTitleTextColor="@android:color/transparent"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     app:title="@{vm.groupInfo.groupName}"
-                    app:titleEnabled="true">
+                    app:titleEnabled="false">
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,145 +64,74 @@
                             tools:src="@color/main_2" />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/groupNameT"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/editGroup"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_small"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/suit_bold"
-                            android:lines="1"
-                            android:maxWidth="250dp"
-                            android:text="@{vm.groupInfo.groupName}"
-                            android:textAppearance="@style/TextAppearance.App.subtitle1"
-                            android:textColor="@color/black"
-                            app:layout_constraintStart_toEndOf="@id/profileImg"
+                            android:layout_marginEnd="@dimen/margin"
+                            android:background="@drawable/corner_radius_30"
+                            android:gravity="center"
+                            android:paddingVertical="@dimen/padding_small"
+                            android:text="프로필 수정"
+                            android:textAppearance="@style/TextAppearance.App.caption1"
+                            android:textColor="@color/main_1"
+                            android:visibility="@{vm.groupInfo.hasEditPermission ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@id/profileImg" />
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/groupCapsuleNumLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="46dp"
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/leaveGroup"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin"
                             android:background="@drawable/corner_radius_30"
-                            android:backgroundTint="@color/main_4"
-                            android:paddingHorizontal="@dimen/padding_small"
+                            android:gravity="center"
+                            android:paddingVertical="@dimen/padding_small"
+                            android:text="그룹 탈퇴"
+                            android:textAppearance="@style/TextAppearance.App.caption1"
+                            android:textColor="@color/main_1"
+                            android:visibility="@{vm.groupInfo.hasEditPermission ? View.GONE : View.VISIBLE}"
                             app:layout_constraintBottom_toBottomOf="@id/profileImg"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toStartOf="@id/groupNameT">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/profileImg" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/capsuleT"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/capsule"
-                                android:textAppearance="@style/TextAppearance.App.caption2"
-                                android:textColor="@color/black"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@id/capsuleNumT"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/capsuleNumT"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginVertical="5dp"
-                                android:layout_marginStart="@dimen/margin_small"
-                                android:background="@drawable/corner_radius_30"
-                                android:gravity="center"
-                                android:maxLines="1"
-                                android:minWidth="36dp"
-                                android:padding="@dimen/padding_small"
-                                android:textAppearance="@style/TextAppearance.App.caption2"
-                                android:textColor="@color/black"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@id/capsuleT"
-                                app:layout_constraintTop_toTopOf="parent"
-                                bind:count="@{vm.groupInfo.groupCapsuleNum}"
-                                bind:showDecimal="@{true}" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/groupMemberNumLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="46dp"
-                            android:layout_marginStart="@dimen/margin"
-                            android:background="@drawable/corner_radius_30"
-                            android:backgroundTint="@color/main_4"
-                            android:paddingHorizontal="@dimen/padding_small"
-                            app:layout_constraintBottom_toBottomOf="@id/profileImg"
-                            app:layout_constraintHorizontal_weight="1"
-                            app:layout_constraintStart_toEndOf="@id/groupCapsuleNumLayout">
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/groupMemberT"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/maxMember"
-                                android:textAppearance="@style/TextAppearance.App.caption2"
-                                android:textColor="@color/black"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@id/groupMemberNumT"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/groupMemberNumT"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginVertical="5dp"
-                                android:layout_marginStart="@dimen/margin_small"
-                                android:background="@drawable/corner_radius_30"
-                                android:gravity="center"
-                                android:maxLines="1"
-                                android:minWidth="36dp"
-                                android:padding="@dimen/padding_small"
-                                android:text='@{vm.groupInfo.groupMemberNum + " / 30"}'                            android:textAppearance="@style/TextAppearance.App.caption2"
-                                android:textColor="@color/black"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@id/groupMemberT"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/groupDescriptionT"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.App.caption2"
                             android:layout_marginHorizontal="@dimen/margin"
                             android:layout_marginTop="@dimen/margin"
-                            bind:setTextMaxLines="@{vm.isShowMore()}"
                             android:text="@{vm.groupInfo.groupDescription}"
+                            android:textAppearance="@style/TextAppearance.App.caption2"
                             app:layout_constraintEnd_toStartOf="@id/moreBtn"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/profileImg" />
+                            app:layout_constraintTop_toBottomOf="@id/profileImg"
+                            bind:setTextMaxLines="@{vm.isShowMore()}" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/gray_600"
-                            android:textAppearance="@style/TextAppearance.App.caption4"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/groupDescriptionT"
                             android:layout_marginStart="@dimen/margin"
                             android:layout_marginTop="@dimen/margin_small"
                             android:drawableStart="@drawable/ic_calendar_24"
                             android:drawableTint="@color/gray_600"
-                            bind:displayGroupCreationDate="@{vm.groupInfo.groupCreateTime}"
-                            android:gravity="center"/>
+                            android:gravity="center"
+                            android:textAppearance="@style/TextAppearance.App.caption4"
+                            android:textColor="@color/gray_600"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/groupDescriptionT"
+                            bind:displayGroupCreationDate="@{vm.groupInfo.groupCreateTime}" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/moreBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin"
+                            android:onClick="@{() -> vm.setShowMore()}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@id/groupDescriptionT"
-                            android:layout_marginEnd="@dimen/margin"
-                            bind:setArrowImg="@{vm.isShowMore}"
-                            android:onClick="@{() -> vm.setShowMore()}" />
+                            bind:setArrowImg="@{vm.isShowMore}" />
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -211,7 +142,8 @@
                         android:layout_height="?attr/actionBarSize"
                         app:layout_collapseMode="pin"
                         app:menu="@menu/menu_detail"
-                        app:navigationIcon="@drawable/ic_arrow_back_24" />
+                        app:navigationIcon="@drawable/ic_arrow_back_24"
+                        app:title="@{vm.groupInfo.groupName}" />
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 

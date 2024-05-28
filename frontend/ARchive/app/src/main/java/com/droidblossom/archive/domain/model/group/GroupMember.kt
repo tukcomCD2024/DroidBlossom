@@ -5,5 +5,6 @@ data class GroupMember(
     val profileUrl: String,
     val nickname: String,
     val tag: String,
-    val isOwner: Boolean
+    val isOwner: Boolean,
+    val isFriend: Boolean
 )

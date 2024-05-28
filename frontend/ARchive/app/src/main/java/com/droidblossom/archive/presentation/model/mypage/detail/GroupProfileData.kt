@@ -7,6 +7,6 @@ data class GroupProfileData (
     val groupProfileUrl : String,
     val hasEditPermission : Boolean,
     val groupCreateTime : String,
-    val groupCapsuleNum: Int = 0,
+    val groupCapsuleNum: String = "0",
     val groupMemberNum: String = "0"
 )

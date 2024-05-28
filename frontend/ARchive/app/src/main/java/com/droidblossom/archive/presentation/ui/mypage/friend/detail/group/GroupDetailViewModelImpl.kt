@@ -76,8 +76,8 @@ class GroupDetailViewModelImpl @Inject constructor(
                     "당신만의 매력적인 이미지로 움직이는 귀여운 캐릭터 타임캡슐 스킨을 직접 제작해보세요.\n" +
                     "우리 앱으로 과거와 현재, 미래를 연결하는 특별한 경험을 즐기실 수 있습니다.",
             groupProfileUrl = "https://www.google.com/#q=quod",
-            hasEditPermission = false,
-            groupCapsuleNum = 7090,
+            hasEditPermission = true,
+            groupCapsuleNum = "0",
             groupMemberNum = "5",
             groupCreateTime = ""
         )

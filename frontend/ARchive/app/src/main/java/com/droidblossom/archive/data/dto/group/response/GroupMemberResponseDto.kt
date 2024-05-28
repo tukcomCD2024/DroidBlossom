@@ -7,13 +7,15 @@ data class GroupMemberResponseDto(
     val profileUrl: String,
     val nickname: String,
     val tag: String,
-    val isOwner: Boolean
+    val isOwner: Boolean,
+    val isFriend: Boolean
 ){
     fun toModel() = GroupMember(
         memberId = this.memberId,
         profileUrl = this.profileUrl,
         nickname = this.nickname,
         tag = this.tag,
-        isOwner = this.isOwner
+        isOwner = this.isOwner,
+        isFriend = this.isFriend
     )
 }

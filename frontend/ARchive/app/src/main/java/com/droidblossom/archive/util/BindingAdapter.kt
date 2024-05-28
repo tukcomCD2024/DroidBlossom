@@ -308,7 +308,7 @@ fun TextView.setGroupCreationDate(dateString: String?) {
             this.text = "날짜 형식 오류"
         }
     } else {
-        this.text = "일반 캡슐 입니다"
+        this.text = ""
     }
 }
 

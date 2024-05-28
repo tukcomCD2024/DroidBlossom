@@ -121,16 +121,6 @@ class GroupDetailActivity :
                 }
             })
 
-            groupCapsuleNumLayout.setOnClickListener {
-                appBarLayout.setExpanded(false, true)
-                vp.setCurrentItem(GROUP_CAPSULE, true)
-            }
-
-            groupMemberNumLayout.setOnClickListener {
-                appBarLayout.setExpanded(false, true)
-                vp.setCurrentItem(GROUP_MEMBER, true)
-            }
-
             appBarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener(){
                 override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
                     when (state) {
@@ -165,8 +155,8 @@ class GroupDetailActivity :
 
             TabLayoutMediator(tabLayout, vp) { tab, position ->
                 tab.text = when (position) {
-                    0 -> getString(R.string.groupCapsule)
-                    1 -> getString(R.string.groupMember)
+                    0 -> getString(R.string.groupCapsule) + "(${viewModel.groupInfo.value.groupCapsuleNum})"
+                    1 -> getString(R.string.groupMember) + "(${viewModel.groupInfo.value.groupMemberNum}/30)"
                     else -> null
                 }
             }.attach()
