@@ -8,6 +8,7 @@ public record GroupDetailDto(
     String groupDescription,
     String groupProfileUrl,
     ZonedDateTime createdAt,
+    Boolean isOwner,
     List<GroupMemberDto> members
 ) {
 
@@ -16,9 +17,10 @@ public record GroupDetailDto(
         String groupDescription,
         String groupProfileUrl,
         ZonedDateTime createdAt,
+        Boolean isOwner,
         List<GroupMemberDto> members
     ) {
-        return new GroupDetailDto(groupName, groupDescription, groupProfileUrl, createdAt, members);
+        return new GroupDetailDto(groupName, groupDescription, groupProfileUrl, createdAt, isOwner, members);
     }
 
 }

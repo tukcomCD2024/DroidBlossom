@@ -43,13 +43,12 @@ public class GroupQueryService {
             groupId, memberId).orElseThrow(GroupNotFoundException::new);
 
         final Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCount(groupId);
-        final Boolean canGroupEdit = groupRepository.findGroupEditPermission(groupId, memberId);
 
         final List<Long> groupMemberIds = groupDetailDto.members().stream()
             .map(GroupMemberDto::memberId)
             .toList();
         final List<Long> friendIds = memberFriendRepository.findFriendIds(groupMemberIds, memberId);
 
-        return GroupDetailTotalDto.as(groupDetailDto, groupCapsuleCount, canGroupEdit, friendIds);
+        return GroupDetailTotalDto.as(groupDetailDto, groupCapsuleCount, friendIds);
     }
 }

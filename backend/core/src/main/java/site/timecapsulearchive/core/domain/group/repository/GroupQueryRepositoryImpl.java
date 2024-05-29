@@ -6,9 +6,12 @@ import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,13 +61,20 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
         return new SliceImpl<>(groups, Pageable.ofSize(size), groups.size() > size);
     }
 
+    /**
+     * 사용자를 제외한 그룹원 정보와 그룹의 상세정보를 반환한다.
+     * @param groupId 상세정보를 찾을 그룹 아이디
+     * @param memberId 사용자 아이디
+     * @return 그룹의 상세정보({@code memberId} 제외 그룹원)
+     */
     public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
         final Long memberId) {
         GroupDetailDto groupDetailDtoIncludeMe =
             jpaQueryFactory
                 .selectFrom(group)
-                .join(memberGroup).on(memberGroup.group.id.eq(groupId))
+                .join(memberGroup).on(memberGroup.group.id.eq(group.id))
                 .join(member).on(member.id.eq(memberGroup.member.id))
+                .where(group.id.eq(groupId))
                 .transform(
                     groupBy(group.id).as(
                         Projections.constructor(
@@ -73,6 +83,7 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                             group.groupDescription,
                             group.groupProfileUrl,
                             group.createdAt,
+                            Expressions.asBoolean(Boolean.FALSE),
                             list(
                                 Projections.constructor(
                                     GroupMemberDto.class,
@@ -92,9 +103,15 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
             return Optional.empty();
         }
 
-        List<GroupMemberDto> groupMemberDtosExcludeMe = groupDetailDtoIncludeMe.members().stream()
-            .filter(memberDto -> !memberDto.memberId().equals(memberId))
-            .toList();
+        boolean isOwner = false;
+        List<GroupMemberDto> groupMemberDtosExcludeMe = new ArrayList<>();
+        for (GroupMemberDto dto : groupDetailDtoIncludeMe.members()) {
+            if (!dto.memberId().equals(memberId)) {
+                groupMemberDtosExcludeMe.add(dto);
+            } else {
+                isOwner = dto.isOwner();
+            }
+        }
 
         return Optional.of(
             GroupDetailDto.as(
@@ -102,14 +119,9 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                 groupDetailDtoIncludeMe.groupDescription(),
                 groupDetailDtoIncludeMe.groupProfileUrl(),
                 groupDetailDtoIncludeMe.createdAt(),
-                groupMemberDtosExcludeMe)
+                isOwner,
+                groupMemberDtosExcludeMe
+            )
         );
-    }
-
-    public Boolean findGroupEditPermission(final Long groupId, final Long memberId) {
-        return jpaQueryFactory.select(memberGroup.isOwner)
-            .from(memberGroup)
-            .where(memberGroup.group.id.eq(groupId).and(memberGroup.member.id.eq(memberId)))
-            .fetchOne();
     }
 }

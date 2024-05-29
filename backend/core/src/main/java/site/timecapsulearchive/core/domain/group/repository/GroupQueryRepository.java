@@ -17,6 +17,4 @@ public interface GroupQueryRepository {
 
     Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
         final Long memberId);
-
-    Boolean findGroupEditPermission(final Long groupId, final Long memberId);
 }
