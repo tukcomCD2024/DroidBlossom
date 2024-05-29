@@ -11,4 +11,14 @@ public record GroupDetailDto(
     List<GroupMemberDto> members
 ) {
 
+    public static GroupDetailDto as(
+        String groupName,
+        String groupDescription,
+        String groupProfileUrl,
+        ZonedDateTime createdAt,
+        List<GroupMemberDto> members
+    ) {
+        return new GroupDetailDto(groupName, groupDescription, groupProfileUrl, createdAt, members);
+    }
+
 }

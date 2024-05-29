@@ -10,6 +10,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -59,12 +60,11 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
 
     public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
         final Long memberId) {
-        return Optional.ofNullable(
+        GroupDetailDto groupDetailDtoIncludeMe =
             jpaQueryFactory
                 .selectFrom(group)
                 .join(memberGroup).on(memberGroup.group.id.eq(groupId))
                 .join(member).on(member.id.eq(memberGroup.member.id))
-                .where(member.id.ne(memberId))
                 .transform(
                     groupBy(group.id).as(
                         Projections.constructor(
@@ -86,7 +86,23 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                         )
                     )
                 )
-                .get(groupId)
+                .get(groupId);
+
+        if (Objects.isNull(groupDetailDtoIncludeMe)) {
+            return Optional.empty();
+        }
+
+        List<GroupMemberDto> groupMemberDtosExcludeMe = groupDetailDtoIncludeMe.members().stream()
+            .filter(memberDto -> !memberDto.memberId().equals(memberId))
+            .toList();
+
+        return Optional.of(
+            GroupDetailDto.as(
+                groupDetailDtoIncludeMe.groupName(),
+                groupDetailDtoIncludeMe.groupDescription(),
+                groupDetailDtoIncludeMe.groupProfileUrl(),
+                groupDetailDtoIncludeMe.createdAt(),
+                groupMemberDtosExcludeMe)
         );
     }
 
