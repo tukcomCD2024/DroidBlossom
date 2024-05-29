@@ -84,6 +84,7 @@ class GroupQueryRepositoryImplTest extends RepositoryTest {
             assertThat(groupDetail.groupDescription()).isNotBlank();
             assertThat(groupDetail.groupProfileUrl()).isNotBlank();
             assertThat(groupDetail.createdAt()).isNotNull();
+            assertThat(groupDetail.members()).isNotEmpty();
         });
     }
 
@@ -120,25 +121,6 @@ class GroupQueryRepositoryImplTest extends RepositoryTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(groupMemberDtos)
                 .noneMatch(member -> member.memberId().equals(groupMemberId));
-        });
-    }
-
-    @Test
-    void 그룹_아이디로_그룹을_상세정보를_조회하면_그룹의_상세정보를_볼_수_있다() {
-        //given
-        //when
-        GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
-                groupId, ownerId)
-            .orElseThrow();
-
-        //then
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(groupDetailDto.groupName()).isNotBlank();
-            softly.assertThat(groupDetailDto.groupDescription()).isNotBlank();
-            softly.assertThat(groupDetailDto.groupProfileUrl()).isNotBlank();
-            softly.assertThat(groupDetailDto.groupProfileUrl()).isNotBlank();
-            softly.assertThat(groupDetailDto.createdAt()).isNotNull();
-            softly.assertThat(groupDetailDto.members()).isNotEmpty();
         });
     }
 
