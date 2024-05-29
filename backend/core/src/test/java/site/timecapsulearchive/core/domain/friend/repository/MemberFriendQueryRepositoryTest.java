@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.friend.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
-import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.domain.FriendInviteFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
@@ -41,19 +42,19 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private static final Long FRIEND_ID_TO_INVITE_OWNER = 11L;
     private static final Long NOT_FRIEND_MEMBER_START_ID = 12L;
 
+    private final MemberFriendQueryRepository memberFriendQueryRepository;
+
     private final List<byte[]> hashedNotMemberPhones = new ArrayList<>();
     private final List<byte[]> hashedFriendPhones = new ArrayList<>();
     private final List<byte[]> hashedNotFriendPhones = new ArrayList<>();
-    private final MemberFriendQueryRepository memberFriendQueryRepository;
     private Long ownerId;
     private Long friendId;
 
-    MemberFriendQueryRepositoryTest(EntityManager entityManager) {
+    MemberFriendQueryRepositoryTest(@Autowired EntityManager entityManager) {
         this.memberFriendQueryRepository = new MemberFriendQueryRepositoryImpl(
             new JPAQueryFactory(entityManager));
     }
 
-    @Transactional
     @BeforeEach
     void setup(@Autowired EntityManager entityManager) {
         Member owner = MemberFixture.member(0);
@@ -78,19 +79,18 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         Member inviteFriendToOwner = MemberFixture.member(FRIEND_ID_TO_INVITE_OWNER.intValue());
         entityManager.persist(inviteFriendToOwner);
 
-        FriendInvite friendInvite = FriendInviteFixture.friendInvite(inviteFriendToOwner, owner);
+        FriendInvite friendInvite = FriendInviteFixture.friendInvite(inviteFriendToOwner,
+            owner);
         entityManager.persist(friendInvite);
 
         //owner와 친구가 아닌 멤버 데이터
-        List<Member> notFriendMembers = MemberFixture.members(NOT_FRIEND_MEMBER_START_ID.intValue(),
+        List<Member> notFriendMembers = MemberFixture.members(
+            NOT_FRIEND_MEMBER_START_ID.intValue(),
             MAX_COUNT);
         for (Member notFriend : notFriendMembers) {
             entityManager.persist(notFriend);
             hashedNotFriendPhones.add(notFriend.getPhone_hash());
         }
-
-        //회원이 아닌 휴대전화번호 데이터
-        hashedNotMemberPhones.addAll(MemberFixture.getPhoneBytesList(23, MAX_COUNT));
     }
 
     @ParameterizedTest
@@ -274,31 +274,96 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         assertThat(friends).isEmpty();
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {3, 6, 10, 5})
-    void 사용자가_친구_태그로_친구관계를_조회하면_친구인_경우_True를_반환한다(int friendId) {
+    @Test
+    void 태그로_검색하면_가장_비슷한_태그를_가진_사용자_한_명만_반환한다() {
         //given
-        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
-            ownerId, friendId + "testTag").orElseThrow();
+        String tag = "test_tag";
 
         //when
-        Boolean isFriend = dto.isFriend();
+        Optional<SearchFriendSummaryDtoByTag> dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag);
 
         //then
-        assertThat(isFriend).isTrue();
+        assertThat(dto).isPresent();
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {12, 15, 19, 21})
-    void 사용자가_친구_태그로_친구관계를_조회하면_친구가_아닌_경우_False를_반환한다(int friendId) {
+    @Test
+    void 일치하는_태그로_검색하면_일치하는_태그를_가진_사용자_한_명만만_나온다() {
         //given
-        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
-            ownerId, friendId + "testTag").orElseThrow();
+        String tag = "test_tag_9999";
 
         //when
-        Boolean isFriend = dto.isFriend();
+        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag).orElseThrow();
 
         //then
-        assertThat(isFriend).isFalse();
+        assertThat(dto.nickname()).isEqualTo("test_nickname_9999");
+    }
+
+    @Test
+    void 일치하지_않는_태그로_검색하면_결과가_나오지_않는다() {
+        //given
+        String tag = "trash";
+
+        //when
+        //then
+        assertThatThrownBy(() -> memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag).orElseThrow());
+    }
+
+    @Test
+    void 사용자가_친구_태그로_친구관계를_조회하면_친구인_경우_True를_반환한다() {
+        //given
+        String tag = "test_tag_9999";
+        Long ownerId = 10000L;
+
+        //when
+        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag).orElseThrow();
+
+        //then
+        assertThat(dto.isFriend()).isTrue();
+    }
+
+    @Test
+    void 사용자가_친구_태그로_친구관계를_조회하면_친구가_아닌_경우_False를_반환한다() {
+        //given
+        String tag = "test_tag_9999";
+        Long ownerId = 10003L;
+
+        //when
+        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag).orElseThrow();
+
+        //then
+        assertThat(dto.isFriend()).isFalse();
+    }
+
+    @Test
+    void 사용자가_친구_태그로_친구초대관계를_조회하면_친구_초대한_경우_True를_반환한다() {
+        //given
+        String tag = "test_tag_9999";
+        Long ownerId = 10001L;
+
+        //when
+        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag).orElseThrow();
+
+        //then
+        assertThat(dto.isFriend()).isTrue();
+    }
+
+    @Test
+    void 사용자가_친구_태그로_친구초대관계를_조회하면_친구_초대하지_않은_경우_False를_반환한다() {
+        //given
+        String tag = "test_tag_9999";
+        Long ownerId = 10003L;
+
+        //when
+        SearchFriendSummaryDtoByTag dto = memberFriendQueryRepository.findFriendsByTag(
+            ownerId, tag).orElseThrow();
+
+        //then
+        assertThat(dto.isFriend()).isFalse();
     }
 }
