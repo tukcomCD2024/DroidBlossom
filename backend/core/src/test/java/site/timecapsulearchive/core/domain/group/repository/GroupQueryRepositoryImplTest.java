@@ -18,6 +18,7 @@ import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
@@ -57,6 +58,69 @@ class GroupQueryRepositoryImplTest extends RepositoryTest {
             entityManager.persist(mg);
         }
         groupMemberId = members.get(0).getId();
+    }
+
+    @Test
+    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_상세가_반환된다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            groupId, ownerId).orElseThrow();
+
+        //then
+        assertThat(groupDetail).isNotNull();
+    }
+
+    @Test
+    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_정보를_볼_수_있다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            groupId, ownerId).orElseThrow();
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(groupDetail.groupName()).isNotBlank();
+            assertThat(groupDetail.groupDescription()).isNotBlank();
+            assertThat(groupDetail.groupProfileUrl()).isNotBlank();
+            assertThat(groupDetail.createdAt()).isNotNull();
+        });
+    }
+
+    @Test
+    void 그룹_아이디와_멤버_아이디_그룹을_조회하면_그룹원들의_정보를_볼_수_있다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            groupId, groupMemberId).orElseThrow();
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            assertThat(groupDetail.members()).isNotEmpty();
+            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.memberId()).isNotNull());
+            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.tag()).isNotBlank());
+            assertThat(groupDetail.members()).allSatisfy(
+                m -> assertThat(m.nickname()).isNotBlank());
+            assertThat(groupDetail.members()).allSatisfy(
+                m -> assertThat(m.profileUrl()).isNotBlank());
+            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.isOwner()).isNotNull());
+        });
+    }
+
+    @Test
+    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_본인은_포함되어_조회되지_않는다() {
+        //given
+        //when
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+            groupId, groupMemberId).orElseThrow();
+
+        List<GroupMemberDto> groupMemberDtos = groupDetail.members();
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(groupMemberDtos)
+                .noneMatch(member -> member.memberId().equals(groupMemberId));
+        });
     }
 
     @Test

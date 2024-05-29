@@ -40,7 +40,6 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
 
     private Long memberId;
     private Long memberIdWithNoGroup;
-    private Long ownerGroupId;
 
     MemberGroupQueryRepositoryTest(JPAQueryFactory jpaQueryFactory) {
         this.groupQueryRepository = new GroupQueryRepositoryImpl(jpaQueryFactory);
@@ -66,9 +65,6 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
             entityManager.persist(group);
             groups.add(group);
         }
-
-        //사용자가 그룹장인 그룹아이디
-        ownerGroupId = groups.get(0).getId();
 
         //그룹원들
         List<Member> members = MemberFixture.members(4, 2);
@@ -149,68 +145,5 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(groupsSlice.isEmpty()).isTrue();
-    }
-
-    @Test
-    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_상세가_반환된다() {
-        //given
-        //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
-            ownerGroupId, memberId).orElseThrow();
-
-        //then
-        assertThat(groupDetail).isNotNull();
-    }
-
-    @Test
-    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_정보를_볼_수_있다() {
-        //given
-        //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
-            ownerGroupId, memberId).orElseThrow();
-
-        //then
-        SoftAssertions.assertSoftly(softly -> {
-            assertThat(groupDetail.groupName()).isNotBlank();
-            assertThat(groupDetail.groupDescription()).isNotBlank();
-            assertThat(groupDetail.groupProfileUrl()).isNotBlank();
-            assertThat(groupDetail.createdAt()).isNotNull();
-        });
-    }
-
-    @Test
-    void 그룹_아이디와_멤버_아이디_그룹을_조회하면_그룹원들의_정보를_볼_수_있다() {
-        //given
-        //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
-            ownerGroupId, memberId).orElseThrow();
-
-        //then
-        SoftAssertions.assertSoftly(softly -> {
-            assertThat(groupDetail.members()).isNotEmpty();
-            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.memberId()).isNotNull());
-            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.tag()).isNotBlank());
-            assertThat(groupDetail.members()).allSatisfy(
-                m -> assertThat(m.nickname()).isNotBlank());
-            assertThat(groupDetail.members()).allSatisfy(
-                m -> assertThat(m.profileUrl()).isNotBlank());
-            assertThat(groupDetail.members()).allSatisfy(m -> assertThat(m.isOwner()).isNotNull());
-        });
-    }
-
-    @Test
-    void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_본인은_포함되어_조회되지_않는다() {
-        //given
-        //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
-            ownerGroupId, memberId).orElseThrow();
-
-        List<GroupMemberDto> groupMemberDtos = groupDetail.members();
-
-        //then
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(groupMemberDtos)
-                .noneMatch(member -> member.memberId().equals(memberId));
-        });
     }
 }
