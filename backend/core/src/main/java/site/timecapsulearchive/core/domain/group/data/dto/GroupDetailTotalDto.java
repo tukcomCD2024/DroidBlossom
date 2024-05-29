@@ -19,7 +19,6 @@ public record GroupDetailTotalDto(
     public static GroupDetailTotalDto as(
         final GroupDetailDto groupDetailDto,
         final Long groupCapsuleTotalCount,
-        final Boolean canGroupEdit,
         final List<Long> friendIds
     ) {
         final List<GroupMemberWithRelationDto> membersWithRelation = groupDetailDto.members()
@@ -33,7 +32,7 @@ public record GroupDetailTotalDto(
             groupDetailDto.groupProfileUrl(),
             groupDetailDto.createdAt(),
             groupCapsuleTotalCount,
-            canGroupEdit,
+            groupDetailDto.isOwner(),
             membersWithRelation
         );
     }
