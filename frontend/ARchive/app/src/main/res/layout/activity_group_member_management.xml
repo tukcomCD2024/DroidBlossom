@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1"
+        android:paddingHorizontal="@dimen/padding"
+        tools:context=".presentation.ui.mypage.friend.detail.group.management.GroupMemberManagementActivity">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/viewHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="그룹원 관리"
+            android:textAppearance="@style/TextAppearance.App.h2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.068" />
+
+        <View
+            android:id="@+id/baseV"
+            android:background="@drawable/corner_radius_30"
+            android:backgroundTint="@color/white"
+            app:layout_constraintTop_toTopOf="@id/groupMemberManagementTab"
+            app:layout_constraintBottom_toBottomOf="@id/groupMemberManagementTab"
+            app:layout_constraintEnd_toEndOf="@id/groupMemberManagementTab"
+            app:layout_constraintStart_toStartOf="@id/groupMemberManagementTab"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/groupMemberManagementTab"
+            style="@style/FriendTabLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
+            bind:tabMarginEnd="@{12}">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="그룹원 목록" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="초대 가능 목록" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="초대 요청 목록" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/groupMemberManagementViewPager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintBaseline_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/groupMemberManagementTab" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

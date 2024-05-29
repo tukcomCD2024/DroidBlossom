@@ -12,6 +12,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.HomeViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.adapter.GroupMemberRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.GroupMemberManagementActivity
 import kotlinx.coroutines.launch
 
 class GroupMemberFragment:
@@ -37,7 +38,17 @@ class GroupMemberFragment:
         binding.vm = viewModel
 
         initRV()
+        initView()
     }
+
+    private fun initView(){
+        with(binding){
+            addGroupMemberT.setOnClickListener {
+                startActivity(GroupMemberManagementActivity.newIntent(requireContext()))
+            }
+        }
+    }
+
 
     private fun initRV(){
         binding.groupMemberRV.adapter = groupMemberRVA

@@ -33,7 +33,9 @@
         android:theme="@style/Theme.ARchive"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".presentation.ui.mypage.friend.detail.group.management.GroupMemberManagementActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.ui.mypage.friend.detail.group.GroupDetailActivity"
             android:exported="false" />
