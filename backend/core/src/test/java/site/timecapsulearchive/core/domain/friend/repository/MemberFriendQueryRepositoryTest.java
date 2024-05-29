@@ -40,7 +40,7 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
-    private static String PROPAGATION_REQUIRES_NEW = "PROPAGATION_REQUIRES_NEW";
+    private static final String PROPAGATION_REQUIRES_NEW = "PROPAGATION_REQUIRES_NEW";
     private static final int MAX_COUNT = 10;
     private static final Long FRIEND_START_ID = 2L;
     private static final Long FRIEND_ID_TO_INVITE_OWNER = 12L;

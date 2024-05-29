@@ -173,12 +173,12 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
         final QFriendInvite friendInviteToFriend = new QFriendInvite(FRIEND_INVITE_TO_FRIEND_PATH);
         final QFriendInvite friendInviteToMe = new QFriendInvite(FRIEND_INVITE_TO_ME_PATH);
 
-        NumberTemplate<Double> tagMatchTemplate = Expressions.numberTemplate(Double.class,
+        NumberTemplate<Double> tagFullTextSearchTemplate = Expressions.numberTemplate(Double.class,
             MATCH_AGAINST_FUNCTION,
             member.tag,
             tag);
 
-        OrderSpecifier<Boolean> tagEqCaseDesc = new CaseBuilder().when(member.tag.eq(tag))
+        OrderSpecifier<Boolean> tagFullyMatchFirstOrder = new CaseBuilder().when(member.tag.eq(tag))
             .then(Boolean.TRUE)
             .otherwise(Boolean.FALSE).desc();
 
@@ -203,8 +203,8 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.owner.id.eq(member.id)
                 .and(friendInviteToMe.friend.id.eq(memberId)))
-            .where(tagMatchTemplate.gt(MATCH_THRESHOLD))
-            .orderBy(tagEqCaseDesc, tagMatchTemplate.desc())
+            .where(tagFullTextSearchTemplate.gt(MATCH_THRESHOLD))
+            .orderBy(tagFullyMatchFirstOrder, tagFullTextSearchTemplate.desc())
             .limit(1L)
             .fetchOne()
         );
