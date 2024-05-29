@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GroupDetailViewModelImpl @Inject constructor(
-    private val getGroupDetailUseCase: GetGroupDetailUseCase
+    private val getGroupDetailUseCase: GetGroupDetailUseCase,
 ) : BaseViewModel(), GroupDetailViewModel {
 
     private val _groupDetailEvents = MutableSharedFlow<GroupDetailViewModel.GroupDetailEvent>()

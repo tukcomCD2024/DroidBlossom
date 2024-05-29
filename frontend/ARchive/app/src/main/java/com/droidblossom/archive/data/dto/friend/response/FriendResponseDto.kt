@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.dto.friend.response
 
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
+import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 
 data class FriendResponseDto(
     val createdAt: String,
@@ -27,5 +28,12 @@ data class FriendResponseDto(
         isFriendInviteToMe = false,
         name = "",
         isChecked = false
+    )
+
+    fun toFriendsForGroupInvite() = FriendForGroupInvite(
+        id = this.id,
+        nickname = this.nickname,
+        profileUrl = this.profileUrl,
+        createdAt = this.createdAt
     )
 }

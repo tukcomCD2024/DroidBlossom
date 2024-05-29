@@ -21,6 +21,7 @@ import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneResponse
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.domain.repository.FriendRepository
+import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
@@ -66,5 +67,9 @@ class FriendRepositoryImpl @Inject constructor(
 
     override suspend fun deleteFriendDeny(friendId: Long): RetrofitResult<String> {
         return apiHandler({api.deleteFriendDenyRequestApi(friendId)}) {response: ResponseBody<String> -> response.result.toModel()}
+    }
+
+    override suspend fun getFriendsForGroupInvitePage(groupId: Long, pagingRequestDto: PagingRequestDto): RetrofitResult<FriendsPage<FriendForGroupInvite>> {
+        return apiHandler({api.getFriendsForGroupInvitePageApi(groupId, pagingRequestDto.size, pagingRequestDto.createdAt)}) { response: ResponseBody<FriendsPageResponseDto> -> response.result.toModelForGroupInvite() }
     }
 }

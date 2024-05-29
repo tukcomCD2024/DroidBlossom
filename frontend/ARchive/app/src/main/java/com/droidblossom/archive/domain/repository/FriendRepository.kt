@@ -11,6 +11,7 @@ import com.droidblossom.archive.domain.model.friend.FriendReqStatusResponse
 import com.droidblossom.archive.domain.model.friend.FriendsPage
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneResponse
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
+import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 import com.droidblossom.archive.util.RetrofitResult
 
 interface FriendRepository {
@@ -25,4 +26,6 @@ interface FriendRepository {
     suspend fun getFriendsRequestsPage(request: PagingRequestDto) : RetrofitResult<FriendsPage<Friend>>
     suspend fun deleteFriend(friendId: Long) : RetrofitResult<String>
     suspend fun deleteFriendDeny(friendId: Long) : RetrofitResult<String>
+    suspend fun getFriendsForGroupInvitePage(groupId : Long, pagingRequestDto: PagingRequestDto) : RetrofitResult<FriendsPage<FriendForGroupInvite>>
+
 }

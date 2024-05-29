@@ -64,4 +64,11 @@ interface FriendService {
     suspend fun deleteFriendDenyRequestApi(
         @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<String>>
+
+    @GET("friends/before/group_invite")
+    suspend fun getFriendsForGroupInvitePageApi(
+        @Query("group_id") groupId : Long,
+        @Query("size") size : Int,
+        @Query("created_at") createdAt : String
+    ) : Response<ResponseBody<FriendsPageResponseDto>>
 }
