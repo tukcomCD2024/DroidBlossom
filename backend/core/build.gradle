@@ -74,9 +74,6 @@ dependencies {
     //aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-    //jnanoid
-    implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
-
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'

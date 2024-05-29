@@ -76,6 +76,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             socialType,
             attributes.getOauth2UserInfo()
         );
+
+        boolean isDuplicateTag = memberRepository.checkTagDuplication(createMember.getTag());
+        if (isDuplicateTag) {
+            log.warn("member tag duplicate - email:{}, tag:{}", createMember.getEmail(),
+                createMember.getTag());
+            createMember.updateTagLowerCaseSocialType();
+            log.warn("member tag update - tag: {}", createMember.getTag());
+        }
+
         return memberRepository.save(createMember);
     }
 }

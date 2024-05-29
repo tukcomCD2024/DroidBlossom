@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.config;
+package site.timecapsulearchive.core.global.config.repository;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

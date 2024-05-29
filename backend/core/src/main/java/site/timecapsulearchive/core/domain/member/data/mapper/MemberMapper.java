@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.member.data.mapper;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +11,7 @@ import site.timecapsulearchive.core.domain.member.data.response.MemberNotificati
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.security.oauth.dto.OAuth2UserInfo;
+import site.timecapsulearchive.core.global.util.TagGenerator;
 import site.timecapsulearchive.core.global.util.nickname.MakeRandomNickNameUtil;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
@@ -33,7 +33,7 @@ public class MemberMapper {
             .email(oAuth2UserInfo.getEmail())
             .profileUrl(oAuth2UserInfo.getImageUrl())
             .socialType(socialType)
-            .tag(NanoIdUtils.randomNanoId())
+            .tag(TagGenerator.generate(oAuth2UserInfo.getEmail(), socialType))
             .build();
     }
 
@@ -64,13 +64,15 @@ public class MemberMapper {
     }
 
     public Member createMemberWithEmail(String email, String password) {
+        SocialType socialType = SocialType.EMAIL;
+
         return Member.builder()
             .email(email)
             .password(password)
             .authId(String.valueOf(UUID.randomUUID()))
             .profileUrl("")
-            .socialType(SocialType.EMAIL)
-            .tag(NanoIdUtils.randomNanoId())
+            .socialType(socialType)
+            .tag(TagGenerator.generate(email, socialType))
             .build();
     }
 }

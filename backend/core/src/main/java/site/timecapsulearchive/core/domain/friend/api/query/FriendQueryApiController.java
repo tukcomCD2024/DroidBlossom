@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
@@ -127,10 +128,13 @@ public class FriendQueryApiController implements FriendQueryApi {
         @AuthenticationPrincipal Long memberId,
         @RequestParam(value = "friend_tag") final String tag
     ) {
+        SearchFriendSummaryDtoByTag searchResult = friendQueryService.searchFriend(
+            memberId, tag);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                friendQueryService.searchFriend(memberId, tag)
+                searchResult.toResponse()
             )
         );
     }

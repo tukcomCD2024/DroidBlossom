@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.config;
+package site.timecapsulearchive.core.global.config.repository;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

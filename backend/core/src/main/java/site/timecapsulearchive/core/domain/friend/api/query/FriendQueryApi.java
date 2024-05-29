@@ -104,8 +104,12 @@ public interface FriendQueryApi {
     );
 
     @Operation(
-        summary = "찬구 검색",
-        description = "친구의 tag로 친구 검색을 한다.",
+        summary = "친구 검색",
+        description = """
+        친구의 tag로 친구 검색을 한다.
+        <br>
+        태그가 일치하면 일치하는 태그를 가진 사용자를 일치하지 않으면 가장 비슷한 태그를 가진 사용자를 반환한다.
+        """,
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
     )

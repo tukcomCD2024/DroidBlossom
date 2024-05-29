@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
+import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
 @Getter
@@ -72,5 +73,9 @@ public class MemberTemporary extends BaseEntity {
             .phone_hash(phone_hash)
             .phone(phone)
             .build();
+    }
+
+    public void updateTagLowerCaseSocialType() {
+        this.tag = TagGenerator.lowercase(email, socialType);
     }
 }
