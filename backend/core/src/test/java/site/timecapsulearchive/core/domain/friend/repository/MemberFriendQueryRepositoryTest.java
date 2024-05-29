@@ -13,12 +13,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.sql.DataSource;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Slice;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import site.timecapsulearchive.core.common.RepositoryTest;
@@ -37,6 +42,7 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
+    private static final String SQL_SCRIP_NAME = "member_tag_insert.sql";
     private static final int MAX_COUNT = 10;
     private static final Long FRIEND_START_ID = 1L;
     private static final Long FRIEND_ID_TO_INVITE_OWNER = 11L;
@@ -53,6 +59,14 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     MemberFriendQueryRepositoryTest(@Autowired EntityManager entityManager) {
         this.memberFriendQueryRepository = new MemberFriendQueryRepositoryImpl(
             new JPAQueryFactory(entityManager));
+    }
+
+    @BeforeAll
+    static void insertScript(@Autowired DataSource dataSource) {
+        Resource resource = new ClassPathResource(SQL_SCRIP_NAME);
+        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(
+            resource);
+        resourceDatabasePopulator.execute(dataSource);
     }
 
     @BeforeEach

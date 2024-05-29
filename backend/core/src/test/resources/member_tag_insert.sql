@@ -6,13 +6,13 @@ values  (true, false, now(), 9999, now(), null, 'test_nickname_9999', 'KAKAO', '
         (true, false, now(), 10003, now(), null, 'test_nickname_10003', 'KAKAO', 'test_email_10003@gmail.co', null, 'http://test_profile_url_10003.com', 'test_auth_id_10003', null, 'test_tag_10003', null);
 
 insert into member_friend(member_friend_id, owner_id, friend_id, created_at, updated_at)
-values (1, 10000, 9999, now(), now()),
-       (2, 9999, 10000, now(), now()),
-       (3, 9999, 10001, now(), now()),
-       (4, 10001, 9999, now(), now());
+values (999, 10000, 9999, now(), now()),
+       (1000, 9999, 10000, now(), now()),
+       (1001, 9999, 10001, now(), now()),
+       (1002, 10001, 9999, now(), now());
 
 insert into friend_invite(friend_invite_id, owner_id, friend_id, created_at, updated_at)
-values (1, 10002, 9999, now(), now()),
-       (2, 9999, 10002, now(), now()),
-       (3, 9999, 10003, now(), now()),
-       (4, 10003, 9999, now(), now());
+values (999, 10002, 9999, now(), now()),
+       (1000, 9999, 10002, now(), now()),
+       (1001, 9999, 10003, now(), now()),
+       (1002, 10003, 9999, now(), now());
