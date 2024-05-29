@@ -6,7 +6,11 @@ import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.me
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -26,6 +30,11 @@ import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 @Repository
 @RequiredArgsConstructor
 public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryRepository {
+
+    private static final double MATCH_THRESHOLD = 0;
+    private static final String MATCH_AGAINST_FUNCTION = "function('match_against', {0}, {1})";
+    private static final String FRIEND_INVITE_TO_ME_PATH = "friendInviteToMe";
+    private static final String FRIEND_INVITE_TO_FRIEND_PATH = "friendInviteToFriend";
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -121,8 +130,8 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
         final Long memberId,
         final List<byte[]> hashes
     ) {
-        final QFriendInvite friendInviteToFriend = new QFriendInvite("friendInviteToFriend");
-        final QFriendInvite friendInviteToMe = new QFriendInvite("friendInviteToMe");
+        final QFriendInvite friendInviteToFriend = new QFriendInvite(FRIEND_INVITE_TO_FRIEND_PATH);
+        final QFriendInvite friendInviteToMe = new QFriendInvite(FRIEND_INVITE_TO_ME_PATH);
 
         return jpaQueryFactory
             .select(
@@ -157,8 +166,21 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
         final Long memberId,
         final String tag
     ) {
-        final QFriendInvite friendInviteToFriend = new QFriendInvite("friendInviteToFriend");
-        final QFriendInvite friendInviteToMe = new QFriendInvite("friendInviteToMe");
+        if (tag != null && tag.isBlank()) {
+            return Optional.empty();
+        }
+
+        final QFriendInvite friendInviteToFriend = new QFriendInvite(FRIEND_INVITE_TO_FRIEND_PATH);
+        final QFriendInvite friendInviteToMe = new QFriendInvite(FRIEND_INVITE_TO_ME_PATH);
+
+        NumberTemplate<Double> tagMatchTemplate = Expressions.numberTemplate(Double.class,
+            MATCH_AGAINST_FUNCTION,
+            member.tag,
+            tag);
+
+        OrderSpecifier<Boolean> tagEqCaseDesc = new CaseBuilder().when(member.tag.eq(tag))
+            .then(Boolean.TRUE)
+            .otherwise(Boolean.FALSE).desc();
 
         return Optional.ofNullable(jpaQueryFactory
             .select(
@@ -179,9 +201,11 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .on(friendInviteToFriend.friend.id.eq(member.id)
                 .and(friendInviteToFriend.owner.id.eq(memberId)))
             .leftJoin(friendInviteToMe)
-            .on(friendInviteToMe.friend.id.eq(memberId)
-                .and(friendInviteToMe.owner.id.eq(member.id)))
-            .where(member.tag.eq(tag))
+            .on(friendInviteToMe.owner.id.eq(member.id)
+                .and(friendInviteToMe.friend.id.eq(memberId)))
+            .where(tagMatchTemplate.gt(MATCH_THRESHOLD))
+            .orderBy(tagEqCaseDesc, tagMatchTemplate.desc())
+            .limit(1L)
             .fetchOne()
         );
     }

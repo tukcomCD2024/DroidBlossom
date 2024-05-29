@@ -23,6 +23,7 @@ import site.timecapsulearchive.core.domain.history.entity.History;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
+import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
 @Getter
@@ -107,4 +108,7 @@ public class Member extends BaseEntity {
         this.phone_hash = phone_hash;
     }
 
+    public void updateTagLowerCaseSocialType() {
+        this.tag = TagGenerator.lowercase(email, socialType);
+    }
 }
