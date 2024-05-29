@@ -30,6 +30,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
     private final JPAQueryFactory query;
 
+    @Override
     public Boolean findIsVerifiedByAuthIdAndSocialType(
         final String authId,
         final SocialType socialType
@@ -40,6 +41,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
             .fetchOne();
     }
 
+    @Override
     public Optional<VerifiedCheckDto> findVerifiedCheckDtoByAuthIdAndSocialType(
         final String authId,
         final SocialType socialType
@@ -59,6 +61,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         );
     }
 
+    @Override
     public Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId) {
         return Optional.ofNullable(
             query
@@ -85,6 +88,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", expression);
     }
 
+    @Override
     public Slice<MemberNotificationDto> findNotificationSliceByMemberId(
         final Long memberId,
         final int size,
@@ -101,6 +105,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return new SliceImpl<>(notifications, Pageable.ofSize(size), hasNext);
     }
 
+    @Override
     public List<MemberNotificationDto> findMemberNotificationDtos(
         final Long memberId,
         final int size,
@@ -126,6 +131,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
             .fetch();
     }
 
+    @Override
     public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(
         final String email
     ) {
@@ -146,6 +152,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         );
     }
 
+    @Override
     public Boolean checkEmailDuplication(final String email) {
         final Integer count = query.selectOne()
             .from(member)
@@ -155,6 +162,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return count != null;
     }
 
+    @Override
     public Optional<Boolean> findIsAlarmByMemberId(final Long memberId) {
         return Optional.ofNullable(
             query.select(member.notificationEnabled)
@@ -164,11 +172,22 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         );
     }
 
+    @Override
     public List<Long> findMemberIdsByIds(List<Long> ids) {
         return query
             .select(member.id)
             .from(member)
             .where(member.id.in(ids))
             .fetch();
+    }
+
+    @Override
+    public boolean checkTagDuplication(String tag) {
+        final Integer count = query.selectOne()
+            .from(member)
+            .where(member.tag.eq(tag))
+            .fetchFirst();
+
+        return count != null;
     }
 }

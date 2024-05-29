@@ -77,7 +77,7 @@ class FriendQueryServiceTest {
             .willReturn(summaryDtoByTag);
 
         //when
-        SearchTagFriendSummaryResponse actualResponse = friendQueryService.searchFriend(
+        SearchFriendSummaryDtoByTag actualResponse = friendQueryService.searchFriend(
             memberId, tag);
 
         //then

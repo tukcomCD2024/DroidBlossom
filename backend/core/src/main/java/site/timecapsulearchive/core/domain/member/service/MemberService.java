@@ -27,6 +27,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
 @Service
@@ -42,7 +43,8 @@ public class MemberService {
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
-        final MemberTemporary member = dto.toMemberTemporary();
+        final String tag = TagGenerator.generate(dto.email(), dto.socialType());
+        final MemberTemporary member = dto.toMemberTemporary(tag);
 
         final MemberTemporary savedMember = memberTemporaryRepository.save(member);
 
@@ -165,6 +167,14 @@ public class MemberService {
         final String encodedPassword = passwordEncoder.encode(password);
         final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
 
+        boolean isDuplicateTag = memberRepository.checkTagDuplication(member.getTag());
+        if (isDuplicateTag) {
+            log.warn("member tag duplicate - email:{}, tag:{}", member.getEmail(),
+                member.getTag());
+            member.updateTagLowerCaseSocialType();
+            log.warn("member tag update - tag: {}", member.getTag());
+        }
+
         final Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();
@@ -213,9 +223,5 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
-    }
-
-    public List<Long> findMemberIdsByIds(List<Long> ids) {
-        return memberRepository.findMemberIdsByIds(ids);
     }
 }

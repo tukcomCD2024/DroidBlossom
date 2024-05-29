@@ -10,7 +10,6 @@ import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
@@ -53,12 +52,8 @@ public class FriendQueryService {
         return memberFriendRepository.findFriendsByPhone(memberId, hashes);
     }
 
-    public SearchTagFriendSummaryResponse searchFriend(final Long memberId, final String tag) {
-        final SearchFriendSummaryDtoByTag friendSummaryDto = memberFriendRepository
-            .findFriendsByTag(memberId, tag).orElseThrow(FriendNotFoundException::new);
-
-        return friendSummaryDto.toResponse();
+    public SearchFriendSummaryDtoByTag searchFriend(final Long memberId, final String tag) {
+        return memberFriendRepository.findFriendsByTag(memberId, tag)
+            .orElseThrow(FriendNotFoundException::new);
     }
-
-
 }

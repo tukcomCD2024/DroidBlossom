@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.config;
+package site.timecapsulearchive.core.global.config.repository;
 
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import site.timecapsulearchive.core.global.config.JpaAuditingConfig;
-import site.timecapsulearchive.core.global.config.QueryDSLConfig;
+import site.timecapsulearchive.core.global.config.repository.JpaAuditingConfig;
+import site.timecapsulearchive.core.global.config.repository.QueryDSLConfig;
 
 @Import(value = {JpaAuditingConfig.class, QueryDSLConfig.class})
 @DataJpaTest
