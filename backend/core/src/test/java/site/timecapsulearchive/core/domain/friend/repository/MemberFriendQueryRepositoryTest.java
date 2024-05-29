@@ -105,6 +105,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             entityManager.persist(notFriend);
             hashedNotFriendPhones.add(notFriend.getPhone_hash());
         }
+
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @ParameterizedTest
