@@ -5,4 +5,5 @@ data class FriendForGroupInvite(
     val nickname: String,
     val profileUrl: String,
     val createdAt: String,
+    var isChecked : Boolean,
 )

@@ -34,6 +34,7 @@ data class FriendResponseDto(
         id = this.id,
         nickname = this.nickname,
         profileUrl = this.profileUrl,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        isChecked = false
     )
 }

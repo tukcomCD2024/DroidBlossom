@@ -8,10 +8,12 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityManagementGroupMemberBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.adapter.ManagementGroupMemberVPA
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,10 @@ class ManagementGroupMemberActivity :
 
     override val viewModel: ManagementGroupMemberViewModelImpl by viewModels<ManagementGroupMemberViewModelImpl>()
 
+    private val groupId: Long by lazy {
+        intent.getLongExtra(GROUP_ID, -1)
+    }
+
     private val managementGroupMemberVPA by lazy {
         ManagementGroupMemberVPA(this)
     }
@@ -35,7 +41,7 @@ class ManagementGroupMemberActivity :
                 viewModel.managementGroupMemberEvents.collect { event ->
                     when(event){
                         is ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage -> {
-
+                            showToastMessage(event.message)
                         }
                         ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading -> {
 
@@ -57,7 +63,7 @@ class ManagementGroupMemberActivity :
         binding.viewHeaderTitle.layoutParams = layoutParams
 
         initView()
-
+        viewModel.setGroupId(groupId)
     }
 
     private fun initView(){
@@ -87,13 +93,14 @@ class ManagementGroupMemberActivity :
 
     companion object {
 
+        private const val GROUP_ID = "group_id"
+
         const val GROUP_MEMBERS = 0
         const val INVITABLE_FRIENDS = 1
         const val INVITATION_REQUESTS = 2
-
-        fun newIntent(context: Context) =
+        fun newIntent(context: Context, groupId: Long) =
             Intent(context, ManagementGroupMemberActivity::class.java).apply {
-
+                putExtra(GROUP_ID, groupId)
             }
     }
 }

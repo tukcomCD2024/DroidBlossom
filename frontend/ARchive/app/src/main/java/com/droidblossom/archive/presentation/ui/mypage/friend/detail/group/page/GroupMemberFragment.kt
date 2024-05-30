@@ -43,7 +43,7 @@ class GroupMemberFragment:
     private fun initView(){
         with(binding){
             addGroupMemberT.setOnClickListener {
-                startActivity(ManagementGroupMemberActivity.newIntent(requireContext()))
+                startActivity(ManagementGroupMemberActivity.newIntent(requireContext(), viewModel.groupId.value))
             }
         }
     }

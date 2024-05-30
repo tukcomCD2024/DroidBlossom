@@ -11,10 +11,29 @@ interface ManagementGroupMemberViewModel {
     val managementGroupMemberEvents: SharedFlow<ManagementGroupMemberEvent>
     val groupMembers: StateFlow<List<GroupMember>>
     val invitedUsers: StateFlow<List<GroupMember>>
+    val invitedUsersHasNextPage: StateFlow<Boolean>
+    val invitedUsersLastCreatedTime: StateFlow<String>
     val invitableFriends: StateFlow<List<FriendForGroupInvite>>
+    val groupInviteeList: StateFlow<List<FriendForGroupInvite>>
+    val invitableFriendsHasNextPage: StateFlow<Boolean>
+    val invitableFriendsLastCreatedTime: StateFlow<String>
+
+    var remainingInvites : Int
 
     fun managementGroupMemberEvent(event: ManagementGroupMemberEvent)
     fun setGroupId(groupId: Long)
+
+    fun getInvitableFriendList()
+    fun getLatestInvitableFriendList()
+    fun onInvitableFriendsRVNearBottom()
+
+    fun getInvitedUserList()
+    fun getLatestInvitedUserList()
+    fun onInvitedUsersRVScrollNearBottom()
+
+    fun onClickInvitableFriend(position: Int)
+
+    fun inviteFriendsToGroup()
 
     sealed class ManagementGroupMemberEvent{
         data class ShowToastMessage(val message : String) : ManagementGroupMemberEvent()
