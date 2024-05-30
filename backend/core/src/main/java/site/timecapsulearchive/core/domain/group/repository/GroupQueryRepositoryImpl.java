@@ -55,11 +55,29 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
             .fetch();
 
         final List<Long> groupIds = groups.stream().map(GroupSummaryDto::id).toList();
+        final List<String> groupOwnerProfileUrls = getGroupOwnerProfileUrls(groupIds);
+        final List<Long> totalGroupMemberCount = getTotalGroupMemberCount(groupIds);
 
-        final List<String> groupOwnerProfileUrls = jpaQueryFactory
-            .select(
-                member.profileUrl
+        final boolean hasNext = groups.size() > size;
+        if (hasNext) {
+            groups.remove(size);
+        }
+
+        final List<FinalGroupSummaryDto> dtos = IntStream.range(0, groups.size())
+            .mapToObj(i -> new FinalGroupSummaryDto(
+                    groups.get(i),
+                    groupOwnerProfileUrls.get(i),
+                    totalGroupMemberCount.get(i)
+                )
             )
+            .toList();
+
+        return new SliceImpl<>(dtos, Pageable.ofSize(size), hasNext);
+    }
+
+    private List<String> getGroupOwnerProfileUrls(final List<Long> groupIds) {
+        return jpaQueryFactory
+            .select(member.profileUrl)
             .from(memberGroup)
             .join(memberGroup.group, group)
             .join(memberGroup.member, member)
@@ -67,26 +85,16 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                 .and(memberGroup.isOwner.eq(true)))
             .orderBy(group.id.desc())
             .fetch();
+    }
 
-        final List<Long> totalGroupMemberCount = jpaQueryFactory
+    private List<Long> getTotalGroupMemberCount(final List<Long> groupIds) {
+        return jpaQueryFactory
             .select(memberGroup.count())
             .from(memberGroup)
             .where(memberGroup.group.id.in(groupIds))
             .groupBy(memberGroup.group.id)
             .orderBy(memberGroup.group.id.desc())
             .fetch();
-
-        final boolean hasNext = groups.size() > size;
-        if (hasNext) {
-            groups.remove(size);
-        }
-
-        List<FinalGroupSummaryDto> dtos = IntStream.range(0, groups.size())
-            .mapToObj(i -> new FinalGroupSummaryDto(groups.get(i),
-                groupOwnerProfileUrls.get(i), totalGroupMemberCount.get(i)))
-            .toList();
-
-        return new SliceImpl<>(dtos, Pageable.ofSize(size), hasNext);
     }
 
     /**
@@ -151,6 +159,15 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                 isOwner,
                 groupMemberDtosExcludeMe
             )
+        );
+    }
+
+    public Optional<Long> getTotalGroupMemberCount(final Long groupId) {
+        return Optional.ofNullable(jpaQueryFactory
+            .select(memberGroup.count())
+            .from(memberGroup)
+            .where(memberGroup.group.id.eq(groupId))
+            .fetchOne()
         );
     }
 }

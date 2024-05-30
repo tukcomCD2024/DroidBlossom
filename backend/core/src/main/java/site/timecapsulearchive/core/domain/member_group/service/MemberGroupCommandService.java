@@ -3,9 +3,7 @@ package site.timecapsulearchive.core.domain.member_group.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
@@ -23,6 +21,7 @@ import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNot
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.global.config.redis.RedissonLock;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
@@ -69,7 +68,15 @@ public class MemberGroupCommandService {
         }
     }
 
+    @RedissonLock(value = "#groupId + ':' + #targetId")
     public void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId) {
+        final Long totalGroupMemberCount = groupRepository.getTotalGroupMemberCount(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        if (totalGroupMemberCount == 30) {
+            throw new GroupMemberCountLimitException();
+        }
+
         final Member groupMember = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
         final Group group = groupRepository.findGroupById(groupId)
@@ -78,7 +85,6 @@ public class MemberGroupCommandService {
         transactionTemplate.executeWithoutResult(status -> {
             final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
                 groupId, targetId, memberId);
-
             if (isDenyRequest != 1) {
                 throw new GroupInviteNotFoundException();
             }
