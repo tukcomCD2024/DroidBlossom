@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import com.droidblossom.archive.R
-import com.droidblossom.archive.databinding.FragmentManagementInvitableFriendsBinding
+import com.droidblossom.archive.databinding.FragmentManagementGroupMembersBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ManagementInvitableFriendsFragment :
-    BaseFragment<ManagementGroupMemberViewModelImpl, FragmentManagementInvitableFriendsBinding>(
-        R.layout.fragment_management_invitable_friends
+class ManagementGroupMembersFragment :
+    BaseFragment<ManagementGroupMemberViewModelImpl, FragmentManagementGroupMembersBinding>(
+        R.layout.fragment_management_group_members
     ) {
+
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
 
@@ -33,7 +36,13 @@ class ManagementInvitableFriendsFragment :
 
         with(binding) {
 
-
+            actionMessage.setOnClickListener {
+                viewModel.managementGroupMemberEvent(
+                    ManagementGroupMemberViewModel.ManagementGroupMemberEvent.NavigateToPage(
+                        ManagementGroupMemberActivity.INVITABLE_FRIENDS
+                    )
+                )
+            }
 
         }
     }
@@ -41,5 +50,4 @@ class ManagementInvitableFriendsFragment :
     private fun initRV() {
 
     }
-
 }

@@ -3,16 +3,16 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.mana
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page.ManagementGroupMemberFragment
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page.ManagementGroupMembersFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page.ManagementInvitableFriendsFragment
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page.ManagementInvitationRequestsFragment
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page.ManagementInvitedUserFragment
 
 class ManagementGroupMemberVPA(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
     private val fragmentList = listOf(
-        ManagementGroupMemberFragment(),
+        ManagementGroupMembersFragment(),
         ManagementInvitableFriendsFragment(),
-        ManagementInvitationRequestsFragment()
+        ManagementInvitedUserFragment()
     )
 
     override fun getItemCount(): Int = fragmentList.size

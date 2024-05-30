@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_1"
         android:paddingHorizontal="@dimen/padding"
-        tools:context=".presentation.ui.mypage.friend.detail.group.management.GroupMemberManagementActivity">
+        tools:context=".presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/viewHeaderTitle"
@@ -45,8 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-            bind:tabMarginEnd="@{12}">
+            app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
