@@ -3,22 +3,34 @@ package com.droidblossom.archive.presentation.ui.mypage.friendaccept
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager2.widget.ViewPager2
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.FRIEND
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptVPA
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.FriendAcceptFragment
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.GroupAcceptFragment
+import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendFragment
+import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupFragment
+import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class FriendAcceptActivity :
     BaseActivity<FriendAcceptViewModelImpl, ActivityFriendAcceptBinding>(R.layout.activity_friend_accept) {
     override val viewModel: FriendAcceptViewModelImpl by viewModels<FriendAcceptViewModelImpl>()
-
+    private var currentVPPosition = 0
     private val friendAcceptVPA by lazy {
         FriendAcceptVPA(this)
     }
@@ -27,7 +39,8 @@ class FriendAcceptActivity :
         super.onCreate(savedInstanceState)
         initView()
 
-        viewModel.getFriendAcceptList()
+        viewModel.getLastedGroupAcceptList()
+        viewModel.getLastedFriendAcceptList()
     }
 
     private fun initView() {
@@ -49,6 +62,13 @@ class FriendAcceptActivity :
             }
         }.attach()
 
+        binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                currentVPPosition = position
+                Log.d("생명", "다름")
+            }
+        })
 
         intent.getStringExtra(FRIENDACCEPT)?.let { type ->
             when (type) {
@@ -69,7 +89,27 @@ class FriendAcceptActivity :
     }
 
     override fun observeData() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.friendAcceptEvent.collect { event ->
+                    when (event) {
+                        is FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
 
+                        is FriendAcceptViewModel.FriendAcceptEvent.SwipeRefreshLayoutDismissLoading -> {
+                            when (val fragment = friendAcceptVPA.getFragment(currentVPPosition)) {
+                                is FriendAcceptFragment -> fragment.onEndSwipeRefresh()
+                                is GroupAcceptFragment -> fragment.onEndSwipeRefresh()
+                                else -> {}
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+        }
     }
 
     companion object {

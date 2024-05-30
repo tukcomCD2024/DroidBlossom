@@ -6,7 +6,7 @@ data class GroupPageResponseDto(
     val groups: List<GroupSummaryResponseDto>,
     val hasNext: Boolean
 ) {
-    fun toModel() = GroupPage(
+    fun toModel() = GroupPage (
         groups = this.groups.map { it.toModel() },
         hasNext = this.hasNext,
     )

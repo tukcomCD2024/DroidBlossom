@@ -5,22 +5,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.droidblossom.archive.databinding.ItemAcceptFriendBinding
-import com.droidblossom.archive.domain.model.friend.Friend
+import com.droidblossom.archive.databinding.ItemAcceptGroupBinding
+import com.droidblossom.archive.domain.model.group.GroupInviteSummary
 
 
-class FriendAcceptRVA(
-    private val onDeny: (Friend) -> Unit,
-    private val onAccept: (Friend) -> Unit
+class GroupAcceptRVA(
+    private val onDeny: (GroupInviteSummary) -> Unit,
+    private val onAccept: (GroupInviteSummary) -> Unit
 ) :
-    ListAdapter<Friend, FriendAcceptRVA.ItemViewHolder>(differ) {
+    ListAdapter<GroupInviteSummary, GroupAcceptRVA.ItemViewHolder>(differ) {
 
 
     inner class ItemViewHolder(
-        private val binding: ItemAcceptFriendBinding
+        private val binding: ItemAcceptGroupBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(data: Friend) {
+        fun bind(data: GroupInviteSummary) {
             binding.item = data
             binding.acceptBtn.setOnClickListener {
                 onAccept(data)
@@ -33,7 +33,7 @@ class FriendAcceptRVA(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
-            ItemAcceptFriendBinding.inflate(
+            ItemAcceptGroupBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -46,17 +46,17 @@ class FriendAcceptRVA(
     }
 
     companion object {
-        val differ = object : DiffUtil.ItemCallback<Friend>() {
+        val differ = object : DiffUtil.ItemCallback<GroupInviteSummary>() {
             override fun areItemsTheSame(
-                oldItem: Friend,
-                newItem: Friend
+                oldItem: GroupInviteSummary,
+                newItem: GroupInviteSummary
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.groupId == newItem.groupId
             }
 
             override fun areContentsTheSame(
-                oldItem: Friend,
-                newItem: Friend
+                oldItem: GroupInviteSummary,
+                newItem: GroupInviteSummary
             ): Boolean {
                 return oldItem == newItem
             }
