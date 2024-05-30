@@ -1,4 +1,3 @@
-
 package site.timecapsulearchive.core.domain.group.data.dto;
 
 import java.util.function.Function;

@@ -3,8 +3,8 @@ package site.timecapsulearchive.core.domain.group.repository;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.data.domain.Slice;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 
 
 public interface GroupQueryRepository {
