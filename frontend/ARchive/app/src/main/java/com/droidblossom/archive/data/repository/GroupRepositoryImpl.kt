@@ -5,10 +5,13 @@ import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.source.remote.api.GroupService
 import com.droidblossom.archive.domain.model.group.GroupDetail
+import com.droidblossom.archive.domain.model.group.GroupInviteSummary
 import com.droidblossom.archive.domain.model.group.GroupPage
+import com.droidblossom.archive.domain.model.group.GroupSummary
 import com.droidblossom.archive.domain.repository.GroupRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.apiHandler
@@ -21,13 +24,23 @@ class GroupRepositoryImpl @Inject constructor(
         return apiHandler({ api.postCrateGroupApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
-    override suspend fun getGroupPageRequest(request: PagingRequestDto): RetrofitResult<GroupPage> {
+    override suspend fun getGroupPageRequest(request: PagingRequestDto): RetrofitResult<GroupPage<GroupSummary>> {
         return apiHandler({
             api.getGroupsPageApi(
                 request.size,
                 request.createdAt
             )
         }) { response: ResponseBody<GroupPageResponseDto> -> response.result.toModel() }
+
+    }
+
+    override suspend fun getGroupInvitesPageRequest(request: PagingRequestDto): RetrofitResult<GroupPage<GroupInviteSummary>> {
+        return apiHandler({
+            api.getGroupInvitesPageApi(
+                request.size,
+                request.createdAt
+            )
+        }) { response: ResponseBody<GroupInvitesPageResponseDto> -> response.result.toModel() }
 
     }
 

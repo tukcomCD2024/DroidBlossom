@@ -5,14 +5,13 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.AddressData
+import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
-import com.droidblossom.archive.domain.model.s3.S3UrlRequest
-import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
 import com.droidblossom.archive.domain.model.group.GroupSummary
-import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleCreateRequest
+import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import com.droidblossom.archive.domain.usecase.capsule.GetAddressUseCase
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupPageUseCase

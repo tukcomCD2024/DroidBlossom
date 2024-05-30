@@ -3,6 +3,7 @@ package com.droidblossom.archive.data.source.remote.api
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
@@ -25,6 +26,12 @@ interface GroupService {
         @Query("size") size : Int,
         @Query("created_at") createdAt: String
     ) : Response<ResponseBody<GroupPageResponseDto>>
+
+    @GET("groups/invites")
+    suspend fun getGroupInvitesPageApi(
+        @Query("size") size : Int,
+        @Query("created_at") createdAt: String
+    ) : Response<ResponseBody<GroupInvitesPageResponseDto>>
 
     @POST("groups/{group_id}/member/{target_id}/accept")
     suspend fun postAcceptGroupInviteApi(
