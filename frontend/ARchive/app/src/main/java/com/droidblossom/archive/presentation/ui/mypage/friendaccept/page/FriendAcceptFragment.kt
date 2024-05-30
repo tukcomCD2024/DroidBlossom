@@ -13,6 +13,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptRVA
 import kotlinx.coroutines.launch
@@ -36,7 +37,15 @@ class FriendAcceptFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        initView()
         initRV()
+    }
+
+    private fun initView() {
+        binding.swipeRefreshL.setOnRefreshListener {
+            viewModel.getLastedFriendAcceptList()
+        }
     }
 
     private fun initRV() {
@@ -63,24 +72,14 @@ class FriendAcceptFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendAcceptEvent.collect { event ->
-                    when (event) {
-                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
-                            showToastMessage(event.message)
-                        }
-
-                        else -> {}
-                    }
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendAcceptList.collect { friendAccepts ->
                     friendAcceptRVA.submitList(friendAccepts)
                 }
             }
         }
+    }
+
+    fun onEndSwipeRefresh() {
+        binding.swipeRefreshL.isRefreshing = false
     }
 }

@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friendaccept.page
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -10,6 +11,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModelImpl
 import kotlinx.coroutines.launch
 
@@ -25,23 +27,16 @@ class GroupAcceptFragment :
     }
 
     private fun initView() {
-
+        binding.swipeRefreshL.setOnRefreshListener {
+            viewModel.getLastedFriendAcceptList()
+        }
     }
 
     override fun observeData() {
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendAcceptEvent.collect { event ->
-                    when (event) {
-                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
-                            showToastMessage(event.message)
-                        }
+    }
 
-                        else -> {}
-                    }
-                }
-            }
-        }
+    fun onEndSwipeRefresh() {
+        binding.swipeRefreshL.isRefreshing = false
     }
 }

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.droidblossom.archive.databinding.ItemAcceptBinding
+import com.droidblossom.archive.databinding.ItemAcceptFriendBinding
 import com.droidblossom.archive.domain.model.friend.Friend
 
 
@@ -17,7 +17,7 @@ class FriendAcceptRVA(
 
 
     inner class ItemViewHolder(
-        private val binding: ItemAcceptBinding
+        private val binding: ItemAcceptFriendBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: Friend) {
@@ -33,7 +33,7 @@ class FriendAcceptRVA(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
-            ItemAcceptBinding.inflate(
+            ItemAcceptFriendBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
