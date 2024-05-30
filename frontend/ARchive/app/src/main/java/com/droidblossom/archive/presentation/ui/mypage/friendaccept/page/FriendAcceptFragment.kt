@@ -26,10 +26,10 @@ class FriendAcceptFragment :
     private val friendAcceptRVA by lazy {
         FriendAcceptRVA(
             { denyFriend ->
-                viewModel.denyRequest(denyFriend)
+                viewModel.denyFriendRequest(denyFriend)
             },
             { acceptFriend ->
-                viewModel.acceptRequest(acceptFriend)
+                viewModel.acceptFriendRequest(acceptFriend)
             }
         )
     }
@@ -61,7 +61,7 @@ class FriendAcceptFragment :
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.onScrollNearBottom()
+                        viewModel.onScrollFriendNearBottom()
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friendaccept
 
 import com.droidblossom.archive.domain.model.friend.Friend
+import com.droidblossom.archive.domain.model.group.GroupInviteSummary
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
 import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendViewModel
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,12 +11,19 @@ interface FriendAcceptViewModel {
 
     val friendAcceptEvent: SharedFlow<FriendAcceptViewModel.FriendAcceptEvent>
     val friendAcceptList: StateFlow<List<Friend>>
+    val groupAcceptList : StateFlow<List<GroupInviteSummary>>
 
     fun getFriendAcceptList()
     fun getLastedFriendAcceptList()
-    fun onScrollNearBottom()
-    fun denyRequest(friend: Friend)
-    fun acceptRequest(friend: Friend)
+    fun onScrollFriendNearBottom()
+    fun denyFriendRequest(friend: Friend)
+    fun acceptFriendRequest(friend: Friend)
+
+    fun getGroupAcceptList()
+    fun getLastedGroupAcceptList()
+    fun onScrollGroupNearBottom()
+    fun denyGroupRequest(group: GroupInviteSummary)
+    fun acceptGroupRequest(group: GroupInviteSummary)
 
 
     sealed class FriendAcceptEvent {

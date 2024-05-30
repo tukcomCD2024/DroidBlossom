@@ -14,6 +14,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.FRIEND
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptVPA
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.FriendAcceptFragment
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.GroupAcceptFragment
@@ -38,7 +39,8 @@ class FriendAcceptActivity :
         super.onCreate(savedInstanceState)
         initView()
 
-        viewModel.getFriendAcceptList()
+        viewModel.getLastedGroupAcceptList()
+        viewModel.getLastedFriendAcceptList()
     }
 
     private fun initView() {

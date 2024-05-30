@@ -6,7 +6,7 @@ import com.droidblossom.archive.domain.model.group.GroupPage
 data class GroupInviteResponseDto(
     val createdAt: String,
     val description: String,
-    val groupId: Int,
+    val groupId: Long,
     val groupName: String,
     val groupOwnerName: String,
     val groupProfileUrl: String

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendAcceptRequest
+import com.droidblossom.archive.domain.model.group.GroupInviteSummary
 import com.droidblossom.archive.domain.usecase.friend.FriendDenyRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsAcceptRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsRequestsPageUseCase
@@ -47,6 +48,10 @@ class FriendAcceptViewModelImpl @Inject constructor(
     override val friendAcceptList: StateFlow<List<Friend>>
         get() = _friendAcceptList
 
+    private val _groupAcceptList = MutableStateFlow<List<GroupInviteSummary>>(listOf())
+    override val groupAcceptList: StateFlow<List<GroupInviteSummary>>
+        get() = _groupAcceptList
+
     private val friendHasNextPage = MutableStateFlow(true)
     private val friendLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
 
@@ -56,15 +61,27 @@ class FriendAcceptViewModelImpl @Inject constructor(
 
     private var getFriendAcceptRequestListJob: Job? = null
 
+    private val groupHasNextPage = MutableStateFlow(true)
+    private val groupLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
+
+    private val scrollGroupEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollGroupEventFlow =
+        scrollGroupEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getGroupAcceptRequestListJob: Job? = null
+
     init {
         viewModelScope.launch {
             scrollFriendEventFlow.collect {
                 getFriendAcceptList()
             }
+            scrollGroupEventFlow.collect {
+                getGroupAcceptList()
+            }
         }
     }
 
-    override fun onScrollNearBottom() {
+    override fun onScrollFriendNearBottom() {
         scrollFriendEventChannel.trySend(Unit)
     }
 
@@ -126,11 +143,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
         }
     }
 
-    override fun denyRequest(friend: Friend) {
+    override fun denyFriendRequest(friend: Friend) {
         viewModelScope.launch {
             friendDenyRequestUseCase(friend.id).collect { result ->
                 result.onSuccess {
-                    removeItem(friend)
+                    removeFriendItem(friend)
                 }.onFail {
                     _friendAcceptEvent.emit(
                         FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
@@ -143,11 +160,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
         }
     }
 
-    override fun acceptRequest(friend: Friend) {
+    override fun acceptFriendRequest(friend: Friend) {
         viewModelScope.launch {
             friendAcceptRequestUseCase(FriendAcceptRequest(friend.id)).collect { result ->
                 result.onSuccess {
-                    removeItem(friend)
+                    removeFriendItem(friend)
                 }.onFail {
                     _friendAcceptEvent.emit(
                         FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
@@ -160,11 +177,114 @@ class FriendAcceptViewModelImpl @Inject constructor(
         }
     }
 
-    fun removeItem(friend: Friend) {
+    override fun getGroupAcceptList() {
+        getGroupAcceptRequestListJob?.cancel()
+        getGroupAcceptRequestListJob = viewModelScope.launch {
+            if (groupHasNextPage.value) {
+                groupsRequestsPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        groupLastCreatedTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        groupHasNextPage.value = it.hasNext
+                        _groupAcceptList.emit(groupAcceptList.value + it.groups)
+                        if (groupAcceptList.value.isNotEmpty()) {
+                            groupLastCreatedTime.value = it.groups.last().createdAt
+                        }
+
+                    }.onFail {
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "서버 통신 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getLastedGroupAcceptList() {
+        getGroupAcceptRequestListJob?.cancel()
+        getGroupAcceptRequestListJob = viewModelScope.launch {
+            groupsRequestsPageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    groupHasNextPage.value = it.hasNext
+                    _groupAcceptList.emit(groupAcceptList.value + it.groups)
+                    if (groupAcceptList.value.isNotEmpty()) {
+                        groupLastCreatedTime.value = it.groups.last().createdAt
+                    }
+
+                }.onFail {
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "서버 통신 실패. 잠시후 시도해 주세요"
+                        )
+                    )
+                }
+            }
+            _friendAcceptEvent.emit(FriendAcceptViewModel.FriendAcceptEvent.SwipeRefreshLayoutDismissLoading)
+        }
+    }
+
+    override fun onScrollGroupNearBottom() {
+        scrollGroupEventChannel.trySend(Unit)
+    }
+
+    override fun denyGroupRequest(group: GroupInviteSummary) {
+        viewModelScope.launch {
+            groupDenyRequestUseCase(group.groupId, group.groupId).collect { result ->
+                result.onSuccess {
+                    removeGroupItem(group)
+                }.onFail {
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "요청 실패. 잠시후 시도해 주세요"
+                        )
+                    )
+                }
+
+            }
+        }
+    }
+
+    override fun acceptGroupRequest(group: GroupInviteSummary) {
+        viewModelScope.launch {
+            groupAcceptRequestUseCase(group.groupId, group.groupId).collect { result ->
+                result.onSuccess {
+                    removeGroupItem(group)
+                }.onFail {
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "요청 실패. 잠시후 시도해 주세요"
+                        )
+                    )
+                }
+
+            }
+        }
+    }
+
+    private fun removeFriendItem(friend: Friend) {
         viewModelScope.launch {
             val newList = _friendAcceptList.value.toMutableList()
             newList.remove(friend)
             _friendAcceptList.emit(newList)
+        }
+    }
+
+    private fun removeGroupItem(group: GroupInviteSummary) {
+        viewModelScope.launch {
+            val newList = _groupAcceptList.value.toMutableList()
+            newList.remove(group)
+            _groupAcceptList.emit(newList)
         }
     }
 
