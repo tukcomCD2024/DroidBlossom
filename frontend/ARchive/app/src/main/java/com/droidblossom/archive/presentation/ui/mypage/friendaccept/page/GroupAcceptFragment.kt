@@ -34,6 +34,7 @@ class GroupAcceptFragment :
             }
         )
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
@@ -73,6 +74,12 @@ class GroupAcceptFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupAcceptList.collect { groupAccepts ->
                     groupAcceptRVA.submitList(groupAccepts)
+
+                    if (groupAccepts.isEmpty()) {
+                        binding.listIsEmptyT.visibility = View.VISIBLE
+                    } else {
+                        binding.listIsEmptyT.visibility = View.GONE
+                    }
                 }
             }
         }

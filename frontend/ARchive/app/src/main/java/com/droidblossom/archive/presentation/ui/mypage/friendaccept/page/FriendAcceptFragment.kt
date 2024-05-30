@@ -74,6 +74,12 @@ class FriendAcceptFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendAcceptList.collect { friendAccepts ->
                     friendAcceptRVA.submitList(friendAccepts)
+
+                    if (friendAccepts.isEmpty()) {
+                        binding.listIsEmptyT.visibility = View.VISIBLE
+                    } else {
+                        binding.listIsEmptyT.visibility = View.GONE
+                    }
                 }
             }
         }

@@ -217,7 +217,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
             ).collect { result ->
                 result.onSuccess {
                     groupHasNextPage.value = it.hasNext
-                    _groupAcceptList.emit(groupAcceptList.value + it.groups)
+                    _groupAcceptList.emit(it.groups)
                     if (groupAcceptList.value.isNotEmpty()) {
                         groupLastCreatedTime.value = it.groups.last().createdAt
                     }
