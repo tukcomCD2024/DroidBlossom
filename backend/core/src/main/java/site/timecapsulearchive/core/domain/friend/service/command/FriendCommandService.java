@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -34,15 +32,12 @@ public class FriendCommandService {
         final Member[] owner = new Member[1];
         final List<Long>[] foundFriendIds = new List[1];
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                owner[0] = memberRepository.findMemberById(memberId)
-                    .orElseThrow(MemberNotFoundException::new);
-                foundFriendIds[0] = memberRepository.findMemberIdsByIds(friendIds);
+        transactionTemplate.executeWithoutResult(status -> {
+            owner[0] = memberRepository.findMemberById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+            foundFriendIds[0] = memberRepository.findMemberIdsByIds(friendIds);
 
-                friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
-            }
+            friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
         });
 
         socialNotificationManager.sendFriendRequestMessages(
@@ -64,12 +59,9 @@ public class FriendCommandService {
 
         final FriendInvite createfriendInvite = FriendInvite.createOf(owner, friend);
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                friendInviteRepository.save(createfriendInvite);
-            }
-        });
+        transactionTemplate.executeWithoutResult(status ->
+            friendInviteRepository.save(createfriendInvite)
+        );
 
         socialNotificationManager.sendFriendReqMessage(owner.getNickname(), friendId);
     }
@@ -93,31 +85,28 @@ public class FriendCommandService {
     public void acceptFriend(final Long memberId, final Long friendId) {
         validateFriendDuplicateId(memberId, friendId);
 
-        final String[] ownerNickname = new String[1];
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                final List<FriendInvite> friendInvites = friendInviteRepository
-                    .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId);
+        final String ownerNickname = transactionTemplate.execute(status -> {
+            final List<FriendInvite> friendInvites = friendInviteRepository
+                .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId);
 
-                if (friendInvites.isEmpty()) {
-                    throw new FriendInviteNotFoundException();
-                }
-
-                final FriendInvite friendInvite = friendInvites.get(0);
-
-                final MemberFriend ownerRelation = friendInvite.ownerRelation();
-                ownerNickname[0] = ownerRelation.getOwnerNickname();
-
-                final MemberFriend friendRelation = friendInvite.friendRelation();
-
-                memberFriendRepository.save(ownerRelation);
-                memberFriendRepository.save(friendRelation);
-                friendInvites.forEach(friendInviteRepository::delete);
+            if (friendInvites.isEmpty()) {
+                throw new FriendInviteNotFoundException();
             }
+
+            final FriendInvite friendInvite = friendInvites.get(0);
+
+            final MemberFriend ownerRelation = friendInvite.ownerRelation();
+
+            final MemberFriend friendRelation = friendInvite.friendRelation();
+
+            memberFriendRepository.save(ownerRelation);
+            memberFriendRepository.save(friendRelation);
+            friendInvites.forEach(friendInviteRepository::delete);
+
+            return ownerRelation.getOwnerNickname();
         });
 
-        socialNotificationManager.sendFriendAcceptMessage(ownerNickname[0], friendId);
+        socialNotificationManager.sendFriendAcceptMessage(ownerNickname, friendId);
     }
 
     @Transactional
