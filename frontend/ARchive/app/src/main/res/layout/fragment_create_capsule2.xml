@@ -136,6 +136,21 @@
             tools:itemCount="30"
             tools:listitem="@layout/item_skin" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/listIsEmptyT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="240dp"
+            android:text="그룹이 없습니다."
+            android:visibility="@{vm.skins.size() == 0 ? View.VISIBLE : View.GONE}"
+            android:textAppearance="@style/TextAppearance.App.body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/nextBtn"
             android:layout_width="0dp"
