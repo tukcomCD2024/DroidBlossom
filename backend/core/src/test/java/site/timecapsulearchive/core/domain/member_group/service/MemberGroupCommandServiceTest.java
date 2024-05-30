@@ -172,17 +172,19 @@ class MemberGroupCommandServiceTest {
         //given
         Long memberId = 1L;
         Long groupId = 1L;
-        Long targetId = 2L;
         Member groupMember = MemberFixture.member(1);
 
+        given(groupRepository.getTotalGroupMemberCount(groupId)).willReturn(Optional.of(10L));
         given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
         given(groupRepository.findGroupById(groupId)).willReturn(
             Optional.of(GroupFixture.group()));
+        given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(2L));
+
         given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(1);
+            groupId, 2L, memberId)).willReturn(1);
 
         //when
-        groupMemberCommandService.acceptGroupInvite(memberId, groupId, targetId);
+        groupMemberCommandService.acceptGroupInvite(memberId, groupId);
 
         //then
         verify(socialNotificationManager, times(1)).sendGroupAcceptMessage(anyString(), anyLong());
@@ -193,21 +195,37 @@ class MemberGroupCommandServiceTest {
         //given
         Long memberId = 1L;
         Long groupId = 1L;
-        Long targetId = 2L;
         Member groupMember = MemberFixture.member(1);
 
+        given(groupRepository.getTotalGroupMemberCount(groupId)).willReturn(Optional.of(10L));
         given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
         given(groupRepository.findGroupById(groupId)).willReturn(
             Optional.of(GroupFixture.group()));
+        given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(2L));
+
         given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(0);
+            groupId, 2L, memberId)).willReturn(0);
 
         //when
         //then
         assertThatThrownBy(
-            () -> groupMemberCommandService.acceptGroupInvite(memberId, groupId, targetId))
+            () -> groupMemberCommandService.acceptGroupInvite(memberId, groupId))
             .isInstanceOf(GroupInviteNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹원은_그룹초대를_수락할_때_그룹초대_인원이_이미_최대_인원이면_예외가_발생한다() {
+        //given
+        Long memberId = 1L;
+        Long groupId = 1L;
+
+        given(groupRepository.getTotalGroupMemberCount(groupId)).willReturn(Optional.of(30L));
+
+        assertThatThrownBy(
+            () -> groupMemberCommandService.acceptGroupInvite(memberId, groupId))
+            .isInstanceOf(GroupMemberCountLimitException.class)
+            .hasMessageContaining(ErrorCode.GROUP_MEMBER_COUNT_LIMIT_ERROR.getMessage());
     }
 
 

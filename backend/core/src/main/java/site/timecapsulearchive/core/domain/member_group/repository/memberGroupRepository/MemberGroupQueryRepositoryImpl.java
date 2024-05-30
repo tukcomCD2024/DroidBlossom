@@ -58,4 +58,13 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .where(memberGroup.group.id.eq(groupId))
             .fetch());
     }
+
+    @Override
+    public Optional<Long> findGroupOwnerId(final Long groupId) {
+        return Optional.ofNullable(jpaQueryFactory
+            .select(memberGroup.member.id)
+            .from(memberGroup)
+            .where(memberGroup.group.id.eq(groupId).and(memberGroup.isOwner.eq(true)))
+            .fetchOne());
+    }
 }

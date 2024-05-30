@@ -31,7 +31,7 @@ public class RedissonLockAspect {
         RedissonLock redissonLock = method.getAnnotation(RedissonLock.class);
 
         String lockKey =
-            method.getName() + "/" + RedisLockSpELParser.getLockKey(signature.getParameterNames(),
+            method.getName() + ":" + RedisLockSpELParser.getLockKey(signature.getParameterNames(),
                 joinPoint.getArgs(), redissonLock.value());
 
         long waitTime = redissonLock.waitTime();

@@ -11,4 +11,6 @@ public interface MemberGroupQueryRepository {
     Optional<Boolean> findIsOwnerByMemberIdAndGroupId(Long groupOwnerId, Long groupId);
 
     Optional<List<Long>> findGroupMemberIds(Long groupId);
+
+    Optional<Long> findGroupOwnerId(Long groupId);
 }

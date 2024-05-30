@@ -46,7 +46,7 @@ public class MemberGroupCommandService {
             GroupOwnerSummaryDto dto = memberGroupRepository.findOwnerInMemberGroup(
                 sendGroupRequest.groupId(), memberId).orElseThrow(GroupNotFoundException::new);
 
-            if (dto.isOwner()) {
+            if (!dto.isOwner()) {
                 throw new NoGroupAuthorityException();
             }
 
@@ -68,8 +68,8 @@ public class MemberGroupCommandService {
         }
     }
 
-    @RedissonLock(value = "#groupId + ':' + #targetId")
-    public void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId) {
+    @RedissonLock(value = "#groupId")
+    public void acceptGroupInvite(final Long memberId, final Long groupId) {
         final Long totalGroupMemberCount = groupRepository.getTotalGroupMemberCount(groupId)
             .orElseThrow(GroupNotFoundException::new);
 
@@ -81,10 +81,12 @@ public class MemberGroupCommandService {
             .orElseThrow(MemberNotFoundException::new);
         final Group group = groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
+        final Long groupOwnerId = memberGroupRepository.findGroupOwnerId(groupId)
+            .orElseThrow(GroupNotFoundException::new);
 
         transactionTemplate.executeWithoutResult(status -> {
             final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-                groupId, targetId, memberId);
+                groupId, groupOwnerId, memberId);
             if (isDenyRequest != 1) {
                 throw new GroupInviteNotFoundException();
             }
@@ -92,7 +94,7 @@ public class MemberGroupCommandService {
             memberGroupRepository.save(MemberGroup.createGroupMember(groupMember, group));
         });
 
-        socialNotificationManager.sendGroupAcceptMessage(groupMember.getNickname(), targetId);
+        socialNotificationManager.sendGroupAcceptMessage(groupMember.getNickname(), groupOwnerId);
     }
 
     /**

@@ -47,14 +47,13 @@ public class MemberGroupCommandApiController implements MemberGroupCommandApi {
         );
     }
 
-    @PostMapping(value = "/{group_id}/member/{target_id}/accept")
+    @PostMapping(value = "/{group_id}/accept")
     @Override
     public ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
         @AuthenticationPrincipal final Long memberId,
-        @PathVariable("group_id") final Long groupId,
-        @PathVariable("target_id") final Long targetId
+        @PathVariable("group_id") final Long groupId
     ) {
-        memberGroupCommandService.acceptGroupInvite(memberId, groupId, targetId);
+        memberGroupCommandService.acceptGroupInvite(memberId, groupId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
