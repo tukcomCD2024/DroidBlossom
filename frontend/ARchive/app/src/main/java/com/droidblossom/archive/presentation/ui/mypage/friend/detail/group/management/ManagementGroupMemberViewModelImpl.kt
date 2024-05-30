@@ -1,12 +1,12 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
+import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
+import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
@@ -26,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManagementGroupMemberViewModelImpl @Inject constructor(
-    private val friendForGroupInvitePageUseCase: FriendForGroupInvitePageUseCase
+    private val friendForGroupInvitePageUseCase: FriendForGroupInvitePageUseCase,
+    private val groupInviteUseCase: GroupInviteUseCase
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -110,7 +111,6 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                 }
             }
         }
-        load()
     }
 
     fun load(){
@@ -130,11 +130,30 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
 
     override fun setGroupId(groupId: Long) {
         _groupId.value = groupId
+        load()
     }
 
     override fun inviteFriendsToGroup(){
         // 성공한다면?
-        load()
+        viewModelScope.launch {
+            val targetIds = groupInviteeList.value.map { it.id }
+            groupInviteUseCase(
+                InviteGroupRequestDto(
+                    groupId.value,
+                    targetIds
+                )
+            ).collect{ result ->
+                result.onSuccess {
+                    // 다른 api 호출을 해서 동기화 or list 조작
+                    // 타입 맞춰야하는데 api 나오면 할 예정
+                    //_invitedUsers.value += _groupInviteeList.value
+                    // _groupInviteeList.value = emptyList()
+                    load()
+                }.onFail {
+                    // Toast와 다시 계산
+                }
+            }
+        }
     }
 
     override fun getInvitableFriendList(){

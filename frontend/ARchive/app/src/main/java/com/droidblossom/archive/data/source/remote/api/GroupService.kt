@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
+import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
@@ -49,5 +50,10 @@ interface GroupService {
     suspend fun getGroupsDetailApi(
         @Path("group_id") groupId : Long,
     ) : Response<ResponseBody<GroupDetailResponseDto>>
+
+    @POST("groups/invite")
+    suspend fun postGroupsInviteApi(
+        @Body request : InviteGroupRequestDto
+    ) : Response<ResponseBody<String>>
 
 }

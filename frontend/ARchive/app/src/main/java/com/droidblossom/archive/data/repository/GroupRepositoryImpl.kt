@@ -4,6 +4,7 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
+import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
@@ -70,6 +71,10 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun getGroupDetailRequest(groupId: Long): RetrofitResult<GroupDetail> {
         return apiHandler({ api.getGroupsDetailApi(groupId) }) { response: ResponseBody<GroupDetailResponseDto> -> response.result.toModel() }
+    }
+
+    override suspend fun postGroupInviteRequest(request: InviteGroupRequestDto): RetrofitResult<String> {
+        return apiHandler({ api.postGroupsInviteApi(request) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
 }
