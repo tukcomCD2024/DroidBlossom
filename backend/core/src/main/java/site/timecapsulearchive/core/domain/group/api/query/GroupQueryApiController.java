@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailTotalDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.domain.group.service.query.GroupQueryService;
@@ -57,7 +57,7 @@ public class GroupQueryApiController implements GroupQueryApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<GroupSummaryDto> groupsSlice = groupQueryService.findGroupsSlice(memberId, size,
+        final Slice<FinalGroupSummaryDto> groupsSlice = groupQueryService.findGroupsSlice(memberId, size,
             createdAt);
 
         return ResponseEntity.ok(

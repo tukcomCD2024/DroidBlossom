@@ -11,7 +11,7 @@ import site.timecapsulearchive.core.domain.friend.repository.member_friend.Membe
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailTotalDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
@@ -30,7 +30,7 @@ public class GroupQueryService {
             .orElseThrow(GroupNotFoundException::new);
     }
 
-    public Slice<GroupSummaryDto> findGroupsSlice(
+    public Slice<FinalGroupSummaryDto> findGroupsSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

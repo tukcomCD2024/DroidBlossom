@@ -4,12 +4,12 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 
 
 public interface GroupQueryRepository {
 
-    Slice<GroupSummaryDto> findGroupsSlice(
+    Slice<FinalGroupSummaryDto> findGroupsSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
