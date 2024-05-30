@@ -9,10 +9,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentGroupMemberBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.home.HomeViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.adapter.GroupMemberRVA
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.GroupMemberManagementActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity
 import kotlinx.coroutines.launch
 
 class GroupMemberFragment:
@@ -44,7 +43,7 @@ class GroupMemberFragment:
     private fun initView(){
         with(binding){
             addGroupMemberT.setOnClickListener {
-                startActivity(GroupMemberManagementActivity.newIntent(requireContext()))
+                startActivity(ManagementGroupMemberActivity.newIntent(requireContext()))
             }
         }
     }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{vm.invitedUsers.empty ? View.GONE : View.VISIBLE}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/membersFriendsUsersRV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingTop="12dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <LinearLayout
+            android:id="@+id/messageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="@{vm.invitedUsers.empty ? View.VISIBLE : View.GONE}">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/noActionMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="120dp"
+                android:text='@{vm.groupMembers.size() >= 29 ? "죄송합니다, 그룹이 최대 인원을 초과했어요." : "친구들을 그룹에 초대해 보세요."}'
+                android:textAppearance="@style/TextAppearance.App.body1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/actionMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin"
+                android:visibility='@{vm.groupMembers.size() >= 29 ? View.GONE : View.VISIBLE}'
+                android:text='@{vm.groupMembers.size() >= 29 ? "죄송합니다, 그룹이 최대 인원을 초과했어요." : "친구들을 그룹에 초대해 보세요."}'
+                android:textAppearance="@style/TextAppearance.App.caption1"
+                android:textColor="@color/main_2" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</layout>
