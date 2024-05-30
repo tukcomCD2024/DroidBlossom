@@ -80,7 +80,7 @@ class FriendDetailActivity :
     private fun initView(){
         with(binding){
             profileTagT.setOnLongClickListener {
-                copyText("tag",vm!!.friendInfo.value.tag)
+                copyText("tag",viewModel.friendInfo.value.tag)
                 true
             }
         }

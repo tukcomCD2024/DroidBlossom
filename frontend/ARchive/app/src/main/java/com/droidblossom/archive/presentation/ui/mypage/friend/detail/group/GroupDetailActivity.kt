@@ -135,13 +135,13 @@ class GroupDetailActivity :
                 override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
                     when (state) {
                         State.EXPANDED -> {
-                            vm!!.setIsAppBarExpanded(true)
+                            viewModel.setIsAppBarExpanded(true)
                         }
                         State.COLLAPSED -> {
-                            vm!!.setIsAppBarExpanded(false)
+                            viewModel.setIsAppBarExpanded(false)
                         }
                         State.IDLE -> {
-                            vm!!.setIsAppBarExpanded(false)
+                            viewModel.setIsAppBarExpanded(false)
                         }
                     }
                 }
