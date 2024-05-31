@@ -23,7 +23,8 @@ public record GroupMemberDto(
             .build();
     }
 
-    public GroupMemberInfoResponse toInfoResponse(final Function<String, String> singlePreSignUrlFunction) {
+    public GroupMemberInfoResponse toInfoResponse(
+        final Function<String, String> singlePreSignUrlFunction) {
         return GroupMemberInfoResponse.builder()
             .memberId(memberId)
             .profileUrl(singlePreSignUrlFunction.apply(profileUrl))

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberWithRelationDto;
 
 
 public interface GroupQueryRepository {

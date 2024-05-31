@@ -58,7 +58,7 @@ public class CapsuleSkinService {
             CapsuleSkin capsuleSkin = capsuleSkinMapper.createDtoToEntity(dto, foundMember);
 
             transactionTemplate.executeWithoutResult(status ->
-                    capsuleSkinRepository.save(capsuleSkin)
+                capsuleSkinRepository.save(capsuleSkin)
             );
             return CapsuleSkinStatusResponse.success();
         }

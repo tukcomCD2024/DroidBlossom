@@ -14,7 +14,8 @@ public record GroupMemberWithRelationDto(
     Boolean isFriend
 ) {
 
-    public GroupMemberWithRelationResponse toResponse(final Function<String, String> singlePreSignUrlFunction) {
+    public GroupMemberWithRelationResponse toResponse(
+        final Function<String, String> singlePreSignUrlFunction) {
         return GroupMemberWithRelationResponse.builder()
             .memberId(memberId)
             .profileUrl(singlePreSignUrlFunction.apply(profileUrl))

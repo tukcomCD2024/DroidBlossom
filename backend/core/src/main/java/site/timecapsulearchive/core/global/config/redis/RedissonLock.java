@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 public @interface RedissonLock {
 
     String value();
+
     long waitTime() default 5000L;
+
     long leaseTime() default 3000L;
 }
