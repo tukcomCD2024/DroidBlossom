@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
@@ -38,7 +39,7 @@ public interface GroupQueryApi {
     ResponseEntity<ApiSpec<GroupDetailResponse>> findGroupDetailById(
         Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true)
         Long groupId
     );
 
@@ -62,5 +63,24 @@ public interface GroupQueryApi {
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
         ZonedDateTime createdAt
+    );
+
+    @Operation(
+        summary = "그룹에 대한 그룹 멤버 조회",
+        description = "그룹의 그룹원들 정보를 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<GroupMemberInfosResponse>> findGroupMemberInfos(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true)
+        Long groupId
     );
 }

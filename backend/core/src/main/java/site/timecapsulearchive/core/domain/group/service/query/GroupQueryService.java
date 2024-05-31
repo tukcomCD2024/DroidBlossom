@@ -51,4 +51,11 @@ public class GroupQueryService {
 
         return GroupDetailTotalDto.as(groupDetailDto, groupCapsuleCount, friendIds);
     }
+
+    public List<GroupMemberDto> findGroupMemberInfos(
+        final Long memberId,
+        final Long groupId
+    ) {
+        return groupRepository.findGroupMemberInfos(memberId, groupId);
+    }
 }

@@ -3,10 +3,11 @@ package site.timecapsulearchive.core.domain.group.repository;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalLong;
 import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberWithRelationDto;
 
 
 public interface GroupQueryRepository {
@@ -21,4 +22,7 @@ public interface GroupQueryRepository {
         final Long memberId);
 
     Optional<Long> getTotalGroupMemberCount(Long groupId);
+
+    List<GroupMemberDto> findGroupMemberInfos(Long memberId, Long groupId);
+
 }

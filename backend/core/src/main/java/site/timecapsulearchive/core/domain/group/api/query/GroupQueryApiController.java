@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.group.api.query;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailTotalDto;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.domain.group.service.query.GroupQueryService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -28,7 +31,7 @@ public class GroupQueryApiController implements GroupQueryApi {
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @GetMapping(
-        value = "/{group_id}",
+        value = "/{group_id}/detail",
         produces = {"application/json"}
     )
     @Override
@@ -67,6 +70,29 @@ public class GroupQueryApiController implements GroupQueryApi {
                 GroupsSliceResponse.createOf(
                     groupsSlice.getContent(),
                     groupsSlice.hasNext(),
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
+            )
+        );
+    }
+
+    @GetMapping(
+        value = "/{group_id}/members",
+        produces = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<GroupMemberInfosResponse>> findGroupMemberInfos(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("group_id") final Long groupId
+    ) {
+        final List<GroupMemberDto> groupMemberDtos = groupQueryService.findGroupMemberInfos(
+            memberId, groupId);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                GroupMemberInfosResponse.createOf(
+                    groupMemberDtos,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet
                 )
             )
