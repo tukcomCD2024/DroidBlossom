@@ -6,11 +6,15 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupInviteSummaryResponses;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesRequestDto;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceptionInvitesSliceResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesSliceResponse;
 import site.timecapsulearchive.core.domain.member_group.service.MemberGroupQueryService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -26,28 +30,54 @@ public class MemberGroupQueryApiController implements MemberGroupQueryApi {
 
 
     @GetMapping(
-        value = "/invites",
+        value = "/reception-invites",
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<GroupInviteSummaryResponses>> findGroupInvites(
+    public ResponseEntity<ApiSpec<GroupReceptionInvitesSliceResponse>> findGroupReceptionInvites(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<GroupInviteSummaryDto> groupInviteSummaryDtos = memberGroupQueryService.findGroupInvites(
+        final Slice<GroupInviteSummaryDto> groupInviteSummarySlice = memberGroupQueryService.findGroupReceptionInvitesSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                GroupInviteSummaryResponses.createOf(
-                    groupInviteSummaryDtos.getContent(),
-                    groupInviteSummaryDtos.hasNext(),
+                GroupReceptionInvitesSliceResponse.createOf(
+                    groupInviteSummarySlice.getContent(),
+                    groupInviteSummarySlice.hasNext(),
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet
                 )
             )
         );
     }
 
+    @GetMapping(
+        value = "/{group_id}/sending-invites",
+        produces = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<GroupSendingInvitesSliceResponse>> findGroupSendingInvites(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable(value = "group_id") final Long groupId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
+    ) {
+        GroupSendingInvitesRequestDto dto = GroupSendingInvitesRequestDto.create(
+            memberId, groupId, size, createdAt);
+        Slice<GroupSendingInviteMemberDto> groupSendingInvitesSlice = memberGroupQueryService.findGroupSendingInvites(
+            dto);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                GroupSendingInvitesSliceResponse.createOf(
+                    groupSendingInvitesSlice.getContent(),
+                    groupSendingInvitesSlice.hasNext()
+                )
+            )
+        );
+    }
 }

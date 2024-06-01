@@ -21,6 +21,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesRequestDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -71,7 +73,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     }
 
     @Override
-    public Slice<GroupInviteSummaryDto> findGroupInvitesSummary(
+    public Slice<GroupInviteSummaryDto> findGroupRecetpionInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
@@ -87,21 +89,51 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
                     group.createdAt,
                     member.nickname
                 )
-
             )
             .from(groupInvite)
             .join(groupInvite.group, group)
-            .join(groupInvite.groupOwner, member).on(groupInvite.groupMember.id.eq(memberId))
-            .where(groupInvite.createdAt.lt(createdAt))
+            .join(groupInvite.groupOwner, member)
+            .where(groupInvite.groupMember.id.eq(memberId).and(groupInvite.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = groupInviteSummaryDtos.size() > size;
-        if (hasNext) {
-            groupInviteSummaryDtos.remove(size);
-        }
-
-        return new SliceImpl<>(groupInviteSummaryDtos, Pageable.ofSize(size), hasNext);
+        return makeSlice(size, groupInviteSummaryDtos);
     }
 
+    private <T> Slice<T> makeSlice(
+        final int size,
+        final List<T> dtos
+    ) {
+        final boolean hasNext = dtos.size() > size;
+        if (hasNext) {
+            dtos.remove(size);
+        }
+
+        return new SliceImpl<>(dtos, Pageable.ofSize(size), hasNext);
+    }
+
+    @Override
+    public Slice<GroupSendingInviteMemberDto> findGroupSendingInvitesSlice(
+        final GroupSendingInvitesRequestDto dto
+    ) {
+        final List<GroupSendingInviteMemberDto> groupSendingInviteMemberDtos = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    GroupSendingInviteMemberDto.class,
+                    member.id,
+                    member.nickname,
+                    member.profileUrl,
+                    groupInvite.createdAt
+                )
+            )
+            .from(groupInvite)
+            .join(groupInvite.groupMember, member)
+            .where(groupInvite.group.id.eq(dto.groupId())
+                .and(groupInvite.groupOwner.id.eq(dto.memberId()))
+                .and(groupInvite.createdAt.loe(dto.createdAt())))
+            .limit(dto.size() + 1)
+            .fetch();
+
+        return makeSlice(dto.size(), groupSendingInviteMemberDtos);
+    }
 }

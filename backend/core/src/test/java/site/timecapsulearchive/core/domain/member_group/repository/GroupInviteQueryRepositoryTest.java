@@ -72,7 +72,7 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime createAt = ZonedDateTime.now().plusDays(1);
 
         //when
-        Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupInvitesSummary(
+        Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupRecetpionInvitesSlice(
             memberId, size, createAt);
 
         //then
@@ -87,7 +87,7 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime createAt = ZonedDateTime.now().plusDays(1);
 
         //when
-        Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupInvitesSummary(
+        Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupRecetpionInvitesSlice(
             memberId, size, createAt);
 
         //then
@@ -108,7 +108,7 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime createAt = ZonedDateTime.now().plusDays(1);
 
         //when
-        Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupInvitesSummary(
+        Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupRecetpionInvitesSlice(
             memberId, size, createAt);
 
         //then
