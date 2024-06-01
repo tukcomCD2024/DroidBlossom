@@ -136,9 +136,9 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .select(
                 Projections.constructor(
                     FriendSummaryDto.class,
-                    friendInvite.owner.id,
-                    friendInvite.owner.profileUrl,
-                    friendInvite.owner.nickname,
+                    friendInvite.friend.id,
+                    friendInvite.friend.profileUrl,
+                    friendInvite.friend.nickname,
                     friendInvite.createdAt
                 )
             )

@@ -44,8 +44,10 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private static final int MAX_COUNT = 40;
     private static final Long FRIEND_START_ID = 2L;
     private static final Long NOT_FRIEND_MEMBER_START_ID = FRIEND_START_ID + MAX_COUNT;
-    private static final Long FRIEND_RECEPTION_INVITE_MEMBER_START_ID = NOT_FRIEND_MEMBER_START_ID + MAX_COUNT;
-    private static final Long FRIEND_SENDING_INVITE_MEMBER_START_ID = FRIEND_RECEPTION_INVITE_MEMBER_START_ID + MAX_COUNT;
+    private static final Long FRIEND_RECEPTION_INVITE_MEMBER_START_ID =
+        NOT_FRIEND_MEMBER_START_ID + MAX_COUNT;
+    private static final Long FRIEND_SENDING_INVITE_MEMBER_START_ID =
+        FRIEND_RECEPTION_INVITE_MEMBER_START_ID + MAX_COUNT;
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
@@ -54,6 +56,8 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private final List<byte[]> hashedNotFriendPhones = new ArrayList<>();
     private Long ownerId;
     private Long friendId;
+    private Long ownerInviteSendingStartId;
+    private Long ownerInviteReceptionStartId;
     private String friendTag;
     private String notFriendTag;
     private String friendInviteTag;
@@ -106,25 +110,27 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             notFriendTag = notFriendMembers.get(0).getTag();
 
             // owner에게 친구 요청만 받은 멤버 데이터
-            List<Member> friendReceptionInviteMembers = MemberFixture.members(
+            List<Member> receptionInviteToOwnerMembers = MemberFixture.members(
                 FRIEND_RECEPTION_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
-            for (Member member : friendReceptionInviteMembers) {
+            for (Member member : receptionInviteToOwnerMembers) {
                 entityManager.persist(member);
 
                 FriendInvite receptionInvite = FriendInviteFixture.friendInvite(owner, member);
                 entityManager.persist(receptionInvite);
             }
-            friendInviteTag = friendReceptionInviteMembers.get(0).getTag();
+            friendInviteTag = receptionInviteToOwnerMembers.get(0).getTag();
+            ownerInviteReceptionStartId = receptionInviteToOwnerMembers.get(0).getId();
 
             // owner에게 친구 요청만 보낸 멤버 데이터
-            List<Member> friendSendingInviteMembers = MemberFixture.members(
+            List<Member> sendingInviteToOwnerMembers = MemberFixture.members(
                 FRIEND_SENDING_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
-            for (Member member : friendSendingInviteMembers) {
+            for (Member member : sendingInviteToOwnerMembers) {
                 entityManager.persist(member);
 
                 FriendInvite sendingInvite = FriendInviteFixture.friendInvite(member, owner);
                 entityManager.persist(sendingInvite);
             }
+            ownerInviteSendingStartId = sendingInviteToOwnerMembers.get(0).getId();
         });
     }
 
@@ -261,7 +267,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             now
         );
 
-        assertThat(slice.getNumberOfElements()).isEqualTo(size);
+        assertThat(slice.getContent()).isNotEmpty();
+        assertThat(slice.getContent()).allMatch(dto -> dto.id() >= ownerInviteReceptionStartId
+            && dto.id() < ownerInviteReceptionStartId + MAX_COUNT);
     }
 
     @Test
@@ -326,7 +334,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             now
         );
 
-        assertThat(slice.getNumberOfElements()).isEqualTo(size);
+        assertThat(slice.getContent()).isNotEmpty();
+        assertThat(slice.getContent()).allMatch(dto -> dto.id() >= ownerInviteSendingStartId
+            && dto.id() < ownerInviteSendingStartId + MAX_COUNT);
     }
 
     @Test
