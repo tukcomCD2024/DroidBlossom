@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.member_group_repository;
 
 import java.util.Optional;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;

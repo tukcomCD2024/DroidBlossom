@@ -1,11 +1,10 @@
-package site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
-import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesRequestDto;
 
 public interface GroupInviteQueryRepository {
 
@@ -19,5 +18,8 @@ public interface GroupInviteQueryRepository {
         final ZonedDateTime createdAt
     );
 
-    Slice<GroupSendingInviteMemberDto> findGroupSendingInvitesSlice(GroupSendingInvitesRequestDto dto);
+    List<GroupSendingInviteMemberDto> findGroupSendingInvites(
+        final Long memberId,
+        final Long groupId
+    );
 }

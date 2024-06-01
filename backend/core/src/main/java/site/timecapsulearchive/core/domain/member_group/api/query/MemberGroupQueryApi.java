@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceptionInvitesSliceResponse;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesSliceResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface MemberGroupQueryApi {
@@ -39,7 +39,7 @@ public interface MemberGroupQueryApi {
 
     @Operation(
         summary = "그룹 요청 보낸 목록 조회",
-        description = "그룹장이 그룹 별로 그룹 초대 요청을 보낸 사용자 목록을 조회한다.",
+        description = "그룹장이 그룹 별로 그룹 초대 요청을 보낸 사용자 목록을 조회한다. 최대 30개가 반환된다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"member group"}
     )
@@ -49,16 +49,10 @@ public interface MemberGroupQueryApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<GroupSendingInvitesSliceResponse>> findGroupSendingInvites(
+    ResponseEntity<ApiSpec<GroupSendingInvitesResponse>> findGroupSendingInvites(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
-        Long groupId,
-
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
-        int size,
-
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
-        ZonedDateTime createdAt
+        Long groupId
     );
 }

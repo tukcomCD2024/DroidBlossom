@@ -1,14 +1,14 @@
 package site.timecapsulearchive.core.domain.member_group.service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
-import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesRequestDto;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +25,10 @@ public class MemberGroupQueryService {
         return groupInviteRepository.findGroupRecetpionInvitesSlice(memberId, size, createdAt);
     }
 
-    public Slice<GroupSendingInviteMemberDto> findGroupSendingInvites(
-        final GroupSendingInvitesRequestDto dto
+    public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
+        final Long memberId,
+        final Long groupId
     ) {
-        return groupInviteRepository.findGroupSendingInvitesSlice(dto);
+        return groupInviteRepository.findGroupSendingInvites(memberId, groupId);
     }
 }

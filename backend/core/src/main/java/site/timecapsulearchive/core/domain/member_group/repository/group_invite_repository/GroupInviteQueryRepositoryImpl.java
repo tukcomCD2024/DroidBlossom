@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository;
 
 
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
@@ -22,7 +22,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
-import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesRequestDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -113,10 +112,11 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     }
 
     @Override
-    public Slice<GroupSendingInviteMemberDto> findGroupSendingInvitesSlice(
-        final GroupSendingInvitesRequestDto dto
+    public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
+        final Long memberId,
+        final Long groupId
     ) {
-        final List<GroupSendingInviteMemberDto> groupSendingInviteMemberDtos = jpaQueryFactory
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
                     GroupSendingInviteMemberDto.class,
@@ -128,12 +128,8 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
             )
             .from(groupInvite)
             .join(groupInvite.groupMember, member)
-            .where(groupInvite.group.id.eq(dto.groupId())
-                .and(groupInvite.groupOwner.id.eq(dto.memberId()))
-                .and(groupInvite.createdAt.loe(dto.createdAt())))
-            .limit(dto.size() + 1)
+            .where(groupInvite.group.id.eq(groupId)
+                .and(groupInvite.groupOwner.id.eq(memberId)))
             .fetch();
-
-        return makeSlice(dto.size(), groupSendingInviteMemberDtos);
     }
 }

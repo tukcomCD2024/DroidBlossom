@@ -5,22 +5,19 @@ import java.util.List;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
 
 @Schema(description = "그룹 초대 보낸 목록")
-public record GroupSendingInvitesSliceResponse(
-    @Schema(description = "초대 보낸 그룹원 정보 리스트")
-    List<GroupSendingInviteMemberResponse> responses,
+public record GroupSendingInvitesResponse(
 
-    @Schema(description = "다음 페이지 유무")
-    Boolean hasNext
+    @Schema(description = "초대 보낸 그룹원 정보 리스트")
+    List<GroupSendingInviteMemberResponse> responses
 ) {
 
-    public static GroupSendingInvitesSliceResponse createOf(
-        final List<GroupSendingInviteMemberDto> groupSendingInviteMemberDtos,
-        final boolean hasNext
+    public static GroupSendingInvitesResponse createOf(
+        final List<GroupSendingInviteMemberDto> groupSendingInviteMemberDtos
     ) {
         List<GroupSendingInviteMemberResponse> groupSendingInviteMemberResponses = groupSendingInviteMemberDtos.stream()
             .map(GroupSendingInviteMemberDto::toResponse)
             .toList();
 
-        return new GroupSendingInvitesSliceResponse(groupSendingInviteMemberResponses, hasNext);
+        return new GroupSendingInvitesResponse(groupSendingInviteMemberResponses);
     }
 }
