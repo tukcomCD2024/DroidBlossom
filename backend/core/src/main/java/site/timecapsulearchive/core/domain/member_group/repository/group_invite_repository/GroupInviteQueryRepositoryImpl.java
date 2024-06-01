@@ -85,14 +85,14 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
                     group.groupName,
                     group.groupProfileUrl,
                     group.groupDescription,
-                    group.createdAt,
+                    groupInvite.createdAt,
                     member.nickname
                 )
             )
             .from(groupInvite)
             .join(groupInvite.group, group)
             .join(groupInvite.groupOwner, member)
-            .where(groupInvite.groupMember.id.eq(memberId).and(groupInvite.createdAt.lt(createdAt)))
+            .where(groupInvite.groupMember.id.eq(memberId).and(groupInvite.createdAt.loe(createdAt)))
             .limit(size + 1)
             .fetch();
 

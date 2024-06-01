@@ -12,7 +12,7 @@ public record GroupInviteSummaryDto(
     String groupName,
     String groupProfileUrl,
     String description,
-    ZonedDateTime createdAt,
+    ZonedDateTime groupReceptionInviteTime,
     String groupOwnerName
 ) {
 
@@ -24,7 +24,7 @@ public record GroupInviteSummaryDto(
             .groupName(groupName)
             .groupProfileUrl(preSignedUrlFunction.apply(groupProfileUrl))
             .description(description)
-            .createdAt(createdAt)
+            .groupReceptionInviteTime(groupReceptionInviteTime)
             .groupOwnerName(groupOwnerName)
             .build();
     }

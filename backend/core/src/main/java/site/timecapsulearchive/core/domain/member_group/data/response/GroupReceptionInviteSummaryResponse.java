@@ -21,16 +21,17 @@ public record GroupReceptionInviteSummaryResponse(
     @Schema(description = "그룹 설명")
     String description,
 
-    @Schema(description = "그룹 생성일")
-    ZonedDateTime createdAt,
+    @Schema(description = "그룹 초대 시간")
+    ZonedDateTime groupReceptionInviteTime,
 
     @Schema(description = "그룹장")
     String groupOwnerName
 ) {
 
     public GroupReceptionInviteSummaryResponse {
-        if (createdAt != null) {
-            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        if (groupReceptionInviteTime != null) {
+            groupReceptionInviteTime = groupReceptionInviteTime.withZoneSameInstant(
+                ResponseMappingConstant.ZONE_ID);
         }
     }
 }
