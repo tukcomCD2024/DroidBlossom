@@ -1,8 +1,12 @@
 package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
@@ -28,5 +32,9 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long>,
     int deleteFriendInviteByOwnerIdAndFriendId(Long memberId, Long targetId);
 
     void delete(FriendInvite friendInvite);
+
+    @Lock(LockModeType.READ)
+    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
+    Optional<FriendInvite> findFriendInviteForUpdateByOwnerIdAndFriendId(Long memberId, Long targetId);
 }
 

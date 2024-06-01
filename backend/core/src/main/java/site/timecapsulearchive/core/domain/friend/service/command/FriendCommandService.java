@@ -1,8 +1,10 @@
 package site.timecapsulearchive.core.domain.friend.service.command;
 
+import jakarta.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FriendCommandService {
@@ -142,4 +145,14 @@ public class FriendCommandService {
         memberFriends.forEach(memberFriendRepository::delete);
     }
 
+    @Transactional
+    public void deleteSendingFriendInvite(final Long memberId, final Long friendId) {
+        validateFriendDuplicateId(memberId, friendId);
+
+        FriendInvite friendInvite = friendInviteRepository.findFriendInviteForUpdateByOwnerIdAndFriendId(
+                    memberId, friendId)
+                .orElseThrow(FriendInviteNotFoundException::new);
+
+        friendInviteRepository.delete(friendInvite);
+    }
 }
