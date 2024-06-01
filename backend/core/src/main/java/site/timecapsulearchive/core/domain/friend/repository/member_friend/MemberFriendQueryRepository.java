@@ -18,7 +18,13 @@ public interface MemberFriendQueryRepository {
         final ZonedDateTime createdAt
     );
 
-    Slice<FriendSummaryDto> findFriendRequestsSlice(
+    Slice<FriendSummaryDto> findFriendReceptionInvitesSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    );
+
+    Slice<FriendSummaryDto> findFriendSendingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

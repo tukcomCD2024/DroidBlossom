@@ -18,7 +18,6 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
@@ -77,23 +76,45 @@ public class FriendQueryApiController implements FriendQueryApi {
     }
 
     @GetMapping(
-        value = "/requests",
+        value = "/reception-invites",
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
+    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendReceptionInvites(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<FriendSummaryDto> friendRequestsSlice = friendQueryService.findFriendRequestsSlice(
+        final Slice<FriendSummaryDto> friendReceptionInvitesSlice = friendQueryService.findFriendReceptionInvitesSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                FriendRequestsSliceResponse.createOf(friendRequestsSlice.getContent(),
-                    friendRequestsSlice.hasNext())
+                FriendsSliceResponse.createOf(friendReceptionInvitesSlice.getContent(),
+                    friendReceptionInvitesSlice.hasNext())
+            )
+        );
+    }
+
+    @GetMapping(
+        value = "/sending-invites",
+        produces = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendSendingInvites(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam(defaultValue = "20", value = "size") final int size,
+        @RequestParam(value = "created_at") final ZonedDateTime createdAt
+    ) {
+        final Slice<FriendSummaryDto> friendSendingInvitesSlice = friendQueryService.findFriendSendingInvitesSlice(
+            memberId, size, createdAt);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                FriendsSliceResponse.createOf(friendSendingInvitesSlice.getContent(),
+                    friendSendingInvitesSlice.hasNext())
             )
         );
     }
