@@ -14,13 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.group.data.dto.FinalGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
@@ -31,12 +29,13 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Slice<FinalGroupSummaryDto> findGroupsSlice(
+    @Override
+    public Slice<GroupSummaryDto> findGroupSummaries(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<GroupSummaryDto> groups = jpaQueryFactory
+        final List<GroupSummaryDto> groupSummaryDtos = jpaQueryFactory
             .select(
                 Projections.constructor(
                     GroupSummaryDto.class,
@@ -54,28 +53,16 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final List<Long> groupIds = groups.stream().map(GroupSummaryDto::id).toList();
-        final List<String> groupOwnerProfileUrls = getGroupOwnerProfileUrls(groupIds);
-        final List<Long> totalGroupMemberCount = getTotalGroupMemberCount(groupIds);
-
-        final boolean hasNext = groups.size() > size;
+        final boolean hasNext = groupSummaryDtos.size() > size;
         if (hasNext) {
-            groups.remove(size);
+            groupSummaryDtos.remove(size);
         }
 
-        final List<FinalGroupSummaryDto> dtos = IntStream.range(0, groups.size())
-            .mapToObj(i -> new FinalGroupSummaryDto(
-                    groups.get(i),
-                    groupOwnerProfileUrls.get(i),
-                    totalGroupMemberCount.get(i)
-                )
-            )
-            .toList();
-
-        return new SliceImpl<>(dtos, Pageable.ofSize(size), hasNext);
+        return new SliceImpl<>(groupSummaryDtos, Pageable.ofSize(size), hasNext);
     }
 
-    private List<String> getGroupOwnerProfileUrls(final List<Long> groupIds) {
+    @Override
+    public List<String> getGroupOwnerProfileUrls(final List<Long> groupIds) {
         return jpaQueryFactory
             .select(member.profileUrl)
             .from(memberGroup)
@@ -87,7 +74,8 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
             .fetch();
     }
 
-    private List<Long> getTotalGroupMemberCount(final List<Long> groupIds) {
+    @Override
+    public List<Long> getTotalGroupMemberCount(final List<Long> groupIds) {
         return jpaQueryFactory
             .select(memberGroup.count())
             .from(memberGroup)
@@ -104,6 +92,7 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
      * @param memberId 사용자 아이디
      * @return 그룹의 상세정보({@code memberId} 제외 그룹원)
      */
+    @Override
     public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
         final Long memberId) {
         GroupDetailDto groupDetailDtoIncludeMe =
@@ -162,6 +151,7 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
         );
     }
 
+    @Override
     public Optional<Long> getTotalGroupMemberCount(final Long groupId) {
         return Optional.ofNullable(jpaQueryFactory
             .select(memberGroup.count())

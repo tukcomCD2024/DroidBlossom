@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.group.data.dto;
 import java.util.function.Function;
 import site.timecapsulearchive.core.domain.group.data.response.GroupSummaryResponse;
 
-public record FinalGroupSummaryDto(
+public record CompleteGroupSummaryDto(
 
     GroupSummaryDto groupSummaryDto,
     String groupOwnerProfileUrl,

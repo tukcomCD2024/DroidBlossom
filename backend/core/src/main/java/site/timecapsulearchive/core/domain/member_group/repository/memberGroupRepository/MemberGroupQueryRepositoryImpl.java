@@ -18,6 +18,7 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Override
     public Optional<GroupOwnerSummaryDto> findOwnerInMemberGroup(final Long groupId,
         final Long memberId) {
         return Optional.ofNullable(jpaQueryFactory
@@ -38,6 +39,7 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
         );
     }
 
+    @Override
     public Optional<Boolean> findIsOwnerByMemberIdAndGroupId(
         final Long memberId,
         final Long groupId
@@ -51,6 +53,7 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
         );
     }
 
+    @Override
     public Optional<List<Long>> findGroupMemberIds(final Long groupId) {
         return Optional.ofNullable(jpaQueryFactory
             .select(memberGroup.member.id)
