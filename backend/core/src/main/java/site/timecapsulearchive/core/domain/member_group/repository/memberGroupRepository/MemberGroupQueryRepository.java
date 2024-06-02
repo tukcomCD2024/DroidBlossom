@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.member_group.repository.memberGroupR
 
 import java.util.List;
 import java.util.Optional;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 
 public interface MemberGroupQueryRepository {
@@ -13,4 +14,6 @@ public interface MemberGroupQueryRepository {
     Optional<List<Long>> findGroupMemberIds(Long groupId);
 
     Optional<Long> findGroupOwnerId(Long groupId);
+
+    List<GroupMemberDto> findGroupMemberInfos(Long memberId, Long groupId);
 }

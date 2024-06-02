@@ -160,25 +160,4 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
             .fetchOne()
         );
     }
-
-    @Override
-    public List<GroupMemberDto> findGroupMemberInfos(
-        final Long memberId,
-        final Long groupId
-    ) {
-        return jpaQueryFactory
-            .select(Projections.constructor(
-                    GroupMemberDto.class,
-                    member.id,
-                    member.profileUrl,
-                    member.nickname,
-                    member.tag,
-                    memberGroup.isOwner
-                )
-            )
-            .from(memberGroup)
-            .join(memberGroup.member, member)
-            .where(memberGroup.group.id.eq(groupId))
-            .fetch();
-    }
 }

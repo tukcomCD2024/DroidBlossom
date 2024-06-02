@@ -37,8 +37,8 @@ public enum ErrorCode {
     EXTERNAL_API_ERROR(500, "EXTERNAL-001", "외부 api 호출에 실패했습니다. 잠시 후 요청해주세요."),
 
     //Redis 분산 락
-    REDIS_FAILED_GET_LOCK_ERROR(403, "LOCK-001", "분산 락을 얻는데 실패 하였습니다."),
-    REDIS_INTERRUPT_ERROR(403, "LOCK-002", "락을 얻는데 인터럽트가 발생 하였습니다."),
+    REDIS_FAILED_GET_LOCK_ERROR(500, "LOCK-001", "분산 락을 얻는데 실패 하였습니다."),
+    REDIS_INTERRUPT_ERROR(500, "LOCK-002", "락을 얻는데 인터럽트가 발생 하였습니다."),
 
     //member
     LOGIN_ON_NOT_VERIFIED_ERROR(400, "MEMBER-001", "인증되지 않은 사용자로 로그인을 시도했습니다."),

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 
 @Repository
@@ -69,5 +70,26 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .from(memberGroup)
             .where(memberGroup.group.id.eq(groupId).and(memberGroup.isOwner.eq(true)))
             .fetchOne());
+    }
+
+    @Override
+    public List<GroupMemberDto> findGroupMemberInfos(
+        final Long memberId,
+        final Long groupId
+    ) {
+        return jpaQueryFactory
+            .select(Projections.constructor(
+                    GroupMemberDto.class,
+                    member.id,
+                    member.profileUrl,
+                    member.nickname,
+                    member.tag,
+                    memberGroup.isOwner
+                )
+            )
+            .from(memberGroup)
+            .join(memberGroup.member, member)
+            .where(memberGroup.group.id.eq(groupId))
+            .fetch();
     }
 }

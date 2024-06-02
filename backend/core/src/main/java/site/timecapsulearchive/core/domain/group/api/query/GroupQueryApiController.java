@@ -75,27 +75,4 @@ public class GroupQueryApiController implements GroupQueryApi {
             )
         );
     }
-
-    @GetMapping(
-        value = "/{group_id}/members",
-        produces = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<ApiSpec<GroupMemberInfosResponse>> findGroupMemberInfos(
-        @AuthenticationPrincipal final Long memberId,
-        @PathVariable("group_id") final Long groupId
-    ) {
-        final List<GroupMemberDto> groupMemberDtos = groupQueryService.findGroupMemberInfos(
-            memberId, groupId);
-
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                GroupMemberInfosResponse.createOf(
-                    groupMemberDtos,
-                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
-                )
-            )
-        );
-    }
 }
