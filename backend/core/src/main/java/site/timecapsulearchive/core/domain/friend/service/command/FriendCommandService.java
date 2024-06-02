@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.friend.service.command;
 
-import jakarta.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +9,19 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
-import site.timecapsulearchive.core.domain.friend.exception.FriendDuplicateIdException;
+import site.timecapsulearchive.core.domain.friend.exception.FriendInviteDuplicateException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteNotFoundException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendTwoWayInviteException;
+import site.timecapsulearchive.core.domain.friend.exception.SelfFriendOperationException;
 import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Slf4j
@@ -34,6 +36,12 @@ public class FriendCommandService {
     private final TransactionTemplate transactionTemplate;
 
     public void requestFriends(Long memberId, List<Long> friendIds) {
+        List<Long> filteredFriendIds = filterTwoWayAndDuplicateInvite(memberId, friendIds);
+
+        if (filteredFriendIds.isEmpty()) {
+            return;
+        }
+
         final Member[] owner = new Member[1];
         final List<Long>[] foundFriendIds = new List[1];
 
@@ -42,7 +50,7 @@ public class FriendCommandService {
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 owner[0] = memberRepository.findMemberById(memberId)
                     .orElseThrow(MemberNotFoundException::new);
-                foundFriendIds[0] = memberRepository.findMemberIdsByIds(friendIds);
+                foundFriendIds[0] = memberRepository.findMemberIdsByIds(filteredFriendIds);
 
                 friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
             }
@@ -55,9 +63,19 @@ public class FriendCommandService {
         );
     }
 
+    private List<Long> filterTwoWayAndDuplicateInvite(Long memberId, List<Long> friendIds) {
+        List<FriendInviteMemberIdsDto> twoWayIds = friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdsAndFriendId(
+            friendIds, memberId);
+
+        return friendIds.stream()
+            .filter(id -> !memberId.equals(id))
+            .filter(id -> !twoWayIds.contains(new FriendInviteMemberIdsDto(id, memberId)))
+            .toList();
+    }
+
     public void requestFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
-        validateTwoWayInvite(memberId, friendId);
+        validateSelfFriendOperation(memberId, friendId);
+        validateTwoWayAndDuplicateInvite(memberId, friendId);
 
         final Member owner = memberRepository.findMemberById(memberId).orElseThrow(
             MemberNotFoundException::new);
@@ -77,67 +95,61 @@ public class FriendCommandService {
         socialNotificationManager.sendFriendReqMessage(owner.getNickname(), friendId);
     }
 
-    private void validateFriendDuplicateId(final Long memberId, final Long friendId) {
+    private void validateSelfFriendOperation(final Long memberId, final Long friendId) {
         if (memberId.equals(friendId)) {
-            throw new FriendDuplicateIdException();
+            throw new SelfFriendOperationException();
         }
     }
 
-    private void validateTwoWayInvite(final Long memberId, final Long friendId) {
-        final Optional<FriendInvite> friendInvite = friendInviteRepository.findFriendInviteByOwnerIdAndFriendId(
-            friendId, memberId);
+    private void validateTwoWayAndDuplicateInvite(final Long memberId, final Long friendId) {
+        final Optional<FriendInviteMemberIdsDto> friendInvite = friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdAndFriendId(
+            memberId, friendId);
 
-        if (friendInvite.isPresent()) {
-            throw new FriendTwoWayInviteException();
-        }
+        friendInvite.ifPresent(dto -> {
+            if (dto.ownerId().equals(friendId) && dto.friendId().equals(memberId)) {
+                throw new FriendTwoWayInviteException();
+            } else {
+                throw new FriendInviteDuplicateException();
+            }
+        });
     }
 
 
     public void acceptFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
+        validateSelfFriendOperation(memberId, friendId);
 
-        final String[] ownerNickname = new String[1];
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                final List<FriendInvite> friendInvites = friendInviteRepository
-                    .findFriendInviteWithMembersByOwnerIdAndFriendId(memberId, friendId);
+        final String ownerNickname = transactionTemplate.execute(status -> {
+            FriendInvite friendInvite = friendInviteRepository.findFriendReceptionInviteForUpdateByOwnerIdAndFriendId(
+                    memberId, friendId)
+                .orElseThrow(FriendInviteNotFoundException::new);
 
-                if (friendInvites.isEmpty()) {
-                    throw new FriendInviteNotFoundException();
-                }
+            final MemberFriend ownerRelation = friendInvite.ownerRelation();
+            final MemberFriend friendRelation = friendInvite.friendRelation();
 
-                final FriendInvite friendInvite = friendInvites.get(0);
+            memberFriendRepository.save(ownerRelation);
+            memberFriendRepository.save(friendRelation);
+            friendInviteRepository.delete(friendInvite);
 
-                final MemberFriend ownerRelation = friendInvite.ownerRelation();
-                ownerNickname[0] = ownerRelation.getOwnerNickname();
-
-                final MemberFriend friendRelation = friendInvite.friendRelation();
-
-                memberFriendRepository.save(ownerRelation);
-                memberFriendRepository.save(friendRelation);
-                friendInvites.forEach(friendInviteRepository::delete);
-            }
+            return ownerRelation.getOwnerNickname();
         });
 
-        socialNotificationManager.sendFriendAcceptMessage(ownerNickname[0], friendId);
+        socialNotificationManager.sendFriendAcceptMessage(ownerNickname, friendId);
     }
 
     @Transactional
     public void denyRequestFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
+        validateSelfFriendOperation(memberId, friendId);
 
-        int isDenyRequest = friendInviteRepository.deleteFriendInviteByOwnerIdAndFriendId(friendId,
-            memberId);
+        FriendInvite friendInvite = friendInviteRepository.findFriendReceptionInviteForUpdateByOwnerIdAndFriendId(
+                memberId, friendId)
+            .orElseThrow(FriendInviteNotFoundException::new);
 
-        if (isDenyRequest != 1) {
-            throw new FriendTwoWayInviteException();
-        }
+        friendInviteRepository.delete(friendInvite);
     }
 
     @Transactional
     public void deleteFriend(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
+        validateSelfFriendOperation(memberId, friendId);
 
         final List<MemberFriend> memberFriends = memberFriendRepository
             .findMemberFriendByOwnerIdAndFriendId(memberId, friendId);
@@ -147,11 +159,11 @@ public class FriendCommandService {
 
     @Transactional
     public void deleteSendingFriendInvite(final Long memberId, final Long friendId) {
-        validateFriendDuplicateId(memberId, friendId);
+        validateSelfFriendOperation(memberId, friendId);
 
-        FriendInvite friendInvite = friendInviteRepository.findFriendInviteForUpdateByOwnerIdAndFriendId(
-                    memberId, friendId)
-                .orElseThrow(FriendInviteNotFoundException::new);
+        FriendInvite friendInvite = friendInviteRepository.findFriendSendingInviteForUpdateByOwnerIdAndFriendId(
+                memberId, friendId)
+            .orElseThrow(FriendInviteNotFoundException::new);
 
         friendInviteRepository.delete(friendInvite);
     }
