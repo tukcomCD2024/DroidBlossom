@@ -41,13 +41,11 @@ import site.timecapsulearchive.core.domain.member.entity.Member;
 class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
     private static final String PROPAGATION_REQUIRES_NEW = "PROPAGATION_REQUIRES_NEW";
-    private static final int MAX_COUNT = 40;
+    private static final int MAX_COUNT = 10;
     private static final Long FRIEND_START_ID = 2L;
     private static final Long NOT_FRIEND_MEMBER_START_ID = FRIEND_START_ID + MAX_COUNT;
-    private static final Long FRIEND_RECEPTION_INVITE_MEMBER_START_ID =
-        NOT_FRIEND_MEMBER_START_ID + MAX_COUNT;
-    private static final Long FRIEND_SENDING_INVITE_MEMBER_START_ID =
-        FRIEND_RECEPTION_INVITE_MEMBER_START_ID + MAX_COUNT;
+    private static final Long FRIEND_INVITE_START_ID =
+        NOT_FRIEND_MEMBER_START_ID + NOT_FRIEND_MEMBER_START_ID;
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
@@ -56,8 +54,6 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private final List<byte[]> hashedNotFriendPhones = new ArrayList<>();
     private Long ownerId;
     private Long friendId;
-    private Long ownerInviteSendingStartId;
-    private Long ownerInviteReceptionStartId;
     private String friendTag;
     private String notFriendTag;
     private String friendInviteTag;
@@ -109,28 +105,13 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             //owner와 친구가 아닌 데이터
             notFriendTag = notFriendMembers.get(0).getTag();
 
-            // owner에게 친구 요청만 받은 멤버 데이터
-            List<Member> receptionInviteToOwnerMembers = MemberFixture.members(
-                FRIEND_RECEPTION_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
-            for (Member member : receptionInviteToOwnerMembers) {
-                entityManager.persist(member);
+            //owner와 친구 초대 관계 멤버 데이터
+            Member friendInviteMember = MemberFixture.member(FRIEND_INVITE_START_ID.intValue());
+            entityManager.persist(friendInviteMember);
 
-                FriendInvite receptionInvite = FriendInviteFixture.friendInvite(owner, member);
-                entityManager.persist(receptionInvite);
-            }
-            friendInviteTag = receptionInviteToOwnerMembers.get(0).getTag();
-            ownerInviteReceptionStartId = receptionInviteToOwnerMembers.get(0).getId();
-
-            // owner에게 친구 요청만 보낸 멤버 데이터
-            List<Member> sendingInviteToOwnerMembers = MemberFixture.members(
-                FRIEND_SENDING_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
-            for (Member member : sendingInviteToOwnerMembers) {
-                entityManager.persist(member);
-
-                FriendInvite sendingInvite = FriendInviteFixture.friendInvite(member, owner);
-                entityManager.persist(sendingInvite);
-            }
-            ownerInviteSendingStartId = sendingInviteToOwnerMembers.get(0).getId();
+            FriendInvite friendInvite = FriendInviteFixture.friendInvite(owner, friendInviteMember);
+            entityManager.persist(friendInvite);
+            friendInviteTag = friendInviteMember.getTag();
         });
     }
 
@@ -206,23 +187,6 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 친구_요청만_보낸_사용자가_친구_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 10;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            FRIEND_RECEPTION_INVITE_MEMBER_START_ID,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @Test
     void 사용자가_유효하지_않은_시간으로_사용자의_친구_목록_조회하면_빈_리스트가_나온다() {
         //given
         int size = 10;
@@ -247,140 +211,6 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            NOT_FRIEND_MEMBER_START_ID,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @ValueSource(ints = {2, 7, 10, 5})
-    @ParameterizedTest
-    void 사용자가_보낸_친구_요청_받은_목록을_조회하면_보낸_친구_요청목록이_나온다(int size) {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
-
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendSendingInvitesSlice(
-            ownerId,
-            size,
-            now
-        );
-
-        assertThat(slice.getContent()).isNotEmpty();
-        assertThat(slice.getContent()).allMatch(dto -> dto.id() >= ownerInviteReceptionStartId
-            && dto.id() < ownerInviteReceptionStartId + MAX_COUNT);
-    }
-
-    @Test
-    void 사용자가_첫_페이지_이후의_친구요청_보낸_목록을_조회하면_다음_페이지의_보낸_친구_요청목록이_나온다() {
-        //given
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
-        Slice<FriendSummaryDto> firstSlice = memberFriendQueryRepository.findFriendSendingInvitesSlice(
-            ownerId, size, now);
-
-        //when
-        FriendSummaryDto dto = firstSlice.getContent().get(firstSlice.getNumberOfElements() - 1);
-        Slice<FriendSummaryDto> nextSlice = memberFriendQueryRepository.findFriendSendingInvitesSlice(
-            ownerId, size, dto.createdAt());
-
-        //then
-        assertThat(nextSlice.getNumberOfElements()).isPositive();
-    }
-
-    @Test
-    void 사용자가_유효하지_않은_시간으로_사용자의_친구_요청_보낸_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 10;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendSendingInvitesSlice(
-            ownerId,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @Test
-    void 친구_요청을_보내지_않은_사용자가_친구_요청_보낸_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 10;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendSendingInvitesSlice(
-            NOT_FRIEND_MEMBER_START_ID,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @ValueSource(ints = {2, 7, 10, 5})
-    @ParameterizedTest
-    void 사용자가_받은_친구_요청_받은_목록을_조회하면_받은_친구_요청목록이_나온다(int size) {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
-
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendReceptionInvitesSlice(
-            ownerId,
-            size,
-            now
-        );
-
-        assertThat(slice.getContent()).isNotEmpty();
-        assertThat(slice.getContent()).allMatch(dto -> dto.id() >= ownerInviteSendingStartId
-            && dto.id() < ownerInviteSendingStartId + MAX_COUNT);
-    }
-
-    @Test
-    void 사용자가_첫_페이지_이후의_친구요청_받은_목록을_조회하면_다음_페이지의_받은_친구_요청목록이_나온다() {
-        //given
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
-        Slice<FriendSummaryDto> firstSlice = memberFriendQueryRepository.findFriendReceptionInvitesSlice(
-            ownerId, size, now);
-
-        //when
-        FriendSummaryDto dto = firstSlice.getContent().get(firstSlice.getNumberOfElements() - 1);
-        Slice<FriendSummaryDto> nextSlice = memberFriendQueryRepository.findFriendReceptionInvitesSlice(
-            ownerId, size, dto.createdAt());
-
-        //then
-        assertThat(nextSlice.getNumberOfElements()).isPositive();
-    }
-
-    @Test
-    void 사용자가_유효하지_않은_시간으로_사용자의_친구_요청_받은_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 10;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendReceptionInvitesSlice(
-            ownerId,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @Test
-    void 친구_요청을_받지_않은_사용자가_친구_요청_받은_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 10;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendReceptionInvitesSlice(
             NOT_FRIEND_MEMBER_START_ID,
             size,
             now
