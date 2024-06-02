@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.global.util.RedisLockSpELParser;
 @RequiredArgsConstructor
 public class RedissonLockAspect {
 
+    private static final String DIVISION = ":";
     private final RedissonClient redissonClient;
 
     @Around("@annotation(RedissonLock)")
@@ -31,7 +32,7 @@ public class RedissonLockAspect {
         RedissonLock redissonLock = method.getAnnotation(RedissonLock.class);
 
         String lockKey =
-            method.getName() + ":" + RedisLockSpELParser.getLockKey(signature.getParameterNames(),
+            method.getName() + DIVISION + RedisLockSpELParser.getLockKey(signature.getParameterNames(),
                 joinPoint.getArgs(), redissonLock.value());
 
         long waitTime = redissonLock.waitTime();
@@ -46,12 +47,12 @@ public class RedissonLockAspect {
                 log.info("락을 얻는데 성공하였습니다. (락 키 : {})", lockKey);
                 return joinPoint.proceed();
             } else {
-                log.warn("락을 얻는데 실패하였습니다. (락 키 : {})", lockKey);
+                log.error("락을 얻는데 실패하였습니다. (락 키 : {})", lockKey);
                 throw new RedisLockException(ErrorCode.REDIS_FAILED_GET_LOCK_ERROR);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            log.warn("락을 얻는데 인터럽트가 발생하였습니다. (락 키 : {})", lockKey);
+            log.error("락을 얻는데 인터럽트가 발생하였습니다. (락 키 : {})", lockKey);
             throw new RedisLockException(ErrorCode.REDIS_INTERRUPT_ERROR);
         } finally {
             if (isLocked) {

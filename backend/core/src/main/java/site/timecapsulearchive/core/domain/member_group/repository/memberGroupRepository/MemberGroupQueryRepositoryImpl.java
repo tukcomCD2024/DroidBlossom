@@ -92,4 +92,14 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .where(memberGroup.group.id.eq(groupId))
             .fetch();
     }
+
+    @Override
+    public Optional<Long> findGroupMembersCount(final Long groupId) {
+        return Optional.ofNullable(jpaQueryFactory
+            .select(memberGroup.count())
+            .from(memberGroup)
+            .where(memberGroup.group.id.eq(groupId))
+            .fetchOne()
+        );
+    }
 }

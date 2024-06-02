@@ -37,8 +37,9 @@ public class MemberGroupCommandService {
 
     public void inviteGroup(final Long memberId, final SendGroupRequest sendGroupRequest) {
         final List<Long> friendIds = sendGroupRequest.targetIds();
-        final List<Member> groupMembers = memberRepository.findMemberByIdIsIn(friendIds);
-        if (groupMembers.size() + friendIds.size() > 30) {
+        final Long groupMembersCount = memberGroupRepository.findGroupMembersCount(
+            sendGroupRequest.groupId()).orElseThrow(GroupNotFoundException::new);
+        if (groupMembersCount + friendIds.size() > 30) {
             throw new GroupMemberCountLimitException();
         }
 

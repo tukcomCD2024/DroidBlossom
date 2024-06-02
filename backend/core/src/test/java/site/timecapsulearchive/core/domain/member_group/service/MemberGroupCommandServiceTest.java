@@ -29,10 +29,10 @@ import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSumma
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
+import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCountLimitException;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
-import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCountLimitException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
@@ -66,8 +66,8 @@ class MemberGroupCommandServiceTest {
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
         GroupOwnerSummaryDto groupOwnerSummaryDto = GroupDtoFixture.groupOwnerSummaryDto(true);
 
-        given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
-            List.of(MemberFixture.member(2)));
+        given(memberGroupRepository.findGroupMembersCount(request.groupId())).willReturn(
+            Optional.of(10L));
         given(memberGroupRepository.findOwnerInMemberGroup(request.groupId(), memberId)).willReturn(
             Optional.of(groupOwnerSummaryDto));
 
@@ -85,8 +85,8 @@ class MemberGroupCommandServiceTest {
         Long memberId = 1L;
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
 
-        given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
-            MemberFixture.membersWithMemberId(1, 40));
+        given(memberGroupRepository.findGroupMembersCount(request.groupId())).willReturn(
+            Optional.of(40L));
 
         //when
         assertThatThrownBy(() -> groupMemberCommandService.inviteGroup(memberId, request))
@@ -101,8 +101,8 @@ class MemberGroupCommandServiceTest {
         Long memberId = 1L;
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
 
-        given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
-            List.of(MemberFixture.member(2)));
+        given(memberGroupRepository.findGroupMembersCount(request.groupId())).willReturn(
+            Optional.of(10L));
         given(memberGroupRepository.findOwnerInMemberGroup(request.groupId(), memberId)).willReturn(
             Optional.empty());
 
@@ -120,8 +120,8 @@ class MemberGroupCommandServiceTest {
         SendGroupRequest request = MemberGroupDtoFixture.sendGroupRequest(1L, List.of(2L));
         GroupOwnerSummaryDto groupOwnerSummaryDto = GroupDtoFixture.groupOwnerSummaryDto(false);
 
-        given(memberRepository.findMemberByIdIsIn(request.targetIds())).willReturn(
-            List.of(MemberFixture.member(2)));
+        given(memberGroupRepository.findGroupMembersCount(request.groupId())).willReturn(
+            Optional.of(10L));
         given(memberGroupRepository.findOwnerInMemberGroup(request.groupId(),
             memberId)).willReturn(Optional.of(groupOwnerSummaryDto));
 

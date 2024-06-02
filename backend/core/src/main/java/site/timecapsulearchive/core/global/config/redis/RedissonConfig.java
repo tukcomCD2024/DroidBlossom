@@ -12,13 +12,14 @@ import org.springframework.context.annotation.Configuration;
 public class RedissonConfig {
 
     private static final String REDISSON_HOST_PREFIX = "redis://";
+    private static final String DIVISION = ":";
     private final RedisProperties redisProperties;
 
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer().setAddress(
-            REDISSON_HOST_PREFIX + redisProperties.host() + ":" + redisProperties.port());
+            REDISSON_HOST_PREFIX + redisProperties.host() + DIVISION + redisProperties.port());
         return Redisson.create(config);
     }
 }
