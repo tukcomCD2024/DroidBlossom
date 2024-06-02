@@ -102,55 +102,6 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
         return getFriendSummaryDtos(request.size(), friends);
     }
 
-    public Slice<FriendSummaryDto> findFriendReceptionInvitesSlice(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        final List<FriendSummaryDto> friends = jpaQueryFactory
-            .select(
-                Projections.constructor(
-                    FriendSummaryDto.class,
-                    friendInvite.owner.id,
-                    friendInvite.owner.profileUrl,
-                    friendInvite.owner.nickname,
-                    friendInvite.createdAt
-                )
-            )
-            .from(friendInvite)
-            .join(friendInvite.owner, member)
-            .where(friendInvite.friend.id.eq(memberId).and(friendInvite.createdAt.loe(createdAt)))
-            .limit(size + 1)
-            .fetch();
-
-        return getFriendSummaryDtos(size, friends);
-    }
-
-    @Override
-    public Slice<FriendSummaryDto> findFriendSendingInvitesSlice(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        final List<FriendSummaryDto> friends = jpaQueryFactory
-            .select(
-                Projections.constructor(
-                    FriendSummaryDto.class,
-                    friendInvite.friend.id,
-                    friendInvite.friend.profileUrl,
-                    friendInvite.friend.nickname,
-                    friendInvite.createdAt
-                )
-            )
-            .from(friendInvite)
-            .join(friendInvite.owner, member)
-            .where(friendInvite.owner.id.eq(memberId).and(friendInvite.createdAt.loe(createdAt)))
-            .limit(size + 1)
-            .fetch();
-
-        return getFriendSummaryDtos(size, friends);
-    }
-
     public List<SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
         final List<byte[]> hashes

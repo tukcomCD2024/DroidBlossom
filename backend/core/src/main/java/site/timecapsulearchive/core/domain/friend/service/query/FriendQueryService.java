@@ -11,6 +11,7 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
@@ -20,6 +21,7 @@ import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 public class FriendQueryService {
 
     private final MemberFriendRepository memberFriendRepository;
+    private final FriendInviteRepository friendInviteRepository;
 
     public Slice<FriendSummaryDto> findFriendsSlice(
         final Long memberId,
@@ -39,7 +41,7 @@ public class FriendQueryService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return memberFriendRepository.findFriendReceptionInvitesSlice(memberId, size, createdAt);
+        return friendInviteRepository.findFriendReceptionInvitesSlice(memberId, size, createdAt);
     }
 
     public Slice<FriendSummaryDto> findFriendSendingInvitesSlice(
@@ -47,7 +49,7 @@ public class FriendQueryService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return memberFriendRepository.findFriendSendingInvitesSlice(memberId, size, createdAt);
+        return friendInviteRepository.findFriendSendingInvitesSlice(memberId, size, createdAt);
     }
 
     public List<SearchFriendSummaryDto> findFriendsByPhone(
