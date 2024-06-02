@@ -18,7 +18,7 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long>,
 
     void delete(FriendInvite friendInvite);
 
-    @Lock(LockModeType.READ)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "3000")})
     Optional<FriendInvite> findFriendSendingInviteForUpdateByOwnerIdAndFriendId(Long memberId,
         Long friendId);
@@ -30,7 +30,7 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long>,
     join fetch fi.friend
     where fi.owner.id =:friendId and fi.friend.id =:memberId
     """)
-    @Lock(LockModeType.READ)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "3000")})
     Optional<FriendInvite> findFriendReceptionInviteForUpdateByOwnerIdAndFriendId(
         @Param(value = "memberId") Long memberId,
