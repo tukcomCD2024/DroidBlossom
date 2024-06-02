@@ -1,7 +1,8 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import site.timecapsulearchive.core.common.RepositoryTest;
+import site.timecapsulearchive.core.common.fixture.domain.FriendInviteFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
-import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteQueryRepository;
-import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
@@ -27,9 +28,11 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
     private Member owner;
 
-    FriendInviteQueryRepositoryTest(EntityManager entityManager, JdbcTemplate jdbcTemplate) {
+    FriendInviteQueryRepositoryTest(EntityManager entityManager, JdbcTemplate jdbcTemplate,
+        JPAQueryFactory jpaQueryFactory) {
         this.entityManager = entityManager;
-        this.friendInviteQueryRepository = new FriendInviteQueryRepositoryImpl(jdbcTemplate);
+        this.friendInviteQueryRepository = new FriendInviteQueryRepositoryImpl(jdbcTemplate,
+            jpaQueryFactory);
     }
 
     @BeforeEach
@@ -39,6 +42,11 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
         friends.addAll(MemberFixture.members(1, 11));
         friends.forEach(entityManager::persist);
+
+        for (Member friend : friends) {
+            FriendInvite friendInvite = FriendInviteFixture.friendInvite(friend, owner);
+            entityManager.persist(friendInvite);
+        }
     }
 
     @Test
@@ -62,5 +70,22 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
             "select f from FriendInvite f where owner.id = :ownerId", FriendInvite.class);
         query.setParameter("ownerId", ownerId);
         return query.getResultList();
+    }
+
+    //Friend -> Owner
+    @Test
+    void 친구가_사용자에게_요청을_보낸_경우_사용자_아이디와_친구_아이디_목록으로_모든_요청_방향의_친구_초대를_조회하면_존재하는_단방향_친구_초대가_나온다() {
+        //given
+        List<Long> friendIds = friends.stream()
+            .map(Member::getId)
+            .toList();
+
+        //when
+        List<FriendInviteMemberIdsDto> friendInviteMemberIdsDtos = friendInviteQueryRepository.findFriendInviteMemberIdsDtoByMemberIdsAndFriendId(
+            friendIds,
+            owner.getId()
+        );
+
+        assertThat(friendInviteMemberIdsDtos).hasSize(friendIds.size());
     }
 }

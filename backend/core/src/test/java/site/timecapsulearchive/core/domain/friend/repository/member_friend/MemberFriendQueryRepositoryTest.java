@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.repository;
+package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,8 +33,6 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
-import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendQueryRepository;
-import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)

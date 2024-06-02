@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.friend.service;
+package site.timecapsulearchive.core.domain.friend.service.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,10 +18,8 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.FriendDtoFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
-import site.timecapsulearchive.core.domain.friend.service.query.FriendQueryService;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 class FriendQueryServiceTest {
