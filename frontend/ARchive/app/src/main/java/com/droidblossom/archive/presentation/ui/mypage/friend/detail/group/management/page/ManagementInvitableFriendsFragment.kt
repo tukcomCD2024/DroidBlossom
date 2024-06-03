@@ -24,6 +24,12 @@ class ManagementInvitableFriendsFragment :
     ) {
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
+    private val invitableFriendRVA by lazy {
+        InvitableFriendRVA { position ->
+            viewModel.onClickInvitableFriend(position)
+        }
+    }
+
 
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -36,11 +42,6 @@ class ManagementInvitableFriendsFragment :
         }
     }
 
-    private val invitableFriendRVA by lazy {
-        InvitableFriendRVA { position ->
-            viewModel.onClickInvitableFriend(position)
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +62,7 @@ class ManagementInvitableFriendsFragment :
 
     private fun initRV() {
         binding.invitableFriendsRV.adapter = invitableFriendRVA
+        binding.invitableFriendsRV.setHasFixedSize(true)
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.getLatestInvitableFriendList()
             viewModel.getLatestInvitedUserList()

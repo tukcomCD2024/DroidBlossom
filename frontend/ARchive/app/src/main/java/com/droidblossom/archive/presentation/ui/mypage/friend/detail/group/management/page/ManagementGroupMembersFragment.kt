@@ -12,6 +12,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModelImpl
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.adapter.ManagementGroupMemberRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,12 +24,16 @@ class ManagementGroupMembersFragment :
 
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
+    private val managementGroupMemberRVA by lazy {
+        ManagementGroupMemberRVA()
+    }
 
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupMembers.collect { members ->
                     viewModel.remainingInvites = 29 - viewModel.groupMembers.value.size
+                    managementGroupMemberRVA.submitList(members)
                 }
             }
         }
@@ -58,6 +63,11 @@ class ManagementGroupMembersFragment :
     }
 
     private fun initRV() {
-
+        binding.groupMembersRV.adapter = managementGroupMemberRVA
+        binding.groupMembersRV.setHasFixedSize(true)
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLatestInvitableFriendList()
+            viewModel.getLatestInvitedUserList()
+        }
     }
 }

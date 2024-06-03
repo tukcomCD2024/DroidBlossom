@@ -18,6 +18,6 @@ data class GroupDetailResponseDto(
         createdAt = this.createdAt,
         groupCapsuleTotalCount = this.groupCapsuleTotalCount,
         canGroupEdit = this.canGroupEdit,
-        members = this.members.map { it.toModel() }
+        members = this.members.map { it.toGroupDetailModel() }
     )
 }
