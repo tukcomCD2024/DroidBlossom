@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.facade;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.service.query.GroupQueryService;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.domain.member_group.service.MemberGroupQueryService;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
 @Component
@@ -25,6 +27,7 @@ public class GroupCapsuleFacade {
     private final MemberService memberService;
     private final GroupCapsuleService groupCapsuleService;
     private final GroupQueryService groupQueryService;
+    private final MemberGroupQueryService memberGroupQueryService;
     private final ImageService imageService;
     private final VideoService videoService;
     private final GeoTransformManager geoTransformManager;
@@ -51,6 +54,8 @@ public class GroupCapsuleFacade {
         imageService.bulkSave(dto.imageNames(), capsule, member);
         videoService.bulkSave(dto.videoNames(), capsule, member);
 
-        groupCapsuleOpenService.bulkSave(dto.groupMemberIds(), capsule);
+        final List<Long> groupMemberIds = memberGroupQueryService.findGroupMemberIds(groupId);
+
+        groupCapsuleOpenService.bulkSave(groupMemberIds, capsule);
     }
 }

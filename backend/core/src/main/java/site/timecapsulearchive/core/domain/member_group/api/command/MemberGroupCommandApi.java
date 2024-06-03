@@ -104,10 +104,7 @@ public interface MemberGroupCommandApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
-        Long groupId,
-
-        @Parameter(in = ParameterIn.PATH, description = "대상 회원 아이디", required = true)
-        Long targetId
+        Long groupId
     );
 
     @Operation(

@@ -13,7 +13,6 @@ import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 
 @Builder
 public record GroupCapsuleCreateRequestDto(
-    List<Long> groupMemberIds,
     List<String> imageNames,
     List<String> videoNames,
     Long capsuleSkinId,

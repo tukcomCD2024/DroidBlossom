@@ -8,7 +8,6 @@ import jakarta.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,8 +21,6 @@ import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.repository.GroupQueryRepository;
@@ -89,7 +86,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(3);
 
         //when
-        Slice<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(memberId,
+        Slice<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupSummaries(memberId,
             size, now);
 
         //then
@@ -103,15 +100,16 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(3);
 
         //when
-        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(memberId,
+        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupSummaries(memberId,
             size, now).getContent();
 
         //then
         assertSoftly(softly -> {
             softly.assertThat(groupsSlice).allMatch(dto -> dto.id() != null);
-            softly.assertThat(groupsSlice).allMatch(dto -> !dto.groupName().isBlank());
-            softly.assertThat(groupsSlice).allMatch(dto -> !dto.groupDescription().isBlank());
-            softly.assertThat(groupsSlice).allMatch(dto -> !dto.groupProfileUrl().isBlank());
+            softly.assertThat(groupsSlice)
+                .allMatch(dto -> !dto.groupName().isBlank());
+            softly.assertThat(groupsSlice)
+                .allMatch(dto -> !dto.groupProfileUrl().isBlank());
             softly.assertThat(groupsSlice).allMatch(dto -> dto.isOwner() != null);
         });
     }
@@ -123,7 +121,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(3);
 
         //when
-        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(
+        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupSummaries(
                 memberIdWithNoGroup,
                 size,
                 now)
@@ -140,7 +138,7 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().minusDays(5);
 
         //when
-        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupsSlice(memberId,
+        List<GroupSummaryDto> groupsSlice = groupQueryRepository.findGroupSummaries(memberId,
             size, now).getContent();
 
         //then

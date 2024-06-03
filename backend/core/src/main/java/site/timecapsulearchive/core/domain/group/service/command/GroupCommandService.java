@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
@@ -48,13 +46,10 @@ public class GroupCommandService {
 
         final MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                groupRepository.save(group);
-                memberGroupRepository.save(memberGroup);
-                groupInviteRepository.bulkSave(memberId, group.getId(), dto.targetIds());
-            }
+        transactionTemplate.executeWithoutResult(status -> {
+            groupRepository.save(group);
+            memberGroupRepository.save(memberGroup);
+            groupInviteRepository.bulkSave(memberId, group.getId(), dto.targetIds());
         });
 
         socialNotificationManager.sendGroupInviteMessage(member.getNickname(),
@@ -73,7 +68,7 @@ public class GroupCommandService {
      * @param groupId  그룹 아이디
      */
     public void deleteGroup(final Long memberId, final Long groupId) {
-        final String groupProfilePath = transactionTemplate.execute(ignored -> {
+        final String groupProfilePath = transactionTemplate.execute(status -> {
             final Group group = groupRepository.findGroupById(groupId)
                 .orElseThrow(GroupNotFoundException::new);
 

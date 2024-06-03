@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 @Schema(description = "그룹원 정보")
-public record GroupMemberResponse(
+public record GroupMemberInfoResponse(
 
     @Schema(description = "그룹원 아이디")
     Long memberId,
@@ -20,10 +20,7 @@ public record GroupMemberResponse(
     String tag,
 
     @Schema(description = "그룹장 여부")
-    Boolean isOwner,
-
-    @Schema(description = "친구 여부")
-    Boolean isFriend
+    Boolean isOwner
 ) {
 
 }

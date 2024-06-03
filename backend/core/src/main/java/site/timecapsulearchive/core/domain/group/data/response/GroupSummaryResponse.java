@@ -18,8 +18,11 @@ public record GroupSummaryResponse(
     @Schema(description = "그룹 프로필 url")
     String profileUrl,
 
-    @Schema(description = "그룹 설명")
-    String description,
+    @Schema(description = "그룹장 프로필 url")
+    String groupOwnerProfileUrl,
+
+    @Schema(description = "총 그룹원 수")
+    Long totalGroupMemberCount,
 
     @Schema(description = "그룹 생성일")
     ZonedDateTime createdAt,

@@ -5,9 +5,7 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
@@ -59,12 +57,9 @@ public class CapsuleSkinService {
         if (isNotExistMotionNameAndRetarget(dto)) {
             CapsuleSkin capsuleSkin = capsuleSkinMapper.createDtoToEntity(dto, foundMember);
 
-            transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-                @Override
-                protected void doInTransactionWithoutResult(TransactionStatus status) {
-                    capsuleSkinRepository.save(capsuleSkin);
-                }
-            });
+            transactionTemplate.executeWithoutResult(status ->
+                capsuleSkinRepository.save(capsuleSkin)
+            );
             return CapsuleSkinStatusResponse.success();
         }
 

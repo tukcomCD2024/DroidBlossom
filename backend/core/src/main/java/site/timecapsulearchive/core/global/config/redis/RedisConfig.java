@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.global.config;
+package site.timecapsulearchive.core.global.config.redis;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
