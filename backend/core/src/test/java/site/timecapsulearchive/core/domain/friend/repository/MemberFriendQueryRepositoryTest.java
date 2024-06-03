@@ -164,7 +164,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         Slice<FriendSummaryDto> nextSlice = memberFriendQueryRepository.findFriendsSlice(
             ownerId,
             size,
-            dto.createdAt()
+            dto.createdAt().plusSeconds(1L)
         );
 
         assertThat(nextSlice.getNumberOfElements()).isPositive();

@@ -146,7 +146,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         //when
         FriendSummaryDto dto = firstSlice.getContent().get(firstSlice.getNumberOfElements() - 1);
         Slice<FriendSummaryDto> nextSlice = friendInviteQueryRepository.findFriendSendingInvitesSlice(
-            ownerId, size, dto.createdAt());
+            ownerId, size, dto.createdAt().plusSeconds(1L));
 
         //then
         assertThat(nextSlice.getNumberOfElements()).isPositive();
@@ -213,7 +213,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         //when
         FriendSummaryDto dto = firstSlice.getContent().get(firstSlice.getNumberOfElements() - 1);
         Slice<FriendSummaryDto> nextSlice = friendInviteQueryRepository.findFriendReceptionInvitesSlice(
-            ownerId, size, dto.createdAt());
+            ownerId, size, dto.createdAt().plusSeconds(1L));
 
         //then
         assertThat(nextSlice.getNumberOfElements()).isPositive();
