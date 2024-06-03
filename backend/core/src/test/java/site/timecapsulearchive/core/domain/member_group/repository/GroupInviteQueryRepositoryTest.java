@@ -120,7 +120,7 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         //when
         GroupInviteSummaryDto dto = firstSlice.getContent().get(0);
         Slice<GroupInviteSummaryDto> groupInvitesSummary = groupInviteRepository.findGroupRecetpionInvitesSlice(
-            memberId, size, dto.groupReceptionInviteTime());
+            memberId, size, dto.groupReceptionInviteTime().plusSeconds(1L));
 
         //then
         assertThat(groupInvitesSummary.getContent()).isNotEmpty();
