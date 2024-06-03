@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member_group.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.dependency.TestTransactionTemplate;
@@ -25,6 +27,7 @@ import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundExceptio
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
@@ -34,6 +37,7 @@ import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitExcep
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.facade.MemberGroupFacade;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
@@ -55,6 +59,11 @@ class MemberGroupCommandServiceTest {
         memberGroupRepository,
         groupInviteRepository,
         transactionTemplate,
+        socialNotificationManager
+    );
+
+    private final MemberGroupFacade groupMemberFacade = new MemberGroupFacade(
+        groupMemberCommandService,
         socialNotificationManager
     );
 
@@ -184,10 +193,40 @@ class MemberGroupCommandServiceTest {
             groupId, 2L, memberId)).willReturn(1);
 
         //when
-        groupMemberCommandService.acceptGroupInvite(memberId, groupId);
+        groupMemberFacade.acceptGroupInvite(memberId, groupId);
 
         //then
         verify(socialNotificationManager, times(1)).sendGroupAcceptMessage(anyString(), anyLong());
+    }
+
+    @Test
+    void 그룹원은_그룹초대를_수락하면_알림을_보내기_위해_그룹원_이름과_그룹장_아이디를_반환한다() {
+        //given
+        Long memberId = 1L;
+        Long groupId = 1L;
+        Member groupMember = MemberFixture.member(1);
+        Long groupOwnerId = 2L;
+
+        given(groupRepository.getTotalGroupMemberCount(groupId)).willReturn(Optional.of(10L));
+        given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
+        given(groupRepository.findGroupById(groupId)).willReturn(
+            Optional.of(GroupFixture.group()));
+        given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(groupOwnerId));
+
+        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, groupOwnerId, memberId)).willReturn(1);
+
+        //when
+        GroupAcceptNotificationDto groupAcceptNotificationDto = groupMemberCommandService.acceptGroupInvite(
+            memberId, groupId);
+
+        //then
+        SoftAssertions.assertSoftly(
+            softly -> {
+                assertThat(groupAcceptNotificationDto.groupMemberNickname()).isEqualTo(groupMember.getNickname());
+                assertThat(groupAcceptNotificationDto.groupOwnerId()).isEqualTo(groupOwnerId);
+            }
+        );
     }
 
     @Test

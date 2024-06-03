@@ -11,6 +11,7 @@ import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
@@ -70,7 +71,7 @@ public class MemberGroupCommandService {
     }
 
     @RedissonLock(value = "#groupId")
-    public void acceptGroupInvite(final Long memberId, final Long groupId) {
+    public GroupAcceptNotificationDto acceptGroupInvite(final Long memberId, final Long groupId) {
         final Long totalGroupMemberCount = groupRepository.getTotalGroupMemberCount(groupId)
             .orElseThrow(GroupNotFoundException::new);
 
@@ -95,7 +96,7 @@ public class MemberGroupCommandService {
             memberGroupRepository.save(MemberGroup.createGroupMember(groupMember, group));
         });
 
-        socialNotificationManager.sendGroupAcceptMessage(groupMember.getNickname(), groupOwnerId);
+        return new GroupAcceptNotificationDto(groupMember.getNickname(), groupOwnerId);
     }
 
     /**

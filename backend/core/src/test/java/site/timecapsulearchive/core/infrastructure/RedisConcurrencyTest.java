@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member_group.facade.MemberGroupFacade;
 import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.domain.member_group.service.MemberGroupCommandService;
@@ -42,6 +43,8 @@ class RedisConcurrencyTest extends RedissonTest {
     private final GroupRepository groupRepository = mock(GroupRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
     private final GroupInviteRepository groupInviteRepository = mock(GroupInviteRepository.class);
+    private final SocialNotificationManager socialNotificationManager = mock(
+        SocialNotificationManager.class);
 
     private final MemberGroupCommandService groupMemberCommandService = spy(
         new MemberGroupCommandService(
@@ -50,7 +53,11 @@ class RedisConcurrencyTest extends RedissonTest {
             memberGroupRepository,
             groupInviteRepository,
             TestTransactionTemplate.spied(),
-            mock(SocialNotificationManager.class))
+            socialNotificationManager)
+    );
+
+    private final MemberGroupFacade memberGroupFacade = spy(
+        new MemberGroupFacade(groupMemberCommandService, socialNotificationManager)
     );
 
 
@@ -82,7 +89,7 @@ class RedisConcurrencyTest extends RedissonTest {
         for (int i = 0; i < MAX_THREADS_COUNT; i++) {
             executorService.submit(() -> {
                 try {
-                    groupMemberCommandService.acceptGroupInvite(memberId, groupId);
+                    memberGroupFacade.acceptGroupInvite(memberId, groupId);
                 } finally {
                     latch.countDown();
                     int expectedCount = countCheck.decrementAndGet();
