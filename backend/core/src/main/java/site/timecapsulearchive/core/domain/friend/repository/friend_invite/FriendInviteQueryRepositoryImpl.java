@@ -75,7 +75,7 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
             )
             .from(friendInvite)
             .join(friendInvite.owner, member)
-            .where(friendInvite.friend.id.eq(memberId).and(friendInvite.createdAt.loe(createdAt)))
+            .where(friendInvite.friend.id.eq(memberId).and(friendInvite.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
 
@@ -109,7 +109,7 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
             )
             .from(friendInvite)
             .join(friendInvite.owner, member)
-            .where(friendInvite.owner.id.eq(memberId).and(friendInvite.createdAt.loe(createdAt)))
+            .where(friendInvite.owner.id.eq(memberId).and(friendInvite.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
 

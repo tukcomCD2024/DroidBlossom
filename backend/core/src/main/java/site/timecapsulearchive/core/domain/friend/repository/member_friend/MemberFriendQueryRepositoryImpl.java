@@ -56,7 +56,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .from(memberFriend)
             .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
             .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
-            .where(memberFriend.owner.id.eq(memberId).and(memberFriend.createdAt.loe(createdAt)))
+            .where(memberFriend.owner.id.eq(memberId).and(memberFriend.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
 
@@ -89,7 +89,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
             .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
             .where(memberFriend.owner.id.eq(request.memberId())
-                .and(memberFriend.createdAt.loe(request.createdAt()))
+                .and(memberFriend.createdAt.lt(request.createdAt()))
                 .and(memberFriend.friend.id.notIn(
                     select(memberGroup.member.id)
                         .from(memberGroup)
