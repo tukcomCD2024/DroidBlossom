@@ -260,6 +260,9 @@ class MemberGroupCommandServiceTest {
         Long groupId = 1L;
 
         given(groupRepository.getTotalGroupMemberCount(groupId)).willReturn(Optional.of(30L));
+        given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(2L));
+        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, 2L, memberId)).willReturn(1);
 
         assertThatThrownBy(
             () -> groupMemberCommandService.acceptGroupInvite(memberId, groupId))

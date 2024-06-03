@@ -75,7 +75,11 @@ public class MemberGroupCommandService {
         final Long totalGroupMemberCount = groupRepository.getTotalGroupMemberCount(groupId)
             .orElseThrow(GroupNotFoundException::new);
 
+        final Long groupOwnerId = memberGroupRepository.findGroupOwnerId(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
         if (totalGroupMemberCount == 30) {
+            deleteGroupInvite(memberId, groupId, groupOwnerId);
             throw new GroupMemberCountLimitException();
         }
 
@@ -83,20 +87,21 @@ public class MemberGroupCommandService {
             .orElseThrow(MemberNotFoundException::new);
         final Group group = groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
-        final Long groupOwnerId = memberGroupRepository.findGroupOwnerId(groupId)
-            .orElseThrow(GroupNotFoundException::new);
 
         transactionTemplate.executeWithoutResult(status -> {
-            final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-                groupId, groupOwnerId, memberId);
-            if (isDenyRequest != 1) {
-                throw new GroupInviteNotFoundException();
-            }
-
+            deleteGroupInvite(memberId, groupId, groupOwnerId);
             memberGroupRepository.save(MemberGroup.createGroupMember(groupMember, group));
         });
 
         return new GroupAcceptNotificationDto(groupMember.getNickname(), groupOwnerId);
+    }
+
+    private void deleteGroupInvite(final Long memberId, final Long groupId, final Long groupOwnerId) {
+        final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, groupOwnerId, memberId);
+        if (isDenyRequest != 1) {
+            throw new GroupInviteNotFoundException();
+        }
     }
 
     /**

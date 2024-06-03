@@ -12,8 +12,17 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
 
     void save(GroupInvite groupInvite);
 
-    int deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(Long groupId, Long groupOwnerId,
-        Long groupMemberId);
+    @Query("delete from GroupInvite gi "
+        + "where gi.group.id =:groupId "
+        + "and gi.groupOwner.id =:groupOwnerId "
+        + "and gi.groupMember.id =:groupMemberId"
+    )
+    @Modifying
+    int deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+        @Param("groupId") Long groupId,
+        @Param("groupOwnerId") Long groupOwnerId,
+        @Param("groupMemberId") Long groupMemberId
+    );
 
     @Query("delete from GroupInvite gi where gi.id in :groupInviteIds")
     @Modifying
