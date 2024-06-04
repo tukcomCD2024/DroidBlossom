@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
 
         <variable
             name="data"
@@ -96,14 +97,15 @@
                     app:layout_constraintStart_toStartOf="@id/profileImg"
                     app:layout_constraintTop_toBottomOf="@id/profileImg"
                     bind:baseImg="@{@drawable/base_use_img}"
-                    bind:url="@{data.profileUrl}" />
+                    bind:url="@{data.groupOwnerProfileUrl}" />
 
                 <TextView
                     android:id="@+id/groupCountT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:text="외 n명"
+                    android:visibility="@{data.totalGroupMemberCount == 1 ? View.GONE : View.VISIBLE }"
+                    android:text="@{@string/groupMemberCount(data.totalGroupMemberCount-1)}"
                     android:textAppearance="@style/TextAppearance.App.caption3"
                     app:layout_constraintBottom_toBottomOf="@id/userImg"
                     app:layout_constraintStart_toEndOf="@id/userImg"

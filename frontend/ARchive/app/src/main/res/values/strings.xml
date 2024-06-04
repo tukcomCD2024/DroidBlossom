@@ -27,6 +27,7 @@
     <string name="timeSelect">시간 선택하기</string>
     <string name="capsule_open_message">캡슐을 눌러서 열어보세요!</string>
     <string name="imgCount">%d/%d</string>
+    <string name="groupMemberCount">외 %d명</string>
 
     <string name="skin_created">나만의 스킨이 탄생했어요!</string>
     <string name="skin_creating">나만의 스킨이 곧 탄생해요!</string>
