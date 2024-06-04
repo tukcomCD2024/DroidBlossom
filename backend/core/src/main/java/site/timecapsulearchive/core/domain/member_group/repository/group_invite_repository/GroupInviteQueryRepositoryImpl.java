@@ -22,6 +22,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -72,7 +73,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     }
 
     @Override
-    public Slice<GroupInviteSummaryDto> findGroupRecetpionInvitesSlice(
+    public Slice<GroupInviteSummaryDto> findGroupReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
@@ -96,22 +97,9 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
             .limit(size + 1)
             .fetch();
 
-        return makeSlice(size, groupInviteSummaryDtos);
+        return SliceUtil.makeSlice(size, groupInviteSummaryDtos);
     }
 
-    private <T> Slice<T> makeSlice(
-        final int size,
-        final List<T> dtos
-    ) {
-        final boolean hasNext = dtos.size() > size;
-        if (hasNext) {
-            dtos.remove(size);
-        }
-
-        return new SliceImpl<>(dtos, Pageable.ofSize(size), hasNext);
-    }
-
-    @Override
     public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
         final Long memberId,
         final Long groupId

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceptionInvitesSliceResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInvitesSliceResponse;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
 import site.timecapsulearchive.core.domain.member_group.service.MemberGroupQueryService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -30,24 +30,24 @@ public class MemberGroupQueryApiController implements MemberGroupQueryApi {
 
 
     @GetMapping(
-        value = "/reception-invites",
+        value = "/receiving-invites",
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<GroupReceptionInvitesSliceResponse>> findGroupReceptionInvites(
+    public ResponseEntity<ApiSpec<GroupReceivingInvitesSliceResponse>> findGroupReceivingInvites(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<GroupInviteSummaryDto> groupInviteSummarySlice = memberGroupQueryService.findGroupReceptionInvitesSlice(
+        final Slice<GroupInviteSummaryDto> groupReceivingInvitesSlice = memberGroupQueryService.findGroupReceivingInvitesSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                GroupReceptionInvitesSliceResponse.createOf(
-                    groupInviteSummarySlice.getContent(),
-                    groupInviteSummarySlice.hasNext(),
+                GroupReceivingInvitesSliceResponse.createOf(
+                    groupReceivingInvitesSlice.getContent(),
+                    groupReceivingInvitesSlice.hasNext(),
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet
                 )
             )

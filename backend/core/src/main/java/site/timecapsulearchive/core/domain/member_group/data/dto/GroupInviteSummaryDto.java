@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.member_group.data.dto;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 import lombok.Builder;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceptionInviteSummaryResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInviteSummaryResponse;
 
 @Builder
 public record GroupInviteSummaryDto(
@@ -12,19 +12,19 @@ public record GroupInviteSummaryDto(
     String groupName,
     String groupProfileUrl,
     String description,
-    ZonedDateTime groupReceptionInviteTime,
+    ZonedDateTime groupReceivingInviteTime,
     String groupOwnerName
 ) {
 
-    public GroupReceptionInviteSummaryResponse toResponse(
+    public GroupReceivingInviteSummaryResponse toResponse(
         final Function<String, String> preSignedUrlFunction
     ) {
-        return GroupReceptionInviteSummaryResponse.builder()
+        return GroupReceivingInviteSummaryResponse.builder()
             .groupId(groupId)
             .groupName(groupName)
             .groupProfileUrl(preSignedUrlFunction.apply(groupProfileUrl))
             .description(description)
-            .groupReceptionInviteTime(groupReceptionInviteTime)
+            .groupReceivingInviteTime(groupReceivingInviteTime)
             .groupOwnerName(groupOwnerName)
             .build();
     }

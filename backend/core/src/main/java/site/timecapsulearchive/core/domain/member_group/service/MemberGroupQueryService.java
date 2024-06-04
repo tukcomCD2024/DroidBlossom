@@ -17,12 +17,12 @@ public class MemberGroupQueryService {
 
     private final GroupInviteRepository groupInviteRepository;
 
-    public Slice<GroupInviteSummaryDto> findGroupReceptionInvitesSlice(
+    public Slice<GroupInviteSummaryDto> findGroupReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return groupInviteRepository.findGroupRecetpionInvitesSlice(memberId, size, createdAt);
+        return groupInviteRepository.findGroupReceivingInvitesSlice(memberId, size, createdAt);
     }
 
     public List<GroupSendingInviteMemberDto> findGroupSendingInvites(

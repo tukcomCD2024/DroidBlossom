@@ -12,7 +12,7 @@ public interface GroupInviteQueryRepository {
 
     List<Long> findGroupInviteIdsByGroupIdAndGroupOwnerId(final Long groupId, final Long memberId);
 
-    Slice<GroupInviteSummaryDto> findGroupRecetpionInvitesSlice(
+    Slice<GroupInviteSummaryDto> findGroupReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

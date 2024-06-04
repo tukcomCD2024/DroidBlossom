@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceptionInvitesSliceResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInvitesSliceResponse;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
@@ -27,7 +27,7 @@ public interface MemberGroupQueryApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<GroupReceptionInvitesSliceResponse>> findGroupReceptionInvites(
+    ResponseEntity<ApiSpec<GroupReceivingInvitesSliceResponse>> findGroupReceivingInvites(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
