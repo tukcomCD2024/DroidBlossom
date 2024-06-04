@@ -8,10 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInvitesSliceResponse;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupInviteSummaryResponses;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface MemberGroupQueryApi {
