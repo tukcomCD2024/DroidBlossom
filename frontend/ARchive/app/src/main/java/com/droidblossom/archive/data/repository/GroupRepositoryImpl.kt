@@ -50,13 +50,11 @@ class GroupRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postAcceptGroupInviteRequest(
-        groupId: Long,
-        targetId: Long
+        groupId: Long
     ): RetrofitResult<String> {
         return apiHandler({
             api.postAcceptGroupInviteApi(
                 groupId,
-                targetId
             )
         }) { response: ResponseBody<String> -> response.result.toModel() }
     }

@@ -36,10 +36,9 @@ interface GroupService {
         @Query("created_at") createdAt: String
     ) : Response<ResponseBody<GroupInvitesPageResponseDto>>
 
-    @POST("groups/{group_id}/member/{target_id}/accept")
+    @POST("groups/{group_id}/accept")
     suspend fun postAcceptGroupInviteApi(
-        @Path("group_id") groupId : Long,
-        @Path("target_id") targetId : Long,
+        @Path("group_id") groupId : Long
     ) : Response<ResponseBody<String>>
 
     @DELETE("groups/{group_id}/member/{target_id}/reject")

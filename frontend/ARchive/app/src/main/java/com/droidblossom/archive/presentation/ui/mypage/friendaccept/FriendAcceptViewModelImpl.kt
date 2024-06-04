@@ -257,7 +257,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
 
     override fun acceptGroupRequest(group: GroupInviteSummary) {
         viewModelScope.launch {
-            groupAcceptRequestUseCase(group.groupId, group.groupId).collect { result ->
+            groupAcceptRequestUseCase(group.groupId).collect { result ->
                 result.onSuccess {
                     removeGroupItem(group)
                 }.onFail {

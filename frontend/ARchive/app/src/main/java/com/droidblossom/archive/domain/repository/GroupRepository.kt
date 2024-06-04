@@ -18,7 +18,7 @@ interface GroupRepository {
 
     suspend fun getGroupInvitesPageRequest(request: PagingRequestDto): RetrofitResult<GroupPage<GroupInviteSummary>>
 
-    suspend fun postAcceptGroupInviteRequest(groupId: Long, targetId: Long): RetrofitResult<String>
+    suspend fun postAcceptGroupInviteRequest(groupId: Long): RetrofitResult<String>
 
     suspend fun deleteRejectGroupInviteRequest(groupId: Long, targetId: Long): RetrofitResult<String>
 

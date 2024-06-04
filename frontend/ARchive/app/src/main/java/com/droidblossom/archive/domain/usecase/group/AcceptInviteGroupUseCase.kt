@@ -12,11 +12,11 @@ import javax.inject.Inject
 class AcceptInviteGroupUseCase @Inject constructor(
     private val repository: GroupRepository
 ) {
-    suspend operator fun invoke(groupId: Long, userId: Long) =
+    suspend operator fun invoke(groupId: Long) =
         flow {
             try {
                 emit(
-                    repository.postAcceptGroupInviteRequest(groupId = groupId, targetId = userId)
+                    repository.postAcceptGroupInviteRequest(groupId = groupId)
                         .onSuccess {
 
                         }.onFail {
