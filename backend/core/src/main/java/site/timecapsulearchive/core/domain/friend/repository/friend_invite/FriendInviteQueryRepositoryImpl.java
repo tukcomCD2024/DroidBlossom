@@ -12,11 +12,13 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
