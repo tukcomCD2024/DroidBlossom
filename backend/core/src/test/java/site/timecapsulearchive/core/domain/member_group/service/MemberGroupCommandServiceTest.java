@@ -38,8 +38,8 @@ import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKic
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.facade.MemberGroupFacade;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
@@ -211,7 +211,8 @@ class MemberGroupCommandServiceTest {
         given(memberRepository.findMemberById(memberId)).willReturn(Optional.of(groupMember));
         given(groupRepository.findGroupById(groupId)).willReturn(
             Optional.of(GroupFixture.group()));
-        given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(groupOwnerId));
+        given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(
+            Optional.of(groupOwnerId));
 
         given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
             groupId, groupOwnerId, memberId)).willReturn(1);
@@ -223,7 +224,8 @@ class MemberGroupCommandServiceTest {
         //then
         SoftAssertions.assertSoftly(
             softly -> {
-                assertThat(groupAcceptNotificationDto.groupMemberNickname()).isEqualTo(groupMember.getNickname());
+                assertThat(groupAcceptNotificationDto.groupMemberNickname()).isEqualTo(
+                    groupMember.getNickname());
                 assertThat(groupAcceptNotificationDto.groupOwnerId()).isEqualTo(groupOwnerId);
             }
         );
