@@ -1,8 +1,8 @@
-package com.droidblossom.archive.data.dto.open.response
+package com.droidblossom.archive.data.dto.common
 
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 
-data class MyPublicCapsuleResponseDto(
+data class MyCapsuleResponseDto(
     val capsuleId : Long,
     val skinUrl : String,
     val dueDate : String?,

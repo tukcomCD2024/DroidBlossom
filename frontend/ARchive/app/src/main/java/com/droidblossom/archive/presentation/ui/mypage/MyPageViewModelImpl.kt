@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.MemberDetail
+import com.droidblossom.archive.domain.usecase.group_capsule.MyGroupCapsulePageUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.open.MyPublicCapsulePageUseCase
-import com.droidblossom.archive.domain.usecase.secret.SecretCapsulePageUseCase
+import com.droidblossom.archive.domain.usecase.secret.MySecretCapsulePageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.util.DateUtils
@@ -28,8 +29,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModelImpl @Inject constructor(
     private val memberUseCase: MemberUseCase,
-    private val secretCapsulePageUseCase: SecretCapsulePageUseCase,
-    private val myPublicCapsulePageUseCase: MyPublicCapsulePageUseCase
+    private val mySecretCapsulePageUseCase: MySecretCapsulePageUseCase,
+    private val myPublicCapsulePageUseCase: MyPublicCapsulePageUseCase,
+    private val myGroupCapsulePageUseCase: MyGroupCapsulePageUseCase
 ) : BaseViewModel(), MyPageViewModel {
 
     private val _myPageEvents = MutableSharedFlow<MyPageViewModel.MyPageEvent>()
@@ -143,7 +145,7 @@ class MyPageViewModelImpl @Inject constructor(
         if (hasNextPage.value) {
             getCapsuleListJob?.cancel()
             getCapsuleListJob = viewModelScope.launch {
-                secretCapsulePageUseCase(
+                mySecretCapsulePageUseCase(
                     PagingRequestDto(
                         15,
                         lastCreatedTime.value
@@ -190,7 +192,25 @@ class MyPageViewModelImpl @Inject constructor(
     private fun getGroupCapsulePage() {
         viewModelScope.launch {
             if (hasNextPage.value) {
-                _myCapsules.emit(listOf())
+                getCapsuleListJob?.cancel()
+                getCapsuleListJob = viewModelScope.launch {
+                    myGroupCapsulePageUseCase(
+                        PagingRequestDto(
+                            15,
+                            lastCreatedTime.value
+                        )
+                    ).collect { result ->
+                        result.onSuccess {
+                            _hasNextPage.value = it.hasNext
+                            _myCapsules.emit(myCapsules.value + it.capsules)
+                            if (myCapsules.value.isNotEmpty()) {
+                                _lastCreatedTime.value = myCapsules.value.last().createdDate
+                            }
+                        }.onFail {
+                            myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                        }
+                    }
+                }
             }
         }
     }
@@ -198,7 +218,7 @@ class MyPageViewModelImpl @Inject constructor(
     private fun getLatestSecretCapsulePage() {
         getCapsuleListJob?.cancel()
         getCapsuleListJob = viewModelScope.launch {
-            secretCapsulePageUseCase(
+            mySecretCapsulePageUseCase(
                 PagingRequestDto(
                     15,
                     DateUtils.dataServerString
@@ -242,16 +262,27 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     private fun getLatestGroupCapsulePage() {
-        viewModelScope.launch {
-            _myCapsules.emit(listOf())
+        getCapsuleListJob?.cancel()
+        getCapsuleListJob = viewModelScope.launch {
+            myGroupCapsulePageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _myCapsules.emit(it.capsules)
+                    if (myCapsules.value.isNotEmpty()) {
+                        _lastCreatedTime.value = myCapsules.value.last().createdDate
+                    }
+                }.onFail {
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                }
+            }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
-
-
-
-
-
 
 
     override fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long) {
