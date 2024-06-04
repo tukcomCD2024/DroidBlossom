@@ -63,16 +63,16 @@ class MemberGroupQueryRepositoryTest extends RepositoryTest {
             groups.add(group);
         }
 
-        //그룹원들
-        List<Member> members = MemberFixture.members(4, 2);
-        members.forEach(entityManager::persist);
-
         //그룹에 사용자를 그룹장으로 설정
         for (int count = 0; count < GROUP_COUNT; count++) {
             MemberGroup memberGroup = MemberGroupFixture.memberGroup(member, groups.get(count),
                 Boolean.TRUE);
             entityManager.persist(memberGroup);
         }
+
+        //그룹원들
+        List<Member> members = MemberFixture.members(4, 2);
+        members.forEach(entityManager::persist);
 
         //그룹원들 설정
         List<MemberGroup> memberGroups = MemberGroupFixture.memberGroups(members, groups.get(0));

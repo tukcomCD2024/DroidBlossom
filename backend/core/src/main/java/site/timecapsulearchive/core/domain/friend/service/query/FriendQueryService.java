@@ -13,9 +13,10 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Service
@@ -26,6 +27,7 @@ public class FriendQueryService {
     private final MemberFriendRepository memberFriendRepository;
     private final MemberGroupRepository memberGroupRepository;
     private final GroupInviteRepository groupInviteRepository;
+    private final FriendInviteRepository friendInviteRepository;
 
     public Slice<FriendSummaryDto> findFriendsSlice(
         final Long memberId,
@@ -55,12 +57,20 @@ public class FriendQueryService {
             friendSummaryDtos.hasNext());
     }
 
-    public Slice<FriendSummaryDto> findFriendRequestsSlice(
+    public Slice<FriendSummaryDto> findFriendReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return memberFriendRepository.findFriendRequestsSlice(memberId, size, createdAt);
+        return friendInviteRepository.findFriendReceivingInvitesSlice(memberId, size, createdAt);
+    }
+
+    public Slice<FriendSummaryDto> findFriendSendingInvitesSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        return friendInviteRepository.findFriendSendingInvitesSlice(memberId, size, createdAt);
     }
 
     public List<SearchFriendSummaryDto> findFriendsByPhone(

@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.member_group_repository;
 
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;

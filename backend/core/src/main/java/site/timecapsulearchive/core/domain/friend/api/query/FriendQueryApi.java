@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.friend.data.request.SearchFriendsRequest;
-import site.timecapsulearchive.core.domain.friend.data.response.FriendRequestsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.FriendsSliceResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchFriendsResponse;
 import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
@@ -65,8 +64,12 @@ public interface FriendQueryApi {
     );
 
     @Operation(
-        summary = "소셜 친구 요청 목록 조회",
-        description = "사용자의 소셜 친구 요청 목록을 보여준다. 수락 대기 중인 요청만 해당한다.",
+        summary = "소셜 친구 요청 받은 목록 조회",
+        description = """
+        사용자가 <b><u>소셜 친구 요청을 받은 목록</u></b>을 보여준다. 
+        <br>
+        수락 대기 중인 요청만 해당한다.
+        """,
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
     )
@@ -76,7 +79,29 @@ public interface FriendQueryApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<FriendRequestsSliceResponse>> findFriendRequests(
+    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendReceivingInvites(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
+        ZonedDateTime createdAt
+    );
+
+    @Operation(
+        summary = "소셜 친구 요청 보낸 목록 조회",
+        description = "사용자가 <b><u>소셜 친구 요청을 보낸 목록</u></b>을 보여준다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendSendingInvites(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)

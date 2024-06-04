@@ -25,10 +25,11 @@ import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDt
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.friend.service.query.FriendQueryService;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 class FriendQueryServiceTest {
@@ -37,11 +38,14 @@ class FriendQueryServiceTest {
         MemberFriendRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
     private final GroupInviteRepository groupInviteRepository = mock(GroupInviteRepository.class);
+    private final FriendInviteRepository friendInviteRepository = mock(
+        FriendInviteRepository.class);
 
     private final FriendQueryService friendQueryService = new FriendQueryService(
         memberFriendRepository,
         memberGroupRepository,
-        groupInviteRepository
+        groupInviteRepository,
+        friendInviteRepository
     );
 
     @Test

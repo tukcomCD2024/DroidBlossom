@@ -18,12 +18,6 @@ public interface MemberFriendQueryRepository {
         final ZonedDateTime createdAt
     );
 
-    Slice<FriendSummaryDto> findFriendRequestsSlice(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    );
-
     List<SearchFriendSummaryDto> findFriendsByPhone(
         final Long memberId,
         final List<byte[]> hashes
