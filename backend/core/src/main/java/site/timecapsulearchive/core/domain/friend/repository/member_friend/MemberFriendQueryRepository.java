@@ -36,7 +36,7 @@ public interface MemberFriendQueryRepository {
 
     List<Long> findFriendIdsByOwnerId(final Long memberId);
 
-    Slice<FriendSummaryDto> findFriendsBeforeGroupInvite(
+    Slice<FriendSummaryDto> findFriends(
         final FriendBeforeGroupInviteRequest request);
 
     List<Long> findFriendIds(final List<Long> groupMemberIds, final Long memberId);

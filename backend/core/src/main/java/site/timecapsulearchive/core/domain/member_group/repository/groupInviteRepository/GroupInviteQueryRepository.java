@@ -16,4 +16,6 @@ public interface GroupInviteQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     );
+
+    List<Long> getGroupMemberIdsByGroupIdAndGroupOwnerId(final Long groupId, final Long memberId);
 }

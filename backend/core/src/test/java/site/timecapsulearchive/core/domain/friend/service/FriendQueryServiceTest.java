@@ -18,19 +18,22 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.FriendDtoFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
-import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendSummaryResponse;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.friend.service.query.FriendQueryService;
+import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 class FriendQueryServiceTest {
 
     private final MemberFriendRepository memberFriendRepository = mock(
         MemberFriendRepository.class);
+    private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
+    private final GroupInviteRepository groupInviteRepository = mock(GroupInviteRepository.class);
 
     private final FriendQueryService friendQueryService = new FriendQueryService(
-        memberFriendRepository);
+        memberFriendRepository, memberGroupRepository, groupInviteRepository);
 
     @Test
     void 사용자는_주소록_기반_핸드폰_번호로_Ahchive_사용자_리스트를_조회_할_수_있다() {

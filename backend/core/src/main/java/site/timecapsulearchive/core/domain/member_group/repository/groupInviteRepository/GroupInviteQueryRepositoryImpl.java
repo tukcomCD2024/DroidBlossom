@@ -30,8 +30,11 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public void bulkSave(final Long groupOwnerId, final Long groupId,
-        final List<Long> groupMemberIds) {
+    public void bulkSave(
+        final Long groupOwnerId,
+        final Long groupId,
+        final List<Long> groupMemberIds
+    ) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_invite (
@@ -105,4 +108,15 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
         return new SliceImpl<>(groupInviteSummaryDtos, Pageable.ofSize(size), hasNext);
     }
 
+    @Override
+    public List<Long> getGroupMemberIdsByGroupIdAndGroupOwnerId(
+        final Long groupId,
+        final Long groupOwnerId
+    ) {
+        return jpaQueryFactory
+            .select(groupInvite.groupMember.id)
+            .from(groupInvite)
+            .where(groupInvite.groupOwner.id.eq(groupOwnerId).and(groupInvite.group.id.eq(groupId)))
+            .fetch();
+    }
 }

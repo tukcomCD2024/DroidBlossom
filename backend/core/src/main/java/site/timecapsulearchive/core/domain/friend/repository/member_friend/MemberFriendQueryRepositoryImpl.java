@@ -1,10 +1,8 @@
 package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
-import static com.querydsl.jpa.JPAExpressions.select;
 import static site.timecapsulearchive.core.domain.friend.entity.QFriendInvite.friendInvite;
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
-import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -73,8 +71,9 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
         return new SliceImpl<>(friendSummaryDtos, Pageable.ofSize(size), hasNext);
     }
 
-    public Slice<FriendSummaryDto> findFriendsBeforeGroupInvite(
-        final FriendBeforeGroupInviteRequest request) {
+    public Slice<FriendSummaryDto> findFriends(
+        final FriendBeforeGroupInviteRequest request
+    ) {
         final List<FriendSummaryDto> friends = jpaQueryFactory
             .select(
                 Projections.constructor(
@@ -86,15 +85,8 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                 )
             )
             .from(memberFriend)
-            .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
-            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
             .where(memberFriend.owner.id.eq(request.memberId())
                 .and(memberFriend.createdAt.lt(request.createdAt()))
-                .and(memberFriend.friend.id.notIn(
-                    select(memberGroup.member.id)
-                        .from(memberGroup)
-                        .where(memberGroup.group.id.eq(request.groupId()))
-                ))
             )
             .limit(request.size() + 1)
             .fetch();
