@@ -3,8 +3,10 @@ package com.droidblossom.archive.presentation.ui.home.dialog
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
+import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -33,7 +35,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val secretCapsuleSummaryUseCase: SecretCapsuleSummaryUseCase,
     private val publicCapsuleSummaryUseCase: PublicCapsuleSummaryUseCase,
     private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase,
-    private val groupCapsuleOpenUseCase: GroupCapsuleOpenUseCase
+    private val groupCapsuleOpenUseCase: GroupCapsuleOpenUseCase,
+    private val groupCapsuleSummaryUseCase: GroupCapsuleSummaryUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents = MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
@@ -83,6 +86,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _capsuleType = MutableStateFlow(HomeFragment.CapsuleType.GROUP)
     override val capsuleType: StateFlow<HomeFragment.CapsuleType> get() = _capsuleType
 
+    private val _groupCapsuleMembers = MutableStateFlow(emptyList<GroupCapsuleMember>())
+    override val groupCapsuleMembers: StateFlow<List<GroupCapsuleMember>> get() = _groupCapsuleMembers
+
+
     override fun capsulePreviewDialogEvent(event: CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent){
         viewModelScope.launch {
             _capsulePreviewDialogEvents.emit(event)
@@ -123,6 +130,25 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             }
         }
     }
+
+    override fun getGroupCapsuleSummary(capsuleId: Long) {
+        viewModelScope.launch {
+            groupCapsuleSummaryUseCase(capsuleId).collect { result ->
+                result.onSuccess {
+                    _capsuleSummaryResponse.emit(it.toCapsuleSummaryResponseModel())
+                    _groupCapsuleMembers.emit(it.members)
+                    _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
+                    if (!capsuleOpenState.value){
+                        calculateCapsuleOpenTime(it.createdAt, it.dueDate)
+                    }
+                }.onFail {
+
+                }
+            }
+        }
+    }
+
+
 
     override fun calculateCapsuleOpenTime(createdAt: String, dueDate: String) {
         viewModelScope.launch {

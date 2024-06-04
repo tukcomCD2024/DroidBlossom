@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.home.dialog
 
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,7 @@ interface CapsulePreviewDialogViewModel {
     val calledFromCamera: StateFlow<Boolean>
     val timeCapsule: StateFlow<Boolean>
     val capsuleType: StateFlow<HomeFragment.CapsuleType>
+    val groupCapsuleMembers: StateFlow<List<GroupCapsuleMember>>
 
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)
     fun calculateCapsuleOpenTime(createdAt: String, dueDate: String)
@@ -37,6 +39,7 @@ interface CapsulePreviewDialogViewModel {
 
     fun getSecretCapsuleSummary(capsuleId: Long)
     fun getPublicCapsuleSummary(capsuleId: Long)
+    fun getGroupCapsuleSummary(capsuleId: Long)
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
 

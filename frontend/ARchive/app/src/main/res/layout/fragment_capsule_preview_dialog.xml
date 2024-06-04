@@ -7,7 +7,9 @@
     <data>
 
         <import type="android.view.View" />
-
+        <variable
+            name="capsuleType"
+            type="com.droidblossom.archive.presentation.ui.home.HomeFragment.CapsuleType" />
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
@@ -261,10 +263,11 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/rectangle_solid_corner_30dp"
             android:backgroundTint="#ECEFFE"
-            android:visibility="gone"
+            android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout">
+            app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout"
+            tools:visibility="visible">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
