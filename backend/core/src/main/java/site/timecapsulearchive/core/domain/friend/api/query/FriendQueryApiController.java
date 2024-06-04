@@ -76,23 +76,23 @@ public class FriendQueryApiController implements FriendQueryApi {
     }
 
     @GetMapping(
-        value = "/reception-invites",
+        value = "/receiving-invites",
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendReceptionInvites(
+    public ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendReceivingInvites(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<FriendSummaryDto> friendReceptionInvitesSlice = friendQueryService.findFriendReceptionInvitesSlice(
+        final Slice<FriendSummaryDto> friendReceivingInvitesSlice = friendQueryService.findFriendReceivingInvitesSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                FriendsSliceResponse.createOf(friendReceptionInvitesSlice.getContent(),
-                    friendReceptionInvitesSlice.hasNext())
+                FriendsSliceResponse.createOf(friendReceivingInvitesSlice.getContent(),
+                    friendReceivingInvitesSlice.hasNext())
             )
         );
     }

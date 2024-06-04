@@ -31,10 +31,10 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
     private static final int MAX_COUNT = 40;
     private static final Long BULK_FRIEND_INVITE_MEMBER_START_ID = 2L;
-    private static final Long FRIEND_RECEPTION_INVITE_MEMBER_START_ID =
+    private static final Long FRIEND_RECEIVING_INVITE_MEMBER_START_ID =
         BULK_FRIEND_INVITE_MEMBER_START_ID + MAX_COUNT;
     private static final Long FRIEND_SENDING_INVITE_MEMBER_START_ID =
-        FRIEND_RECEPTION_INVITE_MEMBER_START_ID + MAX_COUNT;
+        FRIEND_RECEIVING_INVITE_MEMBER_START_ID + MAX_COUNT;
     private static final Long NOT_FRIEND_INVITE_START_ID =
         FRIEND_SENDING_INVITE_MEMBER_START_ID + MAX_COUNT;
 
@@ -44,7 +44,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
     private Long bulkOwnerId;
     private Long ownerId;
-    private Long ownerInviteReceptionStartId;
+    private Long ownerInviteReceivingStartId;
     private Long ownerInviteSendingStartId;
 
     FriendInviteQueryRepositoryTest(EntityManager entityManager, JdbcTemplate jdbcTemplate,
@@ -71,15 +71,15 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         ownerId = owner.getId();
 
         // owner에게 친구 요청만 받은 멤버 데이터
-        List<Member> receptionInviteToOwnerMembers = MemberFixture.members(
-            FRIEND_RECEPTION_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
-        for (Member member : receptionInviteToOwnerMembers) {
+        List<Member> receivingInviteToOwnerMembers = MemberFixture.members(
+            FRIEND_RECEIVING_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
+        for (Member member : receivingInviteToOwnerMembers) {
             entityManager.persist(member);
 
-            FriendInvite receptionInvite = FriendInviteFixture.friendInvite(owner, member);
-            entityManager.persist(receptionInvite);
+            FriendInvite receivingInvite = FriendInviteFixture.friendInvite(owner, member);
+            entityManager.persist(receivingInvite);
         }
-        ownerInviteReceptionStartId = receptionInviteToOwnerMembers.get(0).getId();
+        ownerInviteReceivingStartId = receivingInviteToOwnerMembers.get(0).getId();
 
         // owner에게 친구 요청만 보낸 멤버 데이터
         List<Member> sendingInviteToOwnerMembers = MemberFixture.members(
@@ -131,8 +131,8 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         );
 
         assertThat(slice.getContent()).isNotEmpty();
-        assertThat(slice.getContent()).allMatch(dto -> dto.id() >= ownerInviteReceptionStartId
-            && dto.id() < ownerInviteReceptionStartId + MAX_COUNT);
+        assertThat(slice.getContent()).allMatch(dto -> dto.id() >= ownerInviteReceivingStartId
+            && dto.id() < ownerInviteReceivingStartId + MAX_COUNT);
     }
 
     @Test
@@ -191,7 +191,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
     void 사용자가_받은_친구_요청_받은_목록을_조회하면_받은_친구_요청목록이_나온다(int size) {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
 
-        Slice<FriendSummaryDto> slice = friendInviteQueryRepository.findFriendReceptionInvitesSlice(
+        Slice<FriendSummaryDto> slice = friendInviteQueryRepository.findFriendReceivingInvitesSlice(
             ownerId,
             size,
             now
@@ -207,12 +207,12 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         //given
         int size = 20;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
-        Slice<FriendSummaryDto> firstSlice = friendInviteQueryRepository.findFriendReceptionInvitesSlice(
+        Slice<FriendSummaryDto> firstSlice = friendInviteQueryRepository.findFriendReceivingInvitesSlice(
             ownerId, size, now);
 
         //when
         FriendSummaryDto dto = firstSlice.getContent().get(firstSlice.getNumberOfElements() - 1);
-        Slice<FriendSummaryDto> nextSlice = friendInviteQueryRepository.findFriendReceptionInvitesSlice(
+        Slice<FriendSummaryDto> nextSlice = friendInviteQueryRepository.findFriendReceivingInvitesSlice(
             ownerId, size, dto.createdAt().plusSeconds(1L));
 
         //then
@@ -226,7 +226,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
 
         //when
-        Slice<FriendSummaryDto> slice = friendInviteQueryRepository.findFriendReceptionInvitesSlice(
+        Slice<FriendSummaryDto> slice = friendInviteQueryRepository.findFriendReceivingInvitesSlice(
             ownerId,
             size,
             now
@@ -243,7 +243,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
 
         //when
-        Slice<FriendSummaryDto> slice = friendInviteQueryRepository.findFriendReceptionInvitesSlice(
+        Slice<FriendSummaryDto> slice = friendInviteQueryRepository.findFriendReceivingInvitesSlice(
             NOT_FRIEND_INVITE_START_ID,
             size,
             now

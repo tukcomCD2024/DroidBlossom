@@ -10,7 +10,7 @@ public interface FriendInviteQueryRepository {
     void bulkSave(final Long ownerId, final List<Long> friendIds);
 
 
-    Slice<FriendSummaryDto> findFriendReceptionInvitesSlice(
+    Slice<FriendSummaryDto> findFriendReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

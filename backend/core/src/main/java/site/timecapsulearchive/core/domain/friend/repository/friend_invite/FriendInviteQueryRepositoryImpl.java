@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
         );
     }
 
-    public Slice<FriendSummaryDto> findFriendReceptionInvitesSlice(
+    public Slice<FriendSummaryDto> findFriendReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
@@ -79,16 +80,7 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
             .limit(size + 1)
             .fetch();
 
-        return makeSlice(size, friends);
-    }
-
-    private <T> Slice<T> makeSlice(int size, List<T> dtos) {
-        final boolean hasNext = dtos.size() > size;
-        if (hasNext) {
-            dtos.remove(size);
-        }
-
-        return new SliceImpl<>(dtos, Pageable.ofSize(size), hasNext);
+        return SliceUtil.makeSlice(size, friends);
     }
 
     @Override
@@ -113,6 +105,6 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
             .limit(size + 1)
             .fetch();
 
-        return makeSlice(size, friends);
+        return SliceUtil.makeSlice(size, friends);
     }
 }

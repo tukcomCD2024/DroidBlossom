@@ -79,7 +79,7 @@ public interface FriendQueryApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendReceptionInvites(
+    ResponseEntity<ApiSpec<FriendsSliceResponse>> findFriendReceivingInvites(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)

@@ -36,12 +36,12 @@ public class FriendQueryService {
         return memberFriendRepository.findFriendsBeforeGroupInvite(request);
     }
 
-    public Slice<FriendSummaryDto> findFriendReceptionInvitesSlice(
+    public Slice<FriendSummaryDto> findFriendReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return friendInviteRepository.findFriendReceptionInvitesSlice(memberId, size, createdAt);
+        return friendInviteRepository.findFriendReceivingInvitesSlice(memberId, size, createdAt);
     }
 
     public Slice<FriendSummaryDto> findFriendSendingInvitesSlice(
