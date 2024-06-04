@@ -29,7 +29,7 @@ public record GroupDetailResponse(
     Boolean canGroupEdit,
 
     @Schema(description = "그룹원 리스트")
-    List<GroupMemberResponse> members
+    List<GroupMemberWithRelationResponse> members
 ) {
 
     public GroupDetailResponse {

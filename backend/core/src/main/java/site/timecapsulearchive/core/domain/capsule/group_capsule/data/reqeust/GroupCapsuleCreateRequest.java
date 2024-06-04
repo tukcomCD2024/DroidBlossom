@@ -14,10 +14,6 @@ import site.timecapsulearchive.core.infra.map.data.dto.AddressData;
 @Schema(description = "그룹 캡슐 생성 포맷")
 public record GroupCapsuleCreateRequest(
 
-    @Schema(description = "그룹 멤버 아이디들")
-    @NotNull(message = "그룹 멤버 아이디들는 필수입니다.")
-    List<Long> groupMemberIds,
-
     @Schema(description = "업로드한 이미지 경로 ex) xxx.jpg")
     List<@Image String> imageNames,
 
@@ -56,7 +52,6 @@ public record GroupCapsuleCreateRequest(
 
     public GroupCapsuleCreateRequestDto toGroupCapsuleCreateRequestDto() {
         return GroupCapsuleCreateRequestDto.builder()
-            .groupMemberIds(groupMemberIds)
             .videoNames(videoNames)
             .imageNames(imageNames)
             .capsuleSkinId(capsuleSkinId)

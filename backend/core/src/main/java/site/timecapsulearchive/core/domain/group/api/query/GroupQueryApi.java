@@ -3,13 +3,13 @@ package site.timecapsulearchive.core.domain.group.api.query;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
@@ -38,7 +38,7 @@ public interface GroupQueryApi {
     ResponseEntity<ApiSpec<GroupDetailResponse>> findGroupDetailById(
         Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true, schema = @Schema())
+        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true)
         Long groupId
     );
 

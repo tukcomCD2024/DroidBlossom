@@ -15,9 +15,10 @@ public final class TagGenerator {
     /**
      * 이메일과 소셜 타입(대문자)으로 태그를 생성한다.
      *
-     * @param email 이메일
+     * @param email      이메일
      * @param socialType 소셜 타입
-     * @return 생성된 태그 ex) {@code test1234@gmail.com, SocialType.GOOGLE} -> {@code "test1234-123456GG"}
+     * @return 생성된 태그 ex) {@code test1234@gmail.com, SocialType.GOOGLE} ->
+     * {@code "test1234-123456GG"}
      */
     public static String generate(final String email, final SocialType socialType) {
         final String randomInts = generateRandomInts();
@@ -41,9 +42,10 @@ public final class TagGenerator {
     /**
      * 이메일과 소셜 타입(소문자)으로 태그를 생성한다.
      *
-     * @param email 이메일
+     * @param email      이메일
      * @param socialType 소셜 타입
-     * @return 생성된 태그 ex) {@code test1234@gmail.com, SocialType.GOOGLE} -> {@code "test1234-123456gg"}
+     * @return 생성된 태그 ex) {@code test1234@gmail.com, SocialType.GOOGLE} ->
+     * {@code "test1234-123456gg"}
      */
     public static String lowercase(final String email, final SocialType socialType) {
         final String randomInts = generateRandomInts();

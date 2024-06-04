@@ -17,8 +17,6 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
 
     Optional<Member> findMemberById(Long memberId);
 
-    List<Member> findMemberByIdIsIn(List<Long> memberIds);
-
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Member m SET m.fcmToken = :fcmToken WHERE m.id = :memberId")
     int updateMemberFCMToken(@Param("memberId") Long memberId, @Param("fcmToken") String fcmToken);

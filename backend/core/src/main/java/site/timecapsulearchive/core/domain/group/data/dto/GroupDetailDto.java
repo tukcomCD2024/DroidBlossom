@@ -20,7 +20,8 @@ public record GroupDetailDto(
         Boolean isOwner,
         List<GroupMemberDto> members
     ) {
-        return new GroupDetailDto(groupName, groupDescription, groupProfileUrl, createdAt, isOwner, members);
+        return new GroupDetailDto(groupName, groupDescription, groupProfileUrl, createdAt, isOwner,
+            members);
     }
 
 }

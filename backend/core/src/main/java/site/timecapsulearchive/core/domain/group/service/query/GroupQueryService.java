@@ -2,12 +2,15 @@ package site.timecapsulearchive.core.domain.group.service.query;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
+import site.timecapsulearchive.core.domain.group.data.dto.CompleteGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailTotalDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
@@ -30,12 +33,32 @@ public class GroupQueryService {
             .orElseThrow(GroupNotFoundException::new);
     }
 
-    public Slice<GroupSummaryDto> findGroupsSlice(
+    public Slice<CompleteGroupSummaryDto> findGroupsSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return groupRepository.findGroupsSlice(memberId, size, createdAt);
+        final Slice<GroupSummaryDto> groupSummaryDtos = groupRepository.findGroupSummaries(memberId,
+            size, createdAt);
+        final List<Long> groupIds = groupSummaryDtos.getContent().stream().map(GroupSummaryDto::id)
+            .toList();
+
+        final List<String> groupOwnerProfileUrls = groupRepository.getGroupOwnerProfileUrls(
+            groupIds);
+        final List<Long> totalGroupMemberCount = groupRepository.getTotalGroupMemberCount(groupIds);
+
+        final List<CompleteGroupSummaryDto> finalGroupSummaryDtos = IntStream.range(0,
+                groupSummaryDtos.getContent().size())
+            .mapToObj(i -> new CompleteGroupSummaryDto(
+                    groupSummaryDtos.getContent().get(i),
+                    groupOwnerProfileUrls.get(i),
+                    totalGroupMemberCount.get(i)
+                )
+            )
+            .toList();
+
+        return new SliceImpl<>(finalGroupSummaryDtos, groupSummaryDtos.getPageable(),
+            groupSummaryDtos.hasNext());
     }
 
     public GroupDetailTotalDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
