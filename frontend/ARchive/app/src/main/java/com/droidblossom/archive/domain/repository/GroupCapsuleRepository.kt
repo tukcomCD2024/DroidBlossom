@@ -10,4 +10,7 @@ interface GroupCapsuleRepository {
         request: CapsuleCreateRequestDto
     ): RetrofitResult<String>
 
+    suspend fun openGroupCapsule(
+        groupId: Long
+    ): RetrofitResult<String>
 }

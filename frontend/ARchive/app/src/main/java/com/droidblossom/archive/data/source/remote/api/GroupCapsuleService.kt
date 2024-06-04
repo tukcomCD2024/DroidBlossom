@@ -14,4 +14,9 @@ interface GroupCapsuleService {
         @Path("group_id") groupId : Long,
         @Body request : CapsuleCreateRequestDto
     ) : Response<ResponseBody<String>>
+
+    @POST("group-capsules/{capsule_id}/open")
+    suspend fun postGroupCapsuleOpenApi(
+        @Path("capsule_id") capsuleId: Long
+    ): Response<ResponseBody<String>>
 }

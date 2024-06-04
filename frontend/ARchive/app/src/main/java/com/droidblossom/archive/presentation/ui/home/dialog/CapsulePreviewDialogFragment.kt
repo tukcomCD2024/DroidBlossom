@@ -82,16 +82,17 @@ class CapsulePreviewDialogFragment :
         when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
                 viewModel.getSecretCapsuleSummary(capsuleId)
-                viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24, HomeFragment.CapsuleType.SECRET)
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
                 viewModel.getPublicCapsuleSummary(capsuleId)
-                viewModel.setCapsuleTypeImage(R.drawable.ic_public_marker_24)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_public_marker_24, HomeFragment.CapsuleType.PUBLIC)
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-
+                //viewModel.getPublicCapsuleSummary(capsuleId)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_group_marker_24, HomeFragment.CapsuleType.GROUP)
             }
 
             else -> {

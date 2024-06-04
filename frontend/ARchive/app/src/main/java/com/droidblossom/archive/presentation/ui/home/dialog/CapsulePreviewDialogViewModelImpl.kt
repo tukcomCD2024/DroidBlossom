@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
+import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
@@ -30,7 +32,8 @@ import javax.inject.Inject
 class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val secretCapsuleSummaryUseCase: SecretCapsuleSummaryUseCase,
     private val publicCapsuleSummaryUseCase: PublicCapsuleSummaryUseCase,
-    private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase
+    private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase,
+    private val groupCapsuleOpenUseCase: GroupCapsuleOpenUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents = MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
@@ -76,6 +79,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
     private val _timeCapsule = MutableStateFlow(false)
     override val timeCapsule: StateFlow<Boolean> get() = _timeCapsule
+
+    private val _capsuleType = MutableStateFlow(HomeFragment.CapsuleType.GROUP)
+    override val capsuleType: StateFlow<HomeFragment.CapsuleType> get() = _capsuleType
 
     override fun capsulePreviewDialogEvent(event: CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent){
         viewModelScope.launch {
@@ -207,9 +213,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         return dateFormat.format(calendar.time)
     }
 
-    override fun setCapsuleTypeImage(image : Int){
+    override fun setCapsuleTypeImage(image : Int, type: HomeFragment.CapsuleType){
         viewModelScope.launch {
             _capsuleTypeImage.emit(image)
+            _capsuleType.emit(type)
         }
     }
 
@@ -220,17 +227,32 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
 
         viewModelScope.launch {
-            patchCapsuleOpenedUseCase(capsuleId).collect { result ->
-                result.onSuccess {
-                    if (it.result == "캡슐을 열 수 없습니다.") {
-                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
-                    } else {
-                        _capsuleOpenState.emit(true)
-                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
+            Log.d("흠", "${capsuleType.value}")
+            when(capsuleType.value){
+                HomeFragment.CapsuleType.GROUP -> {
+                    groupCapsuleOpenUseCase(capsuleId).collect { result ->
+                        result.onSuccess {
+                            // 값 뭐뭐 받는지에 따라서 다름
+                        }.onFail {
+                            // 값 뭐뭐 받는지에 따라서 다름
+                        }
                     }
-                }.onFail {
-                    Log.d("개봉", " 개봉 실패 코드 : $it")
-                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
+                }
+
+                else -> {
+                    patchCapsuleOpenedUseCase(capsuleId).collect { result ->
+                        result.onSuccess {
+                            if (it.result == "캡슐을 열 수 없습니다.") {
+                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
+                            } else {
+                                _capsuleOpenState.emit(true)
+                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
+                            }
+                        }.onFail {
+                            Log.d("개봉", " 개봉 실패 코드 : $it")
+                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
+                        }
+                    }
                 }
             }
         }

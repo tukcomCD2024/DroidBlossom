@@ -25,4 +25,8 @@ class GroupCapsuleRepositoryImpl @Inject constructor(
         }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
+    override suspend fun openGroupCapsule(groupId: Long): RetrofitResult<String> {
+        return  apiHandler({ api.postGroupCapsuleOpenApi(groupId) }) { response: ResponseBody<String> -> response.result.toModel() }
+    }
+
 }
