@@ -15,7 +15,7 @@ public record CompleteGroupSummaryDto(
         return GroupSummaryResponse.builder()
             .id(groupSummaryDto.id())
             .name(groupSummaryDto.groupName())
-            .groupOwnerProfileUrl(preSignedUrlFunction.apply(groupOwnerProfileUrl))
+            .groupOwnerProfileUrl(groupOwnerProfileUrl)
             .profileUrl(preSignedUrlFunction.apply(groupSummaryDto.groupProfileUrl()))
             .totalGroupMemberCount(totalGroupMemberCount)
             .createdAt(groupSummaryDto.createdAt())
