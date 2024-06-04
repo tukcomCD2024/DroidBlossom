@@ -1,7 +1,8 @@
 package site.timecapsulearchive.core.domain.group.data.dto;
 
+import java.util.function.Function;
 import lombok.Builder;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberWithRelationResponse;
 
 @Builder
 public record GroupMemberWithRelationDto(
@@ -13,10 +14,11 @@ public record GroupMemberWithRelationDto(
     Boolean isFriend
 ) {
 
-    public GroupMemberResponse toResponse() {
-        return GroupMemberResponse.builder()
+    public GroupMemberWithRelationResponse toResponse(
+        final Function<String, String> singlePreSignUrlFunction) {
+        return GroupMemberWithRelationResponse.builder()
             .memberId(memberId)
-            .profileUrl(profileUrl)
+            .profileUrl(singlePreSignUrlFunction.apply(profileUrl))
             .nickname(nickname)
             .tag(tag)
             .isOwner(isOwner)

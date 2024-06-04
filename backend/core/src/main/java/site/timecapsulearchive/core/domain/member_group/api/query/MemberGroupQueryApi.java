@@ -10,6 +10,8 @@ import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInvitesSliceResponse;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupInviteSummaryResponses;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface MemberGroupQueryApi {
@@ -35,6 +37,25 @@ public interface MemberGroupQueryApi {
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 데이터의 시간", required = true)
         ZonedDateTime createdAt
+    );
+
+    @Operation(
+        summary = "그룹에 대한 그룹 멤버 조회",
+        description = "그룹의 그룹원들 정보를 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        )
+    })
+    ResponseEntity<ApiSpec<GroupMemberInfosResponse>> findGroupMemberInfos(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "조회할 그룹 아이디", required = true)
+        Long groupId
     );
 
     @Operation(

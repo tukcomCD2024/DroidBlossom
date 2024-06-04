@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
+import site.timecapsulearchive.core.domain.member_group.facade.MemberGroupFacade;
 import site.timecapsulearchive.core.domain.member_group.service.MemberGroupCommandService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -20,6 +21,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class MemberGroupCommandApiController implements MemberGroupCommandApi {
 
     private final MemberGroupCommandService memberGroupCommandService;
+    private final MemberGroupFacade memberGroupFacade;
 
     @DeleteMapping(value = "/{group_id}/members/quit")
     @Override
@@ -47,14 +49,13 @@ public class MemberGroupCommandApiController implements MemberGroupCommandApi {
         );
     }
 
-    @PostMapping(value = "/{group_id}/member/{target_id}/accept")
+    @PostMapping(value = "/{group_id}/accept")
     @Override
     public ResponseEntity<ApiSpec<String>> acceptGroupInvitation(
         @AuthenticationPrincipal final Long memberId,
-        @PathVariable("group_id") final Long groupId,
-        @PathVariable("target_id") final Long targetId
+        @PathVariable("group_id") final Long groupId
     ) {
-        memberGroupCommandService.acceptGroupInvite(memberId, groupId, targetId);
+        memberGroupFacade.acceptGroupInvite(memberId, groupId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
