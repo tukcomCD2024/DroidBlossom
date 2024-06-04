@@ -48,8 +48,8 @@ interface GroupService {
         @Path("target_id") targetId : Long,
     ) : Response<ResponseBody<String>>
 
-    @GET("groups/{group_id}")
-    suspend fun getGroupsDetailApi(
+    @GET("groups/{group_id}/detail")
+    suspend fun getGroupDetailApi(
         @Path("group_id") groupId : Long,
     ) : Response<ResponseBody<GroupDetailResponseDto>>
 

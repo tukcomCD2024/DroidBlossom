@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.model.group.toGroupProfileData
@@ -99,6 +100,7 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     override fun setGroupId(groupId: Long) {
         _groupId.value = groupId
+        Log.d("아니","setGroupId, $groupId")
         getGroupDetail()
     }
 
@@ -112,12 +114,13 @@ class GroupDetailViewModelImpl @Inject constructor(
         viewModelScope.launch {
             getGroupDetailUseCase(groupId.value).collect { result ->
                 result.onSuccess {
+                    Log.d("아니","getGroupDetail, 성공")
                     val groupProfile = it.toGroupProfileData()
                     _groupInfo.emit(groupProfile)
                     _groupMembers.emit(it.members)
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
                 }.onFail {
-
+                    Log.d("아니","getGroupDetail, 실패 $it")
                 }
                 groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
             }

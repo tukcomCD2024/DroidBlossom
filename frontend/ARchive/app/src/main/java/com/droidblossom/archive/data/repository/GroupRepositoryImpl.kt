@@ -74,7 +74,7 @@ class GroupRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getGroupDetailRequest(groupId: Long): RetrofitResult<GroupDetail> {
-        return apiHandler({ api.getGroupsDetailApi(groupId) }) { response: ResponseBody<GroupDetailResponseDto> -> response.result.toModel() }
+        return apiHandler({ api.getGroupDetailApi(groupId) }) { response: ResponseBody<GroupDetailResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun postGroupInviteRequest(request: InviteGroupRequestDto): RetrofitResult<String> {
