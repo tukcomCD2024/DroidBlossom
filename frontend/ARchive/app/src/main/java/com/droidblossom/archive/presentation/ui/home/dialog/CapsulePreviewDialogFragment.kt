@@ -91,7 +91,7 @@ class CapsulePreviewDialogFragment :
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-                //viewModel.getPublicCapsuleSummary(capsuleId)
+                viewModel.getGroupCapsuleSummary(capsuleId)
                 viewModel.setCapsuleTypeImage(R.drawable.ic_group_marker_24, HomeFragment.CapsuleType.GROUP)
             }
 
