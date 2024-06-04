@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
-import static site.timecapsulearchive.core.domain.friend.entity.QFriendInvite.friendInvite;
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
