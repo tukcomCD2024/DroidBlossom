@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
+import site.timecapsulearchive.core.global.error.exception.InternalServerException;
 import site.timecapsulearchive.core.global.error.exception.NullCheckValidateException;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
@@ -41,6 +42,17 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage(), e);
 
         final ErrorCode errorCode = e.getErrorCode();
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
+
+        return ResponseEntity.status(errorCode.getStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(InternalServerException.class)
+    protected ResponseEntity<ErrorResponse> handleInternalServerException(final InternalServerException e) {
+        log.error(e.getMessage(), e);
+
+        ErrorCode errorCode = INTERNAL_SERVER_ERROR;
         final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())

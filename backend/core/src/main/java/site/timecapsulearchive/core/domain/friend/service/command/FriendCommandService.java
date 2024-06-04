@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.service.command;
 
+import jakarta.persistence.OptimisticLockException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import site.timecapsulearchive.core.domain.friend.repository.member_friend.Membe
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.error.ErrorCode;
+import site.timecapsulearchive.core.global.error.exception.InternalServerException;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Slf4j
@@ -115,12 +116,12 @@ public class FriendCommandService {
     }
 
 
-    public void acceptFriend(final Long memberId, final Long friendId) {
-        validateSelfFriendOperation(memberId, friendId);
+    public void acceptFriend(final Long memberId, final Long ownerId) {
+        validateSelfFriendOperation(memberId, ownerId);
 
         final String ownerNickname = transactionTemplate.execute(status -> {
-            FriendInvite friendInvite = friendInviteRepository.findFriendReceptionInviteForUpdateByOwnerIdAndFriendId(
-                    memberId, friendId)
+            FriendInvite friendInvite = friendInviteRepository.findFriendReceivingInviteForUpdateByOwnerIdAndFriendId(
+                   ownerId, memberId)
                 .orElseThrow(FriendInviteNotFoundException::new);
 
             final MemberFriend ownerRelation = friendInvite.ownerRelation();
@@ -128,20 +129,21 @@ public class FriendCommandService {
 
             memberFriendRepository.save(ownerRelation);
             memberFriendRepository.save(friendRelation);
+
             friendInviteRepository.delete(friendInvite);
 
             return ownerRelation.getOwnerNickname();
         });
 
-        socialNotificationManager.sendFriendAcceptMessage(ownerNickname, friendId);
+        socialNotificationManager.sendFriendAcceptMessage(ownerNickname, ownerId);
     }
 
     @Transactional
-    public void denyRequestFriend(final Long memberId, final Long friendId) {
-        validateSelfFriendOperation(memberId, friendId);
+    public void denyRequestFriend(final Long memberId, final Long ownerId) {
+        validateSelfFriendOperation(memberId, ownerId);
 
-        FriendInvite friendInvite = friendInviteRepository.findFriendReceptionInviteForUpdateByOwnerIdAndFriendId(
-                memberId, friendId)
+        FriendInvite friendInvite = friendInviteRepository.findFriendReceivingInviteForUpdateByOwnerIdAndFriendId(
+                ownerId, memberId)
             .orElseThrow(FriendInviteNotFoundException::new);
 
         friendInviteRepository.delete(friendInvite);
