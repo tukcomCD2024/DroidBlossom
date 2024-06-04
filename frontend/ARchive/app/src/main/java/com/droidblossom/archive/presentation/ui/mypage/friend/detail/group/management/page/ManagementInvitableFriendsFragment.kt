@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -12,6 +13,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentManagementInvitableFriendsBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.adapter.InvitableFriendRVA
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +38,25 @@ class ManagementInvitableFriendsFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.invitableFriends.collect { members ->
                     invitableFriendRVA.submitList(members)
-                    viewModel.remainingInvites = 29 - viewModel.groupMembers.value.size
+                    viewModel.remainingInvites = 30 - viewModel.groupMembers.value.size
+                    if (binding.swipeRefreshLayout.isRefreshing){
+                        binding.swipeRefreshLayout.isRefreshing = false
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.managementGroupMemberEvents.collect { event ->
+                    when(event){
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading -> {
+                            if (binding.swipeRefreshLayout.isRefreshing){
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
+                        }
+                        else -> {}
+                    }
                 }
             }
         }

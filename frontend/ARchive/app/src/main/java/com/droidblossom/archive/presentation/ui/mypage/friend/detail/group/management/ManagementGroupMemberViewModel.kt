@@ -23,6 +23,8 @@ interface ManagementGroupMemberViewModel {
     fun managementGroupMemberEvent(event: ManagementGroupMemberEvent)
     fun setGroupId(groupId: Long)
 
+    fun getGroupMemberList()
+
     fun getInvitableFriendList()
     fun getLatestInvitableFriendList()
     fun onInvitableFriendsRVNearBottom()

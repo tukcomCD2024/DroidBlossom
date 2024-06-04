@@ -29,6 +29,9 @@ class ManagementInvitedUserFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.invitedUsers.collect { members ->
                     //invitableFriendRVA.submitList(members)
+                    if (binding.swipeRefreshLayout.isRefreshing){
+                        binding.swipeRefreshLayout.isRefreshing = false
+                    }
                 }
             }
         }

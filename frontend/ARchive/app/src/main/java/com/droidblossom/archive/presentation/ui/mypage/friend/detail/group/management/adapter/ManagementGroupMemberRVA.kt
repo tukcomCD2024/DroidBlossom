@@ -5,37 +5,63 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.droidblossom.archive.databinding.ItemManagementGroupMasterBinding
 import com.droidblossom.archive.databinding.ItemManagementGroupMemberBinding
 import com.droidblossom.archive.domain.model.group.GroupMember
 
 class ManagementGroupMemberRVA(
 
-) : ListAdapter<GroupMember, ManagementGroupMemberRVA.ItemViewHolder>(differ){
+) : ListAdapter<GroupMember, RecyclerView.ViewHolder>(differ){
 
-    inner class ItemViewHolder(
-        private val binding: ItemManagementGroupMemberBinding
+    inner class GroupMasterItemViewHolder(
+        private val binding: ItemManagementGroupMasterBinding
     ): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(data: GroupMember){
+        fun groupMasterBind(data: GroupMember){
             binding.item = data
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        return ItemViewHolder(
-            ItemManagementGroupMemberBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+    inner class GroupMemberItemViewHolder(
+        private val binding: ItemManagementGroupMemberBinding
+    ): RecyclerView.ViewHolder(binding.root){
+
+        fun groupMemberBind(data: GroupMember){
+            binding.item = data
+        }
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun getItemViewType(position: Int): Int {
+        return if (getItem(position).isOwner) {
+            TYPE_GROUP_MASTER
+        } else {
+            TYPE_GROUP_MEMBER
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType){
+            TYPE_GROUP_MASTER -> GroupMasterItemViewHolder(ItemManagementGroupMasterBinding.inflate(inflater,parent,false))
+            TYPE_GROUP_MEMBER -> GroupMemberItemViewHolder(ItemManagementGroupMemberBinding.inflate(inflater,parent,false))
+            else -> throw IllegalArgumentException("Invalid view type")
+
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+        when (holder){
+            is GroupMasterItemViewHolder -> holder.groupMasterBind(item)
+            is GroupMemberItemViewHolder -> holder.groupMemberBind(item)
+        }
     }
 
     companion object{
+
+        private const val TYPE_GROUP_MASTER = 0
+        private const val TYPE_GROUP_MEMBER = 1
+
         val differ = object : DiffUtil.ItemCallback<GroupMember>(){
             override fun areItemsTheSame(oldItem: GroupMember, newItem: GroupMember): Boolean {
                 return oldItem.memberId == newItem.memberId

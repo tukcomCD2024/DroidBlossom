@@ -34,6 +34,9 @@ class ManagementGroupMembersFragment :
                 viewModel.groupMembers.collect { members ->
                     viewModel.remainingInvites = 29 - viewModel.groupMembers.value.size
                     managementGroupMemberRVA.submitList(members)
+                    if (binding.swipeRefreshLayout.isRefreshing){
+                        binding.swipeRefreshLayout.isRefreshing = false
+                    }
                 }
             }
         }
@@ -51,13 +54,6 @@ class ManagementGroupMembersFragment :
 
         with(binding) {
 
-            actionMessage.setOnClickListener {
-                viewModel.managementGroupMemberEvent(
-                    ManagementGroupMemberViewModel.ManagementGroupMemberEvent.NavigateToPage(
-                        ManagementGroupMemberActivity.INVITABLE_FRIENDS
-                    )
-                )
-            }
 
         }
     }
@@ -66,6 +62,7 @@ class ManagementGroupMembersFragment :
         binding.groupMembersRV.adapter = managementGroupMemberRVA
         binding.groupMembersRV.setHasFixedSize(true)
         binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getGroupMemberList()
             viewModel.getLatestInvitableFriendList()
             viewModel.getLatestInvitedUserList()
         }

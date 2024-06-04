@@ -5,6 +5,8 @@ import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupMemberResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupMembersInfoResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
@@ -56,4 +58,8 @@ interface GroupService {
         @Body request : InviteGroupRequestDto
     ) : Response<ResponseBody<String>>
 
+    @GET("groups/{group_id}/members")
+    suspend fun getGroupMembersApi(
+        @Path("group_id") groupId : Long,
+    ): Response<ResponseBody<GroupMembersInfoResponseDto>>
 }

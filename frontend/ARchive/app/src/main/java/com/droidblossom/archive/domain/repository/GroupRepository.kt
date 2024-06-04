@@ -5,6 +5,8 @@ import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.domain.model.group.GroupDetail
 import com.droidblossom.archive.domain.model.group.GroupInviteSummary
+import com.droidblossom.archive.domain.model.group.GroupMember
+import com.droidblossom.archive.domain.model.group.GroupMembersInfo
 import com.droidblossom.archive.domain.model.group.GroupPage
 import com.droidblossom.archive.domain.model.group.GroupSummary
 import com.droidblossom.archive.util.RetrofitResult
@@ -23,5 +25,7 @@ interface GroupRepository {
     suspend fun getGroupDetailRequest(groupId: Long): RetrofitResult<GroupDetail>
 
     suspend fun postGroupInviteRequest(request: InviteGroupRequestDto): RetrofitResult<String>
+
+    suspend fun getGroupMemberRequest(groupId: Long): RetrofitResult<GroupMembersInfo>
 
 }

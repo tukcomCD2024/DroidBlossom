@@ -1,10 +1,12 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
+import com.droidblossom.archive.domain.usecase.group.GetGroupMembersInfoUseCase
 import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
@@ -27,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val friendForGroupInvitePageUseCase: FriendForGroupInvitePageUseCase,
-    private val groupInviteUseCase: GroupInviteUseCase
+    private val groupInviteUseCase: GroupInviteUseCase,
+    private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -116,7 +119,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     fun load(){
         getLatestInvitableFriendList()
         getLatestInvitedUserList()
-        _groupInviteeList.value = emptyList()
+        getGroupMemberList()
+
     }
 
     override fun onInvitableFriendsRVNearBottom() {
@@ -131,6 +135,18 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     override fun setGroupId(groupId: Long) {
         _groupId.value = groupId
         load()
+    }
+
+    override fun getGroupMemberList(){
+        viewModelScope.launch {
+            getGroupMembersInfoUseCase(groupId.value).collect{ result ->
+                result.onSuccess {
+                    _groupMembers.value = it.groupMemberResponses
+                }.onFail {
+
+                }
+            }
+        }
     }
 
     override fun inviteFriendsToGroup(){
@@ -177,12 +193,12 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                         managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 가능한 친구 불러오기 실패"))
                     }
                 }
-                managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
             }
         }
 
     }
     override fun getLatestInvitableFriendList(){
+        _groupInviteeList.value = emptyList()
         getInvitableFriendListJob?.cancel()
         getInvitableFriendListJob = viewModelScope.launch {
             friendForGroupInvitePageUseCase(
