@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberResponse;
+import site.timecapsulearchive.core.domain.group.data.response.GroupMemberWithRelationResponse;
 
 public record GroupDetailTotalDto(
     String groupName,
@@ -38,8 +38,8 @@ public record GroupDetailTotalDto(
     }
 
     public GroupDetailResponse toResponse(final Function<String, String> singlePreSignUrlFunction) {
-        List<GroupMemberResponse> members = this.members.stream()
-            .map(GroupMemberWithRelationDto::toResponse)
+        List<GroupMemberWithRelationResponse> groupMemberResponses = members.stream()
+            .map(member -> member.toResponse(singlePreSignUrlFunction))
             .toList();
 
         return GroupDetailResponse.builder()
@@ -49,7 +49,7 @@ public record GroupDetailTotalDto(
             .createdAt(createdAt)
             .groupCapsuleTotalCount(groupCapsuleTotalCount)
             .canGroupEdit(canGroupEdit)
-            .members(members)
+            .members(groupMemberResponses)
             .build();
     }
 }

@@ -4,8 +4,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupCreateDto;
@@ -20,8 +18,8 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 import site.timecapsulearchive.core.infra.s3.manager.S3ObjectManager;
@@ -48,13 +46,10 @@ public class GroupCommandService {
 
         final MemberGroup memberGroup = MemberGroup.createGroupOwner(member, group);
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                groupRepository.save(group);
-                memberGroupRepository.save(memberGroup);
-                groupInviteRepository.bulkSave(memberId, group.getId(), dto.targetIds());
-            }
+        transactionTemplate.executeWithoutResult(status -> {
+            groupRepository.save(group);
+            memberGroupRepository.save(memberGroup);
+            groupInviteRepository.bulkSave(memberId, group.getId(), dto.targetIds());
         });
 
         socialNotificationManager.sendGroupInviteMessage(member.getNickname(),
@@ -73,7 +68,7 @@ public class GroupCommandService {
      * @param groupId  그룹 아이디
      */
     public void deleteGroup(final Long memberId, final Long groupId) {
-        final String groupProfilePath = transactionTemplate.execute(ignored -> {
+        final String groupProfilePath = transactionTemplate.execute(status -> {
             final Group group = groupRepository.findGroupById(groupId)
                 .orElseThrow(GroupNotFoundException::new);
 

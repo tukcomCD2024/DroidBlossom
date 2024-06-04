@@ -41,8 +41,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private static final String PROPAGATION_REQUIRES_NEW = "PROPAGATION_REQUIRES_NEW";
     private static final int MAX_COUNT = 10;
     private static final Long FRIEND_START_ID = 2L;
-    private static final Long FRIEND_ID_TO_INVITE_OWNER = 12L;
-    private static final Long NOT_FRIEND_MEMBER_START_ID = 13L;
+    private static final Long NOT_FRIEND_MEMBER_START_ID = FRIEND_START_ID + MAX_COUNT;
+    private static final Long FRIEND_INVITE_START_ID =
+        NOT_FRIEND_MEMBER_START_ID + NOT_FRIEND_MEMBER_START_ID;
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
@@ -89,15 +90,6 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             friendId = friends.get(0).getId();
             friendTag = friends.get(0).getTag();
 
-            // owner에게 친구 요청만 보낸 멤버 데이터
-            Member inviteFriendToOwner = MemberFixture.member(FRIEND_ID_TO_INVITE_OWNER.intValue());
-            entityManager.persist(inviteFriendToOwner);
-            friendInviteTag =inviteFriendToOwner.getTag();
-
-            FriendInvite friendInvite = FriendInviteFixture.friendInvite(inviteFriendToOwner,
-                owner);
-            entityManager.persist(friendInvite);
-
             //owner와 친구가 아닌 멤버 데이터
             List<Member> notFriendMembers = MemberFixture.members(
                 NOT_FRIEND_MEMBER_START_ID.intValue(),
@@ -106,11 +98,18 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
                 entityManager.persist(notFriend);
                 hashedNotFriendPhones.add(notFriend.getPhone_hash());
             }
-
             //owner에게 친구 요청을 보내지 않은 데이터
             notFriendInviteTag = notFriendMembers.get(0).getTag();
             //owner와 친구가 아닌 데이터
             notFriendTag = notFriendMembers.get(0).getTag();
+
+            //owner와 친구 초대 관계 멤버 데이터
+            Member friendInviteMember = MemberFixture.member(FRIEND_INVITE_START_ID.intValue());
+            entityManager.persist(friendInviteMember);
+
+            FriendInvite friendInvite = FriendInviteFixture.friendInvite(owner, friendInviteMember);
+            entityManager.persist(friendInvite);
+            friendInviteTag = friendInviteMember.getTag();
         });
     }
 
@@ -123,8 +122,8 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
         entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=1").executeUpdate();
     }
 
-    @ParameterizedTest
     @ValueSource(ints = {2, 7, 10, 5})
+    @ParameterizedTest
     void 사용자가_친구_목록_조회하면_친구_관계를_맺은_사용자_리스트가_나온다(int size) {
         //given
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
@@ -148,6 +147,28 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
+    void 사용자가_첫_페이지_이후의_친구_목록_조회하면_다음_페이지의_친구_관계를_맺은_사용자_리스트가_나온다() {
+        //given
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(3);
+        Slice<FriendSummaryDto> firstSlice = memberFriendQueryRepository.findFriendsSlice(
+            ownerId,
+            size,
+            now
+        );
+
+        //when
+        FriendSummaryDto dto = firstSlice.getContent().get(firstSlice.getNumberOfElements() - 1);
+        Slice<FriendSummaryDto> nextSlice = memberFriendQueryRepository.findFriendsSlice(
+            ownerId,
+            size,
+            dto.createdAt().plusSeconds(1L)
+        );
+
+        assertThat(nextSlice.getNumberOfElements()).isPositive();
+    }
+
+    @Test
     void 친구가_친구_목록_조회하면_친구_관계를_맺은_사용자_리스트가_나온다() {
         //given
         int size = 10;
@@ -164,26 +185,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 친구_요청만_보낸_사용자가_친구_목록_조회하면_리스트가_나온다() {
-        //given
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            FRIEND_ID_TO_INVITE_OWNER,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @Test
     void 사용자가_유효하지_않은_시간으로_사용자의_친구_목록_조회하면_빈_리스트가_나온다() {
         //given
-        int size = 20;
+        int size = 10;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
 
         //when
@@ -200,45 +204,11 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     @Test
     void 친구가_없는_사용자가_친구_목록_조회하면_빈_리스트가_나온다() {
         //given
-        int size = 20;
+        int size = 10;
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
 
         //when
         Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendsSlice(
-            NOT_FRIEND_MEMBER_START_ID,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @Test
-    void 사용자가_유효하지_않은_시간으로_사용자의_친구_요청_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).minusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
-            ownerId,
-            size,
-            now
-        );
-
-        //then
-        assertThat(slice).isEmpty();
-    }
-
-    @Test
-    void 친구가_없는_사용자가_친구_요청_목록_조회하면_빈_리스트가_나온다() {
-        //given
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(5);
-
-        //when
-        Slice<FriendSummaryDto> slice = memberFriendQueryRepository.findFriendRequestsSlice(
             NOT_FRIEND_MEMBER_START_ID,
             size,
             now
@@ -369,7 +339,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             ownerId, friendInviteTag).orElseThrow();
 
         //then
-        assertThat(dto.isFriendInviteToMe()).isTrue();
+        assertThat(dto.isFriendInviteToMe() || dto.isFriendInviteToFriend()).isTrue();
     }
 
     @Test

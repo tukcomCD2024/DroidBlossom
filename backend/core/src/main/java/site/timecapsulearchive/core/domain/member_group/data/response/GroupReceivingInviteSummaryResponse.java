@@ -7,7 +7,7 @@ import site.timecapsulearchive.core.global.common.response.ResponseMappingConsta
 
 @Builder
 @Schema(description = "초대온 그룹 요약 정보")
-public record GroupInviteSummaryResponse(
+public record GroupReceivingInviteSummaryResponse(
 
     @Schema(description = "그룹 아이디")
     Long groupId,
@@ -21,16 +21,17 @@ public record GroupInviteSummaryResponse(
     @Schema(description = "그룹 설명")
     String description,
 
-    @Schema(description = "그룹 생성일")
-    ZonedDateTime createdAt,
+    @Schema(description = "그룹 초대 시간")
+    ZonedDateTime groupReceivingInviteTime,
 
     @Schema(description = "그룹장")
     String groupOwnerName
 ) {
 
-    public GroupInviteSummaryResponse {
-        if (createdAt != null) {
-            createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+    public GroupReceivingInviteSummaryResponse {
+        if (groupReceivingInviteTime != null) {
+            groupReceivingInviteTime = groupReceivingInviteTime.withZoneSameInstant(
+                ResponseMappingConstant.ZONE_ID);
         }
     }
 }

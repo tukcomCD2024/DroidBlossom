@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 
 import static site.timecapsulearchive.core.domain.friend.entity.QFriendInvite.friendInvite;
+import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -11,12 +12,13 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -54,6 +56,55 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
                 }
             }
         );
+    }
+
+    public Slice<FriendSummaryDto> findFriendReceivingInvitesSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        final List<FriendSummaryDto> friends = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    FriendSummaryDto.class,
+                    friendInvite.owner.id,
+                    friendInvite.owner.profileUrl,
+                    friendInvite.owner.nickname,
+                    friendInvite.createdAt
+                )
+            )
+            .from(friendInvite)
+            .join(friendInvite.owner, member)
+            .where(friendInvite.friend.id.eq(memberId).and(friendInvite.createdAt.lt(createdAt)))
+            .limit(size + 1)
+            .fetch();
+
+        return SliceUtil.makeSlice(size, friends);
+    }
+
+    @Override
+    public Slice<FriendSummaryDto> findFriendSendingInvitesSlice(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        final List<FriendSummaryDto> friends = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    FriendSummaryDto.class,
+                    friendInvite.friend.id,
+                    friendInvite.friend.profileUrl,
+                    friendInvite.friend.nickname,
+                    friendInvite.createdAt
+                )
+            )
+            .from(friendInvite)
+            .join(friendInvite.owner, member)
+            .where(friendInvite.owner.id.eq(memberId).and(friendInvite.createdAt.lt(createdAt)))
+            .limit(size + 1)
+            .fetch();
+
+        return SliceUtil.makeSlice(size, friends);
     }
 
     @Override

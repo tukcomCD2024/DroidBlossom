@@ -50,6 +50,7 @@ dependencies {
     //redis
     implementation 'org.springframework.data:spring-data-redis'
     implementation 'io.lettuce:lettuce-core:6.3.0.RELEASE'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.30.0'
 
     //RabbitMQ
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -85,6 +86,7 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers:1.19.1'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
     testImplementation 'org.testcontainers:mysql:1.19.1'
+    testImplementation 'com.redis:testcontainers-redis:2.2.2'
 }
 
 tasks.named('test') {

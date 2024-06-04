@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository;
 
 
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
@@ -21,6 +21,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Override
     public void bulkSave(final Long groupOwnerId, final Long groupId,
         final List<Long> groupMemberIds) {
         jdbcTemplate.batchUpdate(
@@ -71,7 +74,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     }
 
     @Override
-    public Slice<GroupInviteSummaryDto> findGroupInvitesSummary(
+    public Slice<GroupInviteSummaryDto> findGroupReceivingInvitesSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
@@ -84,24 +87,38 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
                     group.groupName,
                     group.groupProfileUrl,
                     group.groupDescription,
-                    group.createdAt,
+                    groupInvite.createdAt,
                     member.nickname
                 )
-
             )
             .from(groupInvite)
             .join(groupInvite.group, group)
-            .join(groupInvite.groupOwner, member).on(groupInvite.groupMember.id.eq(memberId))
-            .where(groupInvite.createdAt.lt(createdAt))
+            .join(groupInvite.groupOwner, member)
+            .where(groupInvite.groupMember.id.eq(memberId).and(groupInvite.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = groupInviteSummaryDtos.size() > size;
-        if (hasNext) {
-            groupInviteSummaryDtos.remove(size);
-        }
-
-        return new SliceImpl<>(groupInviteSummaryDtos, Pageable.ofSize(size), hasNext);
+        return SliceUtil.makeSlice(size, groupInviteSummaryDtos);
     }
 
+    public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
+        final Long memberId,
+        final Long groupId
+    ) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    GroupSendingInviteMemberDto.class,
+                    member.id,
+                    member.nickname,
+                    member.profileUrl,
+                    groupInvite.createdAt
+                )
+            )
+            .from(groupInvite)
+            .join(groupInvite.groupMember, member)
+            .where(groupInvite.group.id.eq(groupId)
+                .and(groupInvite.groupOwner.id.eq(memberId)))
+            .fetch();
+    }
 }

@@ -1,14 +1,10 @@
 package site.timecapsulearchive.core.domain.friend.service.command;
 
-import jakarta.persistence.OptimisticLockException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
@@ -22,10 +18,8 @@ import site.timecapsulearchive.core.domain.friend.repository.member_friend.Membe
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.global.error.exception.InternalServerException;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FriendCommandService {
@@ -46,15 +40,12 @@ public class FriendCommandService {
         final Member[] owner = new Member[1];
         final List<Long>[] foundFriendIds = new List[1];
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                owner[0] = memberRepository.findMemberById(memberId)
-                    .orElseThrow(MemberNotFoundException::new);
-                foundFriendIds[0] = memberRepository.findMemberIdsByIds(filteredFriendIds);
+        transactionTemplate.executeWithoutResult(status -> {
+            owner[0] = memberRepository.findMemberById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+            foundFriendIds[0] = memberRepository.findMemberIdsByIds(friendIds);
 
-                friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
-            }
+            friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
         });
 
         socialNotificationManager.sendFriendRequestMessages(
@@ -86,12 +77,9 @@ public class FriendCommandService {
 
         final FriendInvite createfriendInvite = FriendInvite.createOf(owner, friend);
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                friendInviteRepository.save(createfriendInvite);
-            }
-        });
+        transactionTemplate.executeWithoutResult(status ->
+            friendInviteRepository.save(createfriendInvite)
+        );
 
         socialNotificationManager.sendFriendReqMessage(owner.getNickname(), friendId);
     }
@@ -120,8 +108,8 @@ public class FriendCommandService {
         validateSelfFriendOperation(memberId, ownerId);
 
         final String ownerNickname = transactionTemplate.execute(status -> {
-            FriendInvite friendInvite = friendInviteRepository.findFriendReceivingInviteForUpdateByOwnerIdAndFriendId(
-                   ownerId, memberId)
+            final FriendInvite friendInvite = friendInviteRepository.findFriendReceivingInviteForUpdateByOwnerIdAndFriendId(
+                    ownerId, memberId)
                 .orElseThrow(FriendInviteNotFoundException::new);
 
             final MemberFriend ownerRelation = friendInvite.ownerRelation();

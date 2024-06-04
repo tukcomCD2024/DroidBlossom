@@ -19,6 +19,7 @@ import site.timecapsulearchive.core.common.fixture.dto.FriendDtoFixture;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
+import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
@@ -26,9 +27,11 @@ class FriendQueryServiceTest {
 
     private final MemberFriendRepository memberFriendRepository = mock(
         MemberFriendRepository.class);
+    private final FriendInviteRepository friendInviteRepository = mock(
+        FriendInviteRepository.class);
 
     private final FriendQueryService friendQueryService = new FriendQueryService(
-        memberFriendRepository);
+        memberFriendRepository, friendInviteRepository);
 
     @Test
     void 사용자는_주소록_기반_핸드폰_번호로_Ahchive_사용자_리스트를_조회_할_수_있다() {

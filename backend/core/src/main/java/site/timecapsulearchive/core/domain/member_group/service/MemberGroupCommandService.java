@@ -3,9 +3,7 @@ package site.timecapsulearchive.core.domain.member_group.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
@@ -13,6 +11,7 @@ import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
@@ -21,8 +20,9 @@ import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCou
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupKickDuplicatedIdException;
 import site.timecapsulearchive.core.domain.member_group.exception.MemberGroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
-import site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository.GroupInviteRepository;
-import site.timecapsulearchive.core.domain.member_group.repository.memberGroupRepository.MemberGroupRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
+import site.timecapsulearchive.core.global.config.redis.RedissonLock;
 import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
@@ -38,28 +38,26 @@ public class MemberGroupCommandService {
 
     public void inviteGroup(final Long memberId, final SendGroupRequest sendGroupRequest) {
         final List<Long> friendIds = sendGroupRequest.targetIds();
-        final List<Member> groupMembers = memberRepository.findMemberByIdIsIn(friendIds);
-        if (groupMembers.size() + friendIds.size() > 30) {
+        final Long groupMembersCount = memberGroupRepository.findGroupMembersCount(
+            sendGroupRequest.groupId()).orElseThrow(GroupNotFoundException::new);
+        if (groupMembersCount + friendIds.size() > 30) {
             throw new GroupMemberCountLimitException();
         }
 
-        final GroupOwnerSummaryDto[] summaryDto = new GroupOwnerSummaryDto[1];
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                summaryDto[0] = memberGroupRepository.findOwnerInMemberGroup(
-                    sendGroupRequest.groupId(), memberId).orElseThrow(GroupNotFoundException::new);
+        final GroupOwnerSummaryDto groupOwnerSummaryDto = transactionTemplate.execute(status -> {
+            GroupOwnerSummaryDto dto = memberGroupRepository.findOwnerInMemberGroup(
+                sendGroupRequest.groupId(), memberId).orElseThrow(GroupNotFoundException::new);
 
-                if (!summaryDto[0].isOwner()) {
-                    throw new NoGroupAuthorityException();
-                }
-
-                groupInviteRepository.bulkSave(memberId, sendGroupRequest.groupId(), friendIds);
+            if (!dto.isOwner()) {
+                throw new NoGroupAuthorityException();
             }
+
+            groupInviteRepository.bulkSave(memberId, sendGroupRequest.groupId(), friendIds);
+            return dto;
         });
 
-        socialNotificationManager.sendGroupInviteMessage(summaryDto[0].nickname(),
-            summaryDto[0].groupProfileUrl(), friendIds);
+        socialNotificationManager.sendGroupInviteMessage(groupOwnerSummaryDto.nickname(),
+            groupOwnerSummaryDto.groupProfileUrl(), friendIds);
     }
 
     @Transactional
@@ -72,27 +70,39 @@ public class MemberGroupCommandService {
         }
     }
 
-    public void acceptGroupInvite(final Long memberId, final Long groupId, final Long targetId) {
+    @RedissonLock(value = "#groupId")
+    public GroupAcceptNotificationDto acceptGroupInvite(final Long memberId, final Long groupId) {
+        final Long totalGroupMemberCount = groupRepository.getTotalGroupMemberCount(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        final Long groupOwnerId = memberGroupRepository.findGroupOwnerId(groupId)
+            .orElseThrow(GroupNotFoundException::new);
+
+        if (totalGroupMemberCount == 30) {
+            deleteGroupInvite(memberId, groupId, groupOwnerId);
+            throw new GroupMemberCountLimitException();
+        }
+
         final Member groupMember = memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
         final Group group = groupRepository.findGroupById(groupId)
             .orElseThrow(GroupNotFoundException::new);
 
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-                    groupId, targetId, memberId);
-
-                if (isDenyRequest != 1) {
-                    throw new GroupInviteNotFoundException();
-                }
-
-                memberGroupRepository.save(MemberGroup.createGroupMember(groupMember, group));
-            }
+        transactionTemplate.executeWithoutResult(status -> {
+            deleteGroupInvite(memberId, groupId, groupOwnerId);
+            memberGroupRepository.save(MemberGroup.createGroupMember(groupMember, group));
         });
 
-        socialNotificationManager.sendGroupAcceptMessage(groupMember.getNickname(), targetId);
+        return new GroupAcceptNotificationDto(groupMember.getNickname(), groupOwnerId);
+    }
+
+    private void deleteGroupInvite(final Long memberId, final Long groupId,
+        final Long groupOwnerId) {
+        final int isDenyRequest = groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
+            groupId, groupOwnerId, memberId);
+        if (isDenyRequest != 1) {
+            throw new GroupInviteNotFoundException();
+        }
     }
 
     /**

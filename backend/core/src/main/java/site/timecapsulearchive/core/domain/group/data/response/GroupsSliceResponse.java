@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.group.data.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.function.Function;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupSummaryDto;
+import site.timecapsulearchive.core.domain.group.data.dto.CompleteGroupSummaryDto;
 
 @Schema(description = "사용자의 그룹 목록 응답")
 public record GroupsSliceResponse(
@@ -16,7 +16,7 @@ public record GroupsSliceResponse(
 ) {
 
     public static GroupsSliceResponse createOf(
-        final List<GroupSummaryDto> groups,
+        final List<CompleteGroupSummaryDto> groups,
         final Boolean hasNext,
         final Function<String, String> preSignedUrlFunction
     ) {
