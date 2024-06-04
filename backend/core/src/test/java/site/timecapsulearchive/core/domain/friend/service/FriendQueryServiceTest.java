@@ -9,15 +9,21 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.FriendDtoFixture;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
+import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroupInviteRequest;
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.friend.service.query.FriendQueryService;
@@ -33,7 +39,10 @@ class FriendQueryServiceTest {
     private final GroupInviteRepository groupInviteRepository = mock(GroupInviteRepository.class);
 
     private final FriendQueryService friendQueryService = new FriendQueryService(
-        memberFriendRepository, memberGroupRepository, groupInviteRepository);
+        memberFriendRepository,
+        memberGroupRepository,
+        groupInviteRepository
+    );
 
     @Test
     void 사용자는_주소록_기반_핸드폰_번호로_Ahchive_사용자_리스트를_조회_할_수_있다() {
@@ -104,5 +113,67 @@ class FriendQueryServiceTest {
         //when
         assertThatThrownBy(() -> friendQueryService.searchFriend(memberId, tag))
             .isInstanceOf(FriendNotFoundException.class);
+    }
+
+    @Test
+    void 그룹장은_그룹_초대_전_초대_가능한_친구_목록을_조회할_수_있다() {
+        //given
+        Long memberId = 1L;
+        Long groupId = 1L;
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(1);
+
+        FriendBeforeGroupInviteRequest request = FriendBeforeGroupInviteRequest.of(memberId,
+            groupId,
+            size, now);
+        given(memberFriendRepository.findFriends(request)).willReturn(
+            FriendDtoFixture.getFriendSummaryDtoSlice(5, true));
+        given(memberGroupRepository.getGroupMemberIdsByGroupId(request.groupId())).willReturn(
+            List.of(3L));
+        given(groupInviteRepository.getGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
+            request.memberId())).willReturn(List.of(4L));
+
+        Slice<FriendSummaryDto> friendsBeforeGroupInviteSlice = friendQueryService.findFriendsBeforeGroupInviteSlice(
+            request);
+
+        SoftAssertions.assertSoftly(
+            softly -> {
+                assertThat(friendsBeforeGroupInviteSlice.getContent()).isNotEmpty();
+                assertThat(friendsBeforeGroupInviteSlice.getContent()).allMatch(
+                    dto -> !dto.profileUrl().isBlank());
+                assertThat(friendsBeforeGroupInviteSlice.getContent()).allMatch(
+                    dto -> !dto.nickname().isBlank());
+                assertThat(friendsBeforeGroupInviteSlice.getContent()).allMatch(
+                    dto -> Objects.nonNull(dto.id()));
+                assertThat(friendsBeforeGroupInviteSlice.getContent()).allMatch(
+                    dto -> Objects.nonNull(dto.createdAt()));
+                assertThat(friendsBeforeGroupInviteSlice.hasNext()).isTrue();
+                assertThat(friendsBeforeGroupInviteSlice.getSize()).isEqualTo(5);
+            }
+        );
+    }
+
+    @Test
+    void 그룹장은_그룹_초대_전_이미_그룹멤버_혹은_그룹_요청을_보낸_사용자를_제외하고_초대_가능한_사용자를_조회한다() {
+        //given
+        Long memberId = 1L;
+        Long groupId = 1L;
+        int size = 20;
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(1);
+
+        FriendBeforeGroupInviteRequest request = FriendBeforeGroupInviteRequest.of(memberId,
+            groupId,
+            size, now);
+        given(memberFriendRepository.findFriends(request)).willReturn(
+            FriendDtoFixture.getFriendSummaryDtoSlice(5, true));
+        given(memberGroupRepository.getGroupMemberIdsByGroupId(request.groupId())).willReturn(
+            List.of(3L));
+        given(groupInviteRepository.getGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
+            request.memberId())).willReturn(List.of(4L));
+
+        Slice<FriendSummaryDto> friendsBeforeGroupInviteSlice = friendQueryService.findFriendsBeforeGroupInviteSlice(
+            request);
+
+        assertThat(friendsBeforeGroupInviteSlice.getContent()).isNotIn(3L, 4L);
     }
 }
