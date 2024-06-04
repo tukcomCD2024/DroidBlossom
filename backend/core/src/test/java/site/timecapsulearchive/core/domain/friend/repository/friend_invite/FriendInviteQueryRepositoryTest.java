@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +30,9 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
     private static final int MAX_COUNT = 40;
     private static final Long BULK_FRIEND_INVITE_MEMBER_START_ID = 2L;
+    private static final Long OWNER_START_ID = BULK_FRIEND_INVITE_MEMBER_START_ID + MAX_COUNT;
     private static final Long FRIEND_RECEIVING_INVITE_MEMBER_START_ID =
-        BULK_FRIEND_INVITE_MEMBER_START_ID + MAX_COUNT;
+        OWNER_START_ID + MAX_COUNT;
     private static final Long FRIEND_SENDING_INVITE_MEMBER_START_ID =
         FRIEND_RECEIVING_INVITE_MEMBER_START_ID + MAX_COUNT;
     private static final Long NOT_FRIEND_INVITE_START_ID =
@@ -37,15 +40,21 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
 
     private final FriendInviteQueryRepository friendInviteQueryRepository;
     private final EntityManager entityManager;
-    private final List<Member> friends = new ArrayList<>();
+
+    private final List<Member> bulkFriends = new ArrayList<>();
+    private final List<Long> receivingInviteFriendIds = new ArrayList<>();
+    private final List<Long> sendingInvitesFriendIds = new ArrayList<>();
 
     private Long bulkOwnerId;
     private Long ownerId;
     private Long ownerInviteReceivingStartId;
     private Long ownerInviteSendingStartId;
 
-    FriendInviteQueryRepositoryTest(EntityManager entityManager, JdbcTemplate jdbcTemplate,
-        JPAQueryFactory jpaQueryFactory) {
+    FriendInviteQueryRepositoryTest(
+        EntityManager entityManager,
+        JdbcTemplate jdbcTemplate,
+        JPAQueryFactory jpaQueryFactory
+    ) {
         this.entityManager = entityManager;
         this.friendInviteQueryRepository = new FriendInviteQueryRepositoryImpl(jdbcTemplate,
             jpaQueryFactory);
@@ -59,11 +68,12 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
         bulkOwnerId = bulkOwner.getId();
 
         // 벌크 저장 시 owner 친구 데이터
-        friends.addAll(MemberFixture.members(2, BULK_FRIEND_INVITE_MEMBER_START_ID.intValue()));
-        friends.forEach(entityManager::persist);
+        bulkFriends.addAll(MemberFixture.members(BULK_FRIEND_INVITE_MEMBER_START_ID.intValue(),
+            BULK_FRIEND_INVITE_MEMBER_START_ID.intValue()));
+        bulkFriends.forEach(entityManager::persist);
 
         // 친구 초대 owner 멤버 데이터
-        Member owner = MemberFixture.member(1);
+        Member owner = MemberFixture.member(OWNER_START_ID.intValue());
         entityManager.persist(owner);
         ownerId = owner.getId();
 
@@ -72,6 +82,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
             FRIEND_RECEIVING_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
         for (Member member : receivingInviteToOwnerMembers) {
             entityManager.persist(member);
+            receivingInviteFriendIds.add(member.getId());
 
             FriendInvite receivingInvite = FriendInviteFixture.friendInvite(owner, member);
             entityManager.persist(receivingInvite);
@@ -83,6 +94,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
             FRIEND_SENDING_INVITE_MEMBER_START_ID.intValue(), MAX_COUNT);
         for (Member member : sendingInviteToOwnerMembers) {
             entityManager.persist(member);
+            sendingInvitesFriendIds.add(member.getId());
 
             FriendInvite sendingInvite = FriendInviteFixture.friendInvite(member, owner);
             entityManager.persist(sendingInvite);
@@ -96,7 +108,7 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
     @Test
     void 대량의_친구_초대를_저장하면_조회하면_친구_초대를_볼_수_있다() {
         //given
-        List<Long> friendIds = friends.stream()
+        List<Long> friendIds = bulkFriends.stream()
             .map(Member::getId)
             .toList();
 
@@ -254,16 +266,25 @@ class FriendInviteQueryRepositoryTest extends RepositoryTest {
     @Test
     void 친구가_사용자에게_요청을_보낸_경우_사용자_아이디와_친구_아이디_목록으로_모든_요청_방향의_친구_초대를_조회하면_존재하는_단방향_친구_초대가_나온다() {
         //given
-        List<Long> friendIds = friends.stream()
-            .map(Member::getId)
-            .toList();
-
         //when
         List<FriendInviteMemberIdsDto> friendInviteMemberIdsDtos = friendInviteQueryRepository.findFriendInviteMemberIdsDtoByMemberIdsAndFriendId(
-            friendIds,
-            owner.getId()
+            sendingInvitesFriendIds,
+            ownerId
         );
 
-        assertThat(friendInviteMemberIdsDtos).hasSize(friendIds.size());
+        assertThat(friendInviteMemberIdsDtos).hasSize(sendingInvitesFriendIds.size());
+    }
+
+    //Owner -> Friend
+    @Test
+    void 사용자가_친구에게_요청을_보낸_경우_사용자_아이디와_친구_아이디_목록으로_모든_요청_방향의_친구_초대를_조회하면_존재하는_단방향_친구_초대가_나온다() {
+        //given
+        //when
+        List<FriendInviteMemberIdsDto> friendInviteMemberIdsDtos = friendInviteQueryRepository.findFriendInviteMemberIdsDtoByMemberIdsAndFriendId(
+            receivingInviteFriendIds,
+            ownerId
+        );
+
+        assertThat(friendInviteMemberIdsDtos).hasSize(receivingInviteFriendIds.size());
     }
 }
