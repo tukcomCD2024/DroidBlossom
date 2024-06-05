@@ -41,6 +41,7 @@ class FriendAcceptActivity :
 
         viewModel.getLastedGroupAcceptList()
         viewModel.getLastedFriendAcceptList()
+        viewModel.getFriendSendAcceptList()
     }
 
     private fun initView() {
@@ -58,11 +59,12 @@ class FriendAcceptActivity :
             tab.text = when (position) {
                 0 -> getString(R.string.groupAccept)
                 1 -> getString(R.string.friendAccept)
+                2 -> getString(R.string.friendSendAccept)
                 else -> null
             }
         }.attach()
 
-        binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 currentVPPosition = position
