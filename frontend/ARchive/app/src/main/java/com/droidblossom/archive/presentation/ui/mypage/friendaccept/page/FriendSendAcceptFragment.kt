@@ -12,7 +12,6 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModelImpl
-import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptRVA
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendSendAcceptRVA
 import kotlinx.coroutines.launch
 

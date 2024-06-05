@@ -1,7 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friendaccept.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -12,10 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
-import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModelImpl
-import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptRVA
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.GroupAcceptRVA
 import kotlinx.coroutines.launch
 
@@ -46,6 +42,7 @@ class GroupAcceptFragment :
         binding.swipeRefreshL.setOnRefreshListener {
             viewModel.getLastedGroupAcceptList()
         }
+        binding.listIsEmptyT.text ="보낸 요청이 없습니다."
     }
 
     private fun initRV() {

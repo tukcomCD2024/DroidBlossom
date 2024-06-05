@@ -13,14 +13,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.FRIEND
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptVPA
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.FriendAcceptFragment
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.page.GroupAcceptFragment
-import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendFragment
-import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupFragment
-import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
