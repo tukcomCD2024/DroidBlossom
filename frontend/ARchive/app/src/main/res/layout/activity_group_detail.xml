@@ -88,6 +88,7 @@
                             android:gravity="center"
                             android:paddingVertical="@dimen/padding_small"
                             android:text="그룹 탈퇴"
+                            android:onClick="@{() -> vm.leaveGroup()}"
                             android:textAppearance="@style/TextAppearance.App.caption1"
                             android:textColor="@color/main_1"
                             android:visibility="@{vm.groupInfo.hasEditPermission ? View.GONE : View.VISIBLE}"

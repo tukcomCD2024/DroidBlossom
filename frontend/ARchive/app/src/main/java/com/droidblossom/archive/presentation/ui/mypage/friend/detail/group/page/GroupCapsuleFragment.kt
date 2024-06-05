@@ -46,6 +46,10 @@ class GroupCapsuleFragment :
                         is GroupDetailViewModel.GroupDetailEvent.ShowToastMessage -> {
 
                         }
+
+                        else -> {
+
+                        }
                     }
                 }
             }

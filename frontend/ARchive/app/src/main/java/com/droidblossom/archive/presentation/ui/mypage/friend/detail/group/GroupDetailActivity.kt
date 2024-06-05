@@ -55,6 +55,11 @@ class GroupDetailActivity :
                                 binding.swipeRefreshLayout.isRefreshing = false
                             }
                         }
+
+                        GroupDetailViewModel.GroupDetailEvent.LeaveGroupSuccess -> {
+                            showToastMessage("그룹에서 나왔습니다. 함께해 주셔서 고마워요!")
+                            finish()
+                        }
                     }
                 }
             }

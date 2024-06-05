@@ -30,8 +30,11 @@ interface GroupDetailViewModel {
     fun setShowMore()
     fun setIsAppBarExpanded(boolean: Boolean)
 
+    fun leaveGroup()
+
     sealed class GroupDetailEvent{
         object SwipeRefreshLayoutDismissLoading : GroupDetailEvent()
+        object LeaveGroupSuccess: GroupDetailEvent()
         data class ShowToastMessage(val message : String) : GroupDetailEvent()
     }
 }

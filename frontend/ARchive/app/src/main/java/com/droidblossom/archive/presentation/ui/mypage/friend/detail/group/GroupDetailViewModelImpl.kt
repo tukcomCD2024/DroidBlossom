@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.model.group.toGroupProfileData
 import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
+import com.droidblossom.archive.domain.usecase.group.LeaveGroupUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
@@ -27,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupDetailViewModelImpl @Inject constructor(
     private val getGroupDetailUseCase: GetGroupDetailUseCase,
+    private val leaveGroupUseCase: LeaveGroupUseCase
 ) : BaseViewModel(), GroupDetailViewModel {
 
     private val _groupDetailEvents = MutableSharedFlow<GroupDetailViewModel.GroupDetailEvent>()
@@ -100,7 +102,7 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     override fun setGroupId(groupId: Long) {
         _groupId.value = groupId
-        Log.d("아니","setGroupId, $groupId")
+        Log.d("아니", "setGroupId, $groupId")
         getGroupDetail()
     }
 
@@ -114,13 +116,12 @@ class GroupDetailViewModelImpl @Inject constructor(
         viewModelScope.launch {
             getGroupDetailUseCase(groupId.value).collect { result ->
                 result.onSuccess {
-                    Log.d("아니","getGroupDetail, 성공")
                     val groupProfile = it.toGroupProfileData()
                     _groupInfo.emit(groupProfile)
                     _groupMembers.emit(it.members)
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
                 }.onFail {
-                    Log.d("아니","getGroupDetail, 실패 $it")
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 정보를 불러오는데 실패했습니다"))
                 }
                 groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
             }
@@ -156,5 +157,18 @@ class GroupDetailViewModelImpl @Inject constructor(
     override fun setIsAppBarExpanded(boolean: Boolean) {
         _isAppBarExpanded.value = boolean
     }
+
+    override fun leaveGroup() {
+        viewModelScope.launch {
+            leaveGroupUseCase(groupId.value).collect { result ->
+                result.onSuccess {
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.LeaveGroupSuccess)
+                }.onFail {
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 탈퇴를 실패했습니다."))
+                }
+            }
+        }
+    }
+
 
 }

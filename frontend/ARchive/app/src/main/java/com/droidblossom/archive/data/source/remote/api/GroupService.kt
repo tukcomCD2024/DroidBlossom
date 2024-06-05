@@ -4,11 +4,10 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupInvitedUserListResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
-import com.droidblossom.archive.data.dto.group.response.GroupMemberResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupMembersInfoResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
-import com.droidblossom.archive.data.dto.open.response.PublicCapsuleSliceResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -61,4 +60,14 @@ interface GroupService {
     suspend fun getGroupMembersApi(
         @Path("group_id") groupId : Long,
     ): Response<ResponseBody<GroupMembersInfoResponseDto>>
+
+    @GET("groups/{group_id}/sending-invites")
+    suspend fun getGroupInvitedUsersApi(
+        @Path("group_id") groupId : Long,
+    ) : Response<ResponseBody<GroupInvitedUserListResponseDto>>
+
+    @DELETE("groups/{group_id}/members/quit")
+    suspend fun deleteLeaveGroupApi(
+        @Path("group_id") groupId : Long,
+    ) : Response<ResponseBody<String>>
 }

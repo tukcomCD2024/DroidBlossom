@@ -6,14 +6,14 @@ import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupInvitedUserListResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
-import com.droidblossom.archive.data.dto.group.response.GroupMemberResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupMembersInfoResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
 import com.droidblossom.archive.data.source.remote.api.GroupService
 import com.droidblossom.archive.domain.model.group.GroupDetail
 import com.droidblossom.archive.domain.model.group.GroupInviteSummary
-import com.droidblossom.archive.domain.model.group.GroupMember
+import com.droidblossom.archive.domain.model.group.GroupInvitedUsers
 import com.droidblossom.archive.domain.model.group.GroupMembersInfo
 import com.droidblossom.archive.domain.model.group.GroupPage
 import com.droidblossom.archive.domain.model.group.GroupSummary
@@ -81,6 +81,13 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun getGroupMemberRequest(groupId: Long): RetrofitResult<GroupMembersInfo> {
         return apiHandler({ api.getGroupMembersApi(groupId) }) { response: ResponseBody<GroupMembersInfoResponseDto> -> response.result.toModel() }
+    }
+
+    override suspend fun getGroupInvitedUsersRequest(groupId: Long): RetrofitResult<GroupInvitedUsers> {
+        return apiHandler({ api.getGroupInvitedUsersApi(groupId = groupId)}) { response: ResponseBody<GroupInvitedUserListResponseDto> -> response.result.toModel() }
+    }
+    override suspend fun deleteLeaveGroupRequest(groupId: Long): RetrofitResult<String> {
+        return apiHandler({ api.deleteLeaveGroupApi(groupId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
 }
