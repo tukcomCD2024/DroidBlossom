@@ -61,6 +61,10 @@ class FriendRepositoryImpl @Inject constructor(
         return apiHandler({api.getFriendsRequestsPageApi(request.size, request.createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
     }
 
+    override suspend fun getFriendsSendRequestsPage(request: PagingRequestDto): RetrofitResult<FriendsPage<Friend>> {
+        return apiHandler({api.getFriendsSendRequestsPageApi(request.size, request.createdAt)}) {response: ResponseBody<FriendsPageResponseDto> -> response.result.toModel()}
+    }
+
     override suspend fun deleteFriend(friendId: Long): RetrofitResult<String> {
         return apiHandler({api.deleteFriendApi(friendId)}) {response: ResponseBody<String> -> response.result.toModel()}
     }

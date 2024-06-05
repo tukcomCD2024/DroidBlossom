@@ -24,6 +24,7 @@ interface FriendRepository {
     suspend fun getFriendsPage(request: PagingRequestDto) : RetrofitResult<FriendsPage<Friend>>
     suspend fun getFriendsForAddGroupPage(request: PagingRequestDto): RetrofitResult<FriendsPage<FriendsSearchResponse>>
     suspend fun getFriendsRequestsPage(request: PagingRequestDto) : RetrofitResult<FriendsPage<Friend>>
+    suspend fun getFriendsSendRequestsPage(request: PagingRequestDto) : RetrofitResult<FriendsPage<Friend>>
     suspend fun deleteFriend(friendId: Long) : RetrofitResult<String>
     suspend fun deleteFriendDeny(friendId: Long) : RetrofitResult<String>
     suspend fun getFriendsForGroupInvitePage(groupId : Long, pagingRequestDto: PagingRequestDto) : RetrofitResult<FriendsPage<FriendForGroupInvite>>

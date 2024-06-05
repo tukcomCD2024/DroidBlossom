@@ -50,6 +50,12 @@ interface FriendService {
         @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
 
+    @GET("friends/sending-invites")
+    suspend fun getFriendsSendRequestsPageApi(
+        @Query("size") size : Int,
+        @Query("created_at") createdAt : String,
+    ) : Response<ResponseBody<FriendsPageResponseDto>>
+
     @POST("friends/requests")
     suspend fun postFriendListRequestsPageApi(
         @Body request : FriendsReqRequestDto
