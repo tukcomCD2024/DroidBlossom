@@ -36,26 +36,9 @@ fun AppCompatTextView.textInt(int: Int) {
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
-    if (imageUrl == null) {
-        placeholder?.let {
-            this.setImageDrawable(it)
-        }
-        return
-    }
-
-    placeholder?.let {
-        this.setImageDrawable(it)
-    }
-
-    val thumbnailRequest = Glide.with(this.context)
-        .load(imageUrl)
-        .override(this.width, this.height)
-        .sizeMultiplier(0.1f)
-        .transition(DrawableTransitionOptions.withCrossFade(300))
 
     Glide.with(this.context)
         .load(imageUrl)
-        .thumbnail(thumbnailRequest)
         .transition(DrawableTransitionOptions.withCrossFade(300))
         .override(this.width, this.height)
         .apply {
@@ -63,38 +46,30 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
                 placeholder(placeholder)
             }
         }
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d("Glide", "Image load failed")
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d("Glide", "Image loaded successfully")
-                this@setImage.setImageDrawable(resource)
-                return false
-            }
-        })
         .into(this)
 }
 
 @BindingAdapter(value = ["bind:VideoUri", "bind:placeholder"], requireAll = false)
 fun CircleImageView.setThumbUrI(VideoUri: String?, placeholder: Drawable?) {
-    if (VideoUri != null) {
+    if (VideoUri == null) {
+        this.setImageDrawable(placeholder)
+        return
+    }
+
+    Glide.with(context)
+        .load(VideoUri)
+        .override(this.width, this.height)
+        .thumbnail(0.1f)
+        .placeholder(placeholder)
+        .transition(DrawableTransitionOptions.withCrossFade(300))
+        .into(this)
+}
+
+@BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
+fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
+    if (imageUrl != null) {
         Glide.with(context)
-            .load(VideoUri)
-            .thumbnail(0.1f)
+            .load(imageUrl)
             .override(this.width, this.height)
             .apply {
                 if (placeholder != null) {
@@ -105,136 +80,16 @@ fun CircleImageView.setThumbUrI(VideoUri: String?, placeholder: Drawable?) {
     }
 }
 
-
-@BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
-fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
-    if (imageUrl == null) {
-        placeholder?.let {
-            this.setImageDrawable(it)
-        }
-        return
-    }
-
-    placeholder?.let {
-        this.setImageDrawable(it)
-    }
-
-    val thumbnailRequest = Glide.with(this.context)
-        .load(imageUrl)
-        .override(this.width, this.height)
-        .sizeMultiplier(0.1f)
-        .transition(DrawableTransitionOptions.withCrossFade(300))
-        .apply {
-            if (placeholder != null) {
-                placeholder(placeholder)
-            }
-        }
-
-    Glide.with(this.context)
-        .load(imageUrl)
-        .thumbnail(thumbnailRequest)
-        .transition(DrawableTransitionOptions.withCrossFade(300))
-        .override(this.width, this.height)
-        .apply {
-            if (placeholder != null) {
-                placeholder(placeholder)
-            }
-        }
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d("Glide", "Image load failed")
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d("Glide", "Image loaded successfully")
-                this@setImageUrl.setImageDrawable(resource)
-                return false
-            }
-        })
-        .into(this)
-}
-
 @SuppressLint("CheckResult")
 @BindingAdapter(value = ["bind:url", "bind:baseImg"], requireAll = false)
 fun ImageView.setUrlImg(imageUrl: String, placeholder: Drawable?) {
-    Log.d("이미지", "아래")
 
-    placeholder?.let {
-        this.setImageDrawable(it)
-    }
-
-    val thumbnailRequest = Glide.with(this.context)
-        .load(imageUrl)
-        .override(this.width, this.height)
-        .sizeMultiplier(0.1f)
-        .transition(DrawableTransitionOptions.withCrossFade(300))
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                this@setUrlImg.setImageDrawable(resource)
-                return false
-            }
-        })
-
-    // 원본 이미지 로드 요청
     Glide.with(this.context)
         .load(imageUrl)
-        .thumbnail(thumbnailRequest)
-        .transition(DrawableTransitionOptions.withCrossFade(300))
-        .apply {
-            if (placeholder != null) {
-                placeholder(placeholder)
-            }
-        }
-        .listener(object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d("Glide", "Image load failed")
-                return false
-            }
-
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: com.bumptech.glide.request.target.Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d("Glide", "Image loaded successfully")
-                this@setUrlImg.setImageDrawable(resource)
-                return false
-            }
-        })
+        .override(this.width, this.height)
+        .placeholder(placeholder)
+        .error(placeholder)
+        .apply(RequestOptions().fitCenter())
         .into(this)
 }
 
