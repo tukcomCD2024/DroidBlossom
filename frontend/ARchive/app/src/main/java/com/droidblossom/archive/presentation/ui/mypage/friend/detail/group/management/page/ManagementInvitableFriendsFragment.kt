@@ -1,7 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -12,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentManagementInvitableFriendsBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModelImpl
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.adapter.InvitableFriendRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.adapter.ManagementInvitableFriendRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,8 +24,8 @@ class ManagementInvitableFriendsFragment :
     ) {
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
-    private val invitableFriendRVA by lazy {
-        InvitableFriendRVA { position ->
+    private val managementInvitableFriendRVA by lazy {
+        ManagementInvitableFriendRVA { position ->
             viewModel.onClickInvitableFriend(position)
         }
     }
@@ -37,7 +35,7 @@ class ManagementInvitableFriendsFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.invitableFriends.collect { members ->
-                    invitableFriendRVA.submitList(members)
+                    managementInvitableFriendRVA.submitList(members)
                     viewModel.remainingInvites = 30 - viewModel.groupMembers.value.size
                     if (binding.swipeRefreshLayout.isRefreshing){
                         binding.swipeRefreshLayout.isRefreshing = false
@@ -81,7 +79,7 @@ class ManagementInvitableFriendsFragment :
     }
 
     private fun initRV() {
-        binding.invitableFriendsRV.adapter = invitableFriendRVA
+        binding.invitableFriendsRV.adapter = managementInvitableFriendRVA
         binding.invitableFriendsRV.setHasFixedSize(true)
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.getLatestInvitableFriendList()

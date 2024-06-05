@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemManagementInvitableFriendBinding
 import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 
-class InvitableFriendRVA(
+class ManagementInvitableFriendRVA(
     private val onItemClick: (Int) -> Unit
-): ListAdapter<FriendForGroupInvite,InvitableFriendRVA.ItemViewHolder>(differ){
+): ListAdapter<FriendForGroupInvite,ManagementInvitableFriendRVA.ItemViewHolder>(differ){
 
         inner class ItemViewHolder(
             private val binding: ItemManagementInvitableFriendBinding
