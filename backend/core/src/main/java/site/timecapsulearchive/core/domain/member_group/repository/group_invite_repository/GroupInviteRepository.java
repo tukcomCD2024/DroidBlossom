@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member_group.repository.groupInviteRepository;
+package site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
