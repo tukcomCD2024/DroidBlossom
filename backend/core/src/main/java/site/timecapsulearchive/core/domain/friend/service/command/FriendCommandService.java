@@ -2,11 +2,13 @@ package site.timecapsulearchive.core.domain.friend.service.command;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteNotificationDto;
 import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteDuplicateException;
@@ -37,21 +39,21 @@ public class FriendCommandService {
             return;
         }
 
-        final Member[] owner = new Member[1];
-        final List<Long>[] foundFriendIds = new List[1];
-
-        transactionTemplate.executeWithoutResult(status -> {
-            owner[0] = memberRepository.findMemberById(memberId)
+        final FriendInviteNotificationDto dto = transactionTemplate.execute(status -> {
+            Member owner = memberRepository.findMemberById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-            foundFriendIds[0] = memberRepository.findMemberIdsByIds(friendIds);
+            List<Long> foundFriendIds = memberRepository.findMemberIdsByIds(friendIds);
 
-            friendInviteRepository.bulkSave(owner[0].getId(), foundFriendIds[0]);
+            friendInviteRepository.bulkSave(owner.getId(), foundFriendIds);
+
+            return FriendInviteNotificationDto.create(owner.getNickname(), owner.getProfileUrl(),
+                foundFriendIds);
         });
 
         socialNotificationManager.sendFriendRequestMessages(
-            owner[0].getNickname(),
-            owner[0].getProfileUrl(),
-            foundFriendIds[0]
+            dto.nickname(),
+            dto.profileUrl(),
+            dto.foundFriendIds()
         );
     }
 
@@ -61,8 +63,17 @@ public class FriendCommandService {
 
         return friendIds.stream()
             .filter(id -> !memberId.equals(id))
-            .filter(id -> !twoWayIds.contains(new FriendInviteMemberIdsDto(id, memberId)))
+            .filter(isNotTwoWayInvite(memberId, twoWayIds))
             .toList();
+    }
+
+    private Predicate<Long> isNotTwoWayInvite(Long memberId,
+        List<FriendInviteMemberIdsDto> twoWayIds) {
+        return id -> twoWayIds.stream()
+            .noneMatch(twoWayId ->
+                (twoWayId.ownerId().equals(id) && twoWayId.friendId().equals(memberId)) ||
+                    (twoWayId.ownerId().equals(memberId) && twoWayId.friendId().equals(id))
+            );
     }
 
     public void requestFriend(final Long memberId, final Long friendId) {
