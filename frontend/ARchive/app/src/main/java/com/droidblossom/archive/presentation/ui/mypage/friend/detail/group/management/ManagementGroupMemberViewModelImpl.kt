@@ -1,13 +1,14 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
+import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupMembersInfoUseCase
 import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
+import com.droidblossom.archive.domain.usecase.group.GroupInvitedUsersUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 import com.droidblossom.archive.util.DateUtils
@@ -30,7 +31,7 @@ import javax.inject.Inject
 class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val friendForGroupInvitePageUseCase: FriendForGroupInvitePageUseCase,
     private val groupInviteUseCase: GroupInviteUseCase,
-    private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase
+    private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase,
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -45,8 +46,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     override val groupMembers: StateFlow<List<GroupMember>>
         get() = _groupMembers
 
-    private val _invitedUsers = MutableStateFlow(listOf<GroupMember>())
-    override val invitedUsers: StateFlow<List<GroupMember>>
+    private val _invitedUsers = MutableStateFlow(listOf<GroupInvitedUser>())
+    override val invitedUsers: StateFlow<List<GroupInvitedUser>>
         get() = _invitedUsers
 
     private val _invitedUsersHasNextPage = MutableStateFlow(true)

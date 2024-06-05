@@ -6,12 +6,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentManagementInvitedUsersBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberViewModelImpl
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.adapter.ManagementInvitedUserRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,12 +26,15 @@ class ManagementInvitedUserFragment :
 
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
+    private val managementInvitedUserRVA by lazy {
+        ManagementInvitedUserRVA()
+    }
 
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.invitedUsers.collect { members ->
-                    //invitableFriendRVA.submitList(members)
+                    managementInvitedUserRVA.submitList(members)
                     if (binding.swipeRefreshLayout.isRefreshing){
                         binding.swipeRefreshLayout.isRefreshing = false
                     }
@@ -61,7 +67,27 @@ class ManagementInvitedUserFragment :
     }
 
     private fun initRV() {
+        binding.invitedUsersRV.adapter = managementInvitedUserRVA
+        binding.invitedUsersRV.setHasFixedSize(true)
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLatestInvitableFriendList()
+            viewModel.getLatestInvitedUserList()
+        }
 
+        binding.invitedUsersRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.onInvitableFriendsRVNearBottom()
+                    }
+                }
+            }
+        })
     }
 
 }

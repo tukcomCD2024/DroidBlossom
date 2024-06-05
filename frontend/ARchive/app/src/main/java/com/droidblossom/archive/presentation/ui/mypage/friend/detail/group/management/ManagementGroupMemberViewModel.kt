@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management
 
+import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,7 +11,7 @@ interface ManagementGroupMemberViewModel {
     val groupId: StateFlow<Long>
     val managementGroupMemberEvents: SharedFlow<ManagementGroupMemberEvent>
     val groupMembers: StateFlow<List<GroupMember>>
-    val invitedUsers: StateFlow<List<GroupMember>>
+    val invitedUsers: StateFlow<List<GroupInvitedUser>>
     val invitedUsersHasNextPage: StateFlow<Boolean>
     val invitedUsersLastCreatedTime: StateFlow<String>
     val invitableFriends: StateFlow<List<FriendForGroupInvite>>
