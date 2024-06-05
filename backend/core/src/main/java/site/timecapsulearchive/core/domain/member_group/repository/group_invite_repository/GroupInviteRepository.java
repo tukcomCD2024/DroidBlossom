@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -11,6 +12,8 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
     GroupInviteQueryRepository {
 
     void save(GroupInvite groupInvite);
+
+    void delete(GroupInvite groupInvite);
 
     @Query("delete from GroupInvite gi "
         + "where gi.group.id =:groupId "
@@ -27,5 +30,7 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
     @Query("delete from GroupInvite gi where gi.id in :groupInviteIds")
     @Modifying
     void bulkDelete(@Param("groupInviteIds") List<Long> groupInviteIds);
+
+    Optional<GroupInvite> findGroupInviteById(Long groupInviteId);
 }
 
