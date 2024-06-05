@@ -32,13 +32,14 @@ import site.timecapsulearchive.core.domain.member_group.repository.group_invite_
 class GroupInviteQueryRepositoryTest extends RepositoryTest {
 
     private static final int MAX_GROUP_COUNT = 2;
+    private static final int MAX_GROUP_INVITE_COUNT = 10;
 
     private final GroupInviteQueryRepository groupInviteRepository;
 
     private Long groupId;
     private Long groupOwnerId;
     private Long groupMemberId;
-    private Long firstGroupInviteStartId;
+    private Long firstGroupInviteStartId = null;
 
     GroupInviteQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
@@ -56,10 +57,12 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         groupOwners.forEach(entityManager::persist);
         groupOwnerId = groupOwners.get(0).getId();
 
-        //그룹 초대 올 그룹원
-        Member groupMember = MemberFixture.member(2);
-        entityManager.persist(groupMember);
-        groupMemberId = groupMember.getId();
+        //그룹 초대 올 그룹원들
+        List<Member> groupMembers = MemberFixture.members(2, MAX_GROUP_INVITE_COUNT);
+        for (Member groupMember : groupMembers) {
+            entityManager.persist(groupMember);
+        }
+        groupMemberId = groupMembers.get(0).getId();
 
         // 그룹들
         List<Group> groups = GroupFixture.groups(0, MAX_GROUP_COUNT);
@@ -68,12 +71,14 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
 
         // 그룹원에게 초대온 그룹 초대들
         for (int i = 0; i < MAX_GROUP_COUNT; i++) {
-            GroupInvite groupInvite = GroupInvite.createOf(groups.get(i), groupOwners.get(i),
-                groupMember);
-            entityManager.persist(groupInvite);
+            for (Member groupMember : groupMembers) {
+                GroupInvite groupInvite = GroupInvite.createOf(groups.get(i), groupOwners.get(i),
+                    groupMember);
+                entityManager.persist(groupInvite);
 
-            if (i == 0) {
-                firstGroupInviteStartId = groupInvite.getId();
+                if (firstGroupInviteStartId == null) {
+                    firstGroupInviteStartId = groupInvite.getId();
+                }
             }
         }
     }
@@ -140,13 +145,16 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         );
 
         //when
-        Slice<GroupSendingInviteMemberDto> groupSendingInvites = groupInviteRepository.findGroupSendingInvites(requestDto);
+        Slice<GroupSendingInviteMemberDto> groupSendingInvites = groupInviteRepository.findGroupSendingInvites(
+            requestDto);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(groupSendingInvites.hasContent()).isTrue();
-            softly.assertThat(groupSendingInvites.getContent()).allMatch(dto -> dto.groupInviteId() != null);
-            softly.assertThat(groupSendingInvites.getContent()).allMatch(dto -> dto.memberId() != null);
+            softly.assertThat(groupSendingInvites.getContent())
+                .allMatch(dto -> dto.groupInviteId() != null);
+            softly.assertThat(groupSendingInvites.getContent())
+                .allMatch(dto -> dto.memberId() != null);
             softly.assertThat(groupSendingInvites.getContent())
                 .allMatch(dto -> dto.nickname() != null && !dto.nickname().isBlank());
             softly.assertThat(groupSendingInvites.getContent())
@@ -170,5 +178,25 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(groupSendingInvites.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 사용자는_그룹_초대_보낸_목록_첫_페이지를_조회_후_다음_페이지에서_그룹_초대_보낸_목록을_조회_할_수_있다() {
+        //given
+        GroupSendingInvitesSliceRequestDto dto = GroupSendingInvitesSliceRequestDto.create(
+            groupOwnerId, groupId, null, MAX_GROUP_INVITE_COUNT / 2);
+        Slice<GroupSendingInviteMemberDto> firstSlice = groupInviteRepository.findGroupSendingInvites(
+            dto);
+
+        //when
+        GroupSendingInviteMemberDto lastGroupInvite = firstSlice.getContent()
+            .get(firstSlice.getNumberOfElements() - 1);
+        Slice<GroupSendingInviteMemberDto> nextSlice = groupInviteRepository.findGroupSendingInvites(
+            GroupSendingInvitesSliceRequestDto.create(groupOwnerId, groupId,
+                lastGroupInvite.groupInviteId(), 20)
+        );
+
+        //then
+        assertThat(nextSlice.getContent()).isNotEmpty();
     }
 }
