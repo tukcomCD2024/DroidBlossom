@@ -44,7 +44,7 @@ class GroupAcceptFragment :
 
     private fun initView() {
         binding.swipeRefreshL.setOnRefreshListener {
-            viewModel.getLastedFriendAcceptList()
+            viewModel.getLastedGroupAcceptList()
         }
     }
 
