@@ -14,11 +14,10 @@ public record GroupMemberWithRelationDto(
     Boolean isFriend
 ) {
 
-    public GroupMemberWithRelationResponse toResponse(
-        final Function<String, String> singlePreSignUrlFunction) {
+    public GroupMemberWithRelationResponse toResponse() {
         return GroupMemberWithRelationResponse.builder()
             .memberId(memberId)
-            .profileUrl(singlePreSignUrlFunction.apply(profileUrl))
+            .profileUrl(profileUrl)
             .nickname(nickname)
             .tag(tag)
             .isOwner(isOwner)
