@@ -17,11 +17,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/main_bg_1">
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
             android:layout_marginVertical="4dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
@@ -29,19 +30,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@{item.checked ? @color/main_2 : @color/white}"
-            app:strokeWidth="3dp">
+            app:strokeWidth="3dp"
+            app:strokeColor="@{item.checked ? @color/main_2 : @color/white}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:layout_height="match_parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profileImg"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginVertical="10dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_marginStart="16dp"
                     android:src="@color/main_1"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -55,7 +54,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="10dp"
                     android:text="@{item.nickname}"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     android:textColor="@color/black"
