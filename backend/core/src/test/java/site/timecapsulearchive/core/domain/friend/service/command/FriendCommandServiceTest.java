@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.dependency.TestTransactionTemplate;
+import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.FriendInviteMemberIdsDtoFixture;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteDuplicateException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteNotFoundException;
@@ -91,6 +93,25 @@ class FriendCommandServiceTest {
 
         //then
         verify(transactionTemplate, never()).execute(any());
+    }
+
+    @Test
+    void 친구_요청을_보낸_경우_트랜잭션이_동작된다() {
+        //given
+        Long memberId = 1L;
+        List<Long> friendIds = List.of(2L, 3L, 4L, 5L, 6L);
+        List<Long> subFriendIds = friendIds.subList(0, 3);
+        given(friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdsAndFriendId(anyList(),
+            any()))
+            .willReturn(FriendInviteMemberIdsDtoFixture.twoWays(memberId, subFriendIds));
+        given(memberRepository.findMemberById(anyLong())).willReturn(
+            Optional.ofNullable(MemberFixture.memberWithMemberId(0L)));
+
+        //when
+        friendCommandService.requestFriends(memberId, friendIds);
+
+        //then
+        verify(transactionTemplate, times(1)).execute(any());
     }
 
     @Test
