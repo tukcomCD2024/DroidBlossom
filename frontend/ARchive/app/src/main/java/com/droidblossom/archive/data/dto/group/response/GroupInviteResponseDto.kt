@@ -4,7 +4,7 @@ import com.droidblossom.archive.domain.model.group.GroupInviteSummary
 import com.droidblossom.archive.domain.model.group.GroupPage
 
 data class GroupInviteResponseDto(
-    val createdAt: String,
+    val groupReceivingInviteTime: String,
     val description: String,
     val groupId: Long,
     val groupName: String,
@@ -12,7 +12,7 @@ data class GroupInviteResponseDto(
     val groupProfileUrl: String
 ) {
     fun toModel() = GroupInviteSummary(
-        createdAt = this.createdAt,
+        createdAt = this.groupReceivingInviteTime,
         description = this.description,
         groupId = this.groupId,
         groupName = this.groupName,
