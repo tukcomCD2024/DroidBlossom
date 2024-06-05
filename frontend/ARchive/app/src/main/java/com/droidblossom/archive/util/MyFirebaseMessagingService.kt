@@ -76,6 +76,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 sendNotification(remoteMessage, FcmTopic.FRIEND_ACCEPT.name, channelName)
             }
 
+            FcmTopic.GROUP_INVITE.name -> {
+                channelName = "그룹 요청"
+                sendNotification(remoteMessage, FcmTopic.GROUP_INVITE.name, channelName)
+            }
+
+            FcmTopic.GROUP_ACCEPT.name -> {
+                channelName = "그룹 요청 수락"
+                sendNotification(remoteMessage, FcmTopic.GROUP_ACCEPT.name, channelName)
+            }
+
             else -> {}
         }
 
@@ -100,6 +110,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             FcmTopic.FRIEND_ACCEPT.name -> {
                 intent.putExtra("fragmentDestination", FragmentDestination.FRIEND_ACCEPT_ACTIVITY.name)
+            }
+
+            FcmTopic.GROUP_INVITE.name -> {
+                intent.putExtra("fragmentDestination", FragmentDestination.GROUP_REQUEST_ACTIVITY.name)
+            }
+
+            FcmTopic.GROUP_ACCEPT.name -> {
+                intent.putExtra("fragmentDestination", FragmentDestination.GROUP_ACCEPT_ACTIVITY.name)
             }
 
             else -> {
@@ -181,11 +199,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         SKIN_FRAGMENT,
         FRIEND_REQUEST_ACTIVITY,
         FRIEND_ACCEPT_ACTIVITY,
+        GROUP_REQUEST_ACTIVITY,
+        GROUP_ACCEPT_ACTIVITY,
     }
     enum class  FcmTopic{
         CAPSULE_SKIN,
         FRIEND_REQUEST,
         FRIEND_ACCEPT,
+        GROUP_INVITE,
+        GROUP_ACCEPT,
     }
 
 }

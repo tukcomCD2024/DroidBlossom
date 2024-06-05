@@ -400,6 +400,14 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                 startActivity(FriendActivity.newIntent(this, FriendActivity.FRIEND))
             }
 
+            MyFirebaseMessagingService.FragmentDestination.GROUP_REQUEST_ACTIVITY.name -> {
+                startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.GROUP))
+            }
+
+            MyFirebaseMessagingService.FragmentDestination.GROUP_ACCEPT_ACTIVITY.name -> {
+                startActivity(FriendActivity.newIntent(this, FriendActivity.GROUP))
+            }
+
             else -> {
 
             }
