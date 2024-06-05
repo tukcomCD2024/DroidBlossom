@@ -86,7 +86,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 sendNotification(remoteMessage, FcmTopic.GROUP_ACCEPT.name, channelName)
             }
 
-            else -> {}
+            else -> {
+                channelName = "공지사항"
+                sendNotification(remoteMessage, FcmTopic.DEFAULT.name, channelName)
+            }
         }
 
     }
@@ -208,6 +211,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         FRIEND_ACCEPT,
         GROUP_INVITE,
         GROUP_ACCEPT,
+        DEFAULT
     }
 
 }
