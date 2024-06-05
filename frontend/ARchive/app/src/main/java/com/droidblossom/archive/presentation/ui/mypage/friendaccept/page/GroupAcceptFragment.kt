@@ -42,7 +42,6 @@ class GroupAcceptFragment :
         binding.swipeRefreshL.setOnRefreshListener {
             viewModel.getLastedGroupAcceptList()
         }
-        binding.listIsEmptyT.text ="보낸 요청이 없습니다."
     }
 
     private fun initRV() {

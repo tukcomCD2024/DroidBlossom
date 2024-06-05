@@ -35,9 +35,8 @@ class FriendSendAcceptFragment :
     }
 
     private fun initView() {
-        binding.swipeRefreshL.setOnRefreshListener {
-            viewModel.getLastedFriendAcceptList()
-        }
+        binding.swipeRefreshL.isEnabled = false
+        binding.listIsEmptyT.text ="보낸 요청이 없습니다."
     }
 
     private fun initRV() {
