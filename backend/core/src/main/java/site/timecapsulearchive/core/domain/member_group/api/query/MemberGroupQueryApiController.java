@@ -15,8 +15,9 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInvitesSliceResponse;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesSliceResponse;
 import site.timecapsulearchive.core.domain.member_group.service.MemberGroupQueryService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -84,17 +85,25 @@ public class MemberGroupQueryApiController implements MemberGroupQueryApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<GroupSendingInvitesResponse>> findGroupSendingInvites(
+    public ResponseEntity<ApiSpec<GroupSendingInvitesSliceResponse>> findGroupSendingInvites(
         @AuthenticationPrincipal final Long memberId,
-        @PathVariable(value = "group_id") final Long groupId
+        @PathVariable(value = "group_id") final Long groupId,
+        @RequestParam(value = "group_invite_id", required = false) final Long groupInviteId,
+        @RequestParam(value = "size") final int size
     ) {
-        List<GroupSendingInviteMemberDto> groupSendingInvites = memberGroupQueryService.findGroupSendingInvites(
-            memberId, groupId);
+        GroupSendingInvitesSliceRequestDto dto = GroupSendingInvitesSliceRequestDto.create(
+            memberId, groupId, groupInviteId, size);
+
+        Slice<GroupSendingInviteMemberDto> groupSendingInvitesSlice = memberGroupQueryService.findGroupSendingInvites(
+            dto);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                GroupSendingInvitesResponse.createOf(groupSendingInvites)
+                GroupSendingInvitesSliceResponse.createOf(
+                    groupSendingInvitesSlice.getContent(),
+                    groupSendingInvitesSlice.hasNext()
+                )
             )
         );
     }

@@ -23,6 +23,7 @@ import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
 import site.timecapsulearchive.core.domain.member_group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteQueryRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteQueryRepositoryImpl;
@@ -37,6 +38,7 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
     private Long groupId;
     private Long groupOwnerId;
     private Long groupMemberId;
+    private Long firstGroupInviteStartId;
 
     GroupInviteQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
@@ -69,6 +71,10 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
             GroupInvite groupInvite = GroupInvite.createOf(groups.get(i), groupOwners.get(i),
                 groupMember);
             entityManager.persist(groupInvite);
+
+            if (i == 0) {
+                firstGroupInviteStartId = groupInvite.getId();
+            }
         }
     }
 
@@ -129,19 +135,22 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
     @Test
     void 그룹장은_자신이_보낸_그룹_초대_목록을_조회하면_그룹_초대목록이_나온다() {
         //given
+        GroupSendingInvitesSliceRequestDto requestDto = new GroupSendingInvitesSliceRequestDto(
+            groupOwnerId, groupId, null, 20
+        );
+
         //when
-        List<GroupSendingInviteMemberDto> groupSendingInvites = groupInviteRepository.findGroupSendingInvites(
-            groupOwnerId, groupId);
+        Slice<GroupSendingInviteMemberDto> groupSendingInvites = groupInviteRepository.findGroupSendingInvites(requestDto);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(groupSendingInvites).isNotEmpty();
-            softly.assertThat(groupSendingInvites).allMatch(dto -> dto.id() != null);
-            softly.assertThat(groupSendingInvites)
+            softly.assertThat(groupSendingInvites.hasContent()).isTrue();
+            softly.assertThat(groupSendingInvites.getContent()).allMatch(dto -> dto.id() != null);
+            softly.assertThat(groupSendingInvites.getContent())
                 .allMatch(dto -> dto.nickname() != null && !dto.nickname().isBlank());
-            softly.assertThat(groupSendingInvites)
+            softly.assertThat(groupSendingInvites.getContent())
                 .allMatch(dto -> dto.profileUrl() != null && !dto.profileUrl().isBlank());
-            softly.assertThat(groupSendingInvites)
+            softly.assertThat(groupSendingInvites.getContent())
                 .allMatch(dto -> dto.sendingInvitesCreatedAt() != null);
         });
     }
@@ -149,11 +158,16 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
     @Test
     void 그룹원은_자신이_보낸_그룹_초대_목록을_조회하면_빈_리스트가_나온다() {
         //given
+        GroupSendingInvitesSliceRequestDto requestDto = new GroupSendingInvitesSliceRequestDto(
+            groupOwnerId, groupId, firstGroupInviteStartId - 1, 20
+        );
+
         //when
-        List<GroupSendingInviteMemberDto> groupSendingInvites = groupInviteRepository.findGroupSendingInvites(
-            groupMemberId, groupId);
+        Slice<GroupSendingInviteMemberDto> groupSendingInvites = groupInviteRepository.findGroupSendingInvites(
+            requestDto
+        );
 
         //then
-        assertThat(groupSendingInvites).isEmpty();
+        assertThat(groupSendingInvites.isEmpty()).isTrue();
     }
 }

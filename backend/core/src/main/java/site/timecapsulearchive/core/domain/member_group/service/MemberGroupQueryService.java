@@ -10,6 +10,7 @@ import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.exception.GroupNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 
@@ -41,10 +42,8 @@ public class MemberGroupQueryService {
         return memberGroupRepository.findGroupMemberInfos(memberId, groupId);
     }
 
-    public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
-        final Long memberId,
-        final Long groupId
-    ) {
-        return groupInviteRepository.findGroupSendingInvites(memberId, groupId);
+    public Slice<GroupSendingInviteMemberDto> findGroupSendingInvites(final
+        GroupSendingInvitesSliceRequestDto dto) {
+        return groupInviteRepository.findGroupSendingInvites(dto);
     }
 }
