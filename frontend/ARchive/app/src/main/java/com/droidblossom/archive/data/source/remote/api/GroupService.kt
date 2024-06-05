@@ -29,7 +29,7 @@ interface GroupService {
         @Query("created_at") createdAt: String
     ) : Response<ResponseBody<GroupPageResponseDto>>
 
-    @GET("groups/invites")
+    @GET("groups/receiving-invites")
     suspend fun getGroupInvitesPageApi(
         @Query("size") size : Int,
         @Query("created_at") createdAt: String

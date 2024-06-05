@@ -44,7 +44,7 @@ interface FriendService {
         @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
 
-    @GET("friends/requests")
+    @GET("friends/receiving-invites")
     suspend fun getFriendsRequestsPageApi(
         @Query("size") size : Int,
         @Query("created_at") createdAt : String,
