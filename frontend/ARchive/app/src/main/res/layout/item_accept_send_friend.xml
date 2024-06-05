@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="item"
             type="com.droidblossom.archive.domain.model.friend.Friend" />
@@ -76,42 +77,20 @@
                     tools:text="1일전" />
 
                 <TextView
-                    android:id="@+id/acceptBtn"
+                    android:id="@+id/cancelBtn"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="6dp"
                     android:gravity="center"
                     android:paddingVertical="6dp"
-                    android:text="추가"
-                    android:textAppearance="@style/TextAppearance.App.caption1"
-                    android:textColor="@color/main_2"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:layout_marginVertical="8dp"
-                    android:background="@color/gray_400"
-                    app:layout_constraintBottom_toBottomOf="@id/denyBtn"
-                    app:layout_constraintStart_toEndOf="@id/denyBtn"
-                    app:layout_constraintTop_toTopOf="@id/denyBtn" />
-
-                <TextView
-                    android:id="@+id/denyBtn"
-                    android:layout_width="64dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:gravity="center"
-                    android:paddingVertical="6dp"
-                    android:text="삭제"
+                    android:text="취소"
                     android:textAppearance="@style/TextAppearance.App.caption1"
                     android:textColor="@color/red"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/acceptBtn"
-                    app:layout_constraintTop_toTopOf="@id/acceptBtn" />
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
