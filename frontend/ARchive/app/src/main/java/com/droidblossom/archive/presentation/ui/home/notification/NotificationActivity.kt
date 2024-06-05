@@ -42,7 +42,7 @@ class NotificationActivity :
                     startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.FRIEND))
                 }
 
-                NotiCategoryName.GROUP_REQUEST -> {
+                NotiCategoryName.GROUP_INVITE -> {
                     startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.GROUP))
                 }
 
