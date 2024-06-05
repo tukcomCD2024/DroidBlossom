@@ -10,12 +10,14 @@ import site.timecapsulearchive.core.infra.queue.data.dto.FriendReqNotificationDt
 import site.timecapsulearchive.core.infra.queue.data.dto.FriendsReqNotificationsDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupInviteNotificationDto;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Component
 @RequiredArgsConstructor
 public class SocialNotificationManager {
 
     private final RabbitTemplate basicRabbitTemplate;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     /**
      * 단건의 친구 요청을 받아서 알림 전송을 요청한다
@@ -59,10 +61,12 @@ public class SocialNotificationManager {
             return;
         }
 
+        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(profileUrl);
+
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
-            FriendsReqNotificationsDto.createOf(ownerNickname, profileUrl, targetIds)
+            FriendsReqNotificationsDto.createOf(ownerNickname, preSignedUrl, targetIds)
         );
     }
 
