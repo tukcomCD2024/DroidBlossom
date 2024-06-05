@@ -1,7 +1,6 @@
 package com.droidblossom.archive.data.repository
 
 import com.droidblossom.archive.data.dto.ResponseBody
-import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageResponseDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.friend.request.FriendAcceptRequestDto
@@ -17,7 +16,6 @@ import com.droidblossom.archive.data.source.remote.api.FriendService
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendReqStatusResponse
 import com.droidblossom.archive.domain.model.friend.FriendsPage
-import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneResponse
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.domain.repository.FriendRepository

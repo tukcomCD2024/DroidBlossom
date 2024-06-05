@@ -8,6 +8,7 @@ import com.droidblossom.archive.domain.model.group.GroupInviteSummary
 import com.droidblossom.archive.domain.usecase.friend.FriendDenyRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsAcceptRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsRequestsPageUseCase
+import com.droidblossom.archive.domain.usecase.friend.FriendsSendRequestsPageUseCase
 import com.droidblossom.archive.domain.usecase.group.AcceptInviteGroupUseCase
 import com.droidblossom.archive.domain.usecase.group.DenyInviteGroupUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupInvitePageUseCase
@@ -38,6 +39,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
     private val groupsRequestsPageUseCase: GetGroupInvitePageUseCase,
     private val groupAcceptRequestUseCase: AcceptInviteGroupUseCase,
     private val groupDenyRequestUseCase: DenyInviteGroupUseCase,
+    private val friendsSendRequestsPageUseCase: FriendsSendRequestsPageUseCase,
 ) : BaseViewModel(), FriendAcceptViewModel {
 
     private val _friendAcceptEvent = MutableSharedFlow<FriendAcceptViewModel.FriendAcceptEvent>()
@@ -47,6 +49,10 @@ class FriendAcceptViewModelImpl @Inject constructor(
     private val _friendAcceptList = MutableStateFlow<List<Friend>>(listOf())
     override val friendAcceptList: StateFlow<List<Friend>>
         get() = _friendAcceptList
+    private val _friendSendAcceptList = MutableStateFlow<List<Friend>>(listOf())
+
+    override val friendSendAcceptList: StateFlow<List<Friend>>
+        get() = _friendSendAcceptList
 
     private val _groupAcceptList = MutableStateFlow<List<GroupInviteSummary>>(listOf())
     override val groupAcceptList: StateFlow<List<GroupInviteSummary>>
@@ -70,6 +76,16 @@ class FriendAcceptViewModelImpl @Inject constructor(
 
     private var getGroupAcceptRequestListJob: Job? = null
 
+    private val friendSendHasNextPage = MutableStateFlow(true)
+    private val friendSendLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
+
+    private val scrollFriendSendEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollFriendSendEventFlow =
+        scrollFriendSendEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getFriendSendAcceptRequestListJob: Job? = null
+
+
     init {
         viewModelScope.launch {
             scrollFriendEventFlow.collect {
@@ -77,6 +93,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
             }
             scrollGroupEventFlow.collect {
                 getGroupAcceptList()
+            }
+            scrollFriendSendEventFlow.collect {
+                getFriendSendAcceptList()
             }
         }
     }
@@ -270,6 +289,39 @@ class FriendAcceptViewModelImpl @Inject constructor(
 
             }
         }
+    }
+
+    override fun getFriendSendAcceptList() {
+        getFriendSendAcceptRequestListJob?.cancel()
+        getFriendSendAcceptRequestListJob = viewModelScope.launch {
+            if (friendSendHasNextPage.value) {
+                friendsSendRequestsPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        friendSendLastCreatedTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        friendSendHasNextPage.value = it.hasNext
+                        _friendSendAcceptList.emit(friendSendAcceptList.value + it.friends)
+                        if (friendSendAcceptList.value.isNotEmpty()) {
+                            friendSendLastCreatedTime.value = it.friends.last().createdAt
+                        }
+
+                    }.onFail {
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onScrollFriendSendNearBottom() {
+        scrollFriendSendEventChannel.trySend(Unit)
     }
 
     private fun removeFriendItem(friend: Friend) {

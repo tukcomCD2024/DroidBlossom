@@ -51,6 +51,7 @@
 
     <string name="groupAccept">그룹 요청</string>
     <string name="friendAccept">친구 요청</string>
+    <string name="friendSendAccept">보낸 요청</string>
     <string name="groupCapsule">그룹 캡슐</string>
     <string name="groupMember">그룹원</string>
     <string name="capsule">캡슐</string>

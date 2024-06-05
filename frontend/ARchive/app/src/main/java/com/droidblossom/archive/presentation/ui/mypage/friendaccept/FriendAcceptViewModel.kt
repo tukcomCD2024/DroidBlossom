@@ -11,6 +11,7 @@ interface FriendAcceptViewModel {
 
     val friendAcceptEvent: SharedFlow<FriendAcceptViewModel.FriendAcceptEvent>
     val friendAcceptList: StateFlow<List<Friend>>
+    val friendSendAcceptList: StateFlow<List<Friend>>
     val groupAcceptList : StateFlow<List<GroupInviteSummary>>
 
     fun getFriendAcceptList()
@@ -25,6 +26,8 @@ interface FriendAcceptViewModel {
     fun denyGroupRequest(group: GroupInviteSummary)
     fun acceptGroupRequest(group: GroupInviteSummary)
 
+    fun getFriendSendAcceptList()
+    fun onScrollFriendSendNearBottom()
 
     sealed class FriendAcceptEvent {
         data class ShowToastMessage(val message: String) : FriendAcceptEvent()
