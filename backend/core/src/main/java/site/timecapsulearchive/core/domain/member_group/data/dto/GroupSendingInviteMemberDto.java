@@ -5,7 +5,8 @@ import java.time.ZonedDateTime;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInviteMemberResponse;
 
 public record GroupSendingInviteMemberDto(
-    Long id,
+    Long groupInviteId,
+    Long memberId,
     String nickname,
     String profileUrl,
     ZonedDateTime sendingInvitesCreatedAt
@@ -13,7 +14,8 @@ public record GroupSendingInviteMemberDto(
 
     public GroupSendingInviteMemberResponse toResponse() {
         return GroupSendingInviteMemberResponse.builder()
-            .id(id)
+            .groupInviteId(groupInviteId)
+            .memberId(memberId)
             .nickname(nickname)
             .profileUrl(profileUrl)
             .sendingInvitesCreatedAt(sendingInvitesCreatedAt)

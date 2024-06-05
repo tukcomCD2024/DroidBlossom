@@ -108,6 +108,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
             .select(
                 Projections.constructor(
                     GroupSendingInviteMemberDto.class,
+                    groupInvite.id,
                     member.id,
                     member.nickname,
                     member.profileUrl,

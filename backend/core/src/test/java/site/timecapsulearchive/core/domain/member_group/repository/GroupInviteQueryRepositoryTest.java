@@ -145,7 +145,8 @@ class GroupInviteQueryRepositoryTest extends RepositoryTest {
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(groupSendingInvites.hasContent()).isTrue();
-            softly.assertThat(groupSendingInvites.getContent()).allMatch(dto -> dto.id() != null);
+            softly.assertThat(groupSendingInvites.getContent()).allMatch(dto -> dto.groupInviteId() != null);
+            softly.assertThat(groupSendingInvites.getContent()).allMatch(dto -> dto.memberId() != null);
             softly.assertThat(groupSendingInvites.getContent())
                 .allMatch(dto -> dto.nickname() != null && !dto.nickname().isBlank());
             softly.assertThat(groupSendingInvites.getContent())
