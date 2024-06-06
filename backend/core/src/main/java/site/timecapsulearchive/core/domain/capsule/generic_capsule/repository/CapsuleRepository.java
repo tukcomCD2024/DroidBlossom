@@ -23,4 +23,13 @@ public interface CapsuleRepository extends Repository<Capsule, Long> {
         @Param("memberId") Long memberId,
         @Param("capsuleId") Long capsuleId
     );
+
+    @Query("select c "
+        + "from Capsule c"
+        + " where c.id = :capsuleId and c.member.id = :memberId "
+        + "and c.type = 'GROUP' and c.group.id is not null")
+    Optional<Capsule> findGroupCapsuleByMemberIdAndCapsuleId(
+        @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId
+    );
 }
