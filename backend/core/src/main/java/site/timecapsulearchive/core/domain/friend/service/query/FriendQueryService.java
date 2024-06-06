@@ -42,19 +42,33 @@ public class FriendQueryService {
         final Slice<FriendSummaryDto> friendSummaryDtos = memberFriendRepository.findFriends(
             request);
 
-        final List<Long> groupMemberIdsToExcludeBeforeGroupInvite = Stream.concat(
+        final List<Long> groupMemberIdsToExcludeBeforeGroupInvite = getGroupMemberIdsToExcludeBeforeGroupInvite(
+            request);
+
+        final List<FriendSummaryDto> friendSummaryBeforeGroupInvitedDtos = getFriendSummaryBeforeGroupInvitedDtos(
+            friendSummaryDtos, groupMemberIdsToExcludeBeforeGroupInvite);
+
+        return new SliceImpl<>(friendSummaryBeforeGroupInvitedDtos, friendSummaryDtos.getPageable(),
+            friendSummaryDtos.hasNext());
+    }
+
+    private List<Long> getGroupMemberIdsToExcludeBeforeGroupInvite(
+        final FriendBeforeGroupInviteRequest request) {
+        return Stream.concat(
                 memberGroupRepository.findGroupMemberIdsByGroupId(request.groupId()).stream(),
                 groupInviteRepository.findGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
                     request.memberId()).stream())
             .distinct()
             .toList();
+    }
 
-        final List<FriendSummaryDto> friendSummaryBeforeGroupInvitedDtos = friendSummaryDtos.getContent()
+    private List<FriendSummaryDto> getFriendSummaryBeforeGroupInvitedDtos(
+        final Slice<FriendSummaryDto> friendSummaryDtos,
+        final List<Long> groupMemberIdsToExcludeBeforeGroupInvite
+    ) {
+        return friendSummaryDtos.getContent()
             .stream()
             .filter(dto -> !groupMemberIdsToExcludeBeforeGroupInvite.contains(dto.id())).toList();
-
-        return new SliceImpl<>(friendSummaryBeforeGroupInvitedDtos, friendSummaryDtos.getPageable(),
-            friendSummaryDtos.hasNext());
     }
 
     public Slice<FriendSummaryDto> findFriendReceivingInvitesSlice(
