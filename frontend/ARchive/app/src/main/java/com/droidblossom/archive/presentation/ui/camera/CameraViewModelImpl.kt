@@ -85,6 +85,9 @@ class CameraViewModelImpl@Inject constructor(
             CameraViewModel.CapsuleFilterType.FILTER_PUBLIC_FRIEND -> {
                 getFriendsCapsules(latitude, longitude)
             }
+            CameraViewModel.CapsuleFilterType.FILTER_TREASURE -> {
+
+            }
         }
 
     }
