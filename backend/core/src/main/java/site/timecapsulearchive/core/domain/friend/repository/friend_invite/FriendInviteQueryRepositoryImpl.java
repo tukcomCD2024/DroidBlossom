@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 import static site.timecapsulearchive.core.domain.friend.entity.QFriendInvite.friendInvite;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
@@ -11,11 +12,13 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendInviteMemberIdsDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
@@ -104,5 +107,50 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
             .fetch();
 
         return SliceUtil.makeSlice(size, friends);
+    }
+
+    @Override
+    public List<FriendInviteMemberIdsDto> findFriendInviteMemberIdsDtoByMemberIdsAndFriendId(
+        List<Long> memberIds, Long friendId) {
+        BooleanBuilder multipleColumnsInCondition = new BooleanBuilder();
+        for (Long memberId : memberIds) {
+            multipleColumnsInCondition.or(friendInvite.owner.id.eq(memberId)
+                .and(friendInvite.friend.id.eq(friendId)));
+
+            multipleColumnsInCondition.or(friendInvite.owner.id.eq(friendId)
+                .and(friendInvite.friend.id.eq(memberId)));
+        }
+
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    FriendInviteMemberIdsDto.class,
+                    friendInvite.owner.id,
+                    friendInvite.friend.id
+                )
+            )
+            .from(friendInvite)
+            .where(multipleColumnsInCondition)
+            .fetch();
+    }
+
+    @Override
+    public Optional<FriendInviteMemberIdsDto> findFriendInviteMemberIdsDtoByMemberIdAndFriendId(
+        Long memberId, Long friendId) {
+        return Optional.ofNullable(
+            jpaQueryFactory
+                .select(
+                    Projections.constructor(
+                        FriendInviteMemberIdsDto.class,
+                        friendInvite.owner.id,
+                        friendInvite.friend.id
+                    )
+                )
+                .from(friendInvite)
+                .where(friendInvite.owner.id.eq(memberId).and(friendInvite.friend.id.eq(friendId))
+                    .or(friendInvite.owner.id.eq(friendId)
+                        .and(friendInvite.friend.id.eq(memberId))))
+                .fetchOne()
+        );
     }
 }

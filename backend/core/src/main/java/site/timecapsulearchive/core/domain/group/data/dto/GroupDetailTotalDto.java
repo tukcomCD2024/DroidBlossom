@@ -39,7 +39,7 @@ public record GroupDetailTotalDto(
 
     public GroupDetailResponse toResponse(final Function<String, String> singlePreSignUrlFunction) {
         List<GroupMemberWithRelationResponse> groupMemberResponses = members.stream()
-            .map(member -> member.toResponse(singlePreSignUrlFunction))
+            .map(GroupMemberWithRelationDto::toResponse)
             .toList();
 
         return GroupDetailResponse.builder()
