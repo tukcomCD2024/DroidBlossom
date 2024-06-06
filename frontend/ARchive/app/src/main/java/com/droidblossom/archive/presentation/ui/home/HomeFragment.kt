@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     super.updateLeafMarker(info, marker)
                     val key = info.key as CapsuleClusteringKey
                     marker.icon = when (key.capsuleType) {
-                        CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_treasure)
+                        CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
                         CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
                         CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
                         CapsuleType.TREASURE -> OverlayImage.fromResource(R.drawable.ic_marker_pin_treasure)
