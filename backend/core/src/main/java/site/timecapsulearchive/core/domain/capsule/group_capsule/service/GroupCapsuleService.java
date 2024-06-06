@@ -33,7 +33,6 @@ public class GroupCapsuleService {
     private final CapsuleRepository capsuleRepository;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
     private final GroupCapsuleOpenRepository groupCapsuleOpenRepository;
-    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository;
 
     @Transactional
     public Capsule saveGroupCapsule(
@@ -104,19 +103,31 @@ public class GroupCapsuleService {
      */
     @Transactional
     public void openGroupCapsule(final Long memberId, final Long capsuleId) {
-        GroupCapsuleOpen groupCapsuleOpen = groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(
-                memberId,
-                capsuleId)
-            .orElseThrow(GroupCapsuleOpenNotFoundException::new);
-        groupCapsuleOpen.open();
+        Capsule groupCapsule = capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(memberId, capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
 
-        List<Boolean> capsuleOpens = groupCapsuleOpenQueryRepository.findIsOpenedByCapsuleId(
+        if (groupCapsule.getDueDate() == null) {
+            groupCapsule.open();
+            return;
+        }
+
+        List<GroupCapsuleOpen> groupCapsuleOpens = groupCapsuleOpenRepository.findByCapsuleId(
             capsuleId);
+        if (groupCapsuleOpens.isEmpty()) {
+            throw new GroupCapsuleOpenNotFoundException();
+        }
 
-        boolean allGroupMemberOpened = capsuleOpens.stream()
-            .allMatch(isOpened -> isOpened.equals(Boolean.TRUE));
+        boolean allGroupMemberOpened = groupCapsuleOpens.stream()
+            .allMatch(groupCapsuleOpen -> {
+                if (groupCapsuleOpen.matched(capsuleId, memberId)) {
+                    groupCapsuleOpen.open();
+                }
+
+                return groupCapsuleOpen.getIsOpened();
+            });
+
         if (allGroupMemberOpened) {
-            capsuleRepository.updateIsOpenedTrue(memberId, capsuleId);
+            groupCapsule.open();
         }
     }
 }

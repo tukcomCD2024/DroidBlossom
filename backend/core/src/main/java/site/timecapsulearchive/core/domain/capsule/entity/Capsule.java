@@ -111,4 +111,8 @@ public class Capsule extends BaseEntity {
 
         return dueDate.isAfter(ZonedDateTime.now());
     }
+
+    public void open() {
+        this.isOpened = Boolean.TRUE;
+    }
 }
