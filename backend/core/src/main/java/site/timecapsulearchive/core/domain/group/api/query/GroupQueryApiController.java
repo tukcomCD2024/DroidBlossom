@@ -1,7 +1,6 @@
 package site.timecapsulearchive.core.domain.group.api.query;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.group.data.dto.CompleteGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailTotalDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.domain.group.service.query.GroupQueryService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -60,7 +57,8 @@ public class GroupQueryApiController implements GroupQueryApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<CompleteGroupSummaryDto> groupsSlice = groupQueryService.findGroupsSlice(memberId,
+        final Slice<CompleteGroupSummaryDto> groupsSlice = groupQueryService.findGroupsSlice(
+            memberId,
             size,
             createdAt);
 

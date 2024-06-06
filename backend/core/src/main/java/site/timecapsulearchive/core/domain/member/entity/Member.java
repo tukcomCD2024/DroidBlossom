@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.member.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,19 +7,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
-import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
-import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
-import site.timecapsulearchive.core.domain.history.entity.History;
-import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
 import site.timecapsulearchive.core.global.util.TagGenerator;
@@ -73,24 +65,6 @@ public class Member extends BaseEntity {
 
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Capsule> capsules;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberGroup> groups;
-
-    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberFriend> friends;
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FriendInvite> friendsRequests;
-
-    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FriendInvite> notifications;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<History> histories;
 
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,

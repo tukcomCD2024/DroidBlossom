@@ -12,9 +12,11 @@ public record GroupSendingInviteMemberResponse(
     String profileUrl,
     ZonedDateTime sendingInvitesCreatedAt
 ) {
+
     public GroupSendingInviteMemberResponse {
         if (sendingInvitesCreatedAt != null) {
-           sendingInvitesCreatedAt = sendingInvitesCreatedAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+            sendingInvitesCreatedAt = sendingInvitesCreatedAt.withZoneSameInstant(
+                ResponseMappingConstant.ZONE_ID);
         }
     }
 }

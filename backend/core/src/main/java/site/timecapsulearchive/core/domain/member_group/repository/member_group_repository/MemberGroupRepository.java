@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.member_group.repository.member_group
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.Repository;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 
 public interface MemberGroupRepository extends Repository<MemberGroup, Long>,

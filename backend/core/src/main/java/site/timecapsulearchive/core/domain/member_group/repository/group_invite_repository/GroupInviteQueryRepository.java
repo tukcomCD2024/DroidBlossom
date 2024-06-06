@@ -18,7 +18,7 @@ public interface GroupInviteQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     );
-
+  
     Slice<GroupSendingInviteMemberDto> findGroupSendingInvites(
         final GroupSendingInvitesSliceRequestDto dto
     );
