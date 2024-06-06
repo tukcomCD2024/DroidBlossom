@@ -7,6 +7,7 @@ import static site.timecapsulearchive.core.domain.member_group.entity.QGroupInvi
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
@@ -32,8 +34,11 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public void bulkSave(final Long groupOwnerId, final Long groupId,
-        final List<Long> groupMemberIds) {
+    public void bulkSave(
+        final Long groupOwnerId,
+        final Long groupId,
+        final List<Long> groupMemberIds
+    ) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_invite (
@@ -102,6 +107,19 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
         return SliceUtil.makeSlice(size, groupInviteSummaryDtos);
     }
 
+    @Override
+    public List<Long> findGroupMemberIdsByGroupIdAndGroupOwnerId(
+        final Long groupId,
+        final Long groupOwnerId
+    ) {
+        return jpaQueryFactory
+            .select(groupInvite.groupMember.id)
+            .from(groupInvite)
+            .where(groupInvite.groupOwner.id.eq(groupOwnerId).and(groupInvite.group.id.eq(groupId)))
+            .fetch();
+    }
+
+    @Override
     public Slice<GroupSendingInviteMemberDto> findGroupSendingInvites(
         final GroupSendingInvitesSliceRequestDto dto
     ) {

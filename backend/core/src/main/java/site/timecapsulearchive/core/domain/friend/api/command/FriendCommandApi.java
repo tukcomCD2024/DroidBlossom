@@ -43,6 +43,32 @@ public interface FriendCommandApi {
     );
 
     @Operation(
+        summary = "소셜 친구 요청 삭제",
+        description = "사용자가 보낸 소셜 친구 요청을 삭제한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"friend"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                잘못된 요청 파라미터 또는 존재하지 않는 사용자로 요청하거나 존재하지 않는 친구에게 친구 요청을 보낼 경우 발생
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> deleteSendingFriendInvite(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema())
+        Long friendId
+    );
+
+    @Operation(
         summary = "소셜 친구 삭제",
         description = "사용자의 소셜 친구를 삭제한다.",
         security = {@SecurityRequirement(name = "user_token")},
