@@ -115,4 +115,8 @@ public class Capsule extends BaseEntity {
     public void open() {
         this.isOpened = Boolean.TRUE;
     }
+
+    public boolean isTimeCapsule() {
+        return dueDate != null;
+    }
 }

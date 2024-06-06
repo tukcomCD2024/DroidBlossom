@@ -18,7 +18,6 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -106,7 +105,7 @@ public class GroupCapsuleService {
         Capsule groupCapsule = capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (groupCapsule.getDueDate() == null) {
+        if (!groupCapsule.isTimeCapsule()) {
             groupCapsule.open();
             return;
         }
