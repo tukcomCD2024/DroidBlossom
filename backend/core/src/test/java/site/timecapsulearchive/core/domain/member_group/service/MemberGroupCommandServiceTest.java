@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.common.dependency.TestTransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
+import site.timecapsulearchive.core.common.fixture.domain.GroupInviteFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupDtoFixture;
@@ -30,6 +31,7 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.request.SendGroupRequest;
+import site.timecapsulearchive.core.domain.member_group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupInviteNotFoundException;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupMemberCountLimitException;
@@ -301,6 +303,59 @@ class MemberGroupCommandServiceTest {
 
         //then
         verify(memberGroupRepository, times(1)).delete(any(MemberGroup.class));
+    }
+
+    @Test
+    void 그룹장인_사람이_그룹_초대를_삭제하면_삭제된다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupMemberId = 2L;
+        Long groupInviteId = 1L;
+        given(groupInviteRepository.findGroupInviteById(anyLong())).willReturn(
+            GroupInviteFixture.groupInvite(GroupFixture.group(),
+                MemberFixture.memberWithMemberId(groupOwnerId),
+                MemberFixture.memberWithMemberId(groupMemberId))
+        );
+
+        //when
+        groupMemberCommandService.deleteGroupInvite(groupOwnerId, groupInviteId);
+
+        //then
+        verify(groupInviteRepository, times(1)).delete(any(GroupInvite.class));
+    }
+
+    @Test
+    void 그룹_초대가_존재하지_않는_경우_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupInviteId = 1L;
+        given(groupInviteRepository.findGroupInviteById(anyLong())).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupMemberCommandService.deleteGroupInvite(groupOwnerId, groupInviteId))
+            .isInstanceOf(GroupInviteNotFoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹장이_아닌_사람이_그룹_초대를_삭제하면_예외가_발생한다() {
+        //given
+        Long groupOwnerId = 1L;
+        Long groupMemberId = 2L;
+        Long groupInviteId = 1L;
+        given(groupInviteRepository.findGroupInviteById(anyLong())).willReturn(
+            GroupInviteFixture.groupInvite(GroupFixture.group(),
+                MemberFixture.memberWithMemberId(groupOwnerId),
+                MemberFixture.memberWithMemberId(groupMemberId))
+        );
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupMemberCommandService.deleteGroupInvite(groupMemberId, groupInviteId))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
 
     @Test
