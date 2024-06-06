@@ -1,28 +1,34 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
+import site.timecapsulearchive.core.common.fixture.domain.CapsuleSkinFixture;
 import site.timecapsulearchive.core.common.fixture.domain.GroupCapsuleOpenFixture;
+import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
+import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
+import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
+import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
+import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
+import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 
 class GroupCapsuleServiceTest {
@@ -35,13 +41,9 @@ class GroupCapsuleServiceTest {
         GroupCapsuleQueryRepository.class);
     private final GroupCapsuleOpenRepository groupCapsuleOpenRepository = mock(
         GroupCapsuleOpenRepository.class);
-    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository = mock(
-        GroupCapsuleOpenQueryRepository.class);
 
     private final GroupCapsuleService groupCapsuleService = new GroupCapsuleService(
-        capsuleRepository, groupCapsuleQueryRepository, groupCapsuleOpenRepository,
-        groupCapsuleOpenQueryRepository
-    );
+        capsuleRepository, groupCapsuleQueryRepository, groupCapsuleOpenRepository);
 
     @Test
     void 개봉된_그룹_캡슐의_상세_내용을_볼_수_있다() {
@@ -201,14 +203,14 @@ class GroupCapsuleServiceTest {
         //given
         Long memberId = 1L;
         Long capsuleId = 1L;
-        given(groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(Optional.empty());
 
         //when
         //then
         assertThatThrownBy(() -> groupCapsuleService.openGroupCapsule(memberId, capsuleId))
-            .isInstanceOf(GroupCapsuleOpenNotFoundException.class)
-            .hasMessageContaining(ErrorCode.GROUP_CAPSULE_OPEN_NOT_FOUND_ERROR.getMessage());
+            .isInstanceOf(CapsuleNotFondException.class)
+            .hasMessageContaining(ErrorCode.CAPSULE_NOT_FOUND_ERROR.getMessage());
     }
 
     @Test
@@ -216,17 +218,35 @@ class GroupCapsuleServiceTest {
         //given
         Long memberId = 1L;
         Long capsuleId = 1L;
-        given(groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(anyLong(), anyLong()))
 
-            .willReturn(GroupCapsuleOpenFixture.groupCapsuleOpen(memberId.intValue()));
-        given(groupCapsuleOpenQueryRepository.findIsOpenedByCapsuleId(anyLong()))
-            .willReturn(List.of(Boolean.FALSE, Boolean.FALSE, Boolean.TRUE));
+        Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+
+        List<Member> groupMembers = MemberFixture.membersWithMemberId(memberId.intValue() + 2, 4);
+        given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId))
+            .willReturn(
+                GroupCapsuleOpenFixture.groupCapsuleOpens(false, groupCapsule.get(), groupMembers)
+            );
 
         //when
         groupCapsuleService.openGroupCapsule(memberId, capsuleId);
 
         //then
-        verifyNoInteractions(capsuleRepository);
+        assertThat(groupCapsule.get().getIsOpened()).isFalse();
+    }
+
+    private Optional<Capsule> getGroupCapsule(Long memberId, Long capsuleId) {
+        Member member = MemberFixture.memberWithMemberId(memberId);
+
+        return Optional.ofNullable(
+            CapsuleFixture.groupCapsuleWithCapsuleId(
+                member,
+                CapsuleSkinFixture.capsuleSkin(member),
+                GroupFixture.group(),
+                capsuleId
+            )
+        );
     }
 
     @Test
@@ -234,15 +254,63 @@ class GroupCapsuleServiceTest {
         //given
         Long memberId = 1L;
         Long capsuleId = 1L;
-        given(groupCapsuleOpenRepository.findByMemberIdAndCapsuleId(anyLong(), anyLong()))
-            .willReturn(GroupCapsuleOpenFixture.groupCapsuleOpen(memberId.intValue()));
-        given(groupCapsuleOpenQueryRepository.findIsOpenedByCapsuleId(anyLong()))
-            .willReturn(List.of(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE));
+
+        Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+
+        List<Member> groupMembers = MemberFixture.membersWithMemberId(memberId.intValue() + 2, 4);
+        given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId))
+            .willReturn(
+                GroupCapsuleOpenFixture.groupCapsuleOpens(true, groupCapsule.get(), groupMembers)
+            );
 
         //when
         groupCapsuleService.openGroupCapsule(memberId, capsuleId);
 
         //then
-        verify(capsuleRepository, times(1)).updateIsOpenedTrue(anyLong(), anyLong());
+        assertThat(groupCapsule.get().getIsOpened()).isTrue();
+    }
+
+    @Test
+    void 일부_그룹원이_캡슐을_개봉한_경우_캡슐은_개봉되지_않는다() {
+        //given
+        Long memberId = 1L;
+        Long capsuleId = 1L;
+
+        Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+
+        List<Member> groupMembers = MemberFixture.membersWithMemberId(memberId.intValue() + 2, 4);
+        given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId))
+            .willReturn(
+                GroupCapsuleOpenFixture.groupCapsuleOpensNotAllOpened(groupCapsule.get(), groupMembers)
+            );
+
+        //when
+        groupCapsuleService.openGroupCapsule(memberId, capsuleId);
+
+        //then
+        assertThat(groupCapsule.get().getIsOpened()).isFalse();
+    }
+
+    @Test
+    void 모든_그룹원이_캡슐을_개봉이_없는_경우_예외가_발생한다() {
+        //given
+        Long memberId = 1L;
+        Long capsuleId = 1L;
+
+        Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+        given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId)).willReturn(
+            Collections.emptyList());
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupCapsuleService.openGroupCapsule(memberId, capsuleId))
+            .isInstanceOf(GroupCapsuleOpenNotFoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_CAPSULE_OPEN_NOT_FOUND_ERROR.getMessage());
     }
 }

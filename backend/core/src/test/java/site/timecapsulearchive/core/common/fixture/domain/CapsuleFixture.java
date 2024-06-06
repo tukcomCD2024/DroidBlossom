@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.common.fixture.domain;
 
+import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -90,5 +91,28 @@ public class CapsuleFixture {
             .capsuleSkin(capsuleSkin)
             .group(group)
             .build();
+    }
+
+    public static Capsule groupCapsuleWithCapsuleId(
+        Member member,
+        CapsuleSkin capsuleSkin,
+        Group group,
+        Long capsuleId
+    ) {
+        try {
+            Capsule capsule = groupCapsule(member, capsuleSkin, group);
+
+            setFieldValue(capsule, "id", capsuleId);
+            return capsule;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setFieldValue(Object instance, String fieldName, Object value)
+        throws NoSuchFieldException, IllegalAccessException {
+        Field field = instance.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(instance, value);
     }
 }
