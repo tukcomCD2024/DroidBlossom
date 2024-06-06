@@ -148,6 +148,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
+    override fun getTreasureCapsuleSummary(capsuleId: Long) {
+        viewModelScope.launch {
+
+        }
+    }
 
 
     override fun calculateCapsuleOpenTime(createdAt: String, dueDate: String) {
@@ -263,6 +268,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                             // 값 뭐뭐 받는지에 따라서 다름
                         }
                     }
+                }
+
+                HomeFragment.CapsuleType.TREASURE -> {
+
                 }
 
                 else -> {

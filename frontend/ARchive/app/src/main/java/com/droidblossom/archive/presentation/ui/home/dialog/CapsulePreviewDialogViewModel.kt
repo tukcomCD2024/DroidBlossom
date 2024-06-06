@@ -40,6 +40,7 @@ interface CapsulePreviewDialogViewModel {
     fun getSecretCapsuleSummary(capsuleId: Long)
     fun getPublicCapsuleSummary(capsuleId: Long)
     fun getGroupCapsuleSummary(capsuleId: Long)
+    fun getTreasureCapsuleSummary(capsuleId: Long)
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
 
