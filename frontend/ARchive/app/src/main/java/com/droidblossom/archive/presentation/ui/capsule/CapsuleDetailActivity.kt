@@ -75,7 +75,9 @@ class CapsuleDetailActivity :
                 viewModel.getPublicCapsuleDetail(capsuleInd)
             }
 
-            null -> {}
+            else -> {
+
+            }
         }
         binding.closeBtn.setOnClickListener {
             finish()

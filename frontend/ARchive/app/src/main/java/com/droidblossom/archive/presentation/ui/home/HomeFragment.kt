@@ -34,7 +34,6 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
-import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.pow
@@ -56,6 +55,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                     super.updateClusterMarker(info, marker)
                     marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker_46)
+                    marker.height = 120
+                    marker.width = 120
                     marker.captionColor = Color.BLACK
                     marker.captionHaloColor =
                         ContextCompat.getColor(requireContext(), R.color.main_bg_1)
@@ -70,10 +71,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     super.updateLeafMarker(info, marker)
                     val key = info.key as CapsuleClusteringKey
                     marker.icon = when (key.capsuleType) {
-                        CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
+                        CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_treasure)
                         CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
                         CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
+                        CapsuleType.TREASURE -> OverlayImage.fromResource(R.drawable.ic_marker_pin_treasure)
                     }
+                    marker.width = 120
+                    marker.height = 132
                     marker.onClickListener = Overlay.OnClickListener {
                         viewModel.homeEvent(
                             HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
@@ -361,7 +365,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     enum class CapsuleType {
         SECRET,
         GROUP,
-        PUBLIC
+        PUBLIC,
+        TREASURE
     }
 
     override fun onResume() {
