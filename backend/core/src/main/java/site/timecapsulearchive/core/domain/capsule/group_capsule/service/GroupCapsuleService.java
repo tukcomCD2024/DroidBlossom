@@ -18,6 +18,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -101,22 +102,36 @@ public class GroupCapsuleService {
      * @param capsuleId 개봉할 캡슐 아이디
      */
     @Transactional
-    public void openGroupCapsule(final Long memberId, final Long capsuleId) {
-        Capsule groupCapsule = capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(memberId, capsuleId)
+    public GroupCapsuleOpenStateDto openGroupCapsule(final Long memberId, final Long capsuleId) {
+        Capsule groupCapsule = capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(memberId,
+                capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
+
+        if (!groupCapsule.canOpen()) {
+            return GroupCapsuleOpenStateDto.notOpened();
+        }
 
         if (!groupCapsule.isTimeCapsule()) {
             groupCapsule.open();
-            return;
+            return GroupCapsuleOpenStateDto.opened();
         }
 
+        boolean allGroupMemberOpened = isAllGroupMemberOpened(memberId, capsuleId);
+        if (allGroupMemberOpened) {
+            groupCapsule.open();
+        }
+
+        return GroupCapsuleOpenStateDto.opened();
+    }
+
+    private boolean isAllGroupMemberOpened(Long memberId, Long capsuleId) {
         List<GroupCapsuleOpen> groupCapsuleOpens = groupCapsuleOpenRepository.findByCapsuleId(
             capsuleId);
         if (groupCapsuleOpens.isEmpty()) {
             throw new GroupCapsuleOpenNotFoundException();
         }
 
-        boolean allGroupMemberOpened = groupCapsuleOpens.stream()
+        return groupCapsuleOpens.stream()
             .allMatch(groupCapsuleOpen -> {
                 if (groupCapsuleOpen.matched(capsuleId, memberId)) {
                     groupCapsuleOpen.open();
@@ -124,10 +139,6 @@ public class GroupCapsuleService {
 
                 return groupCapsuleOpen.getIsOpened();
             });
-
-        if (allGroupMemberOpened) {
-            groupCapsule.open();
-        }
     }
 }
 

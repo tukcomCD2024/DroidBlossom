@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -109,7 +110,7 @@ public class Capsule extends BaseEntity {
             return false;
         }
 
-        return dueDate.isAfter(ZonedDateTime.now());
+        return dueDate.isAfter(ZonedDateTime.now(ZoneId.of("UTC")));
     }
 
     public void open() {
@@ -118,5 +119,9 @@ public class Capsule extends BaseEntity {
 
     public boolean isTimeCapsule() {
         return dueDate != null;
+    }
+
+    public boolean canOpen() {
+        return dueDate == null || dueDate.isBefore(ZonedDateTime.now(ZoneId.of("UTC")));
     }
 }
