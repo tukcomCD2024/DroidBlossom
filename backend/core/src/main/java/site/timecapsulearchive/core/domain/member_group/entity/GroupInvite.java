@@ -49,10 +49,4 @@ public class GroupInvite extends BaseEntity {
     public static GroupInvite createOf(Group group, Member groupOwner, Member groupMember) {
         return new GroupInvite(group, groupOwner, groupMember);
     }
-
-    public void validateOwner(Long memberId) {
-        if (!groupOwner.getId().equals(memberId)) {
-            throw new NoGroupAuthorityException();
-        }
-    }
 }

@@ -31,6 +31,6 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
     @Modifying
     void bulkDelete(@Param("groupInviteIds") List<Long> groupInviteIds);
 
-    Optional<GroupInvite> findGroupInviteById(Long groupInviteId);
+    Optional<GroupInvite> findGroupInviteByIdAndGroupOwnerId(Long groupInviteId, Long groupOwnerId);
 }
 

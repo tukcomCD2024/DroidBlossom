@@ -119,11 +119,6 @@ public interface MemberGroupCommandApi {
             description = "처리 완료"
         ),
         @ApiResponse(
-            responseCode = "403",
-            description = "그룹장이 아닌 경우 예외가 발생한다.",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-        @ApiResponse(
             responseCode = "404",
             description = "그룹 초대를 찾을 수 없는 경우 발생한다.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))

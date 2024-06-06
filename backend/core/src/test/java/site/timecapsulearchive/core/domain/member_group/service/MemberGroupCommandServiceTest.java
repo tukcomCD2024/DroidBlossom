@@ -311,11 +311,12 @@ class MemberGroupCommandServiceTest {
         Long groupOwnerId = 1L;
         Long groupMemberId = 2L;
         Long groupInviteId = 1L;
-        given(groupInviteRepository.findGroupInviteById(anyLong())).willReturn(
-            GroupInviteFixture.groupInvite(GroupFixture.group(),
+        given(groupInviteRepository.findGroupInviteByIdAndGroupOwnerId(anyLong(),
+            anyLong()))
+            .willReturn(GroupInviteFixture.groupInvite(GroupFixture.group(),
                 MemberFixture.memberWithMemberId(groupOwnerId),
                 MemberFixture.memberWithMemberId(groupMemberId))
-        );
+            );
 
         //when
         groupMemberCommandService.deleteGroupInvite(groupOwnerId, groupInviteId);
@@ -329,33 +330,15 @@ class MemberGroupCommandServiceTest {
         //given
         Long groupOwnerId = 1L;
         Long groupInviteId = 1L;
-        given(groupInviteRepository.findGroupInviteById(anyLong())).willReturn(Optional.empty());
-
-        //when
-        //then
-        assertThatThrownBy(() -> groupMemberCommandService.deleteGroupInvite(groupOwnerId, groupInviteId))
-            .isInstanceOf(GroupInviteNotFoundException.class)
-            .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
-    }
-
-    @Test
-    void 그룹장이_아닌_사람이_그룹_초대를_삭제하면_예외가_발생한다() {
-        //given
-        Long groupOwnerId = 1L;
-        Long groupMemberId = 2L;
-        Long groupInviteId = 1L;
-        given(groupInviteRepository.findGroupInviteById(anyLong())).willReturn(
-            GroupInviteFixture.groupInvite(GroupFixture.group(),
-                MemberFixture.memberWithMemberId(groupOwnerId),
-                MemberFixture.memberWithMemberId(groupMemberId))
-        );
+        given(groupInviteRepository.findGroupInviteByIdAndGroupOwnerId(anyLong(),
+            anyLong())).willReturn(Optional.empty());
 
         //when
         //then
         assertThatThrownBy(
-            () -> groupMemberCommandService.deleteGroupInvite(groupMemberId, groupInviteId))
-            .isInstanceOf(NoGroupAuthorityException.class)
-            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+            () -> groupMemberCommandService.deleteGroupInvite(groupOwnerId, groupInviteId))
+            .isInstanceOf(GroupInviteNotFoundException.class)
+            .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
 
     @Test

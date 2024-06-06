@@ -108,10 +108,10 @@ public class MemberGroupCommandService {
 
     @Transactional
     public void deleteGroupInvite(final Long memberId, final Long groupInviteId) {
-        final GroupInvite groupInvite = groupInviteRepository.findGroupInviteById(groupInviteId)
+        final GroupInvite groupInvite = groupInviteRepository.findGroupInviteByIdAndGroupOwnerId(
+                groupInviteId,
+                memberId)
             .orElseThrow(GroupInviteNotFoundException::new);
-
-        groupInvite.validateOwner(memberId);
 
         groupInviteRepository.delete(groupInvite);
     }
