@@ -83,6 +83,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
             .select(
                 Projections.constructor(
                     GroupInviteSummaryDto.class,
+                    groupInvite.id,
                     group.id,
                     group.groupName,
                     group.groupProfileUrl,
