@@ -115,4 +115,31 @@ public class CapsuleFixture {
         field.setAccessible(true);
         field.set(instance, value);
     }
+
+    public static Capsule notGroupTimeCapsuleWithCapsuleId(
+        Member member,
+        CapsuleSkin capsuleSkin,
+        Group group,
+        Long capsuleId,
+        ZonedDateTime now
+    ) {
+        Capsule capsule = Capsule.builder()
+            .dueDate(now)
+            .title("testTitle")
+            .content("testContent")
+            .type(CapsuleType.GROUP)
+            .address(getTestAddress())
+            .point(geoTransformManager.changePoint4326To3857(TEST_LATITUDE, TEST_LONGITUDE))
+            .member(member)
+            .capsuleSkin(capsuleSkin)
+            .group(group)
+            .build();
+
+        try {
+            setFieldValue(capsule, "id", capsuleId);
+            return capsule;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

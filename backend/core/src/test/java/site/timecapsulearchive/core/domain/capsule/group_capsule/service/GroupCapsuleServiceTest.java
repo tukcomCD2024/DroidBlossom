@@ -1,16 +1,16 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleSkinFixture;
@@ -19,12 +19,13 @@ import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
-import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
@@ -34,6 +35,7 @@ import site.timecapsulearchive.core.global.error.ErrorCode;
 class GroupCapsuleServiceTest {
 
     private final Long capsuleId = 1L;
+    private final Long memberId = 1L;
     private final int groupMemberCount = 3;
 
     private final CapsuleRepository capsuleRepository = mock(CapsuleRepository.class);
@@ -58,7 +60,7 @@ class GroupCapsuleServiceTest {
             capsuleId);
 
         //then
-        SoftAssertions.assertSoftly(softly -> {
+        assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
             List<GroupMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
@@ -84,7 +86,7 @@ class GroupCapsuleServiceTest {
             capsuleId);
 
         //then
-        SoftAssertions.assertSoftly(softly -> {
+        assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
             List<GroupMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
@@ -110,7 +112,7 @@ class GroupCapsuleServiceTest {
             capsuleId);
 
         //then
-        SoftAssertions.assertSoftly(softly -> {
+        assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
             List<GroupMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
@@ -137,7 +139,7 @@ class GroupCapsuleServiceTest {
             capsuleId);
 
         //then
-        SoftAssertions.assertSoftly(softly -> {
+        assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
             List<GroupMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
@@ -162,7 +164,7 @@ class GroupCapsuleServiceTest {
             capsuleId);
 
         //then
-        SoftAssertions.assertSoftly(softly -> {
+        assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
             List<GroupMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
@@ -187,7 +189,7 @@ class GroupCapsuleServiceTest {
             capsuleId);
 
         //then
-        SoftAssertions.assertSoftly(softly -> {
+        assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
             List<GroupMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
@@ -199,10 +201,8 @@ class GroupCapsuleServiceTest {
     }
 
     @Test
-    void 그룹_캡슐_개봉이_없는_캡슐을_개봉하려는_경우_예외가_발생한다() {
+    void 그룹_캡슐이_없는_경우_그룹_캡슐_개봉_시_예외가_발생한다() {
         //given
-        Long memberId = 1L;
-        Long capsuleId = 1L;
         given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(Optional.empty());
 
@@ -214,11 +214,66 @@ class GroupCapsuleServiceTest {
     }
 
     @Test
+    void 개봉일이_지나지_않아_그룹_캡슐을_열_수_없는_경우_캡슐은_개봉되지_않는다() {
+        //given
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        Optional<Capsule> groupCapsule = getGroupCapsuleSpecificTime(memberId, capsuleId,
+            now.plusYears(5));
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+
+        //when
+        GroupCapsuleOpenStateDto groupCapsuleOpenStateDto = groupCapsuleService.openGroupCapsule(
+            memberId, capsuleId);
+
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
+            softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus())
+                .isEqualTo(CapsuleOpenStatus.NOT_OPEN);
+        });
+    }
+
+    @Test
+    void 타임캡슐이_아닌_경우_그룹_캡슐_개봉_시_그룹_캡슐은_개봉된다() {
+        //given
+        Optional<Capsule> groupCapsule = getGroupCapsuleSpecificTime(memberId, capsuleId, null);
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+
+        //when
+        GroupCapsuleOpenStateDto groupCapsuleOpenStateDto = groupCapsuleService.openGroupCapsule(
+            memberId, capsuleId);
+
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
+            softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus())
+                .isEqualTo(CapsuleOpenStatus.OPEN);
+        });
+    }
+
+    private Optional<Capsule> getGroupCapsuleSpecificTime(
+        Long memberId,
+        Long capsuleId,
+        ZonedDateTime now
+    ) {
+        Member member = MemberFixture.memberWithMemberId(memberId);
+
+        return Optional.ofNullable(
+            CapsuleFixture.notGroupTimeCapsuleWithCapsuleId(
+                member,
+                CapsuleSkinFixture.capsuleSkin(member),
+                GroupFixture.group(),
+                capsuleId,
+                now
+            )
+        );
+    }
+
+    @Test
     void 모든_그룹원이_캡슐을_개봉하지_않은_경우_캡슐은_개봉되지_않는다() {
         //given
-        Long memberId = 1L;
-        Long capsuleId = 1L;
-
         Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
         given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
@@ -230,10 +285,15 @@ class GroupCapsuleServiceTest {
             );
 
         //when
-        groupCapsuleService.openGroupCapsule(memberId, capsuleId);
+        GroupCapsuleOpenStateDto groupCapsuleOpenStateDto = groupCapsuleService.openGroupCapsule(
+            memberId, capsuleId);
 
         //then
-        assertThat(groupCapsule.get().getIsOpened()).isFalse();
+        assertSoftly(softly -> {
+            softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
+            softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
+                CapsuleOpenStatus.OPEN);
+        });
     }
 
     private Optional<Capsule> getGroupCapsule(Long memberId, Long capsuleId) {
@@ -250,34 +310,8 @@ class GroupCapsuleServiceTest {
     }
 
     @Test
-    void 모든_그룹원이_캡슐을_개봉한_경우_캡슐은_개봉된다() {
-        //given
-        Long memberId = 1L;
-        Long capsuleId = 1L;
-
-        Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
-        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
-            .willReturn(groupCapsule);
-
-        List<Member> groupMembers = MemberFixture.membersWithMemberId(memberId.intValue() + 2, 4);
-        given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId))
-            .willReturn(
-                GroupCapsuleOpenFixture.groupCapsuleOpens(true, groupCapsule.get(), groupMembers)
-            );
-
-        //when
-        groupCapsuleService.openGroupCapsule(memberId, capsuleId);
-
-        //then
-        assertThat(groupCapsule.get().getIsOpened()).isTrue();
-    }
-
-    @Test
     void 일부_그룹원이_캡슐을_개봉한_경우_캡슐은_개봉되지_않는다() {
         //given
-        Long memberId = 1L;
-        Long capsuleId = 1L;
-
         Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
         given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
@@ -285,22 +319,25 @@ class GroupCapsuleServiceTest {
         List<Member> groupMembers = MemberFixture.membersWithMemberId(memberId.intValue() + 2, 4);
         given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId))
             .willReturn(
-                GroupCapsuleOpenFixture.groupCapsuleOpensNotAllOpened(groupCapsule.get(), groupMembers)
+                GroupCapsuleOpenFixture.groupCapsuleOpensNotAllOpened(groupCapsule.get(),
+                    groupMembers)
             );
 
         //when
-        groupCapsuleService.openGroupCapsule(memberId, capsuleId);
+        GroupCapsuleOpenStateDto groupCapsuleOpenStateDto = groupCapsuleService.openGroupCapsule(
+            memberId, capsuleId);
 
         //then
-        assertThat(groupCapsule.get().getIsOpened()).isFalse();
+        assertSoftly(softly -> {
+            softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
+            softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
+                CapsuleOpenStatus.OPEN);
+        });
     }
 
     @Test
-    void 모든_그룹원이_캡슐을_개봉이_없는_경우_예외가_발생한다() {
+    void 그룹_캡슐_개봉이_없는_경우_예외가_발생한다() {
         //given
-        Long memberId = 1L;
-        Long capsuleId = 1L;
-
         Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
         given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
@@ -312,5 +349,30 @@ class GroupCapsuleServiceTest {
         assertThatThrownBy(() -> groupCapsuleService.openGroupCapsule(memberId, capsuleId))
             .isInstanceOf(GroupCapsuleOpenNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_CAPSULE_OPEN_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 모든_그룹원이_캡슐을_개봉한_경우_캡슐은_개봉된다() {
+        //given
+        Optional<Capsule> groupCapsule = getGroupCapsule(memberId, capsuleId);
+        given(capsuleRepository.findGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            .willReturn(groupCapsule);
+
+        List<Member> groupMembers = MemberFixture.membersWithMemberId(memberId.intValue() + 2, 4);
+        given(groupCapsuleOpenRepository.findByCapsuleId(capsuleId))
+            .willReturn(
+                GroupCapsuleOpenFixture.groupCapsuleOpens(true, groupCapsule.get(), groupMembers)
+            );
+
+        //when
+        GroupCapsuleOpenStateDto groupCapsuleOpenStateDto = groupCapsuleService.openGroupCapsule(
+            memberId, capsuleId);
+
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
+            softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
+                CapsuleOpenStatus.OPEN);
+        });
     }
 }
