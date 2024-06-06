@@ -25,10 +25,11 @@ public interface CapsuleRepository extends Repository<Capsule, Long> {
     );
 
     @Query("select c "
-        + "from Capsule c"
-        + " where c.id = :capsuleId and c.member.id = :memberId "
-        + "and c.type = 'GROUP' and c.group.id is not null")
-    Optional<Capsule> findGroupCapsuleByMemberIdAndCapsuleId(
+        + "from Capsule c "
+        + "join fetch c.groupCapsuleOpens "
+        + "where c.id = :capsuleId and c.member.id = :memberId "
+        + "and c.type = 'GROUP' and c.group.id is not null and c.isOpened = false")
+    Optional<Capsule> findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
         @Param("memberId") Long memberId,
         @Param("capsuleId") Long capsuleId
     );
