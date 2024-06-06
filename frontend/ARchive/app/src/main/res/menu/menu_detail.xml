@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_block"
+        android:id="@+id/toolBarSearch"
         android:icon="@drawable/ic_search_24"
         android:title="@string/search"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_other"
+        android:id="@+id/toolBarMenu"
         android:icon="@drawable/ic_menu_24"
         android:title="메뉴"
         app:showAsAction="always" />

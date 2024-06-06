@@ -4,7 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,10 +20,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityGroupDetailBinding
+import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
+import com.droidblossom.archive.databinding.PopupMenuGroupBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.adapter.GroupDetailVPA
+import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupCapsuleFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page.GroupMemberFragment
 import com.droidblossom.archive.util.AppBarStateChangeListener
@@ -108,6 +118,7 @@ class GroupDetailActivity :
 
     private fun initView(){
         with(binding){
+            setSupportActionBar(groupDetailToolbar)
             swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
                 val fragment = groupVPA.getFragment(vp.currentItem)
                 when (fragment) {
@@ -152,6 +163,7 @@ class GroupDetailActivity :
                 }
 
             })
+
         }
     }
 
@@ -195,6 +207,61 @@ class GroupDetailActivity :
 
             })
 
+
+        }
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenuBinding = PopupMenuGroupBinding.inflate(LayoutInflater.from(this@GroupDetailActivity), null, false)
+
+        val density = this.resources.displayMetrics.density
+        val widthPixels = (120 * density).toInt()
+        val offset = (4 * density).toInt()
+
+        val popupWindow = PopupWindow(
+            popupMenuBinding.root,
+            widthPixels,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        popupMenuBinding.menuMap.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupMenuBinding.menuGroupClosure.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupMenuBinding.menuGroupMemberManagement.setOnClickListener {
+            startActivity(ManagementGroupMemberActivity.newIntent(this, viewModel.groupId.value))
+            popupWindow.dismiss()
+        }
+
+        view.post {
+
+            popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            val popupWidth = popupWindow.contentView.measuredWidth
+            //val popupHeight = popupWindow.contentView.measuredHeight
+
+            popupWindow.showAtLocation(view, Gravity.END or Gravity.TOP,0,0)
+
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_detail,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("메뉴","엥")
+        return when(item.itemId){
+            R.id.toolBarMenu -> {
+                val toolbar: View = findViewById(R.id.groupDetailToolbar)
+                showPopupMenu(toolbar)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
 
         }
     }
