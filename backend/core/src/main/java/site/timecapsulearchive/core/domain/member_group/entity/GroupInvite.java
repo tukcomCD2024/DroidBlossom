@@ -51,7 +51,7 @@ public class GroupInvite extends BaseEntity {
     }
 
     public void validateOwner(Long memberId) {
-        if (!groupOwner.equals(memberId)) {
+        if (!groupOwner.getId().equals(memberId)) {
             throw new NoGroupAuthorityException();
         }
     }
