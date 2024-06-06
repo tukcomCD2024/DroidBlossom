@@ -61,12 +61,10 @@ public class SocialNotificationManager {
             return;
         }
 
-        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(profileUrl);
-
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
-            FriendsReqNotificationsDto.createOf(ownerNickname, preSignedUrl, targetIds)
+            FriendsReqNotificationsDto.createOf(ownerNickname, profileUrl, targetIds)
         );
     }
 
@@ -75,10 +73,12 @@ public class SocialNotificationManager {
         final String groupProfileUrl,
         final List<Long> targetIds
     ) {
+        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(groupProfileUrl);
+
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getSuccessComponent(),
-            GroupInviteNotificationDto.createOf(ownerNickname, groupProfileUrl, targetIds)
+            GroupInviteNotificationDto.createOf(ownerNickname, preSignedUrl, targetIds)
         );
     }
 
