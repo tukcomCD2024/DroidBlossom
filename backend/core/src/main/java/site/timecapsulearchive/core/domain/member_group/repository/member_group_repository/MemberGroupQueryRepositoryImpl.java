@@ -103,7 +103,7 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
         );
     }
 
-    public List<Long> getGroupMemberIdsByGroupId(final Long groupId) {
+    public List<Long> findGroupMemberIdsByGroupId(final Long groupId) {
         return jpaQueryFactory
             .select(memberGroup.member.id)
             .from(memberGroup)

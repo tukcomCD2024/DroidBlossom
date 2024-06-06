@@ -132,9 +132,9 @@ class FriendQueryServiceTest {
             size, now);
         given(memberFriendRepository.findFriends(request)).willReturn(
             FriendDtoFixture.getFriendSummaryDtoSlice(5, true));
-        given(memberGroupRepository.getGroupMemberIdsByGroupId(request.groupId())).willReturn(
+        given(memberGroupRepository.findGroupMemberIdsByGroupId(request.groupId())).willReturn(
             List.of(3L));
-        given(groupInviteRepository.getGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
+        given(groupInviteRepository.findGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
             request.memberId())).willReturn(List.of(4L));
 
         Slice<FriendSummaryDto> friendsBeforeGroupInviteSlice = friendQueryService.findFriendsBeforeGroupInviteSlice(
@@ -170,9 +170,9 @@ class FriendQueryServiceTest {
             size, now);
         given(memberFriendRepository.findFriends(request)).willReturn(
             FriendDtoFixture.getFriendSummaryDtoSlice(5, true));
-        given(memberGroupRepository.getGroupMemberIdsByGroupId(request.groupId())).willReturn(
+        given(memberGroupRepository.findGroupMemberIdsByGroupId(request.groupId())).willReturn(
             List.of(3L));
-        given(groupInviteRepository.getGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
+        given(groupInviteRepository.findGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
             request.memberId())).willReturn(List.of(4L));
 
         Slice<FriendSummaryDto> friendsBeforeGroupInviteSlice = friendQueryService.findFriendsBeforeGroupInviteSlice(

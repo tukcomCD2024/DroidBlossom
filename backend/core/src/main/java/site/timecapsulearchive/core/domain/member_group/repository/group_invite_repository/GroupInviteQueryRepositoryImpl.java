@@ -103,7 +103,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     }
 
     @Override
-    public List<Long> getGroupMemberIdsByGroupIdAndGroupOwnerId(
+    public List<Long> findGroupMemberIdsByGroupIdAndGroupOwnerId(
         final Long groupId,
         final Long groupOwnerId
     ) {

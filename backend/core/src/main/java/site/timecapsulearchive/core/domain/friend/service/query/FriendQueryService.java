@@ -43,8 +43,8 @@ public class FriendQueryService {
             request);
 
         final List<Long> groupMemberIdsToExcludeBeforeGroupInvite = Stream.concat(
-                memberGroupRepository.getGroupMemberIdsByGroupId(request.groupId()).stream(),
-                groupInviteRepository.getGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
+                memberGroupRepository.findGroupMemberIdsByGroupId(request.groupId()).stream(),
+                groupInviteRepository.findGroupMemberIdsByGroupIdAndGroupOwnerId(request.groupId(),
                     request.memberId()).stream())
             .distinct()
             .toList();
