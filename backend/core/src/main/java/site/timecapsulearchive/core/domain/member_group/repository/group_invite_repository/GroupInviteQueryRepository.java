@@ -18,6 +18,8 @@ public interface GroupInviteQueryRepository {
         final ZonedDateTime createdAt
     );
 
+    List<Long> findGroupMemberIdsByGroupIdAndGroupOwnerId(final Long groupId, final Long memberId);
+
     List<GroupSendingInviteMemberDto> findGroupSendingInvites(
         final Long memberId,
         final Long groupId

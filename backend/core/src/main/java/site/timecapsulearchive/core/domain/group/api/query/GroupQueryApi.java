@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 

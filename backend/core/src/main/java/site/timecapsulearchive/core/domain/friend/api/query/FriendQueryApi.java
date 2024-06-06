@@ -66,10 +66,10 @@ public interface FriendQueryApi {
     @Operation(
         summary = "소셜 친구 요청 받은 목록 조회",
         description = """
-        사용자가 <b><u>소셜 친구 요청을 받은 목록</u></b>을 보여준다. 
-        <br>
-        수락 대기 중인 요청만 해당한다.
-        """,
+            사용자가 <b><u>소셜 친구 요청을 받은 목록</u></b>을 보여준다. 
+            <br>
+            수락 대기 중인 요청만 해당한다.
+            """,
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"friend"}
     )

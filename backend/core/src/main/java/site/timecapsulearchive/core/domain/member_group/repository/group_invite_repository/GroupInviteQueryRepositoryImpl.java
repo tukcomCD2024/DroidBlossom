@@ -14,9 +14,7 @@ import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -32,8 +30,11 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public void bulkSave(final Long groupOwnerId, final Long groupId,
-        final List<Long> groupMemberIds) {
+    public void bulkSave(
+        final Long groupOwnerId,
+        final Long groupId,
+        final List<Long> groupMemberIds
+    ) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_invite (
@@ -101,6 +102,19 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
         return SliceUtil.makeSlice(size, groupInviteSummaryDtos);
     }
 
+    @Override
+    public List<Long> findGroupMemberIdsByGroupIdAndGroupOwnerId(
+        final Long groupId,
+        final Long groupOwnerId
+    ) {
+        return jpaQueryFactory
+            .select(groupInvite.groupMember.id)
+            .from(groupInvite)
+            .where(groupInvite.groupOwner.id.eq(groupOwnerId).and(groupInvite.group.id.eq(groupId)))
+            .fetch();
+    }
+
+    @Override
     public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
         final Long memberId,
         final Long groupId

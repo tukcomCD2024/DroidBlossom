@@ -18,4 +18,6 @@ public interface MemberGroupQueryRepository {
     List<GroupMemberDto> findGroupMemberInfos(Long memberId, Long groupId);
 
     Optional<Long> findGroupMembersCount(Long groupId);
+
+    List<Long> findGroupMemberIdsByGroupId(final Long groupId);
 }
