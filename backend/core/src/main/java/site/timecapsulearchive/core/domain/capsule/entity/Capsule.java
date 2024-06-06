@@ -27,6 +27,7 @@ import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNot
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
@@ -112,7 +113,7 @@ public class Capsule extends BaseEntity {
             return false;
         }
 
-        return dueDate.isAfter(ZonedDateTime.now(ZoneId.of("UTC")));
+        return dueDate.isAfter(ZonedDateTimeSupplier.utc().get());
     }
 
     public void open() {
@@ -124,7 +125,7 @@ public class Capsule extends BaseEntity {
     }
 
     public boolean canOpen() {
-        return dueDate == null || dueDate.isBefore(ZonedDateTime.now(ZoneId.of("UTC")));
+        return dueDate == null || dueDate.isBefore(ZonedDateTimeSupplier.utc().get());
     }
 
     public boolean isAllGroupMemberOpened(Long memberId, Long capsuleId) {

@@ -15,6 +15,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
 public class CapsuleFixture {
@@ -33,7 +34,7 @@ public class CapsuleFixture {
 
     public static Capsule capsule(Member member, CapsuleSkin capsuleSkin, CapsuleType capsuleType) {
         return Capsule.builder()
-            .dueDate(ZonedDateTime.now())
+            .dueDate(ZonedDateTimeSupplier.utc().get())
             .title("testTitle")
             .content("testContent")
             .type(capsuleType)
@@ -68,7 +69,7 @@ public class CapsuleFixture {
      */
     public static Capsule groupCapsule(Member member, CapsuleSkin capsuleSkin, Group group) {
         return Capsule.builder()
-            .dueDate(ZonedDateTime.now())
+            .dueDate(ZonedDateTimeSupplier.utc().get())
             .title("testTitle")
             .content("testContent")
             .type(CapsuleType.GROUP)
@@ -132,7 +133,7 @@ public class CapsuleFixture {
         List<Member> groupMembers
     ) {
         CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTime.now(ZoneId.of("UTC")))
+        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
         List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(false,
@@ -149,7 +150,7 @@ public class CapsuleFixture {
         List<Member> groupMembers
     ) {
         CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTime.now(ZoneId.of("UTC")))
+        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
         List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpensNotAllOpened(
@@ -164,7 +165,7 @@ public class CapsuleFixture {
         Long capsuleId
     ) {
         CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTime.now(ZoneId.of("UTC")))
+        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
         setFieldValue(capsule, "id", capsuleId);
@@ -178,7 +179,7 @@ public class CapsuleFixture {
         List<Member> groupMembers
     ) {
         CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTime.now(ZoneId.of("UTC")))
+        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
         List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(true,
@@ -195,7 +196,7 @@ public class CapsuleFixture {
         List<Member> groupMembers
     ) {
         CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTime.now(ZoneId.of("UTC")))
+        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
         List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpensNotOpenSpecificMemberId(
@@ -208,7 +209,7 @@ public class CapsuleFixture {
 
     public static Optional<Capsule> groupCapsuleAlreadyOpen(Long memberId, Long capsuleId) {
         CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTime.now(ZoneId.of("UTC")))
+        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
         setFieldValue(capsule, "id", capsuleId);
