@@ -194,6 +194,10 @@ class CameraFragment :
                             dismissLoading()
                         }
 
+                        is CameraViewModel.CameraEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+
                         else -> {}
                     }
                 }
@@ -268,9 +272,9 @@ class CameraFragment :
             arSceneView
         )
 
-        val layoutParams = binding.scrollview.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.filterIcon.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.scrollview.layoutParams = layoutParams
+        binding.filterIcon.layoutParams = layoutParams
 
         initCustomLifeCycle()
 
@@ -298,6 +302,17 @@ class CameraFragment :
         arSceneView.configureSession { session, config ->
             config.geospatialMode = Config.GeospatialMode.ENABLED
             config.planeFindingMode = Config.PlaneFindingMode.DISABLED
+        }
+
+        with(binding){
+            refreshBtn.setOnClickListener {
+                showLoading(requireContext())
+                arSceneView.clearChildNodes()
+                viewModel.clearAnchorNode()
+                locationUtil.getCurrentLocation { latitude, longitude ->
+                    viewModel.getCapsules(latitude = latitude, longitude = longitude)
+                }
+            }
         }
 
     }

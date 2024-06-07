@@ -86,7 +86,7 @@ class CameraViewModelImpl@Inject constructor(
                 getFriendsCapsules(latitude, longitude)
             }
             CameraViewModel.CapsuleFilterType.FILTER_TREASURE -> {
-
+                getMyCapsules(latitude, longitude)
             }
         }
 
@@ -104,6 +104,7 @@ class CameraViewModelImpl@Inject constructor(
                     capsuleListSize = it.capsuleAnchors.size
                     _capsuleList.value = it.capsuleAnchors
                     if (capsuleList.value.isEmpty()){
+                        cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("주변에 캡슐이 없습니다."))
                         cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                         capsuleListSize = 0
                     }
@@ -120,6 +121,7 @@ class CameraViewModelImpl@Inject constructor(
                     capsuleListSize = it.capsuleAnchors.size
                     _capsuleList.value = it.capsuleAnchors
                     if (capsuleList.value.isEmpty()) {
+                        cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("주변에 캡슐이 없습니다."))
                         cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                         capsuleListSize = 0
                     }

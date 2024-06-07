@@ -27,6 +27,8 @@ interface CameraViewModel {
 
     sealed class CameraEvent{
         data class ShowCapsulePreviewDialog(val capsuleId: String, val capsuleType: String) : CameraEvent()
+
+        data class ShowToastMessage(val message : String): CameraEvent()
         object ShowLoading : CameraEvent()
         object DismissLoading : CameraEvent()
     }
