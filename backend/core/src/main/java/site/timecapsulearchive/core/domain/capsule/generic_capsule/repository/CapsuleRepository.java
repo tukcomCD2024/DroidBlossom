@@ -23,4 +23,14 @@ public interface CapsuleRepository extends Repository<Capsule, Long> {
         @Param("memberId") Long memberId,
         @Param("capsuleId") Long capsuleId
     );
+
+    @Query("select c "
+        + "from Capsule c "
+        + "join fetch c.groupCapsuleOpens "
+        + "where c.id = :capsuleId and c.member.id = :memberId "
+        + "and c.type = 'GROUP' and c.group.id is not null and c.isOpened = false")
+    Optional<Capsule> findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
+        @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId
+    );
 }

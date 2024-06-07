@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
@@ -139,13 +141,19 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
 
     @PostMapping("/{capsule_id}/open")
     @Override
-    public ResponseEntity<ApiSpec<String>> openCapsule(
+    public ResponseEntity<ApiSpec<GroupCapsuleOpenStateResponse>> openCapsule(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable(value = "capsule_id") final Long capsuleId
     ) {
-        groupCapsuleService.openGroupCapsule(memberId, capsuleId);
+        GroupCapsuleOpenStateDto groupCapsuleOpenStateDto = groupCapsuleService.openGroupCapsule(
+            memberId, capsuleId);
 
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                groupCapsuleOpenStateDto.toResponse()
+            )
+        );
     }
 
     @Override

@@ -57,6 +57,7 @@ public enum ErrorCode {
     CAPSULE_NOT_FOUND_ERROR(404, "CAPSULE-001", "캡슐을 찾지 못하였습니다."),
     NO_CAPSULE_AUTHORITY_ERROR(403, "CAPSULE-002", "캡슐에 접근 권한이 없습니다."),
     GROUP_CAPSULE_OPEN_NOT_FOUND_ERROR(404, "CAPSULE-003", "그룹 캡슐 개봉상태를 찾을 수 없습니다."),
+    CAPSULE_OPEN_STATE_ERROR(400, "CAPSULE-004", "캡슐을 개봉할 수 없는 상태입니다."),
 
     //friend
     FRIEND_NOT_FOUND_ERROR(404, "FRIEND-001", "친구를 찾지 못하였습니다"),

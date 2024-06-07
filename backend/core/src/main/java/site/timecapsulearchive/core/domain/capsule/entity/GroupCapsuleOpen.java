@@ -53,4 +53,8 @@ public class GroupCapsuleOpen extends BaseEntity {
     public void open() {
         this.isOpened = Boolean.TRUE;
     }
+
+    public boolean matched(Long capsuleId, Long memberId) {
+        return capsule.getId().equals(capsuleId) && member.getId().equals(memberId);
+    }
 }

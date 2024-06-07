@@ -1,8 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
-import static site.timecapsulearchive.core.domain.capsule.entity.QGroupCapsuleOpen.groupCapsuleOpen;
-
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -20,7 +17,6 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 public class GroupCapsuleOpenQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final JPAQueryFactory jpaQueryFactory;
 
     public void bulkSave(final List<Long> groupMemberIds, final Capsule capsule) {
         jdbcTemplate.batchUpdate(
@@ -32,8 +28,10 @@ public class GroupCapsuleOpenQueryRepository {
             new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    boolean isOpened = capsule.getDueDate() == null;
+
                     ps.setNull(1, Types.BIGINT);
-                    ps.setBoolean(2, false);
+                    ps.setBoolean(2, isOpened);
                     ps.setLong(3, groupMemberIds.get(i));
                     ps.setLong(4, capsule.getId());
                     ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
@@ -46,13 +44,5 @@ public class GroupCapsuleOpenQueryRepository {
                 }
             }
         );
-    }
-
-    public List<Boolean> findIsOpenedByCapsuleId(final Long capsuleId) {
-        return jpaQueryFactory
-            .select(groupCapsuleOpen.isOpened)
-            .from(groupCapsuleOpen)
-            .where(groupCapsuleOpen.capsule.id.eq(capsuleId))
-            .fetch();
     }
 }

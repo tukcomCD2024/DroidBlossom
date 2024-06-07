@@ -14,16 +14,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
@@ -60,13 +64,13 @@ public class Capsule extends BaseEntity {
     private Address address;
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Video> videos;
+    private List<Video> videos = new ArrayList<>();
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupCapsuleOpen> groupCapsuleOpens;
+    private List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -109,6 +113,33 @@ public class Capsule extends BaseEntity {
             return false;
         }
 
-        return dueDate.isAfter(ZonedDateTime.now());
+        return dueDate.isAfter(ZonedDateTimeSupplier.utc().get());
+    }
+
+    public void open() {
+        this.isOpened = Boolean.TRUE;
+    }
+
+    public boolean isTimeCapsule() {
+        return dueDate != null;
+    }
+
+    public boolean canOpen() {
+        return dueDate == null || dueDate.isBefore(ZonedDateTimeSupplier.utc().get());
+    }
+
+    public boolean isAllGroupMemberOpened(Long memberId, Long capsuleId) {
+        if (groupCapsuleOpens.isEmpty()) {
+            throw new GroupCapsuleOpenNotFoundException();
+        }
+
+        return groupCapsuleOpens.stream()
+            .allMatch(groupCapsuleOpen -> {
+                if (groupCapsuleOpen.matched(capsuleId, memberId)) {
+                    groupCapsuleOpen.open();
+                }
+
+                return groupCapsuleOpen.getIsOpened();
+            });
     }
 }

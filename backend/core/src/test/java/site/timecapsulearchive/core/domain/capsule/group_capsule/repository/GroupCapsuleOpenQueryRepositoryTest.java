@@ -37,13 +37,11 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
     private List<GroupCapsuleOpen> groupCapsuleOpens;
 
     public GroupCapsuleOpenQueryRepositoryTest(
-        JPAQueryFactory jpaQueryFactory,
         JdbcTemplate jdbcTemplate,
         DataSource dataSource
     ) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate,
-            jpaQueryFactory);
+        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate);
     }
 
     @Transactional
