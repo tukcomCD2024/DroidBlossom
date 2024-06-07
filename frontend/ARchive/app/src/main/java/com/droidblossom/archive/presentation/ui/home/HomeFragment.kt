@@ -79,12 +79,16 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     marker.width = 120
                     marker.height = 132
                     marker.onClickListener = Overlay.OnClickListener {
-                        viewModel.homeEvent(
-                            HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
-                                key.id.toString(),
-                                key.capsuleType.toString()
+                        if (key.capsuleType.toString() == CapsuleType.TREASURE.toString()) {
+                            showToastMessage("보물은 AR으로만 열 수 있습니다")
+                        } else {
+                            viewModel.homeEvent(
+                                HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
+                                    key.id.toString(),
+                                    key.capsuleType.toString()
+                                )
                             )
-                        )
+                        }
                         true
                     }
                 }
@@ -156,7 +160,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                         }
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            val existingDialog =
+                                parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                             if (existingDialog == null) {
                                 val dialog = CapsulePreviewDialogFragment.newInstance(
                                     "-1",
