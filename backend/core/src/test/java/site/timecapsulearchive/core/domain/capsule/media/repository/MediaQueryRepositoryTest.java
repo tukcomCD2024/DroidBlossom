@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.media.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.sql.DataSource;
@@ -43,10 +44,11 @@ class MediaQueryRepositoryTest extends RepositoryTest {
 
     public MediaQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
-        DataSource dataSource
+        DataSource dataSource,
+        JPAQueryFactory jpaQueryFactory
     ) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.imageQueryRepository = new ImageQueryRepositoryImpl(jdbcTemplate);
+        this.imageQueryRepository = new ImageQueryRepositoryImpl(jdbcTemplate, jpaQueryFactory);
         this.videoQueryRepository = new VideoQueryRepositoryImpl(jdbcTemplate);
     }
 

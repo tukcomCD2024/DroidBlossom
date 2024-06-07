@@ -1,11 +1,15 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image;
 
+import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Image;
 public class ImageQueryRepositoryImpl implements ImageQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final JPAQueryFactory jpaQueryFactory;
 
     public void bulkSave(final List<Image> images) {
         jdbcTemplate.batchUpdate(
@@ -45,4 +50,13 @@ public class ImageQueryRepositoryImpl implements ImageQueryRepository {
             }
         );
     }
+
+    public Optional<Long> deleteImage(final Long imageId) {
+        return Optional.of(jpaQueryFactory
+            .delete(image)
+            .where(image.id.eq(imageId))
+            .execute()
+        );
+    }
+
 }
