@@ -108,6 +108,30 @@ public interface MemberGroupCommandApi {
     );
 
     @Operation(
+        summary = "보낸 그룹 초대 삭제 ",
+        description = "그룹장이 보낸 그룹 초대를 삭제한다. 그룹장만 그룹 초대를 삭제할 수 있다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member group"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹 초대를 찾을 수 없는 경우 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> deleteGroupInvite(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "보낸 그룹 초대 아이디", required = true)
+        Long groupInviteId
+    );
+
+    @Operation(
         summary = "그룹 요청 거부",
         description = "특정 그룹으로부터 초대 요청을 거부한다.",
         security = {@SecurityRequirement(name = "user_token")},
