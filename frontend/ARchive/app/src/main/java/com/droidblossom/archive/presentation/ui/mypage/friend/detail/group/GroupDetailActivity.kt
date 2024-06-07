@@ -216,7 +216,8 @@ class GroupDetailActivity :
 
         val density = this.resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
-        val offset = (4 * density).toInt()
+        val xOffset = (16 * density).toInt()
+        val yOffset = (getStatusBarHeight() * density).toInt()/2
 
         val popupWindow = PopupWindow(
             popupMenuBinding.root,
@@ -224,6 +225,14 @@ class GroupDetailActivity :
             LinearLayout.LayoutParams.WRAP_CONTENT,
             true
         )
+
+        if (viewModel.groupInfo.value.hasEditPermission){
+            popupMenuBinding.menuGroupClosure.visibility = View.VISIBLE
+            popupMenuBinding.menuGroupMemberManagement.visibility = View.VISIBLE
+        }else{
+            popupMenuBinding.menuGroupClosure.visibility = View.GONE
+            popupMenuBinding.menuGroupMemberManagement.visibility = View.GONE
+        }
 
         popupMenuBinding.menuMap.setOnClickListener {
             popupWindow.dismiss()
@@ -242,7 +251,7 @@ class GroupDetailActivity :
             val popupWidth = popupWindow.contentView.measuredWidth
             //val popupHeight = popupWindow.contentView.measuredHeight
 
-            popupWindow.showAtLocation(view, Gravity.END or Gravity.TOP,0,0)
+            popupWindow.showAtLocation(view, Gravity.END or Gravity.TOP, xOffset, yOffset)
 
         }
     }
