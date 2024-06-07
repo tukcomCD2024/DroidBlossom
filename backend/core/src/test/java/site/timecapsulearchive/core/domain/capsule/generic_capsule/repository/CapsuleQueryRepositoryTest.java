@@ -24,6 +24,8 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -58,7 +60,7 @@ class CapsuleQueryRepositoryTest extends RepositoryTest {
     private Point point;
 
     CapsuleQueryRepositoryTest(EntityManager entityManager) {
-        this.capsuleQueryRepository = new CapsuleQueryRepository(
+        this.capsuleQueryRepository = new CapsuleQueryRepositoryImpl(
             new JPAQueryFactory(entityManager));
     }
 
