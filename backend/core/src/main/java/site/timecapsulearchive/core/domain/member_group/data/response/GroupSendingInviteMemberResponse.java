@@ -6,7 +6,8 @@ import site.timecapsulearchive.core.global.common.response.ResponseMappingConsta
 
 @Builder
 public record GroupSendingInviteMemberResponse(
-    Long id,
+    Long groupInviteId,
+    Long memberId,
     String nickname,
     String profileUrl,
     ZonedDateTime sendingInvitesCreatedAt

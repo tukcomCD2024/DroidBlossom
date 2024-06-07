@@ -9,6 +9,9 @@ import site.timecapsulearchive.core.global.common.response.ResponseMappingConsta
 @Schema(description = "초대온 그룹 요약 정보")
 public record GroupReceivingInviteSummaryResponse(
 
+    @Schema(description = "그룹 초대 아이디")
+    Long groupInviteId,
+
     @Schema(description = "그룹 아이디")
     Long groupId,
 

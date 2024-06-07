@@ -6,6 +6,8 @@ import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member_group.entity.QGroupInvite.groupInvite;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -20,6 +22,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupInviteSummaryDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInviteMemberDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
+import site.timecapsulearchive.core.domain.member_group.data.dto.GroupSendingInvitesSliceRequestDto;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
@@ -84,6 +88,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
             .select(
                 Projections.constructor(
                     GroupInviteSummaryDto.class,
+                    groupInvite.id,
                     group.id,
                     group.groupName,
                     group.groupProfileUrl,
@@ -115,14 +120,14 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
     }
 
     @Override
-    public List<GroupSendingInviteMemberDto> findGroupSendingInvites(
-        final Long memberId,
-        final Long groupId
+    public Slice<GroupSendingInviteMemberDto> findGroupSendingInvites(
+        final GroupSendingInvitesSliceRequestDto dto
     ) {
-        return jpaQueryFactory
+        List<GroupSendingInviteMemberDto> groupSendingInviteMemberDtos = jpaQueryFactory
             .select(
                 Projections.constructor(
                     GroupSendingInviteMemberDto.class,
+                    groupInvite.id,
                     member.id,
                     member.nickname,
                     member.profileUrl,
@@ -131,8 +136,24 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
             )
             .from(groupInvite)
             .join(groupInvite.groupMember, member)
-            .where(groupInvite.group.id.eq(groupId)
-                .and(groupInvite.groupOwner.id.eq(memberId)))
+            .where(
+                groupInviteIdPagingCursorCondition(dto),
+                groupInvite.group.id.eq(dto.groupId())
+                    .and(groupInvite.groupOwner.id.eq(dto.memberId()))
+            )
+            .orderBy(groupInvite.id.desc())
+            .limit(dto.size() + 1)
             .fetch();
+
+        return SliceUtil.makeSlice(dto.size(), groupSendingInviteMemberDtos);
+    }
+
+    private BooleanExpression groupInviteIdPagingCursorCondition(
+        GroupSendingInvitesSliceRequestDto dto) {
+        if (dto.groupInviteId() == null) {
+            return null;
+        }
+
+        return groupInvite.id.lt(dto.groupInviteId());
     }
 }

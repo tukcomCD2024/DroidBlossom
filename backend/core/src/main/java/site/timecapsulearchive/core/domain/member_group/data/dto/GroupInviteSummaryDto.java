@@ -7,7 +7,7 @@ import site.timecapsulearchive.core.domain.member_group.data.response.GroupRecei
 
 @Builder
 public record GroupInviteSummaryDto(
-
+    Long groupInviteId,
     Long groupId,
     String groupName,
     String groupProfileUrl,

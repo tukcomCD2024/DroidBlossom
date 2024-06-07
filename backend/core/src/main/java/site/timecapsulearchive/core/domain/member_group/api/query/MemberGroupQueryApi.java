@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfosResponse;
 import site.timecapsulearchive.core.domain.member_group.data.response.GroupReceivingInvitesSliceResponse;
-import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesResponse;
+import site.timecapsulearchive.core.domain.member_group.data.response.GroupSendingInvitesSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 
 public interface MemberGroupQueryApi {
@@ -69,10 +69,16 @@ public interface MemberGroupQueryApi {
             description = "ok"
         )
     })
-    ResponseEntity<ApiSpec<GroupSendingInvitesResponse>> findGroupSendingInvites(
+    ResponseEntity<ApiSpec<GroupSendingInvitesSliceResponse>> findGroupSendingInvites(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
-        Long groupId
+        Long groupId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 그룹 초대 아이디")
+        Long groupInviteId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        int size
     );
 }
