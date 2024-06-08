@@ -14,14 +14,13 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -109,24 +108,7 @@ public class SecretCapsuleQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<CapsuleBasicInfoDto> mySecretCapsules = findMySecretCapsuleDtosByMemberIdAndCreatedAt(
-            memberId, size, createdAt
-        );
-
-        final boolean hasNext = canMoreRead(size, mySecretCapsules.size());
-        if (hasNext) {
-            mySecretCapsules.remove(size);
-        }
-
-        return new SliceImpl<>(mySecretCapsules, Pageable.ofSize(size), hasNext);
-    }
-
-    private List<CapsuleBasicInfoDto> findMySecretCapsuleDtosByMemberIdAndCreatedAt(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        return jpaQueryFactory
+        final List<CapsuleBasicInfoDto> mySecretCapsules = jpaQueryFactory
             .select(
                 Projections.constructor(
                     CapsuleBasicInfoDto.class,
@@ -149,9 +131,7 @@ public class SecretCapsuleQueryRepository {
             .orderBy(capsule.id.desc())
             .limit(size + 1)
             .fetch();
-    }
 
-    private boolean canMoreRead(final int size, final int capsuleSize) {
-        return capsuleSize > size;
+        return SliceUtil.makeSlice(size, mySecretCapsules);
     }
 }
