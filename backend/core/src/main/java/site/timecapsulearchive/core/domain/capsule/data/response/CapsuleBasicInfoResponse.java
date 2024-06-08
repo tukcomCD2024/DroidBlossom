@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.group_capsule.data.response;
+package site.timecapsulearchive.core.domain.capsule.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
@@ -7,8 +7,8 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Builder
-@Schema(description = "사용자가 만든 그룹 캡슐")
-public record MyGroupCapsuleResponse(
+@Schema(description = "캡슐 기본 정보")
+public record CapsuleBasicInfoResponse(
 
     @Schema(description = "캡슐 아이디")
     Long capsuleId,
@@ -32,7 +32,7 @@ public record MyGroupCapsuleResponse(
     CapsuleType capsuleType
 ) {
 
-    public MyGroupCapsuleResponse {
+    public CapsuleBasicInfoResponse {
         if (dueDate != null) {
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
