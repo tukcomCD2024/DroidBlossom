@@ -24,7 +24,8 @@
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:alpha="@{item.opened ? 1.0F : 0.2F}">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/profileImg"
@@ -51,7 +52,8 @@
             android:textAppearance="@style/TextAppearance.App.caption2"
             app:layout_constraintEnd_toEndOf="@id/cardView"
             app:layout_constraintStart_toStartOf="@id/cardView"
-            app:layout_constraintTop_toBottomOf="@id/cardView" />
+            app:layout_constraintTop_toBottomOf="@id/cardView"
+            android:alpha="@{item.opened ? 1.0F : 0.2F}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
