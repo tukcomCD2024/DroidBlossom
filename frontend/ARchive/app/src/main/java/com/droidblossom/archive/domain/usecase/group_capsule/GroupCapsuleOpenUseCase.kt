@@ -14,7 +14,7 @@ class GroupCapsuleOpenUseCase @Inject constructor(
     private val repository: GroupCapsuleRepository
 ) {
     suspend operator fun invoke(groupId: Long) =
-        flow<RetrofitResult<String>> {
+        flow {
             try {
                 emit(repository.openGroupCapsule(groupId).onSuccess {
 

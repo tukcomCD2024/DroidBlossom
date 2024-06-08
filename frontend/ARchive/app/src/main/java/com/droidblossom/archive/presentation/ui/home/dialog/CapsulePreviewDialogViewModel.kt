@@ -23,6 +23,7 @@ interface CapsulePreviewDialogViewModel {
     val visibleOpenProgressBar: StateFlow<Boolean>
     val calledFromCamera: StateFlow<Boolean>
     val timeCapsule: StateFlow<Boolean>
+    val canOpenCapsule: StateFlow<Boolean>
     val capsuleType: StateFlow<HomeFragment.CapsuleType>
     val groupCapsuleMembers: StateFlow<List<GroupCapsuleMember>>
 

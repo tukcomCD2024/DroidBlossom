@@ -2,6 +2,7 @@ package com.droidblossom.archive.domain.repository
 
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenStateResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.secret.CapsulePageList
 import com.droidblossom.archive.util.RetrofitResult
@@ -15,7 +16,7 @@ interface GroupCapsuleRepository {
 
     suspend fun openGroupCapsule(
         groupId: Long
-    ): RetrofitResult<String>
+    ): RetrofitResult<GroupCapsuleOpenStateResponse>
 
     suspend fun getGroupCapsuleSummary(
         capsuleId: Long

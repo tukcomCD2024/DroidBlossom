@@ -3,6 +3,7 @@ package com.droidblossom.archive.data.source.remote.api
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.group.response.MyGroupCapsulePageResponseDto
+import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleOpenStateResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleSummaryResponseDto
 import com.droidblossom.archive.data.dto.open.response.MyPublicCapsulePageResponseDto
 import retrofit2.Response
@@ -23,7 +24,7 @@ interface GroupCapsuleService {
     @POST("group-capsules/{capsule_id}/open")
     suspend fun postGroupCapsuleOpenApi(
         @Path("capsule_id") capsuleId: Long
-    ): Response<ResponseBody<String>>
+    ): Response<ResponseBody<GroupCapsuleOpenStateResponseDto>>
 
     @GET("group-capsules/{capsule_id}/summary")
     suspend fun getGroupCapsuleSummaryApi(
