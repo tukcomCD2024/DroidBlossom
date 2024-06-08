@@ -263,9 +263,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 HomeFragment.CapsuleType.GROUP -> {
                     groupCapsuleOpenUseCase(capsuleId).collect { result ->
                         result.onSuccess {
-                            // 값 뭐뭐 받는지에 따라서 다름
+                            Log.d("그캡 성공", it.toString())
                         }.onFail {
                             // 값 뭐뭐 받는지에 따라서 다름
+                            Log.d("그캡 실패", it.toString())
+
                         }
                     }
                 }

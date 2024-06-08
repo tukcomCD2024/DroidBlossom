@@ -29,6 +29,7 @@ import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.presentation.ui.home.dialog.adapter.GroupCapsuleMemberRVA
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -52,6 +53,10 @@ class CapsulePreviewDialogFragment :
     val capsuleType by lazy {
         arguments?.getString("capsule_type")
             ?.let { CapsuleTypeUtils.stringToEnum(it) }
+    }
+
+    private val groupMemberRVA by lazy {
+        GroupCapsuleMemberRVA()
     }
 
     override fun onStart() {
@@ -114,6 +119,9 @@ class CapsulePreviewDialogFragment :
 
     private fun initView() {
         with(binding) {
+
+            groupMemberRecycleView.adapter = groupMemberRVA
+
             skinCardView.setOnClickListener {
                 if (viewModel.capsuleOpenState.value) {
                     moveCapsuleDetail()
@@ -165,6 +173,14 @@ class CapsulePreviewDialogFragment :
 
                     }
 
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.groupCapsuleMembers.collect {
+                    groupMemberRVA.submitList(it)
                 }
             }
         }

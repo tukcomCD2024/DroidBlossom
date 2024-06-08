@@ -25,7 +25,7 @@ interface GroupCapsuleService {
         @Path("capsule_id") capsuleId: Long
     ): Response<ResponseBody<String>>
 
-    @GET("group-capsules/{capsule-id}/summary")
+    @GET("group-capsules/{capsule_id}/summary")
     suspend fun getGroupCapsuleSummaryApi(
         @Path("capsule_id") capsuleId: Long
     ): Response<ResponseBody<GroupCapsuleSummaryResponseDto>>

@@ -7,9 +7,11 @@
     <data>
 
         <import type="android.view.View" />
+
         <variable
             name="capsuleType"
             type="com.droidblossom.archive.presentation.ui.home.HomeFragment.CapsuleType" />
+
         <variable
             name="vm"
             type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
@@ -255,21 +257,23 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/groupMemberLayout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupMemberRecycleView"
             android:layout_width="0dp"
-            android:layout_height="110dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rectangle_solid_corner_30dp"
-            android:backgroundTint="#ECEFFE"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:background="@drawable/corner_radius_30"
+            android:backgroundTint="@color/main_bg_2"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout"
-            tools:visibility="visible">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            tools:listitem="@layout/item_group_number"
+            tools:visibility="visible" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
