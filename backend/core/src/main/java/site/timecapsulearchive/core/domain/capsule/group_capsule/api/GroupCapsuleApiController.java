@@ -116,10 +116,10 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         @AuthenticationPrincipal final Long memberId,
         @RequestParam("group_id") final Long groupId,
         @RequestParam("size") final int size,
-        @RequestParam("capsuleId") final Long capsuleId
+        @RequestParam("last_capsule_id") final Long lastCapsuleId
     ) {
         final GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
-            size, capsuleId);
+            size, lastCapsuleId);
 
         final Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
             dto);

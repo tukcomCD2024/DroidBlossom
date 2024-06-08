@@ -129,7 +129,7 @@ public interface GroupCapsuleApi {
         int size,
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
-        Long capsuleId
+        Long lastCapsuleId
     );
 
     @Operation(

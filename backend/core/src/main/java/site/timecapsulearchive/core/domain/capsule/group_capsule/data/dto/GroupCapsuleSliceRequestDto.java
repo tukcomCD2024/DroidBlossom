@@ -4,15 +4,15 @@ public record GroupCapsuleSliceRequestDto(
     Long memberId,
     Long groupId,
     int size,
-    Long capsuleId
+    Long lastCapsuleId
 ) {
 
     public static GroupCapsuleSliceRequestDto createOf(
         final Long memberId,
         final Long groupId,
         final int size,
-        final Long capsuleId
+        final Long lastCapsuleId
     ) {
-        return new GroupCapsuleSliceRequestDto(memberId, groupId, size, capsuleId);
+        return new GroupCapsuleSliceRequestDto(memberId, groupId, size, lastCapsuleId);
     }
 }
