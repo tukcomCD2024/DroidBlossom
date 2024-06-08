@@ -116,19 +116,17 @@ public interface GroupCapsuleApi {
             description = "처리 완료"
         )
     })
-    @GetMapping(
-        value = "/groups/{group_id}/capsules",
-        produces = {"application/json"}
-    )
     ResponseEntity<GroupCapsulePageResponse> getGroupCapsules(
-        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true, schema = @Schema())
-        @PathVariable("group_id") Long groupId,
+        Long memberId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "size") Long size,
+        @Parameter(in = ParameterIn.QUERY, description = "그룹 아이디", required = true)
+        Long groupId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true, schema = @Schema())
-        @NotNull @Valid @RequestParam(value = "capsule_id") Long capsuleId
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        Long size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
+        Long capsuleId
     );
 
     @Operation(

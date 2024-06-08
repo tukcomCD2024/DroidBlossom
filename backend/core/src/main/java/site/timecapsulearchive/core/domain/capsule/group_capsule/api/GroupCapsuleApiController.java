@@ -108,9 +108,16 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         );
     }
 
+    @GetMapping(
+        produces = {"application/json"}
+    )
     @Override
-    public ResponseEntity<GroupCapsulePageResponse> getGroupCapsules(Long groupId, Long size,
-        Long capsuleId) {
+    public ResponseEntity<GroupCapsulePageResponse> getGroupCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam("group_id") final Long groupId,
+        @RequestParam("size") final Long size,
+        @RequestParam("capsuleId") final Long capsuleId
+    ) {
         return null;
     }
 
