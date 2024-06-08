@@ -24,6 +24,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -158,13 +159,7 @@ public class PublicCapsuleQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = canMoreRead(size, publicCapsuleDetailDtos.size());
-        if (hasNext) {
-            publicCapsuleDetailDtos.remove(size);
-        }
-
-        return new SliceImpl<>(publicCapsuleDetailDtos, Pageable.ofSize(size), hasNext);
-
+        return SliceUtil.makeSlice(size, publicCapsuleDetailDtos);
     }
 
     private boolean canMoreRead(final int size, final int capsuleSize) {
@@ -199,11 +194,6 @@ public class PublicCapsuleQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = publicCapsules.size() > size;
-        if (hasNext) {
-            publicCapsules.remove(size);
-        }
-
-        return new SliceImpl<>(publicCapsules, Pageable.ofSize(size), hasNext);
+        return SliceUtil.makeSlice(size, publicCapsules);
     }
 }
