@@ -19,10 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 
 @Repository
@@ -171,15 +171,15 @@ public class PublicCapsuleQueryRepository {
         return capsuleSize > size;
     }
 
-    public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
+    public Slice<CapsuleBasicInfoDto> findMyPublicCapsuleSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<MyPublicCapsuleDto> publicCapsules = jpaQueryFactory
+        final List<CapsuleBasicInfoDto> publicCapsules = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    MyPublicCapsuleDto.class,
+                    CapsuleBasicInfoDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
