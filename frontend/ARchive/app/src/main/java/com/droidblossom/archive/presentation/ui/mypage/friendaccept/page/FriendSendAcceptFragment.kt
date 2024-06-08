@@ -22,7 +22,7 @@ class FriendSendAcceptFragment :
 
     private val friendSendAcceptRVA by lazy {
         FriendSendAcceptRVA { denyFriend ->
-            viewModel.denyFriendRequest(denyFriend)
+            viewModel.deleteFriendSendRequest(denyFriend)
         }
     }
 

@@ -5,6 +5,7 @@ import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendAcceptRequest
 import com.droidblossom.archive.domain.model.group.GroupInviteSummary
+import com.droidblossom.archive.domain.usecase.friend.FriendDeleteSendUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendDenyRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsAcceptRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsRequestsPageUseCase
@@ -40,6 +41,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
     private val groupAcceptRequestUseCase: AcceptInviteGroupUseCase,
     private val groupDenyRequestUseCase: DenyInviteGroupUseCase,
     private val friendsSendRequestsPageUseCase: FriendsSendRequestsPageUseCase,
+    private val friendDeleteSendUseCase: FriendDeleteSendUseCase,
 ) : BaseViewModel(), FriendAcceptViewModel {
 
     private val _friendAcceptEvent = MutableSharedFlow<FriendAcceptViewModel.FriendAcceptEvent>()
@@ -324,6 +326,23 @@ class FriendAcceptViewModelImpl @Inject constructor(
         scrollFriendSendEventChannel.trySend(Unit)
     }
 
+    override fun deleteFriendSendRequest(friend: Friend) {
+        viewModelScope.launch {
+            friendDeleteSendUseCase(friend.id).collect { result ->
+                result.onSuccess {
+                    removeFriendSendItem(friend)
+                }.onFail {
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "요청 실패. 잠시후 시도해 주세요"
+                        )
+                    )
+                }
+
+            }
+        }
+    }
+
     private fun removeFriendItem(friend: Friend) {
         viewModelScope.launch {
             val newList = _friendAcceptList.value.toMutableList()
@@ -337,6 +356,14 @@ class FriendAcceptViewModelImpl @Inject constructor(
             val newList = _groupAcceptList.value.toMutableList()
             newList.remove(group)
             _groupAcceptList.emit(newList)
+        }
+    }
+
+    private fun removeFriendSendItem(friend: Friend) {
+        viewModelScope.launch {
+            val newList = _friendSendAcceptList.value.toMutableList()
+            newList.remove(friend)
+            _friendSendAcceptList.emit(newList)
         }
     }
 

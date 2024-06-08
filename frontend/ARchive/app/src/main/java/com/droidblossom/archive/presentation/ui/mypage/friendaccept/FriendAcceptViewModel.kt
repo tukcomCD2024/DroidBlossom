@@ -28,6 +28,7 @@ interface FriendAcceptViewModel {
 
     fun getFriendSendAcceptList()
     fun onScrollFriendSendNearBottom()
+    fun deleteFriendSendRequest(friend: Friend)
 
     sealed class FriendAcceptEvent {
         data class ShowToastMessage(val message: String) : FriendAcceptEvent()
