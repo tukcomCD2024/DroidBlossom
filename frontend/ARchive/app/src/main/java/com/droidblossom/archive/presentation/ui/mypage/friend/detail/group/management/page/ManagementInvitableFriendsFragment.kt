@@ -82,8 +82,7 @@ class ManagementInvitableFriendsFragment :
         binding.invitableFriendsRV.adapter = managementInvitableFriendRVA
         binding.invitableFriendsRV.setHasFixedSize(true)
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getLatestInvitableFriendList()
-            viewModel.getLatestInvitedUserList()
+            viewModel.load()
         }
 
         binding.invitableFriendsRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {

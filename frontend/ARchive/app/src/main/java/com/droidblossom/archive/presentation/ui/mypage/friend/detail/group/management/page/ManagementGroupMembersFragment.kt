@@ -62,9 +62,7 @@ class ManagementGroupMembersFragment :
         binding.groupMembersRV.adapter = managementGroupMemberRVA
         binding.groupMembersRV.setHasFixedSize(true)
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getGroupMemberList()
-            viewModel.getLatestInvitableFriendList()
-            viewModel.getLatestInvitedUserList()
+            viewModel.load()
         }
     }
 }

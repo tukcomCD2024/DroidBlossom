@@ -41,6 +41,22 @@ class ManagementInvitedUserFragment :
                 }
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.managementGroupMemberEvents.collect {  event ->
+
+                    when(event){
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading -> {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                        else -> {
+
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,6 +70,10 @@ class ManagementInvitedUserFragment :
     private fun initView() {
 
         with(binding) {
+
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel.load()
+            }
 
             actionMessage.setOnClickListener {
                 viewModel.managementGroupMemberEvent(
@@ -83,7 +103,7 @@ class ManagementInvitedUserFragment :
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.onInvitableFriendsRVNearBottom()
+                        viewModel.onInvitedUsersRVScrollNearBottom()
                     }
                 }
             }

@@ -24,9 +24,7 @@
                 android:id="@+id/invitedUsersRV"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingTop="12dp"
                 android:visibility="@{vm.invitedUsers.empty ? View.GONE : View.VISIBLE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 

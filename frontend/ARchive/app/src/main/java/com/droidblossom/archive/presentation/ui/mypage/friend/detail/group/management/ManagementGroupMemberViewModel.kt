@@ -13,7 +13,6 @@ interface ManagementGroupMemberViewModel {
     val groupMembers: StateFlow<List<GroupMember>>
     val invitedUsers: StateFlow<List<GroupInvitedUser>>
     val invitedUsersHasNextPage: StateFlow<Boolean>
-    val invitedUsersLastCreatedTime: StateFlow<String>
     val invitableFriends: StateFlow<List<FriendForGroupInvite>>
     val groupInviteeList: StateFlow<List<FriendForGroupInvite>>
     val invitableFriendsHasNextPage: StateFlow<Boolean>

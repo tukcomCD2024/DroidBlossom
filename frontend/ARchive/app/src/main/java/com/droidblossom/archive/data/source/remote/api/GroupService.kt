@@ -4,7 +4,7 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.data.dto.group.response.GroupDetailResponseDto
-import com.droidblossom.archive.data.dto.group.response.GroupInvitedUserListResponseDto
+import com.droidblossom.archive.data.dto.group.response.GroupInvitedUsersPageResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupInvitesPageResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupMembersInfoResponseDto
 import com.droidblossom.archive.data.dto.group.response.GroupPageResponseDto
@@ -64,7 +64,9 @@ interface GroupService {
     @GET("groups/{group_id}/sending-invites")
     suspend fun getGroupInvitedUsersApi(
         @Path("group_id") groupId : Long,
-    ) : Response<ResponseBody<GroupInvitedUserListResponseDto>>
+        @Query("size") size : Int,
+        @Query("group_invite_id") pagingId : Long?,
+    ) : Response<ResponseBody<GroupInvitedUsersPageResponseDto>>
 
     @DELETE("groups/{group_id}/members/quit")
     suspend fun deleteLeaveGroupApi(

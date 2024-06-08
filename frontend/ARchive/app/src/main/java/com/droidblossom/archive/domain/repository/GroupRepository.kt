@@ -1,11 +1,12 @@
 package com.droidblossom.archive.domain.repository
 
+import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.domain.model.group.GroupDetail
 import com.droidblossom.archive.domain.model.group.GroupInviteSummary
-import com.droidblossom.archive.domain.model.group.GroupInvitedUsers
+import com.droidblossom.archive.domain.model.group.GroupInvitedUsersPage
 import com.droidblossom.archive.domain.model.group.GroupMembersInfo
 import com.droidblossom.archive.domain.model.group.GroupPage
 import com.droidblossom.archive.domain.model.group.GroupSummary
@@ -28,7 +29,7 @@ interface GroupRepository {
 
     suspend fun getGroupMemberRequest(groupId: Long): RetrofitResult<GroupMembersInfo>
 
-    suspend fun getGroupInvitedUsersRequest(groupId: Long): RetrofitResult<GroupInvitedUsers>
+    suspend fun getGroupInvitedUsersRequest(groupId: Long, pagingRequest: IdBasedPagingRequestDto): RetrofitResult<GroupInvitedUsersPage>
 
     suspend fun deleteLeaveGroupRequest(groupId: Long): RetrofitResult<String>
 }

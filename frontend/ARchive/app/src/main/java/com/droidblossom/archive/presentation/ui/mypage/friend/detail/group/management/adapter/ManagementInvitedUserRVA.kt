@@ -40,7 +40,7 @@ class ManagementInvitedUserRVA(
                 oldItem: GroupInvitedUser,
                 newItem: GroupInvitedUser
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.groupInviteId == newItem.groupInviteId
             }
 
             override fun areContentsTheSame(

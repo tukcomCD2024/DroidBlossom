@@ -1,14 +1,16 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
+import com.droidblossom.archive.domain.usecase.group.GetGroupInvitedUsersUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupMembersInfoUseCase
 import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
-import com.droidblossom.archive.domain.usecase.group.GroupInvitedUsersUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.detail.FriendForGroupInvite
 import com.droidblossom.archive.util.DateUtils
@@ -32,6 +34,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val friendForGroupInvitePageUseCase: FriendForGroupInvitePageUseCase,
     private val groupInviteUseCase: GroupInviteUseCase,
     private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase,
+    private val getGroupInvitedUsersUseCase: GetGroupInvitedUsersUseCase
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -53,10 +56,6 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val _invitedUsersHasNextPage = MutableStateFlow(true)
     override val invitedUsersHasNextPage: StateFlow<Boolean>
         get() = _invitedUsersHasNextPage
-
-    private val _invitedUsersLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
-    override val invitedUsersLastCreatedTime: StateFlow<String>
-        get() = _invitedUsersLastCreatedTime
 
     private val _invitableFriends = MutableStateFlow(listOf<FriendForGroupInvite>())
     override val invitableFriends: StateFlow<List<FriendForGroupInvite>>
@@ -100,17 +99,19 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             invitableFriendsRVScrollEventFlow.collect {
-                if (invitableFriends.value.isEmpty()){
+                if (invitableFriends.value.isEmpty()) {
                     getLatestInvitableFriendList()
-                }else{
+                } else {
                     getInvitableFriendList()
                 }
             }
+        }
 
+        viewModelScope.launch {
             invitedUsersRVScrollEventFlow.collect {
-                if (invitedUsers.value.isEmpty()){
+                if (invitedUsers.value.isEmpty()) {
                     getLatestInvitedUserList()
-                }else{
+                } else {
                     getInvitedUserList()
                 }
             }
@@ -121,7 +122,6 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
         getLatestInvitableFriendList()
         getLatestInvitedUserList()
         getGroupMemberList()
-
     }
 
     override fun onInvitableFriendsRVNearBottom() {
@@ -240,6 +240,22 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     override fun getInvitedUserList(){
         if (invitedUsersHasNextPage.value){
             getInvitedUserListJob = viewModelScope.launch {
+                getGroupInvitedUsersUseCase(
+                    groupId = groupId.value,
+                    pagingRequest = IdBasedPagingRequestDto(
+                        size = 15,
+                        pagingId = invitedUsers.value.lastOrNull()?.groupInviteId
+                    )
+                ).collect{ result ->
+                    result.onSuccess {
+                        _invitedUsers.value = it.groupSendingInviteMembers
+                        _invitedUsersHasNextPage.value = it.hasNext
+                    }.onFail {
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
+                    }
+                }
+                managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
             }
         }
 
@@ -247,7 +263,23 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     override fun getLatestInvitedUserList(){
         getInvitedUserListJob?.cancel()
         getInvitedUserListJob = viewModelScope.launch {
-
+            getInvitedUserListJob = viewModelScope.launch {
+                getGroupInvitedUsersUseCase(
+                    groupId = groupId.value,
+                    pagingRequest = IdBasedPagingRequestDto(
+                        size = 15,
+                        pagingId = null
+                    )
+                ).collect{ result ->
+                    result.onSuccess {
+                        _invitedUsers.value = it.groupSendingInviteMembers
+                        _invitedUsersHasNextPage.value = it.hasNext
+                    }.onFail {
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
+                    }
+                }
+                managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
+            }
         }
     }
 
