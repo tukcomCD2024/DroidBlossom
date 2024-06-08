@@ -197,6 +197,7 @@ public class GroupCapsuleQueryRepository {
             .from(capsule)
             .where(capsule.group.id.eq(dto.groupId())
                 .and(capsuleIdPagingCursorCondition(dto.lastCapsuleId())))
+            .orderBy(capsule.id.desc())
             .limit(dto.size() + 1)
             .fetch();
 
