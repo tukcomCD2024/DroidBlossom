@@ -27,7 +27,9 @@ class ManagementInvitedUserFragment :
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
     private val managementInvitedUserRVA by lazy {
-        ManagementInvitedUserRVA()
+        ManagementInvitedUserRVA { position ->
+            viewModel.onClickInvitedUser(position)
+        }
     }
 
     override fun observeData() {

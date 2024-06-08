@@ -8,6 +8,7 @@ import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
 import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
+import com.droidblossom.archive.domain.usecase.group.CancelGroupInviteUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupInvitedUsersUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupMembersInfoUseCase
 import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
@@ -34,7 +35,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val friendForGroupInvitePageUseCase: FriendForGroupInvitePageUseCase,
     private val groupInviteUseCase: GroupInviteUseCase,
     private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase,
-    private val getGroupInvitedUsersUseCase: GetGroupInvitedUsersUseCase
+    private val getGroupInvitedUsersUseCase: GetGroupInvitedUsersUseCase,
+    private val cancelGroupInviteUseCase: CancelGroupInviteUseCase
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -224,7 +226,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     }
 
     override fun onClickInvitableFriend(position: Int){
-        if (_invitableFriends.value[position].isChecked){
+        if (invitableFriends.value[position].isChecked){
             _invitableFriends.value[position].isChecked = false
             _groupInviteeList.value -= invitableFriends.value[position]
         }else{
@@ -283,5 +285,18 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
         }
     }
 
+    override fun onClickInvitedUser(position: Int){
+        viewModelScope.launch {
+            val user = invitedUsers.value[position]
+            cancelGroupInviteUseCase(groupInviteId = user.groupInviteId).collect{ result ->
+                result.onSuccess {
+                    _invitedUsers.value -= user
+                }.onFail {
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
+                }
+
+            }
+        }
+    }
 
 }

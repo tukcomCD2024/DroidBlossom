@@ -37,6 +37,8 @@ interface ManagementGroupMemberViewModel {
 
     fun inviteFriendsToGroup()
 
+    fun onClickInvitedUser(position: Int)
+
     sealed class ManagementGroupMemberEvent{
         data class ShowToastMessage(val message : String) : ManagementGroupMemberEvent()
         data class NavigateToPage(val page: Int) : ManagementGroupMemberEvent()

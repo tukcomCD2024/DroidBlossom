@@ -32,4 +32,6 @@ interface GroupRepository {
     suspend fun getGroupInvitedUsersRequest(groupId: Long, pagingRequest: IdBasedPagingRequestDto): RetrofitResult<GroupInvitedUsersPage>
 
     suspend fun deleteLeaveGroupRequest(groupId: Long): RetrofitResult<String>
+
+    suspend fun deleteGroupInviteRequest(groupInviteId: Long): RetrofitResult<String>
 }

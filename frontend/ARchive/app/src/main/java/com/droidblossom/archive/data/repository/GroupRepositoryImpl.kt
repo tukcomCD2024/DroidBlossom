@@ -91,4 +91,8 @@ class GroupRepositoryImpl @Inject constructor(
         return apiHandler({ api.deleteLeaveGroupApi(groupId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
+    override suspend fun deleteGroupInviteRequest(groupInviteId: Long): RetrofitResult<String> {
+        return apiHandler({ api.deleteGroupInviteApi(groupInviteId = groupInviteId) }) { response: ResponseBody<String> -> response.result.toString() }
+    }
+
 }

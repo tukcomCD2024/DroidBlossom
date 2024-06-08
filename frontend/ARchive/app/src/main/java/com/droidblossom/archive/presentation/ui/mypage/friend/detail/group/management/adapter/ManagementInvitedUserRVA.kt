@@ -9,7 +9,7 @@ import com.droidblossom.archive.databinding.ItemManagementInvitedUserBinding
 import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 
 class ManagementInvitedUserRVA(
-
+    private val onItemClick: (Int) -> Unit
 ): ListAdapter<GroupInvitedUser, ManagementInvitedUserRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -17,6 +17,9 @@ class ManagementInvitedUserRVA(
     ) : RecyclerView.ViewHolder(binding.root){
         fun bind(data: GroupInvitedUser){
             binding.item = data
+            binding.cancelT.setOnClickListener {
+                onItemClick(bindingAdapterPosition)
+            }
         }
     }
 
