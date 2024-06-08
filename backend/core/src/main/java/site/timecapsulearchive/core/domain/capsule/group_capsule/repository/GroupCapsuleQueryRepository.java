@@ -159,12 +159,7 @@ public class GroupCapsuleQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = groupCapsules.size() > size;
-        if (hasNext) {
-            groupCapsules.remove(size);
-        }
-
-        return new SliceImpl<>(groupCapsules, Pageable.ofSize(size), hasNext);
+        return SliceUtil.makeSlice(size, groupCapsules);
     }
 
     public boolean findGroupCapsuleExistByGroupId(Long groupId) {
