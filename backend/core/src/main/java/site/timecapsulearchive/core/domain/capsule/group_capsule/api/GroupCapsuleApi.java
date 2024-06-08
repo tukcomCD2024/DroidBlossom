@@ -112,6 +112,11 @@ public interface GroupCapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹에 대한 권한이 없는 경우 발생한다",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<Slice<CapsuleBasicInfoDto>>> getGroupCapsules(

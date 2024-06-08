@@ -110,4 +110,14 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .where(memberGroup.group.id.eq(groupId))
             .fetch();
     }
+
+    @Override
+    public boolean existMemberGroupByMemberIdAndGroupId(Long memberId, Long groupId) {
+        final Integer count = jpaQueryFactory.selectOne()
+            .from(memberGroup)
+            .where(memberGroup.member.id.eq(memberId).and(memberGroup.group.id.eq(groupId)))
+            .fetchFirst();
+
+        return count != null;
+    }
 }
