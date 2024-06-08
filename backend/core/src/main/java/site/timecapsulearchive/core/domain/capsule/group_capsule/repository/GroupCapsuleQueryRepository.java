@@ -17,18 +17,17 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.QMember;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -131,15 +130,15 @@ public class GroupCapsuleQueryRepository {
             ).get(capsuleId));
     }
 
-    public Slice<MyGroupCapsuleDto> findMyGroupCapsuleSlice(
+    public Slice<CapsuleBasicInfoDto> findMyGroupCapsuleSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<MyGroupCapsuleDto> groupCapsules = jpaQueryFactory
+        final List<CapsuleBasicInfoDto> groupCapsules = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    MyGroupCapsuleDto.class,
+                    CapsuleBasicInfoDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
