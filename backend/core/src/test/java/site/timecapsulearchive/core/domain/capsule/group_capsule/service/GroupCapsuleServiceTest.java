@@ -1,7 +1,9 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -11,9 +13,13 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
+import site.timecapsulearchive.core.common.fixture.dto.CapsuleBasicInfoDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
@@ -22,9 +28,12 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.Ca
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 
 class GroupCapsuleServiceTest {
@@ -36,9 +45,10 @@ class GroupCapsuleServiceTest {
     private final CapsuleRepository capsuleRepository = mock(CapsuleRepository.class);
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository = mock(
         GroupCapsuleQueryRepository.class);
+    private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
 
     private final GroupCapsuleService groupCapsuleService = new GroupCapsuleService(
-        capsuleRepository, groupCapsuleQueryRepository);
+        capsuleRepository, groupCapsuleQueryRepository, memberGroupRepository);
 
     @Test
     void 개봉된_그룹_캡슐의_상세_내용을_볼_수_있다() {
@@ -196,7 +206,8 @@ class GroupCapsuleServiceTest {
     @Test
     void 그룹_캡슐이_없는_경우_그룹_캡슐_개봉_시_예외가_발생한다() {
         //given
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(Optional.empty());
 
         //when
@@ -212,7 +223,8 @@ class GroupCapsuleServiceTest {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleSpecificTime(memberId,
             capsuleId, now.plusYears(5));
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -232,7 +244,8 @@ class GroupCapsuleServiceTest {
         //given
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleSpecificTime(memberId,
             capsuleId, null);
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -254,7 +267,8 @@ class GroupCapsuleServiceTest {
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleNotAllMemberOpen(memberId,
             capsuleId,
             groupMembers);
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -276,7 +290,8 @@ class GroupCapsuleServiceTest {
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleHalfMemberOpen(memberId,
             capsuleId,
             groupMembers);
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -295,7 +310,8 @@ class GroupCapsuleServiceTest {
     void 그룹_캡슐_개봉이_없는_경우_예외가_발생한다() {
         //given
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleEmptyOpen(memberId, capsuleId);
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -312,7 +328,8 @@ class GroupCapsuleServiceTest {
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleAllMemberOpen(memberId,
             capsuleId,
             groupMembers);
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -334,7 +351,8 @@ class GroupCapsuleServiceTest {
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleExcludeSpecificMember(memberId,
             capsuleId,
             groupMembers);
-        given(capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+        given(
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -347,5 +365,44 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.OPEN);
         });
+    }
+
+    @Test
+    void 사용자가_그룹원이_아니면_그룹_캡슐_목록_조회_시_예외가_발생한다() {
+        //given
+        Long groupId = 1L;
+        int size = 20;
+        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+            size, capsuleId);
+        given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
+            .willReturn(false);
+
+        //when
+        //then
+        assertThatThrownBy(() -> groupCapsuleService.findGroupCapsuleSlice(dto))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    @Test
+    void 사용자가_그룹원이면_그룹_캡슐_목록_조회_시_그룹_캡슐_목록이_조회된다() {
+        //given
+        Long groupId = 1L;
+        int size = 20;
+        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+            size, capsuleId);
+        given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
+            .willReturn(true);
+        given(groupCapsuleQueryRepository.findGroupCapsuleSlice(
+            any(GroupCapsuleSliceRequestDto.class)))
+            .willReturn(
+                new SliceImpl<>(CapsuleBasicInfoDtoFixture.capsuleBasicInfoDtos(capsuleId, size)));
+
+        //when
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
+            dto);
+
+        //then
+        assertThat(groupCapsuleSlice.hasContent()).isTrue();
     }
 }

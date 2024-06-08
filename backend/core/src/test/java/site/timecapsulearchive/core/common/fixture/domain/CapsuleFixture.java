@@ -1,8 +1,8 @@
 package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.lang.reflect.Field;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -216,5 +216,19 @@ public class CapsuleFixture {
         setFieldValue(capsule, "isOpened", true);
 
         return Optional.ofNullable(capsule);
+    }
+
+    public static List<Capsule> groupCapsules(
+        Member owner,
+        CapsuleSkin capsuleSkin,
+        Group group,
+        int maxCount
+    ) {
+        List<Capsule> result = new ArrayList<>();
+        for (int count = 0; count < maxCount; count++) {
+            result.add(groupCapsule(owner, capsuleSkin, group));
+        }
+
+        return result;
     }
 }
