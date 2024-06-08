@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
@@ -112,13 +112,24 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<GroupCapsulePageResponse> getGroupCapsules(
+    public ResponseEntity<ApiSpec<Slice<CapsuleBasicInfoDto>>> getGroupCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam("group_id") final Long groupId,
-        @RequestParam("size") final Long size,
+        @RequestParam("size") final int size,
         @RequestParam("capsuleId") final Long capsuleId
     ) {
-        return null;
+        final GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+            size, capsuleId);
+
+        final Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
+            dto);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                groupCapsuleSlice
+            )
+        );
     }
 
     @GetMapping(value = "/my", produces = {"application/json"})

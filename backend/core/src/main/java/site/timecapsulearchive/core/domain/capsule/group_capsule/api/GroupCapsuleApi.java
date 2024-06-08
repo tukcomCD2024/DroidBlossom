@@ -9,21 +9,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -116,14 +114,14 @@ public interface GroupCapsuleApi {
             description = "처리 완료"
         )
     })
-    ResponseEntity<GroupCapsulePageResponse> getGroupCapsules(
+    ResponseEntity<ApiSpec<Slice<CapsuleBasicInfoDto>>> getGroupCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "그룹 아이디", required = true)
         Long groupId,
 
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
-        Long size,
+        int size,
 
         @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
         Long capsuleId

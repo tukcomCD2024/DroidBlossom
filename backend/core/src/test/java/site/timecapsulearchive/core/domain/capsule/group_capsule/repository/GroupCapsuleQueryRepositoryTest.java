@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.common.fixture.domain.GroupCapsuleOpenFixtur
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberGroupFixture;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
@@ -29,7 +30,6 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -187,7 +187,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(1);
 
         //when
-        Slice<MyGroupCapsuleDto> groupCapsules = groupCapsuleQueryRepository.findMyGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsules = groupCapsuleQueryRepository.findMyGroupCapsuleSlice(
             groupLeaderId, size, now);
 
         //then
