@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupMemberCapsuleOpenStatusListResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
@@ -155,6 +156,35 @@ public interface GroupCapsuleApi {
     );
 
     @Operation(
+        summary = "그룹원의 그룹 캡슐 개봉 상태 확인",
+        description = """
+            그룹원의 그룹 캡슐 개봉 상태를 확인한다.
+            """,
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "그룹 캡슐의 개봉 상태를 찾을 수 없는 경우 예외가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<GroupMemberCapsuleOpenStatusListResponse>> getGroupCapsuleOpenStatus(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true)
+        Long groupId,
+
+        @Parameter(in = ParameterIn.PATH, description = "개봉 상태를 확인할 캡슐 아이디", required = true)
+        Long capsuleId
+    );
+
+    @Operation(
         summary = "그룹 캡슐 개봉",
         description = """
             그룹원이 그룹 캡슐을 개봉한다.<br> 캡슐을 만들 때의 그룹원 모두가 캡슐을 개봉해야만 캡슐이 개봉된다.
@@ -177,7 +207,7 @@ public interface GroupCapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "개봉할 그룹 캡슐 아이디", required = true)
-        @PathVariable("capsule_id") Long capsuleId
+        Long capsuleId
     );
 
     @Operation(
