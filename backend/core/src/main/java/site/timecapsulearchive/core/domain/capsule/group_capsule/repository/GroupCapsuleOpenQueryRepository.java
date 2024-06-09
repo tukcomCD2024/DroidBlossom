@@ -18,12 +18,16 @@ public class GroupCapsuleOpenQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void bulkSave(final List<Long> groupMemberIds, final Capsule capsule) {
+    public void bulkSave(
+        final Long groupId,
+        final List<Long> groupMemberIds,
+        final Capsule capsule
+    ) {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_capsule_open (
-                group_capsule_open_id, is_opened, member_id, capsule_id, created_at, updated_at
-                ) values (?, ? ,? ,? ,?, ?)
+                group_capsule_open_id, is_opened, member_id, capsule_id, group_id, created_at, updated_at
+                ) values (?, ? ,? ,? ,?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
                 @Override
@@ -34,8 +38,9 @@ public class GroupCapsuleOpenQueryRepository {
                     ps.setBoolean(2, isOpened);
                     ps.setLong(3, groupMemberIds.get(i));
                     ps.setLong(4, capsule.getId());
-                    ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
+                    ps.setLong(5, groupId);
                     ps.setTimestamp(6, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
+                    ps.setTimestamp(7, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                 }
 
                 @Override
