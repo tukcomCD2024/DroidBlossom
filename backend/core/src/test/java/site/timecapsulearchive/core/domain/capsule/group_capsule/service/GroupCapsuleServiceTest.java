@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
+import site.timecapsulearchive.core.common.fixture.dto.GroupMemberCapsuleOpenStatusDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
@@ -22,10 +24,12 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.Ca
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 
@@ -361,5 +365,39 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.OPEN);
         });
+    }
+
+    @Test
+    void 그룹원이_아닌_사용자가_그룹_캡슐_개봉_상태를_조회하면_오류가_발생한다() throws Exception {
+        //given
+        Long groupId = 1L;
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupCapsuleService.findGroupMemberCapsuleOpenStatus(memberId, capsuleId,
+                groupId))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹원이_그룹_캡슐_개봉_상태를_조회하면_그룹_캡슐_개봉_상태를_조회할_수_있다() throws Exception {
+        //given
+        Long groupId = 1L;
+        int size = 20;
+        given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
+            .willReturn(true);
+        given(groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId))
+            .willReturn(
+                GroupMemberCapsuleOpenStatusDtoFixture.groupMemberCapsuleOpenStatusDto(memberId,
+                    size));
+
+        //when
+        List<GroupMemberCapsuleOpenStatusDto> groupMemberCapsuleOpenStatus = groupCapsuleService.findGroupMemberCapsuleOpenStatus(
+            memberId, capsuleId, groupId);
+
+        //then
+        assertThat(groupMemberCapsuleOpenStatus).isNotEmpty();
     }
 }
