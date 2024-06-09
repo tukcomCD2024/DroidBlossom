@@ -77,4 +77,9 @@ interface GroupService {
     suspend fun deleteGroupInviteApi(
         @Path("group_invite_id") groupInviteId: Long
     ) : Response<ResponseBody<String>>
+
+    @DELETE("groups/{group_id}")
+    suspend fun deleteGroupApi(
+        @Path("group_id") groupId: Long
+    ) : Response<ResponseBody<String>>
 }

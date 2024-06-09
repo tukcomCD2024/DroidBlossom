@@ -68,6 +68,13 @@ class GroupDetailActivity :
 
                         GroupDetailViewModel.GroupDetailEvent.LeaveGroupSuccess -> {
                             showToastMessage("그룹에서 나왔습니다. 함께해 주셔서 고마워요!")
+                            setResult(SUCCESS_GROUP_DELETE, Intent().putExtra(GROUP_ID, viewModel.groupId.value))
+                            finish()
+                        }
+
+                        GroupDetailViewModel.GroupDetailEvent.SuccessClosureGroup -> {
+                            showToastMessage("그룹이 폐쇄되었습니다.")
+                            setResult(SUCCESS_GROUP_DELETE, Intent().putExtra(GROUP_ID, viewModel.groupId.value))
                             finish()
                         }
                     }
@@ -238,6 +245,7 @@ class GroupDetailActivity :
             popupWindow.dismiss()
         }
         popupMenuBinding.menuGroupClosure.setOnClickListener {
+            viewModel.closureGroup()
             popupWindow.dismiss()
         }
         popupMenuBinding.menuGroupMemberManagement.setOnClickListener {
@@ -279,6 +287,7 @@ class GroupDetailActivity :
         private const val GROUP_ID = "group_id"
         private const val GROUP_CAPSULE = 0
         private const val GROUP_MEMBER = 1
+        const val SUCCESS_GROUP_DELETE = 111
         fun newIntent(context: Context, groupId: Long) =
             Intent(context, GroupDetailActivity::class.java).apply {
                 putExtra(GROUP_ID, groupId)

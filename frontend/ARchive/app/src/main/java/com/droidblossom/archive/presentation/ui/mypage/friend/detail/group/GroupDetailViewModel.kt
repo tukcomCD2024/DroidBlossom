@@ -29,6 +29,7 @@ interface GroupDetailViewModel {
     fun getLatestCapsuleList()
     fun setShowMore()
     fun setIsAppBarExpanded(boolean: Boolean)
+    fun closureGroup()
 
     fun leaveGroup()
 
@@ -36,5 +37,6 @@ interface GroupDetailViewModel {
         object SwipeRefreshLayoutDismissLoading : GroupDetailEvent()
         object LeaveGroupSuccess: GroupDetailEvent()
         data class ShowToastMessage(val message : String) : GroupDetailEvent()
+        object SuccessClosureGroup: GroupDetailEvent()
     }
 }

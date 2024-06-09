@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.model.group.toGroupProfileData
+import com.droidblossom.archive.domain.usecase.group.DeleteGroupUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
 import com.droidblossom.archive.domain.usecase.group.LeaveGroupUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -28,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupDetailViewModelImpl @Inject constructor(
     private val getGroupDetailUseCase: GetGroupDetailUseCase,
-    private val leaveGroupUseCase: LeaveGroupUseCase
+    private val leaveGroupUseCase: LeaveGroupUseCase,
+    private val deleteGroupUseCase: DeleteGroupUseCase
 ) : BaseViewModel(), GroupDetailViewModel {
 
     private val _groupDetailEvents = MutableSharedFlow<GroupDetailViewModel.GroupDetailEvent>()
@@ -170,5 +172,16 @@ class GroupDetailViewModelImpl @Inject constructor(
         }
     }
 
+    override fun closureGroup(){
+        viewModelScope.launch {
+            deleteGroupUseCase(groupId.value).collect{ result ->
+                result.onSuccess {
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SuccessClosureGroup)
+                }.onFail {
+
+                }
+            }
+        }
+    }
 
 }

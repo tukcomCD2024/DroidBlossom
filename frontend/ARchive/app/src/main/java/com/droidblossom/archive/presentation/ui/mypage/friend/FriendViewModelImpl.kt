@@ -228,4 +228,11 @@ class FriendViewModelImpl @Inject constructor(
     override fun searchGroup() {
 
     }
+
+    override fun removeGroup(groupId:Long){
+        val groupToRemove = _groupListUi.value.find { it.id == groupId }
+        groupToRemove?.let {
+            _groupListUi.value -= it
+        }
+    }
 }

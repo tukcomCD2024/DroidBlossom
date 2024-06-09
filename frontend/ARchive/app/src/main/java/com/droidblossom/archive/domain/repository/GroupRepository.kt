@@ -34,4 +34,5 @@ interface GroupRepository {
     suspend fun deleteLeaveGroupRequest(groupId: Long): RetrofitResult<String>
 
     suspend fun deleteGroupInviteRequest(groupInviteId: Long): RetrofitResult<String>
+    suspend fun deleteGroupRequest(groupId: Long): RetrofitResult<String>
 }

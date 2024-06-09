@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -28,9 +29,20 @@ class GroupListFragment :
 
     override val viewModel: FriendViewModelImpl by activityViewModels()
 
+    private val groupDetailLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == GroupDetailActivity.SUCCESS_GROUP_DELETE) {
+            val groupId = result.data?.getLongExtra("group_id", -1L)
+            groupId?.let {
+                if (it != -1L){
+                    viewModel.removeGroup(it)
+                }
+            }
+        }
+    }
+
     private val groupAdapter by lazy {
         GroupRVA { groupId ->
-            startActivity(GroupDetailActivity.newIntent(requireContext(), groupId))
+            groupDetailLauncher.launch(GroupDetailActivity.newIntent(requireContext(), groupId))
         }
     }
 
