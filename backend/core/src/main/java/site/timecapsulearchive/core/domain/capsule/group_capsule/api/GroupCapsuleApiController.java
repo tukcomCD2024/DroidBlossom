@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.Gr
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
@@ -112,13 +113,14 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<Slice<CapsuleBasicInfoDto>>> getGroupCapsules(
+    public ResponseEntity<ApiSpec<GroupCapsuleSliceResponse>> getGroupCapsules(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam("group_id") final Long groupId,
         @RequestParam("size") final int size,
-        @RequestParam("last_capsule_id") final Long lastCapsuleId
+        @RequestParam(value = "last_capsule_id", required = false) final Long lastCapsuleId
     ) {
-        final GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+        final GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId,
+            groupId,
             size, lastCapsuleId);
 
         final Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
@@ -127,7 +129,11 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                groupCapsuleSlice
+                GroupCapsuleSliceResponse.create(
+                    groupCapsuleSlice.getContent(),
+                    groupCapsuleSlice.hasNext(),
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
             )
         );
     }
