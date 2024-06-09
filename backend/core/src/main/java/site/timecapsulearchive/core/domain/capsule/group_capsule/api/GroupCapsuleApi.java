@@ -177,11 +177,11 @@ public interface GroupCapsuleApi {
     ResponseEntity<ApiSpec<GroupMemberCapsuleOpenStatusListResponse>> getGroupCapsuleOpenStatus(
         Long memberId,
 
-        @Parameter(in = ParameterIn.PATH, description = "생성할 그룹 아이디", required = true)
-        Long groupId,
-
         @Parameter(in = ParameterIn.PATH, description = "개봉 상태를 확인할 캡슐 아이디", required = true)
-        Long capsuleId
+        Long capsuleId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "생성할 그룹 아이디", required = true)
+        Long groupId
     );
 
     @Operation(
