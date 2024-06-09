@@ -102,18 +102,18 @@ public class GroupCapsuleService {
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (!groupCapsule.canOpen()) {
-            return GroupCapsuleOpenStateDto.notOpened();
+        if (groupCapsule.isNotCapsuleOpened()) {
+            return GroupCapsuleOpenStateDto.notOpened(false);
         }
 
-        if (!groupCapsule.isTimeCapsule()) {
+        if (groupCapsule.isNotTimeCapsule()) {
             groupCapsule.open();
             return GroupCapsuleOpenStateDto.opened();
         }
 
         boolean allGroupMemberOpened = groupCapsule.isAllGroupMemberOpened(memberId, capsuleId);
         if (!allGroupMemberOpened) {
-            return GroupCapsuleOpenStateDto.notOpened();
+            return GroupCapsuleOpenStateDto.notOpened(true);
         }
 
         groupCapsule.open();

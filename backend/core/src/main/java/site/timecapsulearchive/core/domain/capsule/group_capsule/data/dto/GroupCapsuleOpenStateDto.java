@@ -3,21 +3,23 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 
 public record GroupCapsuleOpenStateDto(
-    CapsuleOpenStatus capsuleOpenStatus
+    CapsuleOpenStatus capsuleOpenStatus,
+    boolean isIndividuallyOpened
 ) {
 
     public static GroupCapsuleOpenStateDto opened() {
-        return new GroupCapsuleOpenStateDto(CapsuleOpenStatus.OPEN);
+        return new GroupCapsuleOpenStateDto(CapsuleOpenStatus.OPEN, true);
     }
 
-    public static GroupCapsuleOpenStateDto notOpened() {
-        return new GroupCapsuleOpenStateDto(CapsuleOpenStatus.NOT_OPEN);
+    public static GroupCapsuleOpenStateDto notOpened(boolean isIndividuallyOpened) {
+        return new GroupCapsuleOpenStateDto(CapsuleOpenStatus.NOT_OPEN, isIndividuallyOpened);
     }
 
     public GroupCapsuleOpenStateResponse toResponse() {
         return new GroupCapsuleOpenStateResponse(
             capsuleOpenStatus,
-            capsuleOpenStatus.getStatusMessage()
+            capsuleOpenStatus.getStatusMessage(),
+            isIndividuallyOpened
         );
     }
 }
