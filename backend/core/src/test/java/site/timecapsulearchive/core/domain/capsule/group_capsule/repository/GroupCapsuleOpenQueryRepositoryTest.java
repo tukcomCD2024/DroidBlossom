@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.sql.DataSource;
@@ -39,10 +40,12 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
 
     public GroupCapsuleOpenQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
-        DataSource dataSource
+        DataSource dataSource,
+        JPAQueryFactory jpaQueryFactory
     ) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate);
+        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate,
+            jpaQueryFactory);
     }
 
     @Transactional
@@ -63,7 +66,8 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         capsule = CapsuleFixture.groupCapsule(groupLeader, capsuleSkin, group);
         entityManager.persist(capsule);
 
-        groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(group, false, capsule, groupMembers);
+        groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(group, false, capsule,
+            groupMembers);
     }
 
     @Test
