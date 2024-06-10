@@ -10,6 +10,7 @@ import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSki
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +25,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.QMember;
@@ -176,5 +178,37 @@ public class GroupCapsuleQueryRepository {
             .from(capsule)
             .where(capsule.group.id.eq(groupId))
             .fetchOne();
+    }
+
+    public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
+        final List<CapsuleBasicInfoDto> groupCapsuleDtos = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    CapsuleBasicInfoDto.class,
+                    capsule.id,
+                    capsuleSkin.imageUrl,
+                    capsule.dueDate,
+                    capsule.createdAt,
+                    capsule.title,
+                    capsule.isOpened,
+                    capsule.type
+                )
+            )
+            .from(capsule)
+            .where(capsule.group.id.eq(dto.groupId())
+                .and(capsuleIdPagingCursorCondition(dto.lastCapsuleId())))
+            .orderBy(capsule.id.desc())
+            .limit(dto.size() + 1)
+            .fetch();
+
+        return SliceUtil.makeSlice(dto.size(), groupCapsuleDtos);
+    }
+
+    private BooleanExpression capsuleIdPagingCursorCondition(final Long capsuleId) {
+        if (capsuleId == null) {
+            return null;
+        }
+
+        return capsule.id.lt(capsuleId);
     }
 }

@@ -14,12 +14,15 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +31,7 @@ public class GroupCapsuleService {
 
     private final CapsuleRepository capsuleRepository;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
+    private final MemberGroupRepository memberGroupRepository;
 
     @Transactional
     public Capsule saveGroupCapsule(
@@ -118,6 +122,16 @@ public class GroupCapsuleService {
 
         groupCapsule.open();
         return GroupCapsuleOpenStateDto.opened();
+    }
+
+    public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
+        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(dto.memberId(),
+            dto.groupId());
+        if (!isGroupMember) {
+            throw new NoGroupAuthorityException();
+        }
+
+        return groupCapsuleQueryRepository.findGroupCapsuleSlice(dto);
     }
 }
 
