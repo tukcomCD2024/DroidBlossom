@@ -4,6 +4,5 @@ import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 
 data class CapsulePageList(
     val capsules: List<CapsuleData>,
-    val hasNext: Boolean,
-    val hasPrevious: Boolean
+    val hasNext: Boolean
 )
