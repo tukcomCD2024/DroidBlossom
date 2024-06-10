@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
@@ -22,6 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.facade.CapsuleFacade;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
@@ -137,7 +137,7 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<CapsuleBasicInfoDto> publicCapsules = publicCapsuleService.findMyPublicCapsuleSlice(
+        final Slice<MyPublicCapsuleDto> publicCapsules = publicCapsuleService.findMyPublicCapsuleSlice(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(

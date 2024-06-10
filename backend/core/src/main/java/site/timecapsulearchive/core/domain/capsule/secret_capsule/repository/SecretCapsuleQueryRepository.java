@@ -14,13 +14,14 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.global.util.SliceUtil;
+import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -103,15 +104,32 @@ public class SecretCapsuleQueryRepository {
         return Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", expression);
     }
 
-    public Slice<CapsuleBasicInfoDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
+    public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberIdAndCreatedAt(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<CapsuleBasicInfoDto> mySecretCapsules = jpaQueryFactory
+        final List<MySecreteCapsuleDto> mySecretCapsules = findMySecretCapsuleDtosByMemberIdAndCreatedAt(
+            memberId, size, createdAt
+        );
+
+        final boolean hasNext = canMoreRead(size, mySecretCapsules.size());
+        if (hasNext) {
+            mySecretCapsules.remove(size);
+        }
+
+        return new SliceImpl<>(mySecretCapsules, Pageable.ofSize(size), hasNext);
+    }
+
+    private List<MySecreteCapsuleDto> findMySecretCapsuleDtosByMemberIdAndCreatedAt(
+        final Long memberId,
+        final int size,
+        final ZonedDateTime createdAt
+    ) {
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
-                    CapsuleBasicInfoDto.class,
+                    MySecreteCapsuleDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
@@ -131,7 +149,9 @@ public class SecretCapsuleQueryRepository {
             .orderBy(capsule.id.desc())
             .limit(size + 1)
             .fetch();
+    }
 
-        return SliceUtil.makeSlice(size, mySecretCapsules);
+    private boolean canMoreRead(final int size, final int capsuleSize) {
+        return capsuleSize > size;
     }
 }
