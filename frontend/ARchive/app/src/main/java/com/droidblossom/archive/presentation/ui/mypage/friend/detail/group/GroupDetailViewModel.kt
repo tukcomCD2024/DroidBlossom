@@ -38,5 +38,9 @@ interface GroupDetailViewModel {
         object LeaveGroupSuccess: GroupDetailEvent()
         data class ShowToastMessage(val message : String) : GroupDetailEvent()
         object SuccessClosureGroup: GroupDetailEvent()
+
+        object DismissLoading : GroupDetailEvent()
+        object ShowLoading : GroupDetailEvent()
+
     }
 }

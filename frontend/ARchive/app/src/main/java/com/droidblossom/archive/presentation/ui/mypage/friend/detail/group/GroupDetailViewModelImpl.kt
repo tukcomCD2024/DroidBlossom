@@ -11,6 +11,7 @@ import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -161,6 +162,7 @@ class GroupDetailViewModelImpl @Inject constructor(
     }
 
     override fun leaveGroup() {
+        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowLoading)
         viewModelScope.launch {
             leaveGroupUseCase(groupId.value).collect { result ->
                 result.onSuccess {
@@ -169,19 +171,27 @@ class GroupDetailViewModelImpl @Inject constructor(
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 탈퇴를 실패했습니다."))
                 }
             }
+            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.DismissLoading)
         }
     }
 
     override fun closureGroup(){
+        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowLoading)
         viewModelScope.launch {
             deleteGroupUseCase(groupId.value).collect{ result ->
                 result.onSuccess {
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SuccessClosureGroup)
                 }.onFail {
-
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 폐쐐를 실패했습니다."))
+                }.onException { it ->
+                    it.message?.let { message ->
+                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(message))
+                    }
                 }
             }
+            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.DismissLoading)
         }
+
     }
 
 }

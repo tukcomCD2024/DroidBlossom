@@ -77,6 +77,14 @@ class GroupDetailActivity :
                             setResult(SUCCESS_GROUP_DELETE, Intent().putExtra(GROUP_ID, viewModel.groupId.value))
                             finish()
                         }
+
+                        GroupDetailViewModel.GroupDetailEvent.DismissLoading -> {
+                            dismissLoading()
+                        }
+
+                        GroupDetailViewModel.GroupDetailEvent.ShowLoading -> {
+                            showLoading(this@GroupDetailActivity)
+                        }
                     }
                 }
             }
