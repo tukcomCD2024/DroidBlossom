@@ -10,6 +10,7 @@ import site.timecapsulearchive.core.infra.queue.data.dto.FriendReqNotificationDt
 import site.timecapsulearchive.core.infra.queue.data.dto.FriendsReqNotificationsDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupInviteNotificationDto;
+import site.timecapsulearchive.core.infra.queue.data.dto.TreasureCaptureNotificationDto;
 import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Component
@@ -90,6 +91,20 @@ public class SocialNotificationManager {
             RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
             GroupAcceptNotificationDto.createOf(targetId, groupMemberNickname)
+        );
+    }
+
+    public void sendTreasureCaptureMessage(
+        final Long targetId,
+        final String memberNickname,
+        final String treasureImageUrl
+    ) {
+        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(treasureImageUrl);
+
+        basicRabbitTemplate.convertAndSend(
+            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getSuccessComponent(),
+            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_QUEUE.getSuccessComponent(),
+            TreasureCaptureNotificationDto.createOf(targetId, preSignedUrl, memberNickname)
         );
     }
 }

@@ -13,8 +13,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Caps
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CoordinateRangeDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -25,7 +24,6 @@ import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 @Transactional(readOnly = true)
 public class CapsuleService {
 
-    private final CapsuleQueryRepository capsuleQueryRepository;
     private final CapsuleRepository capsuleRepository;
     private final MemberFriendRepository memberFriendRepository;
     private final GeoTransformManager geoTransformManager;
@@ -49,7 +47,7 @@ public class CapsuleService {
 
         final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
-        return capsuleQueryRepository.findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+        return capsuleRepository.findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
             memberId, mbr, capsuleType);
     }
 
@@ -63,7 +61,7 @@ public class CapsuleService {
 
         final Polygon mbr = geoTransformManager.getDistanceMBROf3857(point, dto.distance());
 
-        return capsuleQueryRepository.findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+        return capsuleRepository.findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
             memberId, mbr, capsuleType);
     }
 
@@ -116,7 +114,7 @@ public class CapsuleService {
 
         final List<Long> friendIds = memberFriendRepository.findFriendIdsByOwnerId(memberId);
 
-        return capsuleQueryRepository.findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
+        return capsuleRepository.findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
             friendIds,
             mbr
         );
@@ -140,7 +138,7 @@ public class CapsuleService {
 
         final List<Long> friendIds = memberFriendRepository.findFriendIdsByOwnerId(memberId);
 
-        return capsuleQueryRepository.findFriendsARCapsulesByCurrentLocation(
+        return capsuleRepository.findFriendsARCapsulesByCurrentLocation(
             friendIds,
             mbr
         );

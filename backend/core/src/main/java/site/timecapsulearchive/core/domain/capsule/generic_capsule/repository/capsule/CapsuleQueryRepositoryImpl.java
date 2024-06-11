@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository;
+package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule;
 
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
@@ -20,7 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Near
 
 @Repository
 @RequiredArgsConstructor
-public class CapsuleQueryRepository {
+public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -104,8 +104,8 @@ public class CapsuleQueryRepository {
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
     public List<NearbyCapsuleSummaryDto> findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
-        List<Long> friendIds,
-        Polygon mbr
+        final List<Long> friendIds,
+        final Polygon mbr
     ) {
         return jpaQueryFactory
             .select(
@@ -136,8 +136,8 @@ public class CapsuleQueryRepository {
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
     public List<NearbyARCapsuleSummaryDto> findFriendsARCapsulesByCurrentLocation(
-        List<Long> friendIds,
-        Polygon mbr
+        final List<Long> friendIds,
+        final Polygon mbr
     ) {
         return jpaQueryFactory
             .select(

@@ -7,7 +7,8 @@ public enum NotificationRequestMessage {
     FRIEND_REQUEST(NotificationStatus.SUCCESS, "친구 요청 알림", "님 으로부터 친구 요청이 왔습니다."),
     FRIEND_ACCEPT(NotificationStatus.SUCCESS, "친구 수락 알림", "님이 친구 요청을 수락하였습니다."),
     GROUP_INVITE(NotificationStatus.SUCCESS, "그룹 초대 알림", "님으로부터 그룹 초대 요청이 왔습니다."),
-    GROUP_ACCEPT(NotificationStatus.SUCCESS, "그룹 수락 알림", "님이 그룹 요청을 수락하였습니다.");
+    GROUP_ACCEPT(NotificationStatus.SUCCESS, "그룹 수락 알림", "님이 그룹 요청을 수락하였습니다."),
+    TREASURE_CAPTURE(NotificationStatus.SUCCESS, "보물 찾기 알림", "님이 보물 찾기에 성공하여 캡슐 스킨을 획득하였습니다.");
 
     private final NotificationStatus status;
     private final String title;
@@ -28,6 +29,6 @@ public enum NotificationRequestMessage {
     }
 
     public String buildPrefixText(String prefix) {
-        return prefix + text + "ARchive에서 확인해보세요!";
+        return prefix + text + " ARchive에서 확인해보세요!";
     }
 }

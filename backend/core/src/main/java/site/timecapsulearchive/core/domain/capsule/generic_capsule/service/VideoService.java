@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.VideoQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 
@@ -14,7 +14,7 @@ import site.timecapsulearchive.core.infra.s3.data.dto.S3Directory;
 @RequiredArgsConstructor
 public class VideoService {
 
-    private final VideoQueryRepository videoQueryRepository;
+    private final VideoRepository videoRepository;
 
     @Transactional
     public void bulkSave(final List<String> fileNames, final Capsule capsule, final Member member) {
@@ -23,7 +23,7 @@ public class VideoService {
                 .map(fileName -> S3Directory.CAPSULE.generateFullPath(member.getId(), fileName))
                 .toList();
 
-            videoQueryRepository.bulkSave(Video.createOf(fullFileNames, capsule, member));
+            videoRepository.bulkSave(Video.createOf(fullFileNames, capsule, member));
         }
     }
 
