@@ -15,7 +15,7 @@ public record TreasureCaptureNotificationDto(
 
     public static TreasureCaptureNotificationDto createOf(
         final Long targetId,
-        final String treasureUrl,
+        final String treasureImageUrl,
         final String memberNickname
 
     ) {
@@ -23,7 +23,7 @@ public record TreasureCaptureNotificationDto(
 
         return new TreasureCaptureNotificationDto(
             targetId,
-            treasureUrl,
+            treasureImageUrl,
             treasureCaptureRequest.getStatus(),
             treasureCaptureRequest.getTitle(),
             treasureCaptureRequest.buildPrefixText(memberNickname)
