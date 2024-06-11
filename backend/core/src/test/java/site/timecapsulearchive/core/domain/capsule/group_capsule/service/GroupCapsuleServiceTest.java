@@ -236,6 +236,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus())
                 .isEqualTo(CapsuleOpenStatus.NOT_OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isFalse();
         });
     }
 
@@ -257,6 +258,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus())
                 .isEqualTo(CapsuleOpenStatus.OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -280,6 +282,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.NOT_OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -303,6 +306,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.NOT_OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -341,6 +345,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -364,6 +369,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 

@@ -14,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,12 +119,8 @@ public class Capsule extends BaseEntity {
         this.isOpened = Boolean.TRUE;
     }
 
-    public boolean isTimeCapsule() {
-        return dueDate != null;
-    }
-
-    public boolean canOpen() {
-        return dueDate == null || dueDate.isBefore(ZonedDateTimeSupplier.utc().get());
+    public boolean isNotTimeCapsule() {
+        return dueDate == null;
     }
 
     public boolean isAllGroupMemberOpened(Long memberId, Long capsuleId) {
@@ -133,13 +128,15 @@ public class Capsule extends BaseEntity {
             throw new GroupCapsuleOpenNotFoundException();
         }
 
-        return groupCapsuleOpens.stream()
-            .allMatch(groupCapsuleOpen -> {
-                if (groupCapsuleOpen.matched(capsuleId, memberId)) {
-                    groupCapsuleOpen.open();
-                }
+        boolean isCapsuleOpened = true;
+        for (GroupCapsuleOpen groupCapsuleOpen : groupCapsuleOpens) {
+            if (groupCapsuleOpen.matched(capsuleId, memberId)) {
+                groupCapsuleOpen.open();
+            }
 
-                return groupCapsuleOpen.getIsOpened();
-            });
+            isCapsuleOpened = isCapsuleOpened && groupCapsuleOpen.getIsOpened();
+        }
+
+        return isCapsuleOpened;
     }
 }
