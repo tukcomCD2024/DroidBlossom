@@ -9,11 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
@@ -39,16 +38,9 @@ public class GroupCapsuleOpen extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Builder
-    private GroupCapsuleOpen(Boolean isOpened, Capsule capsule, Member member) {
-        this.isOpened = Objects.requireNonNull(isOpened);
-        this.capsule = Objects.requireNonNull(capsule);
-        this.member = Objects.requireNonNull(member);
-    }
-
-    public static GroupCapsuleOpen createOf(Member member, Capsule capsule, Boolean isOpened) {
-        return new GroupCapsuleOpen(isOpened, capsule, member);
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
     public void open() {
         this.isOpened = Boolean.TRUE;

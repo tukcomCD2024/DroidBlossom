@@ -12,7 +12,11 @@ public class GroupCapsuleOpenService {
 
     private final GroupCapsuleOpenQueryRepository repository;
 
-    public void bulkSave(final List<Long> groupMemberIds, final Capsule capsule) {
-        repository.bulkSave(groupMemberIds, capsule);
+    public void bulkSave(
+        final Long groupId,
+        final List<Long> groupMemberIds,
+        final Capsule capsule
+    ) {
+        repository.bulkSave(groupId, groupMemberIds, capsule);
     }
 }
