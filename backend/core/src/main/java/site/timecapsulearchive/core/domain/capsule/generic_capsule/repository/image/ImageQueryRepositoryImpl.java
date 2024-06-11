@@ -21,7 +21,6 @@ import site.timecapsulearchive.core.domain.capsule.entity.Image;
 public class ImageQueryRepositoryImpl implements ImageQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final JPAQueryFactory jpaQueryFactory;
 
     public void bulkSave(final List<Image> images) {
         jdbcTemplate.batchUpdate(
@@ -50,22 +49,4 @@ public class ImageQueryRepositoryImpl implements ImageQueryRepository {
             }
         );
     }
-
-    public Optional<String> findImageUrl(final Long imageId) {
-        return Optional.ofNullable(jpaQueryFactory
-            .select(image.imageUrl)
-            .from(image)
-            .where(image.id.eq(imageId))
-            .fetchOne()
-        );
-    }
-
-    public Optional<Long> deleteImage(final Long imageId) {
-        return Optional.of(jpaQueryFactory
-            .delete(image)
-            .where(image.id.eq(imageId))
-            .execute()
-        );
-    }
-
 }

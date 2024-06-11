@@ -7,9 +7,4 @@ import site.timecapsulearchive.core.domain.capsule.entity.Image;
 public interface ImageQueryRepository {
 
     void bulkSave(final List<Image> images);
-
-    Optional<Long> deleteImage(final Long imageId);
-
-    Optional<String> findImageUrl(final Long imageId);
-
 }

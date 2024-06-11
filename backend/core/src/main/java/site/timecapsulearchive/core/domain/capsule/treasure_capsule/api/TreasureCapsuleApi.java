@@ -40,10 +40,7 @@ public interface TreasureCapsuleApi {
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "개봉할 보물 캡슐 아이디", required = true)
-        Long capsuleId,
-
-        @Parameter(in = ParameterIn.PATH, description = "보물 url 저장한 이미지 아이디", required = true)
-        Long imageId
+        Long capsuleId
     );
 
 }

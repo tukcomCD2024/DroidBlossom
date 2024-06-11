@@ -19,13 +19,12 @@ public class TreasureCapsuleController implements TreasureCapsuleApi {
     private final TreasureCapsuleService treasureCapsuleService;
 
     @Override
-    @PostMapping("/{capsule_id}/image/{image_id}/open")
+    @PostMapping("/{capsule_id}/open")
     public ResponseEntity<ApiSpec<String>> openTreasureCapsule(
         @AuthenticationPrincipal final Long memberId,
-        @PathVariable(value = "capsule_id") final Long capsuleId,
-        @PathVariable(value = "image_id") final Long imageId
+        @PathVariable(value = "capsule_id") final Long capsuleId
     ) {
-        treasureCapsuleService.openTreasureCapsule(memberId, capsuleId, imageId);
+        treasureCapsuleService.openTreasureCapsule(memberId, capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(

@@ -10,10 +10,16 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 public interface CapsuleRepository extends Repository<Capsule, Long>, CapsuleQueryRepository {
 
     Capsule save(Capsule capsule);
+    void delete(Capsule capsule);
 
     @Query("select c from Capsule c where c.id = :capsuleId and c.member.id = :memberId")
     Optional<Capsule> findCapsuleByMemberIdAndCapsuleId(
         @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId
+    );
+
+    @Query("select c from Capsule c join fetch c.images where c.id = :capsuleId")
+    Optional<Capsule> findCapsuleWithImageByCapsuleId(
         @Param("capsuleId") Long capsuleId
     );
 
