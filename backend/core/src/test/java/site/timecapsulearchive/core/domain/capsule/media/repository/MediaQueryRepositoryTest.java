@@ -44,11 +44,10 @@ class MediaQueryRepositoryTest extends RepositoryTest {
 
     public MediaQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
-        DataSource dataSource,
-        JPAQueryFactory jpaQueryFactory
+        DataSource dataSource
     ) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.imageQueryRepository = new ImageQueryRepositoryImpl(jdbcTemplate, jpaQueryFactory);
+        this.imageQueryRepository = new ImageQueryRepositoryImpl(jdbcTemplate);
         this.videoQueryRepository = new VideoQueryRepositoryImpl(jdbcTemplate);
     }
 
