@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.repository.SecretCapsuleQueryRepository;
 
 @Service
@@ -27,7 +27,7 @@ public class SecretCapsuleService {
      * @param createdAt 마지막 캡슐 생성 날짜
      * @return 내 페이지에서 비밀 캡슐을 조회한다.
      */
-    public Slice<MySecreteCapsuleDto> findSecretCapsuleSliceByMemberId(
+    public Slice<CapsuleBasicInfoDto> findSecretCapsuleSliceByMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

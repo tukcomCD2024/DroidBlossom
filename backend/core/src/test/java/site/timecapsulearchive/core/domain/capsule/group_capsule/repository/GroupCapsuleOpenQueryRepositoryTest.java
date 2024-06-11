@@ -19,12 +19,12 @@ import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleSkinFixture;
 import site.timecapsulearchive.core.common.fixture.domain.GroupCapsuleOpenFixture;
+import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
-import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
+import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
@@ -32,21 +32,29 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final GroupCapsuleOpenQueryRepository groupCapsuleOpenRepository;
+
+    private Long groupId;
     private Capsule capsule;
     private List<Member> groupMembers;
     private List<GroupCapsuleOpen> groupCapsuleOpens;
 
     public GroupCapsuleOpenQueryRepositoryTest(
         JdbcTemplate jdbcTemplate,
-        DataSource dataSource
+        DataSource dataSource,
+        JPAQueryFactory jpaQueryFactory
     ) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate);
+        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate,
+            jpaQueryFactory);
     }
 
     @Transactional
     @BeforeEach
     void setUp(@Autowired EntityManager entityManager) {
+        Group group = GroupFixture.group();
+        entityManager.persist(group);
+        groupId = group.getId();
+
         groupMembers = MemberFixture.members(1, 5);
         groupMembers.forEach(entityManager::persist);
 
@@ -55,10 +63,11 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(groupLeader);
         entityManager.persist(capsuleSkin);
 
-        capsule = CapsuleFixture.capsule(groupLeader, capsuleSkin, CapsuleType.GROUP);
+        capsule = CapsuleFixture.groupCapsule(groupLeader, capsuleSkin, group);
         entityManager.persist(capsule);
 
-        groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(false, capsule, groupMembers);
+        groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(group, false, capsule,
+            groupMembers);
     }
 
     @Test
@@ -68,7 +77,7 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
         Long capsuleId = capsule.getId();
 
         // when
-        groupCapsuleOpenRepository.bulkSave(groupMemberIds, capsule);
+        groupCapsuleOpenRepository.bulkSave(groupId, groupMemberIds, capsule);
 
         //then
         String sql = "SELECT count(*) from group_capsule_open WHERE capsule_id = (:capsuleId) and member_id in (:groupMemberIds)";
