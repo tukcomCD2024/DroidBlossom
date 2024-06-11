@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -136,8 +135,10 @@ public class CapsuleFixture {
         Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
-        List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(false,
-            capsule, groupMembers);
+        Group group = GroupFixture.group();
+
+        List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(group,
+            false, capsule, groupMembers);
         setFieldValue(capsule, "id", capsuleId);
         setFieldValue(capsule, "groupCapsuleOpens", groupCapsuleOpens);
 
@@ -153,7 +154,10 @@ public class CapsuleFixture {
         Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
+        Group group = GroupFixture.group();
+
         List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpensNotAllOpened(
+            group,
             capsule, groupMembers);
         setFieldValue(capsule, "id", capsuleId);
         setFieldValue(capsule, "groupCapsuleOpens", groupCapsuleOpens);
@@ -182,8 +186,10 @@ public class CapsuleFixture {
         Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
-        List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(true,
-            capsule, groupMembers);
+        Group group = GroupFixture.group();
+
+        List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(group,
+            true, capsule, groupMembers);
         setFieldValue(capsule, "id", capsuleId);
         setFieldValue(capsule, "groupCapsuleOpens", groupCapsuleOpens);
 
@@ -199,21 +205,12 @@ public class CapsuleFixture {
         Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
             .build();
 
+        Group group = GroupFixture.group();
+
         List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpensNotOpenSpecificMemberId(
-            capsule, groupMembers, memberId);
+            group, capsule, groupMembers, memberId);
         setFieldValue(capsule, "id", capsuleId);
         setFieldValue(capsule, "groupCapsuleOpens", groupCapsuleOpens);
-
-        return Optional.ofNullable(capsule);
-    }
-
-    public static Optional<Capsule> groupCapsuleAlreadyOpen(Long memberId, Long capsuleId) {
-        CapsuleBuilder capsuleBuilder = getCapsuleBuilder(memberId);
-        Capsule capsule = capsuleBuilder.dueDate(ZonedDateTimeSupplier.utc().get())
-            .build();
-
-        setFieldValue(capsule, "id", capsuleId);
-        setFieldValue(capsule, "isOpened", true);
 
         return Optional.ofNullable(capsule);
     }

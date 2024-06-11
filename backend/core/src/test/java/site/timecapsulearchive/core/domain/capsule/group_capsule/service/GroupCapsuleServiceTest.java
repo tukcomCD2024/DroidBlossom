@@ -28,6 +28,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.Ca
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
@@ -45,10 +46,13 @@ class GroupCapsuleServiceTest {
     private final CapsuleRepository capsuleRepository = mock(CapsuleRepository.class);
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository = mock(
         GroupCapsuleQueryRepository.class);
+    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository = mock(
+        GroupCapsuleOpenQueryRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
 
     private final GroupCapsuleService groupCapsuleService = new GroupCapsuleService(
-        capsuleRepository, groupCapsuleQueryRepository, memberGroupRepository);
+        capsuleRepository, groupCapsuleQueryRepository, groupCapsuleOpenQueryRepository,
+        memberGroupRepository);
 
     @Test
     void 개봉된_그룹_캡슐의_상세_내용을_볼_수_있다() {
@@ -236,6 +240,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus())
                 .isEqualTo(CapsuleOpenStatus.NOT_OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isFalse();
         });
     }
 
@@ -257,6 +262,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus())
                 .isEqualTo(CapsuleOpenStatus.OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -280,6 +286,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.NOT_OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -303,6 +310,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isFalse();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.NOT_OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -341,6 +349,7 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
     }
 
@@ -364,7 +373,42 @@ class GroupCapsuleServiceTest {
             softly.assertThat(groupCapsule.get().getIsOpened()).isTrue();
             softly.assertThat(groupCapsuleOpenStateDto.capsuleOpenStatus()).isEqualTo(
                 CapsuleOpenStatus.OPEN);
+            softly.assertThat(groupCapsuleOpenStateDto.isIndividuallyOpened()).isTrue();
         });
+    }
+
+    @Test
+    void 그룹원이_아닌_사용자가_그룹_캡슐_개봉_상태를_조회하면_오류가_발생한다() throws Exception {
+        //given
+        Long groupId = 1L;
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupCapsuleService.findGroupMemberCapsuleOpenStatus(memberId, capsuleId,
+                groupId))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹원이_그룹_캡슐_개봉_상태를_조회하면_그룹_캡슐_개봉_상태를_조회할_수_있다() throws Exception {
+        //given
+        Long groupId = 1L;
+        int size = 20;
+        given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
+            .willReturn(true);
+        given(groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId))
+            .willReturn(
+                GroupMemberCapsuleOpenStatusDtoFixture.groupMemberCapsuleOpenStatusDto(memberId,
+                    size));
+
+        //when
+        List<GroupMemberCapsuleOpenStatusDto> groupMemberCapsuleOpenStatus = groupCapsuleService.findGroupMemberCapsuleOpenStatus(
+            memberId, capsuleId, groupId);
+
+        //then
+        assertThat(groupMemberCapsuleOpenStatus).isNotEmpty();
     }
 
     @Test

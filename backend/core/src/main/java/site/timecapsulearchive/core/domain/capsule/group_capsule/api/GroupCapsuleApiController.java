@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.api;
 
 import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,15 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupMemberCapsuleOpenStatusListResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleService;
@@ -159,6 +163,24 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
                     groupCapsules.hasNext(),
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet
                 )
+            )
+        );
+    }
+
+    @GetMapping(value = "/{capsule_id}/open-status", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<GroupMemberCapsuleOpenStatusListResponse>> getGroupCapsuleOpenStatus(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId,
+        @RequestParam("group_id") final Long groupId
+    ) {
+        List<GroupMemberCapsuleOpenStatusDto> groupMemberCapsuleOpenStatus = groupCapsuleService.findGroupMemberCapsuleOpenStatus(
+            memberId, capsuleId, groupId);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                GroupMemberCapsuleOpenStatusListResponse.create(groupMemberCapsuleOpenStatus)
             )
         );
     }

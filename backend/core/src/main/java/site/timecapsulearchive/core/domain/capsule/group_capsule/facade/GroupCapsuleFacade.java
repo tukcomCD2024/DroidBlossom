@@ -56,6 +56,6 @@ public class GroupCapsuleFacade {
 
         final List<Long> groupMemberIds = memberGroupQueryService.findGroupMemberIds(groupId);
 
-        groupCapsuleOpenService.bulkSave(groupMemberIds, capsule);
+        groupCapsuleOpenService.bulkSave(groupId, groupMemberIds, capsule);
     }
 }

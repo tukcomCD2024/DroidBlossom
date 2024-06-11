@@ -17,6 +17,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -31,6 +32,7 @@ public class GroupCapsuleService {
 
     private final CapsuleRepository capsuleRepository;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
+    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository;
     private final MemberGroupRepository memberGroupRepository;
 
     @Transactional
@@ -102,22 +104,23 @@ public class GroupCapsuleService {
      */
     @Transactional
     public GroupCapsuleOpenStateDto openGroupCapsule(final Long memberId, final Long capsuleId) {
-        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(memberId,
+        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
+                memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (!groupCapsule.canOpen()) {
-            return GroupCapsuleOpenStateDto.notOpened();
+        if (groupCapsule.isNotCapsuleOpened()) {
+            return GroupCapsuleOpenStateDto.notOpened(false);
         }
 
-        if (!groupCapsule.isTimeCapsule()) {
+        if (groupCapsule.isNotTimeCapsule()) {
             groupCapsule.open();
             return GroupCapsuleOpenStateDto.opened();
         }
 
         boolean allGroupMemberOpened = groupCapsule.isAllGroupMemberOpened(memberId, capsuleId);
         if (!allGroupMemberOpened) {
-            return GroupCapsuleOpenStateDto.notOpened();
+            return GroupCapsuleOpenStateDto.notOpened(true);
         }
 
         groupCapsule.open();
@@ -132,6 +135,19 @@ public class GroupCapsuleService {
         }
 
         return groupCapsuleQueryRepository.findGroupCapsuleSlice(dto);
+    }
+
+    public List<GroupMemberCapsuleOpenStatusDto> findGroupMemberCapsuleOpenStatus(
+        final Long memberId,
+        final Long capsuleId,
+        final Long groupId
+    ) {
+        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId);
+        if (!isGroupMember) {
+            throw new NoGroupAuthorityException();
+        }
+
+        return groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId);
     }
 }
 
