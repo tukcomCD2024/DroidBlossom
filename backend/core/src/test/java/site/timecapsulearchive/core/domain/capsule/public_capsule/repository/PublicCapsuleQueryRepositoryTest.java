@@ -19,11 +19,11 @@ import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
 import site.timecapsulearchive.core.common.fixture.domain.CapsuleSkinFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFriendFixture;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
@@ -193,7 +193,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
         ZonedDateTime now = ZonedDateTime.now().plusDays(1);
 
         //when
-        Slice<MyPublicCapsuleDto> publicCapsules = publicCapsuleQueryRepository.findMyPublicCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> publicCapsules = publicCapsuleQueryRepository.findMyPublicCapsuleSlice(
             memberId, size, now);
 
         //then
