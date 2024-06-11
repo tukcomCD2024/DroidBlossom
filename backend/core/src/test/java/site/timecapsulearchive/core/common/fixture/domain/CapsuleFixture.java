@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;

@@ -80,6 +80,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
             entityManager.persist(c);
 
             List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(
+                group,
                 false,
                 c, groupMember);
             groupCapsuleOpens.forEach(entityManager::persist);
