@@ -8,6 +8,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
@@ -89,7 +90,7 @@ public class GroupCapsuleService {
      * @param createdAt 조회를 시작할 캡슐의 생성 시간, 첫 조회라면 현재 시간, 이후 조회라면 맨 마지막 데이터의 시간
      * @return 사용자가 생성한 그룹 캡슐 목록
      */
-    public Slice<MyGroupCapsuleDto> findMyGroupCapsuleSlice(
+    public Slice<CapsuleBasicInfoDto> findMyGroupCapsuleSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

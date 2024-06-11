@@ -1,11 +1,11 @@
-package site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto;
+package site.timecapsulearchive.core.domain.capsule.data.dto;
 
 import java.time.ZonedDateTime;
 import java.util.function.Function;
+import site.timecapsulearchive.core.domain.capsule.data.response.CapsuleBasicInfoResponse;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.MyPublicCapsuleResponse;
 
-public record MyPublicCapsuleDto(
+public record CapsuleBasicInfoDto(
     Long capsuleId,
     String skinUrl,
     ZonedDateTime dueDate,
@@ -15,9 +15,9 @@ public record MyPublicCapsuleDto(
     CapsuleType capsuleType
 ) {
 
-    public MyPublicCapsuleResponse toResponse(
+    public CapsuleBasicInfoResponse toResponse(
         final Function<String, String> singlePreSignUrlFunction) {
-        return MyPublicCapsuleResponse.builder()
+        return CapsuleBasicInfoResponse.builder()
             .capsuleId(capsuleId)
             .skinUrl(singlePreSignUrlFunction.apply(skinUrl))
             .dueDate(dueDate)
