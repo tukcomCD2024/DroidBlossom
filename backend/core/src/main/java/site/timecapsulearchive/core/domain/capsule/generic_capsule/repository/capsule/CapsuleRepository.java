@@ -10,6 +10,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 public interface CapsuleRepository extends Repository<Capsule, Long>, CapsuleQueryRepository {
 
     Capsule save(Capsule capsule);
+
     void delete(Capsule capsule);
 
     @Query("select c from Capsule c where c.id = :capsuleId and c.member.id = :memberId")

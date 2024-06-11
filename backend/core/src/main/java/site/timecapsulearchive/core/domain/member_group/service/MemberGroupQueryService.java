@@ -43,7 +43,7 @@ public class MemberGroupQueryService {
     }
 
     public Slice<GroupSendingInviteMemberDto> findGroupSendingInvites(final
-        GroupSendingInvitesSliceRequestDto dto) {
+    GroupSendingInvitesSliceRequestDto dto) {
         return groupInviteRepository.findGroupSendingInvites(dto);
     }
 }

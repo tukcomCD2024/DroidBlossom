@@ -17,12 +17,12 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long>,
         Long friendId);
 
     @Query(value = """
-    select fi
-    from FriendInvite fi
-    join fetch fi.owner
-    join fetch fi.friend
-    where fi.owner.id =:ownerId and fi.friend.id =:friendId
-    """)
+        select fi
+        from FriendInvite fi
+        join fetch fi.owner
+        join fetch fi.friend
+        where fi.owner.id =:ownerId and fi.friend.id =:friendId
+        """)
     Optional<FriendInvite> findFriendReceivingInviteForUpdateByOwnerIdAndFriendId(
         @Param(value = "ownerId") Long ownerId,
         @Param(value = "friendId") Long friendId

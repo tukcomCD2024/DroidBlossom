@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image;
 
-import java.util.Optional;
 import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
 

@@ -13,9 +13,9 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.MyGroupCapsuleDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -98,7 +98,8 @@ public class GroupCapsuleService {
      */
     @Transactional
     public GroupCapsuleOpenStateDto openGroupCapsule(final Long memberId, final Long capsuleId) {
-        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(memberId,
+        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
+                memberId,
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 

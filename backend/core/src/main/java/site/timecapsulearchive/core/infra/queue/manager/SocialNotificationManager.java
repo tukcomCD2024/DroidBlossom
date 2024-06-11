@@ -93,6 +93,7 @@ public class SocialNotificationManager {
             GroupAcceptNotificationDto.createOf(targetId, groupMemberNickname)
         );
     }
+
     public void sendTreasureCaptureMessage(
         final Long targetId,
         final String memberNickname,

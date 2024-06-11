@@ -49,7 +49,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InternalServerException.class)
-    protected ResponseEntity<ErrorResponse> handleInternalServerException(final InternalServerException e) {
+    protected ResponseEntity<ErrorResponse> handleInternalServerException(
+        final InternalServerException e) {
         log.error(e.getMessage(), e);
 
         ErrorCode errorCode = INTERNAL_SERVER_ERROR;

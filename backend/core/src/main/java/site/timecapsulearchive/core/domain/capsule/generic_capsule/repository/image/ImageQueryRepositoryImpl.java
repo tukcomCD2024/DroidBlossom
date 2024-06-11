@@ -1,15 +1,11 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image;
 
-import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
-
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;

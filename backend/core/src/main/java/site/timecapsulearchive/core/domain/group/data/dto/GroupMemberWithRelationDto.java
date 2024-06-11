@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.group.data.dto;
 
-import java.util.function.Function;
 import lombok.Builder;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberWithRelationResponse;
 

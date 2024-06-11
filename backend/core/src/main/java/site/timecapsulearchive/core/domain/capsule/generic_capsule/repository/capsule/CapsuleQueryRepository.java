@@ -7,6 +7,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Near
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 
 public interface CapsuleQueryRepository {
+
     List<NearbyARCapsuleSummaryDto> findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final Long memberId,
         final Polygon mbr,

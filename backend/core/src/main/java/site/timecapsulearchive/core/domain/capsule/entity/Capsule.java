@@ -14,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +63,13 @@ public class Capsule extends BaseEntity {
     private Address address;
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
+    private final List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Video> videos = new ArrayList<>();
+    private final List<Video> videos = new ArrayList<>();
 
     @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
+    private final List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
