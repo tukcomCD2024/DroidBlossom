@@ -51,6 +51,15 @@ public class ImageQueryRepositoryImpl implements ImageQueryRepository {
         );
     }
 
+    public Optional<String> findImageUrl(final Long imageId) {
+        return Optional.ofNullable(jpaQueryFactory
+            .select(image.imageUrl)
+            .from(image)
+            .where(image.id.eq(imageId))
+            .fetchOne()
+        );
+    }
+
     public Optional<Long> deleteImage(final Long imageId) {
         return Optional.of(jpaQueryFactory
             .delete(image)

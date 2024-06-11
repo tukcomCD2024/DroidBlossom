@@ -7,7 +7,7 @@ import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
 public record TreasureCaptureNotificationDto(
 
     Long targetId,
-    String treasureUrl,
+    String treasureImageUrl,
     NotificationStatus notificationStatus,
     String title,
     String text
@@ -19,14 +19,14 @@ public record TreasureCaptureNotificationDto(
         final String memberNickname
 
     ) {
-        final NotificationRequestMessage friendAcceptRequest = NotificationRequestMessage.TREASURE_CAPTURE;
+        final NotificationRequestMessage treasureCaptureRequest = NotificationRequestMessage.TREASURE_CAPTURE;
 
         return new TreasureCaptureNotificationDto(
             targetId,
             treasureUrl,
-            friendAcceptRequest.getStatus(),
-            friendAcceptRequest.getTitle(),
-            friendAcceptRequest.buildPrefixText(memberNickname)
+            treasureCaptureRequest.getStatus(),
+            treasureCaptureRequest.getTitle(),
+            treasureCaptureRequest.buildPrefixText(memberNickname)
         );
     }
 }

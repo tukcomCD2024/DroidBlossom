@@ -30,9 +30,9 @@ public class TreasureCapsuleService {
         final Member member = memberRepository.findMemberById(memberId).orElseThrow(
             MemberNotFoundException::new);
 
-        String treasureUrl = transactionTemplate.execute(status -> {
-            // capsuleId로 image 엔티티의 imageUrl을 가져온 후 삭제
-            final Image treasureImage = imageRepository.findById(imageId)
+        String treasureImageUrl = transactionTemplate.execute(status -> {
+            // imageId로 image 엔티티의 imageUrl을 가져온 후 삭제
+            final String imageUrl = imageRepository.findImageUrl(imageId)
                 .orElseThrow(CapsuleNotFondException::new);
             imageRepository.deleteImage(imageId);
 
@@ -46,14 +46,14 @@ public class TreasureCapsuleService {
 
             // caspuleSkin 저장
             final CapsuleSkin myTreasureCapsuleSkin = CapsuleSkin.captureTreasureCapsuleSkin(
-                treasureImage.getImageUrl(), member);
+                imageUrl, member);
             capsuleSkinRepository.save(myTreasureCapsuleSkin);
 
-            return treasureImage.getImageUrl();
+            return imageUrl;
         });
 
         // 알림 전송
         socialNotificationManager.sendTreasureCaptureMessage(memberId, member.getNickname(),
-            treasureUrl);
+            treasureImageUrl);
     }
 }

@@ -96,9 +96,9 @@ public class SocialNotificationManager {
     public void sendTreasureCaptureMessage(
         final Long targetId,
         final String memberNickname,
-        final String treasureUrl
+        final String treasureImageUrl
     ) {
-        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(treasureUrl);
+        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(treasureImageUrl);
 
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getSuccessComponent(),

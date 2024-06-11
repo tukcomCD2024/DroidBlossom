@@ -10,4 +10,6 @@ public interface ImageQueryRepository {
 
     Optional<Long> deleteImage(final Long imageId);
 
+    Optional<String> findImageUrl(final Long imageId);
+
 }

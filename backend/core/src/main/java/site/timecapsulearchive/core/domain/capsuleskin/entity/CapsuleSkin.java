@@ -57,13 +57,13 @@ public class CapsuleSkin extends BaseEntity {
         this.retarget = retarget;
     }
 
-    private CapsuleSkin(String imageUrl, Member member) {
-        this.skinName = "보물 캡슐에서 얻은 스킨";
+    private CapsuleSkin(String skinName, String imageUrl, Member member) {
+        this.skinName =
         this.imageUrl = imageUrl;
         this.member = member;
     }
 
     public static CapsuleSkin captureTreasureCapsuleSkin(String imageUrl, Member member) {
-        return new CapsuleSkin(imageUrl, member);
+        return new CapsuleSkin("보물 캡슐에서 얻은 스킨", imageUrl, member);
     }
 }
