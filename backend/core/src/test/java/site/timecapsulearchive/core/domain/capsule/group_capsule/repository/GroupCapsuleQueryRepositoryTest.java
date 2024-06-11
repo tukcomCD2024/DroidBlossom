@@ -76,7 +76,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         capsuleId = capsule.getId();
 
         //그룹 캡슐 오픈 여부
-        List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(false,
+        List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(group, false,
             capsule, groupMember);
         groupCapsuleOpens.forEach(entityManager::persist);
     }
