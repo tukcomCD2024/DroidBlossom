@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsulePageResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupMemberCapsuleOpenStatusListResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
@@ -111,10 +112,33 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         );
     }
 
+    @GetMapping(
+        produces = {"application/json"}
+    )
     @Override
-    public ResponseEntity<GroupCapsulePageResponse> getGroupCapsules(Long groupId, Long size,
-        Long capsuleId) {
-        return null;
+    public ResponseEntity<ApiSpec<GroupCapsuleSliceResponse>> getGroupCapsules(
+        @AuthenticationPrincipal final Long memberId,
+        @RequestParam("group_id") final Long groupId,
+        @RequestParam("size") final int size,
+        @RequestParam(value = "last_capsule_id", required = false) final Long lastCapsuleId
+    ) {
+        final GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId,
+            groupId,
+            size, lastCapsuleId);
+
+        final Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
+            dto);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                GroupCapsuleSliceResponse.create(
+                    groupCapsuleSlice.getContent(),
+                    groupCapsuleSlice.hasNext(),
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
+            )
+        );
     }
 
     @GetMapping(value = "/my", produces = {"application/json"})
