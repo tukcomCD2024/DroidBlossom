@@ -15,7 +15,7 @@ import com.droidblossom.archive.databinding.FragmentHomeBinding
 import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationActivity
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng

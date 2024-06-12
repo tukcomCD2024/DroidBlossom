@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.home.dialog.adapter
+package com.droidblossom.archive.presentation.ui.capsulepreview.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,12 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemGroupNumberBinding
-import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 
 class GroupCapsuleMemberRVA(
 
-): ListAdapter<GroupCapsuleMember,GroupCapsuleMemberRVA.ItemViewHolder>(differ) {
+): ListAdapter<GroupCapsuleMember, GroupCapsuleMemberRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemGroupNumberBinding

@@ -14,7 +14,7 @@
 
         <variable
             name="vm"
-            type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
+            type="com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.skin.adapter.MySkinRVA
 import com.droidblossom.archive.presentation.ui.skin.detail.SkinDetailDialogFragment
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity

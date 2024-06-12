@@ -20,12 +20,11 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.ProfileRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.SpinnerAdapter
 import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingActivity
 import com.droidblossom.archive.util.CustomLifecycleOwner

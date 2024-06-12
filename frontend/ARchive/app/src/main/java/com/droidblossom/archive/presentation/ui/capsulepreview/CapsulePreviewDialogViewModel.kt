@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.home.dialog
+package com.droidblossom.archive.presentation.ui.capsulepreview
 
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember

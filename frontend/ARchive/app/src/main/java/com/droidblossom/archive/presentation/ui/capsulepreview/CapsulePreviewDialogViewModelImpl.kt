@@ -1,4 +1,4 @@
-package com.droidblossom.archive.presentation.ui.home.dialog
+package com.droidblossom.archive.presentation.ui.capsulepreview
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,6 @@ import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCas
 import com.droidblossom.archive.domain.usecase.treasure.OpenTreasureCapsuleUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
-import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
