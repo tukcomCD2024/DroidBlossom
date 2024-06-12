@@ -11,6 +11,7 @@ import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummary
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupMembersCapsuleOpenStatusUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
+import com.droidblossom.archive.domain.usecase.treasure.OpenTreasureCapsuleUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.util.onError
@@ -39,7 +40,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase,
     private val groupCapsuleOpenUseCase: GroupCapsuleOpenUseCase,
     private val groupCapsuleSummaryUseCase: GroupCapsuleSummaryUseCase,
-    private val groupMembersCapsuleOpenStatusUseCase: GroupMembersCapsuleOpenStatusUseCase
+    private val groupMembersCapsuleOpenStatusUseCase: GroupMembersCapsuleOpenStatusUseCase,
+    private val openTreasureCapsuleUseCase: OpenTreasureCapsuleUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents =
@@ -176,6 +178,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
 
     override fun getTreasureCapsuleSummary(capsuleId: Long) {
+        _capsuleId.value = capsuleId
         viewModelScope.launch {
 
         }
@@ -418,7 +421,13 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     private suspend fun openTreasureCapsule(){
+        openTreasureCapsuleUseCase(capsuleId.value).collect{result ->
+            result.onSuccess {
+                // 어케하지
+            }.onFail {
 
+            }
+        }
     }
 
     override fun setVisibleOpenProgressBar(visible: Boolean) {

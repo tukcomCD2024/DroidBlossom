@@ -42,4 +42,5 @@ interface GroupCapsuleService {
         @Path("capsule_id") capsuleId: Long,
         @Query("group_id") groupId: Long
     ): Response<ResponseBody<GroupMembersCapsuleOpenStatusResponseDto>>
+
 }

@@ -10,6 +10,7 @@ import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
+import com.droidblossom.archive.data.source.remote.api.TreasureService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,4 +63,7 @@ object ServiceModule {
     @Provides
     fun providesGroupCapsuleService(retrofit: Retrofit) : GroupCapsuleService = retrofit.create(GroupCapsuleService::class.java)
 
+    @Singleton
+    @Provides
+    fun providesTreasureService(retrofit: Retrofit) : TreasureService = retrofit.create(TreasureService::class.java)
 }

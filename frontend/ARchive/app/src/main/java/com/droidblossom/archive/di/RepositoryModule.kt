@@ -11,6 +11,7 @@ import com.droidblossom.archive.data.repository.KakaoRepositoryImpl
 import com.droidblossom.archive.data.repository.PublicRepositoryImpl
 import com.droidblossom.archive.data.repository.S3RepositoryImpl
 import com.droidblossom.archive.data.repository.SecretRepositoryImpl
+import com.droidblossom.archive.data.repository.TreasureRepositoryImpl
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
 import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
@@ -22,6 +23,7 @@ import com.droidblossom.archive.data.source.remote.api.KakaoService
 import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
+import com.droidblossom.archive.data.source.remote.api.TreasureService
 import com.droidblossom.archive.domain.repository.AuthRepository
 import com.droidblossom.archive.domain.repository.CapsuleRepository
 import com.droidblossom.archive.domain.repository.CapsuleSkinRepository
@@ -33,6 +35,7 @@ import com.droidblossom.archive.domain.repository.KakaoRepository
 import com.droidblossom.archive.domain.repository.PublicRepository
 import com.droidblossom.archive.domain.repository.S3Repository
 import com.droidblossom.archive.domain.repository.SecretRepository
+import com.droidblossom.archive.domain.repository.TreasureRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -92,4 +95,7 @@ object RepositoryModule {
     @ViewModelScoped
     fun providesGroupCapsuleRepository(api : GroupCapsuleService) : GroupCapsuleRepository = GroupCapsuleRepositoryImpl(api)
 
+    @Provides
+    @ViewModelScoped
+    fun providesTreasureRepository(api: TreasureService) : TreasureRepository = TreasureRepositoryImpl(api)
 }
