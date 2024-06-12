@@ -5,10 +5,12 @@ import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
 
 data class GroupCapsuleOpenStateResponseDto(
     val capsuleOpenStatus: String,
-    val statusMessage: String
+    val statusMessage: String,
+    val isIndividuallyOpened: Boolean
 ){
     fun toModel() = GroupCapsuleOpenStateResponse(
         capsuleOpenStatus = GroupCapsuleOpenState.valueOf(this.capsuleOpenStatus),
-        statusMessage = this.statusMessage
+        statusMessage = this.statusMessage,
+        isIndividuallyOpened = this.isIndividuallyOpened
     )
 }

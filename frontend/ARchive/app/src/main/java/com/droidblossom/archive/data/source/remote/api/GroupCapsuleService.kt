@@ -5,7 +5,7 @@ import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.group.response.MyGroupCapsulePageResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleOpenStateResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleSummaryResponseDto
-import com.droidblossom.archive.data.dto.open.response.MyPublicCapsulePageResponseDto
+import com.droidblossom.archive.data.dto.group_capsule.GroupMembersCapsuleOpenStatusResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,4 +36,10 @@ interface GroupCapsuleService {
         @Query("size") size : Int,
         @Query("created_at") createdAt: String
     ): Response<ResponseBody<MyGroupCapsulePageResponseDto>>
+
+    @GET("group-capsules/{capsule_id}/open-status")
+    suspend fun getGroupCapsulesMemberOpenStatusApi(
+        @Path("capsule_id") capsuleId: Long,
+        @Query("group_id") groupId: Long
+    ): Response<ResponseBody<GroupMembersCapsuleOpenStatusResponseDto>>
 }

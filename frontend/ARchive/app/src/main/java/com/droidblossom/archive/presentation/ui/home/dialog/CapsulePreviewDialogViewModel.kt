@@ -26,6 +26,8 @@ interface CapsulePreviewDialogViewModel {
     val canOpenCapsule: StateFlow<Boolean>
     val capsuleType: StateFlow<HomeFragment.CapsuleType>
     val groupCapsuleMembers: StateFlow<List<GroupCapsuleMember>>
+    val capsuleId: StateFlow<Long>
+    val myGroupCapsuleOpenStatus: StateFlow<Boolean>
 
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)
     fun calculateCapsuleOpenTime(createdAt: String, dueDate: String)
@@ -41,7 +43,12 @@ interface CapsulePreviewDialogViewModel {
     fun getSecretCapsuleSummary(capsuleId: Long)
     fun getPublicCapsuleSummary(capsuleId: Long)
     fun getGroupCapsuleSummary(capsuleId: Long)
+    fun getGroupMembersCapsuleOpenStatus()
+
     fun getTreasureCapsuleSummary(capsuleId: Long)
+
+    fun setGroupCapsuleOpenState()
+
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
 

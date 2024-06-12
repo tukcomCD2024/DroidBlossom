@@ -8,6 +8,7 @@ import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummaryUseCase
+import com.droidblossom.archive.domain.usecase.group_capsule.GroupMembersCapsuleOpenStatusUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -37,13 +38,17 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val publicCapsuleSummaryUseCase: PublicCapsuleSummaryUseCase,
     private val patchCapsuleOpenedUseCase: PatchCapsuleOpenedUseCase,
     private val groupCapsuleOpenUseCase: GroupCapsuleOpenUseCase,
-    private val groupCapsuleSummaryUseCase: GroupCapsuleSummaryUseCase
+    private val groupCapsuleSummaryUseCase: GroupCapsuleSummaryUseCase,
+    private val groupMembersCapsuleOpenStatusUseCase: GroupMembersCapsuleOpenStatusUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
-    private val _capsulePreviewDialogEvents = MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
-    override val capsulePreviewDialogEvents: SharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent> = _capsulePreviewDialogEvents.asSharedFlow()
+    private val _capsulePreviewDialogEvents =
+        MutableSharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent>()
+    override val capsulePreviewDialogEvents: SharedFlow<CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent> =
+        _capsulePreviewDialogEvents.asSharedFlow()
 
-    private val _capsuleSummaryResponse = MutableStateFlow(CapsuleSummaryResponse("","","","","","","", false, ""))
+    private val _capsuleSummaryResponse =
+        MutableStateFlow(CapsuleSummaryResponse("", "", "", "", "", "", "", false, ""))
     override val capsuleSummaryResponse: StateFlow<CapsuleSummaryResponse>
         get() = _capsuleSummaryResponse
 
@@ -66,7 +71,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override val capsuleOpenState: StateFlow<Boolean> = _capsuleOpenState.asStateFlow()
 
     private val _visibleCapsuleOpenMessage = MutableStateFlow(true)
-    override val visibleCapsuleOpenMessage: StateFlow<Boolean> = _visibleCapsuleOpenMessage.asStateFlow()
+    override val visibleCapsuleOpenMessage: StateFlow<Boolean> =
+        _visibleCapsuleOpenMessage.asStateFlow()
 
     private val _visibleTimeProgressBar = MutableStateFlow(false)
     override val visibleTimeProgressBar: StateFlow<Boolean> = _visibleTimeProgressBar.asStateFlow()
@@ -93,23 +99,31 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _groupCapsuleMembers = MutableStateFlow(emptyList<GroupCapsuleMember>())
     override val groupCapsuleMembers: StateFlow<List<GroupCapsuleMember>> get() = _groupCapsuleMembers
 
+    private val _capsuleId = MutableStateFlow(-1L)
+    override val capsuleId: StateFlow<Long> get() = _capsuleId
 
-    override fun capsulePreviewDialogEvent(event: CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent){
+    private val _myGroupCapsuleOpenStatus = MutableStateFlow(false)
+    override val myGroupCapsuleOpenStatus: StateFlow<Boolean> get() = _myGroupCapsuleOpenStatus
+
+
+    override fun capsulePreviewDialogEvent(event: CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent) {
         viewModelScope.launch {
             _capsulePreviewDialogEvents.emit(event)
         }
     }
 
-    override fun setCalledFromCamera(calledFromCamera : Boolean){
+    override fun setCalledFromCamera(calledFromCamera: Boolean) {
         _calledFromCamera.value = calledFromCamera
     }
+
     override fun getSecretCapsuleSummary(capsuleId: Long) {
+        _capsuleId.value = capsuleId
         viewModelScope.launch {
             secretCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
                     _capsuleSummaryResponse.emit(it)
                     _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
-                    if (!capsuleOpenState.value){
+                    if (!capsuleOpenState.value) {
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
@@ -120,12 +134,13 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     override fun getPublicCapsuleSummary(capsuleId: Long) {
+        _capsuleId.value = capsuleId
         viewModelScope.launch {
             publicCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
                     _capsuleSummaryResponse.emit(it)
                     _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
-                    if (!capsuleOpenState.value){
+                    if (!capsuleOpenState.value) {
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
@@ -136,13 +151,14 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     override fun getGroupCapsuleSummary(capsuleId: Long) {
+        _capsuleId.value = capsuleId
         viewModelScope.launch {
             groupCapsuleSummaryUseCase(capsuleId).collect { result ->
                 result.onSuccess {
                     _capsuleSummaryResponse.emit(it.toCapsuleSummaryResponseModel())
                     _groupCapsuleMembers.emit(it.members)
                     _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
-                    if (!capsuleOpenState.value){
+                    if (!capsuleOpenState.value) {
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
@@ -151,6 +167,13 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             }
         }
     }
+
+    override fun getGroupMembersCapsuleOpenStatus() {
+        viewModelScope.launch {
+            //groupMembersCapsuleOpenStatusUseCase()
+        }
+    }
+
 
     override fun getTreasureCapsuleSummary(capsuleId: Long) {
         viewModelScope.launch {
@@ -164,17 +187,21 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
 
             val startTimeCalendar = Calendar.getInstance().apply {
-                time = dateFormat.parse(createdAt) ?: throw IllegalArgumentException("Invalid createdAt format")
+                time = dateFormat.parse(createdAt)
+                    ?: throw IllegalArgumentException("Invalid createdAt format")
             }
 
             val endTimeCalendar = Calendar.getInstance().apply {
                 if (dueDate.isBlank()) {
                     time = startTimeCalendar.time
-                }else{
-                    time = dateFormat.parse(dueDate) ?: throw IllegalArgumentException("Invalid createdAt format")
+                } else {
+                    time = dateFormat.parse(dueDate)
+                        ?: throw IllegalArgumentException("Invalid createdAt format")
                 }
             }
-            if (startTimeCalendar == endTimeCalendar) _timeCapsule.emit(false) else _timeCapsule.emit(true)
+            if (startTimeCalendar == endTimeCalendar) _timeCapsule.emit(false) else _timeCapsule.emit(
+                true
+            )
             _startTime.emit(startTimeCalendar)
             _endTime.emit(endTimeCalendar)
         }
@@ -195,8 +222,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 val totalTimeSeconds = (endTimeMillis - startTimeMillis)
                 val initialProgressSeconds = (currentTimeMillis - startTimeMillis)
 
-                val totalTimeInt = if (totalTimeSeconds > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeSeconds.toInt()
-                val initialProgressInt = if (initialProgressSeconds > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressSeconds.toInt()
+                val totalTimeInt =
+                    if (totalTimeSeconds > Int.MAX_VALUE) Int.MAX_VALUE else totalTimeSeconds.toInt()
+                val initialProgressInt =
+                    if (initialProgressSeconds > Int.MAX_VALUE) Int.MAX_VALUE else initialProgressSeconds.toInt()
 
                 _totalTime.emit(totalTimeInt)
                 _timeProgress.emit(initialProgressInt)
@@ -222,8 +251,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 _timeProgress.emit(initialProgress)
 
                 if (remainingTime > 24 * 60 * 60 * 1000) {
-                    _timerState.emit(formatReleaseDate(Calendar.getInstance().apply { timeInMillis = endTimeMillis }))
-                }else{
+                    _timerState.emit(
+                        formatReleaseDate(
+                            Calendar.getInstance().apply { timeInMillis = endTimeMillis })
+                    )
+                } else {
                     _timerState.emit(getTime(remainingTime))
                 }
 
@@ -239,6 +271,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             _canOpenCapsule.emit(true)
         }
     }
+
     private fun getTime(millis: Long): String {
         val hours = (millis / (1000 * 60 * 60)) % 24
         val minutes = (millis / (1000 * 60)) % 60
@@ -251,7 +284,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         return dateFormat.format(calendar.time)
     }
 
-    override fun setCapsuleTypeImage(image : Int, type: HomeFragment.CapsuleType){
+    override fun setCapsuleTypeImage(image: Int, type: HomeFragment.CapsuleType) {
         viewModelScope.launch {
             _capsuleTypeImage.emit(image)
             _capsuleType.emit(type)
@@ -260,45 +293,85 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
     override fun openCapsule(capsuleId: Long) {
         if (timeCapsule.value && !calledFromCamera.value) {
-            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("타임캡슐 첫 오픈 시에는 시간, 위치 제약 있습니다."))
+            capsulePreviewDialogEvent(
+                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                    "타임캡슐 첫 오픈 시에는 시간, 위치 제약 있습니다."
+                )
+            )
             return
         }
 
-        if (canOpenCapsule.value){
+        if (canOpenCapsule.value) {
             viewModelScope.launch {
-                when(capsuleType.value){
+                when (capsuleType.value) {
                     HomeFragment.CapsuleType.GROUP -> {
-                        groupCapsuleOpenUseCase(capsuleId).collect { result ->
-                            result.onSuccess {
-                                Log.d("그캡","${it.capsuleOpenStatus}\n${it.statusMessage}")
-                                when(it.capsuleOpenStatus){
-                                    GroupCapsuleOpenState.OPEN -> {
-                                        _capsuleOpenState.emit(true)
-                                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
-                                    }
 
-                                    GroupCapsuleOpenState.NOT_OPEN -> {
-                                        // 현재 사용자의 오픈 여부를 바꾸어야 하는데 식별할 요소가 없음 - 일단 재호출
-                                        // 근데 이미 호출된 오픈된 상태일 떄 막을 방법이 없음
-                                        groupCapsuleSummaryUseCase(capsuleId).collect { result ->
-                                            result.onSuccess {
-                                                _groupCapsuleMembers.emit(it.members)
-                                            }.onFail {
-
-                                            }
+                        if (myGroupCapsuleOpenStatus.value){
+                            capsulePreviewDialogEvent(
+                                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                    "모든 그룹원이 캡슐 개봉 요청을 완료할 때까지 기다려주세요."
+                                )
+                            )
+                        }else{
+                            groupCapsuleOpenUseCase(capsuleId).collect { result ->
+                                result.onSuccess { it ->
+                                    when (it.capsuleOpenStatus) {
+                                        GroupCapsuleOpenState.OPEN -> {
+                                            Log.d("그캡", "오픈")
+                                            _capsuleOpenState.emit(true)
+                                            _groupCapsuleMembers.value =
+                                                groupCapsuleMembers.value.map { capsuleMember ->
+                                                    capsuleMember.copy(
+                                                        memberId = capsuleMember.memberId,
+                                                        nickname = capsuleMember.nickname,
+                                                        profileUrl = capsuleMember.profileUrl,
+                                                        isOpened = true
+                                                    )
+                                                }
+                                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
                                         }
 
+                                        GroupCapsuleOpenState.NOT_OPEN -> {
+                                            if (it.isIndividuallyOpened) {
+                                                _myGroupCapsuleOpenStatus.value = true
+                                                capsulePreviewDialogEvent(
+                                                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                                        "캡슐 개봉요청을 성공했습니다."
+                                                    )
+                                                )
+                                            } else {
+                                                capsulePreviewDialogEvent(
+                                                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                                        "캡슐 개봉요청을 실패했습니다."
+                                                    )
+                                                )
+                                            }
 
-
+                                        }
                                     }
+                                }.onFail {
+                                    // 값 뭐뭐 받는지에 따라서 다름
+                                    Log.d("그캡", it.toString())
+                                    capsulePreviewDialogEvent(
+                                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                            "캡슐 열기 실패"
+                                        )
+                                    )
+
                                 }
+                            }
+                        }
+
+                        // 캡슐 재요청 -> 상태만 바꾸도록 변경
+                        groupCapsuleSummaryUseCase(capsuleId).collect { result ->
+                            result.onSuccess {
+                                _groupCapsuleMembers.emit(it.members)
                             }.onFail {
-                                // 값 뭐뭐 받는지에 따라서 다름
-                                Log.d("그캡 실패", it.toString())
-                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
 
                             }
                         }
+
+
                     }
 
                     HomeFragment.CapsuleType.TREASURE -> {
@@ -309,21 +382,33 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         patchCapsuleOpenedUseCase(capsuleId).collect { result ->
                             result.onSuccess {
                                 if (it.result == "캡슐을 열 수 없습니다.") {
-                                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(it.result))
+                                    capsulePreviewDialogEvent(
+                                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                            it.result
+                                        )
+                                    )
                                 } else {
                                     _capsuleOpenState.emit(true)
                                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
                                 }
                             }.onFail {
                                 Log.d("개봉", " 개봉 실패 코드 : $it")
-                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 열기 실패"))
+                                capsulePreviewDialogEvent(
+                                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                        "캡슐 열기 실패"
+                                    )
+                                )
                             }
                         }
                     }
                 }
             }
-        }else{
-            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("아직 캡슐 개봉시간이 되지 않았습니다."))
+        } else {
+            capsulePreviewDialogEvent(
+                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                    "아직 캡슐 개봉시간이 되지 않았습니다."
+                )
+            )
         }
 
 
@@ -332,5 +417,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override fun setVisibleOpenProgressBar(visible: Boolean) {
         _visibleOpenProgressBar.value = visible
     }
+
+    override fun setGroupCapsuleOpenState() {
+        _capsuleOpenState.value = true
+        _myGroupCapsuleOpenStatus.value = true
+    }
+
 
 }

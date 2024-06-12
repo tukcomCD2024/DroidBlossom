@@ -158,8 +158,8 @@ class CapsulePreviewDialogFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsulePreviewDialogEvents.collect { event ->
                     when (event) {
-
                         is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage -> {
+                            Log.d("그캡", "토아스트")
                             showToastMessage(event.message)
                         }
 
@@ -180,11 +180,15 @@ class CapsulePreviewDialogFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.groupCapsuleMembers.collect {
-                    groupMemberRVA.submitList(it)
+                viewModel.groupCapsuleMembers.collect { groupMembers ->
+                    groupMemberRVA.submitList(groupMembers)
+                    if (groupMembers.isNotEmpty() && groupMembers.all { it.isOpened }) {
+                        viewModel.setGroupCapsuleOpenState()
+                    }
                 }
             }
         }
+
     }
 
     private fun updateSkinCardViewConstraints(isVisible: Boolean) {
