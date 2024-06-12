@@ -55,6 +55,7 @@ interface CapsulePreviewDialogViewModel {
 
         object CapsuleOpenSuccess : CapsulePreviewDialogEvent()
         object MoveCapsuleDetail : CapsulePreviewDialogEvent()
+        object DismissCapsulePreviewDialog : CapsulePreviewDialogEvent()
 
     }
 }

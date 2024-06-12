@@ -423,9 +423,26 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private suspend fun openTreasureCapsule() {
         openTreasureCapsuleUseCase(capsuleId.value).collect { result ->
             result.onSuccess {
-                // 어케하지
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                        "축하합니다. 보물 캡슐을 발견했습니다.\n알림함에서 확인하세요."
+                    )
+                )
             }.onFail {
-
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                        "보물캡슐 열기 실패"
+                    )
+                )
+            }.onException {
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                        "누군가 이미 발견했습니다."
+                    )
+                )
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                )
             }
         }
     }

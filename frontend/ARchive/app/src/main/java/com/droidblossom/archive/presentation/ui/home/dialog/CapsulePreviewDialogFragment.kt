@@ -172,6 +172,10 @@ class CapsulePreviewDialogFragment :
                             moveCapsuleDetail()
                         }
 
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog -> {
+                            dismiss()
+                        }
+
                     }
 
                 }
