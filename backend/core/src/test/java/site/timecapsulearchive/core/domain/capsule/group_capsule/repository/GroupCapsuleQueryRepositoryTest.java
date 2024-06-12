@@ -27,12 +27,11 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
@@ -115,7 +114,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         //when
         GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        List<GroupMemberSummaryDto> summaryDto = detailDto.members();
+        List<GroupCapsuleMemberSummaryDto> summaryDto = detailDto.members();
 
         //then
         assertSoftly(
@@ -144,9 +143,8 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 그룹캡슐_아이디로_그룹_캡슐의_요약_조회_하면_요약_내용을_조회할_수_있다() {
         // given
         //when
-        GroupCapsuleSummaryDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
+        GroupCapsuleSummaryDto capsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        CapsuleSummaryDto capsuleSummaryDto = detailDto.capsuleSummaryDto();
 
         //then
         assertSoftly(
@@ -162,17 +160,21 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 그룹캡슐_아이디로_그룹_캡슐의_요약_조회_하면_그룹원_정보를_조회할_수_있다() {
         // given
         //when
-        GroupCapsuleSummaryDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
+        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        List<GroupMemberSummaryDto> summaryDto = detailDto.members();
 
         //then
         assertSoftly(
             softly -> {
-                softly.assertThat(summaryDto).isNotEmpty();
-                softly.assertThat(summaryDto).allMatch(dto -> !dto.isOpened());
-                softly.assertThat(summaryDto).allMatch(dto -> !dto.profileUrl().isEmpty());
-                softly.assertThat(summaryDto).allMatch(dto -> !dto.nickname().isEmpty());
+                softly.assertThat(groupCapsuleSummaryDto.groupMembers()).isNotEmpty();
+                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
+                        .allMatch(dto -> dto.id() != null);
+                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
+                    .allMatch(dto -> !dto.isOpened());
+                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
+                    .allMatch(dto -> !dto.profileUrl().isEmpty());
+                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
+                    .allMatch(dto -> !dto.nickname().isEmpty());
             });
     }
 
@@ -201,7 +203,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         //then
         assertSoftly(softly -> {
             assertThat(groupCapsules.hasContent()).isTrue();
-            assertThat(groupCapsules).allMatch(c-> c.capsuleType().equals(CapsuleType.GROUP));
+            assertThat(groupCapsules).allMatch(c -> c.capsuleType().equals(CapsuleType.GROUP));
             assertThat(groupCapsules).allMatch(c -> c.createdAt().isBefore(now));
         });
     }
