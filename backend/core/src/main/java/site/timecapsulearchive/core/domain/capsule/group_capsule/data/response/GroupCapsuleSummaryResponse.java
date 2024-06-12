@@ -3,19 +3,21 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.data.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import lombok.Builder;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "캡슐 요약 정보")
 @Builder
 public record GroupCapsuleSummaryResponse(
 
+    @Schema(description = "그룹 아이디")
+    Long groupId,
+
     @Schema(description = "그룹원 요약 정보")
-    List<GroupMemberSummaryResponse> members,
+    List<GroupCapsuleMemberResponse> groupMembers,
 
     @Schema(description = "생성자 닉네임")
     String nickname,
@@ -61,8 +63,8 @@ public record GroupCapsuleSummaryResponse(
 
     public static GroupCapsuleSummaryResponse createOf(
         final GroupCapsuleSummaryDto summaryDto,
-        final Function<String, String> preSignUrlFunction,
-        final Function<Point, Point> changePointFunction
+        final UnaryOperator<String> preSignUrlFunction,
+        final UnaryOperator<Point> changePointFunction
     ) {
         return summaryDto.toResponse(preSignUrlFunction, changePointFunction);
     }

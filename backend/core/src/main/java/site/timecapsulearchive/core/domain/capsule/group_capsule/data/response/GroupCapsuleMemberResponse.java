@@ -1,9 +1,12 @@
-package site.timecapsulearchive.core.domain.group.data.response;
+package site.timecapsulearchive.core.domain.capsule.group_capsule.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "그룹원 요약 정보")
-public record GroupMemberSummaryResponse(
+public record GroupCapsuleMemberResponse(
+
+    @Schema(description = "멤버 아이디")
+    Long id,
 
     @Schema(description = "닉네임")
     String nickname,

@@ -1,43 +1,51 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto;
 
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMemberResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 
 public record GroupCapsuleSummaryDto(
-    CapsuleSummaryDto capsuleSummaryDto,
-    List<GroupMemberSummaryDto> members
+    Long groupId,
+    String nickname,
+    String profileUrl,
+    String skinUrl,
+    String title,
+    ZonedDateTime dueDate,
+    Point point,
+    String address,
+    String roadName,
+    Boolean isOpened,
+    ZonedDateTime createdAt,
+    List<GroupCapsuleMemberDto> groupMembers
 ) {
 
-    public List<GroupMemberSummaryResponse> groupMemberSummaryDtoToResponse() {
-        return members.stream()
-            .map(GroupMemberSummaryDto::toResponse)
-            .toList();
-    }
-
     public GroupCapsuleSummaryResponse toResponse(
-        final Function<String, String> preSignUrlFunction,
-        final Function<Point, Point> changePointFunction
+        final UnaryOperator<String> preSignUrlFunction,
+        final UnaryOperator<Point> changePointFunction
     ) {
-        final Point changePoint = changePointFunction.apply(capsuleSummaryDto.point());
+        final Point changePoint = changePointFunction.apply(point);
+
+        final List<GroupCapsuleMemberResponse> groupMembersResponse = groupMembers.stream()
+            .map(GroupCapsuleMemberDto::toResponse)
+            .toList();
 
         return GroupCapsuleSummaryResponse.builder()
-            .members(groupMemberSummaryDtoToResponse())
-            .nickname(capsuleSummaryDto.nickname())
-            .profileUrl(capsuleSummaryDto.profileUrl())
-            .skinUrl(preSignUrlFunction.apply(capsuleSummaryDto.skinUrl()))
-            .title(capsuleSummaryDto.title())
-            .dueDate(capsuleSummaryDto.dueDate())
+            .groupId(groupId)
+            .groupMembers(groupMembersResponse)
+            .nickname(nickname)
+            .profileUrl(profileUrl)
+            .skinUrl(preSignUrlFunction.apply(skinUrl))
+            .title(title)
+            .dueDate(dueDate)
             .latitude(changePoint.getX())
             .longitude(changePoint.getY())
-            .address(capsuleSummaryDto.address())
-            .roadName(capsuleSummaryDto.roadName())
-            .isOpened(capsuleSummaryDto.isOpened())
-            .createdAt(capsuleSummaryDto.createdAt())
+            .address(address)
+            .roadName(roadName)
+            .isOpened(isOpened)
+            .createdAt(createdAt)
             .build();
     }
 }
