@@ -29,23 +29,24 @@ interface CapsulePreviewDialogViewModel {
     val capsuleId: StateFlow<Long>
     val myGroupCapsuleOpenStatus: StateFlow<Boolean>
 
+    fun setCapsuleId(capsuleId:Long)
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)
     fun calculateCapsuleOpenTime(createdAt: String, dueDate: String)
     fun setProgressBar()
 
     fun setCapsuleTypeImage(image : Int, type: HomeFragment.CapsuleType)
 
-    fun openCapsule(capsuleId : Long)
+    fun openCapsule()
     fun setVisibleOpenProgressBar(visible: Boolean)
 
     fun setCalledFromCamera(calledFromCamera : Boolean)
 
-    fun getSecretCapsuleSummary(capsuleId: Long)
-    fun getPublicCapsuleSummary(capsuleId: Long)
-    fun getGroupCapsuleSummary(capsuleId: Long)
+    fun getSecretCapsuleSummary()
+    fun getPublicCapsuleSummary()
+    fun getGroupCapsuleSummary()
     fun getGroupMembersCapsuleOpenStatus()
 
-    fun getTreasureCapsuleSummary(capsuleId: Long)
+    fun getTreasureCapsuleSummary()
 
     fun setGroupCapsuleOpenState()
 

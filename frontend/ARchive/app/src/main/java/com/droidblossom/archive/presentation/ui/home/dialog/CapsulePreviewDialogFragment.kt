@@ -84,25 +84,25 @@ class CapsulePreviewDialogFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding.vm = viewModel
-
+        viewModel.setCapsuleId(capsuleId)
         when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
-                viewModel.getSecretCapsuleSummary(capsuleId)
+                viewModel.getSecretCapsuleSummary()
                 viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24, HomeFragment.CapsuleType.SECRET)
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-                viewModel.getPublicCapsuleSummary(capsuleId)
+                viewModel.getPublicCapsuleSummary()
                 viewModel.setCapsuleTypeImage(R.drawable.ic_public_marker_24, HomeFragment.CapsuleType.PUBLIC)
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-                viewModel.getGroupCapsuleSummary(capsuleId)
+                viewModel.getGroupCapsuleSummary()
                 viewModel.setCapsuleTypeImage(R.drawable.ic_group_marker_24, HomeFragment.CapsuleType.GROUP)
             }
 
             HomeFragment.CapsuleType.TREASURE -> {
-                viewModel.getTreasureCapsuleSummary(capsuleId)
+                viewModel.getTreasureCapsuleSummary()
                 viewModel.setCapsuleTypeImage(R.drawable.ic_treasure_marker, HomeFragment.CapsuleType.GROUP)
             }
 
@@ -127,7 +127,7 @@ class CapsulePreviewDialogFragment :
                 if (viewModel.capsuleOpenState.value) {
                     moveCapsuleDetail()
                 } else {
-                    viewModel.openCapsule(capsuleId.toLong())
+                    viewModel.openCapsule()
                 }
             }
 
