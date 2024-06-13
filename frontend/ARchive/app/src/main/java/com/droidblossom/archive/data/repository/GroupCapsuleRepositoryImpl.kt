@@ -6,10 +6,12 @@ import com.droidblossom.archive.data.dto.open.response.MyPublicCapsulePageRespon
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.group.response.MyGroupCapsulePageResponseDto
+import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleOpenStateResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleSummaryResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupMembersCapsuleOpenStatusResponseDto
 import com.droidblossom.archive.data.source.remote.api.GroupCapsuleService
+import com.droidblossom.archive.domain.model.common.CapsuleDetail
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenStateResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupMembersCapsuleOpenStatusResponse
@@ -41,6 +43,10 @@ class GroupCapsuleRepositoryImpl @Inject constructor(
 
     override suspend fun getGroupCapsuleSummary(capsuleId: Long): RetrofitResult<GroupCapsuleSummaryResponse> {
         return  apiHandler({ api.getGroupCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<GroupCapsuleSummaryResponseDto> -> response.result.toModel() }
+    }
+
+    override suspend fun getGroupCapsuleDetail(capsuleId: Long): RetrofitResult<CapsuleDetail> {
+        return  apiHandler({ api.getGroupCapsuleDetailApi(capsuleId) }) { response: ResponseBody<GroupCapsuleDetailResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getMyGroupCapsulesPage(request: PagingRequestDto): RetrofitResult<CapsulePageList> {
