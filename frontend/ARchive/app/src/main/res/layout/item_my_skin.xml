@@ -34,7 +34,7 @@
                 android:background="@drawable/corner_radius_8"
                 android:padding="12dp"
                 android:clipToOutline="true"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="w,4:3"
                 app:layout_constraintEnd_toEndOf="parent"
