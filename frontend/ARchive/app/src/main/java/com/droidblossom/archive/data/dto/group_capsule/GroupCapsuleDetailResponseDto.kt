@@ -1,12 +1,13 @@
 package com.droidblossom.archive.data.dto.group_capsule
 
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 
 data class GroupCapsuleDetailResponseDto(
     val address: String,
     val roadName: String?,
     val capsuleSkinUrl: String,
-    val members : List<GroupCapsuleMemberDto>,
+    val members : List<DummyMember>,
     val content: String?,
     val createdDate: String,
     val latitude: Double,
@@ -35,5 +36,18 @@ data class GroupCapsuleDetailResponseDto(
         title =  this.title,
         capsuleType=this.capsuleType,
         members = this.members.map { it.toModel() },
+    )
+}
+
+data class DummyMember(
+    val nickname : String,
+    val profileUrl : String,
+    val isOpened : Boolean,
+){
+    fun toModel() = GroupCapsuleMember(
+        memberId = 1,
+        nickname = this.nickname,
+        profileUrl = this.profileUrl,
+        isOpened = this.isOpened
     )
 }
