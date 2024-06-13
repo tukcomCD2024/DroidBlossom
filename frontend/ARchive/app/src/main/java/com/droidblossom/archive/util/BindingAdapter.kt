@@ -2,6 +2,7 @@ package com.droidblossom.archive.util
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
@@ -225,6 +226,25 @@ fun ImageView.setCapsuleType2Img(type: String?) {
     }
 }
 
+@BindingAdapter("bind:setCapsuleTypeColor")
+fun View.setCapsuleTypeColor(type: String?) {
+    when (type) {
+        "SECRET" -> {
+            this.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.purple))
+        }
+
+        "PUBLIC" -> {
+            this.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.main_1))
+        }
+
+        "GROUP" -> {
+            this.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.main_2))
+        }
+
+        else -> {}
+    }
+}
+
 @BindingAdapter("bind:setArrowImg")
 fun ImageView.setArrowImg(isShowMore: Boolean) {
     if (isShowMore) this.setImageResource(R.drawable.ic_arrow_up_24) else this.setImageResource(R.drawable.ic_arrow_down_24)
@@ -235,7 +255,7 @@ fun TextView.setTextMaxLines(isShowMore: Boolean) {
     if (isShowMore) {
         this.maxLines = Int.MAX_VALUE
         this.ellipsize = null
-    }else{
+    } else {
         this.maxLines = 1
         this.ellipsize = TextUtils.TruncateAt.END
     }
