@@ -241,6 +241,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
 
     override fun getInvitedUserList(){
         if (invitedUsersHasNextPage.value){
+            getInvitedUserListJob?.cancel()
             getInvitedUserListJob = viewModelScope.launch {
                 getGroupInvitedUsersUseCase(
                     groupId = groupId.value,
@@ -250,7 +251,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     )
                 ).collect{ result ->
                     result.onSuccess {
-                        _invitedUsers.value = it.groupSendingInviteMembers
+                        _invitedUsers.value += it.groupSendingInviteMembers
                         _invitedUsersHasNextPage.value = it.hasNext
                     }.onFail {
                         managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
@@ -265,23 +266,21 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     override fun getLatestInvitedUserList(){
         getInvitedUserListJob?.cancel()
         getInvitedUserListJob = viewModelScope.launch {
-            getInvitedUserListJob = viewModelScope.launch {
-                getGroupInvitedUsersUseCase(
-                    groupId = groupId.value,
-                    pagingRequest = IdBasedPagingRequestDto(
-                        size = 15,
-                        pagingId = null
-                    )
-                ).collect{ result ->
-                    result.onSuccess {
-                        _invitedUsers.value = it.groupSendingInviteMembers
-                        _invitedUsersHasNextPage.value = it.hasNext
-                    }.onFail {
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
-                    }
+            getGroupInvitedUsersUseCase(
+                groupId = groupId.value,
+                pagingRequest = IdBasedPagingRequestDto(
+                    size = 15,
+                    pagingId = null
+                )
+            ).collect{ result ->
+                result.onSuccess {
+                    _invitedUsers.value = it.groupSendingInviteMembers
+                    _invitedUsersHasNextPage.value = it.hasNext
+                }.onFail {
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
                 }
-                managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
             }
+            managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
 
