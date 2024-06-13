@@ -2,11 +2,14 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.model.group.toGroupProfileData
 import com.droidblossom.archive.domain.usecase.group.DeleteGroupUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
 import com.droidblossom.archive.domain.usecase.group.LeaveGroupUseCase
+import com.droidblossom.archive.domain.usecase.group_capsule.CapsulesOfGroupPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
@@ -31,7 +34,8 @@ import javax.inject.Inject
 class GroupDetailViewModelImpl @Inject constructor(
     private val getGroupDetailUseCase: GetGroupDetailUseCase,
     private val leaveGroupUseCase: LeaveGroupUseCase,
-    private val deleteGroupUseCase: DeleteGroupUseCase
+    private val deleteGroupUseCase: DeleteGroupUseCase,
+    private val capsulesOfGroupPageUseCase: CapsulesOfGroupPageUseCase
 ) : BaseViewModel(), GroupDetailViewModel {
 
     private val _groupDetailEvents = MutableSharedFlow<GroupDetailViewModel.GroupDetailEvent>()
@@ -53,10 +57,6 @@ class GroupDetailViewModelImpl @Inject constructor(
     private val _capsulesHasNextPage = MutableStateFlow(true)
     override val capsulesHasNextPage: StateFlow<Boolean>
         get() = _capsulesHasNextPage
-
-    private val _capsulesLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
-    override val capsulesLastCreatedTime: StateFlow<String>
-        get() = _capsulesLastCreatedTime
 
     private val _isShowMore = MutableStateFlow(false)
     override val isShowMore: StateFlow<Boolean>
@@ -107,6 +107,7 @@ class GroupDetailViewModelImpl @Inject constructor(
         _groupId.value = groupId
         Log.d("아니", "setGroupId, $groupId")
         getGroupDetail()
+        getLatestCapsuleList()
     }
 
     override fun groupDetailEvent(event: GroupDetailViewModel.GroupDetailEvent) {
@@ -141,7 +142,20 @@ class GroupDetailViewModelImpl @Inject constructor(
         if (capsulesHasNextPage.value) {
             getCapsuleListJob?.cancel()
             getCapsuleListJob = viewModelScope.launch {
-
+                capsulesOfGroupPageUseCase(
+                    groupId = groupId.value,
+                    pagingRequest = IdBasedPagingRequestDto(
+                        size = 15,
+                        pagingId = capsules.value.lastOrNull()?.capsuleId
+                    )
+                ).collect{ result ->
+                    result.onSuccess {
+                        _capsules.value += it.capsules
+                        _capsulesHasNextPage.value = it.hasNext
+                    }.onFail {
+                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹의 캡슐 불러오기 실패"))
+                    }
+                }
             }
         }
     }
@@ -149,7 +163,20 @@ class GroupDetailViewModelImpl @Inject constructor(
     override fun getLatestCapsuleList() {
         getCapsuleListJob?.cancel()
         getCapsuleListJob = viewModelScope.launch {
-
+            capsulesOfGroupPageUseCase(
+                groupId = groupId.value,
+                pagingRequest = IdBasedPagingRequestDto(
+                    size = 15,
+                    pagingId = null
+                )
+            ).collect{ result ->
+                result.onSuccess {
+                    _capsules.value = it.capsules
+                    _capsulesHasNextPage.value = it.hasNext
+                }.onFail {
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹의 캡슐 불러오기 실패"))
+                }
+            }
         }
     }
 

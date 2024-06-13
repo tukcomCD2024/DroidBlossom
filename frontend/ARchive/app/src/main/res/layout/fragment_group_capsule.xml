@@ -26,6 +26,7 @@
             android:layout_marginHorizontal="@dimen/margin"
             android:clipToPadding="false"
             android:paddingTop="12dp"
+            android:paddingBottom="20dp"
             android:visibility="@{vm.capsules.empty ? View.GONE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

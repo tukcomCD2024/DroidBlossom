@@ -3,6 +3,7 @@ package com.droidblossom.archive.data.source.remote.api
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
 import com.droidblossom.archive.data.dto.group.response.MyGroupCapsulePageResponseDto
+import com.droidblossom.archive.data.dto.group_capsule.CapsulesOfGroupResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleOpenStateResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleSummaryResponseDto
@@ -43,6 +44,13 @@ interface GroupCapsuleService {
         @Query("size") size : Int,
         @Query("created_at") createdAt: String
     ): Response<ResponseBody<MyGroupCapsulePageResponseDto>>
+
+    @GET("group-capsules")
+    suspend fun getCapsulesOfGroupApi(
+        @Query("group_id") groupId: Long,
+        @Query("size") size: Int,
+        @Query("last_capsule_id") pagingId: Long?
+    ) : Response<ResponseBody<CapsulesOfGroupResponseDto>>
 
     @GET("group-capsules/{capsule_id}/open-status")
     suspend fun getGroupCapsulesMemberOpenStatusApi(

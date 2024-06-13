@@ -25,6 +25,7 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingTop="12dp"
+            android:paddingBottom="20dp"
             android:visibility="@{vm.groupMembers.empty ? View.GONE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

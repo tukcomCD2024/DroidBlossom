@@ -152,6 +152,7 @@ class GroupDetailActivity :
             binding.swipeRefreshLayout.setOnRefreshListener {
                 if (viewModel.isAppBarExpanded.value){
                     viewModel.getGroupDetail()
+                    viewModel.getLatestCapsuleList()
                 }
             }
 

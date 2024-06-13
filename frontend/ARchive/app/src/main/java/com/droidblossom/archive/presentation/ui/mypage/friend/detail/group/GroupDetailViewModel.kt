@@ -14,7 +14,6 @@ interface GroupDetailViewModel {
     val groupMembers: StateFlow<List<GroupMember>>
     val capsules : StateFlow<List<CapsuleData>>
     val capsulesHasNextPage : StateFlow<Boolean>
-    val capsulesLastCreatedTime : StateFlow<String>
     val isShowMore:StateFlow<Boolean>
     val isAppBarExpanded:StateFlow<Boolean>
 

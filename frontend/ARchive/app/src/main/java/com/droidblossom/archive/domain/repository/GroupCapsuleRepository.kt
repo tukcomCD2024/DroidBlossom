@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.repository
 
 import com.droidblossom.archive.data.dto.common.CapsuleCreateRequestDto
+import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleDetailResponseDto
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
@@ -31,6 +32,11 @@ interface GroupCapsuleRepository {
 
     suspend fun getMyGroupCapsulesPage(
         request: PagingRequestDto
+    ) : RetrofitResult<CapsulePageList>
+
+    suspend fun getCapsulesPageOfGroup(
+        groupId: Long,
+        request: IdBasedPagingRequestDto
     ) : RetrofitResult<CapsulePageList>
 
     suspend fun getGroupCapsulesMemberOpenStatus(
