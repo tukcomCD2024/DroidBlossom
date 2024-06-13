@@ -9,8 +9,10 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.G
 
 public record GroupCapsuleSummaryDto(
     Long groupId,
-    String nickname,
-    String profileUrl,
+    String groupName,
+    String groupProfileUrl,
+    String creatorNickname,
+    String creatorProfileUrl,
     String skinUrl,
     String title,
     ZonedDateTime dueDate,
@@ -35,8 +37,10 @@ public record GroupCapsuleSummaryDto(
         return GroupCapsuleSummaryResponse.builder()
             .groupId(groupId)
             .groupMembers(groupMembersResponse)
-            .nickname(nickname)
-            .profileUrl(profileUrl)
+            .groupName(groupName)
+            .groupProfileUrl(preSignUrlFunction.apply(groupProfileUrl))
+            .creatorNickname(creatorNickname)
+            .creatorProfileUrl(creatorProfileUrl)
             .skinUrl(preSignUrlFunction.apply(skinUrl))
             .title(title)
             .dueDate(dueDate)

@@ -19,11 +19,17 @@ public record GroupCapsuleSummaryResponse(
     @Schema(description = "그룹원 요약 정보")
     List<GroupCapsuleMemberResponse> groupMembers,
 
+    @Schema(description = "그룹 이름")
+    String groupName,
+
+    @Schema(description = "그룹 프로필 url")
+    String groupProfileUrl,
+
     @Schema(description = "생성자 닉네임")
-    String nickname,
+    String creatorNickname,
 
     @Schema(description = "생성자 프로필 url")
-    String profileUrl,
+    String creatorProfileUrl,
 
     @Schema(description = "캡슐 스킨 url")
     String skinUrl,

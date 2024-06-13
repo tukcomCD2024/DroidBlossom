@@ -15,9 +15,9 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
@@ -76,10 +76,24 @@ public class GroupCapsuleService {
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public GroupCapsuleSummaryDto findGroupCapsuleSummaryByGroupIDAndCapsuleId(
-        final Long capsuleId) {
-        return groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId)
+    public GroupCapsuleSummaryDto findGroupCapsuleSummary(
+        final Long memberId,
+        final Long groupId,
+        final Long capsuleId
+    ) {
+        checkGroupAuthority(memberId, groupId);
+
+        return groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(memberId, groupId,
+                capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
+    }
+
+    private void checkGroupAuthority(Long memberId, Long groupId) {
+        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId,
+            groupId);
+        if (!isGroupMember) {
+            throw new NoGroupAuthorityException();
+        }
     }
 
     /**
@@ -130,11 +144,7 @@ public class GroupCapsuleService {
     }
 
     public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
-        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(dto.memberId(),
-            dto.groupId());
-        if (!isGroupMember) {
-            throw new NoGroupAuthorityException();
-        }
+        checkGroupAuthority(dto.memberId(), dto.groupId());
 
         return groupCapsuleQueryRepository.findGroupCapsuleSlice(dto);
     }
@@ -144,10 +154,7 @@ public class GroupCapsuleService {
         final Long capsuleId,
         final Long groupId
     ) {
-        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId);
-        if (!isGroupMember) {
-            throw new NoGroupAuthorityException();
-        }
+        checkGroupAuthority(memberId, groupId);
 
         return groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId);
     }

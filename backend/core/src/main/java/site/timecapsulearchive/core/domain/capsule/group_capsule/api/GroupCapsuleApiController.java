@@ -95,10 +95,14 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<GroupCapsuleSummaryResponse>> getGroupCapsuleSummaryByCapsuleId(
         @AuthenticationPrincipal Long memberId,
+        @RequestParam("group_id") Long groupId,
         @PathVariable("capsule_id") Long capsuleId
     ) {
-        final GroupCapsuleSummaryDto summaryDto = groupCapsuleService.findGroupCapsuleSummaryByGroupIDAndCapsuleId(
-            capsuleId);
+        final GroupCapsuleSummaryDto summaryDto = groupCapsuleService.findGroupCapsuleSummary(
+            memberId,
+            groupId,
+            capsuleId
+        );
 
         return ResponseEntity.ok(
             ApiSpec.success(
