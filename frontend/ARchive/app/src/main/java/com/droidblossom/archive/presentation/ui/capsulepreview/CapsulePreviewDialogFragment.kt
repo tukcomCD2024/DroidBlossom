@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.DialogInterface
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -81,6 +82,7 @@ class CapsulePreviewDialogFragment :
         viewModel.setCapsuleId(capsuleId)
         when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
+                setColor(R.color.purple,R.color.purple_alpha70)
                 viewModel.getSecretCapsuleSummary()
                 viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24, HomeFragment.CapsuleType.SECRET)
             }
@@ -91,6 +93,7 @@ class CapsulePreviewDialogFragment :
             }
 
             HomeFragment.CapsuleType.GROUP -> {
+                setColor(R.color.main_2,R.color.sky_blue_alpha70)
                 viewModel.getGroupCapsuleSummary()
                 viewModel.setCapsuleTypeImage(R.drawable.ic_group_marker_24, HomeFragment.CapsuleType.GROUP)
             }
@@ -296,6 +299,12 @@ class CapsulePreviewDialogFragment :
             putBoolean("isOpened", viewModel.capsuleOpenState.value)
         }
         setFragmentResult("capsuleState", capsuleState)
+    }
+
+    private fun setColor(progressBarColor : Int , titleColor : Int){
+        binding.progressBar.progressTintList =  ColorStateList.valueOf(requireContext().getColor(progressBarColor))
+        binding.openProgressBar.progressBackgroundTintList = ColorStateList.valueOf(requireContext().getColor(progressBarColor))
+        binding.capsuleDetailLayout.backgroundTintList = ColorStateList.valueOf(requireContext().getColor(titleColor))
     }
 
     companion object {
