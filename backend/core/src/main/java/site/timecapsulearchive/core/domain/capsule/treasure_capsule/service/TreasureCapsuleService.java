@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Image;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleOpenDto;
-import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.response.TreasureCapsuleOpenResponse;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -52,5 +52,12 @@ public class TreasureCapsuleService {
             treasureImageUrl);
 
         return new TreasureCapsuleOpenDto(treasureImageUrl);
+    }
+
+    public TreasureCapsuleSummaryDto findTreasureCapsuleSummary(
+        final Long capsuleId
+    ) {
+        return capsuleRepository.findTreasureCapsuleSummary(capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
     }
 }
