@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentGroupCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModelImpl
@@ -25,10 +28,26 @@ class GroupCapsuleFragment :
     private val capsuleRVA: CapsuleRVA by lazy {
         CapsuleRVA(
             { id, type ->
-
+                startActivity(
+                    CapsuleDetailActivity.newIntent(
+                        requireContext(),
+                        id,
+                        type
+                    )
+                )
             },
             { capsuleIndex, id, type ->
-
+                val existingDialog =
+                    parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                if (existingDialog == null) {
+                    val dialog = CapsulePreviewDialogFragment.newInstance(
+                        capsuleIndex.toString(),
+                        id.toString(),
+                        type.toString(),
+                        false
+                    )
+                    dialog.show(parentFragmentManager, CapsulePreviewDialogFragment.TAG)
+                }
 
             }
         )
