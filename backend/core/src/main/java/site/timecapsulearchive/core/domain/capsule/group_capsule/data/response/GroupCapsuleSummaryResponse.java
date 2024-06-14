@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import lombok.Builder;
 import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "캡슐 요약 정보")
@@ -52,8 +52,11 @@ public record GroupCapsuleSummaryResponse(
     @Schema(description = "캡슐 생성 도로 이름")
     String roadName,
 
-    @Schema(description = "개봉 여부")
-    Boolean isOpened,
+    @Schema(description = "캡슐 개봉 여부")
+    Boolean isCapsuleOpened,
+
+    @Schema(description = "현재 사용자 캡슐 개봉 여부")
+    Boolean isRequestMemberCapsuleOpened,
 
     @Schema(description = "캡슐 생성 일")
     ZonedDateTime createdAt
@@ -68,10 +71,10 @@ public record GroupCapsuleSummaryResponse(
     }
 
     public static GroupCapsuleSummaryResponse createOf(
-        final GroupCapsuleSummaryDto summaryDto,
+        final CombinedGroupCapsuleSummaryDto groupCapsuleSummary,
         final UnaryOperator<String> preSignUrlFunction,
         final UnaryOperator<Point> changePointFunction
     ) {
-        return summaryDto.toResponse(preSignUrlFunction, changePointFunction);
+        return groupCapsuleSummary.toResponse(preSignUrlFunction, changePointFunction);
     }
 }

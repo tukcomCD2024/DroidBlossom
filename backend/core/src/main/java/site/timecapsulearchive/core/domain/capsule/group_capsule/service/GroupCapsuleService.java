@@ -13,8 +13,10 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
@@ -76,24 +78,34 @@ public class GroupCapsuleService {
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public GroupCapsuleSummaryDto findGroupCapsuleSummary(
+    /**
+     * 그룹 캡슐의 요약 정보를 조회한다.
+     * <br>
+     * @param memberId 사용자 아이디
+     * @param groupId 캡슐이 만들어진 그룹 아이디
+     * @param capsuleId 조회할 캡슐 아이디
+     * @return 그룹 캡슐의 요약 정보(캡슐, 그룹원)
+     * @throws NoGroupAuthorityException 그룹에 대한 권한이 존재하지 않으면 예외가 발생한다.
+     */
+    public CombinedGroupCapsuleSummaryDto findGroupCapsuleSummary(
         final Long memberId,
         final Long groupId,
         final Long capsuleId
     ) {
-        checkGroupAuthority(memberId, groupId);
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = memberGroupRepository.findGroupCapsuleMembers(
+            groupId, capsuleId);
 
-        return groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(memberId, groupId,
-                capsuleId)
+        GroupCapsuleMemberDto requestMember = groupCapsuleMembers.stream()
+            .filter(dto -> memberId.equals(dto.id()))
+            .findAny()
+            .orElseThrow(NoGroupAuthorityException::new);
+
+        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
+            groupId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
-    }
 
-    private void checkGroupAuthority(Long memberId, Long groupId) {
-        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId,
-            groupId);
-        if (!isGroupMember) {
-            throw new NoGroupAuthorityException();
-        }
+        return CombinedGroupCapsuleSummaryDto.create(groupCapsuleSummaryDto, groupCapsuleMembers,
+            requestMember.isOpened());
     }
 
     /**
@@ -147,6 +159,14 @@ public class GroupCapsuleService {
         checkGroupAuthority(dto.memberId(), dto.groupId());
 
         return groupCapsuleQueryRepository.findGroupCapsuleSlice(dto);
+    }
+
+    private void checkGroupAuthority(Long memberId, Long groupId) {
+        boolean isGroupMember = memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId,
+            groupId);
+        if (!isGroupMember) {
+            throw new NoGroupAuthorityException();
+        }
     }
 
     public List<GroupMemberCapsuleOpenStatusDto> findGroupMemberCapsuleOpenStatus(

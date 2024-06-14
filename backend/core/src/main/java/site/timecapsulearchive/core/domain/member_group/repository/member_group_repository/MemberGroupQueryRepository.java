@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.member_group.repository.member_group
 
 import java.util.List;
 import java.util.Optional;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 
@@ -22,4 +23,6 @@ public interface MemberGroupQueryRepository {
     List<Long> findGroupMemberIdsByGroupId(final Long groupId);
 
     boolean existMemberGroupByMemberIdAndGroupId(Long memberId, Long groupId);
+
+    List<GroupCapsuleMemberDto> findGroupCapsuleMembers(Long groupId, Long capsuleId);
 }

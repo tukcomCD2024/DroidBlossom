@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member_group.repository.member_group_repository;
 
+import static site.timecapsulearchive.core.domain.capsule.entity.QGroupCapsuleOpen.groupCapsuleOpen;
 import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberDto;
 import site.timecapsulearchive.core.domain.member_group.data.dto.GroupOwnerSummaryDto;
 
@@ -120,5 +122,28 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .fetchFirst();
 
         return count != null;
+    }
+
+    @Override
+    public List<GroupCapsuleMemberDto> findGroupCapsuleMembers(
+        final Long groupId,
+        final Long capsuleId
+    ) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    GroupCapsuleMemberDto.class,
+                    member.id,
+                    member.nickname,
+                    member.profileUrl,
+                    memberGroup.isOwner,
+                    groupCapsuleOpen.isOpened
+                )
+            )
+            .from(memberGroup)
+            .join(memberGroup.member, member)
+            .join(groupCapsuleOpen).on(memberGroup.member.id.eq(groupCapsuleOpen.member.id))
+            .where(memberGroup.group.id.eq(groupId).and(groupCapsuleOpen.capsule.id.eq(capsuleId)))
+            .fetch();
     }
 }

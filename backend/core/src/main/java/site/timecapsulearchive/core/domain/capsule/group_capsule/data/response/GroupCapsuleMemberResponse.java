@@ -11,9 +11,6 @@ public record GroupCapsuleMemberResponse(
     @Schema(description = "프로필 url")
     String profileUrl,
 
-    @Schema(description = "현재 요청한 사용자 여부")
-    Boolean isRequestMember,
-
     @Schema(description = "그룹장 여부")
     Boolean isGroupOwner,
 
