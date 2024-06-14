@@ -54,7 +54,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     @BeforeEach
     @Transactional
     void setup(@Autowired EntityManager entityManager) {
-        // 그룹원
+        // 그룹장 & 그룹원
         List<Member> groupMember = MemberFixture.members(1, 5);
         groupMember.forEach(entityManager::persist);
         Member owner = groupMember.get(0);
@@ -74,8 +74,9 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         memberGroups.forEach(entityManager::persist);
 
         //그룹 캡슐
-        List<Capsule> capsules = CapsuleFixture.groupCapsules(owner, capsuleSkin, group, MAX_COUNT);
-        for (Capsule c : capsules) {
+        List<Capsule> groupCapsules = CapsuleFixture.groupCapsules(owner, capsuleSkin, group,
+            MAX_COUNT);
+        for (Capsule c : groupCapsules) {
             entityManager.persist(c);
 
             List<GroupCapsuleOpen> groupCapsuleOpens = GroupCapsuleOpenFixture.groupCapsuleOpens(
@@ -84,8 +85,8 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
                 c, groupMember);
             groupCapsuleOpens.forEach(entityManager::persist);
         }
-        capsule = capsules.get(0);
-        lastCapsuleId = capsules.get(capsules.size() - 1).getId();
+        capsule = groupCapsules.get(0);
+        lastCapsuleId = groupCapsules.get(groupCapsules.size() - 1).getId();
     }
 
     @Test
@@ -144,38 +145,17 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         // given
         //when
         GroupCapsuleSummaryDto capsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            capsule.getId()).orElseThrow();
+            groupId, capsule.getId()).orElseThrow();
 
         //then
         assertSoftly(
             softly -> {
                 softly.assertThat(capsuleSummaryDto).isNotNull();
+                softly.assertThat(capsuleSummaryDto.isOpened()).isFalse();
                 softly.assertThat(capsuleSummaryDto.title()).isEqualTo(capsule.getTitle());
                 softly.assertThat(capsuleSummaryDto.point()).isEqualTo(capsule.getPoint());
             }
         );
-    }
-
-    @Test
-    void 그룹캡슐_아이디로_그룹_캡슐의_요약_조회_하면_그룹원_정보를_조회할_수_있다() {
-        // given
-        //when
-        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            capsule.getId()).orElseThrow();
-
-        //then
-        assertSoftly(
-            softly -> {
-                softly.assertThat(groupCapsuleSummaryDto.groupMembers()).isNotEmpty();
-                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
-                        .allMatch(dto -> dto.id() != null);
-                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
-                    .allMatch(dto -> !dto.isOpened());
-                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
-                    .allMatch(dto -> !dto.profileUrl().isEmpty());
-                softly.assertThat(groupCapsuleSummaryDto.groupMembers())
-                    .allMatch(dto -> !dto.nickname().isEmpty());
-            });
     }
 
     @Test
@@ -185,7 +165,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
 
         //when
         Optional<GroupCapsuleSummaryDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            notCapsuleId);
+            notCapsuleId, groupId);
         //then
         assertThat(detailDto).isEmpty();
     }

@@ -19,6 +19,8 @@ import site.timecapsulearchive.core.common.fixture.domain.CapsuleFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleBasicInfoDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
+import site.timecapsulearchive.core.common.fixture.dto.GroupCapsuleMemberDtoFixture;
+import site.timecapsulearchive.core.common.fixture.dto.GroupCapsuleSummaryDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupMemberCapsuleOpenStatusDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
@@ -27,13 +29,14 @@ import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNot
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
@@ -380,7 +383,7 @@ class GroupCapsuleServiceTest {
     }
 
     @Test
-    void 그룹원이_아닌_사용자가_그룹_캡슐_개봉_상태를_조회하면_오류가_발생한다() throws Exception {
+    void 그룹원이_아닌_사용자가_그룹_캡슐_개봉_상태를_조회하면_오류가_발생한다() {
         //given
         Long groupId = 1L;
 
@@ -394,7 +397,7 @@ class GroupCapsuleServiceTest {
     }
 
     @Test
-    void 그룹원이_그룹_캡슐_개봉_상태를_조회하면_그룹_캡슐_개봉_상태를_조회할_수_있다() throws Exception {
+    void 그룹원이_그룹_캡슐_개봉_상태를_조회하면_그룹_캡슐_개봉_상태를_조회할_수_있다() {
         //given
         Long groupId = 1L;
         int size = 20;
@@ -450,5 +453,58 @@ class GroupCapsuleServiceTest {
 
         //then
         assertThat(groupCapsuleSlice.hasContent()).isTrue();
+    }
+
+    @Test
+    void 그룹원이_아닌_경우_그룹_캡슐_요약_조회_시_예외가_발생한다() {
+        //given
+        Long groupId = 1L;
+        Long notGroupMemberId = 999L;
+        given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10));
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupCapsuleService.findGroupCapsuleSummary(notGroupMemberId, groupId, capsuleId))
+            .isInstanceOf(NoGroupAuthorityException.class)
+            .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹원이_없는_그룹_캡슐을_요약_조회_시_예외가_발생한다() {
+        //given
+        Long groupId = 1L;
+
+        given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10));
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+            .willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(
+            () -> groupCapsuleService.findGroupCapsuleSummary(memberId, groupId, capsuleId))
+            .isInstanceOf(CapsuleNotFondException.class)
+            .hasMessageContaining(ErrorCode.CAPSULE_NOT_FOUND_ERROR.getMessage());
+    }
+
+    @Test
+    void 그룹원이_그룹_캡슐을_요약_조회_시_그룹_캡슐_요약_조회를_볼_수_있다() {
+        //given
+        Long groupId = 1L;
+
+        given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10));
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+            .willReturn(Optional.of(
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId)));
+
+        //when
+        CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
+            memberId, groupId, capsuleId);;
+
+        //then
+        assertThat(groupCapsuleSummaryDto).isNotNull();
     }
 }
