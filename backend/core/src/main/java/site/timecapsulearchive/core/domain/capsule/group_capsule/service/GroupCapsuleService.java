@@ -105,7 +105,7 @@ public class GroupCapsuleService {
             .orElseThrow(CapsuleNotFondException::new);
 
         return CombinedGroupCapsuleSummaryDto.create(groupCapsuleSummaryDto, groupCapsuleMembers,
-            requestMember.isOpened());
+            requestMember.isOpened(), requestMember.isGroupOwner());
     }
 
     /**

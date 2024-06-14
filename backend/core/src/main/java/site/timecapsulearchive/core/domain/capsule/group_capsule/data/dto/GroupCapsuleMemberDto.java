@@ -11,6 +11,6 @@ public record GroupCapsuleMemberDto(
 ) {
 
     public GroupCapsuleMemberResponse toResponse() {
-        return new GroupCapsuleMemberResponse(nickname, profileUrl, isGroupOwner, isOpened);
+        return new GroupCapsuleMemberResponse(id, nickname, profileUrl, isGroupOwner, isOpened);
     }
 }

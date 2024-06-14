@@ -58,6 +58,9 @@ public record GroupCapsuleSummaryResponse(
     @Schema(description = "현재 사용자 캡슐 개봉 여부")
     Boolean isRequestMemberCapsuleOpened,
 
+    @Schema(description = "현재 사용자 그룹장 여부")
+    Boolean isRequestMemberGroupOwner,
+
     @Schema(description = "캡슐 생성 일")
     ZonedDateTime createdAt
 ) {

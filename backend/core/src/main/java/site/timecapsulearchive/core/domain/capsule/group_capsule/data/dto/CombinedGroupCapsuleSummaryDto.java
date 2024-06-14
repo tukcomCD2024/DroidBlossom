@@ -22,13 +22,15 @@ public record CombinedGroupCapsuleSummaryDto(
     Boolean isCapsuleOpened,
     ZonedDateTime createdAt,
     Boolean isRequestMemberCapsuleOpen,
+    Boolean isRequestMemberGroupOwner,
     List<GroupCapsuleMemberDto> groupMembers
 ) {
 
     public static CombinedGroupCapsuleSummaryDto create(
         final GroupCapsuleSummaryDto groupCapsuleSummaryDto,
         final List<GroupCapsuleMemberDto> groupCapsuleMemberSummaryDtos,
-        final Boolean isRequestMemberCapsuleOpen
+        final Boolean isRequestMemberCapsuleOpen,
+        final Boolean isRequestMemberGroupOwner
     ) {
         return new CombinedGroupCapsuleSummaryDto(
             groupCapsuleSummaryDto.groupId(),
@@ -45,6 +47,7 @@ public record CombinedGroupCapsuleSummaryDto(
             groupCapsuleSummaryDto.isOpened(),
             groupCapsuleSummaryDto.createdAt(),
             isRequestMemberCapsuleOpen,
+            isRequestMemberGroupOwner,
             groupCapsuleMemberSummaryDtos
         );
     }
@@ -75,6 +78,7 @@ public record CombinedGroupCapsuleSummaryDto(
             .roadName(roadName)
             .isCapsuleOpened(isCapsuleOpened)
             .isRequestMemberCapsuleOpened(isRequestMemberCapsuleOpen)
+            .isRequestMemberGroupOwner(isRequestMemberGroupOwner)
             .createdAt(createdAt)
             .build();
     }
