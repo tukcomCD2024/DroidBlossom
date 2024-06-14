@@ -14,9 +14,7 @@ public record TreasureCapsuleOpenResponse(
         final TreasureCapsuleOpenDto dto,
         final Function<String, String> s3PreSignedUrlForGet
     ) {
-        final String treasureImageUrl = s3PreSignedUrlForGet.apply(dto.treasureImageUrl());
-
-        return new TreasureCapsuleOpenResponse(treasureImageUrl);
+        return dto.toResponse(s3PreSignedUrlForGet);
     }
 
 }
