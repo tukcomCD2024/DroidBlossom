@@ -55,6 +55,11 @@ public interface TreasureCapsuleApi {
         @ApiResponse(
             responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "보물 캡슐 찾기 실패 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<TreasureCapsuleSummaryResponse>> findTreasureCapsuleSummary(
