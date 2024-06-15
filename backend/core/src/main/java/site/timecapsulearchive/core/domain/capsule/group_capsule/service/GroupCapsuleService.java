@@ -104,8 +104,16 @@ public class GroupCapsuleService {
             groupId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        return CombinedGroupCapsuleSummaryDto.create(groupCapsuleSummaryDto, groupCapsuleMembers,
-            requestMember.isOpened(), requestMember.isGroupOwner());
+        Boolean hasEditPermission = requestMember.id().equals(groupCapsuleSummaryDto.creatorId());
+        Boolean hasDeletePermission = hasEditPermission || requestMember.isGroupOwner();
+
+        return CombinedGroupCapsuleSummaryDto.create(
+            groupCapsuleSummaryDto,
+            groupCapsuleMembers,
+            requestMember.isOpened(),
+            hasEditPermission,
+            hasDeletePermission
+        );
     }
 
     /**

@@ -22,7 +22,8 @@ public record CombinedGroupCapsuleSummaryDto(
     Boolean isCapsuleOpened,
     ZonedDateTime createdAt,
     Boolean isRequestMemberCapsuleOpen,
-    Boolean isRequestMemberGroupOwner,
+    Boolean hasEditPermission,
+    Boolean hasDeletePermission,
     List<GroupCapsuleMemberDto> groupMembers
 ) {
 
@@ -30,7 +31,8 @@ public record CombinedGroupCapsuleSummaryDto(
         final GroupCapsuleSummaryDto groupCapsuleSummaryDto,
         final List<GroupCapsuleMemberDto> groupCapsuleMemberSummaryDtos,
         final Boolean isRequestMemberCapsuleOpen,
-        final Boolean isRequestMemberGroupOwner
+        final Boolean hasEditPermission,
+        final Boolean hasDeletePermission
     ) {
         return new CombinedGroupCapsuleSummaryDto(
             groupCapsuleSummaryDto.groupId(),
@@ -47,7 +49,8 @@ public record CombinedGroupCapsuleSummaryDto(
             groupCapsuleSummaryDto.isOpened(),
             groupCapsuleSummaryDto.createdAt(),
             isRequestMemberCapsuleOpen,
-            isRequestMemberGroupOwner,
+            hasEditPermission,
+            hasDeletePermission,
             groupCapsuleMemberSummaryDtos
         );
     }
@@ -78,7 +81,8 @@ public record CombinedGroupCapsuleSummaryDto(
             .roadName(roadName)
             .isCapsuleOpened(isCapsuleOpened)
             .isRequestMemberCapsuleOpened(isRequestMemberCapsuleOpen)
-            .isRequestMemberGroupOwner(isRequestMemberGroupOwner)
+            .hasEditPermission(hasEditPermission)
+            .hasDeletePermission(hasDeletePermission)
             .createdAt(createdAt)
             .build();
     }

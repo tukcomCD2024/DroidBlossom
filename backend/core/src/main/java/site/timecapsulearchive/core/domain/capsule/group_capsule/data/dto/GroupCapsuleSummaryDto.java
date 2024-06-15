@@ -7,6 +7,7 @@ public record GroupCapsuleSummaryDto(
     Long groupId,
     String groupName,
     String groupProfileUrl,
+    Long creatorId,
     String creatorNickname,
     String creatorProfileUrl,
     String skinUrl,

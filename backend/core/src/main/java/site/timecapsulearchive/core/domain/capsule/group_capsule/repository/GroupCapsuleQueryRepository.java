@@ -102,6 +102,7 @@ public class GroupCapsuleQueryRepository {
                         group.id,
                         group.groupName,
                         group.groupProfileUrl,
+                        member.id,
                         member.nickname,
                         member.profileUrl,
                         capsuleSkin.imageUrl,
