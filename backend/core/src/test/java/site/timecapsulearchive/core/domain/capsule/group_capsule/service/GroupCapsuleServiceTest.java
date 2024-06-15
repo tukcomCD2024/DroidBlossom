@@ -498,7 +498,7 @@ class GroupCapsuleServiceTest {
             .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10, false));
         given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
             .willReturn(Optional.of(
-                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId)));
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
@@ -509,7 +509,7 @@ class GroupCapsuleServiceTest {
     }
 
     @Test
-    void 그룹원이_그룹_캡슐을_요약_조회_시_그룹장_여부가_거짓이다() {
+    void 그룹_캡슐을_만든_사람이_아닌_그룹원이_그룹_캡슐을_요약_조회_시_수정_권한이_없다() {
         //given
         Long groupId = 1L;
         Long groupMemberId = 2L;
@@ -518,18 +518,38 @@ class GroupCapsuleServiceTest {
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
         given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
             .willReturn(Optional.of(
-                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId)));
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             groupMemberId, groupId, capsuleId);;
 
         //then
-        assertThat(groupCapsuleSummaryDto.isRequestMemberGroupOwner()).isFalse();
+        assertThat(groupCapsuleSummaryDto.hasEditPermission()).isFalse();
     }
 
     @Test
-    void 그룹장이_그룹_캡슐을_요약_조회_시_그룹장_여부가_참이다() {
+    void 그룹_캡슐을_만든_사람이_아닌_그룹원이_그룹_캡슐을_요약_조회_시_삭제_권한이_없다() {
+        //given
+        Long groupId = 1L;
+        Long groupMemberId = 2L;
+
+        given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+            .willReturn(Optional.of(
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
+
+        //when
+        CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
+            groupMemberId, groupId, capsuleId);;
+
+        //then
+        assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isFalse();
+    }
+
+    @Test
+    void 그룹_캡슐을_만든_사람이_그룹_캡슐을_요약_조회_시_수정_권한이_있다() {
         //given
         Long groupId = 1L;
 
@@ -537,14 +557,33 @@ class GroupCapsuleServiceTest {
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
         given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
             .willReturn(Optional.of(
-                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId)));
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, groupId, capsuleId);;
 
         //then
-        assertThat(groupCapsuleSummaryDto.isRequestMemberGroupOwner()).isTrue();
+        assertThat(groupCapsuleSummaryDto.hasEditPermission()).isTrue();
+    }
+
+     @Test
+    void 그룹_캡슐을_만든_사람이_그룹_캡슐을_요약_조회_시_삭제_권한이_있다() {
+        //given
+        Long groupId = 1L;
+
+        given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+            .willReturn(Optional.of(
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
+
+        //when
+        CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
+            memberId, groupId, capsuleId);;
+
+        //then
+        assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isTrue();
     }
 
     @Test
@@ -556,7 +595,7 @@ class GroupCapsuleServiceTest {
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, true));
         given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
             .willReturn(Optional.of(
-                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId)));
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
@@ -575,7 +614,7 @@ class GroupCapsuleServiceTest {
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
         given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
             .willReturn(Optional.of(
-                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId)));
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(

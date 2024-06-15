@@ -9,11 +9,12 @@ public class GroupCapsuleSummaryDtoFixture {
     private static final double TEST_LATITUDE = 37.078;
     private static final double TEST_LONGITUDE = 127.423;
 
-    public static GroupCapsuleSummaryDto groupCapsule(Long groupId) {
+    public static GroupCapsuleSummaryDto groupCapsule(Long groupId, Long memberId) {
         return new GroupCapsuleSummaryDto(
             groupId,
             "test-group",
             "test-group-profile.com",
+            memberId,
             "test-creator",
             "test-creator-profile.com",
             "test-capsule-skin.com",
