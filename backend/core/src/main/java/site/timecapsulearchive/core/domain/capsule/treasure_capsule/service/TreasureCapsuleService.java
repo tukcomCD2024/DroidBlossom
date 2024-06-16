@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.treasure_capsule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
@@ -54,6 +55,7 @@ public class TreasureCapsuleService {
         return new TreasureCapsuleOpenDto(treasureImageUrl);
     }
 
+    @Transactional(readOnly = true)
     public TreasureCapsuleSummaryDto findTreasureCapsuleSummary(
         final Long capsuleId
     ) {

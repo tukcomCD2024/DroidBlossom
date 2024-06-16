@@ -7,13 +7,9 @@ import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.respons
 
 @Builder
 public record TreasureCapsuleSummaryDto(
-
     String skinUrl,
-
     ZonedDateTime dueDate,
-
     String address,
-
     String roadName
 
 ) {
