@@ -1,8 +1,8 @@
 package com.droidblossom.archive.domain.model.common
 
 data class CapsuleSummaryResponse(
-    val nickname: String,
-    val profileUrl: String,
+    val nicknameOrGroupName: String,
+    val profileOrGroupProfileUrl: String,
     val skinUrl: String,
     val title: String,
     val dueDate: String,

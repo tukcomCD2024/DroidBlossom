@@ -145,7 +145,7 @@
                 app:civ_circle_background_color="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:imageUrl="@{vm.capsuleSummaryResponse.profileUrl}"
+                bind:imageUrl="@{vm.capsuleSummaryResponse.profileOrGroupProfileUrl}"
                 bind:placeholder="@{@drawable/app_symbol}" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -157,7 +157,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/suit_bold"
                 android:maxLines="1"
-                android:text="@{vm.capsuleSummaryResponse.nickname}"
+                android:text="@{vm.capsuleSummaryResponse.nicknameOrGroupName}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/gray_700"
                 app:layout_constraintBottom_toBottomOf="@id/profileImg"

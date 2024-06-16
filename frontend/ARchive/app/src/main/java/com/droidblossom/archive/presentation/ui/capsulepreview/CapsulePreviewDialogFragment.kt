@@ -173,6 +173,7 @@ class CapsulePreviewDialogFragment :
                             dismiss()
                         }
 
+                        else -> {}
                     }
 
                 }

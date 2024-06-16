@@ -106,6 +106,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _myGroupCapsuleOpenStatus = MutableStateFlow(false)
     override val myGroupCapsuleOpenStatus: StateFlow<Boolean> get() = _myGroupCapsuleOpenStatus
 
+    private val _groupId = MutableStateFlow(-1L)
+    override val groupId: StateFlow<Long> get() = _groupId
+
+
     override fun setCapsuleId(capsuleId: Long) {
         _capsuleId.value = capsuleId
     }
@@ -158,8 +162,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             groupCapsuleSummaryUseCase(capsuleId.value).collect { result ->
                 result.onSuccess {
                     _capsuleSummaryResponse.emit(it.toCapsuleSummaryResponseModel())
-                    _groupCapsuleMembers.emit(it.members)
+                    _groupCapsuleMembers.emit(it.groupMembers)
                     _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
+                    _groupId.emit(it.groupId)
+                    _myGroupCapsuleOpenStatus.emit(it.isRequestMemberCapsuleOpened)
                     if (!capsuleOpenState.value) {
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
@@ -172,7 +178,16 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
     override fun getGroupMembersCapsuleOpenStatus() {
         viewModelScope.launch {
-            //groupMembersCapsuleOpenStatusUseCase()
+            groupMembersCapsuleOpenStatusUseCase(
+                groupId = groupId.value,
+                capsuleId = capsuleId.value
+            ).collect{ result ->
+                result.onSuccess {
+                    _groupCapsuleMembers.emit(it.groupMemberCapsuleOpenStatus)
+                }.onFail {
+
+                }
+            }
         }
     }
 
@@ -412,7 +427,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         // 캡슐 재요청 -> 상태만 바꾸도록 변경
         groupCapsuleSummaryUseCase(capsuleId.value).collect { result ->
             result.onSuccess {
-                _groupCapsuleMembers.emit(it.members)
+                _groupCapsuleMembers.emit(it.groupMembers)
             }.onFail {
 
             }

@@ -28,6 +28,7 @@ interface CapsulePreviewDialogViewModel {
     val groupCapsuleMembers: StateFlow<List<GroupCapsuleMember>>
     val capsuleId: StateFlow<Long>
     val myGroupCapsuleOpenStatus: StateFlow<Boolean>
+    val groupId: StateFlow<Long>
 
     fun setCapsuleId(capsuleId:Long)
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)

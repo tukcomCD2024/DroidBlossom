@@ -4,9 +4,12 @@ import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleSummaryRe
 
 
 data class GroupCapsuleSummaryResponseDto(
-    val members : List<GroupCapsuleMemberDto>,
-    val nickname: String,
-    val profileUrl: String,
+    val groupId: Long,
+    val groupMembers : List<GroupCapsuleMemberDto>,
+    val groupName: String,
+    val groupProfileUrl: String,
+    val creatorNickname: String,
+    val creatorProfileUrl: String,
     val skinUrl: String,
     val title: String,
     val dueDate: String?,
@@ -14,13 +17,19 @@ data class GroupCapsuleSummaryResponseDto(
     val longitude: Double,
     val address: String,
     val roadName: String?,
-    val isOpened: Boolean,
+    val isCapsuleOpened: Boolean,
+    val isRequestMemberCapsuleOpened: Boolean,
+    val hasEditPermission: Boolean,
+    val hasDeletePermission: Boolean,
     val createdAt: String
 ){
     fun toModel() = GroupCapsuleSummaryResponse(
-        members = this.members.map { it.toModel() },
-        nickname = this.nickname,
-        profileUrl = this.profileUrl,
+        groupId = this.groupId,
+        groupMembers = this.groupMembers.map { it.toModel() },
+        groupName = this.groupName,
+        groupProfileUrl = this.groupProfileUrl,
+        creatorNickname = this.creatorNickname,
+        creatorProfileUrl = this.creatorProfileUrl,
         skinUrl = this.skinUrl,
         title = this.title,
         dueDate = this.dueDate ?: "",
@@ -28,8 +37,10 @@ data class GroupCapsuleSummaryResponseDto(
         longitude = this.longitude,
         address = this.address,
         roadName = this.roadName ?: "",
-        isOpened = this.isOpened,
+        isCapsuleOpened = this.isCapsuleOpened,
+        isRequestMemberCapsuleOpened = this.isRequestMemberCapsuleOpened,
+        hasEditPermission = this.hasEditPermission,
+        hasDeletePermission = this.hasDeletePermission,
         createdAt = this.createdAt
-
     )
 }

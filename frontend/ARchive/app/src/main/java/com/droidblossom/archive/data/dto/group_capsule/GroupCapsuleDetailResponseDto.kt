@@ -40,14 +40,17 @@ data class GroupCapsuleDetailResponseDto(
 }
 
 data class DummyMember(
+    val memberId: Long,
     val nickname : String,
     val profileUrl : String,
     val isOpened : Boolean,
+    val isGroupOwner : Boolean
 ){
     fun toModel() = GroupCapsuleMember(
-        memberId = 1,
+        memberId = this.memberId,
         nickname = this.nickname,
         profileUrl = this.profileUrl,
-        isOpened = this.isOpened
+        isOpened = this.isOpened,
+        isGroupOwner = this.isGroupOwner
     )
 }
