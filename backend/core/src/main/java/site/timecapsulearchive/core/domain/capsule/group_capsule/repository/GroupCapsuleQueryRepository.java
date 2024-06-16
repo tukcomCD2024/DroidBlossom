@@ -7,6 +7,7 @@ import static site.timecapsulearchive.core.domain.capsule.entity.QGroupCapsuleOp
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
 import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
+import static site.timecapsulearchive.core.domain.group.entity.QGroup.group;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.Projections;
@@ -23,11 +24,10 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.QMember;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
@@ -76,7 +76,7 @@ public class GroupCapsuleQueryRepository {
                             capsule.isOpened,
                             capsule.type
                         ),
-                        list(Projections.constructor(GroupMemberSummaryDto.class,
+                        list(Projections.constructor(GroupCapsuleMemberSummaryDto.class,
                             groupMember.nickname,
                             groupMember.profileUrl,
                             groupCapsuleOpen.isOpened)
@@ -91,45 +91,40 @@ public class GroupCapsuleQueryRepository {
     }
 
     public Optional<GroupCapsuleSummaryDto> findGroupCapsuleSummaryDtoByCapsuleId(
-        final Long capsuleId) {
-        final QMember owner = new QMember("owner");
-        final QMember groupMember = new QMember("groupMember");
-
-        return Optional.ofNullable(jpaQueryFactory
-            .selectFrom(capsule)
-            .join(owner).on(capsule.member.id.eq(owner.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id)).join(groupCapsuleOpen)
-            .on(groupCapsuleOpen.capsule.id.eq(capsuleId))
-            .join(groupMember).on(groupMember.id.eq(groupCapsuleOpen.member.id))
-            .groupBy(groupCapsuleOpen.id)
-            .where(groupCapsuleOpen.capsule.id.eq(capsuleId))
-            .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.GROUP)))
-            .transform(
-                groupBy(capsule.id).as(
+        final Long groupId,
+        final Long capsuleId
+    ) {
+        return Optional.ofNullable(
+            jpaQueryFactory
+                .select(
                     Projections.constructor(
                         GroupCapsuleSummaryDto.class,
-                        Projections.constructor(
-                            CapsuleSummaryDto.class,
-                            owner.nickname,
-                            owner.profileUrl,
-                            capsuleSkin.imageUrl,
-                            capsule.title,
-                            capsule.dueDate,
-                            capsule.point,
-                            capsule.address.fullRoadAddressName,
-                            capsule.address.roadName,
-                            capsule.isOpened,
-                            capsule.createdAt
-                        ),
-                        list(Projections.constructor(GroupMemberSummaryDto.class,
-                            groupMember.nickname,
-                            groupMember.profileUrl,
-                            groupCapsuleOpen.isOpened)
-                        )
+                        group.id,
+                        group.groupName,
+                        group.groupProfileUrl,
+                        member.id,
+                        member.nickname,
+                        member.profileUrl,
+                        capsuleSkin.imageUrl,
+                        capsule.title,
+                        capsule.dueDate,
+                        capsule.point,
+                        capsule.address.fullRoadAddressName,
+                        capsule.address.roadName,
+                        capsule.isOpened,
+                        capsule.createdAt
                     )
-
                 )
-            ).get(capsuleId));
+                .from(capsule)
+                .join(capsule.member, member)
+                .join(capsule.capsuleSkin, capsuleSkin)
+                .join(capsule.group, group)
+                .where(capsule.id.eq(capsuleId)
+                    .and(capsule.group.id.eq(groupId))
+                    .and(capsule.type.eq(CapsuleType.GROUP))
+                )
+                .fetchOne()
+        );
     }
 
     public Slice<CapsuleBasicInfoDto> findMyGroupCapsuleSlice(

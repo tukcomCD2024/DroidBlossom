@@ -98,6 +98,9 @@ public interface GroupCapsuleApi {
     ResponseEntity<ApiSpec<GroupCapsuleSummaryResponse>> getGroupCapsuleSummaryByCapsuleId(
         Long memberId,
 
+        @Parameter(in = ParameterIn.QUERY, description = "그룹 아이디", required = true)
+        Long groupId,
+
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true)
         Long capsuleId
     );

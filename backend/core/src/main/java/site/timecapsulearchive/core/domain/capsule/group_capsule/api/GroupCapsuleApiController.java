@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
@@ -95,16 +95,20 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<GroupCapsuleSummaryResponse>> getGroupCapsuleSummaryByCapsuleId(
         @AuthenticationPrincipal Long memberId,
+        @RequestParam("group_id") Long groupId,
         @PathVariable("capsule_id") Long capsuleId
     ) {
-        final GroupCapsuleSummaryDto summaryDto = groupCapsuleService.findGroupCapsuleSummaryByGroupIDAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleSummaryDto groupCapsuleSummary = groupCapsuleService.findGroupCapsuleSummary(
+            memberId,
+            groupId,
+            capsuleId
+        );
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 GroupCapsuleSummaryResponse.createOf(
-                    summaryDto,
+                    groupCapsuleSummary,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     geoTransformManager::changePoint3857To4326
                 )
