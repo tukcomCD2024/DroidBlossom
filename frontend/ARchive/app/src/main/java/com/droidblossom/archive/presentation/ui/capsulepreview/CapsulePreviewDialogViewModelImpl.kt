@@ -11,9 +11,11 @@ import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummary
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupMembersCapsuleOpenStatusUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleSummaryUseCase
+import com.droidblossom.archive.domain.usecase.treasure.GetTreasureCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.treasure.OpenTreasureCapsuleUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -40,7 +42,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val groupCapsuleOpenUseCase: GroupCapsuleOpenUseCase,
     private val groupCapsuleSummaryUseCase: GroupCapsuleSummaryUseCase,
     private val groupMembersCapsuleOpenStatusUseCase: GroupMembersCapsuleOpenStatusUseCase,
-    private val openTreasureCapsuleUseCase: OpenTreasureCapsuleUseCase
+    private val openTreasureCapsuleUseCase: OpenTreasureCapsuleUseCase,
+    private val getTreasureCapsuleSummaryUseCase: GetTreasureCapsuleSummaryUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents =
@@ -194,7 +197,20 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
     override fun getTreasureCapsuleSummary() {
         viewModelScope.launch {
+            getTreasureCapsuleSummaryUseCase(
+                capsuleId = capsuleId.value
+            ).collect{ result ->
+                result.onSuccess {
+                    _capsuleSummaryResponse.emit(it.toCapsuleSummaryResponseModel())
+                    _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
+                    _visibleCapsuleOpenMessage.emit(true)
+                    _visibleTimeProgressBar.emit(false)
+                    _visibleOpenProgressBar.emit(true)
+                    _canOpenCapsule.emit(true)
+                }.onFail {
 
+                }
+            }
         }
     }
 
@@ -326,7 +342,16 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }
 
                     HomeFragment.CapsuleType.TREASURE -> {
-                        openTreasureCapsule()
+                        Log.d("타타", "여기 오잖아")
+                        if (!calledFromCamera.value){
+                            capsulePreviewDialogEvent(
+                                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                    "보물캡슐은 AR화면에서 오픈이 가능합니다."
+                                )
+                            )
+                        }else{
+                            openTreasureCapsule()
+                        }
                     }
 
                     else -> {

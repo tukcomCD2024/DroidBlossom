@@ -178,7 +178,7 @@ fun TextView.setFormattedDate(dateString: String) {
             val formattedDate = date?.let { formatter.format(it) }
             this.text = formattedDate
         } catch (e: Exception) {
-            this.text = "날짜 형식 오류"
+            this.text = "보물 캡슐"
         }
     }
 }

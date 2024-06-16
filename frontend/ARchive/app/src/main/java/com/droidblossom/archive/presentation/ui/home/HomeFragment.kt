@@ -79,16 +79,12 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                     marker.width = 120
                     marker.height = 132
                     marker.onClickListener = Overlay.OnClickListener {
-                        if (key.capsuleType.toString() == CapsuleType.TREASURE.toString()) {
-                            showToastMessage("보물은 AR으로만 열 수 있습니다")
-                        } else {
-                            viewModel.homeEvent(
-                                HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
-                                    key.id.toString(),
-                                    key.capsuleType.toString()
-                                )
+                        viewModel.homeEvent(
+                            HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
+                                key.id.toString(),
+                                key.capsuleType.toString()
                             )
-                        }
+                        )
                         true
                     }
                 }

@@ -100,7 +100,7 @@ class CapsulePreviewDialogFragment :
 
             HomeFragment.CapsuleType.TREASURE -> {
                 viewModel.getTreasureCapsuleSummary()
-                viewModel.setCapsuleTypeImage(R.drawable.ic_treasure_marker, HomeFragment.CapsuleType.GROUP)
+                viewModel.setCapsuleTypeImage(R.drawable.ic_treasure_marker, HomeFragment.CapsuleType.TREASURE)
             }
 
             else -> {
