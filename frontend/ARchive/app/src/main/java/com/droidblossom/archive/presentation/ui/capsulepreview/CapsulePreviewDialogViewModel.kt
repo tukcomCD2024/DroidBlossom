@@ -29,6 +29,7 @@ interface CapsulePreviewDialogViewModel {
     val capsuleId: StateFlow<Long>
     val myGroupCapsuleOpenStatus: StateFlow<Boolean>
     val groupId: StateFlow<Long>
+    val treasureOpenResult: StateFlow<String>
 
     fun setCapsuleId(capsuleId:Long)
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)
@@ -57,6 +58,8 @@ interface CapsulePreviewDialogViewModel {
         object CapsuleOpenSuccess : CapsulePreviewDialogEvent()
         object MoveCapsuleDetail : CapsulePreviewDialogEvent()
         object DismissCapsulePreviewDialog : CapsulePreviewDialogEvent()
+
+        object ShowTreasureCapsuleResult: CapsulePreviewDialogEvent()
 
     }
 }

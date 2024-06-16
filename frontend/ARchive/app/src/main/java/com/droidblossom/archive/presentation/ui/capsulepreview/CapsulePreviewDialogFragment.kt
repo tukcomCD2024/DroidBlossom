@@ -173,6 +173,12 @@ class CapsulePreviewDialogFragment :
                             dismiss()
                         }
 
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowTreasureCapsuleResult -> {
+                            // 보물캡슐 내용물 보여주기
+                            showToastMessage("축하합니다. 보물을 획득하셨어요!!")
+                            dismiss()
+                        }
+
                         else -> {}
                     }
 
@@ -246,7 +252,11 @@ class CapsulePreviewDialogFragment :
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.MoveCapsuleDetail)
+                    if (capsuleType == HomeFragment.CapsuleType.TREASURE){
+                        viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowTreasureCapsuleResult)
+                    }else{
+                        viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.MoveCapsuleDetail)
+                    }
                     viewModel.setVisibleOpenProgressBar(false)
                 }
             })

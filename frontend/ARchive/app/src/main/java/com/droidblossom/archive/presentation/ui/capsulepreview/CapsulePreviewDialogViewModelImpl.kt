@@ -112,6 +112,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val _groupId = MutableStateFlow(-1L)
     override val groupId: StateFlow<Long> get() = _groupId
 
+    private val _treasureOpenResult = MutableStateFlow("")
+    override val treasureOpenResult: StateFlow<String>
+        get() = _treasureOpenResult
+
 
     override fun setCapsuleId(capsuleId: Long) {
         _capsuleId.value = capsuleId
@@ -184,7 +188,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             groupMembersCapsuleOpenStatusUseCase(
                 groupId = groupId.value,
                 capsuleId = capsuleId.value
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     _groupCapsuleMembers.emit(it.groupMemberCapsuleOpenStatus)
                 }.onFail {
@@ -199,7 +203,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         viewModelScope.launch {
             getTreasureCapsuleSummaryUseCase(
                 capsuleId = capsuleId.value
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     _capsuleSummaryResponse.emit(it.toCapsuleSummaryResponseModel())
                     _capsuleOpenState.emit(capsuleSummaryResponse.value.isOpened)
@@ -342,14 +346,13 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }
 
                     HomeFragment.CapsuleType.TREASURE -> {
-                        Log.d("타타", "여기 오잖아")
-                        if (!calledFromCamera.value){
+                        if (!calledFromCamera.value) {
                             capsulePreviewDialogEvent(
                                 CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                                     "보물캡슐은 AR화면에서 오픈이 가능합니다."
                                 )
                             )
-                        }else{
+                        } else {
                             openTreasureCapsule()
                         }
                     }
@@ -404,7 +407,6 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 result.onSuccess { it ->
                     when (it.capsuleOpenStatus) {
                         GroupCapsuleOpenState.OPEN -> {
-                            Log.d("그캡", "오픈")
                             _capsuleOpenState.emit(true)
                             _groupCapsuleMembers.value =
                                 groupCapsuleMembers.value.map { capsuleMember ->
@@ -462,11 +464,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private suspend fun openTreasureCapsule() {
         openTreasureCapsuleUseCase(capsuleId.value).collect { result ->
             result.onSuccess {
-                capsulePreviewDialogEvent(
-                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "축하합니다. 보물 캡슐을 발견했습니다.\n알림함에서 확인하세요."
-                    )
-                )
+                _treasureOpenResult.emit(it.treasureImageUrl)
+                _capsuleOpenState.emit(true)
+                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
             }.onFail {
                 capsulePreviewDialogEvent(
                     CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
