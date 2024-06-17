@@ -91,7 +91,6 @@ public class GroupCapsuleQueryRepository {
     }
 
     public Optional<GroupCapsuleSummaryDto> findGroupCapsuleSummaryDtoByCapsuleId(
-        final Long groupId,
         final Long capsuleId
     ) {
         return Optional.ofNullable(
@@ -120,7 +119,6 @@ public class GroupCapsuleQueryRepository {
                 .join(capsule.capsuleSkin, capsuleSkin)
                 .join(capsule.group, group)
                 .where(capsule.id.eq(capsuleId)
-                    .and(capsule.group.id.eq(groupId))
                     .and(capsule.type.eq(CapsuleType.GROUP))
                 )
                 .fetchOne()

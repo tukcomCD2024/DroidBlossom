@@ -82,27 +82,24 @@ public class GroupCapsuleService {
      * 그룹 캡슐의 요약 정보를 조회한다.
      * <br>
      * @param memberId 사용자 아이디
-     * @param groupId 캡슐이 만들어진 그룹 아이디
      * @param capsuleId 조회할 캡슐 아이디
      * @return 그룹 캡슐의 요약 정보(캡슐, 그룹원)
      * @throws NoGroupAuthorityException 그룹에 대한 권한이 존재하지 않으면 예외가 발생한다.
      */
     public CombinedGroupCapsuleSummaryDto findGroupCapsuleSummary(
         final Long memberId,
-        final Long groupId,
         final Long capsuleId
     ) {
+        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+
         List<GroupCapsuleMemberDto> groupCapsuleMembers = memberGroupRepository.findGroupCapsuleMembers(
-            groupId, capsuleId);
+            groupCapsuleSummaryDto.groupId(), capsuleId);
 
         GroupCapsuleMemberDto requestMember = groupCapsuleMembers.stream()
             .filter(dto -> memberId.equals(dto.id()))
             .findAny()
             .orElseThrow(NoGroupAuthorityException::new);
-
-        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            groupId, capsuleId)
-            .orElseThrow(CapsuleNotFondException::new);
 
         Boolean hasEditPermission = requestMember.id().equals(groupCapsuleSummaryDto.creatorId());
         Boolean hasDeletePermission = hasEditPermission || requestMember.isGroupOwner();
