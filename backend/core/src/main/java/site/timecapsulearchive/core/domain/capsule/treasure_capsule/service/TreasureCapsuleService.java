@@ -2,11 +2,14 @@ package site.timecapsulearchive.core.domain.capsule.treasure_capsule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleOpenDto;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -24,7 +27,7 @@ public class TreasureCapsuleService {
     private final SocialNotificationManager socialNotificationManager;
     private final TransactionTemplate transactionTemplate;
 
-    public void openTreasureCapsule(final Long memberId, final Long capsuleId) {
+    public TreasureCapsuleOpenDto openTreasureCapsule(final Long memberId, final Long capsuleId) {
         final Member member = memberRepository.findMemberById(memberId).orElseThrow(
             MemberNotFoundException::new);
 
@@ -48,5 +51,15 @@ public class TreasureCapsuleService {
         // 알림 전송
         socialNotificationManager.sendTreasureCaptureMessage(memberId, member.getNickname(),
             treasureImageUrl);
+
+        return new TreasureCapsuleOpenDto(treasureImageUrl);
+    }
+
+    @Transactional(readOnly = true)
+    public TreasureCapsuleSummaryDto findTreasureCapsuleSummary(
+        final Long capsuleId
+    ) {
+        return capsuleRepository.findTreasureCapsuleSummary(capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
     }
 }
