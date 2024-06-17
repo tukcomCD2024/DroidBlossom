@@ -30,10 +30,10 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.ca
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -500,7 +500,8 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto).isNotNull();
@@ -520,7 +521,8 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            groupMemberId, capsuleId);;
+            groupMemberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isFalse();
@@ -540,7 +542,8 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            groupMemberId, capsuleId);;
+            groupMemberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isFalse();
@@ -559,13 +562,14 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isTrue();
     }
 
-     @Test
+    @Test
     void 그룹_캡슐을_만든_사람이_그룹_캡슐을_요약_조회_시_삭제_권한이_있다() {
         //given
         Long groupId = 1L;
@@ -578,7 +582,8 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isTrue();
@@ -597,7 +602,8 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isTrue();
@@ -616,7 +622,8 @@ class GroupCapsuleServiceTest {
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isFalse();
