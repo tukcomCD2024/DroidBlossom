@@ -86,7 +86,7 @@ class CapsulePreviewDialogFragment :
 
         binding.vm = viewModel
         viewModel.setCapsuleId(capsuleId)
-        
+
         when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
                 setColor(R.color.purple, R.color.purple_alpha70)

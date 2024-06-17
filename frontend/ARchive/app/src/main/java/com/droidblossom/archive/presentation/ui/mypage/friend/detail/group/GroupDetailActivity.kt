@@ -23,6 +23,7 @@ import com.droidblossom.archive.databinding.ActivityGroupDetailBinding
 import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.databinding.PopupMenuGroupBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.ui.capsule.ImagesActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.adapter.GroupDetailVPA
@@ -85,6 +86,8 @@ class GroupDetailActivity :
                         GroupDetailViewModel.GroupDetailEvent.ShowLoading -> {
                             showLoading(this@GroupDetailActivity)
                         }
+
+                        else -> {}
                     }
                 }
             }
@@ -147,6 +150,16 @@ class GroupDetailActivity :
                     }
                     else -> true
                 }
+            }
+
+            profileImg.setOnClickListener {
+                startActivity(
+                    ImagesActivity.newIntent(
+                        baseContext,
+                        arrayOf(viewModel.groupInfo.value.groupProfileUrl),
+                        ImagesActivity.INFINITE
+                    )
+                )
             }
 
             binding.swipeRefreshLayout.setOnRefreshListener {

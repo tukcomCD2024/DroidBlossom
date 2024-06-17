@@ -46,7 +46,7 @@ class ImageWithTitleDialogFragment(
                     ImagesActivity.newIntent(
                         requireContext(),
                         arrayOf(ImgUrl),
-                        0
+                        ImagesActivity.INFINITE
                     )
                 )
             }
