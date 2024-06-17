@@ -24,11 +24,17 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCapsulePreviewDialogBinding
 import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
+import com.droidblossom.archive.presentation.customview.CommonDialogFragment
+import com.droidblossom.archive.presentation.customview.ImageWithTitleDialogFragment
+import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.capsule.ImagesActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.capsulepreview.adapter.GroupCapsuleMemberRVA
 import com.droidblossom.archive.util.CapsuleTypeUtils
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -80,27 +86,40 @@ class CapsulePreviewDialogFragment :
 
         binding.vm = viewModel
         viewModel.setCapsuleId(capsuleId)
+        
         when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
-                setColor(R.color.purple,R.color.purple_alpha70)
+                setColor(R.color.purple, R.color.purple_alpha70)
                 viewModel.getSecretCapsuleSummary()
-                viewModel.setCapsuleTypeImage(R.drawable.ic_secret_marker_24, HomeFragment.CapsuleType.SECRET)
+                viewModel.setCapsuleTypeImage(
+                    R.drawable.ic_secret_marker_24,
+                    HomeFragment.CapsuleType.SECRET
+                )
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
                 viewModel.getPublicCapsuleSummary()
-                viewModel.setCapsuleTypeImage(R.drawable.ic_public_marker_24, HomeFragment.CapsuleType.PUBLIC)
+                viewModel.setCapsuleTypeImage(
+                    R.drawable.ic_public_marker_24,
+                    HomeFragment.CapsuleType.PUBLIC
+                )
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-                setColor(R.color.main_2,R.color.sky_blue_alpha70)
+                setColor(R.color.main_2, R.color.sky_blue_alpha70)
                 viewModel.getGroupCapsuleSummary()
-                viewModel.setCapsuleTypeImage(R.drawable.ic_group_marker_24, HomeFragment.CapsuleType.GROUP)
+                viewModel.setCapsuleTypeImage(
+                    R.drawable.ic_group_marker_24,
+                    HomeFragment.CapsuleType.GROUP
+                )
             }
 
             HomeFragment.CapsuleType.TREASURE -> {
                 viewModel.getTreasureCapsuleSummary()
-                viewModel.setCapsuleTypeImage(R.drawable.ic_treasure_marker, HomeFragment.CapsuleType.TREASURE)
+                viewModel.setCapsuleTypeImage(
+                    R.drawable.ic_treasure_marker,
+                    HomeFragment.CapsuleType.TREASURE
+                )
             }
 
             else -> {
@@ -174,7 +193,7 @@ class CapsulePreviewDialogFragment :
                         }
 
                         is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowTreasureCapsuleResult -> {
-                            // 보물캡슐 내용물 보여주기
+                            moveTreasureDialog()
                             showToastMessage("축하합니다. 보물을 획득하셨어요!!")
                             dismiss()
                         }
@@ -239,6 +258,14 @@ class CapsulePreviewDialogFragment :
         startActivity(intent)
     }
 
+    private fun moveTreasureDialog() {
+        val sheet = ImageWithTitleDialogFragment.newIntent(
+            "보물을 발견했습니다!",
+            viewModel.treasureOpenResult.value
+        ) { }
+        sheet.show(parentFragmentManager, "logoutDialog")
+    }
+
 
     private fun animateProgressBar() {
         viewModel.capsulePreviewDialogEvent(
@@ -252,9 +279,11 @@ class CapsulePreviewDialogFragment :
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    if (capsuleType == HomeFragment.CapsuleType.TREASURE){
-                        viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowTreasureCapsuleResult)
-                    }else{
+                    if (capsuleType == HomeFragment.CapsuleType.TREASURE) {
+                        viewModel.capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowTreasureCapsuleResult
+                        )
+                    } else {
                         viewModel.capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.MoveCapsuleDetail)
                     }
                     viewModel.setVisibleOpenProgressBar(false)
@@ -265,7 +294,8 @@ class CapsulePreviewDialogFragment :
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        val popupMenuBinding =
+            PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         val density = requireContext().resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
@@ -290,11 +320,14 @@ class CapsulePreviewDialogFragment :
 
         view.post {
 
-            popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            popupWindow.contentView.measure(
+                View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED
+            )
             val popupWidth = popupWindow.contentView.measuredWidth
             //val popupHeight = popupWindow.contentView.measuredHeight
 
-            val xOff = -(popupWidth + popupWidth/2 + view.width)
+            val xOff = -(popupWidth + popupWidth / 2 + view.width)
             val yOff = -view.height
 
             popupWindow.showAsDropDown(view, xOff, yOff)
@@ -312,10 +345,13 @@ class CapsulePreviewDialogFragment :
         setFragmentResult("capsuleState", capsuleState)
     }
 
-    private fun setColor(progressBarColor : Int , titleColor : Int){
-        binding.progressBar.progressTintList =  ColorStateList.valueOf(requireContext().getColor(progressBarColor))
-        binding.openProgressBar.progressBackgroundTintList = ColorStateList.valueOf(requireContext().getColor(progressBarColor))
-        binding.capsuleDetailLayout.backgroundTintList = ColorStateList.valueOf(requireContext().getColor(titleColor))
+    private fun setColor(progressBarColor: Int, titleColor: Int) {
+        binding.progressBar.progressTintList =
+            ColorStateList.valueOf(requireContext().getColor(progressBarColor))
+        binding.openProgressBar.progressBackgroundTintList =
+            ColorStateList.valueOf(requireContext().getColor(progressBarColor))
+        binding.capsuleDetailLayout.backgroundTintList =
+            ColorStateList.valueOf(requireContext().getColor(titleColor))
     }
 
     companion object {
