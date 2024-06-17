@@ -21,7 +21,6 @@ import site.timecapsulearchive.core.common.fixture.dto.CapsuleBasicInfoDtoFixtur
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupCapsuleMemberDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupCapsuleSummaryDtoFixture;
-import site.timecapsulearchive.core.common.fixture.dto.GroupMemberCapsuleOpenStatusDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
@@ -386,11 +385,15 @@ class GroupCapsuleServiceTest {
     void 그룹원이_아닌_사용자가_그룹_캡슐_개봉_상태를_조회하면_오류가_발생한다() {
         //given
         Long groupId = 1L;
+        Long notGroupMemberId = 100L;
+        int size = 20;
+        given(groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(capsuleId, groupId))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(memberId.intValue(), size, false));
 
         //when
         //then
         assertThatThrownBy(
-            () -> groupCapsuleService.findGroupMemberCapsuleOpenStatus(memberId, capsuleId,
+            () -> groupCapsuleService.findGroupCapsuleMembers(notGroupMemberId, capsuleId,
                 groupId))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
@@ -401,19 +404,15 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
-            .willReturn(true);
-        given(groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId))
-            .willReturn(
-                GroupMemberCapsuleOpenStatusDtoFixture.groupMemberCapsuleOpenStatusDto(memberId,
-                    size));
+        given(groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(capsuleId, groupId))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(memberId.intValue(), size, false));
 
         //when
-        List<GroupMemberCapsuleOpenStatusDto> groupMemberCapsuleOpenStatus = groupCapsuleService.findGroupMemberCapsuleOpenStatus(
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = groupCapsuleService.findGroupCapsuleMembers(
             memberId, capsuleId, groupId);
 
         //then
-        assertThat(groupMemberCapsuleOpenStatus).isNotEmpty();
+        assertThat(groupCapsuleMembers).isNotEmpty();
     }
 
     @Test

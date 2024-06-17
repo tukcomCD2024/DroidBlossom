@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
 import static site.timecapsulearchive.core.domain.capsule.entity.QGroupCapsuleOpen.groupCapsuleOpen;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
+import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,8 +17,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
-import site.timecapsulearchive.core.domain.member.entity.QMember;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -59,24 +59,27 @@ public class GroupCapsuleOpenQueryRepository {
         );
     }
 
-    public List<GroupMemberCapsuleOpenStatusDto> findGroupMemberCapsuleOpenStatus(
+    public List<GroupCapsuleMemberDto> findGroupCapsuleMembers(
         final Long capsuleId,
         final Long groupId
     ) {
         return jpaQueryFactory
             .select(
                 Projections.constructor(
-                    GroupMemberCapsuleOpenStatusDto.class,
-                    groupCapsuleOpen.member.id,
-                    groupCapsuleOpen.member.nickname,
-                    groupCapsuleOpen.member.profileUrl,
+                    GroupCapsuleMemberDto.class,
+                    member.id,
+                    member.nickname,
+                    member.profileUrl,
+                    memberGroup.isOwner,
                     groupCapsuleOpen.isOpened
                 )
             )
             .from(groupCapsuleOpen)
+            .join(memberGroup).on(groupCapsuleOpen.member.id.eq(memberGroup.member.id))
             .join(groupCapsuleOpen.member, member)
             .where(groupCapsuleOpen.group.id.eq(groupId)
                 .and(groupCapsuleOpen.capsule.id.eq(capsuleId))
+                .and(memberGroup.group.id.eq(groupId))
             )
             .fetch();
     }
