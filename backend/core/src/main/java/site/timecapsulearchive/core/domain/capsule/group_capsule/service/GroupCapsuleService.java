@@ -20,7 +20,6 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -174,14 +173,21 @@ public class GroupCapsuleService {
         }
     }
 
-    public List<GroupMemberCapsuleOpenStatusDto> findGroupMemberCapsuleOpenStatus(
+    public List<GroupCapsuleMemberDto> findGroupCapsuleMembers(
         final Long memberId,
         final Long capsuleId,
         final Long groupId
     ) {
-        checkGroupAuthority(memberId, groupId);
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(
+            capsuleId, groupId);
 
-        return groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId);
+        boolean isGroupMember = groupCapsuleMembers.stream()
+            .anyMatch(groupCapsuleMember -> groupCapsuleMember.id().equals(memberId));
+        if (!isGroupMember) {
+            throw new NoGroupAuthorityException();
+        }
+
+        return groupCapsuleMembers;
     }
 }
 

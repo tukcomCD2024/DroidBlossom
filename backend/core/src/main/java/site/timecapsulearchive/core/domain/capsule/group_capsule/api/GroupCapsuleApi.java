@@ -20,9 +20,9 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.Gr
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMembersResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupMemberCapsuleOpenStatusListResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
@@ -156,9 +156,9 @@ public interface GroupCapsuleApi {
     );
 
     @Operation(
-        summary = "그룹원의 그룹 캡슐 개봉 상태 확인",
+        summary = "그룹 캡슐에 대한 그룹원 목록 조회",
         description = """
-            그룹원의 그룹 캡슐 개봉 상태를 확인한다.
+            그룹 캡슐에 대한 그룹원 목록 조회한다.
             """,
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group capsule"}
@@ -174,7 +174,7 @@ public interface GroupCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<GroupMemberCapsuleOpenStatusListResponse>> getGroupCapsuleOpenStatus(
+    ResponseEntity<ApiSpec<GroupCapsuleMembersResponse>> getGroupCapsuleMembers(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "개봉 상태를 확인할 캡슐 아이디", required = true)
