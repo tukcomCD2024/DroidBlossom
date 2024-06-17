@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.response.TreasureCapsuleOpenResponse;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.response.TreasureCapsuleSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
@@ -36,10 +38,34 @@ public interface TreasureCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<String>> openTreasureCapsule(
+    ResponseEntity<ApiSpec<TreasureCapsuleOpenResponse>> openTreasureCapsule(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "개봉할 보물 캡슐 아이디", required = true)
+        Long capsuleId
+    );
+
+    @Operation(
+        summary = "보물 캡슐 요약 조회",
+        description = "사용자는 보물 캡슐 정보를 요약 조회할 수 있다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"secret capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "보물 캡슐 찾기 실패 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<TreasureCapsuleSummaryResponse>> findTreasureCapsuleSummary(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "조회할 보물 캡슐 아이디", required = true)
         Long capsuleId
     );
 

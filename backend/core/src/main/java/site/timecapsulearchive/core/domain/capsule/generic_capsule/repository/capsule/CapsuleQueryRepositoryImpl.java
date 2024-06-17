@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.ComparablePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleSummaryDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      * @see site.timecapsulearchive.core.global.geography.GeoTransformManager
      */
+    @Override
     public List<NearbyARCapsuleSummaryDto> findARCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final Long memberId,
         final Polygon mbr,
@@ -75,6 +78,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
      * @param capsuleType 조회할 캡슐의 타입
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
+    @Override
     public List<NearbyCapsuleSummaryDto> findCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final Long memberId,
         final Polygon mbr,
@@ -103,6 +107,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
      * @param mbr       캡슐을 조회할 범위(최소사각형), <code>GeoTransformManager</code> 참조
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
+    @Override
     public List<NearbyCapsuleSummaryDto> findFriendsCapsuleSummaryDtosByCurrentLocationAndCapsuleType(
         final List<Long> friendIds,
         final Polygon mbr
@@ -135,6 +140,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
      * @param mbr       캡슐을 조회할 범위(최소사각형), <code>GeoTransformManager</code> 참조
      * @return 범위 내에 조회된 캡슐들의 요약 정보들을 반환한다.
      */
+    @Override
     public List<NearbyARCapsuleSummaryDto> findFriendsARCapsulesByCurrentLocation(
         final List<Long> friendIds,
         final Polygon mbr
@@ -159,5 +165,24 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.in(friendIds))
                 .and(capsule.type.eq(CapsuleType.PUBLIC)))
             .fetch();
+    }
+
+    @Override
+    public Optional<TreasureCapsuleSummaryDto> findTreasureCapsuleSummary(final Long capsuleId) {
+        return Optional.ofNullable(jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    TreasureCapsuleSummaryDto.class,
+                    capsuleSkin.imageUrl,
+                    capsule.dueDate,
+                    capsule.address.fullRoadAddressName,
+                    capsule.address.roadName
+                )
+            )
+            .from(capsule)
+            .join(capsule.capsuleSkin, capsuleSkin)
+            .where(capsule.id.eq(capsuleId))
+            .fetchOne()
+        );
     }
 }
