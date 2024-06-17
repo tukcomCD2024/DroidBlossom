@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMembersResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupMemberCapsuleOpenStatusListResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.facade.GroupCapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleService;
@@ -95,12 +95,10 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
     @Override
     public ResponseEntity<ApiSpec<GroupCapsuleSummaryResponse>> getGroupCapsuleSummaryByCapsuleId(
         @AuthenticationPrincipal Long memberId,
-        @RequestParam("group_id") Long groupId,
         @PathVariable("capsule_id") Long capsuleId
     ) {
         CombinedGroupCapsuleSummaryDto groupCapsuleSummary = groupCapsuleService.findGroupCapsuleSummary(
             memberId,
-            groupId,
             capsuleId
         );
 
@@ -172,18 +170,18 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
 
     @GetMapping(value = "/{capsule_id}/open-status", produces = {"application/json"})
     @Override
-    public ResponseEntity<ApiSpec<GroupMemberCapsuleOpenStatusListResponse>> getGroupCapsuleOpenStatus(
+    public ResponseEntity<ApiSpec<GroupCapsuleMembersResponse>> getGroupCapsuleMembers(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId,
         @RequestParam("group_id") final Long groupId
     ) {
-        List<GroupMemberCapsuleOpenStatusDto> groupMemberCapsuleOpenStatus = groupCapsuleService.findGroupMemberCapsuleOpenStatus(
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = groupCapsuleService.findGroupCapsuleMembers(
             memberId, capsuleId, groupId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                GroupMemberCapsuleOpenStatusListResponse.create(groupMemberCapsuleOpenStatus)
+                GroupCapsuleMembersResponse.create(groupCapsuleMembers)
             )
         );
     }

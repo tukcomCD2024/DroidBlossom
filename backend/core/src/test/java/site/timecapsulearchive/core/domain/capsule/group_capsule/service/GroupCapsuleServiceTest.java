@@ -21,7 +21,6 @@ import site.timecapsulearchive.core.common.fixture.dto.CapsuleBasicInfoDtoFixtur
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupCapsuleMemberDtoFixture;
 import site.timecapsulearchive.core.common.fixture.dto.GroupCapsuleSummaryDtoFixture;
-import site.timecapsulearchive.core.common.fixture.dto.GroupMemberCapsuleOpenStatusDtoFixture;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
@@ -31,10 +30,10 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.ca
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupMemberCapsuleOpenStatusDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -386,11 +385,15 @@ class GroupCapsuleServiceTest {
     void 그룹원이_아닌_사용자가_그룹_캡슐_개봉_상태를_조회하면_오류가_발생한다() {
         //given
         Long groupId = 1L;
+        Long notGroupMemberId = 100L;
+        int size = 20;
+        given(groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(capsuleId, groupId))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(memberId.intValue(), size, false));
 
         //when
         //then
         assertThatThrownBy(
-            () -> groupCapsuleService.findGroupMemberCapsuleOpenStatus(memberId, capsuleId,
+            () -> groupCapsuleService.findGroupCapsuleMembers(notGroupMemberId, capsuleId,
                 groupId))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
@@ -401,19 +404,15 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
-            .willReturn(true);
-        given(groupCapsuleOpenQueryRepository.findGroupMemberCapsuleOpenStatus(capsuleId, groupId))
-            .willReturn(
-                GroupMemberCapsuleOpenStatusDtoFixture.groupMemberCapsuleOpenStatusDto(memberId,
-                    size));
+        given(groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(capsuleId, groupId))
+            .willReturn(GroupCapsuleMemberDtoFixture.members(memberId.intValue(), size, false));
 
         //when
-        List<GroupMemberCapsuleOpenStatusDto> groupMemberCapsuleOpenStatus = groupCapsuleService.findGroupMemberCapsuleOpenStatus(
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = groupCapsuleService.findGroupCapsuleMembers(
             memberId, capsuleId, groupId);
 
         //then
-        assertThat(groupMemberCapsuleOpenStatus).isNotEmpty();
+        assertThat(groupCapsuleMembers).isNotEmpty();
     }
 
     @Test
@@ -460,31 +459,30 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         Long notGroupMemberId = 999L;
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
+            .willReturn(Optional.of(
+                GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10, false));
 
         //when
         //then
         assertThatThrownBy(
-            () -> groupCapsuleService.findGroupCapsuleSummary(notGroupMemberId, groupId, capsuleId))
+            () -> groupCapsuleService.findGroupCapsuleSummary(notGroupMemberId, capsuleId))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
 
     @Test
-    void 그룹원이_없는_그룹_캡슐을_요약_조회_시_예외가_발생한다() {
+    void 그룹원이_존재하지_않는_그룹_캡슐을_요약_조회_시_예외가_발생한다() {
         //given
-        Long groupId = 1L;
-
-        given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
-            .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.empty());
 
         //when
         //then
         assertThatThrownBy(
-            () -> groupCapsuleService.findGroupCapsuleSummary(memberId, groupId, capsuleId))
+            () -> groupCapsuleService.findGroupCapsuleSummary(memberId, capsuleId))
             .isInstanceOf(CapsuleNotFondException.class)
             .hasMessageContaining(ErrorCode.CAPSULE_NOT_FOUND_ERROR.getMessage());
     }
@@ -496,13 +494,14 @@ class GroupCapsuleServiceTest {
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(0, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, groupId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto).isNotNull();
@@ -516,13 +515,14 @@ class GroupCapsuleServiceTest {
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            groupMemberId, groupId, capsuleId);;
+            groupMemberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isFalse();
@@ -536,13 +536,14 @@ class GroupCapsuleServiceTest {
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            groupMemberId, groupId, capsuleId);;
+            groupMemberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isFalse();
@@ -555,32 +556,34 @@ class GroupCapsuleServiceTest {
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, groupId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isTrue();
     }
 
-     @Test
+    @Test
     void 그룹_캡슐을_만든_사람이_그룹_캡슐을_요약_조회_시_삭제_권한이_있다() {
         //given
         Long groupId = 1L;
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, groupId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isTrue();
@@ -593,13 +596,14 @@ class GroupCapsuleServiceTest {
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, true));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, groupId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isTrue();
@@ -612,13 +616,14 @@ class GroupCapsuleServiceTest {
 
         given(memberGroupRepository.findGroupCapsuleMembers(anyLong(), anyLong()))
             .willReturn(GroupCapsuleMemberDtoFixture.members(1, 10, false));
-        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(groupId, capsuleId))
+        given(groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId))
             .willReturn(Optional.of(
                 GroupCapsuleSummaryDtoFixture.groupCapsule(groupId, memberId)));
 
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
-            memberId, groupId, capsuleId);;
+            memberId, capsuleId);
+        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isFalse();

@@ -145,7 +145,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         // given
         //when
         GroupCapsuleSummaryDto capsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            groupId, capsule.getId()).orElseThrow();
+            capsule.getId()).orElseThrow();
 
         //then
         assertSoftly(
@@ -165,7 +165,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
 
         //when
         Optional<GroupCapsuleSummaryDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
-            notCapsuleId, groupId);
+            notCapsuleId);
         //then
         assertThat(detailDto).isEmpty();
     }
