@@ -24,12 +24,25 @@
         android:background="@android:color/transparent"
         android:backgroundTint="@android:color/transparent">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/closeBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="@dimen/margin"
+            android:backgroundTint="@color/main_bg_1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_close_24"
+            android:tint="@color/main_1"
+            android:background="@drawable/corner_radius_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/capsuleOpenMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_solid_corner_30dp"
-            android:backgroundTint="#ECEFFE"
+            android:backgroundTint="@color/main_bg_1"
             android:paddingHorizontal="@dimen/padding"
             android:paddingVertical="18dp"
             android:text="@string/capsule_open_message"
@@ -258,24 +271,49 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/groupMemberRecycleView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin"
             android:layout_marginTop="@dimen/margin"
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_bg_1"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout"
-            tools:listitem="@layout/item_group_number"
-            tools:visibility="visible" />
+            android:paddingStart="@dimen/padding_small"
+            android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
+            app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout">
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/refreshBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                android:background="@drawable/corner_radius_22"
+                android:backgroundTint="@color/white_alpha60"
+                android:scaleType="center"
+                android:onClick="@{() -> vm.getGroupMembersCapsuleOpenStatus()}"
+                android:src="@drawable/ic_refresh_24"
+                android:tint="@color/main_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupMemberRecycleView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/item_group_number"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/margin"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

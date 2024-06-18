@@ -150,6 +150,10 @@ class CapsulePreviewDialogFragment :
             capsuleMenuImg.setOnClickListener { view ->
                 showPopupMenu(view)
             }
+
+            closeBtn.setOnClickListener {
+                dismiss()
+            }
         }
     }
 
@@ -175,7 +179,6 @@ class CapsulePreviewDialogFragment :
                 viewModel.capsulePreviewDialogEvents.collect { event ->
                     when (event) {
                         is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage -> {
-                            Log.d("그캡", "토아스트")
                             showToastMessage(event.message)
                         }
 
@@ -210,7 +213,9 @@ class CapsulePreviewDialogFragment :
                 viewModel.groupCapsuleMembers.collect { groupMembers ->
                     groupMemberRVA.submitList(groupMembers)
                     if (groupMembers.isNotEmpty() && groupMembers.all { it.isOpened }) {
-                        viewModel.setGroupCapsuleOpenState()
+                        if (viewModel.timeCapsule.value){
+                            viewModel.setGroupCapsuleOpenState()
+                        }
                     }
                 }
             }
