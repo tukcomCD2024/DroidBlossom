@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -32,6 +33,7 @@ import com.droidblossom.archive.presentation.ui.capsule.ImagesActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.capsulepreview.adapter.GroupCapsuleMemberRVA
 import com.droidblossom.archive.util.CapsuleTypeUtils
+import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -151,9 +153,9 @@ class CapsulePreviewDialogFragment :
                 showPopupMenu(view)
             }
 
-            closeBtn.setOnClickListener {
-                dismiss()
-            }
+//            closeBtn.setOnClickListener {
+//                dismiss()
+//            }
         }
     }
 
