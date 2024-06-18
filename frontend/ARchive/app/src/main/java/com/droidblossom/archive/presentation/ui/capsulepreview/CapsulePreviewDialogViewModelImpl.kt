@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenStateResponse
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummaryUseCase
@@ -396,110 +397,54 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     private suspend fun openGroupCapsule() {
-        if (myGroupCapsuleOpenStatus.value) {
-            if (groupCapsuleMembers.value.any { !it.isOpened }){
-                capsulePreviewDialogEvent(
-                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "모든 그룹원이 캡슐 개봉 요청을 완료할 때까지 기다려주세요."
-                    )
+        if (myGroupCapsuleOpenStatus.value && groupCapsuleMembers.value.any { !it.isOpened }) {
+            capsulePreviewDialogEvent(
+                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                    "모든 그룹원이 캡슐 개봉 요청을 완료할 때까지 기다려주세요."
                 )
-            }else{
-                groupCapsuleOpenUseCase(capsuleId.value).collect { result ->
-                    result.onSuccess { it ->
-                        when (it.capsuleOpenStatus) {
-                            GroupCapsuleOpenState.OPEN -> {
-                                _capsuleOpenState.emit(true)
-                                _groupCapsuleMembers.value =
-                                    groupCapsuleMembers.value.map { capsuleMember ->
-                                        capsuleMember.copy(
-                                            memberId = capsuleMember.memberId,
-                                            nickname = capsuleMember.nickname,
-                                            profileUrl = capsuleMember.profileUrl,
-                                            isOpened = true
-                                        )
-                                    }
-                                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
-                            }
-
-                            GroupCapsuleOpenState.NOT_OPEN -> {
-                                if (it.isIndividuallyOpened) {
-                                    _myGroupCapsuleOpenStatus.value = true
-                                    capsulePreviewDialogEvent(
-                                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                            "캡슐 개봉요청을 성공했습니다."
-                                        )
-                                    )
-                                } else {
-                                    capsulePreviewDialogEvent(
-                                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                            "캡슐 개봉요청을 실패했습니다."
-                                        )
-                                    )
-                                }
-
-                            }
-                        }
-                    }.onFail {
-                        // 값 뭐뭐 받는지에 따라서 다름
-                        capsulePreviewDialogEvent(
-                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                "캡슐 열기 실패"
-                            )
-                        )
-
-                    }
-                }
-            }
-        } else {
-            groupCapsuleOpenUseCase(capsuleId.value).collect { result ->
-                result.onSuccess { it ->
-                    when (it.capsuleOpenStatus) {
-                        GroupCapsuleOpenState.OPEN -> {
-                            _capsuleOpenState.emit(true)
-                            _groupCapsuleMembers.value =
-                                groupCapsuleMembers.value.map { capsuleMember ->
-                                    capsuleMember.copy(
-                                        memberId = capsuleMember.memberId,
-                                        nickname = capsuleMember.nickname,
-                                        profileUrl = capsuleMember.profileUrl,
-                                        isOpened = true
-                                    )
-                                }
-                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
-                        }
-
-                        GroupCapsuleOpenState.NOT_OPEN -> {
-                            if (it.isIndividuallyOpened) {
-                                _myGroupCapsuleOpenStatus.value = true
-                                capsulePreviewDialogEvent(
-                                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                        "캡슐 개봉요청을 성공했습니다."
-                                    )
-                                )
-                            } else {
-                                capsulePreviewDialogEvent(
-                                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                        "캡슐 개봉요청을 실패했습니다."
-                                    )
-                                )
-                            }
-
-                        }
-                    }
-                }.onFail {
-                    // 값 뭐뭐 받는지에 따라서 다름
-                    capsulePreviewDialogEvent(
-                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                            "캡슐 열기 실패"
-                        )
-                    )
-
-                }
-            }
+            )
+            return
         }
 
+        handleGroupCapsuleOpen()
         getGroupMembersCapsuleOpenStatus()
+    }
 
+    private suspend fun handleGroupCapsuleOpen() {
+        groupCapsuleOpenUseCase(capsuleId.value).collect { result ->
+            result.onSuccess { handleSuccess(it) }.onFail { handleFailure() }
+        }
+    }
+
+    private suspend fun handleSuccess(it: GroupCapsuleOpenStateResponse) {
+        when (it.capsuleOpenStatus) {
+            GroupCapsuleOpenState.OPEN -> {
+                _capsuleOpenState.emit(true)
+                _groupCapsuleMembers.value = groupCapsuleMembers.value.map { capsuleMember ->
+                    capsuleMember.copy(isOpened = true)
+                }
+                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
+            }
+            GroupCapsuleOpenState.NOT_OPEN -> {
+                val message = if (it.isIndividuallyOpened) {
+                    _myGroupCapsuleOpenStatus.value = true
+                    "캡슐 개봉요청을 성공했습니다."
+                } else {
+                    "캡슐 개봉요청을 실패했습니다."
+                }
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(message)
+                )
+            }
+        }
+    }
+
+    private fun handleFailure() {
+        capsulePreviewDialogEvent(
+            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                "캡슐 열기 실패"
+            )
+        )
     }
 
     private suspend fun openTreasureCapsule() {
