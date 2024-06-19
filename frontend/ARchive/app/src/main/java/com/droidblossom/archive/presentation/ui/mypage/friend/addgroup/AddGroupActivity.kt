@@ -9,6 +9,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.widget.TextViewCompat.setTextAppearance
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,8 +18,6 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.REFRESH
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.RESULT_FRIEND_CODE
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.AddGroupVPA
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
@@ -53,14 +53,6 @@ class AddGroupActivity :
                         }
 
                         is AddGroupViewModel.AddGroupEvent.Finish -> {
-                            finish()
-                        }
-
-                        is AddGroupViewModel.AddGroupEvent.FinishWithRefresh -> {
-                            val resultIntent = Intent().apply {
-                                putExtra(REFRESH, true)
-                            }
-                            setResult(RESULT_FRIEND_CODE , resultIntent)
                             finish()
                         }
 
