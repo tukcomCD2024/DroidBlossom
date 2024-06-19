@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.page
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
