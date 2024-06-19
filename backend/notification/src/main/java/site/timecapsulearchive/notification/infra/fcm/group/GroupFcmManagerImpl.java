@@ -13,12 +13,14 @@ import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 import site.timecapsulearchive.notification.infra.fcm.FCMManager;
 import site.timecapsulearchive.notification.infra.fcm.FcmMessageData;
+import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 
 @Component
 @RequiredArgsConstructor
 public class GroupFcmManagerImpl implements GroupFcmManager {
 
     private final FCMManager fcmManager;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     public void sendGroupInviteNotifications(
         final GroupInviteNotificationDto dto,
@@ -35,6 +37,8 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
                             String.valueOf(dto.notificationStatus()))
                         .putData(FcmMessageData.TITLE.getData(), dto.title())
                         .putData(FcmMessageData.TEXT.getData(), dto.text())
+                        .putData(FcmMessageData.IMAGE.getData(),
+                            s3PreSignedUrlManager.createS3PreSignedUrlForGet(dto.groupProfileUrl()))
                         .build()
                 );
         } catch (FirebaseMessagingException e) {
