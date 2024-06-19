@@ -16,8 +16,6 @@ import com.droidblossom.archive.domain.usecase.treasure.GetTreasureCapsuleSummar
 import com.droidblossom.archive.domain.usecase.treasure.OpenTreasureCapsuleUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
-import com.droidblossom.archive.util.DateUtils
-import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -216,17 +214,17 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     _visibleOpenProgressBar.emit(true)
                     _canOpenCapsule.emit(true)
                 }.onFail {
-
-                }.onException {
-                    _treasureRemove.value = true
-                    capsulePreviewDialogEvent(
-                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                            "안타깝게도 이미 누군가가 발견했어요."
+                    if (it == 404){
+                        _treasureRemove.value = true
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                "안타깝게도 이미 누군가가 발견했어요."
+                            )
                         )
-                    )
-                    capsulePreviewDialogEvent(
-                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
-                    )
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                        )
+                    }
                 }
             }
         }
@@ -468,21 +466,17 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 _treasureRemove.value = true
                 capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
             }.onFail {
-                capsulePreviewDialogEvent(
-                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "보물캡슐 열기 실패"
+                if (it == 404){
+                    _treasureRemove.value = true
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                            "안타깝게도 이미 누군가가 발견했어요."
+                        )
                     )
-                )
-            }.onException {
-                _treasureRemove.value = true
-                capsulePreviewDialogEvent(
-                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "안타깝게도 이미 누군가가 발견했어요."
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
                     )
-                )
-                capsulePreviewDialogEvent(
-                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
-                )
+                }
             }
         }
     }
