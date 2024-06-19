@@ -21,6 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,7 +44,15 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
         final Polygon mbr,
         final CapsuleType capsuleType
     ) {
-        JPAQuery<NearbyARCapsuleSummaryDto> dynamicQuery = jpaQueryFactory
+        List<Long> groupIds = jpaQueryFactory
+            .select(
+                memberGroup.group.id
+            )
+            .from(memberGroup)
+            .where(memberGroup.member.id.eq(memberId))
+            .fetch();
+
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
                     NearbyARCapsuleSummaryDto.class,
@@ -59,20 +68,16 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             )
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member);
-
-        joinMemberGroupForGroupCapsule(memberId, capsuleType, dynamicQuery);
-
-        return dynamicQuery
-            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId)))
+            .join(capsule.member, member)
+            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
             .fetch();
     }
 
-    private BooleanExpression capsuleFilter(CapsuleType capsuleType, Long memberId) {
+    private BooleanExpression capsuleFilter(CapsuleType capsuleType, Long memberId, List<Long> groupIds) {
         return switch (capsuleType) {
-            case ALL -> capsule.member.id.eq(memberId);
+            case ALL -> capsule.member.id.eq(memberId).or(capsule.group.id.in(groupIds));
             case TREASURE -> capsule.type.eq(capsuleType);
-            case GROUP -> capsule.type.eq(CapsuleType.GROUP);
+            case GROUP -> capsule.type.eq(CapsuleType.GROUP).and(capsule.group.id.in(groupIds));
             default -> capsule.type.eq(capsuleType).and(capsule.member.id.eq(memberId));
         };
     }
@@ -91,7 +96,15 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
         final Polygon mbr,
         final CapsuleType capsuleType
     ) {
-        JPAQuery<NearbyCapsuleSummaryDto> dynamicQuery = jpaQueryFactory
+        List<Long> groupIds = jpaQueryFactory
+            .select(
+                memberGroup.group.id
+            )
+            .from(memberGroup)
+            .where(memberGroup.member.id.eq(memberId))
+            .fetch();
+
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
                     NearbyCapsuleSummaryDto.class,
@@ -102,23 +115,9 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             )
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member);
-
-        joinMemberGroupForGroupCapsule(memberId, capsuleType, dynamicQuery);
-
-        return dynamicQuery
-            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId)))
+            .join(capsule.member, member)
+            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
             .fetch();
-    }
-
-    private void joinMemberGroupForGroupCapsule(Long memberId, CapsuleType capsuleType,
-        JPAQuery<?> dynamicQuery) {
-        if (capsuleType.equals(CapsuleType.GROUP)) {
-            dynamicQuery
-                .join(memberGroup).on(memberGroup.member.id.eq(capsule.member.id)
-                    .and(memberGroup.member.id.eq(memberId))
-                );
-        }
     }
 
     /**
