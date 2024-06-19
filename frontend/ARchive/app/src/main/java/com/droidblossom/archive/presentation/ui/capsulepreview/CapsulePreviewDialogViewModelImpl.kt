@@ -360,7 +360,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }
 
                     HomeFragment.CapsuleType.TREASURE -> {
-                        if (calledFromCamera.value) {
+                        if (!calledFromCamera.value) {
                             capsulePreviewDialogEvent(
                                 CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                                     "보물캡슐은 AR화면에서 오픈이 가능합니다."
