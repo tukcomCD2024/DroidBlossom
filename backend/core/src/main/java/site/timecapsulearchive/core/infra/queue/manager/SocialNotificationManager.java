@@ -74,12 +74,10 @@ public class SocialNotificationManager {
         final String groupProfileUrl,
         final List<Long> targetIds
     ) {
-        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(groupProfileUrl);
-
         basicRabbitTemplate.convertAndSend(
             RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getSuccessComponent(),
-            GroupInviteNotificationDto.createOf(ownerNickname, preSignedUrl, targetIds)
+            GroupInviteNotificationDto.createOf(ownerNickname, groupProfileUrl, targetIds)
         );
     }
 
