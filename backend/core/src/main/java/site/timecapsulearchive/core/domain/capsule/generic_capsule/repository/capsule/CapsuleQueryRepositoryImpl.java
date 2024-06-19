@@ -3,11 +3,13 @@ package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.c
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
+import static site.timecapsulearchive.core.domain.member_group.entity.QMemberGroup.memberGroup;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.ComparablePath;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +43,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
         final Polygon mbr,
         final CapsuleType capsuleType
     ) {
-        return jpaQueryFactory
+        JPAQuery<NearbyARCapsuleSummaryDto> dynamicQuery = jpaQueryFactory
             .select(
                 Projections.constructor(
                     NearbyARCapsuleSummaryDto.class,
@@ -57,7 +59,11 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             )
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member)
+            .join(capsule.member, member);
+
+        joinMemberGroupForGroupCapsule(memberId, capsuleType, dynamicQuery);
+
+        return dynamicQuery
             .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId)))
             .fetch();
     }
@@ -66,6 +72,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
         return switch (capsuleType) {
             case ALL -> capsule.member.id.eq(memberId);
             case TREASURE -> capsule.type.eq(capsuleType);
+            case GROUP -> capsule.type.eq(CapsuleType.GROUP);
             default -> capsule.type.eq(capsuleType).and(capsule.member.id.eq(memberId));
         };
     }
@@ -84,7 +91,7 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
         final Polygon mbr,
         final CapsuleType capsuleType
     ) {
-        return jpaQueryFactory
+        JPAQuery<NearbyCapsuleSummaryDto> dynamicQuery = jpaQueryFactory
             .select(
                 Projections.constructor(
                     NearbyCapsuleSummaryDto.class,
@@ -95,9 +102,23 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             )
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member)
+            .join(capsule.member, member);
+
+        joinMemberGroupForGroupCapsule(memberId, capsuleType, dynamicQuery);
+
+        return dynamicQuery
             .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId)))
             .fetch();
+    }
+
+    private void joinMemberGroupForGroupCapsule(Long memberId, CapsuleType capsuleType,
+        JPAQuery<?> dynamicQuery) {
+        if (capsuleType.equals(CapsuleType.GROUP)) {
+            dynamicQuery
+                .join(memberGroup).on(memberGroup.member.id.eq(capsule.member.id)
+                    .and(memberGroup.member.id.eq(memberId))
+                );
+        }
     }
 
     /**
