@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.repository;
+package site.timecapsulearchive.notification.repository.notification;
 
 import org.springframework.data.repository.Repository;
 import site.timecapsulearchive.notification.entity.CategoryName;

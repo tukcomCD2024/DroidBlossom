@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.repository;
+package site.timecapsulearchive.notification.repository.notification;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ import site.timecapsulearchive.notification.entity.NotificationStatus;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationQueryRepository {
+public class NotificationQueryRepositoryImpl implements NotificationQueryRepository{
 
     private final JdbcTemplate jdbcTemplate;
 

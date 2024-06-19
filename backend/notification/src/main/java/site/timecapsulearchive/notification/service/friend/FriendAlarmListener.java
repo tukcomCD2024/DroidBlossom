@@ -1,27 +1,13 @@
-package site.timecapsulearchive.notification.service;
+package site.timecapsulearchive.notification.service.friend;
 
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSendDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
-import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 
-public interface NotificationServiceListener {
-
-
-    @RabbitListener(
-        bindings = @QueueBinding(
-            value = @Queue(value = "notification.createCapsuleSkin.queue", durable = "true"),
-            exchange = @Exchange(value = "notification.createCapsuleSkin.exchange"),
-            key = "notification.createCapsuleSkin.queue"
-        ),
-        returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
-    )
-    void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto);
+public interface FriendAlarmListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
@@ -56,17 +42,5 @@ public interface NotificationServiceListener {
         messageConverter = "jsonMessageConverter"
     )
     void sendFriendRequestNotifications(final FriendNotificationsDto dto);
-
-
-    @RabbitListener(
-        bindings = @QueueBinding(
-            value = @Queue(value = "notification.groupInvite.queue", durable = "true"),
-            exchange = @Exchange(value = "groupInvite.exchange"),
-            key = "notification.groupInvite.queue"
-        ),
-        returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
-    )
-    void sendGroupInviteNotification(final GroupInviteNotificationDto dto);
 
 }
