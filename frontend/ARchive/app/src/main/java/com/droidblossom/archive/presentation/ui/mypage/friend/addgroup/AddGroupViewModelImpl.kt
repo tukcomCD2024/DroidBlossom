@@ -223,7 +223,7 @@ class AddGroupViewModelImpl @Inject constructor(
                 )
             ).collect { result ->
                 result.onSuccess {
-                    _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.FinishWithRefresh)
+                    _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.Finish)
                     Log.d("addgroup", "그룹 생성 성공")
                 }.onFail {
                     _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.ShowToastMessage("서버와 연결을 실패했습니다."))

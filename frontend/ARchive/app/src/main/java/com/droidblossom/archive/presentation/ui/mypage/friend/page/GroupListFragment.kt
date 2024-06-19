@@ -72,6 +72,10 @@ class GroupListFragment :
                 }
             }
         })
+
+        binding.swipeRefreshL.setOnRefreshListener {
+            viewModel.getGroupLastList()
+        }
     }
 
     override fun observeData() {
@@ -82,5 +86,9 @@ class GroupListFragment :
                 }
             }
         }
+    }
+
+    fun onEndSwipeRefresh() {
+        binding.swipeRefreshL.isRefreshing = false
     }
 }

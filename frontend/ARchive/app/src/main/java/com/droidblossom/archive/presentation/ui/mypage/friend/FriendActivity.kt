@@ -16,6 +16,7 @@ import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendVPA
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupActivity
+import com.droidblossom.archive.presentation.ui.mypage.friend.page.GroupListFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,16 +31,6 @@ class FriendActivity :
 
     private val friendVPA by lazy {
         FriendVPA(this)
-    }
-
-    private var createResultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_FRIEND_CODE) {
-            if (result.data?.getBooleanExtra(REFRESH, false) == true){
-                viewModel.setEvent(FriendViewModel.FriendEvent.OnRefresh)
-            }
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +49,7 @@ class FriendActivity :
         binding.vp.adapter = friendVPA
 
         binding.addCV.setOnClickListener {
-            createResultLauncher.launch(AddGroupActivity.newIntent(this@FriendActivity))
+            startActivity(AddGroupActivity.newIntent(this@FriendActivity))
         }
 
         binding.closeBtn.setOnClickListener {
@@ -80,7 +71,7 @@ class FriendActivity :
                 if (tab.position == 0) {
                     binding.addT.text = "그룹 추가"
                     binding.addCV.setOnClickListener {
-                        createResultLauncher.launch(AddGroupActivity.newIntent(this@FriendActivity))
+                        startActivity(AddGroupActivity.newIntent(this@FriendActivity))
                     }
                 } else {
                     binding.addT.text = "친구 추가"
@@ -121,8 +112,8 @@ class FriendActivity :
                         is FriendViewModel.FriendEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
-                        is FriendViewModel.FriendEvent.OnRefresh -> {
-                            viewModel.getGroupLastList()
+                        is FriendViewModel.FriendEvent.OnRefreshEnd->{
+                            (friendVPA.getFragment(0) as GroupListFragment).onEndSwipeRefresh()
                         }
                         else -> {}
                     }

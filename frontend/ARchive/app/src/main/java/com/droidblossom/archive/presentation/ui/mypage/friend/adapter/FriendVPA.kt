@@ -18,4 +18,8 @@ class FriendVPA(activity: FragmentActivity) : FragmentStateAdapter(activity){
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
     }
+
+    fun getFragment(position: Int): Fragment? {
+        return fragmentList.getOrNull(position)
+    }
 }

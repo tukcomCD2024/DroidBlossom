@@ -170,7 +170,7 @@ class FriendViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        friendHasNextPage.value = it.hasNext
+                        groupHasNextPage.value = it.hasNext
                         if (friendListUI.value.isEmpty()) {
                             _groupListUi.emit(it.groups)
                         } else {
@@ -190,26 +190,25 @@ class FriendViewModelImpl @Inject constructor(
     }
 
     override fun getGroupLastList() {
-        if (groupHasNextPage.value) {
-            getGroupListJob?.cancel()
-            getGroupListJob = viewModelScope.launch {
-                getGroupPageUseCase(
-                    PagingRequestDto(
-                        15,
-                        DateUtils.dataServerString
-                    )
-                ).collect { result ->
-                    result.onSuccess {
-                        friendHasNextPage.value = it.hasNext
-                        _groupListUi.emit(it.groups)
-                        friendLastCreatedTime.value = it.groups.last().createdAt
-                    }.onFail {
-                        _friendEvent.emit(
-                            FriendViewModel.FriendEvent.ShowToastMessage(
-                                "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
-                            )
+        getGroupListJob?.cancel()
+        getGroupListJob = viewModelScope.launch {
+            getGroupPageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    groupHasNextPage.value = it.hasNext
+                    _groupListUi.emit(it.groups)
+                    friendLastCreatedTime.value = it.groups.last().createdAt
+                    _friendEvent.emit(FriendViewModel.FriendEvent.OnRefreshEnd)
+                }.onFail {
+                    _friendEvent.emit(
+                        FriendViewModel.FriendEvent.ShowToastMessage(
+                            "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
                         )
-                    }
+                    )
                 }
             }
         }

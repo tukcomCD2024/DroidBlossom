@@ -56,14 +56,6 @@ class AddGroupActivity :
                             finish()
                         }
 
-                        is AddGroupViewModel.AddGroupEvent.FinishWithRefresh -> {
-                            val resultIntent = Intent().apply {
-                                putExtra(REFRESH, true)
-                            }
-                            setResult(RESULT_FRIEND_CODE , resultIntent)
-                            finish()
-                        }
-
                         else -> {}
                     }
                 }

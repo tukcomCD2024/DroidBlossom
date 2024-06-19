@@ -42,6 +42,6 @@ interface FriendViewModel {
 
     sealed class FriendEvent {
         data class ShowToastMessage(val message: String) : FriendViewModel.FriendEvent()
-        object  OnRefresh : FriendEvent()
+        object  OnRefreshEnd : FriendEvent()
     }
 }
