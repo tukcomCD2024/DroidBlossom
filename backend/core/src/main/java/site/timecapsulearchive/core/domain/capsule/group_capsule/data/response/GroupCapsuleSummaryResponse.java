@@ -3,25 +3,33 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.data.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import lombok.Builder;
 import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "캡슐 요약 정보")
 @Builder
 public record GroupCapsuleSummaryResponse(
 
+    @Schema(description = "그룹 아이디")
+    Long groupId,
+
     @Schema(description = "그룹원 요약 정보")
-    List<GroupMemberSummaryResponse> members,
+    List<GroupCapsuleMemberResponse> groupMembers,
+
+    @Schema(description = "그룹 이름")
+    String groupName,
+
+    @Schema(description = "그룹 프로필 url")
+    String groupProfileUrl,
 
     @Schema(description = "생성자 닉네임")
-    String nickname,
+    String creatorNickname,
 
     @Schema(description = "생성자 프로필 url")
-    String profileUrl,
+    String creatorProfileUrl,
 
     @Schema(description = "캡슐 스킨 url")
     String skinUrl,
@@ -44,8 +52,17 @@ public record GroupCapsuleSummaryResponse(
     @Schema(description = "캡슐 생성 도로 이름")
     String roadName,
 
-    @Schema(description = "개봉 여부")
-    Boolean isOpened,
+    @Schema(description = "캡슐 개봉 여부")
+    Boolean isCapsuleOpened,
+
+    @Schema(description = "현재 사용자 캡슐 개봉 여부")
+    Boolean isRequestMemberCapsuleOpened,
+
+    @Schema(description = "캡슐 수정 권한 여부")
+    Boolean hasEditPermission,
+
+    @Schema(description = "캡슐 삭제 권한 여부")
+    Boolean hasDeletePermission,
 
     @Schema(description = "캡슐 생성 일")
     ZonedDateTime createdAt
@@ -60,10 +77,10 @@ public record GroupCapsuleSummaryResponse(
     }
 
     public static GroupCapsuleSummaryResponse createOf(
-        final GroupCapsuleSummaryDto summaryDto,
-        final Function<String, String> preSignUrlFunction,
-        final Function<Point, Point> changePointFunction
+        final CombinedGroupCapsuleSummaryDto groupCapsuleSummary,
+        final UnaryOperator<String> preSignUrlFunction,
+        final UnaryOperator<Point> changePointFunction
     ) {
-        return summaryDto.toResponse(preSignUrlFunction, changePointFunction);
+        return groupCapsuleSummary.toResponse(preSignUrlFunction, changePointFunction);
     }
 }

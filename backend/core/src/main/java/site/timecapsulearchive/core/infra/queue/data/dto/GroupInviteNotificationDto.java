@@ -15,8 +15,8 @@ public record GroupInviteNotificationDto(
 ) {
 
     public static GroupInviteNotificationDto createOf(
-        final String groupProfileUrl,
         final String ownerNickname,
+        final String groupProfileUrl,
         final List<Long> targetIds
 
     ) {

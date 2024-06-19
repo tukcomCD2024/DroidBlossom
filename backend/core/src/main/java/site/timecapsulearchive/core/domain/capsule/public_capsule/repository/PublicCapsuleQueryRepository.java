@@ -19,11 +19,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -158,28 +159,22 @@ public class PublicCapsuleQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = canMoreRead(size, publicCapsuleDetailDtos.size());
-        if (hasNext) {
-            publicCapsuleDetailDtos.remove(size);
-        }
-
-        return new SliceImpl<>(publicCapsuleDetailDtos, Pageable.ofSize(size), hasNext);
-
+        return SliceUtil.makeSlice(size, publicCapsuleDetailDtos);
     }
 
     private boolean canMoreRead(final int size, final int capsuleSize) {
         return capsuleSize > size;
     }
 
-    public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
+    public Slice<CapsuleBasicInfoDto> findMyPublicCapsuleSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<MyPublicCapsuleDto> publicCapsules = jpaQueryFactory
+        final List<CapsuleBasicInfoDto> publicCapsules = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    MyPublicCapsuleDto.class,
+                    CapsuleBasicInfoDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
@@ -199,11 +194,6 @@ public class PublicCapsuleQueryRepository {
             .limit(size + 1)
             .fetch();
 
-        final boolean hasNext = publicCapsules.size() > size;
-        if (hasNext) {
-            publicCapsules.remove(size);
-        }
-
-        return new SliceImpl<>(publicCapsules, Pageable.ofSize(size), hasNext);
+        return SliceUtil.makeSlice(size, publicCapsules);
     }
 }

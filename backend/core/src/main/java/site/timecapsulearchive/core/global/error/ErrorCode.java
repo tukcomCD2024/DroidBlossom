@@ -36,6 +36,10 @@ public enum ErrorCode {
     //외부 API
     EXTERNAL_API_ERROR(500, "EXTERNAL-001", "외부 api 호출에 실패했습니다. 잠시 후 요청해주세요."),
 
+    //Redis 분산 락
+    REDIS_FAILED_GET_LOCK_ERROR(500, "LOCK-001", "분산 락을 얻는데 실패 하였습니다."),
+    REDIS_INTERRUPT_ERROR(500, "LOCK-002", "락을 얻는데 인터럽트가 발생 하였습니다."),
+
     //member
     LOGIN_ON_NOT_VERIFIED_ERROR(400, "MEMBER-001", "인증되지 않은 사용자로 로그인을 시도했습니다."),
 
@@ -52,18 +56,29 @@ public enum ErrorCode {
     //capsule
     CAPSULE_NOT_FOUND_ERROR(404, "CAPSULE-001", "캡슐을 찾지 못하였습니다."),
     NO_CAPSULE_AUTHORITY_ERROR(403, "CAPSULE-002", "캡슐에 접근 권한이 없습니다."),
+    GROUP_CAPSULE_OPEN_NOT_FOUND_ERROR(404, "CAPSULE-003", "그룹 캡슐 개봉상태를 찾을 수 없습니다."),
+    CAPSULE_OPEN_STATE_ERROR(400, "CAPSULE-004", "캡슐을 개봉할 수 없는 상태입니다."),
 
     //friend
     FRIEND_NOT_FOUND_ERROR(404, "FRIEND-001", "친구를 찾지 못하였습니다"),
-    FRIEND_DUPLICATE_ID_ERROR(404, "FRIEND-002", "친구 아이디가 중복되었습니다."),
+    SELF_FRIEND_OPERATION_ERROR(400, "FRIEND-002", "자기 자신을 향해 친구와 관련된 작업을 수행할 수 없습니다."),
 
     //group
     GROUP_CREATE_ERROR(400, "GROUP-001", "그룹 생성에 실패하였습니다."),
     GROUP_NOT_FOUND_ERROR(404, "GROUP-002", "그룹을 찾을 수 없습니다"),
+    GROUP_INVITATION_NOT_FOUND_ERROR(404, "GROUP-003", "그룹 초대를 찾을 수 없습니다"),
+    GROUP_MEMBER_EXIST_ERROR(400, "GROUP-004", "다른 그룹 멤버가 존재해 그룹을 삭제할 수 없습니다."),
+    NO_GROUP_AUTHORITY_ERROR(403, "GROUP-005", "그룹에 대한 권한이 존재하지 않습니다."),
+    GROUP_CAPSULE_EXIST_ERROR(400, "GROUP-006", "그룹 캡슐이 존재해 그룹을 삭제할 수 없습니다."),
+    GROUP_OWNER_QUIT_ERROR(400, "GROUP-007", "그룹장은 그룹을 탈퇴할 수 없습니다."),
+    GROUP_MEMBER_NOT_FOUND_ERROR(404, "GROUP-008", "그룹에서 해당 멤버를 찾을 수 없습니다."),
+    GROUP_MEMBER_DUPLICATED_ID_ERROR(400, "GROUP-009", "자신을 추방할 수 없습니다."),
+    GROUP_MEMBER_COUNT_LIMIT_ERROR(400, "GROUP-009", "그룹 멤버는 최대 30명까지 입니다."),
 
     //friend invite
     FRIEND_INVITE_NOT_FOUND_ERROR(404, "FRIEND-INVITE-001", "친구 요청을 찾지 못하였습니다."),
-    FRIEND_TWO_WAY_INVITE_ERROR(400, "FRIEND-INVITE-002", "친구 요청을 받은 상태입니다.");
+    FRIEND_TWO_WAY_INVITE_ERROR(400, "FRIEND-INVITE-002", "친구 요청을 받은 상태입니다."),
+    FRIEND_INVITE_DUPLICATE_ERROR(400, "FRIEND-INVITE-003", "이미 친구 요청된 상태입니다.");
 
     private final int status;
     private final String code;

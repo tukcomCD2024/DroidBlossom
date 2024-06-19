@@ -1,0 +1,1 @@
+alter table member add fulltext index fx_tag(tag) with parser ngram;

@@ -5,4 +5,5 @@ import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 
 public interface GroupCapsuleOpenRepository extends Repository<GroupCapsuleOpen, Long> {
 
+    void save(GroupCapsuleOpen groupCapsuleOpen);
 }

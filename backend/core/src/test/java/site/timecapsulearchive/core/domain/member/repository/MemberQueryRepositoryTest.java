@@ -39,7 +39,7 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     private int friendCount;
 
     MemberQueryRepositoryTest(EntityManager entityManager) {
-        this.memberQueryRepository = new MemberQueryRepository(
+        this.memberQueryRepository = new MemberQueryRepositoryImpl(
             new JPAQueryFactory(entityManager));
     }
 

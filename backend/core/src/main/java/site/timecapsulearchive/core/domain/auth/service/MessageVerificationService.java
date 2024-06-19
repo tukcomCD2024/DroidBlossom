@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.auth.service;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
@@ -20,6 +21,7 @@ import site.timecapsulearchive.core.global.security.encryption.HashEncryptionMan
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -108,6 +110,14 @@ public class MessageVerificationService {
             .orElseThrow(MemberNotFoundException::new);
 
         memberTemporaryRepository.delete(memberTemporary);
+
+        boolean isDuplicateTag = memberRepository.checkTagDuplication(memberTemporary.getTag());
+        if (isDuplicateTag) {
+            log.warn("member tag duplicate - email:{}, tag:{}", memberTemporary.getEmail(),
+                memberTemporary.getTag());
+            memberTemporary.updateTagLowerCaseSocialType();
+            log.warn("member tag update - tag: {}", memberTemporary.getTag());
+        }
 
         final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
             aesEncryptionManager.encryptWithPrefixIV(plain));

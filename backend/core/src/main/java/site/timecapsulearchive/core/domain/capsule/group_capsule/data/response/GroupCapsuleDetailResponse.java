@@ -8,12 +8,12 @@ import lombok.Builder;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "그룹 캡슐 상세 정보")
 @Builder
 public record GroupCapsuleDetailResponse(
+
     @Schema(description = "캡슐 아이디")
     Long capsuleId,
 
@@ -21,7 +21,7 @@ public record GroupCapsuleDetailResponse(
     String capsuleSkinUrl,
 
     @Schema(description = "그룹원 요약 정보")
-    List<GroupMemberSummaryResponse> members,
+    List<GroupCapsuleMemberSummaryResponse> members,
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,

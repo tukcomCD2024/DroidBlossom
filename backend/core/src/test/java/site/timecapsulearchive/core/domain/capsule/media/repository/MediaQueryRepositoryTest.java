@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.capsule.media.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.sql.DataSource;
@@ -23,8 +24,10 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
 import site.timecapsulearchive.core.domain.capsule.entity.Video;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.ImageQueryRepository;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.VideoQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageQueryRepositoryImpl;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoQueryRepositoryImpl;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
@@ -44,8 +47,8 @@ class MediaQueryRepositoryTest extends RepositoryTest {
         DataSource dataSource
     ) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.imageQueryRepository = new ImageQueryRepository(jdbcTemplate);
-        this.videoQueryRepository = new VideoQueryRepository(jdbcTemplate);
+        this.imageQueryRepository = new ImageQueryRepositoryImpl(jdbcTemplate);
+        this.videoQueryRepository = new VideoQueryRepositoryImpl(jdbcTemplate);
     }
 
     @Transactional
