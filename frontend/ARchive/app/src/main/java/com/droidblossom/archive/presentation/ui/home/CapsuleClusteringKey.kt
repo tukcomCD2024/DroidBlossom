@@ -15,4 +15,5 @@ class CapsuleClusteringKey(val id: Long, val capsuleType: HomeFragment.CapsuleTy
     }
 
     override fun hashCode() = id.hashCode()
+
 }

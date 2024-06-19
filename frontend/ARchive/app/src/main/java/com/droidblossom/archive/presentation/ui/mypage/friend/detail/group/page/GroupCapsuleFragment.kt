@@ -100,10 +100,7 @@ class GroupCapsuleFragment :
                 capsuleRVA.notifyItemChanged(capsuleIndex)
             }
         }
-
-
         initRV()
-
     }
 
     private fun initRV(){

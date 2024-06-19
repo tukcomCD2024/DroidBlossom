@@ -349,7 +349,15 @@ class CapsulePreviewDialogFragment :
             putLong("capsuleId", capsuleId.toLong())
             putBoolean("isOpened", viewModel.capsuleOpenState.value)
         }
+
+        val treasureCapsule = Bundle().apply {
+            putInt("capsuleIndex", capsuleIndex)
+            putLong("capsuleId", capsuleId.toLong())
+            putBoolean("remove", viewModel.treasureRemove.value)
+        }
+
         setFragmentResult("capsuleState", capsuleState)
+        setFragmentResult("treasureCapsule", treasureCapsule)
     }
 
     private fun setColor(progressBarColor: Int, titleColor: Int) {

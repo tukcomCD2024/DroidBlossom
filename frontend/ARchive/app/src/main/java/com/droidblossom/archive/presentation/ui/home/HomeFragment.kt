@@ -17,6 +17,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationActivity
+import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -47,6 +48,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     //private lateinit var naverMap: NaverMap
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
+
+    private val keyMaps: MutableMap<Long, CapsuleClusteringKey> = mutableMapOf()
 
     // https://navermaps.github.io/android-map-sdk/guide-ko/5-8.html
     private val clusterer: Clusterer<CapsuleClusteringKey> =
@@ -110,6 +113,20 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         locationUtil = LocationUtil(requireContext())
         initView()
         initMap()
+
+        parentFragmentManager.setFragmentResultListener(
+            "treasureCapsule",
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                clusterer.map?.let { _ ->
+                    clusterer.remove(keyMaps[capsuleId]!!)
+                }
+            }
+        }
 
         val layoutParams = binding.notificationBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
@@ -226,6 +243,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect {
+                    keyMaps.clear()
                     clusterer.map?.let { _ ->
                         // 마커 지우는 로직
                         clusterer.clear()
@@ -275,11 +293,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun addMarker(capsuleList: List<CapsuleMarker>) {
 
         val keyTagMap: Map<CapsuleClusteringKey, *> = capsuleList.associate {
-            CapsuleClusteringKey(
+
+            val key = CapsuleClusteringKey(
                 id = it.id,
                 capsuleType = it.capsuleType,
                 position = LatLng(it.latitude, it.longitude)
-            ) to null
+            )
+
+            keyMaps[it.id] = key
+            key to null
         }
 
         clusterer.addAll(keyTagMap)

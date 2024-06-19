@@ -117,6 +117,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override val treasureOpenResult: StateFlow<String>
         get() = _treasureOpenResult
 
+    private val _treasureRemove = MutableStateFlow(false)
+    override val treasureRemove: StateFlow<Boolean> get() = _treasureRemove
+
 
     override fun setCapsuleId(capsuleId: Long) {
         _capsuleId.value = capsuleId
@@ -214,6 +217,16 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     _canOpenCapsule.emit(true)
                 }.onFail {
 
+                }.onException {
+                    _treasureRemove.value = true
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                            "안타깝게도 이미 누군가가 발견했어요."
+                        )
+                    )
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                    )
                 }
             }
         }
@@ -347,7 +360,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }
 
                     HomeFragment.CapsuleType.TREASURE -> {
-                        if (!calledFromCamera.value) {
+                        if (calledFromCamera.value) {
                             capsulePreviewDialogEvent(
                                 CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                                     "보물캡슐은 AR화면에서 오픈이 가능합니다."
@@ -452,6 +465,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             result.onSuccess {
                 _treasureOpenResult.emit(it.treasureImageUrl)
                 _capsuleOpenState.emit(true)
+                _treasureRemove.value = true
                 capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
             }.onFail {
                 capsulePreviewDialogEvent(
@@ -460,9 +474,10 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     )
                 )
             }.onException {
+                _treasureRemove.value = true
                 capsulePreviewDialogEvent(
                     CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "누군가 이미 발견했습니다."
+                        "안타깝게도 이미 누군가가 발견했어요."
                     )
                 )
                 capsulePreviewDialogEvent(
