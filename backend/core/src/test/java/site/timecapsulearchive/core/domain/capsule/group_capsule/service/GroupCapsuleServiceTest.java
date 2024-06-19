@@ -215,7 +215,7 @@ class GroupCapsuleServiceTest {
     void 그룹_캡슐이_없는_경우_그룹_캡슐_개봉_시_예외가_발생한다() {
         //given
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(Optional.empty());
 
         //when
@@ -232,7 +232,7 @@ class GroupCapsuleServiceTest {
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleSpecificTime(memberId,
             capsuleId, now.plusYears(5));
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -254,7 +254,7 @@ class GroupCapsuleServiceTest {
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleSpecificTime(memberId,
             capsuleId, null);
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -278,7 +278,7 @@ class GroupCapsuleServiceTest {
             capsuleId,
             groupMembers);
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -302,7 +302,7 @@ class GroupCapsuleServiceTest {
             capsuleId,
             groupMembers);
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -323,7 +323,7 @@ class GroupCapsuleServiceTest {
         //given
         Optional<Capsule> groupCapsule = CapsuleFixture.groupCapsuleEmptyOpen(memberId, capsuleId);
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -341,7 +341,7 @@ class GroupCapsuleServiceTest {
             capsuleId,
             groupMembers);
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when
@@ -365,7 +365,7 @@ class GroupCapsuleServiceTest {
             capsuleId,
             groupMembers);
         given(
-            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong(), anyLong()))
+            capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(anyLong()))
             .willReturn(groupCapsule);
 
         //when

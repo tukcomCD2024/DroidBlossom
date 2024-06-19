@@ -136,9 +136,7 @@ public class GroupCapsuleService {
      */
     @Transactional
     public GroupCapsuleOpenStateDto openGroupCapsule(final Long memberId, final Long capsuleId) {
-        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
-                memberId,
-                capsuleId)
+        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (groupCapsule.isNotCapsuleOpened()) {
