@@ -58,8 +58,8 @@ public class CapsuleSkin extends BaseEntity {
     }
 
     private CapsuleSkin(String skinName, String imageUrl, Member member) {
-        this.skinName =
-            this.imageUrl = imageUrl;
+        this.skinName = skinName;
+        this.imageUrl = imageUrl;
         this.member = member;
     }
 
