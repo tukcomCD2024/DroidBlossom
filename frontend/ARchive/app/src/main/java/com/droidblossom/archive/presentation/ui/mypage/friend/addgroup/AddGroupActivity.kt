@@ -16,8 +16,6 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAddGroupBinding
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.REFRESH
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity.Companion.RESULT_FRIEND_CODE
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.adapter.AddGroupVPA
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip

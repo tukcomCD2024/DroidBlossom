@@ -126,8 +126,6 @@ class FriendActivity :
         const val FRIEND = "friend"
         const val GROUP = "group"
         const val TYPE_KEY = "type_key"
-        const val REFRESH = "need_refresh"
-        const val RESULT_FRIEND_CODE = 104
         fun newIntent(context: Context, type: String) =
             Intent(context, FriendActivity::class.java).apply {
                 putExtra(TYPE_KEY, type)

@@ -38,10 +38,10 @@ interface FriendViewModel {
     fun searchGroup()
     fun getGroupList()
     fun getGroupLastList()
-    fun removeGroup(groupId:Long)
+    fun removeGroup(groupId: Long)
 
     sealed class FriendEvent {
         data class ShowToastMessage(val message: String) : FriendViewModel.FriendEvent()
-        object  OnRefreshEnd : FriendEvent()
+        object OnRefreshEnd : FriendEvent()
     }
 }
