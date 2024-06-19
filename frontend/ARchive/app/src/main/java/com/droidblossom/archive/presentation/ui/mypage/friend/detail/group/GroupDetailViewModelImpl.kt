@@ -221,4 +221,12 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     }
 
+    override fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long) {
+        viewModelScope.launch {
+            val newList = _capsules.value
+            newList[capsuleIndex].isOpened = true
+            _capsules.emit(newList)
+        }
+    }
+
 }

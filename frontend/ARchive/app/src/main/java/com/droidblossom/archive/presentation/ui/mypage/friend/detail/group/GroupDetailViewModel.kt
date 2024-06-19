@@ -31,6 +31,7 @@ interface GroupDetailViewModel {
     fun closureGroup()
 
     fun leaveGroup()
+    fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long)
 
     sealed class GroupDetailEvent{
         object SwipeRefreshLayoutDismissLoading : GroupDetailEvent()

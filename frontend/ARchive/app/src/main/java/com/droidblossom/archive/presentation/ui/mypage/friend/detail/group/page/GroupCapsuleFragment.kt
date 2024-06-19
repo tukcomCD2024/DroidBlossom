@@ -15,6 +15,7 @@ import com.droidblossom.archive.databinding.FragmentGroupCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
 import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModelImpl
@@ -86,6 +87,20 @@ class GroupCapsuleFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        parentFragmentManager.setFragmentResultListener(
+            "capsuleState",
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val capsuleOpenState = bundle.getBoolean("isOpened")
+            if (capsuleIndex != -1 && capsuleOpenState) {
+                viewModel.updateCapsuleOpenState(capsuleIndex, capsuleId)
+                capsuleRVA.notifyItemChanged(capsuleIndex)
+            }
+        }
+
 
         initRV()
 
