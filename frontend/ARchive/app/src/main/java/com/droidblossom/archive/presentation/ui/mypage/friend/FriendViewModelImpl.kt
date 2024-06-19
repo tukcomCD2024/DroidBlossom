@@ -68,6 +68,12 @@ class FriendViewModelImpl @Inject constructor(
     override val groupListUI: StateFlow<List<GroupSummary>>
         get() = _groupListUi
 
+    override fun setEvent(event: FriendViewModel.FriendEvent) {
+        viewModelScope.launch {
+            _friendEvent.emit(event)
+        }
+    }
+
     private val groupHasNextPage = MutableStateFlow(true)
 
     private val groupLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
@@ -183,6 +189,32 @@ class FriendViewModelImpl @Inject constructor(
         }
     }
 
+    override fun getGroupLastList() {
+        if (groupHasNextPage.value) {
+            getGroupListJob?.cancel()
+            getGroupListJob = viewModelScope.launch {
+                getGroupPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        DateUtils.dataServerString
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        friendHasNextPage.value = it.hasNext
+                        _groupListUi.emit(it.groups)
+                        friendLastCreatedTime.value = it.groups.last().createdAt
+                    }.onFail {
+                        _friendEvent.emit(
+                            FriendViewModel.FriendEvent.ShowToastMessage(
+                                "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     override fun changeDeleteOpen(previousPosition: Int?, currentPosition: Int) {
         viewModelScope.launch {
             val newList = _friendListUI.value
@@ -229,7 +261,7 @@ class FriendViewModelImpl @Inject constructor(
 
     }
 
-    override fun removeGroup(groupId:Long){
+    override fun removeGroup(groupId: Long) {
         val groupToRemove = _groupListUi.value.find { it.id == groupId }
         groupToRemove?.let {
             _groupListUi.value -= it
