@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
+import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 
@@ -46,5 +47,11 @@ public class AuthManager {
 
     public TokenResponse reIssueToken(String refreshToken) {
         return tokenManager.reIssueToken(refreshToken);
+    }
+
+    public TemporaryTokenResponse signUp(SignUpRequestDto dto) {
+        Long createdMemberId = memberService.createMember(dto);
+
+        return tokenManager.createTemporaryToken(createdMemberId);
     }
 }
