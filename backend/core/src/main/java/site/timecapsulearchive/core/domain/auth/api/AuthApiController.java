@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
+import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.data.request.EmailSignInRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.EmailSignUpRequest;
@@ -74,13 +76,13 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
         @Valid @RequestBody final TemporaryTokenReIssueRequest request
     ) {
-        final TemporaryTokenResponse temporaryToken = authManager.reIssueTemporaryToken(
+        final TemporaryTokenDto temporaryToken = authManager.reIssueTemporaryToken(
             request.authId(), request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                temporaryToken
+                temporaryToken.toResponse()
             )
         );
     }
@@ -94,12 +96,12 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(
         @Valid @RequestBody final TokenReIssueRequest request
     ) {
-        final TokenResponse token = authManager.reIssueToken(request.refreshToken());
+        final TokenDto token = authManager.reIssueToken(request.refreshToken());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                token
+                token.toResponse()
             )
         );
     }
@@ -113,12 +115,12 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
         @Valid @RequestBody final SignUpRequest request
     ) {
-        final TemporaryTokenResponse temporaryToken = authManager.signUp(request.toDto());
+        final TemporaryTokenDto temporaryToken = authManager.signUp(request.toDto());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                temporaryToken
+                temporaryToken.toResponse()
             )
         );
     }
@@ -131,12 +133,12 @@ public class AuthApiController implements AuthApi {
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
         @Valid @RequestBody final SignInRequest request) {
-        final TokenResponse token = authManager.signIn(request.authId(), request.socialType());
+        final TokenDto token = authManager.signIn(request.authId(), request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                token
+                token.toResponse()
             )
         );
     }
@@ -173,13 +175,13 @@ public class AuthApiController implements AuthApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationNumberValidRequest request
     ) {
-        TokenResponse token = authManager.validVerificationMessage(memberId,
+        TokenDto token = authManager.validVerificationMessage(memberId,
             request.certificationNumber(), request.receiver());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                token
+                token.toResponse()
             )
         );
     }
@@ -193,13 +195,13 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
         @Valid @RequestBody final EmailSignUpRequest request
     ) {
-        TemporaryTokenResponse temporaryToken = authManager.signUpWithEmail(request.email(),
+        TemporaryTokenDto temporaryToken = authManager.signUpWithEmail(request.email(),
             request.password());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                temporaryToken
+                temporaryToken.toResponse()
             )
         );
     }
@@ -213,13 +215,13 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithEmail(
         @Valid @RequestBody final EmailSignInRequest request
     ) {
-        TokenResponse token = authManager.signInWithEmail(request.email(),
+        TokenDto token = authManager.signInWithEmail(request.email(),
             request.password());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                token
+                token.toResponse()
             )
         );
     }

@@ -5,6 +5,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.dto.MemberInfo;
+import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
+import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
@@ -26,15 +28,15 @@ public class TokenManager {
      * @param memberId 액세스 토큰 클레임 값에 넣을 사용자 아이디
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
-    public TokenResponse createNewToken(final Long memberId) {
+    public TokenDto createNewToken(final Long memberId) {
         final String key = String.valueOf(UUID.randomUUID());
         memberInfoCacheRepository.save(key, MemberInfo.from(memberId));
 
         return createTokenResponse(memberId, key);
     }
 
-    private TokenResponse createTokenResponse(final Long memberId, final String key) {
-        return TokenResponse.create(
+    private TokenDto createTokenResponse(final Long memberId, final String key) {
+        return TokenDto.create(
             jwtFactory.createAccessToken(memberId),
             jwtFactory.createRefreshToken(key),
             jwtFactory.getExpiresIn(),
@@ -48,8 +50,8 @@ public class TokenManager {
      * @param memberId 임시 인증 토큰 클레임 값에 사용할 사용자 아이디
      * @return 임시 인증 토큰 응답(임시 인증 토큰, 임시 인증 토큰 만료일)
      */
-    public TemporaryTokenResponse createTemporaryToken(final Long memberId) {
-        return TemporaryTokenResponse.create(
+    public TemporaryTokenDto createTemporaryToken(final Long memberId) {
+        return TemporaryTokenDto.create(
             jwtFactory.createTemporaryAccessToken(memberId),
             jwtFactory.getTemporaryTokenExpiresIn()
         );
@@ -61,7 +63,7 @@ public class TokenManager {
      * @param refreshToken 리프레시 토큰
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
-    public TokenResponse reIssueToken(final String refreshToken) {
+    public TokenDto reIssueToken(final String refreshToken) {
         final TokenParseResult tokenParseResult = jwtFactory.parse(
             refreshToken,
             List.of(TokenType.REFRESH)

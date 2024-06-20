@@ -3,9 +3,9 @@ package site.timecapsulearchive.core.domain.auth.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
+import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
-import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
-import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
@@ -39,7 +39,7 @@ public class AuthManager {
         );
     }
 
-    public TemporaryTokenResponse reIssueTemporaryToken(final String authId,
+    public TemporaryTokenDto reIssueTemporaryToken(final String authId,
         final SocialType socialType) {
         final Long notVerifiedMemberId = memberService.findNotVerifiedMemberIdBy(authId,
             socialType);
@@ -47,17 +47,17 @@ public class AuthManager {
         return tokenManager.createTemporaryToken(notVerifiedMemberId);
     }
 
-    public TokenResponse reIssueToken(final String refreshToken) {
+    public TokenDto reIssueToken(final String refreshToken) {
         return tokenManager.reIssueToken(refreshToken);
     }
 
-    public TemporaryTokenResponse signUp(final SignUpRequestDto dto) {
+    public TemporaryTokenDto signUp(final SignUpRequestDto dto) {
         final Long createdMemberId = memberService.createMember(dto);
 
         return tokenManager.createTemporaryToken(createdMemberId);
     }
 
-    public TokenResponse signIn(final String authId, final SocialType socialType) {
+    public TokenDto signIn(final String authId, final SocialType socialType) {
         final Long verifiedSocialMemberId = memberService.findVerifiedSocialMemberIdBy(authId,
             socialType);
 
@@ -72,7 +72,7 @@ public class AuthManager {
         return messageVerificationService.sendVerificationMessage(memberId, receiver, appHashKey);
     }
 
-    public TokenResponse validVerificationMessage(
+    public TokenDto validVerificationMessage(
         final Long memberId,
         final String certificationNumber,
         final String receiver
@@ -84,13 +84,13 @@ public class AuthManager {
         return tokenManager.createNewToken(verifiedMemberId);
     }
 
-    public TemporaryTokenResponse signUpWithEmail(final String email, final String password) {
+    public TemporaryTokenDto signUpWithEmail(final String email, final String password) {
         Long createdMemberId = memberService.createMemberWithEmail(email, password);
 
         return tokenManager.createTemporaryToken(createdMemberId);
     }
 
-    public TokenResponse signInWithEmail(final String email, final String password) {
+    public TokenDto signInWithEmail(final String email, final String password) {
         Long verifiedEmailMemberId = memberService.findVerifiedEmailMemberIdBy(email, password);
 
         return tokenManager.createNewToken(verifiedEmailMemberId);
