@@ -18,7 +18,6 @@ import site.timecapsulearchive.core.infra.s3.manager.S3UrlGenerator;
 @RequiredArgsConstructor
 public class CapsuleSkinMapper {
 
-    private final S3UrlGenerator s3UrlGenerator;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     public CapsuleSkinsSliceResponse capsuleSkinSliceToResponse(
@@ -57,7 +56,7 @@ public class CapsuleSkinMapper {
         return CapsuleSkin.builder()
             .skinName(dto.skinName())
             .imageUrl(
-                s3UrlGenerator.generateFileName(member.getId(), dto.directory(), dto.imageUrl()))
+                S3UrlGenerator.generateFileName(member.getId(), dto.directory(), dto.imageUrl()))
             .member(member)
             .build();
     }
@@ -73,7 +72,7 @@ public class CapsuleSkinMapper {
             .skinName(dto.skinName())
             .imageUrl(
                 s3PreSignedUrlManager.getS3PreSignedUrlForGet(
-                    s3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl())
+                    S3UrlGenerator.generateFileName(memberId, dto.directory(), dto.imageUrl())
                 ))
             .motionName(dto.motionName())
             .retarget(dto.retarget())

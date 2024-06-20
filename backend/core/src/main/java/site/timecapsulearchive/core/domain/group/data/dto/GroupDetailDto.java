@@ -2,30 +2,26 @@ package site.timecapsulearchive.core.domain.group.data.dto;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
-import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberResponse;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
 
 public record GroupDetailDto(
     String groupName,
     String groupDescription,
     String groupProfileUrl,
     ZonedDateTime createdAt,
+    Boolean isOwner,
     List<GroupMemberDto> members
 ) {
 
-    public GroupDetailResponse toResponse(Function<String, String> singlePreSignUrlFunction) {
-        List<GroupMemberResponse> members = this.members.stream()
-            .map(GroupMemberDto::toResponse)
-            .toList();
-
-        return GroupDetailResponse.builder()
-            .groupName(groupName)
-            .groupDescription(groupDescription)
-            .groupProfileUrl(singlePreSignUrlFunction.apply(groupProfileUrl))
-            .createdAt(createdAt)
-            .members(members)
-            .build();
+    public static GroupDetailDto as(
+        String groupName,
+        String groupDescription,
+        String groupProfileUrl,
+        ZonedDateTime createdAt,
+        Boolean isOwner,
+        List<GroupMemberDto> members
+    ) {
+        return new GroupDetailDto(groupName, groupDescription, groupProfileUrl, createdAt, isOwner,
+            members);
     }
+
 }

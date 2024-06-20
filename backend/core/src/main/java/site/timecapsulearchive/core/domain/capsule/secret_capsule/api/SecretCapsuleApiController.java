@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
@@ -22,7 +23,6 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.facade.CapsuleFacade;
-import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.dto.MySecreteCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.reqeust.SecretCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.data.response.MySecretCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.secret_capsule.service.SecretCapsuleService;
@@ -64,7 +64,7 @@ public class SecretCapsuleApiController implements SecretCapsuleApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(defaultValue = "0", value = "created_at") final ZonedDateTime createdAt
     ) {
-        final Slice<MySecreteCapsuleDto> dtos = secretCapsuleService.findSecretCapsuleSliceByMemberId(
+        final Slice<CapsuleBasicInfoDto> dtos = secretCapsuleService.findSecretCapsuleSliceByMemberId(
             memberId, size, createdAt);
 
         return ResponseEntity.ok(

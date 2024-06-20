@@ -1,7 +1,6 @@
 package site.timecapsulearchive.core.domain.member.service;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
@@ -25,9 +24,9 @@ import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedExcep
 import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
-import site.timecapsulearchive.core.domain.member.repository.MemberQueryRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
 @Service
@@ -37,14 +36,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-    private final MemberQueryRepository memberQueryRepository;
     private final PasswordEncoder passwordEncoder;
 
     private final MemberMapper memberMapper;
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
-        final MemberTemporary member = dto.toMemberTemporary();
+        final String tag = TagGenerator.generate(dto.email(), dto.socialType());
+        final MemberTemporary member = dto.toMemberTemporary(tag);
 
         final MemberTemporary savedMember = memberTemporaryRepository.save(member);
 
@@ -63,7 +62,7 @@ public class MemberService {
         final SocialType socialType
     ) {
 
-        final Boolean isVerified = memberQueryRepository.findIsVerifiedByAuthIdAndSocialType(
+        final Boolean isVerified = memberRepository.findIsVerifiedByAuthIdAndSocialType(
             authId,
             socialType
         );
@@ -87,7 +86,7 @@ public class MemberService {
         final String authId,
         final SocialType socialType
     ) throws NotVerifiedMemberException {
-        final VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
+        final VerifiedCheckDto dto = memberRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -109,8 +108,8 @@ public class MemberService {
     public Long findNotVerifiedMemberIdByAuthIdAndSocialType(
         final String authId,
         final SocialType socialType
-    ) throws AlreadyVerifiedException {
-        final VerifiedCheckDto dto = memberQueryRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
+    ) {
+        final VerifiedCheckDto dto = memberRepository.findVerifiedCheckDtoByAuthIdAndSocialType(
                 authId, socialType)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -122,7 +121,7 @@ public class MemberService {
     }
 
     public MemberDetailDto findMemberDetailById(final Long memberId) {
-        return memberQueryRepository.findMemberDetailResponseDtoById(memberId)
+        return memberRepository.findMemberDetailResponseDtoById(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
 
@@ -153,7 +152,7 @@ public class MemberService {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final Slice<MemberNotificationDto> notifications = memberQueryRepository.findNotificationSliceByMemberId(
+        final Slice<MemberNotificationDto> notifications = memberRepository.findNotificationSliceByMemberId(
             memberId, size, createdAt);
 
         return memberMapper.notificationSliceToResponse(
@@ -167,13 +166,21 @@ public class MemberService {
         final String encodedPassword = passwordEncoder.encode(password);
         final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
 
+        boolean isDuplicateTag = memberRepository.checkTagDuplication(member.getTag());
+        if (isDuplicateTag) {
+            log.warn("member tag duplicate - email:{}, tag:{}", member.getEmail(),
+                member.getTag());
+            member.updateTagLowerCaseSocialType();
+            log.warn("member tag update - tag: {}", member.getTag());
+        }
+
         final Member savedMember = memberRepository.save(member);
 
         return savedMember.getId();
     }
 
     public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
-        final EmailVerifiedCheckDto dto = memberQueryRepository.findEmailVerifiedCheckDtoByEmail(
+        final EmailVerifiedCheckDto dto = memberRepository.findEmailVerifiedCheckDtoByEmail(
                 email)
             .orElseThrow(MemberNotFoundException::new);
 
@@ -200,13 +207,13 @@ public class MemberService {
     }
 
     public CheckEmailDuplicationResponse checkEmailDuplication(final String email) {
-        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(email);
+        Boolean isDuplicated = memberRepository.checkEmailDuplication(email);
 
         return new CheckEmailDuplicationResponse(isDuplicated);
     }
 
     public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
-        final Boolean isAlarm = memberQueryRepository.findIsAlarmByMemberId(memberId)
+        final Boolean isAlarm = memberRepository.findIsAlarmByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         return new MemberNotificationStatusResponse(isAlarm);
@@ -215,9 +222,5 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
-    }
-
-    public List<Long> findMemberIdsByIds(List<Long> ids) {
-        return memberQueryRepository.findMemberIdsByIds(ids);
     }
 }

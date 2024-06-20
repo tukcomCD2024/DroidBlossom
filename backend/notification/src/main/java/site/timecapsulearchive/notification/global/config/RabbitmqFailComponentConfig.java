@@ -17,7 +17,8 @@ public class RabbitmqFailComponentConfig {
 
     @Bean
     public DirectExchange capsuleSkinFailExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getFailComponent());
+        return new DirectExchange(
+            RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getFailComponent());
     }
 
     @Bean
@@ -35,7 +36,8 @@ public class RabbitmqFailComponentConfig {
 
     @Bean
     public DirectExchange groupInviteFailExchange() {
-        return new DirectExchange(RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getFailComponent());
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getFailComponent());
     }
 
     @Bean
@@ -46,9 +48,32 @@ public class RabbitmqFailComponentConfig {
             .withQueueName();
     }
 
+
+    @Bean
+    public Queue groupAcceptFailQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getFailComponent(), true);
+    }
+
+    @Bean
+    public DirectExchange groupAcceptFailExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getFailComponent());
+    }
+
+    @Bean
+    public Binding groupAcceptFailBinding() {
+        return BindingBuilder
+            .bind(groupAcceptFailQueue())
+            .to(groupAcceptFailExchange())
+            .withQueueName();
+    }
+
+
     @Bean
     public Queue friendRequestFailQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getFailComponent(),
+        return new Queue(
+            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getFailComponent(),
             true);
     }
 
@@ -68,7 +93,8 @@ public class RabbitmqFailComponentConfig {
 
     @Bean
     public Queue friendAcceptFailQueue() {
-        return new Queue(RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getFailComponent(),
+        return new Queue(
+            RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getFailComponent(),
             true);
     }
 

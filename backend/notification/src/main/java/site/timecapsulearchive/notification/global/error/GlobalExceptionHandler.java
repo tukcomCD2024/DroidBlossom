@@ -7,7 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import site.timecapsulearchive.notification.infra.exception.MessageNotSendableException;
+import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 
 @RestControllerAdvice
 @Slf4j
@@ -21,9 +21,9 @@ public class GlobalExceptionHandler {
             .body(errorResponse);
     }
 
-    @ExceptionHandler(MessageNotSendableException.class)
+    @ExceptionHandler(MessageNotSendAbleException.class)
     protected ResponseEntity<ErrorResponse> handleMessageNotSendableException(
-        final MessageNotSendableException e) {
+        final MessageNotSendAbleException e) {
         log.warn(e.getMessage(), e);
 
         final ErrorResponse errorResponse = ErrorResponse.messageNotSendable();

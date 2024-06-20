@@ -6,6 +6,7 @@ import static site.timecapsulearchive.core.global.error.ErrorCode.INTERNAL_SERVE
 import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_NOT_FOUND_ERROR;
 import static site.timecapsulearchive.core.global.error.ErrorCode.REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.TransactionalException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
+import site.timecapsulearchive.core.global.error.exception.InternalServerException;
 import site.timecapsulearchive.core.global.error.exception.NullCheckValidateException;
 import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 
@@ -46,11 +48,23 @@ public class GlobalExceptionHandler {
             .body(errorResponse);
     }
 
+    @ExceptionHandler(InternalServerException.class)
+    protected ResponseEntity<ErrorResponse> handleInternalServerException(
+        final InternalServerException e) {
+        log.error(e.getMessage(), e);
+
+        ErrorCode errorCode = INTERNAL_SERVER_ERROR;
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
+
+        return ResponseEntity.status(errorCode.getStatus())
+            .body(errorResponse);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleRequestArgumentNotValidException(
         MethodArgumentNotValidException e
     ) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         final ErrorResponse response = ErrorResponse.ofBindingResult(INPUT_INVALID_VALUE_ERROR,
             e.getBindingResult());
@@ -62,7 +76,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleRequestTypeNotValidException(
         HttpMessageNotReadableException e
     ) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         final ErrorResponse response = ErrorResponse.fromErrorCode(INPUT_INVALID_TYPE_ERROR);
         return ResponseEntity.status(INPUT_INVALID_VALUE_ERROR.getStatus())
@@ -73,7 +87,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleNullCheckValidException(
         NullCheckValidateException e
     ) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         final ErrorResponse response = ErrorResponse.fromParameter(
             REQUEST_PARAMETER_NOT_FOUND_ERROR, e.getMessage());
@@ -83,7 +97,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExternalApiException.class)
     protected ResponseEntity<ErrorResponse> handleExternalApiException(ExternalApiException e) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.fromErrorCode(errorCode);
@@ -96,7 +110,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
         MissingServletRequestParameterException e
     ) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         final ErrorResponse errorResponse = ErrorResponse.fromParameter(
             REQUEST_PARAMETER_NOT_FOUND_ERROR,
@@ -110,7 +124,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException e
     ) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         final ErrorResponse errorResponse = ErrorResponse.fromType(
             REQUEST_PARAMETER_TYPE_NOT_MATCH_ERROR,
@@ -126,7 +140,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
         DataIntegrityViolationException e
     ) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         ErrorCode errorCode = INPUT_INVALID_VALUE_ERROR;
         final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
@@ -137,7 +151,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TransactionalException.class)
     protected ResponseEntity<ErrorResponse> handleTransactionException(TransactionalException e) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         ErrorCode errorCode = INTERNAL_SERVER_ERROR;
         final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
@@ -149,11 +163,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<ErrorResponse> handleConstraintViolationException(
         ConstraintViolationException e) {
-        log.warn(e.getMessage(), e);
+        log.error(e.getMessage(), e);
 
         ErrorCode errorCode = INPUT_INVALID_VALUE_ERROR;
         final ErrorResponse errorResponse = ErrorResponse.ofConstraints(errorCode,
             e.getConstraintViolations());
+
+        return ResponseEntity.status(errorCode.getStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(PersistenceException.class)
+    protected ResponseEntity<ErrorResponse> handlePersistenceException(PersistenceException e) {
+        log.error(e.getMessage(), e);
+
+        ErrorCode errorCode = INTERNAL_SERVER_ERROR;
+        final ErrorResponse errorResponse = ErrorResponse.fromErrorCode(errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
             .body(errorResponse);

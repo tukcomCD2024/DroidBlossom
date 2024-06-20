@@ -22,8 +22,14 @@ public record GroupDetailResponse(
     @Schema(description = "그룹 생성일")
     ZonedDateTime createdAt,
 
+    @Schema(description = "그룹 캡슐의 총 개수")
+    Long groupCapsuleTotalCount,
+
+    @Schema(description = "그룹 수정 권한")
+    Boolean canGroupEdit,
+
     @Schema(description = "그룹원 리스트")
-    List<GroupMemberResponse> members
+    List<GroupMemberWithRelationResponse> members
 ) {
 
     public GroupDetailResponse {

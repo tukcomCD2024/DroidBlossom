@@ -5,13 +5,14 @@ import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
 import site.timecapsulearchive.notification.entity.NotificationStatus;
 
-public record GroupInviteNotificationDto (
+public record GroupInviteNotificationDto(
     NotificationStatus notificationStatus,
     String groupProfileUrl,
     String title,
     String text,
     List<Long> targetIds
-){
+) {
+
     public List<Notification> toNotification(NotificationCategory notificationCategory) {
         return targetIds.stream()
             .map(id -> Notification.builder()
