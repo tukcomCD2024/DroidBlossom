@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 
@@ -70,7 +70,7 @@ public class PublicCapsuleService {
      * @param createdAt 조회를 시작할 캡슐의 생성 시간, 첫 조회라면 현재 시간, 이후 조회라면 맨 마지막 데이터의 시간
      * @return 사용자가 생성한 공개 캡슐 목록
      */
-    public Slice<MyPublicCapsuleDto> findMyPublicCapsuleSlice(
+    public Slice<CapsuleBasicInfoDto> findMyPublicCapsuleSlice(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt

@@ -1,13 +1,11 @@
 package site.timecapsulearchive.core.infra.s3.manager;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+public final class S3UrlGenerator {
 
-@Component
-@RequiredArgsConstructor
-public class S3UrlGenerator {
+    private S3UrlGenerator() {
+    }
 
-    public String generateFileName(
+    public static String generateFileName(
         final Long memberId,
         final String directory,
         final String fileName

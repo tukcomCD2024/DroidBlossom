@@ -31,13 +31,14 @@ public class RabbitFailedComponentConfig {
 
     @Bean
     public Queue groupInviteFailQueue() {
-        return new Queue(RabbitmqComponentConstants.GROUP_INVITE_QUEUE.getFailComponent(), true);
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getFailComponent(), true);
     }
 
     @Bean
     public DirectExchange groupInviteFailExchange() {
         return new DirectExchange(
-            RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getFailComponent());
+            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getFailComponent());
     }
 
     @Bean
@@ -45,6 +46,26 @@ public class RabbitFailedComponentConfig {
         return BindingBuilder
             .bind(groupInviteFailQueue())
             .to(groupInviteFailExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue groupAcceptFailQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getFailComponent(), true);
+    }
+
+    @Bean
+    public DirectExchange groupAcceptFailExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getFailComponent());
+    }
+
+    @Bean
+    public Binding groupAcceptFailBinding() {
+        return BindingBuilder
+            .bind(groupAcceptFailQueue())
+            .to(groupAcceptFailExchange())
             .withQueueName();
     }
 
@@ -87,6 +108,27 @@ public class RabbitFailedComponentConfig {
         return BindingBuilder
             .bind(friendAcceptFailQueue())
             .to(friendAcceptFailExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue treasureCaptureFailQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_QUEUE.getFailComponent(),
+            true);
+    }
+
+    @Bean
+    public DirectExchange treasureCaptureFailExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getFailComponent());
+    }
+
+    @Bean
+    public Binding treasureCaptureFailBinding() {
+        return BindingBuilder
+            .bind(treasureCaptureFailQueue())
+            .to(treasureCaptureFailExchange())
             .withQueueName();
     }
 }

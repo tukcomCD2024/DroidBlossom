@@ -43,13 +43,14 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue groupInviteQueue() {
-        return new Queue(RabbitmqComponentConstants.GROUP_INVITE_QUEUE.getSuccessComponent(), true);
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getSuccessComponent(), true);
     }
 
     @Bean
     public DirectExchange groupInviteExchange() {
         return new DirectExchange(
-            RabbitmqComponentConstants.GROUP_INVITE_EXCHANGE.getSuccessComponent());
+            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getSuccessComponent());
     }
 
     @Bean
@@ -57,6 +58,26 @@ public class RabbitmqConfig {
         return BindingBuilder
             .bind(groupInviteQueue())
             .to(groupInviteExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue groupAcceptQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(), true);
+    }
+
+    @Bean
+    public DirectExchange groupAcceptExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getSuccessComponent());
+    }
+
+    @Bean
+    public Binding groupAcceptBinding() {
+        return BindingBuilder
+            .bind(groupAcceptQueue())
+            .to(groupAcceptExchange())
             .withQueueName();
     }
 
@@ -99,6 +120,27 @@ public class RabbitmqConfig {
         return BindingBuilder
             .bind(friendAcceptQueue())
             .to(friendAcceptExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue treasureCaptureQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_QUEUE.getSuccessComponent(),
+            true);
+    }
+
+    @Bean
+    public DirectExchange treasureCaptureExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getSuccessComponent());
+    }
+
+    @Bean
+    public Binding treasureCaptureBinding() {
+        return BindingBuilder
+            .bind(treasureCaptureQueue())
+            .to(treasureCaptureExchange())
             .withQueueName();
     }
 

@@ -5,17 +5,16 @@ import java.util.function.Function;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
-import site.timecapsulearchive.core.domain.group.data.response.GroupMemberSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMemberSummaryResponse;
 
 public record GroupCapsuleDetailDto(
     CapsuleDetailDto capsuleDetailDto,
-    List<GroupMemberSummaryDto> members
+    List<GroupCapsuleMemberSummaryDto> members
 ) {
 
-    public List<GroupMemberSummaryResponse> groupMemberSummaryDtoToResponse() {
+    public List<GroupCapsuleMemberSummaryResponse> groupMemberSummaryDtoToResponse() {
         return members.stream()
-            .map(GroupMemberSummaryDto::toResponse)
+            .map(GroupCapsuleMemberSummaryDto::toResponse)
             .toList();
     }
 

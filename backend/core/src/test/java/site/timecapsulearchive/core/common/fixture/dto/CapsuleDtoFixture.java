@@ -7,11 +7,11 @@ import java.util.stream.IntStream;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.group.data.dto.GroupMemberSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 
 public class CapsuleDtoFixture {
 
-    private static ZonedDateTime now = ZonedDateTime.now();
+    private static final ZonedDateTime now = ZonedDateTime.now();
 
     public static Optional<CapsuleDetailDto> getCapsuleDetailDto(Long capsuleId, Boolean isOpened,
         ZonedDateTime dueDate) {
@@ -24,13 +24,14 @@ public class CapsuleDtoFixture {
 
     public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long capsuleId,
         boolean isOpened, ZonedDateTime now, int count) {
-        return Optional.of(new GroupCapsuleDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
-            getGroupMemberSummaryDtos(count)));
+        return Optional.of(
+            new GroupCapsuleDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
+                getGroupMemberSummaryDtos(count)));
     }
 
-    private static List<GroupMemberSummaryDto> getGroupMemberSummaryDtos(int count) {
+    private static List<GroupCapsuleMemberSummaryDto> getGroupMemberSummaryDtos(int count) {
         return IntStream.range(0, count)
-            .mapToObj(i -> new GroupMemberSummaryDto(i + "testNickname", i + "testUrl", true))
+            .mapToObj(i -> new GroupCapsuleMemberSummaryDto(i + "testNickname", i + "testUrl", true))
             .toList();
     }
 }

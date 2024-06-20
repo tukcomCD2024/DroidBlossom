@@ -9,6 +9,6 @@ public record RabbitmqProperties(
     String userName,
     String password,
     String virtualHost
-){
+) {
 
 }
