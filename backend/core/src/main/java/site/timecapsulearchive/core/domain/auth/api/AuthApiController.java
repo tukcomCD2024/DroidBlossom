@@ -77,14 +77,12 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
         @Valid @RequestBody final TemporaryTokenReIssueRequest request
     ) {
-        final Long id = memberService.findNotVerifiedMemberIdByAuthIdAndSocialType(
-            request.authId(), request.socialType()
-        );
+        TemporaryTokenResponse temporaryToken = authManager.reIssueTemporaryToken(request.authId(), request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                tokenService.createTemporaryToken(id)
+                temporaryToken
             )
         );
     }

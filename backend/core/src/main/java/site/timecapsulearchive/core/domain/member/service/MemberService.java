@@ -105,7 +105,7 @@ public class MemberService {
      * @return 인증되지 않은 사용자의 아이디
      * @throws AlreadyVerifiedException 이미 인증된 사용자인 경우 발생하는 예외
      */
-    public Long findNotVerifiedMemberIdByAuthIdAndSocialType(
+    public Long findNotVerifiedMemberIdBy(
         final String authId,
         final SocialType socialType
     ) {
