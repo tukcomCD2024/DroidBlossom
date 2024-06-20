@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
+import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 
@@ -41,5 +42,9 @@ public class AuthManager {
         Long notVerifiedMemberId = memberService.findNotVerifiedMemberIdBy(authId, socialType);
 
         return tokenManager.createTemporaryToken(notVerifiedMemberId);
+    }
+
+    public TokenResponse reIssueToken(String refreshToken) {
+        return tokenManager.reIssueToken(refreshToken);
     }
 }

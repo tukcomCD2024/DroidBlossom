@@ -96,10 +96,12 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(
         @Valid @RequestBody final TokenReIssueRequest request
     ) {
+        TokenResponse token = authManager.reIssueToken(request.refreshToken());
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                tokenService.reIssueToken(request.refreshToken())
+                token
             )
         );
     }
