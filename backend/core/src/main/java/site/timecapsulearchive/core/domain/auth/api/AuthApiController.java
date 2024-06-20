@@ -197,13 +197,13 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
         @Valid @RequestBody final EmailSignUpRequest request
     ) {
-        final Long id = memberService.createMemberWithEmailAndPassword(request.email(),
+        TemporaryTokenResponse temporaryToken = authManager.signUpWithEmail(request.email(),
             request.password());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                tokenService.createTemporaryToken(id)
+                temporaryToken
             )
         );
     }

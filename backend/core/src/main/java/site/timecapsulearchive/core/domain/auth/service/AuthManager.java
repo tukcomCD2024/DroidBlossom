@@ -83,4 +83,10 @@ public class AuthManager {
 
         return tokenManager.createNewToken(verifiedMemberId);
     }
+
+    public TemporaryTokenResponse signUpWithEmail(final String email, final String password) {
+        Long createdMemberId = memberService.createMemberWithEmail(email, password);
+
+        return tokenManager.createTemporaryToken(createdMemberId);
+    }
 }

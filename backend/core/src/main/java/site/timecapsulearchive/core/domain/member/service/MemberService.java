@@ -162,7 +162,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Long createMemberWithEmailAndPassword(final String email, final String password) {
+    public Long createMemberWithEmail(final String email, final String password) {
         final String encodedPassword = passwordEncoder.encode(password);
         final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
 
