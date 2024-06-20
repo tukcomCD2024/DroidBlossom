@@ -96,6 +96,9 @@ class FriendViewModelImpl @Inject constructor(
             scrollFriendEventFlow.collect {
                 getFriendList()
             }
+
+        }
+        viewModelScope.launch {
             scrollGroupEventFlow.collect {
                 getGroupList()
             }
@@ -176,7 +179,7 @@ class FriendViewModelImpl @Inject constructor(
                         } else {
                             _groupListUi.emit(_groupListUi.value + it.groups)
                         }
-                        friendLastCreatedTime.value = it.groups.last().createdAt
+                        groupLastCreatedTime.value = it.groups.last().createdAt
                     }.onFail {
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
