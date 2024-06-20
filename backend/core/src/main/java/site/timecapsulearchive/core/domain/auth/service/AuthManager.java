@@ -29,7 +29,7 @@ public class AuthManager {
         );
     }
 
-    public String getOauth2GoogleUrl(HttpServletRequest request) {
+    public String getOauth2GoogleUrl(final HttpServletRequest request) {
         final String baseUrl = request.getRequestURL().toString();
 
         return baseUrl.replace(
@@ -40,18 +40,26 @@ public class AuthManager {
 
     public TemporaryTokenResponse reIssueTemporaryToken(final String authId,
         final SocialType socialType) {
-        Long notVerifiedMemberId = memberService.findNotVerifiedMemberIdBy(authId, socialType);
+        final Long notVerifiedMemberId = memberService.findNotVerifiedMemberIdBy(authId,
+            socialType);
 
         return tokenManager.createTemporaryToken(notVerifiedMemberId);
     }
 
-    public TokenResponse reIssueToken(String refreshToken) {
+    public TokenResponse reIssueToken(final String refreshToken) {
         return tokenManager.reIssueToken(refreshToken);
     }
 
-    public TemporaryTokenResponse signUp(SignUpRequestDto dto) {
-        Long createdMemberId = memberService.createMember(dto);
+    public TemporaryTokenResponse signUp(final SignUpRequestDto dto) {
+        final Long createdMemberId = memberService.createMember(dto);
 
         return tokenManager.createTemporaryToken(createdMemberId);
+    }
+
+    public TokenResponse signIn(final String authId, final SocialType socialType) {
+        final Long verifiedSocialMemberId = memberService.findVerifiedSocialMemberIdBy(authId,
+            socialType);
+
+        return tokenManager.createNewToken(verifiedSocialMemberId);
     }
 }

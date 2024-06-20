@@ -43,7 +43,7 @@ public class AuthApiController implements AuthApi {
     @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
     @Override
     public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(final HttpServletRequest request) {
-        String kakaoLoginUrl = authManager.getOAuth2KakaoUrl(request);
+        final String kakaoLoginUrl = authManager.getOAuth2KakaoUrl(request);
 
         return ResponseEntity.ok(OAuth2UriResponse.from(kakaoLoginUrl));
     }
@@ -51,7 +51,7 @@ public class AuthApiController implements AuthApi {
     @GetMapping(value = "/login/url/google", produces = {"application/json"})
     @Override
     public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(final HttpServletRequest request) {
-        String googleLoginUrl = authManager.getOauth2GoogleUrl(request);
+        final String googleLoginUrl = authManager.getOauth2GoogleUrl(request);
 
         return ResponseEntity.ok(OAuth2UriResponse.from(googleLoginUrl));
     }
@@ -77,7 +77,8 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> reIssueTemporaryToken(
         @Valid @RequestBody final TemporaryTokenReIssueRequest request
     ) {
-        TemporaryTokenResponse temporaryToken = authManager.reIssueTemporaryToken(request.authId(), request.socialType());
+        final TemporaryTokenResponse temporaryToken = authManager.reIssueTemporaryToken(
+            request.authId(), request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -96,7 +97,7 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TokenResponse>> reIssueAccessToken(
         @Valid @RequestBody final TokenReIssueRequest request
     ) {
-        TokenResponse token = authManager.reIssueToken(request.refreshToken());
+        final TokenResponse token = authManager.reIssueToken(request.refreshToken());
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -115,7 +116,7 @@ public class AuthApiController implements AuthApi {
     public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithSocialProvider(
         @Valid @RequestBody final SignUpRequest request
     ) {
-        TemporaryTokenResponse temporaryToken = authManager.signUp(request.toDto());
+        final TemporaryTokenResponse temporaryToken = authManager.signUp(request.toDto());
 
         return ResponseEntity.ok(
             ApiSpec.success(
@@ -133,13 +134,12 @@ public class AuthApiController implements AuthApi {
     @Override
     public ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(
         @Valid @RequestBody final SignInRequest request) {
-        final Long memberId = memberService.findVerifiedMemberIdByAuthIdAndSocialType(
-            request.authId(), request.socialType());
+        final TokenResponse token = authManager.signIn(request.authId(), request.socialType());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                tokenService.createNewToken(memberId)
+                token
             )
         );
     }

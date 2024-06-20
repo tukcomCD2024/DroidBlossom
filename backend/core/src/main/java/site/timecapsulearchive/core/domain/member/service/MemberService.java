@@ -82,7 +82,7 @@ public class MemberService {
      * @return 인증된 사용자의 아이디
      * @throws NotVerifiedMemberException 인증되지 않은 사용자인 경우에 발생하는 예외
      */
-    public Long findVerifiedMemberIdByAuthIdAndSocialType(
+    public Long findVerifiedSocialMemberIdBy(
         final String authId,
         final SocialType socialType
     ) throws NotVerifiedMemberException {
