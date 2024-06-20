@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="data"
+            type="com.droidblossom.archive.domain.model.group.GroupSummary" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        tools:background="@color/main_bg_1">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/friendLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImg"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@color/main_1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:baseImg="@{@drawable/base_use_img}"
+                    bind:url="@{data.profileUrl}" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/groupNameT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="@{data.name}"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    app:layout_constraintEnd_toStartOf="@id/groupBtn"
+                    app:layout_constraintStart_toEndOf="@id/profileImg"
+                    app:layout_constraintTop_toTopOf="@id/profileImg"
+                    tools:text="그룹 이름" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/groupBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_arrow_right_24"
+                    app:layout_constraintBottom_toBottomOf="@id/groupNameT"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/groupNameT" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/main_bg_2"
+                    app:layout_constraintBottom_toTopOf="@id/userImg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userImg"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@color/main_bg_1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/profileImg"
+                    app:layout_constraintTop_toBottomOf="@id/profileImg"
+                    bind:baseImg="@{@drawable/base_use_img}"
+                    bind:url="@{data.groupOwnerProfileUrl}" />
+
+                <TextView
+                    android:id="@+id/groupCountT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:visibility="@{data.totalGroupMemberCount == 1 ? View.GONE : View.VISIBLE }"
+                    android:text="@{@string/groupMemberCount(data.totalGroupMemberCount-1)}"
+                    android:textAppearance="@style/TextAppearance.App.caption3"
+                    app:layout_constraintBottom_toBottomOf="@id/userImg"
+                    app:layout_constraintStart_toEndOf="@id/userImg"
+                    app:layout_constraintTop_toTopOf="@id/userImg" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

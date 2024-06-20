@@ -44,8 +44,14 @@ interface FriendService {
         @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
 
-    @GET("friends/requests")
+    @GET("friends/receiving-invites")
     suspend fun getFriendsRequestsPageApi(
+        @Query("size") size : Int,
+        @Query("created_at") createdAt : String,
+    ) : Response<ResponseBody<FriendsPageResponseDto>>
+
+    @GET("friends/sending-invites")
+    suspend fun getFriendsSendRequestsPageApi(
         @Query("size") size : Int,
         @Query("created_at") createdAt : String,
     ) : Response<ResponseBody<FriendsPageResponseDto>>
@@ -60,8 +66,21 @@ interface FriendService {
         @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<String>>
 
+
+    @DELETE("friends/{friend_id}/sending-invites")
+    suspend fun deleteFriendSendApi(
+        @Path("friend_id") friendId : Long,
+    ) : Response<ResponseBody<String>>
+
     @DELETE("friends/{friend_id}/deny-request")
     suspend fun deleteFriendDenyRequestApi(
         @Path("friend_id") friendId : Long,
     ) : Response<ResponseBody<String>>
+
+    @GET("friends/before/group_invite")
+    suspend fun getFriendsForGroupInvitePageApi(
+        @Query("group_id") groupId : Long,
+        @Query("size") size : Int,
+        @Query("created_at") createdAt : String
+    ) : Response<ResponseBody<FriendsPageResponseDto>>
 }

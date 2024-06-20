@@ -1,7 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.friendaccept.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentAcceptBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.mypage.friend.FriendViewModel
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.adapter.FriendAcceptRVA
 import kotlinx.coroutines.launch
@@ -25,10 +23,10 @@ class FriendAcceptFragment :
     private val friendAcceptRVA by lazy {
         FriendAcceptRVA(
             { denyFriend ->
-                viewModel.denyRequest(denyFriend)
+                viewModel.denyFriendRequest(denyFriend)
             },
             { acceptFriend ->
-                viewModel.acceptRequest(acceptFriend)
+                viewModel.acceptFriendRequest(acceptFriend)
             }
         )
     }
@@ -36,7 +34,15 @@ class FriendAcceptFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        initView()
         initRV()
+    }
+
+    private fun initView() {
+        binding.swipeRefreshL.setOnRefreshListener {
+            viewModel.getLastedFriendAcceptList()
+        }
     }
 
     private fun initRV() {
@@ -52,7 +58,7 @@ class FriendAcceptFragment :
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.onScrollNearBottom()
+                        viewModel.onScrollFriendNearBottom()
                     }
                 }
             }
@@ -63,24 +69,20 @@ class FriendAcceptFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendAcceptEvent.collect { event ->
-                    when (event) {
-                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
-                            showToastMessage(event.message)
-                        }
+                viewModel.friendAcceptList.collect { friendAccepts ->
+                    friendAcceptRVA.submitList(friendAccepts)
 
-                        else -> {}
+                    if (friendAccepts.isEmpty()) {
+                        binding.listIsEmptyT.visibility = View.VISIBLE
+                    } else {
+                        binding.listIsEmptyT.visibility = View.GONE
                     }
                 }
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.friendAcceptList.collect { friendAccepts ->
-                    friendAcceptRVA.submitList(friendAccepts)
-                }
-            }
-        }
+    fun onEndSwipeRefresh() {
+        binding.swipeRefreshL.isRefreshing = false
     }
 }

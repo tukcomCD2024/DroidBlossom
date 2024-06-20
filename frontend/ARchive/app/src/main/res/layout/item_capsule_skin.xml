@@ -8,8 +8,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/capsuleSkin"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
         app:srcCompat="@drawable/app_symbol">
 
     </androidx.appcompat.widget.AppCompatImageView>

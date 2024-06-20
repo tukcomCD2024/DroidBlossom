@@ -16,8 +16,8 @@ data class CapsuleSummaryResponseDto(
     val createdAt: String
 ){
     fun toModel() = CapsuleSummaryResponse(
-        nickname = this.nickname,
-        profileUrl = this.profileUrl,
+        nicknameOrGroupName = this.nickname,
+        profileOrGroupProfileUrl = this.profileUrl,
         skinUrl = this.skinUrl,
         title = this.title,
         dueDate = this.dueDate ?: "",

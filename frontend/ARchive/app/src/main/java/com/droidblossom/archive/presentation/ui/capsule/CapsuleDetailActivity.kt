@@ -20,6 +20,7 @@ import com.droidblossom.archive.domain.model.common.ContentType
 import com.droidblossom.archive.domain.model.common.ContentUrl
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.capsule.adapter.ImageUrlRVA
+import com.droidblossom.archive.presentation.ui.capsulepreview.adapter.GroupCapsuleMemberRVA
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.util.intentSerializable
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,10 @@ import kotlinx.coroutines.launch
 class CapsuleDetailActivity :
     BaseActivity<CapsuleDetailViewModelImpl, ActivityCapsuleDetailBinding>(R.layout.activity_capsule_detail) {
     override val viewModel: CapsuleDetailViewModelImpl by viewModels()
+
+    private val groupMemberRVA by lazy {
+        GroupCapsuleMemberRVA()
+    }
 
     private val imageVP by lazy {
         ImageUrlRVA({ position, list ->
@@ -60,22 +65,24 @@ class CapsuleDetailActivity :
         binding.closeBtn.layoutParams = layoutParams
 
         val type = intent.intentSerializable(CAPSULE_TYPE, HomeFragment.CapsuleType::class.java)
-        val capsuleInd = intent.getLongExtra(CAPSULE_ID, 0)
+        val capsuleId = intent.getLongExtra(CAPSULE_ID, 0)
 
         when (type) {
             HomeFragment.CapsuleType.SECRET -> {
-                viewModel.getSecretCapsuleDetail(capsuleInd)
+                viewModel.getSecretCapsuleDetail(capsuleId)
             }
 
             HomeFragment.CapsuleType.GROUP -> {
-
+                viewModel.getGroupCapsuleDetail(capsuleId)
             }
 
             HomeFragment.CapsuleType.PUBLIC -> {
-                viewModel.getPublicCapsuleDetail(capsuleInd)
+                viewModel.getPublicCapsuleDetail(capsuleId)
             }
 
-            null -> {}
+            else -> {
+
+            }
         }
         binding.closeBtn.setOnClickListener {
             finish()
@@ -90,25 +97,28 @@ class CapsuleDetailActivity :
         binding.postImgVP.offscreenPageLimit = 3
         binding.indicator.attachTo(binding.postImgVP)
 
+        binding.groupNumberRecycleView.adapter = groupMemberRVA
+
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(this), null, false)
+        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(
+            LayoutInflater.from(this@CapsuleDetailActivity),
+            null,
+            false
+        )
 
         val density = this.resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
 
-        val popupWindow = PopupWindow(popupMenuBinding.root,
+        val popupWindow = PopupWindow(
+            popupMenuBinding.root,
             widthPixels,
             LinearLayout.LayoutParams.WRAP_CONTENT,
-            true)
+            true
+        )
 
-        popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWidth = popupWindow.contentView.measuredWidth
-
-        val xOffset = (view.width / 2) - (popupWidth / 2) - 213
-        popupWindow.showAsDropDown(view, xOffset, -view.height)
-
+        // 메뉴 클릭 리스너 설정
         popupMenuBinding.menuMap.setOnClickListener {
             popupWindow.dismiss()
         }
@@ -117,6 +127,22 @@ class CapsuleDetailActivity :
         }
         popupMenuBinding.menuDelete.setOnClickListener {
             popupWindow.dismiss()
+        }
+
+        view.post {
+
+            popupWindow.contentView.measure(
+                View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED
+            )
+            val popupWidth = popupWindow.contentView.measuredWidth
+            //val popupHeight = popupWindow.contentView.measuredHeight
+
+            val xOff = -(popupWidth + popupWidth / 2 + view.width)
+            val yOff = -view.height
+
+            popupWindow.showAsDropDown(view, xOff, yOff)
+
         }
     }
 
@@ -129,10 +155,10 @@ class CapsuleDetailActivity :
                             ContentUrl(url, ContentType.IMAGE)
                         }?.toList() ?: listOf<ContentUrl>())
                                 + (it.videoUrls?.map { url ->
-                                    ContentUrl(url, ContentType.VIDEO)
-                                }?.toList() ?: listOf<ContentUrl>())
+                            ContentUrl(url, ContentType.VIDEO)
+                        }?.toList() ?: listOf<ContentUrl>())
                     )
-
+                    groupMemberRVA.submitList(it.members)
                 }
             }
         }

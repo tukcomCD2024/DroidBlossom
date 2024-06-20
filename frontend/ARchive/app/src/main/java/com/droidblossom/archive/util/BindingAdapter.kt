@@ -2,9 +2,11 @@ package com.droidblossom.archive.util
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +33,11 @@ fun AppCompatTextView.textInt(int: Int) {
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
+
     Glide.with(this.context)
         .load(imageUrl)
         .transition(DrawableTransitionOptions.withCrossFade(300))
+        .override(this.width, this.height)
         .apply {
             if (placeholder != null) {
                 placeholder(placeholder)
@@ -44,25 +48,26 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
 
 @BindingAdapter(value = ["bind:VideoUri", "bind:placeholder"], requireAll = false)
 fun CircleImageView.setThumbUrI(VideoUri: String?, placeholder: Drawable?) {
-    if (VideoUri != null) {
-        Glide.with(context)
-            .load(VideoUri)
-            .thumbnail(0.1f)
-            .apply {
-                if (placeholder != null) {
-                    placeholder(placeholder)
-                }
-            }
-            .into(this)
+    if (VideoUri == null) {
+        this.setImageDrawable(placeholder)
+        return
     }
-}
 
+    Glide.with(context)
+        .load(VideoUri)
+        .override(this.width, this.height)
+        .thumbnail(0.1f)
+        .placeholder(placeholder)
+        .transition(DrawableTransitionOptions.withCrossFade(300))
+        .into(this)
+}
 
 @BindingAdapter(value = ["bind:imageUrl", "bind:placeholder"], requireAll = false)
 fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
     if (imageUrl != null) {
         Glide.with(context)
             .load(imageUrl)
+            .override(this.width, this.height)
             .apply {
                 if (placeholder != null) {
                     placeholder(placeholder)
@@ -75,8 +80,10 @@ fun CircleImageView.setImageUrl(imageUrl: String?, placeholder: Drawable?) {
 @SuppressLint("CheckResult")
 @BindingAdapter(value = ["bind:url", "bind:baseImg"], requireAll = false)
 fun ImageView.setUrlImg(imageUrl: String, placeholder: Drawable?) {
+
     Glide.with(this.context)
         .load(imageUrl)
+        .override(this.width, this.height)
         .placeholder(placeholder)
         .error(placeholder)
         .apply(RequestOptions().fitCenter())
@@ -142,6 +149,24 @@ fun TextView.setFormattedDateTimeNull(dateString: String?) {
     }
 }
 
+@BindingAdapter("bind:displayGroupCreationDate")
+fun TextView.setGroupCreationDate(dateString: String?) {
+    if (!dateString.isNullOrEmpty()) {
+        try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = parser.parse(dateString)
+
+            val formatter = SimpleDateFormat("yyyy년 MM월 dd일 생성", Locale.getDefault())
+            val formattedDate = date?.let { formatter.format(it) }
+            this.text = formattedDate
+        } catch (e: Exception) {
+            this.text = "날짜 형식 오류"
+        }
+    } else {
+        this.text = ""
+    }
+}
+
 @BindingAdapter("bind:displayCreationDateFormatted")
 fun TextView.setFormattedDate(dateString: String) {
     dateString.let {
@@ -153,7 +178,7 @@ fun TextView.setFormattedDate(dateString: String) {
             val formattedDate = date?.let { formatter.format(it) }
             this.text = formattedDate
         } catch (e: Exception) {
-            this.text = "날짜 형식 오류"
+            this.text = "보물 캡슐"
         }
     }
 }
@@ -200,6 +225,42 @@ fun ImageView.setCapsuleType2Img(type: String?) {
         else -> {}
     }
 }
+
+@BindingAdapter("bind:setCapsuleTypeColor")
+fun View.setCapsuleTypeColor(type: String?) {
+    when (type) {
+        "SECRET" -> {
+            this.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.purple))
+        }
+
+        "PUBLIC" -> {
+            this.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.main_1))
+        }
+
+        "GROUP" -> {
+            this.backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.main_2))
+        }
+
+        else -> {}
+    }
+}
+
+@BindingAdapter("bind:setArrowImg")
+fun ImageView.setArrowImg(isShowMore: Boolean) {
+    if (isShowMore) this.setImageResource(R.drawable.ic_arrow_up_24) else this.setImageResource(R.drawable.ic_arrow_down_24)
+}
+
+@BindingAdapter("bind:setTextMaxLines")
+fun TextView.setTextMaxLines(isShowMore: Boolean) {
+    if (isShowMore) {
+        this.maxLines = Int.MAX_VALUE
+        this.ellipsize = null
+    } else {
+        this.maxLines = 1
+        this.ellipsize = TextUtils.TruncateAt.END
+    }
+}
+
 
 @BindingAdapter("bind:tabMarginEnd")
 fun TabLayout.setTabItemMargin(marginEndDp: Int) {
@@ -260,3 +321,4 @@ fun TextView.formatCountWithK(count: Int, showDecimal: Boolean) {
         }
     }
 }
+

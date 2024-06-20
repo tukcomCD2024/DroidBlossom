@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="44dp"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="22dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <data>
+        <variable
+            name="item"
+            type="com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember" />
+    </data>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/profileImg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToOutline="true"
-            android:scaleType="fitCenter"
-            android:src="@color/main_4"
-            tools:ignore="UnusedAttribute" />
-    </androidx.cardview.widget.CardView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/nameT"
-        android:layout_width="44dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:paddingBottom="16dp"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:lines="1"
-        android:text="USERRR"
-        android:textAppearance="@style/TextAppearance.App.caption2"
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintTop_toBottomOf="@id/cardView" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="44dp"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:alpha="@{item.opened ? 1.0F : 0.2F}">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/profileImg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@color/main_4"
+                bind:baseImg="@{@drawable/base_use_img}"
+                bind:url="@{item.profileUrl}"
+                tools:ignore="UnusedAttribute" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/nameT"
+            android:layout_width="44dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingBottom="16dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:text="@{item.nickname}"
+            android:textAppearance="@style/TextAppearance.App.caption2"
+            app:layout_constraintEnd_toEndOf="@id/cardView"
+            app:layout_constraintStart_toStartOf="@id/cardView"
+            app:layout_constraintTop_toBottomOf="@id/cardView"
+            android:alpha="@{item.opened ? 1.0F : 0.2F}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

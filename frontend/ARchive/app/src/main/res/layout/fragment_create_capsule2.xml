@@ -125,8 +125,8 @@
             android:layout_height="0dp"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="100dp"
-            android:paddingBottom="88dp"
             android:clipToPadding="false"
+            android:paddingBottom="88dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -135,6 +135,20 @@
             app:spanCount="3"
             tools:itemCount="30"
             tools:listitem="@layout/item_skin" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/listIsEmptyT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="240dp"
+            android:text="스킨이 없습니다."
+            android:textAppearance="@style/TextAppearance.App.body1"
+            android:visibility="@{vm.skins.size() == 0 ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/nextBtn"
@@ -154,13 +168,13 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <View
-            app:layout_constraintTop_toTopOf="@id/nextBtn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@color/main_bg_1_alpha20"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/nextBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

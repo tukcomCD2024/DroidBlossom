@@ -15,8 +15,9 @@ import com.droidblossom.archive.databinding.FragmentHomeBinding
 import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationActivity
+import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -34,7 +35,6 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
-import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.pow
@@ -49,6 +49,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private lateinit var locationUtil: LocationUtil
     private lateinit var locationSource: FusedLocationSource
 
+    private val keyMaps: MutableMap<Long, CapsuleClusteringKey> = mutableMapOf()
+
     // https://navermaps.github.io/android-map-sdk/guide-ko/5-8.html
     private val clusterer: Clusterer<CapsuleClusteringKey> =
         Clusterer.Builder<CapsuleClusteringKey>()
@@ -56,6 +58,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                 override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                     super.updateClusterMarker(info, marker)
                     marker.icon = OverlayImage.fromResource(R.drawable.ic_cluster_marker_46)
+                    marker.height = 120
+                    marker.width = 120
                     marker.captionColor = Color.BLACK
                     marker.captionHaloColor =
                         ContextCompat.getColor(requireContext(), R.color.main_bg_1)
@@ -73,7 +77,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                         CapsuleType.SECRET -> OverlayImage.fromResource(R.drawable.ic_marker_pin_secret)
                         CapsuleType.GROUP -> OverlayImage.fromResource(R.drawable.ic_marker_pin_group)
                         CapsuleType.PUBLIC -> OverlayImage.fromResource(R.drawable.ic_marker_pin_public)
+                        CapsuleType.TREASURE -> OverlayImage.fromResource(R.drawable.ic_marker_pin_treasure)
                     }
+                    marker.width = 120
+                    marker.height = 132
                     marker.onClickListener = Overlay.OnClickListener {
                         viewModel.homeEvent(
                             HomeViewModel.HomeEvent.ShowCapsulePreviewDialog(
@@ -106,6 +113,20 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         locationUtil = LocationUtil(requireContext())
         initView()
         initMap()
+
+        parentFragmentManager.setFragmentResultListener(
+            "treasureCapsule",
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                clusterer.map?.let { _ ->
+                    clusterer.remove(keyMaps[capsuleId]!!)
+                }
+            }
+        }
 
         val layoutParams = binding.notificationBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
@@ -152,7 +173,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                         }
 
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
-                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            val existingDialog =
+                                parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                             if (existingDialog == null) {
                                 val dialog = CapsulePreviewDialogFragment.newInstance(
                                     "-1",
@@ -221,6 +243,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect {
+                    keyMaps.clear()
                     clusterer.map?.let { _ ->
                         // 마커 지우는 로직
                         clusterer.clear()
@@ -270,11 +293,15 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     private fun addMarker(capsuleList: List<CapsuleMarker>) {
 
         val keyTagMap: Map<CapsuleClusteringKey, *> = capsuleList.associate {
-            CapsuleClusteringKey(
+
+            val key = CapsuleClusteringKey(
                 id = it.id,
                 capsuleType = it.capsuleType,
                 position = LatLng(it.latitude, it.longitude)
-            ) to null
+            )
+
+            keyMaps[it.id] = key
+            key to null
         }
 
         clusterer.addAll(keyTagMap)
@@ -361,7 +388,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     enum class CapsuleType {
         SECRET,
         GROUP,
-        PUBLIC
+        PUBLIC,
+        TREASURE
     }
 
     override fun onResume() {

@@ -3,15 +3,20 @@ package com.droidblossom.archive.presentation.ui.social.page.group
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendViewModel
 import com.droidblossom.archive.util.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,10 +42,27 @@ class SocialGroupViewModelImpl @Inject constructor(
     private val _lastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
-    override var clearCapsule = false
 
+    private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getGroupCapsuleListJob: Job? = null
     init {
-        //getGroupCapsulePage()
+        viewModelScope.launch {
+            scrollEventFlow.collect {
+                if (groupCapsules.value.isEmpty()){
+                    getLatestGroupCapsule()
+                }else{
+                    getGroupCapsulePage()
+                }
+            }
+        }
+        getLatestGroupCapsule()
+    }
+
+    override fun onScrollNearBottom() {
+        scrollEventChannel.trySend(Unit)
     }
 
     override fun socialGroupEvent(event: SocialGroupViewModel.SocialGroupEvent) {
@@ -68,17 +90,13 @@ class SocialGroupViewModelImpl @Inject constructor(
     override fun getGroupCapsulePage(){
         viewModelScope.launch {
             if (hasNextPage.value) {
-
+                getGroupCapsuleListJob?.cancel()
             }
         }
     }
 
     override fun getLatestGroupCapsule(){
-        clearCapsule = true
-        _groupCapsules.value = listOf()
-        _hasNextPage.value = true
-        _lastCreatedTime.value = DateUtils.dataServerString
-        getGroupCapsulePage()
+        getGroupCapsuleListJob?.cancel()
     }
 
 }

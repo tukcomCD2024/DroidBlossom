@@ -9,8 +9,12 @@
         <import type="android.view.View" />
 
         <variable
+            name="capsuleType"
+            type="com.droidblossom.archive.presentation.ui.home.HomeFragment.CapsuleType" />
+
+        <variable
             name="vm"
-            type="com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogViewModel" />
+            type="com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,12 +24,25 @@
         android:background="@android:color/transparent"
         android:backgroundTint="@android:color/transparent">
 
+<!--        <androidx.appcompat.widget.AppCompatImageView-->
+<!--            android:id="@+id/closeBtn"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_marginEnd="@dimen/margin"-->
+<!--            android:backgroundTint="@color/main_bg_1"-->
+<!--            android:scaleType="centerInside"-->
+<!--            android:src="@drawable/ic_close_24"-->
+<!--            android:tint="@color/main_1"-->
+<!--            android:background="@drawable/corner_radius_8"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/capsuleOpenMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_solid_corner_30dp"
-            android:backgroundTint="#ECEFFE"
+            android:backgroundTint="@color/main_bg_1"
             android:paddingHorizontal="@dimen/padding"
             android:paddingVertical="18dp"
             android:text="@string/capsule_open_message"
@@ -125,7 +142,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rectangle_solid_corner_30dp"
-            android:backgroundTint="#ECEFFE"
+            android:backgroundTint="@color/main_bg_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/capsuleDetailLayout">
@@ -141,7 +158,7 @@
                 app:civ_circle_background_color="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:imageUrl="@{vm.capsuleSummaryResponse.profileUrl}"
+                bind:imageUrl="@{vm.capsuleSummaryResponse.profileOrGroupProfileUrl}"
                 bind:placeholder="@{@drawable/app_symbol}" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -153,7 +170,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/suit_bold"
                 android:maxLines="1"
-                android:text="@{vm.capsuleSummaryResponse.nickname}"
+                android:text="@{vm.capsuleSummaryResponse.nicknameOrGroupName}"
                 android:textAppearance="@style/TextAppearance.App.caption4"
                 android:textColor="@color/gray_700"
                 app:layout_constraintBottom_toBottomOf="@id/profileImg"
@@ -186,11 +203,11 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/skinImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:alpha="@{vm.visibleCapsuleOpenMessage ? 1.0F : 0.2F}"
-                    android:scaleType="centerInside"
+                    android:scaleType="centerCrop"
                     bind:baseImg="@{@drawable/sample_skin}"
                     bind:url="@{vm.capsuleSummaryResponse.skinUrl}" />
 
@@ -229,6 +246,7 @@
                 android:visibility="@{vm.visibleOpenProgressBar ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
+                tools:progress="40"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profileImg" />
@@ -254,20 +272,48 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/groupMemberLayout"
             android:layout_width="0dp"
-            android:layout_height="110dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rectangle_solid_corner_30dp"
-            android:backgroundTint="#ECEFFE"
-            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:background="@drawable/corner_radius_30"
+            android:backgroundTint="@color/main_bg_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:paddingStart="@dimen/padding_small"
+            android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
             app:layout_constraintTop_toBottomOf="@id/capsuleSkinLayout">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupMemberRecycleView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:visibility="@{vm.capsuleType == capsuleType.GROUP ? View.VISIBLE : View.GONE }"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/item_group_number"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/margin"
+                tools:visibility="visible" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/refreshBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                android:background="@drawable/corner_radius_22"
+                android:backgroundTint="@color/white_alpha60"
+                android:scaleType="center"
+                android:onClick="@{() -> vm.getGroupMembersCapsuleOpenStatus()}"
+                android:src="@drawable/ic_refresh_24"
+                android:tint="@color/main_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

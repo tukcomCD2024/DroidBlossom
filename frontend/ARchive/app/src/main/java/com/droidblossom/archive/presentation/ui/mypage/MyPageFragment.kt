@@ -1,12 +1,10 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
-import android.Manifest
-import android.content.pm.PackageManager
+
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -22,7 +20,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentMyPageBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.adapter.CapsuleRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.ProfileRVA
 import com.droidblossom.archive.presentation.ui.mypage.adapter.SpinnerAdapter
@@ -35,10 +33,10 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
+class MyPageFragment :
+    BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
 
     override val viewModel: MyPageViewModelImpl by viewModels()
-    private var reloadMyInfo = false
 
     private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
         CustomLifecycleOwner()
@@ -48,11 +46,9 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         ProfileRVA(
             {
                 startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.GROUP))
-                reloadMyInfo = true
             },
             {
                 startActivity(FriendActivity.newIntent(requireContext(), FriendActivity.FRIEND))
-                reloadMyInfo = true
             },
             {
                 startActivity(
@@ -61,16 +57,19 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
                         FriendAcceptActivity.FRIEND
                     )
                 )
-                reloadMyInfo = true
             },
             {
                 startActivity(SettingActivity.newIntent(requireContext()))
-            }
+            },
+            {
+                copyText("tag",it)
+            },
         )
     }
     private val capsuleRVA: CapsuleRVA by lazy {
         CapsuleRVA(
             { id, type ->
+                reload = false
                 startActivity(
                     CapsuleDetailActivity.newIntent(
                         requireContext(),
@@ -80,6 +79,7 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
                 )
             },
             { capsuleIndex, id, type ->
+                reload = false
                 val existingDialog =
                     parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                 if (existingDialog == null) {
@@ -133,6 +133,7 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
                 viewModel.updateCapsuleOpenState(capsuleIndex, capsuleId)
                 capsuleRVA.notifyItemChanged(capsuleIndex)
             }
+            reload = true
         }
         initCustomLifeCycle()
         initMyPageRVA()
@@ -166,7 +167,8 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         binding.myPageRV.layoutManager = layoutManager
         binding.myPageRV.adapter = concatAdapter
         binding.myPageSwipeRefreshLayout.setOnRefreshListener {
-            viewModel.load()
+            viewModel.getMe()
+            viewModel.getLatestCapsulePage()
         }
 
         binding.myPageRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -190,17 +192,6 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         visibleLifecycleOwner.lifecycleScope.launch {
             visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.myCapsules.collect { capsule ->
-                    if (viewModel.clearCapsule) {
-                        viewModel.clearCapsule = false
-                    } else {
-                        viewModel.updateMyCapsulesUI()
-                    }
-                }
-            }
-        }
-        visibleLifecycleOwner.lifecycleScope.launch {
-            visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.myCapsulesUI.collect { capsule ->
                     capsuleRVA.submitList(capsule) {
                         if (binding.myPageSwipeRefreshLayout.isRefreshing) {
                             binding.myPageSwipeRefreshLayout.isRefreshing = false
@@ -223,8 +214,11 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
                             startActivity(SettingActivity.newIntent(requireContext()))
                         }
 
-                        is MyPageViewModel.MyPageEvent.HideLoading -> {
-                            binding.myPageSwipeRefreshLayout.isRefreshing = false
+                        is MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading -> {
+                            if (binding.myPageSwipeRefreshLayout.isRefreshing) {
+                                binding.myPageSwipeRefreshLayout.isRefreshing = false
+                            }
+                            binding.myPageRV.scrollToPosition(0)
                         }
 
                         else -> {}
@@ -244,10 +238,9 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         visibleLifecycleOwner.lifecycleScope.launch {
             visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleType.collect {
-                    if (viewModel.viewModelReload){
-                        viewModel.clearCapsules(false)
+                    if (reload || isActive) {
+                        viewModel.getLatestCapsulePage()
                     }
-
                 }
             }
         }
@@ -260,13 +253,15 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
                     Lifecycle.Event.ON_START,
                     Lifecycle.Event.ON_CREATE,
                     Lifecycle.Event.ON_RESUME,
-                    Lifecycle.Event.ON_PAUSE, -> {
+                    Lifecycle.Event.ON_PAUSE,
+                    -> {
                         if (isHidden) {
                             visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
                         } else {
                             visibleLifecycleOwner.handleLifecycleEvent(event)
                         }
                     }
+
                     else -> {
                         visibleLifecycleOwner.handleLifecycleEvent(event)
                     }
@@ -278,41 +273,40 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
+            Log.d("생명", "onHiddenChanged - hide")
             onHidden()
         } else {
+            Log.d("생명", "onHiddenChanged - show")
             onShow()
         }
     }
 
     private fun onHidden() {
         viewModel.viewModelReload = false
-        reloadState = true
+        isActive = false
     }
 
     private fun onShow() {
         visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        if (reload){
-            viewModel.load()
-            reload = false
-            viewModel.viewModelReload = false
-            binding.myPageRV.scrollToPosition(0)
-        }
-        if (!reload && !reloadState){
-            viewModel.load()
-            reload = false
-            viewModel.viewModelReload = false
-            binding.myPageRV.scrollToPosition(0)
-        }
-
-        if (reloadMyInfo){
-            viewModel.getMe()
-        }
+        reload = true
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("생명", "onSaveInstanceState")
+    }
+
 
     override fun onResume() {
         super.onResume()
-        reloadState = false
-        reload = false
+        isActive = true
+        Log.d("생명", "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("생명", "onPause")
+        isActive = false
     }
 
     companion object {
@@ -323,14 +317,18 @@ class MyPageFragment : BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(
         const val SPINNER_TYPE = 3
         const val CAPSULE_TYPE = 4
 
-        private var reloadState = true
-        private var reload = false
-        fun newIntent() : MyPageFragment{
-            if (reloadState){
-                reload = true
-            }
+        private var reload = true
+        private var isActive = false
+
+
+        fun newIntent(): MyPageFragment{
+            Log.d("생명", "뉴 인텐트")
             return MyPageFragment()
         }
+    }
+
+    fun scrollToTop(){
+        binding.myPageRV.scrollToPosition(0)
     }
 
     enum class SpinnerCapsuleType(val description: String) {

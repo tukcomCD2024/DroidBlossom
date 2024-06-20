@@ -27,85 +27,140 @@
             android:layout_height="match_parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/filterAll"
+            android:id="@+id/filterIcon"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="@dimen/margin"
             android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@{vm.selectedCapsuleFilter== filter.FILTER_ALL ? @color/main_alpha85 : @color/white_alpha60}"
+            android:backgroundTint="@color/white_alpha60"
             android:gravity="center"
-            android:onClick="@{()->view.onClickFilter(filter.FILTER_ALL)}"
             android:paddingHorizontal="14dp"
-            android:text="전체"
+            android:text="필터"
+            android:drawableEnd="@drawable/ic_filter_24"
             android:textAppearance="@style/TextAppearance.App.caption1"
-            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_ALL ? @color/white : @color/gray_700 }"
+            android:textColor="@color/gray_700"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/filterSecret"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_SECRET ? @color/main_alpha85 : @color/white_alpha60}"
-            android:gravity="center"
-            android:onClick="@{()->view.onClickFilter(filter.FILTER_SECRET)}"
-            android:paddingHorizontal="14dp"
-            android:text="비밀"
-            android:textAppearance="@style/TextAppearance.App.caption1"
-            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_SECRET ? @color/white : @color/gray_700 }"
-            app:layout_constraintStart_toEndOf="@id/filterAll"
-            app:layout_constraintTop_toTopOf="@id/filterAll" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/filterGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
+        <HorizontalScrollView
+            android:id="@+id/scrollview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/filterIcon"
+            app:layout_constraintStart_toEndOf="@id/filterIcon"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="4dp"
-            android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_GROUP ? @color/main_alpha85 : @color/white_alpha60}"
-            android:gravity="center"
-            android:onClick="@{()->view.onClickFilter(filter.FILTER_GROUP)}"
-            android:paddingHorizontal="14dp"
-            android:text="그룹"
-            android:textAppearance="@style/TextAppearance.App.caption1"
-            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_GROUP ? @color/white : @color/gray_700 }"
-            app:layout_constraintStart_toEndOf="@id/filterSecret"
-            app:layout_constraintTop_toTopOf="@id/filterAll" />
+            android:scrollbars="none">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/filterPublicMy"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_MY ? @color/main_alpha85 : @color/white_alpha60}"
-            android:gravity="center"
-            android:onClick="@{()->view.onClickFilter(filter.FILTER_PUBLIC_MY)}"
-            android:paddingHorizontal="14dp"
-            android:text="공개(나)"
-            android:textAppearance="@style/TextAppearance.App.caption1"
-            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_MY ? @color/white : @color/gray_700 }"
-            app:layout_constraintStart_toEndOf="@id/filterGroup"
-            app:layout_constraintTop_toTopOf="@id/filterAll" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/filterPublicFriend"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/corner_radius_18"
-            android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_FRIEND ? @color/main_alpha85 : @color/white_alpha60}"
-            android:gravity="center"
-            android:onClick="@{()->view.onClickFilter(filter.FILTER_PUBLIC_FRIEND)}"
-            android:paddingHorizontal="14dp"
-            android:text="공개(친구)"
-            android:textAppearance="@style/TextAppearance.App.caption1"
-            android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_FRIEND ? @color/white : @color/gray_700 }"
-            app:layout_constraintStart_toEndOf="@id/filterPublicMy"
-            app:layout_constraintTop_toTopOf="@id/filterAll" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filterAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/corner_radius_18"
+                    android:backgroundTint="@{vm.selectedCapsuleFilter== filter.FILTER_ALL ? @color/main_alpha85 : @color/white_alpha60}"
+                    android:gravity="center"
+                    android:onClick="@{()->view.onClickFilter(filter.FILTER_ALL)}"
+                    android:paddingHorizontal="14dp"
+                    android:text="전체"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_ALL ? @color/white : @color/gray_700 }" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filterSecret"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/corner_radius_18"
+                    android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_SECRET ? @color/main_alpha85 : @color/white_alpha60}"
+                    android:gravity="center"
+                    android:onClick="@{()->view.onClickFilter(filter.FILTER_SECRET)}"
+                    android:paddingHorizontal="14dp"
+                    android:text="비밀"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_SECRET ? @color/white : @color/gray_700 }" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filterGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/corner_radius_18"
+                    android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_GROUP ? @color/main_alpha85 : @color/white_alpha60}"
+                    android:gravity="center"
+                    android:onClick="@{()->view.onClickFilter(filter.FILTER_GROUP)}"
+                    android:paddingHorizontal="14dp"
+                    android:text="그룹"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_GROUP ? @color/white : @color/gray_700 }" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filterPublicMy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/corner_radius_18"
+                    android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_MY ? @color/main_alpha85 : @color/white_alpha60}"
+                    android:gravity="center"
+                    android:onClick="@{()->view.onClickFilter(filter.FILTER_PUBLIC_MY)}"
+                    android:paddingHorizontal="14dp"
+                    android:text="공개(나)"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_MY ? @color/white : @color/gray_700 }" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filterPublicFriend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/corner_radius_18"
+                    android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_FRIEND ? @color/main_alpha85 : @color/white_alpha60}"
+                    android:gravity="center"
+                    android:onClick="@{()->view.onClickFilter(filter.FILTER_PUBLIC_FRIEND)}"
+                    android:paddingHorizontal="14dp"
+                    android:text="공개(친구)"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_PUBLIC_FRIEND ? @color/white : @color/gray_700 }" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/filterTreasure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/corner_radius_18"
+                    android:backgroundTint="@{vm.selectedCapsuleFilter==filter.FILTER_TREASURE ? @color/main_alpha85 : @color/white_alpha60}"
+                    android:gravity="center"
+                    android:onClick="@{()->view.onClickFilter(filter.FILTER_TREASURE)}"
+                    android:paddingHorizontal="14dp"
+                    android:text="보물"
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@{vm.selectedCapsuleFilter==filter.FILTER_TREASURE ? @color/white : @color/gray_700 }" />
+
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/refreshBtn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="22dp"
+            android:background="@drawable/corner_radius_22"
+            android:backgroundTint="@color/white_alpha60"
+            android:scaleType="center"
+            android:src="@drawable/ic_refresh_24"
+            android:tint="@color/main_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scrollview" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

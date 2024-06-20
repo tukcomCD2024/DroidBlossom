@@ -1,6 +1,6 @@
 package com.droidblossom.archive.domain.model.friend
 
-data class FriendsPage(
-    val friends: List<Friend>,
+data class FriendsPage<T>(
+    val friends: List<T>,
     val hasNext: Boolean
 )

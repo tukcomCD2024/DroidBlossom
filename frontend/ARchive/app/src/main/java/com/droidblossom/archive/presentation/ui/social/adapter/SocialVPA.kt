@@ -17,4 +17,8 @@ class SocialVPA(fragment: Fragment) : FragmentStateAdapter(fragment){
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
     }
+
+    fun getFragment(position: Int): Fragment? {
+        return fragmentList.getOrNull(position)
+    }
 }

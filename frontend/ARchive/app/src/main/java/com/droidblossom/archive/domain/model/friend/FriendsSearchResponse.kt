@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.model.friend
 
 data class FriendsSearchResponse (
+    val createdAt : String,
     val id : Long,
     val profileUrl : String,
     val nickname : String,

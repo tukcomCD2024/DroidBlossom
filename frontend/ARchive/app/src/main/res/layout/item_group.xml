@@ -1,65 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/main_bg_1">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.droidblossom.archive.domain.model.group.GroupSummary" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="76dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="4dp"
-        android:padding="4dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:background="@color/main_bg_1">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="76dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="4dp"
+            android:backgroundTint="@{item.checked ? @color/main_2 : @color/white }"
+            android:padding="4dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:backgroundTint="@color/white">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/groupProfileImg"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="@id/groupBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/groupBtn"
-                tools:src="@color/main_4" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/groupProfileNameT"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:gravity="start"
-                android:layout_marginStart="12dp"
-                android:text="GROUP  "
-                app:layout_constraintEnd_toStartOf="@id/groupBtn"
-                android:textAppearance="@style/TextAppearance.App.body2"
-                app:layout_constraintBottom_toBottomOf="@id/groupBtn"
-                app:layout_constraintStart_toEndOf="@id/groupProfileImg"
-                app:layout_constraintTop_toTopOf="@id/groupBtn" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/groupProfileImg"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="@id/groupBtn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/groupBtn"
+                    bind:baseImg="@{@drawable/base_use_img}"
+                    bind:url="@{item.profileUrl}"
+                    tools:src="@color/main_2" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/groupBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="24dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_arrow_right_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/groupProfileNameT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:lines="1"
+                    android:text="@{item.name}"
+                    android:textAppearance="@style/TextAppearance.App.body1"
+                    android:textColor="@{item.checked ? @color/white : @color/black}"
+                    app:layout_constraintBottom_toBottomOf="@id/groupBtn"
+                    app:layout_constraintEnd_toStartOf="@id/groupBtn"
+                    app:layout_constraintStart_toEndOf="@id/groupProfileImg"
+                    app:layout_constraintTop_toTopOf="@id/groupBtn"
+                    tools:text="그룹 이름" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/groupBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_arrow_right_24"
+                    android:tint="@{item.checked ? @color/white : @color/main_1 }"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

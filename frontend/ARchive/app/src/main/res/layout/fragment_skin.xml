@@ -123,23 +123,34 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/skinRV"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="100dp"
-                android:elevation="1dp"
-                android:orientation="vertical"
-                android:clipToPadding="false"
-                android:paddingBottom="70dp"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                android:layout_marginTop="@dimen/margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintVertical_bias="1.0"
-                app:spanCount="3" />
+                app:layout_constraintTop_toBottomOf="@id/searchBtn">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/skinRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="1dp"
+                    android:orientation="vertical"
+                    android:clipToPadding="false"
+                    android:paddingBottom="70dp"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:spanCount="3" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/createCapsuleLayout"

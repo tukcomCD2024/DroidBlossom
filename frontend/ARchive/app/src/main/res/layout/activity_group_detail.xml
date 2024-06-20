@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.GroupDetailViewModel" />
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main_bg_1"
+            tools:context=".presentation.ui.mypage.friend.detail.group.GroupDetailActivity">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
+                style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/main_bg_1">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:collapsedTitleTextAppearance="@style/TextAppearance.App.h4"
+                    app:collapsedTitleTextColor="@color/gray_700"
+                    app:contentScrim="@color/main_bg_1"
+                    app:expandedTitleTextColor="@android:color/transparent"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:title="@{vm.groupInfo.groupName}"
+                    app:titleEnabled="false">
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/main_bg_1"
+                        android:paddingBottom="@dimen/padding">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileImg"
+                            android:layout_width="75dp"
+                            android:layout_height="75dp"
+                            android:layout_marginStart="@dimen/margin"
+                            android:layout_marginTop="?attr/actionBarSize"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            bind:baseImg="@{@drawable/base_use_img}"
+                            bind:url="@{vm.groupInfo.groupProfileUrl}"
+                            tools:src="@color/main_2" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/editGroup"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin"
+                            android:background="@drawable/corner_radius_30"
+                            android:gravity="center"
+                            android:paddingVertical="@dimen/padding_small"
+                            android:text="프로필 수정"
+                            android:textAppearance="@style/TextAppearance.App.caption1"
+                            android:textColor="@color/main_1"
+                            android:visibility="@{vm.groupInfo.hasEditPermission ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/profileImg" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/leaveGroup"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin"
+                            android:background="@drawable/corner_radius_30"
+                            android:gravity="center"
+                            android:paddingVertical="@dimen/padding_small"
+                            android:text="그룹 탈퇴"
+                            android:onClick="@{() -> vm.leaveGroup()}"
+                            android:textAppearance="@style/TextAppearance.App.caption1"
+                            android:textColor="@color/main_1"
+                            android:visibility="@{vm.groupInfo.hasEditPermission ? View.GONE : View.VISIBLE}"
+                            app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/profileImg" />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/groupDescriptionT"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/margin"
+                            android:layout_marginTop="@dimen/margin"
+                            android:text="@{vm.groupInfo.groupDescription}"
+                            android:textAppearance="@style/TextAppearance.App.caption2"
+                            app:layout_constraintEnd_toStartOf="@id/moreBtn"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/profileImg"
+                            bind:setTextMaxLines="@{vm.isShowMore()}" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin"
+                            android:layout_marginTop="@dimen/margin_small"
+                            android:drawableStart="@drawable/ic_calendar_24"
+                            android:drawableTint="@color/gray_600"
+                            android:gravity="center"
+                            android:textAppearance="@style/TextAppearance.App.caption4"
+                            android:textColor="@color/gray_600"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/groupDescriptionT"
+                            bind:displayGroupCreationDate="@{vm.groupInfo.groupCreateTime}" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/moreBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin"
+                            android:onClick="@{() -> vm.setShowMore()}"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/groupDescriptionT"
+                            bind:setArrowImg="@{vm.isShowMore}" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/groupDetailToolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:layout_collapseMode="pin"
+                        app:menu="@menu/menu_detail"
+                        app:navigationIcon="@drawable/ic_arrow_back_24"
+                        app:title="@{vm.groupInfo.groupName}" />
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    style="@style/FriendTabLayoutStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@drawable/corner_radius_30"
+                    android:backgroundTint="@color/white">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+</layout>
