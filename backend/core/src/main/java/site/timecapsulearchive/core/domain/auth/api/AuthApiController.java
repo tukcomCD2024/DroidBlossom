@@ -177,16 +177,13 @@ public class AuthApiController implements AuthApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationNumberValidRequest request
     ) {
-        final TokenResponse response = messageVerificationService.validVerificationMessage(
-            memberId,
-            request.certificationNumber(),
-            request.receiver()
-        );
+        TokenResponse token = authManager.validVerificationMessage(memberId,
+            request.certificationNumber(), request.receiver());
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                response
+                token
             )
         );
     }

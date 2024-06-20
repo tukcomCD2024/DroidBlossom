@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
-import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
@@ -79,7 +78,7 @@ public class MessageVerificationService {
             + "타인 노출 금지";
     }
 
-    public TokenResponse validVerificationMessage(
+    public Long validVerificationMessage(
         final Long memberId,
         final String certificationNumber,
         final String receiver
@@ -95,9 +94,7 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        final Long verifiedMemberId = updateToVerifiedMember(memberId, plain);
-
-        return tokenManager.createNewToken(verifiedMemberId);
+        return updateToVerifiedMember(memberId, plain);
     }
 
     private boolean isNotMatch(final String certificationNumber,

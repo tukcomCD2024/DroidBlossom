@@ -71,4 +71,16 @@ public class AuthManager {
     ) {
         return messageVerificationService.sendVerificationMessage(memberId, receiver, appHashKey);
     }
+
+    public TokenResponse validVerificationMessage(
+        final Long memberId,
+        final String certificationNumber,
+        final String receiver
+    ) {
+        Long verifiedMemberId = messageVerificationService.validVerificationMessage(memberId,
+            certificationNumber,
+            receiver);
+
+        return tokenManager.createNewToken(verifiedMemberId);
+    }
 }
