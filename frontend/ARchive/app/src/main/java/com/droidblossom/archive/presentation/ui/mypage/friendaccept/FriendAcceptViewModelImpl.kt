@@ -91,12 +91,20 @@ class FriendAcceptViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollFriendEventFlow.collect {
-                getFriendAcceptListPage()
+                if (friendAcceptList.value.isEmpty()){
+                    getLastedFriendAcceptList()
+                }else{
+                    getFriendAcceptListPage()
+                }
             }
         }
         viewModelScope.launch {
             scrollGroupEventFlow.collect {
-                getGroupAcceptListPage()
+                if (groupAcceptList.value.isEmpty()){
+                    getLastedGroupAcceptList()
+                }else{
+                    getGroupAcceptListPage()
+                }
             }
         }
         viewModelScope.launch {
@@ -111,9 +119,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
     }
 
     override fun getFriendAcceptListPage() {
-        getFriendAcceptRequestListJob?.cancel()
-        getFriendAcceptRequestListJob = viewModelScope.launch {
-            if (friendHasNextPage.value) {
+        if (friendHasNextPage.value){
+            getFriendAcceptRequestListJob?.cancel()
+            getFriendAcceptRequestListJob = viewModelScope.launch {
                 friendsRequestsPageUseCase(
                     PagingRequestDto(
                         15,
@@ -126,7 +134,6 @@ class FriendAcceptViewModelImpl @Inject constructor(
                         if (friendAcceptList.value.isNotEmpty()) {
                             friendLastCreatedTime.value = it.friends.last().createdAt
                         }
-
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
@@ -298,9 +305,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
     }
 
     override fun getFriendSendAcceptListPage() {
-        getFriendSendAcceptRequestListJob?.cancel()
-        getFriendSendAcceptRequestListJob = viewModelScope.launch {
-            if (friendSendHasNextPage.value) {
+        if (friendSendHasNextPage.value){
+            getFriendSendAcceptRequestListJob?.cancel()
+            getFriendSendAcceptRequestListJob = viewModelScope.launch {
                 friendsSendRequestsPageUseCase(
                     PagingRequestDto(
                         15,
@@ -324,8 +331,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 }
             }
         }
-    }
 
+    }
+    
     override fun onScrollFriendSendNearBottom() {
         scrollFriendSendEventChannel.trySend(Unit)
     }
