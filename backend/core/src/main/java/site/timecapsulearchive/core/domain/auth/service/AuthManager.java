@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.auth.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
@@ -16,9 +17,9 @@ public class AuthManager {
     private static final String KAKAO_AUTHORIZATION_ENDPOINT = "/auth/login/kakao";
     private static final String GOOGLE_AUTHORIZATION_ENDPOINT = "/auth/login/google";
 
-    private final MemberService memberService;
-
     private final TokenManager tokenManager;
+    private final MemberService memberService;
+    private final MessageVerificationService messageVerificationService;
 
     public String getOAuth2KakaoUrl(final HttpServletRequest request) {
         final String baseUrl = request.getRequestURL().toString();
@@ -61,5 +62,13 @@ public class AuthManager {
             socialType);
 
         return tokenManager.createNewToken(verifiedSocialMemberId);
+    }
+
+    public VerificationMessageSendDto sendVerificationMessage(
+        final Long memberId,
+        final String receiver,
+        final String appHashKey
+    ) {
+        return messageVerificationService.sendVerificationMessage(memberId, receiver, appHashKey);
     }
 }

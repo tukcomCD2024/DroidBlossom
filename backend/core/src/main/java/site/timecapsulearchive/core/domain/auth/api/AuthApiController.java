@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.data.request.EmailSignInRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.EmailSignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
@@ -154,17 +155,14 @@ public class AuthApiController implements AuthApi {
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final VerificationMessageSendRequest request
     ) {
-        final VerificationMessageSendResponse response = messageVerificationService.sendVerificationMessage(
-            memberId,
-            request.receiver(),
-            request.appHashKey()
-        );
+        final VerificationMessageSendDto verificationMessageSendDto = authManager.sendVerificationMessage(
+            memberId, request.receiver(), request.appHashKey());
 
         return ResponseEntity.accepted()
             .body(
                 ApiSpec.success(
                     SuccessCode.ACCEPTED,
-                    response
+                    verificationMessageSendDto.toResponse()
                 )
             );
     }
