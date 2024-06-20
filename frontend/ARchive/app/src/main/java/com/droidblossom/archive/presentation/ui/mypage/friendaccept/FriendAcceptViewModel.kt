@@ -14,19 +14,19 @@ interface FriendAcceptViewModel {
     val friendSendAcceptList: StateFlow<List<Friend>>
     val groupAcceptList : StateFlow<List<GroupInviteSummary>>
 
-    fun getFriendAcceptList()
+    fun getFriendAcceptListPage()
     fun getLastedFriendAcceptList()
     fun onScrollFriendNearBottom()
     fun denyFriendRequest(friend: Friend)
     fun acceptFriendRequest(friend: Friend)
 
-    fun getGroupAcceptList()
+    fun getGroupAcceptListPage()
     fun getLastedGroupAcceptList()
     fun onScrollGroupNearBottom()
     fun denyGroupRequest(group: GroupInviteSummary)
     fun acceptGroupRequest(group: GroupInviteSummary)
 
-    fun getFriendSendAcceptList()
+    fun getFriendSendAcceptListPage()
     fun onScrollFriendSendNearBottom()
     fun deleteFriendSendRequest(friend: Friend)
 

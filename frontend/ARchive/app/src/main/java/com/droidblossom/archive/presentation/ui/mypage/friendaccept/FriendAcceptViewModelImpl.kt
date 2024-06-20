@@ -91,13 +91,17 @@ class FriendAcceptViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollFriendEventFlow.collect {
-                getFriendAcceptList()
+                getFriendAcceptListPage()
             }
+        }
+        viewModelScope.launch {
             scrollGroupEventFlow.collect {
-                getGroupAcceptList()
+                getGroupAcceptListPage()
             }
-            scrollFriendSendEventFlow.collect {
-                getFriendSendAcceptList()
+        }
+        viewModelScope.launch {
+            scrollFriendSendEventFlow.collect{
+                getFriendSendAcceptListPage()
             }
         }
     }
@@ -106,7 +110,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
         scrollFriendEventChannel.trySend(Unit)
     }
 
-    override fun getFriendAcceptList() {
+    override fun getFriendAcceptListPage() {
         getFriendAcceptRequestListJob?.cancel()
         getFriendAcceptRequestListJob = viewModelScope.launch {
             if (friendHasNextPage.value) {
@@ -198,7 +202,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getGroupAcceptList() {
+    override fun getGroupAcceptListPage() {
         getGroupAcceptRequestListJob?.cancel()
         getGroupAcceptRequestListJob = viewModelScope.launch {
             if (groupHasNextPage.value) {
@@ -293,7 +297,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getFriendSendAcceptList() {
+    override fun getFriendSendAcceptListPage() {
         getFriendSendAcceptRequestListJob?.cancel()
         getFriendSendAcceptRequestListJob = viewModelScope.launch {
             if (friendSendHasNextPage.value) {

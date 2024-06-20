@@ -36,7 +36,7 @@ class FriendAcceptActivity :
 
         viewModel.getLastedGroupAcceptList()
         viewModel.getLastedFriendAcceptList()
-        viewModel.getFriendSendAcceptList()
+        viewModel.getFriendSendAcceptListPage()
     }
 
     private fun initView() {
