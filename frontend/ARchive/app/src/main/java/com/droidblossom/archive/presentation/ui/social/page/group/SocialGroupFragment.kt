@@ -76,14 +76,10 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.groupCapsules.collect{ groupCapsules ->
-                    if (viewModel.clearCapsule){
-                        viewModel.clearCapsule = false
-                    }else{
-                        socialFriendCapsuleRVA.submitList(groupCapsules){
-                            if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
-                                binding.socialFriendSwipeRefreshLayout.isRefreshing = false
-                                binding.socialGroupRV.scrollToPosition(0)
-                            }
+                    socialFriendCapsuleRVA.submitList(groupCapsules){
+                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
+                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            binding.socialGroupRV.scrollToPosition(0)
                         }
                     }
                 }
@@ -98,8 +94,9 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
                             showToastMessage(event.message)
                         }
 
-                        is SocialGroupViewModel.SocialGroupEvent.HideLoading ->{
+                        is SocialGroupViewModel.SocialGroupEvent.SwipeRefreshLayoutDismissLoading ->{
                             binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                            binding.socialGroupRV.scrollToPosition(0)
                         }
                         else -> {
 
@@ -134,11 +131,15 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
                     val totalItemCount = layoutManager.itemCount
                     val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                     if (totalItemCount - lastVisibleItemPosition <= 5) {
-                        viewModel.getGroupCapsulePage()
+                        viewModel.onScrollNearBottom()
                     }
                 }
             }
         })
+    }
+
+    fun scrollToTop(){
+        binding.socialGroupRV.scrollToPosition(0)
     }
 
 

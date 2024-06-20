@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/main_1</item>
         <item name="elevationOverlayEnabled">false</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@color/main_bg_1</item>
     </style>
 
     <style name="Theme.ARchive" parent="Base.Theme.ARchive" />

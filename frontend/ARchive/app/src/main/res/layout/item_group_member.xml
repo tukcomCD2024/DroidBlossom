@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="data"
+            type="com.droidblossom.archive.domain.model.group.GroupMember" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/friendLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImg"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@color/main_1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:baseImg="@{@drawable/base_use_img}"
+                    bind:url="@{data.profileUrl}" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:cardCornerRadius="12dp"
+                    android:layout_marginEnd="-4dp"
+                    android:layout_marginBottom="-4dp"
+                    android:visibility="@{data.isOwner ? View.VISIBLE : View.GONE}"
+                    app:cardBackgroundColor="@color/main_3"
+                    app:layout_constraintEnd_toEndOf="@id/profileImg"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        app:layout_constraintEnd_toEndOf="@id/profileImg"
+                        app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                        app:srcCompat="@drawable/ic_crown"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/nicknameT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="@{data.nickname}"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    app:layout_constraintEnd_toStartOf="@id/addFriend"
+                    app:layout_constraintStart_toEndOf="@id/profileImg"
+                    app:layout_constraintTop_toTopOf="@id/profileImg" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/addFriend"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="@dimen/margin"
+                    android:backgroundTint="@color/main_2"
+                    android:visibility="@{data.isFriend ? View.GONE : View.VISIBLE}"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/profileImg"
+                    app:strokeWidth="0dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_plus_small_24"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_gravity="center"
+                        app:layout_constraintTop_toTopOf="@id/profileImg"
+                        app:layout_constraintBottom_toBottomOf="@id/profileImg"/>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

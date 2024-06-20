@@ -6,6 +6,7 @@ import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.model.common.Dummy
 import com.droidblossom.archive.domain.model.common.FileName
 import com.droidblossom.archive.domain.model.common.Location
+import com.droidblossom.archive.domain.model.group.GroupSummary
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,7 +19,8 @@ interface CreateCapsuleViewModel {
 
     //Create1
     val create1Events: SharedFlow<Create1Event>
-    val groupId: StateFlow<Int>
+    val groupId: StateFlow<Long>
+    val groups: StateFlow<List<GroupSummary>>
 
     //Create2
     val create2Events: SharedFlow<Create2Event>
@@ -59,7 +61,10 @@ interface CreateCapsuleViewModel {
     val dueTime : StateFlow<String>
     val address : StateFlow<AddressData>
 
-    fun onScrollNearBottom()
+    fun onScrollSkinNearBottom()
+    fun onScrollGroupNearBottom()
+    fun getGroupList()
+    fun changeGroup(previousPosition: Int?, currentPosition: Int)
     fun move1To2()
     fun choseCapsuleType(type: Int)
     fun move2To3()
@@ -92,6 +97,8 @@ interface CreateCapsuleViewModel {
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
+
+        data class ShowToastMessage(val message : String) : Create1Event()
     }
 
     sealed class Create2Event {

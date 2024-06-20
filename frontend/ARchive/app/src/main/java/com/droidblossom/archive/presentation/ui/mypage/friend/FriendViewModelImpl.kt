@@ -3,8 +3,10 @@ package com.droidblossom.archive.presentation.ui.mypage.friend
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
+import com.droidblossom.archive.domain.model.group.GroupSummary
 import com.droidblossom.archive.domain.usecase.friend.FriendDeleteUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsPageUseCase
+import com.droidblossom.archive.domain.usecase.group.GetGroupPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationViewModel
@@ -29,7 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendViewModelImpl @Inject constructor(
     private val friendsPageUseCase: FriendsPageUseCase,
-    private val friendDeleteUseCase: FriendDeleteUseCase
+    private val friendDeleteUseCase: FriendDeleteUseCase,
+    private val getGroupPageUseCase: GetGroupPageUseCase,
 ) : BaseViewModel(), FriendViewModel {
 
     private val _friendEvent = MutableSharedFlow<FriendViewModel.FriendEvent>()
@@ -61,22 +64,50 @@ class FriendViewModelImpl @Inject constructor(
     override val isGroupSearchOpen: StateFlow<Boolean>
         get() = _isGroupSearchOpen
 
+    private val _groupListUi = MutableStateFlow<List<GroupSummary>>(listOf())
+    override val groupListUI: StateFlow<List<GroupSummary>>
+        get() = _groupListUi
+
+    override fun setEvent(event: FriendViewModel.FriendEvent) {
+        viewModelScope.launch {
+            _friendEvent.emit(event)
+        }
+    }
+
+    private val groupHasNextPage = MutableStateFlow(true)
+
+    private val groupLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
+
+
     private val scrollFriendEventChannel = Channel<Unit>(Channel.CONFLATED)
     private val scrollFriendEventFlow =
         scrollFriendEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
-    private var getFriendLstJob: Job? = null
+    private var getFriendListJob: Job? = null
+
+    private val scrollGroupEventChannel = Channel<Unit>(Channel.CONFLATED)
+    private val scrollGroupEventFlow =
+        scrollGroupEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+
+    private var getGroupListJob: Job? = null
 
     init {
         viewModelScope.launch {
             scrollFriendEventFlow.collect {
                 getFriendList()
             }
+            scrollGroupEventFlow.collect {
+                getGroupList()
+            }
         }
     }
 
     override fun onScrollNearBottomFriend() {
         scrollFriendEventChannel.trySend(Unit)
+    }
+
+    override fun onScrollNearBottomGroup() {
+        scrollGroupEventChannel.trySend(Unit)
     }
 
     //friend
@@ -98,8 +129,8 @@ class FriendViewModelImpl @Inject constructor(
 
     override fun getFriendList() {
         if (friendHasNextPage.value) {
-            getFriendLstJob?.cancel()
-            getFriendLstJob = viewModelScope.launch {
+            getFriendListJob?.cancel()
+            getFriendListJob = viewModelScope.launch {
                 friendsPageUseCase(
                     PagingRequestDto(
                         15,
@@ -123,6 +154,61 @@ class FriendViewModelImpl @Inject constructor(
                             )
                         )
                     }
+                }
+            }
+        }
+    }
+
+    override fun getGroupList() {
+        if (groupHasNextPage.value) {
+            getGroupListJob?.cancel()
+            getGroupListJob = viewModelScope.launch {
+                getGroupPageUseCase(
+                    PagingRequestDto(
+                        15,
+                        groupLastCreatedTime.value
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        groupHasNextPage.value = it.hasNext
+                        if (friendListUI.value.isEmpty()) {
+                            _groupListUi.emit(it.groups)
+                        } else {
+                            _groupListUi.emit(_groupListUi.value + it.groups)
+                        }
+                        friendLastCreatedTime.value = it.groups.last().createdAt
+                    }.onFail {
+                        _friendEvent.emit(
+                            FriendViewModel.FriendEvent.ShowToastMessage(
+                                "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getGroupLastList() {
+        getGroupListJob?.cancel()
+        getGroupListJob = viewModelScope.launch {
+            getGroupPageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    groupHasNextPage.value = it.hasNext
+                    _groupListUi.emit(it.groups)
+                    friendLastCreatedTime.value = it.groups.last().createdAt
+                    _friendEvent.emit(FriendViewModel.FriendEvent.OnRefreshEnd)
+                }.onFail {
+                    _friendEvent.emit(
+                        FriendViewModel.FriendEvent.ShowToastMessage(
+                            "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                        )
+                    )
                 }
             }
         }
@@ -172,5 +258,12 @@ class FriendViewModelImpl @Inject constructor(
 
     override fun searchGroup() {
 
+    }
+
+    override fun removeGroup(groupId: Long) {
+        val groupToRemove = _groupListUi.value.find { it.id == groupId }
+        groupToRemove?.let {
+            _groupListUi.value -= it
+        }
     }
 }

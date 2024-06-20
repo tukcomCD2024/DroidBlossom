@@ -35,10 +35,6 @@ class SkinViewModelImpl @Inject constructor(
     override val skins: StateFlow<List<CapsuleSkinSummary>>
         get() = _skins
 
-    private val _skinsUI = MutableStateFlow(listOf<CapsuleSkinSummary>())
-
-    override val skinsUI: StateFlow<List<CapsuleSkinSummary>>
-        get() = _skins
 
     private val _lastCreatedSkinTime = MutableStateFlow(DateUtils.dataServerString)
     override val lastCreatedSkinTime: StateFlow<String>
@@ -60,7 +56,11 @@ class SkinViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollEventFlow.collect{
-                getSkinList()
+                if (skins.value.isEmpty()){
+                    getLatestSkinList()
+                }else{
+                    getSkinList()
+                }
             }
         }
     }
@@ -77,12 +77,12 @@ class SkinViewModelImpl @Inject constructor(
                 capsuleSkinsPageUseCase(
                     PagingRequestDto(
                         15,
-                        lastCreatedSkinTime.value
+                        _lastCreatedSkinTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
                         _hasNextSkins.value = it.hasNext
-                        _skins.emit(skins.value + it.skins)
+                        _skins.value = skins.value + it.skins
                         if (skins.value.isNotEmpty()) {
                             _lastCreatedSkinTime.value = skins.value.last().createdAt
                         }
@@ -95,11 +95,31 @@ class SkinViewModelImpl @Inject constructor(
         }
     }
 
-    override fun updateMySkinsUI(){
-        viewModelScope.launch {
-            _skinsUI.emit(skins.value)
+    override fun getLatestSkinList(){
+        getSkinLstJob?.cancel()
+        getSkinLstJob = viewModelScope.launch {
+            capsuleSkinsPageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextSkins.value = it.hasNext
+                    _skins.value = it.skins
+                    if (skins.value.isNotEmpty()) {
+                        _lastCreatedSkinTime.value = skins.value.last().createdAt
+                    }
+                }.onFail {
+                    _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
+                }
+
+            }
+            _skinEvents.emit(SkinViewModel.SkinEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
+
+
     override fun goSkinMake() {
         viewModelScope.launch {
             _skinEvents.emit(SkinViewModel.SkinEvent.ToSkinMake)
@@ -123,14 +143,4 @@ class SkinViewModelImpl @Inject constructor(
             _isSearchOpen.emit(false)
         }
     }
-
-    override fun clearSkins() {
-        viewModelScope.launch {
-            _skins.value = listOf()
-            _lastCreatedSkinTime.value = DateUtils.dataServerString
-            _hasNextSkins.value = true
-            getSkinList()
-        }
-    }
-
 }

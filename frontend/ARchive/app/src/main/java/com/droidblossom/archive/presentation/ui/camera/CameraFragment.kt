@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -23,7 +24,8 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.home.CapsuleClusteringKey
 import com.droidblossom.archive.util.CustomLifecycleOwner
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
@@ -35,6 +37,7 @@ import com.google.ar.sceneform.rendering.ViewAttachmentManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.node.AnchorNode
+import io.github.sceneview.node.Node
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -49,6 +52,8 @@ class CameraFragment :
     private lateinit var config: Config
     private lateinit var viewAttachmentManager: ViewAttachmentManager
     private val locationUtil by lazy { LocationUtil(requireContext()) }
+
+    private val keyMaps: MutableMap<Long, AnchorNode> = mutableMapOf()
 
     private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
         CustomLifecycleOwner()
@@ -171,7 +176,8 @@ class CameraFragment :
                     when (event) {
                         is CameraViewModel.CameraEvent.ShowCapsulePreviewDialog -> {
 
-                            val existingDialog = parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                            val existingDialog =
+                                parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                             if (existingDialog == null) {
                                 val dialog = CapsulePreviewDialogFragment.newInstance(
                                     "-1",
@@ -190,6 +196,10 @@ class CameraFragment :
 
                         is CameraViewModel.CameraEvent.DismissLoading -> {
                             dismissLoading()
+                        }
+
+                        is CameraViewModel.CameraEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
                         }
 
                         else -> {}
@@ -214,6 +224,7 @@ class CameraFragment :
         visibleLifecycleOwner.lifecycleScope.launch {
             visibleLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.capsuleList.collect { capsuleList ->
+                    keyMaps.clear()
                     arSceneView.onSessionUpdated = { session, frame ->
                         if (viewModel.capsuleList.value.isNotEmpty() && !viewModel.isCapsulesAdded) {
                             Log.d("CameraFragmentAR", "earth setting start")
@@ -261,14 +272,26 @@ class CameraFragment :
         binding.view = this
         arSceneView = binding.sceneView
 
+        parentFragmentManager.setFragmentResultListener(
+            "treasureCapsule",
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                arSceneView.removeChildNode(keyMaps[capsuleId] as Node)
+            }
+        }
+
         viewAttachmentManager = ViewAttachmentManager(
             arSceneView.context,
             arSceneView
         )
 
-        val layoutParams = binding.filterAll.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.filterIcon.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.filterAll.layoutParams = layoutParams
+        binding.filterIcon.layoutParams = layoutParams
 
         initCustomLifeCycle()
 
@@ -298,6 +321,17 @@ class CameraFragment :
             config.planeFindingMode = Config.PlaneFindingMode.DISABLED
         }
 
+        with(binding){
+            refreshBtn.setOnClickListener {
+                showLoading(requireContext())
+                arSceneView.clearChildNodes()
+                viewModel.clearAnchorNode()
+                locationUtil.getCurrentLocation { latitude, longitude ->
+                    viewModel.getCapsules(latitude = latitude, longitude = longitude)
+                }
+            }
+        }
+
     }
 
 
@@ -320,6 +354,7 @@ class CameraFragment :
                                     addChildNode(viewNode)
                                 }
                                 viewModel.addAnchorNode(this)
+                                keyMaps[capsule.id] = this
                             }
                         }.let {
                             sceneView.addChildNode(it)
@@ -345,13 +380,15 @@ class CameraFragment :
                     Lifecycle.Event.ON_START,
                     Lifecycle.Event.ON_CREATE,
                     Lifecycle.Event.ON_RESUME,
-                    Lifecycle.Event.ON_PAUSE, -> {
+                    Lifecycle.Event.ON_PAUSE,
+                    -> {
                         if (isHidden) {
                             visibleLifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
                         } else {
                             visibleLifecycleOwner.handleLifecycleEvent(event)
                         }
                     }
+
                     else -> {
                         visibleLifecycleOwner.handleLifecycleEvent(event)
                     }
@@ -397,12 +434,13 @@ class CameraFragment :
         ) {
             arSceneView.session?.resume()
             viewAttachmentManager.onResume()
-            //requestPermissionLauncher.launch(arPermissionList)
+            requestPermissionLauncher.launch(arPermissionList)
         }
     }
 
     fun onClickFilter(capsuleFilterType: CameraViewModel.CapsuleFilterType) {
         showLoading(requireContext())
+        keyMaps.clear()
         arSceneView.clearChildNodes()
         viewModel.clearAnchorNode()
         locationUtil.getCurrentLocation { latitude, longitude ->

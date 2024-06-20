@@ -1,23 +1,27 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityFriendBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.adapter.FriendVPA
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupActivity
-import com.droidblossom.archive.presentation.ui.mypage.friend.addgroup.AddGroupViewModelImpl
+import com.droidblossom.archive.presentation.ui.mypage.friend.page.GroupListFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
-import com.kakao.sdk.common.KakaoSdk
-import com.kakao.sdk.common.KakaoSdk.type
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -34,6 +38,7 @@ class FriendActivity :
         initView()
 
         viewModel.getFriendList()
+        viewModel.getGroupList()
     }
 
     private fun initView() {
@@ -48,6 +53,8 @@ class FriendActivity :
         }
 
         binding.closeBtn.setOnClickListener {
+            //startActivity(GroupDetailActivity.newIntent(this@FriendActivity,1))
+            //startActivity(FriendDetailActivity.newIntent(this@FriendActivity,1))
             finish()
         }
 
@@ -98,6 +105,21 @@ class FriendActivity :
 
     override fun observeData() {
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.friendEvent.collect { event ->
+                    when (event) {
+                        is FriendViewModel.FriendEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+                        is FriendViewModel.FriendEvent.OnRefreshEnd->{
+                            (friendVPA.getFragment(0) as GroupListFragment).onEndSwipeRefresh()
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
     }
 
     companion object {

@@ -27,6 +27,8 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
+import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendFragment
+import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupFragment
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
 import com.droidblossom.archive.util.onFail
@@ -196,32 +198,40 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                         when (tab) {
                             MainPage.HOME -> {
                                 showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuHome
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuHome){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuHome
+                                }
                             }
 
                             MainPage.SKIN -> {
                                 showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuSkin
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuSkin){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuSkin
+                                }
                             }
 
                             MainPage.AR -> {
                                 showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuCamera){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuCamera
+                                }
                             }
 
                             MainPage.SOCIAL -> {
                                 showFragment(SocialFragment.newIntent(), SocialFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuSocial
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuSocial){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuSocial
+                                }
                             }
 
                             MainPage.MY_PAGE -> {
                                 showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
-                                binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuMyPage){
+                                    binding.bottomNavigation.selectedItemId = R.id.menuMyPage
+                                }
                             }
 
-                            MainPage.NULL -> {
-
-                            }
+                            else -> {}
                         }
                     }
             }
@@ -298,32 +308,56 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             viewModel.mainEvent(MainViewModel.MainEvent.NavigateToCamera)
         }
 
-        binding.bottomNavigation.setOnItemSelectedListener {
-            viewModel.setMainTab(MainPage.NULL)
-
-            when (it.itemId) {
-                R.id.menuHome -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
-                    return@setOnItemSelectedListener true
+        binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
+            val currentItemId = binding.bottomNavigation.selectedItemId
+            val selectedItemId = menuItem.itemId
+            if (currentItemId == selectedItemId) {
+                // 같음 - 스크롤 추가
+                Log.d("생명", "같음")
+                when (selectedItemId) {
+                    R.id.menuHome -> {
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSkin -> {
+                        (supportFragmentManager.findFragmentByTag(SkinFragment.TAG) as? SkinFragment)?.scrollToTop()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSocial -> {
+                        val socialFragment = supportFragmentManager.findFragmentByTag(SocialFragment.TAG) as? SocialFragment
+                        socialFragment?.scrollToTopCurrentFragment()
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuMyPage -> {
+                        (supportFragmentManager.findFragmentByTag(MyPageFragment.TAG) as? MyPageFragment)?.scrollToTop()
+                        return@setOnItemSelectedListener true
+                    }
+                    else -> {
+                        return@setOnItemSelectedListener false
+                    }
                 }
-
-                R.id.menuSkin -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
-                    return@setOnItemSelectedListener true
-                }
-
-                R.id.menuSocial -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
-                    return@setOnItemSelectedListener true
-                }
-
-                R.id.menuMyPage -> {
-                    viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
-                    return@setOnItemSelectedListener true
-                }
-
-                else -> {
-                    return@setOnItemSelectedListener false
+            } else {
+                // 같음 - 스크롤 x
+                Log.d("생명", "다름")
+                when (selectedItemId) {
+                    R.id.menuHome -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSkin -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuSocial -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
+                        return@setOnItemSelectedListener true
+                    }
+                    R.id.menuMyPage -> {
+                        viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
+                        return@setOnItemSelectedListener true
+                    }
+                    else -> {
+                        return@setOnItemSelectedListener false
+                    }
                 }
             }
         }
@@ -364,6 +398,14 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
 
             MyFirebaseMessagingService.FragmentDestination.FRIEND_ACCEPT_ACTIVITY.name -> {
                 startActivity(FriendActivity.newIntent(this, FriendActivity.FRIEND))
+            }
+
+            MyFirebaseMessagingService.FragmentDestination.GROUP_REQUEST_ACTIVITY.name -> {
+                startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.GROUP))
+            }
+
+            MyFirebaseMessagingService.FragmentDestination.GROUP_ACCEPT_ACTIVITY.name -> {
+                startActivity(FriendActivity.newIntent(this, FriendActivity.GROUP))
             }
 
             else -> {
@@ -408,6 +450,5 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         AR,
         SOCIAL,
         MY_PAGE,
-        NULL,
     }
 }

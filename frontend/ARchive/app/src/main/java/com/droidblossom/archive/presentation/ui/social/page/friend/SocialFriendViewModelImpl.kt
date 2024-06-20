@@ -44,22 +44,25 @@ class SocialFriendViewModelImpl @Inject constructor(
     private val _lastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
     override val lastCreatedTime: StateFlow<String>
         get() = _lastCreatedTime
-    override var clearCapsule = false
 
     private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
     private val scrollEventFlow =
         scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
-    private var getSecretCapsuleListJob: Job? = null
+    private var getPublicCapsuleListJob: Job? = null
 
 
     init {
         viewModelScope.launch {
             scrollEventFlow.collect {
-                getPublicCapsulePage()
+                if (publicCapsules.value.isEmpty()){
+                    getLatestPublicCapsule()
+                }else{
+                    getPublicCapsulePage()
+                }
             }
         }
-        getPublicCapsulePage()
+        getLatestPublicCapsule()
     }
 
     override fun onScrollNearBottom() {
@@ -87,8 +90,8 @@ class SocialFriendViewModelImpl @Inject constructor(
 
     override fun getPublicCapsulePage() {
         if (hasNextPage.value){
-            getSecretCapsuleListJob?.cancel()
-            getSecretCapsuleListJob = viewModelScope.launch {
+            getPublicCapsuleListJob?.cancel()
+            getPublicCapsuleListJob = viewModelScope.launch {
                 publicCapsulePageUseCase(
                     PagingRequestDto(
                         15,
@@ -98,22 +101,38 @@ class SocialFriendViewModelImpl @Inject constructor(
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
                         _publicCapsules.emit(publicCapsules.value + it.publicCapsules)
-                        _lastCreatedTime.value = publicCapsules.value.last().createdDate
+                        if (publicCapsules.value.isNotEmpty()) {
+                            _lastCreatedTime.value = it.publicCapsules.last().createdDate
+                        }
                     }.onFail {
                         socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
                     }
                 }
-                socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.HideLoading)
             }
         }
     }
 
     override fun getLatestPublicCapsule() {
-        clearCapsule = true
-        _publicCapsules.value = listOf()
-        _hasNextPage.value = true
-        _lastCreatedTime.value = DateUtils.dataServerString
-        getPublicCapsulePage()
+        getPublicCapsuleListJob?.cancel()
+        getPublicCapsuleListJob = viewModelScope.launch {
+            publicCapsulePageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _publicCapsules.value = it.publicCapsules
+                    if (publicCapsules.value.isNotEmpty()) {
+                        _lastCreatedTime.value = it.publicCapsules.last().createdDate
+                    }
+                }.onFail {
+                    socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
+                }
+            }
+            socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.SwipeRefreshLayoutDismissLoading)
+        }
     }
 
     override fun searchFriendCapsule() {

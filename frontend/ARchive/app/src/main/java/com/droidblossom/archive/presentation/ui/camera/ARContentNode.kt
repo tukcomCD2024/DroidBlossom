@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemCapsuleSkinBinding
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
-import com.droidblossom.archive.presentation.ui.home.dialog.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.google.ar.sceneform.rendering.ViewAttachmentManager
 import com.google.ar.sceneform.rendering.ViewRenderable
@@ -37,6 +37,7 @@ class ARContentNode(
         Glide.with(context)
             .load(capsule.skinUrl)
             .placeholder(R.drawable.sample_skin)
+            .override(350, 350)
             .error(R.drawable.sample_skin)
             .fallback(R.drawable.sample_skin)
             .into(capsuleSkin.capsuleSkin)
@@ -54,7 +55,8 @@ class ARContentNode(
                         isEditable = true
                     }
                     onSingleTapConfirmed = {
-                        val existingDialog = fragmentManagerProvider.provideFragmentManager().findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
+                        val existingDialog = fragmentManagerProvider.provideFragmentManager()
+                            .findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?
                         if (existingDialog == null) {
                             val dialog = CapsulePreviewDialogFragment.newInstance(
                                 "-1",
@@ -62,7 +64,10 @@ class ARContentNode(
                                 capsule.capsuleType.toString(),
                                 true
                             )
-                            dialog.show(fragmentManagerProvider.provideFragmentManager(), CapsulePreviewDialogFragment.TAG)
+                            dialog.show(
+                                fragmentManagerProvider.provideFragmentManager(),
+                                CapsulePreviewDialogFragment.TAG
+                            )
                         }
                         true
                     }

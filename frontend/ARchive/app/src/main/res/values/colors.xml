@@ -21,6 +21,7 @@
     <color name="gray_800">#FF2E2E2E</color>
     <color name="gray_900">#FF1C1C1C</color>
     <color name="kakao">#FEE500</color>
+    <color name="purple">#FFA46CFF</color>
 
 
     <color name="main_1_alpha20">#324263F7</color>
@@ -37,5 +38,7 @@
     <color name="main_bg_alpha70">#B3ECEFFE</color>
     <color name="main_alpha70">#B31B3AC4</color>
     <color name="main_bg_1_alpha20">#99ECEFFE</color>
+    <color name="sky_blue_alpha70">#B36882F9</color>
+    <color name="purple_alpha70">#B38036FA</color>
     <color name="Transparency">#00FFFFFF</color>
 </resources>

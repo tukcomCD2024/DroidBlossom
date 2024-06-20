@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -41,7 +42,7 @@ class NotificationActivity :
                     startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.FRIEND))
                 }
 
-                NotiCategoryName.GROUP_REQUEST -> {
+                NotiCategoryName.GROUP_INVITE -> {
                     startActivity(FriendAcceptActivity.newIntent(this, FriendAcceptActivity.GROUP))
                 }
 
@@ -74,7 +75,7 @@ class NotificationActivity :
             requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
         initView()
-        viewModel.getNotificationPage()
+        viewModel.getLatestNotificationPage()
     }
 
     private fun initView() {
@@ -85,29 +86,45 @@ class NotificationActivity :
         binding.backBtn.setOnClickListener {
             finish()
         }
+
+        initRV()
+    }
+    private fun initRV(){
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getLatestNotificationPage()
+        }
         binding.rv.adapter = notificationRVA
         binding.rv.setHasFixedSize(true)
         binding.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val lastVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
-                val totalItemViewCount = recyclerView.adapter!!.itemCount - 1
 
-                if (newState == 2 && !recyclerView.canScrollVertically(1)
-                    && lastVisibleItemPosition == totalItemViewCount
-                ) {
-                    viewModel.onScrollNearBottom()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (totalItemCount - lastVisibleItemPosition <= 5) {
+                        viewModel.onScrollNearBottom()
+                    }
                 }
+
             }
         })
     }
+
 
     override fun observeData() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.notifications.collect { notifications ->
-                    notificationRVA.submitList(notifications)
+                    notificationRVA.submitList(notifications){
+                        if (binding.swipeRefreshLayout.isRefreshing){
+                            binding.swipeRefreshLayout.isRefreshing = false
+                            binding.rv.scrollToPosition(0)
+                        }
+                    }
                 }
             }
         }
@@ -118,6 +135,13 @@ class NotificationActivity :
                     when (event) {
                         is NotificationViewModel.NotificationEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+
+                        is NotificationViewModel.NotificationEvent.SwipeRefreshLayoutDismissLoading -> {
+                            if (binding.swipeRefreshLayout.isRefreshing){
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
+                            binding.rv.scrollToPosition(0)
                         }
 
                         else -> {}

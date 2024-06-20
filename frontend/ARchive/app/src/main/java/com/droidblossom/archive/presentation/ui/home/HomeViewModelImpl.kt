@@ -84,12 +84,12 @@ class HomeViewModelImpl @Inject constructor(
         }
     }
 
-    override fun selectHotPlace() {
+    override fun selectTreasure() {
         viewModelScope.launch {
-            if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.HOT)
+            if (filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.TREASURE)
                 _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.ALL)
             else
-                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.HOT)
+                _filterCapsuleSelect.emit(HomeViewModel.CapsuleFilter.TREASURE)
         }
     }
 

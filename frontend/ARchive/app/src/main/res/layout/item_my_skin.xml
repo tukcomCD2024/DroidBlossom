@@ -6,6 +6,7 @@
 
 
     <data>
+
         <variable
             name="item"
             type="com.droidblossom.archive.domain.model.common.CapsuleSkinSummary" />
@@ -15,16 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        app:cardCornerRadius="16dp"
-        app:strokeColor="@color/white"
         android:background="@color/white"
-        android:elevation="0dp">
+        android:elevation="0dp"
+        app:cardCornerRadius="16dp"
+        app:strokeColor="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="12dp">
+            android:background="@color/white">
 
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -32,8 +32,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@drawable/corner_radius_8"
+                android:padding="12dp"
                 android:clipToOutline="true"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="w,4:3"
                 app:layout_constraintEnd_toEndOf="parent"

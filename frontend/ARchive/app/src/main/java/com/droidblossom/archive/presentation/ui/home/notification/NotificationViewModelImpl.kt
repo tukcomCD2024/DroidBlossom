@@ -1,11 +1,11 @@
 package com.droidblossom.archive.presentation.ui.home.notification
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.NotificationModel
 import com.droidblossom.archive.domain.usecase.member.GetNotificationsUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -53,7 +53,11 @@ class NotificationViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollEventFlow.collect {
-                getNotificationPage()
+                if (notifications.value.isEmpty()){
+                    getLatestNotificationPage()
+                }else{
+                    getNotificationPage()
+                }
             }
         }
     }
@@ -69,13 +73,15 @@ class NotificationViewModelImpl @Inject constructor(
                 getNotificationsUseCase(
                     PagingRequestDto(
                         15,
-                        lastCreatedTime.value
+                        _lastCreatedTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
                         _hasNextPage.value = it.hasNext
-                        _notifications.emit(notifications.value + it.notifications)
-                        _lastCreatedTime.value = it.notifications.last().createdAt
+                        _notifications.value = notifications.value + it.notifications
+                        if (notifications.value.isNotEmpty()) {
+                            _lastCreatedTime.value = it.notifications.last().createdAt
+                        }
                     }.onFail {
                         _notificationEvent.emit(
                             NotificationViewModel.NotificationEvent.ShowToastMessage(
@@ -88,4 +94,32 @@ class NotificationViewModelImpl @Inject constructor(
         }
 
     }
+
+    override fun getLatestNotificationPage() {
+        getNotificationListJob?.cancel()
+        getNotificationListJob = viewModelScope.launch {
+            getNotificationsUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    _hasNextPage.value = it.hasNext
+                    _notifications.value = it.notifications
+                    if (notifications.value.isNotEmpty()) {
+                        _lastCreatedTime.value = it.notifications.last().createdAt
+                    }
+                }.onFail {
+                    _notificationEvent.emit(
+                        NotificationViewModel.NotificationEvent.ShowToastMessage(
+                            "알림 불러오기 실패"
+                        )
+                    )
+                }
+            }
+            _notificationEvent.emit(NotificationViewModel.NotificationEvent.SwipeRefreshLayoutDismissLoading)
+        }
+    }
+
 }

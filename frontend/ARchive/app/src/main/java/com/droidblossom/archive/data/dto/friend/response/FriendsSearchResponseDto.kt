@@ -15,6 +15,7 @@ data class FriendsSearchResponseDto(
 ) : Serializable {
 
     fun toModel() = FriendsSearchResponse(
+        createdAt = "",
         id = this.id,
         profileUrl = this.profileUrl,
         nickname = this.nickname,

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.mypage.friend.detail.friend.FriendDetailViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1"
+        tools:context=".presentation.ui.mypage.friend.detail.friend.FriendDetailActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:expandedTitleTextColor="@android:color/transparent"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.App.h4"
+                app:collapsedTitleTextColor="@color/gray_700"
+                app:contentScrim="@color/main_bg_1"
+                app:title="@{vm.friendInfo.nickname}"
+                app:titleEnabled="true">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/main_bg_1"
+                    android:paddingBottom="@dimen/padding">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profileImg"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="@dimen/margin"
+                        android:layout_marginTop="?attr/actionBarSize"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        bind:baseImg="@{@drawable/base_use_img}"
+                        bind:url="@{vm.friendInfo.profileUrl}"
+                        tools:src="@color/main_2" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profileNameT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:ellipsize="end"
+                        android:lines="1"
+                        android:maxWidth="250dp"
+                        android:text="@{vm.friendInfo.nickname}"
+                        android:textAppearance="@style/TextAppearance.App.subtitle1"
+                        android:fontFamily="@font/suit_bold"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@id/profileImg"
+                        app:layout_constraintTop_toBottomOf="@id/profileImg" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profileTagT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:maxLines="1"
+                        android:text="@{'@' + vm.friendInfo.tag}"
+                        android:textAppearance="@style/TextAppearance.App.body2"
+                        android:textColor="@color/gray_600"
+                        app:layout_constraintStart_toStartOf="@id/profileImg"
+                        app:layout_constraintTop_toBottomOf="@id/profileNameT" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/searchOpenBtnT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="차단"
+                        android:paddingVertical="@dimen/padding_small"
+                        android:paddingHorizontal="@dimen/padding"
+                        android:layout_marginEnd="@dimen/margin"
+                        android:textAppearance="@style/TextAppearance.App.body2"
+                        android:textColor="@color/main_1"
+                        android:background="@drawable/corner_radius_30"
+                        app:layout_constraintTop_toTopOf="@id/profileImg"
+                        app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:navigationIcon="@drawable/ic_arrow_back_24"
+                    app:menu="@menu/menu_detail"
+                    app:layout_collapseMode="pin" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:paddingHorizontal="@dimen/padding">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="3"
+                android:layout_marginHorizontal="@dimen/margin" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

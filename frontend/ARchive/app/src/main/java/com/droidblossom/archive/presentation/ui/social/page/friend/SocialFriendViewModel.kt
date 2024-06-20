@@ -11,8 +11,6 @@ interface SocialFriendViewModel {
     val isSearchOpen : StateFlow<Boolean>
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
-    var clearCapsule:Boolean
-
 
     fun socialFriendEvent(event: SocialFriendEvent)
     fun openSearchFriendCapsule()
@@ -24,7 +22,7 @@ interface SocialFriendViewModel {
     fun getLatestPublicCapsule()
     sealed class SocialFriendEvent{
         data class ShowToastMessage(val message : String) : SocialFriendEvent()
-        object HideLoading : SocialFriendEvent()
+        object SwipeRefreshLayoutDismissLoading : SocialFriendEvent()
 
     }
 }

@@ -18,7 +18,7 @@ interface HomeViewModel {
     fun selectPublic()
     fun selectGroup()
     fun selectSecret()
-    fun selectHotPlace()
+    fun selectTreasure()
     fun clickFollowBtn()
     fun clickNotificationBtn()
     fun clickFAB()
@@ -37,10 +37,10 @@ interface HomeViewModel {
         SECRET,
         PUBLIC,
         GROUP,
-        HOT;
+        TREASURE;
         override fun toString(): String {
             return when (this) {
-                SECRET, PUBLIC, GROUP -> this.name
+                SECRET, PUBLIC, GROUP, TREASURE -> this.name
                 else -> "ALL"
             }
         }

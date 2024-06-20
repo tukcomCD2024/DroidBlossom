@@ -10,20 +10,16 @@ interface MyPageViewModel {
 
     val myInfo : StateFlow<MemberDetail>
     val myCapsules : StateFlow<List<CapsuleData>>
-    val myCapsulesUI : StateFlow<List<CapsuleData>>
     val hasNextPage : StateFlow<Boolean>
     val lastCreatedTime : StateFlow<String>
     val capsuleType: StateFlow<MyPageFragment.SpinnerCapsuleType>
     var viewModelReload:Boolean
-    var clearCapsule:Boolean
 
     fun getMe()
-    fun clearCapsules(setting:Boolean)
-    fun updateMyCapsulesUI()
     fun updateCapsuleOpenState(capsuleIndex: Int, capsuleId: Long)
     fun clickSetting()
-
     fun getCapsulePage()
+    fun getLatestCapsulePage()
     fun load()
     fun selectSpinnerItem(item:MyPageFragment.SpinnerCapsuleType)
     fun myPageEvent(event: MyPageEvent)
@@ -32,7 +28,7 @@ interface MyPageViewModel {
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
 
-        object HideLoading : MyPageEvent()
+        object SwipeRefreshLayoutDismissLoading : MyPageEvent()
 
         object ClickSetting : MyPageEvent()
 

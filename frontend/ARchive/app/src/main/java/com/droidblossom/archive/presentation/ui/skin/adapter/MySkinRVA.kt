@@ -9,13 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.databinding.ItemMySkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 
-class MySkinRVA() : ListAdapter<CapsuleSkinSummary, MySkinRVA.ItemViewHolder>(differ) {
+class MySkinRVA(
+    private val goSkinDetail:(skin:CapsuleSkinSummary) -> Unit
+) : ListAdapter<CapsuleSkinSummary, MySkinRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemMySkinBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: CapsuleSkinSummary) {
             binding.item = data
+            binding.root.setOnClickListener {
+                goSkinDetail(data)
+            }
         }
     }
 

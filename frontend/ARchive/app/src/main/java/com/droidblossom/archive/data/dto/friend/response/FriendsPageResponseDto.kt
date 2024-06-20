@@ -10,4 +10,14 @@ data class FriendsPageResponseDto(
         friends = this.friends.map { it.toModel() },
         hasNext = this.hasNext
     )
+
+    fun toModelForAddGroup() = FriendsPage(
+        friends = this.friends.map { it.toFriendsSearchModel() },
+        hasNext = this.hasNext
+    )
+
+    fun toModelForGroupInvite() = FriendsPage(
+        friends = this.friends.map { it.toFriendsForGroupInvite() },
+        hasNext = this.hasNext
+    )
 }
