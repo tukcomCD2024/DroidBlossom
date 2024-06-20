@@ -36,10 +36,6 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class AuthApiController implements AuthApi {
 
     private final AuthManager authManager;
-    private final TokenManager tokenService;
-    private final MessageVerificationService messageVerificationService;
-    private final MemberService memberService;
-
 
     @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
     @Override

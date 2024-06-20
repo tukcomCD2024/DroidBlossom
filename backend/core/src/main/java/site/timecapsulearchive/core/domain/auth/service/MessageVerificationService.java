@@ -34,7 +34,6 @@ public class MessageVerificationService {
     private final SmsApiManager smsApiManager;
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-    private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
     private final HashEncryptionManager hashEncryptionManager;
