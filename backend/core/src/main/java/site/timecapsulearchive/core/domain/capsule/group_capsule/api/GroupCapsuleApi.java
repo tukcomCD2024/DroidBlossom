@@ -180,7 +180,7 @@ public interface GroupCapsuleApi {
         @Parameter(in = ParameterIn.PATH, description = "개봉 상태를 확인할 캡슐 아이디", required = true)
         Long capsuleId,
 
-        @Parameter(in = ParameterIn.QUERY, description = "생성할 그룹 아이디", required = true)
+        @Parameter(in = ParameterIn.QUERY, description = "캡슐이 속한 그룹 아이디", required = true)
         Long groupId
     );
 
