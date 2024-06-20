@@ -43,7 +43,7 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(
-            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email, password))
+            () -> memberService.findVerifiedEmailMemberIdBy(email, password))
             .isExactlyInstanceOf(MemberNotFoundException.class);
     }
 
@@ -56,7 +56,7 @@ class MemberServiceTest {
             .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
 
         //when
-        Long id = memberService.findVerifiedMemberIdByEmailAndPassword(
+        Long id = memberService.findVerifiedEmailMemberIdBy(
             email, password);
 
         //then
@@ -85,7 +85,7 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(
-            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email, password))
+            () -> memberService.findVerifiedEmailMemberIdBy(email, password))
             .isExactlyInstanceOf(NotVerifiedMemberException.class);
     }
 
@@ -99,7 +99,7 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(
-            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email + "trash", password))
+            () -> memberService.findVerifiedEmailMemberIdBy(email + "trash", password))
             .isExactlyInstanceOf(CredentialsNotMatchedException.class);
     }
 
@@ -113,7 +113,7 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(
-            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email, password + "trash"))
+            () -> memberService.findVerifiedEmailMemberIdBy(email, password + "trash"))
             .isExactlyInstanceOf(CredentialsNotMatchedException.class);
     }
 
@@ -127,7 +127,7 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(
-            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email, password))
+            () -> memberService.findVerifiedEmailMemberIdBy(email, password))
             .isExactlyInstanceOf(CredentialsNotMatchedException.class);
     }
 
@@ -141,7 +141,7 @@ class MemberServiceTest {
 
         //when, then
         assertThatThrownBy(
-            () -> memberService.findVerifiedMemberIdByEmailAndPassword(email + "password",
+            () -> memberService.findVerifiedEmailMemberIdBy(email + "password",
                 password + "trash"))
             .isExactlyInstanceOf(CredentialsNotMatchedException.class);
     }

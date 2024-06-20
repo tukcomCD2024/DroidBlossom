@@ -179,7 +179,7 @@ public class MemberService {
         return savedMember.getId();
     }
 
-    public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
+    public Long findVerifiedEmailMemberIdBy(final String email, final String password) {
         final EmailVerifiedCheckDto dto = memberRepository.findEmailVerifiedCheckDtoByEmail(
                 email)
             .orElseThrow(MemberNotFoundException::new);

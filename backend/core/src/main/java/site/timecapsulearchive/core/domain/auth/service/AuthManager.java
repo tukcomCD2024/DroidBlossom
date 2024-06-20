@@ -89,4 +89,10 @@ public class AuthManager {
 
         return tokenManager.createTemporaryToken(createdMemberId);
     }
+
+    public TokenResponse signInWithEmail(final String email, final String password) {
+        Long verifiedEmailMemberId = memberService.findVerifiedEmailMemberIdBy(email, password);
+
+        return tokenManager.createNewToken(verifiedEmailMemberId);
+    }
 }
