@@ -22,6 +22,7 @@ import site.timecapsulearchive.core.domain.auth.data.response.OAuth2UriResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
+import site.timecapsulearchive.core.domain.auth.service.AuthManager;
 import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
 import site.timecapsulearchive.core.domain.auth.service.TokenManager;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
@@ -33,9 +34,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 @RequestMapping("/auth")
 public class AuthApiController implements AuthApi {
 
-    private static final String KAKAO_AUTHORIZATION_ENDPOINT = "/auth/login/kakao";
-    private static final String GOOGLE_AUTHORIZATION_ENDPOINT = "/auth/login/google";
-
+    private final AuthManager authManager;
     private final TokenManager tokenService;
     private final MessageVerificationService messageVerificationService;
     private final MemberService memberService;
@@ -44,11 +43,7 @@ public class AuthApiController implements AuthApi {
     @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
     @Override
     public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(final HttpServletRequest request) {
-        final String baseUrl = request.getRequestURL().toString();
-        final String kakaoLoginUrl = baseUrl.replace(
-            request.getRequestURI(),
-            request.getContextPath() + KAKAO_AUTHORIZATION_ENDPOINT
-        );
+        String kakaoLoginUrl = authManager.getOAuth2KakaoUrl(request);
 
         return ResponseEntity.ok(OAuth2UriResponse.from(kakaoLoginUrl));
     }
@@ -56,11 +51,7 @@ public class AuthApiController implements AuthApi {
     @GetMapping(value = "/login/url/google", produces = {"application/json"})
     @Override
     public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(final HttpServletRequest request) {
-        final String baseUrl = request.getRequestURL().toString();
-        final String googleLoginUrl = baseUrl.replace(
-            request.getRequestURI(),
-            request.getContextPath() + GOOGLE_AUTHORIZATION_ENDPOINT
-        );
+        String googleLoginUrl = authManager.getOauth2GoogleUrl(request);
 
         return ResponseEntity.ok(OAuth2UriResponse.from(googleLoginUrl));
     }
