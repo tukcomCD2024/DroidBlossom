@@ -30,7 +30,7 @@
     <string name="groupMemberCount">외 %d명</string>
 
     <string name="skin_created">나만의 스킨이 탄생했어요!</string>
-    <string name="skin_creating">나만의 스킨이 곧 탄생해요!</string>
+    <string name="skin_creating">나만의 스킨이 만들어지고 있어요!</string>
 
     <string name="agree_content">  개인정보처리자는 다음의 어느 하나에 해당하는 경우에는 개인정보를 수집할 수 있으며 그 수집 목적의 범위에서 이용할 수 있습니다(「개인정보 보호법」 제15조제1항).
  정보주체의 동의를 받은 경우

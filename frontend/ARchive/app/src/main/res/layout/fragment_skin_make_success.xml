@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="@{vm.addMotion ? @string/skin_created : @string/skin_creating}"
+                android:text="@{vm.addMotion ? @string/skin_creating : @string/skin_created}"
                 android:textAppearance="@style/TextAppearance.App.h1"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
