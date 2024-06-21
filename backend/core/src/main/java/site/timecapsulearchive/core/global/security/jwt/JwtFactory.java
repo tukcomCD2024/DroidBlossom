@@ -57,13 +57,13 @@ public class JwtFactory {
      * @param memberInfoKey 사용자 식별자
      * @return 리프레시 토큰
      */
-    public String createRefreshToken(final String memberInfoKey) {
+    public String createRefreshToken(final Long memberId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenValidityMs);
 
         return Jwts.builder()
             .setIssuer(ISSUER)
-            .setSubject(memberInfoKey)
+            .setSubject(String.valueOf(memberId))
             .setExpiration(validity)
             .claim(TOKEN_TYPE_CLAIM_NAME, TokenType.REFRESH.name())
             .signWith(key, SignatureAlgorithm.HS256)

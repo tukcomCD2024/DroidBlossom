@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.domain.auth.data.dto.MemberInfo;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
-import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
-import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
 import site.timecapsulearchive.core.domain.auth.repository.MemberInfoCacheRepository;
+import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
 import site.timecapsulearchive.core.global.security.jwt.TokenParseResult;
 import site.timecapsulearchive.core.global.security.jwt.TokenType;
@@ -29,16 +27,26 @@ public class TokenManager {
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
     public TokenDto createNewToken(final Long memberId) {
-        final String key = String.valueOf(UUID.randomUUID());
-        memberInfoCacheRepository.save(key, MemberInfo.from(memberId));
+        /**
+         * 1. 회원 아이디로 리프레시 토큰 생성
+         * 2. 생성된 리프레시 토큰과 회원 아이디로 "1:ejfkdsvxlcvmlxc"로 redis에 저장한다.
+         * 3. 생성된 토큰을 반환한다.
+         *
+         * 1. 회원 아이디로 리프레시 토큰을 찾는다
+         * 2. 찾은 리프레시 토큰과 요청 받은 리프레시 토큰을 비교한다.
+         * 3. 일치하면 새로운 리프레시 토큰과 액세스 토큰을 반환한다
+         * 4. 일치하지 않으면 예외를 반환한다.
+         */
+        String refreshToken = jwtFactory.createRefreshToken(memberId);
+        memberInfoCacheRepository.save(memberId, refreshToken);
 
-        return createTokenResponse(memberId, key);
+        return createToken(memberId, refreshToken);
     }
 
-    private TokenDto createTokenResponse(final Long memberId, final String key) {
+    private TokenDto createToken(final Long memberId, final String refreshToken) {
         return TokenDto.create(
             jwtFactory.createAccessToken(memberId),
-            jwtFactory.createRefreshToken(key),
+            refreshToken,
             jwtFactory.getExpiresIn(),
             jwtFactory.getRefreshTokenExpiresIn()
         );
@@ -68,13 +76,19 @@ public class TokenManager {
             refreshToken,
             List.of(TokenType.REFRESH)
         );
-        final MemberInfo memberInfo = memberInfoCacheRepository.findMemberInfoByInfoKey(
-                tokenParseResult.subject())
+
+        Long memberId = Long.valueOf(tokenParseResult.subject());
+        final String foundRefreshToken = memberInfoCacheRepository.findRefreshTokenByMemberId(
+                memberId)
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
-        final String newKey = String.valueOf(UUID.randomUUID());
-        memberInfoCacheRepository.rename(tokenParseResult.subject(), newKey);
+        if (!refreshToken.equals(foundRefreshToken)) {
+            throw new InvalidTokenException();
+        }
 
-        return createTokenResponse(memberInfo.memberId(), newKey);
+        String newRefreshToken = jwtFactory.createRefreshToken(memberId);
+        memberInfoCacheRepository.save(memberId, newRefreshToken);
+
+        return createToken(memberId, refreshToken);
     }
 }
