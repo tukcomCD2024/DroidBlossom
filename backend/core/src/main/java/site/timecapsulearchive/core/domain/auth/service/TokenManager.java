@@ -1,13 +1,12 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
-import site.timecapsulearchive.core.domain.auth.repository.MemberInfoCacheRepository;
+import site.timecapsulearchive.core.domain.auth.repository.RefreshTokenCacheRepository;
 import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
 import site.timecapsulearchive.core.global.security.jwt.TokenParseResult;
@@ -18,7 +17,7 @@ import site.timecapsulearchive.core.global.security.jwt.TokenType;
 public class TokenManager {
 
     private final JwtFactory jwtFactory;
-    private final MemberInfoCacheRepository memberInfoCacheRepository;
+    private final RefreshTokenCacheRepository refreshTokenCacheRepository;
 
     /**
      * 새로운 액세스 토큰과 리프레시 토큰을 발급한다. - 액세스 토큰(멤버 아이디) - 리프레시 토큰(데이터베이스에 저장된 사용자 식별자)
@@ -38,7 +37,7 @@ public class TokenManager {
          * 4. 일치하지 않으면 예외를 반환한다.
          */
         String refreshToken = jwtFactory.createRefreshToken(memberId);
-        memberInfoCacheRepository.save(memberId, refreshToken);
+        refreshTokenCacheRepository.save(memberId, refreshToken);
 
         return createToken(memberId, refreshToken);
     }
@@ -78,7 +77,7 @@ public class TokenManager {
         );
 
         Long memberId = Long.valueOf(tokenParseResult.subject());
-        final String foundRefreshToken = memberInfoCacheRepository.findRefreshTokenByMemberId(
+        final String foundRefreshToken = refreshTokenCacheRepository.findRefreshTokenByMemberId(
                 memberId)
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
@@ -87,7 +86,7 @@ public class TokenManager {
         }
 
         String newRefreshToken = jwtFactory.createRefreshToken(memberId);
-        memberInfoCacheRepository.save(memberId, newRefreshToken);
+        refreshTokenCacheRepository.save(memberId, newRefreshToken);
 
         return createToken(memberId, refreshToken);
     }

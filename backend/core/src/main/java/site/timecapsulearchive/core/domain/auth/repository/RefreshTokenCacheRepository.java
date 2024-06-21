@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberInfoCacheRepository {
+public class RefreshTokenCacheRepository {
 
     private static final int MAXIMUM_REFRESH_TOKEN_EXPIRES_IN_DAY = 30;
-    private static final String PREFIX = "refreshToken-memberId:";
+    private static final String PREFIX = "reIssue_memberId_refreshToken:";
 
     private final StringRedisTemplate redisTemplate;
 
