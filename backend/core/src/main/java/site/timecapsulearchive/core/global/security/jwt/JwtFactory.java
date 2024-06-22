@@ -74,7 +74,7 @@ public class JwtFactory {
      * 사용자 아이디를 받아서 임시 토큰 (１시간) 토큰 반환
      *
      * @param memberId 사용자 아이디
-     * @return 리프레시 토큰
+     * @return 임시 인증 토큰
      */
     public String createTemporaryAccessToken(final Long memberId) {
         Date now = new Date();
@@ -93,19 +93,19 @@ public class JwtFactory {
      * 토큰과 토큰 타입으로 토큰의 사용자 식별자와 타입 추출
      *
      * @param token 토큰
-     * @return 사용자 식별자
+     * @return 사용자 식별자, 토큰 타입
      */
-    public TokenParseResult parse(final String token, final List<TokenType> tokenTypes) {
+    public TokenParseResult parse(final String token, final List<TokenType> acceptableTokenTypes) {
         try {
             Claims claims = jwtParser()
                 .parseClaimsJws(token)
                 .getBody();
 
-            validTokenType(tokenTypes, claims);
+            TokenType tokenType = getAcceptableTokenType(acceptableTokenTypes, claims);
 
             return TokenParseResult.of(
                 claims.getSubject(),
-                TokenType.valueOf(claims.get(TOKEN_TYPE_CLAIM_NAME, String.class))
+                tokenType
             );
         } catch (final JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException(e);
@@ -118,20 +118,24 @@ public class JwtFactory {
             .build();
     }
 
-    private void validTokenType(final List<TokenType> tokenTypes, final Claims claims) {
-        TokenType tokenType = TokenType.valueOf(
-            claims.get(TOKEN_TYPE_CLAIM_NAME, String.class)
-        );
+    private TokenType getAcceptableTokenType(List<TokenType> tokenTypes, Claims claims) {
+        String extractTokenType = claims.get(TOKEN_TYPE_CLAIM_NAME, String.class);
+        if (extractTokenType == null || extractTokenType.isBlank()) {
+            throw new IllegalArgumentException();
+        }
 
+        TokenType tokenType = TokenType.valueOf(extractTokenType);
         if (!tokenTypes.contains(tokenType)) {
             throw new JwtException("허용되지 않는 JWT 토큰 타입입니다.");
         }
+        return tokenType;
     }
 
     /**
      * 토큰을 파싱해서 올바른 토큰인지 확인
      *
      * @param token 검증할 토큰
+     * @throws InvalidTokenException 토큰이 유효하지 않은 경우
      */
     public void validate(final String token) {
         try {
