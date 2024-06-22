@@ -26,16 +26,6 @@ public class TokenManager {
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
     public TokenDto createNewToken(final Long memberId) {
-        /**
-         * 1. 회원 아이디로 리프레시 토큰 생성
-         * 2. 생성된 리프레시 토큰과 회원 아이디로 "1:ejfkdsvxlcvmlxc"로 redis에 저장한다.
-         * 3. 생성된 토큰을 반환한다.
-         *
-         * 1. 회원 아이디로 리프레시 토큰을 찾는다
-         * 2. 찾은 리프레시 토큰과 요청 받은 리프레시 토큰을 비교한다.
-         * 3. 일치하면 새로운 리프레시 토큰과 액세스 토큰을 반환한다
-         * 4. 일치하지 않으면 예외를 반환한다.
-         */
         String refreshToken = jwtFactory.createRefreshToken(memberId);
         refreshTokenCacheRepository.save(memberId, refreshToken);
 
