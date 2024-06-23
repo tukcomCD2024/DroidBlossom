@@ -14,15 +14,13 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
-import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
 @RequiredArgsConstructor
@@ -94,24 +92,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final List<MemberNotificationDto> notifications = findMemberNotificationDtos(
-            memberId, size, createdAt);
-
-        final boolean hasNext = notifications.size() > size;
-        if (hasNext) {
-            notifications.remove(size);
-        }
-
-        return new SliceImpl<>(notifications, Pageable.ofSize(size), hasNext);
-    }
-
-    @Override
-    public List<MemberNotificationDto> findMemberNotificationDtos(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        return query
+        final List<MemberNotificationDto> memberNotificationDtos = query
             .select(
                 Projections.constructor(
                     MemberNotificationDto.class,
@@ -129,6 +110,8 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
             .orderBy(notification.id.desc())
             .limit(size + 1)
             .fetch();
+
+        return SliceUtil.makeSlice(size, memberNotificationDtos);
     }
 
     @Override

@@ -77,30 +77,6 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 중복_이메일로_중복_체크하면_True가_반환된다() {
-        //given
-        String duplicatedEmail = "1test@google.com";
-
-        //when
-        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(duplicatedEmail);
-
-        //then
-        assertThat(isDuplicated).isTrue();
-    }
-
-    @Test
-    void 고유한_이메일로_중복_체크_테스트하면_False가_반환된다() {
-        //given
-        String uniqueEmail = "unique@google.com";
-
-        //when
-        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(uniqueEmail);
-
-        //then
-        assertThat(isDuplicated).isFalse();
-    }
-
-    @Test
     void 특정_사용자로_알림_목록을_조회하면_알림_리스트가_반환된다() {
         int size = 20;
         ZonedDateTime now = ZonedDateTime.now().plusMinutes(1);
