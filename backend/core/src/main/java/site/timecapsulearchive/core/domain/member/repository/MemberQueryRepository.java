@@ -9,6 +9,7 @@ import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 public interface MemberQueryRepository {
 
@@ -47,5 +48,5 @@ public interface MemberQueryRepository {
 
     boolean checkTagDuplication(final String tag);
 
-    Optional<byte[]> findMemberPhoneHash(final Long memberId);
+    Optional<ByteArrayWrapper> findMemberPhoneHash(final Long memberId);
 }

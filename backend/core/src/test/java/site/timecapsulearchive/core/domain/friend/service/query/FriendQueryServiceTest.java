@@ -59,7 +59,7 @@ class FriendQueryServiceTest {
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(5);
 
         given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
-            Optional.of(MemberFixture.getPhoneBytes(startFriendsIndex)));
+            Optional.of(MemberFixture.getPhoneByteWrapper(startFriendsIndex)));
         given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(FriendDtoFixture.getFriendSummaryDtos(5));
 
@@ -79,7 +79,7 @@ class FriendQueryServiceTest {
         List<ByteArrayWrapper> phones = Collections.emptyList();
 
         given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
-            Optional.of(MemberFixture.getPhoneBytes(startFriendsIndex)));
+            Optional.of(MemberFixture.getPhoneByteWrapper(startFriendsIndex)));
         given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 
@@ -101,7 +101,7 @@ class FriendQueryServiceTest {
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(friendsCount);
 
         given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
-            Optional.of(MemberFixture.getPhoneBytes(startFriendsIndex)));
+            Optional.of(MemberFixture.getPhoneByteWrapper(startFriendsIndex)));
 
         given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(FriendDtoFixture.getFriendSummaryDtos(friendsCount));

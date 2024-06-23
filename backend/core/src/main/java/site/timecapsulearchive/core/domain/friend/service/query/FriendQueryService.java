@@ -96,15 +96,15 @@ public class FriendQueryService {
         final List<ByteArrayWrapper> phoneEncryption
     ) {
         final List<byte[]> hashes = phoneEncryption.stream()
-            .map(ByteArrayWrapper::getData)
+            .map(ByteArrayWrapper::data)
             .toList();
 
-        final byte[] memberPhoneHash = memberRepository.findMemberPhoneHash(memberId).orElseThrow(
-            MemberNotFoundException::new);
-        final ByteArrayWrapper myPhoneWrapper = new ByteArrayWrapper(memberPhoneHash);
+        final ByteArrayWrapper myPhoneWrapper = memberRepository.findMemberPhoneHash(memberId)
+            .orElseThrow(MemberNotFoundException::new);
 
-        final List<SearchFriendSummaryDto> friendSummaryDtos = new ArrayList<>(memberFriendRepository.findFriendsByPhone(
-            memberId, hashes));
+        final List<SearchFriendSummaryDto> friendSummaryDtos = new ArrayList<>(
+            memberFriendRepository.findFriendsByPhone(
+                memberId, hashes));
 
         friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(myPhoneWrapper));
 
