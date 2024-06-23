@@ -11,6 +11,7 @@ import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
+import site.timecapsulearchive.core.domain.member.data.dto.UpdateMemberDataDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
@@ -222,5 +223,18 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateMemberData(
+        final Long memberId,
+        final UpdateMemberDataDto updateMemberDataDto
+    ) {
+        final int updateMemberData = memberRepository.updateMemberData(memberId,
+                updateMemberDataDto.nickname(), updateMemberDataDto.tag());
+
+        if (updateMemberData != 1) {
+            throw new MemberNotFoundException();
+        }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
@@ -160,4 +161,27 @@ public interface MemberApi {
     })
     ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
         CheckEmailDuplicationRequest request);
+
+    @Operation(
+        summary = "사용자 정보 수정",
+        description = "사용자 정보(닉네임, 태그)를 수정한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<String>> updateMemberData(
+        Long memberId,
+        UpdateMemberDataRequest request
+    );
+
 }

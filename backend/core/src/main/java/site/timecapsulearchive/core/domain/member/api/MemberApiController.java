@@ -16,6 +16,7 @@ import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
@@ -131,4 +132,21 @@ public class MemberApiController implements MemberApi {
             )
         );
     }
+
+    @Override
+    @PatchMapping("/data")
+    public ResponseEntity<ApiSpec<String>> updateMemberData(
+        @AuthenticationPrincipal Long memberId,
+        @Valid @RequestBody UpdateMemberDataRequest request
+    ) {
+        memberService.updateMemberData(memberId, request.toDto());
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
+    }
+
+
 }
