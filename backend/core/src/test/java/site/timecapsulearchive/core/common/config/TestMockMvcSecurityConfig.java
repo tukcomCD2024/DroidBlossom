@@ -1,5 +1,8 @@
 package site.timecapsulearchive.core.common.config;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +18,7 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
+import site.timecapsulearchive.core.domain.auth.repository.BlackListCacheRepository;
 import site.timecapsulearchive.core.domain.member.entity.Role;
 import site.timecapsulearchive.core.global.api.limit.ApiLimitCheckInterceptor;
 import site.timecapsulearchive.core.global.api.limit.ApiLimitProperties;
@@ -64,7 +68,11 @@ public class TestMockMvcSecurityConfig {
 
     @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider() {
-        return new JwtAuthenticationProvider(UnitTestDependency.jwtFactory());
+        BlackListCacheRepository blackListCacheRepository = mock(BlackListCacheRepository.class);
+        given(blackListCacheRepository.exist(anyLong())).willReturn(Boolean.FALSE);
+
+        return new JwtAuthenticationProvider(UnitTestDependency.jwtFactory(),
+            blackListCacheRepository);
     }
 
     @Bean
