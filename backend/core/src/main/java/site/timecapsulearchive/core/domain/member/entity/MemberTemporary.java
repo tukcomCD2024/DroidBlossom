@@ -13,14 +13,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
+@Table(name = "member_temporary")
 @Getter
+@SQLDelete(sql = "UPDATE member_temporary SET is_deleted = true WHERE member_temporary_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_TEMPORARY")
 public class MemberTemporary extends BaseEntity {
 
     @Id
@@ -49,6 +53,9 @@ public class MemberTemporary extends BaseEntity {
 
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 
     @Builder
     public MemberTemporary(String profileUrl, String nickname, SocialType socialType, String email,

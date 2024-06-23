@@ -21,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -30,9 +32,11 @@ import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "capsule")
 @Getter
+@SQLDelete(sql = "UPDATE `capsule` SET is_deleted = true WHERE capsule_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "CAPSULE")
 public class Capsule extends BaseEntity {
 
     @Id
@@ -58,6 +62,9 @@ public class Capsule extends BaseEntity {
 
     @Column(name = "is_opened", nullable = false)
     private Boolean isOpened;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 
     @Embedded
     private Address address;

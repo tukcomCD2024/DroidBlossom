@@ -11,13 +11,17 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.group.exception.GroupCreateException;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "group")
 @Getter
+@SQLDelete(sql = "UPDATE `group` SET is_deleted = true WHERE group_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "GROUP")
 public class Group extends BaseEntity {
 
     @Id
@@ -33,6 +37,9 @@ public class Group extends BaseEntity {
 
     @Column(name = "group_profile_url", nullable = false)
     private String groupProfileUrl;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 
     @Builder
     private Group(String groupName, String groupDescription, String groupProfileUrl) {

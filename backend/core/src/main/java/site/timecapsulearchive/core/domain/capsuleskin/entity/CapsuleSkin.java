@@ -15,13 +15,17 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "capsule_skin")
 @Getter
+@SQLDelete(sql = "UPDATE `capsule_skin` SET is_deleted = true WHERE caspuel_skin_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "CAPSULE_SKIN")
 public class CapsuleSkin extends BaseEntity {
 
     @Id
@@ -42,6 +46,9 @@ public class CapsuleSkin extends BaseEntity {
     @Column(name = "retarget")
     @Enumerated(EnumType.STRING)
     private Retarget retarget;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

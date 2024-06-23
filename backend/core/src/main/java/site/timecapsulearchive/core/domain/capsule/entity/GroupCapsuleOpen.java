@@ -12,14 +12,18 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
-@Entity
 @Getter
+@Table(name = "group_capsule_open")
+@Entity
+@SQLDelete(sql = "UPDATE `group_capsule_open` SET is_deleted = true WHERE group_capsule_open_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "GROUP_CAPSULE_OPEN")
 public class GroupCapsuleOpen extends BaseEntity {
 
     @Id
@@ -29,6 +33,9 @@ public class GroupCapsuleOpen extends BaseEntity {
 
     @Column(name = "is_opened", nullable = false)
     private Boolean isOpened;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)
