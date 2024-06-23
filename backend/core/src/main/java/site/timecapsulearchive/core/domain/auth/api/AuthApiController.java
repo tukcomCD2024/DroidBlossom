@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,9 +27,6 @@ import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResp
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.domain.auth.service.AuthManager;
-import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
-import site.timecapsulearchive.core.domain.auth.service.TokenManager;
-import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
@@ -141,6 +139,20 @@ public class AuthApiController implements AuthApi {
                 token.toResponse()
             )
         );
+    }
+
+    @PostMapping(
+        value = "/sign-out",
+        produces = {"application/json"}
+    )
+    @Override
+    public ResponseEntity<ApiSpec<String>> signOutWithSocialProvider(
+        Authentication authentication
+    ) {
+        authManager.signOut((Long) authentication.getPrincipal(),
+            (String) authentication.getCredentials());
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
     @PostMapping(

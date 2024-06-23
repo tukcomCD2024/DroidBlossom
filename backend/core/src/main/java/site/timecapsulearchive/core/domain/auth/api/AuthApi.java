@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import site.timecapsulearchive.core.domain.auth.data.request.EmailSignInRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.EmailSignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
@@ -132,6 +133,41 @@ public interface AuthApi {
         )
     })
     ResponseEntity<ApiSpec<TokenResponse>> signInWithSocialProvider(SignInRequest request);
+
+    @Operation(
+        summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 아이디 로그아웃",
+        description = """
+            다른 소셜 프로바이더의 앱으로 인증한 클라이언트의 아이디로 로그아웃한다.
+                        
+            로그인된 사용자만 가능하다.
+            """,
+        tags = {"auth"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = """
+                요청이 잘못되어 발생하는 오류이다.
+                <ul>
+                <li>올바르지 않은 요청인 경우 예외가 발생한다.</li>
+                <li>인증되지 않은 사용자인 경우 예외가 발생한다.</li>
+                </ul>
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "로그아웃을 요청한 멤버를 찾을 수 없는 경우 예외가 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> signOutWithSocialProvider(
+        Authentication authentication
+    );
 
     @Operation(
         summary = "임시 인증 토큰 재발급",

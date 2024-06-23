@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
+import site.timecapsulearchive.core.domain.auth.repository.BlackListCacheRepository;
 import site.timecapsulearchive.core.domain.auth.repository.RefreshTokenCacheRepository;
 import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
@@ -18,6 +19,7 @@ public class TokenManager {
 
     private final JwtFactory jwtFactory;
     private final RefreshTokenCacheRepository refreshTokenCacheRepository;
+    private final BlackListCacheRepository blackListCacheRepository;
 
     /**
      * 새로운 액세스 토큰과 리프레시 토큰을 발급한다. - 액세스 토큰(멤버 아이디) - 리프레시 토큰(데이터베이스에 저장된 사용자 식별자)
@@ -79,5 +81,15 @@ public class TokenManager {
         refreshTokenCacheRepository.save(memberId, newRefreshToken);
 
         return createToken(memberId, refreshToken);
+    }
+
+    public void removeRefreshToken(final Long memberId) {
+        refreshTokenCacheRepository.remove(memberId);
+    }
+
+    public void addBlackList(final Long memberId, final String accessToken) {
+        long leftTime = jwtFactory.getLeftTime(accessToken);
+
+        blackListCacheRepository.save(memberId, accessToken, leftTime);
     }
 }
