@@ -144,25 +144,6 @@ public interface MemberApi {
     );
 
     @Operation(
-        summary = "이메일 중복 조회",
-        description = "이메일의 중복을 조회한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"member"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "처리 완료"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "입력 이메일이 없거나 형식이 안맞는 경우 발생하는 예외"
-        )
-    })
-    ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
-        CheckEmailDuplicationRequest request);
-
-    @Operation(
         summary = "사용자 정보 수정",
         description = "사용자 정보(닉네임, 태그)를 수정한다.",
         security = {@SecurityRequirement(name = "user_token")},

@@ -132,37 +132,6 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(
-        final String email
-    ) {
-        return Optional.ofNullable(
-            query
-                .select(
-                    Projections.constructor(
-                        EmailVerifiedCheckDto.class,
-                        member.id,
-                        member.isVerified,
-                        member.email,
-                        member.password
-                    )
-                )
-                .from(member)
-                .where(member.email.eq(email))
-                .fetchOne()
-        );
-    }
-
-    @Override
-    public Boolean checkEmailDuplication(final String email) {
-        final Integer count = query.selectOne()
-            .from(member)
-            .where(member.email.eq(email))
-            .fetchFirst();
-
-        return count != null;
-    }
-
-    @Override
     public Optional<Boolean> findIsAlarmByMemberId(final Long memberId) {
         return Optional.ofNullable(
             query.select(member.notificationEnabled)

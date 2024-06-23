@@ -37,7 +37,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-    private final PasswordEncoder passwordEncoder;
 
     private final MemberMapper memberMapper;
 
@@ -160,57 +159,6 @@ public class MemberService {
             notifications.getContent(),
             notifications.hasNext()
         );
-    }
-
-    @Transactional
-    public Long createMemberWithEmailAndPassword(final String email, final String password) {
-        final String encodedPassword = passwordEncoder.encode(password);
-        final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
-
-        boolean isDuplicateTag = memberRepository.checkTagDuplication(member.getTag());
-        if (isDuplicateTag) {
-            log.warn("member tag duplicate - email:{}, tag:{}", member.getEmail(),
-                member.getTag());
-            member.updateTagLowerCaseSocialType();
-            log.warn("member tag update - tag: {}", member.getTag());
-        }
-
-        final Member savedMember = memberRepository.save(member);
-
-        return savedMember.getId();
-    }
-
-    public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
-        final EmailVerifiedCheckDto dto = memberRepository.findEmailVerifiedCheckDtoByEmail(
-                email)
-            .orElseThrow(MemberNotFoundException::new);
-
-        if (!dto.isVerified()) {
-            throw new NotVerifiedMemberException();
-        }
-
-        if (isNotMatched(email, password, dto.email(), dto.password())) {
-            throw new CredentialsNotMatchedException();
-        }
-
-        return dto.memberId();
-    }
-
-    private boolean isNotMatched(
-        final String inputEmail,
-        final String inputPassword,
-        final String email,
-        final String password
-    ) {
-        return !inputEmail.equals(email) ||
-            password == null ||
-            !passwordEncoder.matches(inputPassword, password);
-    }
-
-    public CheckEmailDuplicationResponse checkEmailDuplication(final String email) {
-        Boolean isDuplicated = memberRepository.checkEmailDuplication(email);
-
-        return new CheckEmailDuplicationResponse(isDuplicated);
     }
 
     public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {

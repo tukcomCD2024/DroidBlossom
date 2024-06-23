@@ -120,19 +120,6 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @PostMapping("/check-duplication/email")
-    @Override
-    public ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
-        @Valid @RequestBody CheckEmailDuplicationRequest request
-    ) {
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                memberService.checkEmailDuplication(request.email())
-            )
-        );
-    }
-
     @Override
     @PatchMapping("/data")
     public ResponseEntity<ApiSpec<String>> updateMemberData(
@@ -147,6 +134,5 @@ public class MemberApiController implements MemberApi {
             )
         );
     }
-
 
 }
