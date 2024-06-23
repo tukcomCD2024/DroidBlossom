@@ -4,25 +4,19 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.UpdateMemberDataDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
-import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
-import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
@@ -37,8 +31,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-
-    private final MemberMapper memberMapper;
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
@@ -147,18 +139,12 @@ public class MemberService {
         }
     }
 
-    public MemberNotificationSliceResponse findNotificationSliceByMemberId(
+    public Slice<MemberNotificationDto> findNotificationSliceByMemberId(
         final Long memberId,
         final int size,
         final ZonedDateTime createdAt
     ) {
-        final Slice<MemberNotificationDto> notifications = memberRepository.findNotificationSliceByMemberId(
-            memberId, size, createdAt);
-
-        return memberMapper.notificationSliceToResponse(
-            notifications.getContent(),
-            notifications.hasNext()
-        );
+        return memberRepository.findNotificationSliceByMemberId(memberId, size, createdAt);
     }
 
     public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
@@ -179,7 +165,7 @@ public class MemberService {
         final UpdateMemberDataDto updateMemberDataDto
     ) {
         final int updateMemberData = memberRepository.updateMemberData(memberId,
-                updateMemberDataDto.nickname(), updateMemberDataDto.tag());
+            updateMemberDataDto.nickname(), updateMemberDataDto.tag());
 
         if (updateMemberData != 1) {
             throw new MemberNotFoundException();
