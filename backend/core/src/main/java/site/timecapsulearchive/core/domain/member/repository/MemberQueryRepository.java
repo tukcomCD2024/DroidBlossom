@@ -43,7 +43,9 @@ public interface MemberQueryRepository {
 
     Optional<Boolean> findIsAlarmByMemberId(final Long memberId);
 
-    List<Long> findMemberIdsByIds(List<Long> ids);
+    List<Long> findMemberIdsByIds(final List<Long> ids);
 
-    boolean checkTagDuplication(String tag);
+    boolean checkTagDuplication(final String tag);
+
+    Optional<byte[]> findMemberPhoneHash(final Long memberId);
 }

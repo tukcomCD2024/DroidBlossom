@@ -15,6 +15,8 @@ import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroup
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
+import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
@@ -24,6 +26,7 @@ import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 @RequiredArgsConstructor
 public class FriendQueryService {
 
+    private final MemberRepository memberRepository;
     private final MemberFriendRepository memberFriendRepository;
     private final MemberGroupRepository memberGroupRepository;
     private final GroupInviteRepository groupInviteRepository;
@@ -91,10 +94,20 @@ public class FriendQueryService {
         final Long memberId,
         final List<ByteArrayWrapper> phoneEncryption
     ) {
-        final List<byte[]> hashes = phoneEncryption.stream().map(ByteArrayWrapper::getData)
+        final List<byte[]> hashes = phoneEncryption.stream()
+            .map(ByteArrayWrapper::getData)
             .toList();
 
-        return memberFriendRepository.findFriendsByPhone(memberId, hashes);
+        final byte[] memberPhoneHash = memberRepository.findMemberPhoneHash(memberId).orElseThrow(
+            MemberNotFoundException::new);
+        final ByteArrayWrapper memberPhoneWrapper = new ByteArrayWrapper(memberPhoneHash);
+
+        final List<SearchFriendSummaryDto> friendSummaryDtos = memberFriendRepository.findFriendsByPhone(
+            memberId, hashes);
+
+        friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(memberPhoneWrapper));
+
+        return friendSummaryDtos;
     }
 
     public SearchFriendSummaryDtoByTag searchFriend(final Long memberId, final String tag) {

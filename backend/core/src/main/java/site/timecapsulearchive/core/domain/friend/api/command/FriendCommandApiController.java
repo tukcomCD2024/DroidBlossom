@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.friend.data.request.SendFriendRequest;
 import site.timecapsulearchive.core.domain.friend.service.command.FriendCommandService;
-import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
@@ -21,7 +20,6 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class FriendCommandApiController implements FriendCommandApi {
 
     private final FriendCommandService friendCommandService;
-    private final MemberService memberService;
 
     @DeleteMapping(value = "/{friend_id}")
     @Override

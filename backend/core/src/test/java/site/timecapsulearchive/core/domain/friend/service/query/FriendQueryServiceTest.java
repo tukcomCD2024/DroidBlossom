@@ -27,12 +27,15 @@ import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroup
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 class FriendQueryServiceTest {
 
+    private final MemberRepository memberRepository = mock(
+        MemberRepository.class);
     private final MemberFriendRepository memberFriendRepository = mock(
         MemberFriendRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
@@ -41,6 +44,7 @@ class FriendQueryServiceTest {
         FriendInviteRepository.class);
 
     private final FriendQueryService friendQueryService = new FriendQueryService(
+        memberRepository,
         memberFriendRepository,
         memberGroupRepository,
         groupInviteRepository,

@@ -173,7 +173,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public List<Long> findMemberIdsByIds(List<Long> ids) {
+    public List<Long> findMemberIdsByIds(final List<Long> ids) {
         return query
             .select(member.id)
             .from(member)
@@ -182,12 +182,21 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public boolean checkTagDuplication(String tag) {
+    public boolean checkTagDuplication(final String tag) {
         final Integer count = query.selectOne()
             .from(member)
             .where(member.tag.eq(tag))
             .fetchFirst();
 
         return count != null;
+    }
+
+    @Override
+    public Optional<byte[]> findMemberPhoneHash(final Long memberId) {
+        return Optional.ofNullable(query.select(member.phone_hash)
+            .from(member)
+            .where(member.id.eq(memberId))
+            .fetchOne()
+        );
     }
 }
