@@ -11,12 +11,16 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "notification_category")
 @Getter
+@SQLDelete(sql = "UPDATE notification_category SET is_deleted = true WHERE notification_category_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "NOTIFICATION_CATEGORY")
 public class NotificationCategory extends BaseEntity {
 
     @Id
@@ -30,5 +34,8 @@ public class NotificationCategory extends BaseEntity {
 
     @Column(name = "category_description", nullable = false)
     private String categoryDescription;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 }
 

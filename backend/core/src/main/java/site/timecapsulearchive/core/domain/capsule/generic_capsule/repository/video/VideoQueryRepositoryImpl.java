@@ -22,8 +22,8 @@ public class VideoQueryRepositoryImpl implements VideoQueryRepository {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO video (
-                video_id, video_url, member_id, capsule_id, created_at, updated_at
-                ) values (?, ?, ?, ?, ?, ?)
+                video_id, video_url, member_id, capsule_id, created_at, updated_at, is_deleted
+                ) values (?, ?, ?, ?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
 
@@ -36,6 +36,7 @@ public class VideoQueryRepositoryImpl implements VideoQueryRepository {
                     ps.setLong(4, video.getCapsule().getId());
                     ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(6, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
+                    ps.setBoolean(7, Boolean.FALSE);
                 }
 
                 @Override

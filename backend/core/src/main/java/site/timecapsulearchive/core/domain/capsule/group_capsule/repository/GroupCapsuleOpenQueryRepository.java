@@ -34,8 +34,8 @@ public class GroupCapsuleOpenQueryRepository {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_capsule_open (
-                group_capsule_open_id, is_opened, member_id, capsule_id, group_id, created_at, updated_at
-                ) values (?, ? ,? ,? ,?, ?, ?)
+                group_capsule_open_id, is_opened, member_id, capsule_id, group_id, created_at, updated_at, is_deleted
+                ) values (?, ? ,? ,? ,?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
                 @Override
@@ -49,6 +49,7 @@ public class GroupCapsuleOpenQueryRepository {
                     ps.setLong(5, groupId);
                     ps.setTimestamp(6, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(7, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
+                    ps.setBoolean(8, Boolean.FALSE);
                 }
 
                 @Override

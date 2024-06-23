@@ -14,12 +14,16 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "notification")
 @Getter
+@SQLDelete(sql = "UPDATE notification SET is_deleted = true WHERE notification_id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "NOTIFICATION")
 public class Notification extends BaseEntity {
 
     @Id
@@ -35,6 +39,9 @@ public class Notification extends BaseEntity {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "is_deleted")
+    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
