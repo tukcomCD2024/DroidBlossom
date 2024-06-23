@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.friend.service.query;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -100,12 +101,12 @@ public class FriendQueryService {
 
         final byte[] memberPhoneHash = memberRepository.findMemberPhoneHash(memberId).orElseThrow(
             MemberNotFoundException::new);
-        final ByteArrayWrapper memberPhoneWrapper = new ByteArrayWrapper(memberPhoneHash);
+        final ByteArrayWrapper myPhoneWrapper = new ByteArrayWrapper(memberPhoneHash);
 
-        final List<SearchFriendSummaryDto> friendSummaryDtos = memberFriendRepository.findFriendsByPhone(
-            memberId, hashes);
+        final List<SearchFriendSummaryDto> friendSummaryDtos = new ArrayList<>(memberFriendRepository.findFriendsByPhone(
+            memberId, hashes));
 
-        friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(memberPhoneWrapper));
+        friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(myPhoneWrapper));
 
         return friendSummaryDtos;
     }

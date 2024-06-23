@@ -52,7 +52,7 @@ class FriendQueryServiceTest {
     );
 
     @Test
-    void 사용자는_주소록_기반_핸드폰_번호로_Ahchive_사용자_리스트를_조회_할_수_있다() {
+    void 사용자는_주소록_기반_핸드폰_번호로_ARchive_사용자_리스트를_조회_할_수_있다() {
         //given
         Long memberId = 1L;
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(5);
@@ -69,7 +69,7 @@ class FriendQueryServiceTest {
 
 
     @Test
-    void 사용자는_주소록_기반_번호_없이_Ahchive_사용자_리스트_조회하면_빈_리스트를_반환한다() {
+    void 사용자는_주소록_기반_핸드폰_번호_없이_ARchive_사용자_리스트_조회하면_빈_리스트를_반환한다() {
         //given
         Long memberId = 1L;
         List<ByteArrayWrapper> phones = Collections.emptyList();
@@ -85,7 +85,28 @@ class FriendQueryServiceTest {
     }
 
     @Test
-    void 사용자는_태그로_Ahchive_사용자를_검색할_수_있다() {
+    void 사용자는_주소록_기반_번호로_ARchive_사용자를_검색하면_본인은_조회되지_않는다() {
+        //given
+        Long memberId = 1L;
+        int friendsCount = 5;
+        int startFriendsIndex = 0;
+
+        List<ByteArrayWrapper> phones = MemberFixture.getPhones(friendsCount);
+
+        given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
+            Optional.of(MemberFixture.getPhoneBytes(startFriendsIndex)));
+
+        given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
+            .willReturn(FriendDtoFixture.getFriendSummaryDtos(friendsCount));
+
+        List<SearchFriendSummaryDto> dtos = friendQueryService.findFriendsByPhone(memberId,
+            phones);
+
+        assertThat(dtos.size()).isEqualTo(friendsCount - 1);
+    }
+
+    @Test
+    void 사용자는_태그로_ARchive_사용자를_검색할_수_있다() {
         //given
         Long memberId = 1L;
         String tag = "testTag";
@@ -109,7 +130,7 @@ class FriendQueryServiceTest {
     }
 
     @Test
-    void 사용자는_존재하지_않는_태그로_Ahchive_사용자를_검색하면_예외가_발생한다() {
+    void 사용자는_존재하지_않는_태그로_ARchive_사용자를_검색하면_예외가_발생한다() {
         //given
         Long memberId = 1L;
         String tag = "testTag";
