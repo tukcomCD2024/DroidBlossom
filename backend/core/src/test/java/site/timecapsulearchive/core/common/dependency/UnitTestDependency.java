@@ -1,24 +1,22 @@
 package site.timecapsulearchive.core.common.dependency;
 
 import org.opengis.referencing.FactoryException;
+import site.timecapsulearchive.core.global.config.security.JwtProperties;
 import site.timecapsulearchive.core.global.geography.GeoTransformConfig;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.AESKeyProperties;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashProperties;
-import site.timecapsulearchive.core.infra.s3.config.S3Config;
-import site.timecapsulearchive.core.infra.s3.config.S3Properties;
-import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
+import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
+import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
+import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
+import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
 /**
  * 유닛 테스트를 위한 의존성 클래스 집합체
  */
 public class UnitTestDependency {
-
-    public static S3PreSignedUrlManager s3PreSignedUrlManager() {
-        S3Config s3Config = new S3Config(
-            new S3Properties("a".repeat(32), "b".repeat(32), "origin", "temporary", "us-east"));
-        return new S3PreSignedUrlManager(s3Config);
-    }
 
     public static GeoTransformManager geoTransformManager() {
         GeoTransformConfig geoTransformConfig = new GeoTransformConfig();
@@ -36,5 +34,21 @@ public class UnitTestDependency {
 
     public static HashEncryptionManager hashEncryptionManager() {
         return new HashEncryptionManager(new HashProperties("test"));
+    }
+
+    public static JwtProperties jwtProperties() {
+        return new JwtProperties("T".repeat(32), 3600, 3600, 3600);
+    }
+
+    public static JwtFactory jwtFactory() {
+        return new JwtFactory(jwtProperties());
+    }
+
+    public static AESEncryptionManager aesEncryptionManager() {
+        return new AESEncryptionManager(new AESKeyProperties("A".repeat(32)));
+    }
+
+    public static SmsApiManager smsApiManager() {
+        return (receiver, message) -> new SmsApiResponse(200, "success");
     }
 }
