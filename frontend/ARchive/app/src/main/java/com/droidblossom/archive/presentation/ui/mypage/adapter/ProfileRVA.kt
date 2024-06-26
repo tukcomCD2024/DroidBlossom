@@ -31,6 +31,9 @@ class ProfileRVA(
                 tagCopy(data.tag)
                 true
             }
+            binding.tagCopyBtn.setOnClickListener {
+                tagCopy(data.tag)
+            }
         }
     }
 

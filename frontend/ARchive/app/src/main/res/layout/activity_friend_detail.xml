@@ -43,8 +43,8 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profileImg"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         android:layout_marginStart="@dimen/margin"
                         android:layout_marginTop="?attr/actionBarSize"
                         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +79,15 @@
                         android:textColor="@color/gray_600"
                         app:layout_constraintStart_toStartOf="@id/profileImg"
                         app:layout_constraintTop_toBottomOf="@id/profileNameT" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/tagCopyBtn"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:layout_constraintStart_toEndOf="@id/profileTagT"
+                        app:layout_constraintTop_toTopOf="@id/profileTagT"
+                        app:layout_constraintBottom_toBottomOf="@id/profileTagT"
+                        app:srcCompat="@drawable/ic_tag_copy_24"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/searchOpenBtnT"

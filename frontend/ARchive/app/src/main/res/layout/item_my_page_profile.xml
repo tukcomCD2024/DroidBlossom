@@ -17,11 +17,11 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImg"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="24dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/settingBtn"
             bind:baseImg="@{@drawable/base_use_img}"
             bind:url="@{data.profileUrl}"
             tools:src="@color/main_2" />
@@ -30,39 +30,63 @@
             android:id="@+id/profileNameT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginTop="@dimen/margin_small"
             android:ellipsize="end"
             android:lines="1"
             android:maxWidth="250dp"
             android:text="@{data.nickname}"
-            android:textAppearance="@style/TextAppearance.App.body2"
+            android:textAppearance="@style/TextAppearance.App.subtitle1"
+            android:fontFamily="@font/suit_bold"
             android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/profileImg"
-            app:layout_constraintTop_toTopOf="@id/profileImg" />
+            app:layout_constraintStart_toStartOf="@id/profileImg"
+            app:layout_constraintTop_toBottomOf="@id/profileImg" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/profileTagT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginTop="@dimen/margin_small"
             android:maxLines="1"
             android:text="@{'@' + data.tag}"
-            android:textAppearance="@style/TextAppearance.App.caption4"
+            android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/gray_600"
+            app:layout_constraintStart_toStartOf="@id/profileImg"
+            app:layout_constraintTop_toBottomOf="@id/profileNameT" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/tagCopyBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintStart_toEndOf="@id/profileTagT"
+            app:layout_constraintTop_toTopOf="@id/profileTagT"
+            app:layout_constraintBottom_toBottomOf="@id/profileTagT"
+            app:srcCompat="@drawable/ic_tag_copy_24"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/searchOpenBtnT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="프로필 수정"
+            android:paddingVertical="@dimen/padding_small"
+            android:paddingHorizontal="@dimen/padding"
+            android:textAppearance="@style/TextAppearance.App.body2"
+            android:textColor="@color/main_1"
+            android:background="@drawable/corner_radius_30"
+            app:layout_constraintTop_toTopOf="@id/profileImg"
             app:layout_constraintBottom_toBottomOf="@id/profileImg"
-            app:layout_constraintStart_toEndOf="@id/profileImg" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/settingBtn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="18dp"
+            app:cardCornerRadius="15dp"
             android:elevation="15dp"
             android:layout_marginEnd="1dp"
-            app:layout_constraintBottom_toBottomOf="@id/profileImg"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/profileImg">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
@@ -82,7 +106,7 @@
             app:layout_constraintEnd_toStartOf="@id/friendLayout"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileImg">
+            app:layout_constraintTop_toBottomOf="@id/profileTagT">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/groupT"
@@ -122,13 +146,12 @@
             android:layout_width="0dp"
             android:layout_height="46dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="20dp"
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_4"
             app:layout_constraintEnd_toStartOf="@id/requestLayout"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@id/groupLayout"
-            app:layout_constraintTop_toBottomOf="@id/profileImg">
+            app:layout_constraintTop_toTopOf="@id/groupLayout">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/friendT"
@@ -167,12 +190,11 @@
             android:id="@+id/requestLayout"
             android:layout_width="72dp"
             android:layout_height="46dp"
-            android:layout_marginTop="20dp"
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/friendLayout"
-            app:layout_constraintTop_toBottomOf="@id/profileImg">
+            app:layout_constraintTop_toTopOf="@id/groupLayout">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/requestImg"

@@ -83,6 +83,9 @@ class FriendDetailActivity :
                 copyText("tag",viewModel.friendInfo.value.tag)
                 true
             }
+            tagCopyBtn.setOnClickListener{
+                copyText("tag",viewModel.friendInfo.value.tag)
+            }
         }
     }
 
