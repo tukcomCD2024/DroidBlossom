@@ -314,11 +314,7 @@ class CapsulePreviewDialogFragment :
             true
         )
 
-        // 메뉴 클릭 리스너 설정
-        popupMenuBinding.menuMap.setOnClickListener {
-            popupWindow.dismiss()
-        }
-        popupMenuBinding.menuModify.setOnClickListener {
+        popupMenuBinding.menuReport.setOnClickListener {
             popupWindow.dismiss()
         }
         popupMenuBinding.menuDelete.setOnClickListener {
@@ -334,7 +330,7 @@ class CapsulePreviewDialogFragment :
             val popupWidth = popupWindow.contentView.measuredWidth
             //val popupHeight = popupWindow.contentView.measuredHeight
 
-            val xOff = -(popupWidth + popupWidth / 2 + view.width)
+            val xOff = -(popupWidth + view.width)
             val yOff = -view.height
 
             popupWindow.showAsDropDown(view, xOff, yOff)

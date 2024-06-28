@@ -8,21 +8,12 @@
     android:padding="@dimen/padding">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/menuReport"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="캡슐 신고"
-        android:fontFamily="@font/suit_bold"
-        android:layout_marginBottom="@dimen/margin"
-        android:textAppearance="@style/TextAppearance.App.caption4"
-        android:textColor="@color/gray_700" />
-
-    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/menuDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/suit_bold"
-        android:text="캡슐 삭제"
+        android:text="스킨 삭제"
         android:textAppearance="@style/TextAppearance.App.caption4"
         android:textColor="@color/gray_700" />
+
 </LinearLayout>

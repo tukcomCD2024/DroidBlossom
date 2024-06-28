@@ -8,20 +8,11 @@
     android:padding="@dimen/padding">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/menuMap"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="지도"
-        android:fontFamily="@font/suit_bold"
-        android:textAppearance="@style/TextAppearance.App.caption4"
-        android:textColor="@color/gray_700" />
-
-    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/menuGroupMemberManagement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin"
         android:text="그룹원 관리"
+        android:layout_marginBottom="@dimen/margin"
         android:fontFamily="@font/suit_bold"
         android:textAppearance="@style/TextAppearance.App.caption4"
         android:textColor="@color/gray_700" />
@@ -30,9 +21,9 @@
         android:id="@+id/menuGroupClosure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin"
         android:fontFamily="@font/suit_bold"
         android:text="그룹 폐쇄"
         android:textAppearance="@style/TextAppearance.App.caption4"
         android:textColor="@color/gray_700" />
+
 </LinearLayout>

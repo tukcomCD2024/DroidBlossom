@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinDetailDialogBinding
 import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
+import com.droidblossom.archive.databinding.PopupMenuSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +70,7 @@ class SkinDetailDialogFragment :
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenuBinding = PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        val popupMenuBinding = PopupMenuSkinBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         val density = requireContext().resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
@@ -81,13 +82,6 @@ class SkinDetailDialogFragment :
             true
         )
 
-        // 메뉴 클릭 리스너 설정
-        popupMenuBinding.menuMap.setOnClickListener {
-            popupWindow.dismiss()
-        }
-        popupMenuBinding.menuModify.setOnClickListener {
-            popupWindow.dismiss()
-        }
         popupMenuBinding.menuDelete.setOnClickListener {
             popupWindow.dismiss()
         }
@@ -98,7 +92,7 @@ class SkinDetailDialogFragment :
             val popupWidth = popupWindow.contentView.measuredWidth
             //val popupHeight = popupWindow.contentView.measuredHeight
 
-            val xOff = -(popupWidth + popupWidth/2 + view.width)
+            val xOff = -(popupWidth + view.width)
             val yOff = -view.height
 
             popupWindow.showAsDropDown(view, xOff, yOff)

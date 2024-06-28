@@ -97,7 +97,7 @@ class GroupDetailActivity :
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupInfo.collect {
                     binding.tabLayout.getTabAt(GROUP_CAPSULE)?.text = getString(R.string.groupCapsule) + "(${viewModel.groupInfo.value.groupCapsuleNum})"
-
+                    invalidateOptionsMenu()
                 }
             }
         }
@@ -263,9 +263,6 @@ class GroupDetailActivity :
             popupMenuBinding.menuGroupMemberManagement.visibility = View.GONE
         }
 
-        popupMenuBinding.menuMap.setOnClickListener {
-            popupWindow.dismiss()
-        }
         popupMenuBinding.menuGroupClosure.setOnClickListener {
             viewModel.closureGroup()
             popupWindow.dismiss()
@@ -287,8 +284,13 @@ class GroupDetailActivity :
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_detail,menu)
+        menuInflater.inflate(R.menu.menu_detail, menu)
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.toolBarMenu)?.isVisible = viewModel.groupInfo.value.hasEditPermission
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
