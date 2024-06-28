@@ -332,8 +332,8 @@ class MyPageFragment :
     }
 
     enum class SpinnerCapsuleType(val description: String) {
-        SECRET("Secret"),
-        PUBLIC("Public"),
-        GROUP("Group")
+        SECRET("비밀 캡슐"),
+        PUBLIC("공개 캡슐"),
+        GROUP("그룹 캡슐")
     }
 }
