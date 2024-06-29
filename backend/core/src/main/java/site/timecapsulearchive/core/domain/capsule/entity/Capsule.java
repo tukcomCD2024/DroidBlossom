@@ -66,13 +66,13 @@ public class Capsule extends BaseEntity {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "capsule")
     private final List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "capsule")
     private final List<Video> videos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "capsule")
     private final List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
