@@ -40,8 +40,8 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_invite (
-                group_invite_id, group_owner_id, group_member_id, group_id, created_at, updated_at, is_deleted
-                ) values (?, ?, ?, ?, ?, ?, ?)
+                group_invite_id, group_owner_id, group_member_id, group_id, created_at, updated_at
+                ) values (?, ?, ?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
 
@@ -54,7 +54,6 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
                     ps.setLong(4, groupId);
                     ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(6, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
-                    ps.setBoolean(7, Boolean.FALSE);
                 }
 
                 @Override

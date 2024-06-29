@@ -34,8 +34,8 @@ public class GroupCapsuleOpenQueryRepository {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO group_capsule_open (
-                group_capsule_open_id, is_opened, member_id, capsule_id, group_id, created_at, updated_at, is_deleted
-                ) values (?, ? ,? ,? ,?, ?, ?, ?)
+                group_capsule_open_id, is_opened, member_id, capsule_id, group_id, created_at, updated_at
+                ) values (?, ? ,? ,? ,?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
                 @Override

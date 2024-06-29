@@ -37,8 +37,8 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO friend_invite (
-                friend_invite_id, owner_id, friend_id, created_at, updated_at, is_deleted
-                ) values (?, ?, ?, ?, ?, ?)
+                friend_invite_id, owner_id, friend_id, created_at, updated_at
+                ) values (?, ?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
 
@@ -50,7 +50,6 @@ public class FriendInviteQueryRepositoryImpl implements FriendInviteQueryReposit
                     ps.setLong(3, friendId);
                     ps.setTimestamp(4, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
-                    ps.setBoolean(6, Boolean.FALSE);
                 }
 
                 @Override

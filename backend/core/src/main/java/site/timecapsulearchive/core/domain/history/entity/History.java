@@ -23,8 +23,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "history")
 @Getter
-@SQLDelete(sql = "UPDATE `history` SET is_deleted = true WHERE hisotry_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `history` SET deleted_at = now() WHERE hisotry_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class History extends BaseEntity {
 
@@ -35,9 +35,6 @@ public class History extends BaseEntity {
 
     @Column(name = "title", nullable = false)
     private String title;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistoryImage> historyImages;

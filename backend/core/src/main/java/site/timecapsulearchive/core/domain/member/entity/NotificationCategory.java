@@ -18,8 +18,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "notification_category")
 @Getter
-@SQLDelete(sql = "UPDATE notification_category SET is_deleted = true WHERE notification_category_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE notification_category SET deleted_at = now() WHERE notification_category_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NotificationCategory extends BaseEntity {
 
@@ -34,8 +34,5 @@ public class NotificationCategory extends BaseEntity {
 
     @Column(name = "category_description", nullable = false)
     private String categoryDescription;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 }
 
