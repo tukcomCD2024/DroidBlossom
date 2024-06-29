@@ -20,8 +20,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "history_image")
 @Getter
-@SQLDelete(sql = "UPDATE `history_image` SET is_deleted = true WHERE history_image_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `history_image` SET deleted_at = now() WHERE history_image_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HistoryImage extends BaseEntity {
 
@@ -29,9 +29,6 @@ public class HistoryImage extends BaseEntity {
     @Column(name = "history_image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id", nullable = false)

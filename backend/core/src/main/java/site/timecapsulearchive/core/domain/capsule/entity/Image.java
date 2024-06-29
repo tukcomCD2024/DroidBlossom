@@ -22,8 +22,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "image")
 @Getter
-@SQLDelete(sql = "UPDATE `image` SET is_deleted = true WHERE image_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `image` SET deleted_at = now() WHERE image_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image extends BaseEntity {
 
@@ -34,9 +34,6 @@ public class Image extends BaseEntity {
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)

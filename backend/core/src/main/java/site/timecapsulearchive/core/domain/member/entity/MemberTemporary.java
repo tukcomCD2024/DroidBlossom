@@ -22,8 +22,8 @@ import site.timecapsulearchive.core.global.util.TagGenerator;
 @Entity
 @Table(name = "member_temporary")
 @Getter
-@SQLDelete(sql = "UPDATE member_temporary SET is_deleted = true WHERE member_temporary_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE member_temporary SET deleted_at = now() WHERE member_temporary_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberTemporary extends BaseEntity {
 
@@ -45,6 +45,7 @@ public class MemberTemporary extends BaseEntity {
     @Email
     @Column(name = "email", nullable = false)
     private String email;
+
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
 
@@ -53,9 +54,6 @@ public class MemberTemporary extends BaseEntity {
 
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @Builder
     public MemberTemporary(String profileUrl, String nickname, SocialType socialType, String email,

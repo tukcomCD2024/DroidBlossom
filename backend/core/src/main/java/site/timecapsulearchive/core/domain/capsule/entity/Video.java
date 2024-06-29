@@ -22,8 +22,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "video")
 @Getter
-@SQLDelete(sql = "UPDATE `video` SET is_deleted = true WHERE video_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `video` SET deleted_at = now() WHERE video_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Video extends BaseEntity {
 
@@ -34,9 +34,6 @@ public class Video extends BaseEntity {
 
     @Column(name = "video_url", nullable = false)
     private String videoUrl;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "capsule_id", nullable = false)

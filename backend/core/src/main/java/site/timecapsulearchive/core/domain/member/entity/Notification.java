@@ -21,8 +21,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "notification")
 @Getter
-@SQLDelete(sql = "UPDATE notification SET is_deleted = true WHERE notification_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE notification SET deleted_at = now() WHERE notification_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification extends BaseEntity {
 
@@ -39,9 +39,6 @@ public class Notification extends BaseEntity {
 
     @Column(name = "image_url")
     private String imageUrl;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

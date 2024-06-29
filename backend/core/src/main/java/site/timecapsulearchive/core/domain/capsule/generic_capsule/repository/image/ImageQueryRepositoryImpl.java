@@ -22,8 +22,8 @@ public class ImageQueryRepositoryImpl implements ImageQueryRepository {
         jdbcTemplate.batchUpdate(
             """
                 INSERT INTO image (
-                image_id, image_url, member_id, capsule_id, created_at, updated_at, is_deleted
-                ) values (?, ?, ?, ?, ?, ?, ?)
+                image_id, image_url, member_id, capsule_id, created_at, updated_at
+                ) values (?, ?, ?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
 
@@ -36,7 +36,6 @@ public class ImageQueryRepositoryImpl implements ImageQueryRepository {
                     ps.setLong(4, image.getCapsule().getId());
                     ps.setTimestamp(5, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(6, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
-                    ps.setBoolean(7, Boolean.FALSE);
                 }
 
                 @Override

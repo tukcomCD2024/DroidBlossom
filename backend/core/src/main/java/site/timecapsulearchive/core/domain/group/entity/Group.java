@@ -19,8 +19,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "group")
 @Getter
-@SQLDelete(sql = "UPDATE `group` SET is_deleted = true WHERE group_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `group` SET deleted_at = now() WHERE group_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group extends BaseEntity {
 
@@ -37,9 +37,6 @@ public class Group extends BaseEntity {
 
     @Column(name = "group_profile_url", nullable = false)
     private String groupProfileUrl;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @Builder
     private Group(String groupName, String groupDescription, String groupProfileUrl) {

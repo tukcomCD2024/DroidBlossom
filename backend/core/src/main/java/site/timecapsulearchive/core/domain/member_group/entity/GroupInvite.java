@@ -21,8 +21,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "group_invite")
 @Getter
-@SQLDelete(sql = "UPDATE `group_invite` SET is_deleted = true WHERE group_invite_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `group_invite` SET deleted_at = now() WHERE group_invite_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupInvite extends BaseEntity {
 
@@ -30,9 +30,6 @@ public class GroupInvite extends BaseEntity {
     @Column(name = "group_invite_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)

@@ -34,8 +34,8 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "capsule")
 @Getter
-@SQLDelete(sql = "UPDATE `capsule` SET is_deleted = true WHERE capsule_id = ?")
-@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE `capsule` SET deleted_at = now() WHERE capsule_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Capsule extends BaseEntity {
 
@@ -62,9 +62,6 @@ public class Capsule extends BaseEntity {
 
     @Column(name = "is_opened", nullable = false)
     private Boolean isOpened;
-
-    @Column(name = "is_deleted")
-    private boolean is_deleted = Boolean.FALSE;
 
     @Embedded
     private Address address;
