@@ -196,8 +196,7 @@ public class GroupCapsuleService {
     }
 
     @Transactional
-    public void deleteRelatedAllOwnerGroup(
-        final Long memberId,
+    public void deleteRelatedAllOwnerGroupCapsule(
         final List<Group> allOwnerGroups,
         final ZonedDateTime deletedAt
     ) {
@@ -205,8 +204,7 @@ public class GroupCapsuleService {
             .map(Group::getId)
             .toList();
 
-        final List<Capsule> groupCapsules = capsuleRepository.findCapsulesByNotEqualMemberIdAndGroupIds(
-            memberId, groupIds);
+        final List<Capsule> groupCapsules = capsuleRepository.findCapsulesByGroupIds(groupIds);
         final List<Long> groupCapsuleIds = groupCapsules.stream()
             .map(Capsule::getId)
             .toList();

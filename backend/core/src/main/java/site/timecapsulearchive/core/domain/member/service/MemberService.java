@@ -232,7 +232,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteNotificationByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+    public void deleteByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
         notificationRepository.deleteByMemberId(memberId, deletedAt);
     }
 }

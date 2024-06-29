@@ -42,13 +42,13 @@ public interface CapsuleRepository extends Repository<Capsule, Long>, CapsuleQue
         @Param("capsuleId") Long capsuleId
     );
 
-    @Query("UPDATE Capsule c SET c.deletedAt = :deletedAt WHERE c.member.id = :memberId")
+    @Query("UPDATE Capsule c SET c.deletedAt = :deletedAt WHERE c.member.id = :memberId and c.group is null ")
     @Modifying
-    void deleteByMemberId(
+    void deleteExcludeGroupCapsuleByMemberId(
         @Param("memberId") Long memberId,
         @Param("deletedAt") ZonedDateTime deletedAt
     );
 
-    @Query("select c from Capsule c where c.member.id != :memberId and c.group.id in :groupIds")
-    List<Capsule> findCapsulesByNotEqualMemberIdAndGroupIds(Long memberId, List<Long> groupIds);
+    @Query("select c from Capsule c where c.group.id in :groupIds")
+    List<Capsule> findCapsulesByGroupIds(@Param("groupIds") List<Long> groupIds);
 }

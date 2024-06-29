@@ -155,7 +155,7 @@ public class GroupCommandService {
     }
 
     @Transactional
-    public void deleteRelatedAllByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+    public void deleteRelatedAllGroupByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
         groupInviteRepository.deleteByMemberId(memberId, deletedAt);
         memberGroupRepository.deleteByMemberId(memberId, deletedAt);
     }

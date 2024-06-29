@@ -23,7 +23,7 @@ public class GroupCapsuleOpenService {
     }
 
     @Transactional
-    public void deleteAllByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+    public void deleteByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
         groupCapsuleOpenRepository.deleteByMemberId(memberId, deletedAt);
     }
 }

@@ -32,27 +32,24 @@ public class MemberFacade {
 
     @Transactional
     public void deleteByMemberId(final Long memberId, final String accessToken) {
-        tokenManager.removeRefreshToken(memberId);
-
-        tokenManager.addBlackList(memberId, accessToken);
-
         final Member member = memberService.findMemberById(memberId);
 
         final ZonedDateTime deletedAt = ZonedDateTimeSupplier.utc().get();
-        groupCapsuleOpenService.deleteAllByMemberId(memberId, deletedAt);
-        capsuleService.deleteRelatedAllByMemberId(memberId, deletedAt);
+        groupCapsuleOpenService.deleteByMemberId(memberId, deletedAt);
+        capsuleService.deleteRelatedAllCapsuleByMemberId(memberId, deletedAt);
 
-        friendCommandService.deleteRelatedAllByMemberId(memberId, deletedAt);
-
-        memberService.deleteNotificationByMemberId(memberId, deletedAt);
-
-        groupCommandService.deleteRelatedAllByMemberId(memberId, deletedAt);
+        friendCommandService.deleteRelatedAllFriendByMemberId(memberId, deletedAt);
+        groupCommandService.deleteRelatedAllGroupByMemberId(memberId, deletedAt);
 
         final List<Group> allOwnerGroups = groupQueryService.findAllOwnerGroupsByMemberId(
             memberId);
-        groupCapsuleService.deleteRelatedAllOwnerGroup(memberId, allOwnerGroups, deletedAt);
+        groupCapsuleService.deleteRelatedAllOwnerGroupCapsule(allOwnerGroups, deletedAt);
         groupCommandService.deleteRelatedAllOwnerGroup(allOwnerGroups, deletedAt);
 
+        memberService.deleteByMemberId(memberId, deletedAt);
         memberService.delete(member);
+
+        tokenManager.removeRefreshToken(memberId);
+        tokenManager.addBlackList(memberId, accessToken);
     }
 }
