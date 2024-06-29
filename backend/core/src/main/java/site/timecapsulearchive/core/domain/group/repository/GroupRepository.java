@@ -14,6 +14,6 @@ public interface GroupRepository extends Repository<Group, Long>, GroupQueryRepo
 
     void delete(Group group);
 
-    @Query("select g from Group g join MemberGroup mg where mg.member.id = :memberId and mg.isOwner = true")
+    @Query("select g from Group g join MemberGroup mg on mg.group.id = g.id where mg.member.id = :memberId and mg.isOwner = true")
     List<Group> findAllOwnerGroupsByMemberId(Long memberId);
 }
