@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.group.service.command;
 
 import jakarta.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -151,5 +152,25 @@ public class GroupCommandService {
         if (!isOwner) {
             throw new NoGroupAuthorityException();
         }
+    }
+
+    @Transactional
+    public void deleteRelatedAllByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+        groupInviteRepository.deleteByMemberId(memberId, deletedAt);
+        memberGroupRepository.deleteByMemberId(memberId, deletedAt);
+    }
+
+    @Transactional
+    public void deleteRelatedAllOwnerGroup(
+        final List<Group> allOwnerGroups,
+        final ZonedDateTime deletedAt
+    ) {
+        final List<Long> groupIds = allOwnerGroups.stream()
+            .map(Group::getId)
+            .toList();
+
+        groupInviteRepository.deleteByGroupIds(groupIds, deletedAt);
+        memberGroupRepository.deleteByGroupIds(groupIds, deletedAt);
+        allOwnerGroups.forEach(groupRepository::delete);
     }
 }

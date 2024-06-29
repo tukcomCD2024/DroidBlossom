@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -14,7 +15,10 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Coor
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
+import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
@@ -27,6 +31,9 @@ public class CapsuleService {
     private final CapsuleRepository capsuleRepository;
     private final MemberFriendRepository memberFriendRepository;
     private final GeoTransformManager geoTransformManager;
+    private final ImageRepository imageRepository;
+    private final VideoRepository videoRepository;
+    private final CapsuleSkinRepository capsuleSkinRepository;
 
     /**
      * 현재 위치에서 범위 내에 있는 AR 캡슐을 조회한다.
@@ -142,5 +149,13 @@ public class CapsuleService {
             friendIds,
             mbr
         );
+    }
+
+    @Transactional
+    public void deleteRelatedAllByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+        imageRepository.deleteByMemberId(memberId, deletedAt);
+        videoRepository.deleteByMemberId(memberId, deletedAt);
+        capsuleSkinRepository.deleteByMemberId(memberId, deletedAt);
+        capsuleRepository.deleteByMemberId(memberId, deletedAt);
     }
 }

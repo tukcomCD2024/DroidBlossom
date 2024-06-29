@@ -13,6 +13,8 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
@@ -20,7 +22,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -35,7 +37,9 @@ public class GroupCapsuleService {
 
     private final CapsuleRepository capsuleRepository;
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository;
-    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository;
+    private final GroupCapsuleOpenRepository groupCapsuleOpenRepository;
+    private final ImageRepository imageRepository;
+    private final VideoRepository videoRepository;
     private final MemberGroupRepository memberGroupRepository;
 
     @Transactional
@@ -80,7 +84,8 @@ public class GroupCapsuleService {
     /**
      * 그룹 캡슐의 요약 정보를 조회한다.
      * <br>
-     * @param memberId 사용자 아이디
+     *
+     * @param memberId  사용자 아이디
      * @param capsuleId 조회할 캡슐 아이디
      * @return 그룹 캡슐의 요약 정보(캡슐, 그룹원)
      * @throws NoGroupAuthorityException 그룹에 대한 권한이 존재하지 않으면 예외가 발생한다.
@@ -89,7 +94,8 @@ public class GroupCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(capsuleId)
+        GroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleQueryRepository.findGroupCapsuleSummaryDtoByCapsuleId(
+                capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         List<GroupCapsuleMemberDto> groupCapsuleMembers = memberGroupRepository.findGroupCapsuleMembers(
@@ -136,7 +142,8 @@ public class GroupCapsuleService {
      */
     @Transactional
     public GroupCapsuleOpenStateDto openGroupCapsule(final Long memberId, final Long capsuleId) {
-        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(capsuleId)
+        Capsule groupCapsule = capsuleRepository.findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
+                capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         if (groupCapsule.isNotCapsuleOpened()) {
@@ -176,7 +183,7 @@ public class GroupCapsuleService {
         final Long capsuleId,
         final Long groupId
     ) {
-        List<GroupCapsuleMemberDto> groupCapsuleMembers = groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = groupCapsuleOpenRepository.findGroupCapsuleMembers(
             capsuleId, groupId);
 
         boolean isGroupMember = groupCapsuleMembers.stream()
@@ -186,6 +193,28 @@ public class GroupCapsuleService {
         }
 
         return groupCapsuleMembers;
+    }
+
+    @Transactional
+    public void deleteRelatedAllOwnerGroup(
+        final Long memberId,
+        final List<Group> allOwnerGroups,
+        final ZonedDateTime deletedAt
+    ) {
+        final List<Long> groupIds = allOwnerGroups.stream()
+            .map(Group::getId)
+            .toList();
+
+        final List<Capsule> groupCapsules = capsuleRepository.findCapsulesByNotEqualMemberIdAndGroupIds(
+            memberId, groupIds);
+        final List<Long> groupCapsuleIds = groupCapsules.stream()
+            .map(Capsule::getId)
+            .toList();
+
+        videoRepository.deleteByCapsuleIds(groupCapsuleIds, deletedAt);
+        imageRepository.deleteByCapsuleIds(groupCapsuleIds, deletedAt);
+        groupCapsuleOpenRepository.deleteByCapsuleIds(groupCapsuleIds, deletedAt);
+        groupCapsules.forEach(capsuleRepository::delete);
     }
 }
 

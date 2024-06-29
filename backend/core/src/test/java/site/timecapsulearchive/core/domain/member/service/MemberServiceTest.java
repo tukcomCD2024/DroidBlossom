@@ -17,10 +17,13 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.domain.member.repository.NotificationRepository;
 
 class MemberServiceTest {
 
     private final MemberRepository memberRepository = mock(MemberRepository.class);
+    private final NotificationRepository notificationRepository = mock(
+        NotificationRepository.class);
     private final MemberTemporaryRepository memberTemporaryRepository = mock(
         MemberTemporaryRepository.class);
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -28,6 +31,7 @@ class MemberServiceTest {
 
     private final MemberService memberService = new MemberService(
         memberRepository,
+        notificationRepository,
         memberTemporaryRepository,
         passwordEncoder,
         memberMapper

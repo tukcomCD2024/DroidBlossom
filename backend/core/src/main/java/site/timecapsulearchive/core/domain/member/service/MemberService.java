@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.domain.member.repository.NotificationRepository;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
@@ -35,6 +36,7 @@ import site.timecapsulearchive.core.global.util.TagGenerator;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final NotificationRepository notificationRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -222,5 +224,15 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public void delete(final Member member) {
+        memberRepository.delete(member);
+    }
+
+    @Transactional
+    public void deleteNotificationByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+        notificationRepository.deleteByMemberId(memberId, deletedAt);
     }
 }
