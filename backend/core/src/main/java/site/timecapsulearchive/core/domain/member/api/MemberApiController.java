@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResp
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
+import site.timecapsulearchive.core.domain.member.facade.MemberFacade;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -31,6 +34,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 @RequestMapping("/me")
 public class MemberApiController implements MemberApi {
 
+    private final MemberFacade memberFacade;
     private final MemberService memberService;
 
     @GetMapping(produces = {"application/json"})
@@ -130,5 +134,14 @@ public class MemberApiController implements MemberApi {
                 memberService.checkEmailDuplication(request.email())
             )
         );
+    }
+
+    @DeleteMapping
+    @Override
+    public ResponseEntity<ApiSpec<String>> deleteMember(Authentication authentication) {
+        memberFacade.deleteByMemberId((Long) authentication.getPrincipal(),
+            (String) authentication.getCredentials());
+
+        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 }

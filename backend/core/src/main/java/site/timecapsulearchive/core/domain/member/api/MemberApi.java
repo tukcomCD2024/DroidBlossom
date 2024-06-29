@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
@@ -160,4 +161,23 @@ public interface MemberApi {
     })
     ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
         CheckEmailDuplicationRequest request);
+
+    @Operation(
+        summary = "회원 탈퇴",
+        description = """
+            가입한 사용자가 회원을 탈퇴한다.
+            """,
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "사용자를 찾을 수 없는 경우 발생한다."
+        )
+    })
+    ResponseEntity<ApiSpec<String>> deleteMember(Authentication authentication);
 }
