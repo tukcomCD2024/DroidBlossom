@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/capsuleImg"
             android:background="@drawable/corner_radius_8"
-            android:src="@drawable/sample_skin"
+            android:src="@drawable/base_skin"
             android:backgroundTint="@color/white"
             android:padding="5dp"
             android:layout_marginVertical="12dp"

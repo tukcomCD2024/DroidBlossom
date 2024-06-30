@@ -39,7 +39,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:baseImg="@{@drawable/sample_skin}"
+                bind:baseImg="@{@drawable/base_skin}"
                 bind:url="@{item.motionUrl}"
                 tools:targetApi="s" />
 

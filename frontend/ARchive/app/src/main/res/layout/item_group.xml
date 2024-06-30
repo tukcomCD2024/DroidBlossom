@@ -46,7 +46,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/groupBtn"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/groupBtn"
-                    bind:baseImg="@{@drawable/base_use_img}"
+                    bind:baseImg="@{@drawable/base_user}"
                     bind:url="@{item.profileUrl}"
                     tools:src="@color/main_2" />
 

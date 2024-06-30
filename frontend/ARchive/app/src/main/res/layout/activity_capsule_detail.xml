@@ -163,9 +163,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        bind:baseImg="@{@drawable/sample_skin}"
+                        bind:baseImg="@{@drawable/base_skin}"
                         bind:url="@{vm.capsuleDetail.capsuleSkinUrl}"
-                        tools:src="@drawable/sample_skin" />
+                        tools:src="@drawable/base_skin" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/capsuleCreatedT"

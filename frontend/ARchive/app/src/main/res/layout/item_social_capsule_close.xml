@@ -27,7 +27,7 @@
                 android:id="@+id/capsuleImg"
                 android:layout_width="66dp"
                 android:layout_height="66dp"
-                bind:baseImg="@{@drawable/sample_skin}"
+                bind:baseImg="@{@drawable/base_skin}"
                 bind:url="@{item.capsuleSkinUrl}"
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
@@ -35,7 +35,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tool:src="@drawable/sample_skin" />
+                tool:src="@drawable/base_skin" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"

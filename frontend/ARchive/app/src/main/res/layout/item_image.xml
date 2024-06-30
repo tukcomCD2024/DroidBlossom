@@ -34,7 +34,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/postImg"
                     bind:url="@{item.url}"
-                    bind:baseImg="@{@drawable/app_symbol}"
+                    bind:baseImg="@{@drawable/base_content_img}"
                     android:layout_width="match_parent"
                     android:layout_height="360dp"
                     android:background="@drawable/corner_radius_16_stroke_2"

@@ -209,7 +209,7 @@
                     android:layout_gravity="center"
                     android:alpha="@{vm.visibleCapsuleOpenMessage ? 1.0F : 0.2F}"
                     android:scaleType="centerCrop"
-                    bind:baseImg="@{@drawable/sample_skin}"
+                    bind:baseImg="@{@drawable/base_skin}"
                     bind:url="@{vm.capsuleSummaryResponse.skinUrl}" />
 
             </com.google.android.material.card.MaterialCardView>

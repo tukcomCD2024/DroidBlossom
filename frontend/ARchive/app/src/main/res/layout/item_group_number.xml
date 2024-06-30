@@ -34,7 +34,7 @@
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
                 android:src="@color/main_4"
-                bind:baseImg="@{@drawable/base_use_img}"
+                bind:baseImg="@{@drawable/base_user}"
                 bind:url="@{item.profileUrl}"
                 tools:ignore="UnusedAttribute" />
         </androidx.cardview.widget.CardView>

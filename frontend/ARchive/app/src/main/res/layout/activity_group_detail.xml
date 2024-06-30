@@ -59,7 +59,7 @@
                             android:layout_marginTop="?attr/actionBarSize"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            bind:baseImg="@{@drawable/base_use_img}"
+                            bind:baseImg="@{@drawable/base_user}"
                             bind:url="@{vm.groupInfo.groupProfileUrl}"
                             tools:src="@color/main_2" />
 

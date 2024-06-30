@@ -29,12 +29,12 @@
                 android:layout_height="44dp"
                 app:civ_border_color="@color/white"
                 app:civ_border_overlay="true"
-                bind:baseImg="@{@drawable/app_symbol}"
-                bind:url="@{item.capsuleSkinUrl}"
+                bind:baseImg="@{@drawable/base_user}"
+                bind:url="@{item.profileUrl}"
                 app:civ_circle_background_color="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tool:src="@drawable/sample_skin" />
+                tool:src="@drawable/base_skin" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
@@ -138,7 +138,7 @@
                             android:id="@+id/capsuleContentImageView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            bind:baseImg="@{@drawable/img}"
+                            bind:baseImg="@{@drawable/base_content_img}"
                             bind:url="@{item.thumbnailImage}"
                             android:scaleType="centerCrop"/>
 
