@@ -15,6 +15,7 @@ import site.timecapsulearchive.core.domain.group.service.command.GroupCommandSer
 import site.timecapsulearchive.core.domain.group.service.query.GroupQueryService;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.domain.notification.service.NotificationService;
 import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier;
 
 @Component
@@ -23,8 +24,13 @@ public class MemberFacade {
 
     private final TokenManager tokenManager;
     private final MemberService memberService;
+
+    private final NotificationService notificationService;
+
     private final CapsuleService capsuleService;
+
     private final FriendCommandService friendCommandService;
+
     private final GroupCommandService groupCommandService;
     private final GroupCapsuleOpenService groupCapsuleOpenService;
     private final GroupQueryService groupQueryService;
@@ -46,7 +52,7 @@ public class MemberFacade {
         groupCapsuleService.deleteRelatedAllOwnerGroupCapsule(allOwnerGroups, deletedAt);
         groupCommandService.deleteRelatedAllOwnerGroup(allOwnerGroups, deletedAt);
 
-        memberService.deleteByMemberId(memberId, deletedAt);
+        notificationService.deleteByMemberId(memberId, deletedAt);
         memberService.delete(member);
 
         tokenManager.removeRefreshToken(memberId);

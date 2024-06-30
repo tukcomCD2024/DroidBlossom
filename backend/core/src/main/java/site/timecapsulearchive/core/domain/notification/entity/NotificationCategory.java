@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member.entity;
+package site.timecapsulearchive.core.domain.notification.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
