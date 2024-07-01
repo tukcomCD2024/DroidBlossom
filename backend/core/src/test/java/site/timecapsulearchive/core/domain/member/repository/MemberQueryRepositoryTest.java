@@ -4,22 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Slice;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFriendFixture;
-import site.timecapsulearchive.core.common.fixture.domain.NotificationFixture;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -30,7 +25,7 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     private final MemberQueryRepository memberQueryRepository;
 
     private Member member;
-    private Member zeroNotificationMember;
+    private Member noFriendMember;
     private int friendCount;
 
     MemberQueryRepositoryTest(EntityManager entityManager) {
@@ -44,8 +39,8 @@ class MemberQueryRepositoryTest extends RepositoryTest {
         member = MemberFixture.member(0);
         entityManager.persist(member);
 
-        zeroNotificationMember = MemberFixture.member(1);
-        entityManager.persist(zeroNotificationMember);
+        noFriendMember = MemberFixture.member(1);
+        entityManager.persist(noFriendMember);
 
         for (int count = 2; count < 22; count++) {
             Member friend = MemberFixture.member(count);
@@ -109,7 +104,7 @@ class MemberQueryRepositoryTest extends RepositoryTest {
         //given
         //when
         MemberDetailDto detailDto = memberQueryRepository.findMemberDetailResponseDtoById(
-                zeroNotificationMember.getId())
+                noFriendMember.getId())
             .orElseThrow();
 
         //then
