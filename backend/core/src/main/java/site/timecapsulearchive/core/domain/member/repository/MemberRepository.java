@@ -26,4 +26,6 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
         @Param("memberId") Long memberId,
         @Param("notificationEnabled") Boolean notificationEnabled
     );
+
+    void delete(Member member);
 }

@@ -23,11 +23,11 @@ import site.timecapsulearchive.core.common.fixture.domain.NotificationCategoryFi
 import site.timecapsulearchive.core.common.fixture.domain.NotificationFixture;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
-import site.timecapsulearchive.core.domain.member.entity.CategoryName;
+import site.timecapsulearchive.core.domain.notification.data.dto.MemberNotificationDto;
+import site.timecapsulearchive.core.domain.notification.entity.CategoryName;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.entity.Notification;
-import site.timecapsulearchive.core.domain.member.entity.NotificationCategory;
+import site.timecapsulearchive.core.domain.notification.entity.Notification;
+import site.timecapsulearchive.core.domain.notification.entity.NotificationCategory;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberQueryRepositoryTest extends RepositoryTest {
@@ -98,51 +98,6 @@ class MemberQueryRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(isDuplicated).isFalse();
-    }
-
-    @Test
-    void 특정_사용자로_알림_목록을_조회하면_알림_리스트가_반환된다() {
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now().plusMinutes(1);
-
-        Slice<MemberNotificationDto> slice = memberQueryRepository.findNotificationSliceByMemberId(
-            member.getId(), size, now);
-
-        assertThat(slice.getContent()).allMatch(
-            notification -> notification.createdAt().isBefore(now));
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {20, 15, 10, 5, 1})
-    void 원하는_크기로_알림_목록을_조회하면_크기에_맞는_알림_리스트가_반환된다(int size) {
-        ZonedDateTime now = ZonedDateTime.now().plusMinutes(1);
-
-        Slice<MemberNotificationDto> slice = memberQueryRepository.findNotificationSliceByMemberId(
-            member.getId(), size, now);
-
-        assertThat(slice.getContent().size()).isEqualTo(size);
-    }
-
-    @Test
-    void 유효하지_않은_시간으로_알림_목록을_조회하면_빈_알림_리스트가_반환된다() {
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now().minusDays(5);
-
-        Slice<MemberNotificationDto> slice = memberQueryRepository.findNotificationSliceByMemberId(
-            member.getId(), size, now);
-
-        assertThat(slice.getContent().size()).isEqualTo(0);
-    }
-
-    @Test
-    void 알림이_존재하지_않는_사용자로_알림_목록을_조회하면_빈_알림_리스트가_반환된다() {
-        int size = 20;
-        ZonedDateTime now = ZonedDateTime.now().plusMinutes(1);
-
-        Slice<MemberNotificationDto> slice = memberQueryRepository.findNotificationSliceByMemberId(
-            zeroNotificationMember.getId(), size, now);
-
-        assertThat(slice.getContent().size()).isEqualTo(0);
     }
 
     @Test
