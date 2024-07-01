@@ -106,7 +106,7 @@ public class FriendQueryService {
             memberFriendRepository.findFriendsByPhone(
                 memberId, hashes));
 
-        friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(memberPhoneHash));
+        friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(myPhoneWrapper));
 
         return friendSummaryDtos;
     }
