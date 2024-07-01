@@ -166,7 +166,8 @@ public interface AuthApi {
         )
     })
     ResponseEntity<ApiSpec<String>> signOutWithSocialProvider(
-        Authentication authentication
+        Long memberId,
+        String accessToken
     );
 
     @Operation(

@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
+import jakarta.persistence.Access;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResp
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
 import site.timecapsulearchive.core.domain.auth.service.AuthManager;
+import site.timecapsulearchive.core.global.common.argument.AccessToken;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
@@ -147,10 +149,10 @@ public class AuthApiController implements AuthApi {
     )
     @Override
     public ResponseEntity<ApiSpec<String>> signOutWithSocialProvider(
-        Authentication authentication
+        @AuthenticationPrincipal final Long memberId,
+        @AccessToken final String accessToken
     ) {
-        authManager.signOut((Long) authentication.getPrincipal(),
-            (String) authentication.getCredentials());
+        authManager.signOut(memberId, accessToken);
 
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
