@@ -1,16 +1,14 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import site.timecapsulearchive.core.domain.auth.data.dto.MemberInfo;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
-import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
-import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
-import site.timecapsulearchive.core.domain.auth.repository.MemberInfoCacheRepository;
+import site.timecapsulearchive.core.domain.auth.repository.BlackListCacheRepository;
+import site.timecapsulearchive.core.domain.auth.repository.RefreshTokenCacheRepository;
+import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
 import site.timecapsulearchive.core.global.security.jwt.TokenParseResult;
 import site.timecapsulearchive.core.global.security.jwt.TokenType;
@@ -20,7 +18,8 @@ import site.timecapsulearchive.core.global.security.jwt.TokenType;
 public class TokenManager {
 
     private final JwtFactory jwtFactory;
-    private final MemberInfoCacheRepository memberInfoCacheRepository;
+    private final RefreshTokenCacheRepository refreshTokenCacheRepository;
+    private final BlackListCacheRepository blackListCacheRepository;
 
     /**
      * 새로운 액세스 토큰과 리프레시 토큰을 발급한다. - 액세스 토큰(멤버 아이디) - 리프레시 토큰(데이터베이스에 저장된 사용자 식별자)
@@ -29,16 +28,16 @@ public class TokenManager {
      * @return 토큰 응답(액세스 토큰, 리프레시 토큰, 액세스 토큰 만료일, 리프레시 토큰 만료일)
      */
     public TokenDto createNewToken(final Long memberId) {
-        final String key = String.valueOf(UUID.randomUUID());
-        memberInfoCacheRepository.save(key, MemberInfo.from(memberId));
+        String refreshToken = jwtFactory.createRefreshToken(memberId);
+        refreshTokenCacheRepository.save(memberId, refreshToken);
 
-        return createTokenResponse(memberId, key);
+        return createToken(memberId, refreshToken);
     }
 
-    private TokenDto createTokenResponse(final Long memberId, final String key) {
+    private TokenDto createToken(final Long memberId, final String refreshToken) {
         return TokenDto.create(
             jwtFactory.createAccessToken(memberId),
-            jwtFactory.createRefreshToken(key),
+            refreshToken,
             jwtFactory.getExpiresIn(),
             jwtFactory.getRefreshTokenExpiresIn()
         );
@@ -68,13 +67,29 @@ public class TokenManager {
             refreshToken,
             List.of(TokenType.REFRESH)
         );
-        final MemberInfo memberInfo = memberInfoCacheRepository.findMemberInfoByInfoKey(
-                tokenParseResult.subject())
+
+        Long memberId = Long.valueOf(tokenParseResult.subject());
+        final String foundRefreshToken = refreshTokenCacheRepository.findRefreshTokenByMemberId(
+                memberId)
             .orElseThrow(AlreadyReIssuedTokenException::new);
 
-        final String newKey = String.valueOf(UUID.randomUUID());
-        memberInfoCacheRepository.rename(tokenParseResult.subject(), newKey);
+        if (!refreshToken.equals(foundRefreshToken)) {
+            throw new InvalidTokenException();
+        }
 
-        return createTokenResponse(memberInfo.memberId(), newKey);
+        String newRefreshToken = jwtFactory.createRefreshToken(memberId);
+        refreshTokenCacheRepository.save(memberId, newRefreshToken);
+
+        return createToken(memberId, refreshToken);
+    }
+
+    public void removeRefreshToken(final Long memberId) {
+        refreshTokenCacheRepository.remove(memberId);
+    }
+
+    public void addBlackList(final Long memberId, final String accessToken) {
+        long leftTime = jwtFactory.getLeftTime(accessToken);
+
+        blackListCacheRepository.save(memberId, accessToken, leftTime);
     }
 }

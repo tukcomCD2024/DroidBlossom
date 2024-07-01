@@ -95,4 +95,10 @@ public class AuthManager {
 
         return tokenManager.createNewToken(verifiedEmailMemberId);
     }
+
+    public void signOut(Long memberId, String accessToken) {
+        tokenManager.removeRefreshToken(memberId);
+
+        tokenManager.addBlackList(memberId, accessToken);
+    }
 }

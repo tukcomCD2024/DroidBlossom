@@ -74,4 +74,8 @@ public class GroupQueryService {
 
         return GroupDetailTotalDto.as(groupDetailDto, groupCapsuleCount, friendIds);
     }
+
+    public List<Group> findAllOwnerGroupsByMemberId(Long memberId) {
+        return groupRepository.findAllOwnerGroupsByMemberId(memberId);
+    }
 }

@@ -13,14 +13,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
+@Table(name = "member")
 @Getter
+@SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE member_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER")
 public class Member extends BaseEntity {
 
     @Id

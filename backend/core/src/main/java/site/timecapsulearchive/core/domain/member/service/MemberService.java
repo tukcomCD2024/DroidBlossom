@@ -1,20 +1,16 @@
 package site.timecapsulearchive.core.domain.member.service;
 
-import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -26,6 +22,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.domain.notification.repository.NotificationRepository;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
@@ -35,6 +32,7 @@ import site.timecapsulearchive.core.global.util.TagGenerator;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final NotificationRepository notificationRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -147,20 +145,6 @@ public class MemberService {
         }
     }
 
-    public MemberNotificationSliceResponse findNotificationSliceByMemberId(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        final Slice<MemberNotificationDto> notifications = memberRepository.findNotificationSliceByMemberId(
-            memberId, size, createdAt);
-
-        return memberMapper.notificationSliceToResponse(
-            notifications.getContent(),
-            notifications.hasNext()
-        );
-    }
-
     @Transactional
     public Long createMemberWithEmail(final String email, final String password) {
         final String encodedPassword = passwordEncoder.encode(password);
@@ -222,5 +206,10 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public void delete(final Member member) {
+        memberRepository.delete(member);
     }
 }
