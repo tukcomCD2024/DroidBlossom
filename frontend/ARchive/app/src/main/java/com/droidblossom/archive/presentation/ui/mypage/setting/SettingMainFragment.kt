@@ -103,7 +103,7 @@ class SettingMainFragment :
         val emailSelectorIntent = Intent(Intent.ACTION_SENDTO)
         emailSelectorIntent.data = Uri.parse("mailto:")
 
-        val address = arrayOf("ARchive@address.com")
+        val address = arrayOf("archivetimecapsule@gmail.com")
 
         val emailIntent = Intent(Intent.ACTION_SEND)
         emailIntent.putExtra(Intent.EXTRA_EMAIL, address)
