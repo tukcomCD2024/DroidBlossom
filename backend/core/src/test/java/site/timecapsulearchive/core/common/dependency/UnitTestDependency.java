@@ -37,7 +37,7 @@ public class UnitTestDependency {
     }
 
     public static JwtProperties jwtProperties() {
-        return new JwtProperties("T".repeat(32), 3600, 3600, 3600);
+        return new JwtProperties("T".repeat(32), 86400000L, 2592000000L, 3600000L);
     }
 
     public static JwtFactory jwtFactory() {

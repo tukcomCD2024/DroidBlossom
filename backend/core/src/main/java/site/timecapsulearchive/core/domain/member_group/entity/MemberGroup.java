@@ -12,6 +12,11 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
@@ -19,8 +24,10 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
 @Getter
+@Table(name = "member_group")
+@SQLDelete(sql = "UPDATE member_group SET deleted_at = now() WHERE member_group_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_GROUP")
 public class MemberGroup extends BaseEntity {
 
     @Id

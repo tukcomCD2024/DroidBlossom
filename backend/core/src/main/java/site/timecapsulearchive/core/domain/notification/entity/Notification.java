@@ -1,4 +1,4 @@
-package site.timecapsulearchive.core.domain.member.entity;
+package site.timecapsulearchive.core.domain.notification.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,12 +14,17 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "notification")
 @Getter
+@SQLDelete(sql = "UPDATE notification SET deleted_at = now() WHERE notification_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "NOTIFICATION")
 public class Notification extends BaseEntity {
 
     @Id

@@ -185,4 +185,27 @@ class JwtFactoryTest {
         assertThatThrownBy(() -> jwtFactory.validate(invalidToken))
             .isInstanceOf(InvalidTokenException.class);
     }
+
+    @Test
+    void 액세스_토큰을_주면_현재_시간과의_차이_밀리초를_반환한다() {
+        //given
+        String accessToken = TokenFixture.accessToken(MEMBER_ID);
+
+        //when
+        long leftTime = jwtFactory.getLeftTime(accessToken);
+
+        //then
+        assertThat(leftTime).isPositive();
+    }
+
+    @Test
+    void 이미_지난_액세스_토큰을_주면_예외가_발생한다() {
+        //given
+        String expiredAccessToken = TokenFixture.expiredToken(MEMBER_ID, TokenType.ACCESS);
+
+        //when
+        //then
+        assertThatThrownBy(() -> jwtFactory.getLeftTime(expiredAccessToken))
+            .isInstanceOf(InvalidTokenException.class);
+    }
 }

@@ -7,6 +7,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import javax.crypto.SecretKey;
@@ -54,7 +56,7 @@ public class JwtFactory {
     /**
      * 사용자 식별자를 받아서 리프레시 토큰 반환
      *
-     * @param memberInfoKey 사용자 식별자
+     * @param memberId 사용자 식별자
      * @return 리프레시 토큰
      */
     public String createRefreshToken(final Long memberId) {
@@ -155,5 +157,21 @@ public class JwtFactory {
 
     public long getTemporaryTokenExpiresIn() {
         return temporaryValidityMs;
+    }
+
+    public long getLeftTime(final String accessToken) {
+        Instant expiration;
+        try {
+             expiration = jwtParser().parseClaimsJws(accessToken)
+                .getBody()
+                .getExpiration()
+                .toInstant();
+        } catch (final JwtException | IllegalArgumentException e) {
+            throw new InvalidTokenException(e);
+        }
+
+        Instant now = Instant.now();
+
+        return Duration.between(now, expiration).toMillis();
     }
 }

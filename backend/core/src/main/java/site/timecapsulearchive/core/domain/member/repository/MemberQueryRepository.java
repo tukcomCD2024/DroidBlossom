@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
+import site.timecapsulearchive.core.domain.notification.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 
@@ -24,18 +24,6 @@ public interface MemberQueryRepository {
     );
 
     Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId);
-
-    Slice<MemberNotificationDto> findNotificationSliceByMemberId(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    );
-
-    List<MemberNotificationDto> findMemberNotificationDtos(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    );
 
     Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(final String email);
 

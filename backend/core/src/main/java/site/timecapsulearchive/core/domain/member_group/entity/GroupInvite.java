@@ -12,14 +12,18 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "group_invite")
 @Getter
+@SQLDelete(sql = "UPDATE `group_invite` SET deleted_at = now() WHERE group_invite_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "GROUP_INVITE")
 public class GroupInvite extends BaseEntity {
 
     @Id

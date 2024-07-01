@@ -30,4 +30,9 @@ public class RefreshTokenCacheRepository {
     public Optional<String> findRefreshTokenByMemberId(final Long memberId) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + memberId));
     }
+
+    public void remove(Long memberId) {
+        redisTemplate.opsForValue()
+            .getAndDelete(PREFIX + memberId);
+    }
 }

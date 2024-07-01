@@ -1,6 +1,6 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -12,6 +12,7 @@ import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.exception.AlreadyReIssuedTokenException;
+import site.timecapsulearchive.core.domain.auth.repository.BlackListCacheRepository;
 import site.timecapsulearchive.core.domain.auth.repository.RefreshTokenCacheRepository;
 import site.timecapsulearchive.core.global.error.exception.InvalidTokenException;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
@@ -23,7 +24,10 @@ class TokenManagerTest {
     private final JwtFactory jwtFactory = UnitTestDependency.jwtFactory();
     private final RefreshTokenCacheRepository refreshTokenCacheRepository = mock(
         RefreshTokenCacheRepository.class);
-    private final TokenManager tokenManager = new TokenManager(jwtFactory, refreshTokenCacheRepository);
+    private final BlackListCacheRepository blackListCacheRepository = mock(
+        BlackListCacheRepository.class);
+    private final TokenManager tokenManager = new TokenManager(jwtFactory,
+        refreshTokenCacheRepository, blackListCacheRepository);
 
     @Test
     void 사용자_아이디로_토큰을_발급하면_액세스_토큰과_리프레시_토큰이_나온다() {
@@ -64,7 +68,7 @@ class TokenManagerTest {
         TokenDto refreshedToken = tokenManager.reIssueToken(refreshToken);
 
         //then
-         assertSoftly(softly -> {
+        assertSoftly(softly -> {
             softly.assertThat(refreshedToken.accessToken()).isNotBlank();
             softly.assertThat(refreshedToken.refreshToken()).isNotBlank();
             softly.assertThat(refreshedToken.expiresIn()).isGreaterThan(0);

@@ -27,6 +27,8 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageRepository;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
@@ -34,7 +36,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenQueryRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.exception.NoGroupAuthorityException;
@@ -50,13 +52,15 @@ class GroupCapsuleServiceTest {
     private final CapsuleRepository capsuleRepository = mock(CapsuleRepository.class);
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository = mock(
         GroupCapsuleQueryRepository.class);
-    private final GroupCapsuleOpenQueryRepository groupCapsuleOpenQueryRepository = mock(
-        GroupCapsuleOpenQueryRepository.class);
+    private final GroupCapsuleOpenRepository groupCapsuleOpenRepository = mock(
+        GroupCapsuleOpenRepository.class);
+    private final ImageRepository imageRepository = mock(ImageRepository.class);
+    private final VideoRepository videoRepository = mock(VideoRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
 
     private final GroupCapsuleService groupCapsuleService = new GroupCapsuleService(
-        capsuleRepository, groupCapsuleQueryRepository, groupCapsuleOpenQueryRepository,
-        memberGroupRepository);
+        capsuleRepository, groupCapsuleQueryRepository, groupCapsuleOpenRepository, imageRepository,
+        videoRepository, memberGroupRepository);
 
     @Test
     void 개봉된_그룹_캡슐의_상세_내용을_볼_수_있다() {
@@ -387,7 +391,7 @@ class GroupCapsuleServiceTest {
         Long groupId = 1L;
         Long notGroupMemberId = 100L;
         int size = 20;
-        given(groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(capsuleId, groupId))
+        given(groupCapsuleOpenRepository.findGroupCapsuleMembers(capsuleId, groupId))
             .willReturn(GroupCapsuleMemberDtoFixture.members(memberId.intValue(), size, false));
 
         //when
@@ -404,7 +408,7 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        given(groupCapsuleOpenQueryRepository.findGroupCapsuleMembers(capsuleId, groupId))
+        given(groupCapsuleOpenRepository.findGroupCapsuleMembers(capsuleId, groupId))
             .willReturn(GroupCapsuleMemberDtoFixture.members(memberId.intValue(), size, false));
 
         //when

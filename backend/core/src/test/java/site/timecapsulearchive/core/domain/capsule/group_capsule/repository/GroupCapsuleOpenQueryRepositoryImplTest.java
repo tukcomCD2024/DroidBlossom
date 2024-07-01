@@ -28,7 +28,7 @@ import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
-class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
+class GroupCapsuleOpenQueryRepositoryImplTest extends RepositoryTest {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final GroupCapsuleOpenQueryRepository groupCapsuleOpenRepository;
@@ -38,13 +38,13 @@ class GroupCapsuleOpenQueryRepositoryTest extends RepositoryTest {
     private List<Member> groupMembers;
     private List<GroupCapsuleOpen> groupCapsuleOpens;
 
-    public GroupCapsuleOpenQueryRepositoryTest(
+    public GroupCapsuleOpenQueryRepositoryImplTest(
         JdbcTemplate jdbcTemplate,
         DataSource dataSource,
         JPAQueryFactory jpaQueryFactory
     ) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepository(jdbcTemplate,
+        this.groupCapsuleOpenRepository = new GroupCapsuleOpenQueryRepositoryImpl(jdbcTemplate,
             jpaQueryFactory);
     }
 
