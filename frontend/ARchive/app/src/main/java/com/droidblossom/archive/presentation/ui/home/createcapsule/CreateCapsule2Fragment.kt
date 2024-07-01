@@ -1,31 +1,22 @@
 package com.droidblossom.archive.presentation.ui.home.createcapsule
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCreateCapsule2Binding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.adapter.SkinRVA
-import com.droidblossom.archive.presentation.ui.skin.adapter.SkinMotionRVA
-import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -66,7 +57,6 @@ class CreateCapsule2Fragment :
         navController = Navigation.findNavController(view)
 
         initRVA()
-        initSearchEdit()
 
         //테스트용
         Toast.makeText(requireContext(), viewModel.capsuleTypeCreateIs.value.title, Toast.LENGTH_SHORT)
@@ -97,29 +87,6 @@ class CreateCapsule2Fragment :
                 }
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.recycleView.layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.updateTopConstraintsForSearch(
-                        isSearchOpen = it,
-                        searchOpenView = binding.searchOpenBtn,
-                        searchView = binding.searchBtn,
-                        additionalMarginDp = 16f,
-                        resources = resources
-                    )
-                    if (it){
-                        binding.searchOpenEditT.requestFocus()
-                        val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                        imm.showSoftInput(binding.searchOpenEditT, InputMethodManager.SHOW_IMPLICIT);
-
-                    }
-                }
-            }
-        }
-
-
     }
 
 
@@ -141,55 +108,5 @@ class CreateCapsule2Fragment :
                 }
             }
         })
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun initSearchEdit(){
-        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
-                    viewModel.searchSkin()
-                }
-                true
-            }
-            false
-        }
-        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel.closeSearchSkin()
-            }
-        }
-        binding.root.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.recycleView.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.searchOpenBtnT.setOnClickListener {
-            val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-        }
     }
 }
