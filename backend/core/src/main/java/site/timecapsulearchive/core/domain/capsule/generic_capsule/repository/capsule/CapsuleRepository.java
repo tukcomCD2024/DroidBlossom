@@ -1,5 +1,7 @@
 package site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -39,4 +41,14 @@ public interface CapsuleRepository extends Repository<Capsule, Long>, CapsuleQue
     Optional<Capsule> findNotOpenedGroupCapsuleByMemberIdAndCapsuleId(
         @Param("capsuleId") Long capsuleId
     );
+
+    @Query("UPDATE Capsule c SET c.deletedAt = :deletedAt WHERE c.member.id = :memberId and c.group is null ")
+    @Modifying
+    void deleteExcludeGroupCapsuleByMemberId(
+        @Param("memberId") Long memberId,
+        @Param("deletedAt") ZonedDateTime deletedAt
+    );
+
+    @Query("select c from Capsule c where c.group.id in :groupIds")
+    List<Capsule> findCapsulesByGroupIds(@Param("groupIds") List<Long> groupIds);
 }

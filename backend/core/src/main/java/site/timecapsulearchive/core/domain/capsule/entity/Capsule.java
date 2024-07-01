@@ -21,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -30,9 +32,11 @@ import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "capsule")
 @Getter
+@SQLDelete(sql = "UPDATE `capsule` SET deleted_at = now() WHERE capsule_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "CAPSULE")
 public class Capsule extends BaseEntity {
 
     @Id
@@ -62,13 +66,13 @@ public class Capsule extends BaseEntity {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "capsule")
     private final List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "capsule")
     private final List<Video> videos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "capsule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "capsule")
     private final List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

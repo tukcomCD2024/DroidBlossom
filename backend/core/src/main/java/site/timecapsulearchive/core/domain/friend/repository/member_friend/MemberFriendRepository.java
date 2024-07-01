@@ -1,6 +1,8 @@
 package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +22,11 @@ public interface MemberFriendRepository extends Repository<MemberFriend, Long>,
     void delete(MemberFriend memberFriend);
 
     void save(MemberFriend memberFriend);
+
+    @Query("UPDATE MemberFriend mf SET mf.deletedAt = :deletedAt WHERE mf.friend.id = :memberId or mf.owner.id = :memberId")
+    @Modifying
+    void deleteByMemberId(
+        @Param("memberId") Long memberId,
+        @Param("deletedAt") ZonedDateTime deletedAt
+    );
 }

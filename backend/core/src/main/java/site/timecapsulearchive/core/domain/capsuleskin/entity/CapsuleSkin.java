@@ -15,13 +15,17 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "capsule_skin")
 @Getter
+@SQLDelete(sql = "UPDATE `capsule_skin` SET deleted_at = now() WHERE caspuel_skin_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "CAPSULE_SKIN")
 public class CapsuleSkin extends BaseEntity {
 
     @Id

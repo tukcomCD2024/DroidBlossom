@@ -2,8 +2,8 @@ package site.timecapsulearchive.core.common.fixture.domain;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import site.timecapsulearchive.core.domain.member.entity.CategoryName;
-import site.timecapsulearchive.core.domain.member.entity.NotificationCategory;
+import site.timecapsulearchive.core.domain.notification.entity.CategoryName;
+import site.timecapsulearchive.core.domain.notification.entity.NotificationCategory;
 
 public class NotificationCategoryFixture {
 

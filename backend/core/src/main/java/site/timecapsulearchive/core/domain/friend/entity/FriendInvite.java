@@ -12,13 +12,17 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "friend_invite")
 @Getter
+@SQLDelete(sql = "UPDATE `friend_invite` SET deleted_at = now() WHERE friend_invite_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "FRIEND_INVITE")
 public class FriendInvite extends BaseEntity {
 
     @Id
