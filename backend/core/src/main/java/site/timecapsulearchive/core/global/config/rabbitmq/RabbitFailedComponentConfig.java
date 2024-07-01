@@ -110,25 +110,4 @@ public class RabbitFailedComponentConfig {
             .to(friendAcceptFailExchange())
             .withQueueName();
     }
-
-    @Bean
-    public Queue treasureCaptureFailQueue() {
-        return new Queue(
-            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_QUEUE.getFailComponent(),
-            true);
-    }
-
-    @Bean
-    public DirectExchange treasureCaptureFailExchange() {
-        return new DirectExchange(
-            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getFailComponent());
-    }
-
-    @Bean
-    public Binding treasureCaptureFailBinding() {
-        return BindingBuilder
-            .bind(treasureCaptureFailQueue())
-            .to(treasureCaptureFailExchange())
-            .withQueueName();
-    }
 }

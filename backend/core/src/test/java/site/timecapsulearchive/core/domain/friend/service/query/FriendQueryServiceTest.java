@@ -27,12 +27,15 @@ import site.timecapsulearchive.core.domain.friend.data.request.FriendBeforeGroup
 import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 class FriendQueryServiceTest {
 
+    private final MemberRepository memberRepository = mock(
+        MemberRepository.class);
     private final MemberFriendRepository memberFriendRepository = mock(
         MemberFriendRepository.class);
     private final MemberGroupRepository memberGroupRepository = mock(MemberGroupRepository.class);
@@ -41,6 +44,7 @@ class FriendQueryServiceTest {
         FriendInviteRepository.class);
 
     private final FriendQueryService friendQueryService = new FriendQueryService(
+        memberRepository,
         memberFriendRepository,
         memberGroupRepository,
         groupInviteRepository,
@@ -48,7 +52,7 @@ class FriendQueryServiceTest {
     );
 
     @Test
-    void 사용자는_주소록_기반_핸드폰_번호로_Ahchive_사용자_리스트를_조회_할_수_있다() {
+    void 사용자는_주소록_기반_핸드폰_번호로_ARchive_사용자_리스트를_조회_할_수_있다() {
         //given
         Long memberId = 1L;
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(5);
@@ -65,7 +69,7 @@ class FriendQueryServiceTest {
 
 
     @Test
-    void 사용자는_주소록_기반_번호_없이_Ahchive_사용자_리스트_조회하면_빈_리스트를_반환한다() {
+    void 사용자는_주소록_기반_핸드폰_번호_없이_ARchive_사용자_리스트_조회하면_빈_리스트를_반환한다() {
         //given
         Long memberId = 1L;
         List<ByteArrayWrapper> phones = Collections.emptyList();
@@ -81,7 +85,28 @@ class FriendQueryServiceTest {
     }
 
     @Test
-    void 사용자는_태그로_Ahchive_사용자를_검색할_수_있다() {
+    void 사용자는_주소록_기반_번호로_ARchive_사용자를_검색하면_본인은_조회되지_않는다() {
+        //given
+        Long memberId = 1L;
+        int friendsCount = 5;
+        int startFriendsIndex = 0;
+
+        List<ByteArrayWrapper> phones = MemberFixture.getPhones(friendsCount);
+
+        given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
+            Optional.of(MemberFixture.getPhoneBytes(startFriendsIndex)));
+
+        given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
+            .willReturn(FriendDtoFixture.getFriendSummaryDtos(friendsCount));
+
+        List<SearchFriendSummaryDto> dtos = friendQueryService.findFriendsByPhone(memberId,
+            phones);
+
+        assertThat(dtos.size()).isEqualTo(friendsCount - 1);
+    }
+
+    @Test
+    void 사용자는_태그로_ARchive_사용자를_검색할_수_있다() {
         //given
         Long memberId = 1L;
         String tag = "testTag";
@@ -105,7 +130,7 @@ class FriendQueryServiceTest {
     }
 
     @Test
-    void 사용자는_존재하지_않는_태그로_Ahchive_사용자를_검색하면_예외가_발생한다() {
+    void 사용자는_존재하지_않는_태그로_ARchive_사용자를_검색하면_예외가_발생한다() {
         //given
         Long memberId = 1L;
         String tag = "testTag";

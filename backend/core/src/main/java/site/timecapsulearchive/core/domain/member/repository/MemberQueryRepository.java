@@ -35,4 +35,7 @@ public interface MemberQueryRepository {
     List<Long> findMemberIdsByIds(final List<Long> ids);
 
     boolean checkTagDuplication(final String tag);
+
+    Optional<byte[]> findMemberPhoneHash(final Long memberId);
+
 }
