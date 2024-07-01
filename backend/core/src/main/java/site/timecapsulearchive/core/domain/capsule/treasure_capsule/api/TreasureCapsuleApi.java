@@ -20,7 +20,7 @@ public interface TreasureCapsuleApi {
         summary = "보물 캡슐 개봉",
         description = "사용자는 보물 캡슐을 개봉할 수 있다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"secret capsule"}
+        tags = {"treasure capsule"}
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -49,7 +49,7 @@ public interface TreasureCapsuleApi {
         summary = "보물 캡슐 요약 조회",
         description = "사용자는 보물 캡슐 정보를 요약 조회할 수 있다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"secret capsule"}
+        tags = {"treasure capsule"}
     )
     @ApiResponses(value = {
         @ApiResponse(
