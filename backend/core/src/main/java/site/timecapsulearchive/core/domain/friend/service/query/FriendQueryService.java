@@ -99,11 +99,12 @@ public class FriendQueryService {
             .map(ByteArrayWrapper::data)
             .toList();
 
-        final ByteArrayWrapper memberPhoneHash = memberRepository.findMemberPhoneHash(memberId).orElseThrow(
-            MemberNotFoundException::new);
+        final ByteArrayWrapper myPhoneWrapper = memberRepository.findMemberPhoneHash(memberId)
+            .orElseThrow(MemberNotFoundException::new);
 
-        final List<SearchFriendSummaryDto> friendSummaryDtos = new ArrayList<>(memberFriendRepository.findFriendsByPhone(
-            memberId, hashes));
+        final List<SearchFriendSummaryDto> friendSummaryDtos = new ArrayList<>(
+            memberFriendRepository.findFriendsByPhone(
+                memberId, hashes));
 
         friendSummaryDtos.removeIf(dto -> dto.phoneHash().equals(memberPhoneHash));
 

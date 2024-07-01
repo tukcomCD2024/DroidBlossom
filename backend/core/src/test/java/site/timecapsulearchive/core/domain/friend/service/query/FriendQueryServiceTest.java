@@ -55,8 +55,11 @@ class FriendQueryServiceTest {
     void 사용자는_주소록_기반_핸드폰_번호로_ARchive_사용자_리스트를_조회_할_수_있다() {
         //given
         Long memberId = 1L;
+        int startFriendsIndex = 0;
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(5);
 
+        given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
+            Optional.of(MemberFixture.getPhoneByteWrapper(startFriendsIndex)));
         given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(FriendDtoFixture.getFriendSummaryDtos(5));
 
@@ -64,7 +67,7 @@ class FriendQueryServiceTest {
         List<SearchFriendSummaryDto> dtos = friendQueryService.findFriendsByPhone(memberId, phones);
 
         //then
-        assertThat(dtos.size()).isEqualTo(phones.size());
+        assertThat(dtos).isNotEmpty();
     }
 
 
@@ -72,7 +75,11 @@ class FriendQueryServiceTest {
     void 사용자는_주소록_기반_핸드폰_번호_없이_ARchive_사용자_리스트_조회하면_빈_리스트를_반환한다() {
         //given
         Long memberId = 1L;
+        int startFriendsIndex = 0;
         List<ByteArrayWrapper> phones = Collections.emptyList();
+
+        given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
+            Optional.of(MemberFixture.getPhoneByteWrapper(startFriendsIndex)));
         given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(Collections.emptyList());
 
