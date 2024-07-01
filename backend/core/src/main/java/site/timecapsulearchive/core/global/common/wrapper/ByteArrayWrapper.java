@@ -2,19 +2,12 @@ package site.timecapsulearchive.core.global.common.wrapper;
 
 import java.util.Arrays;
 
-public final class ByteArrayWrapper {
+public record ByteArrayWrapper(byte[] data) {
 
-    private final byte[] data;
-
-    public ByteArrayWrapper(final byte[] data) {
+    public ByteArrayWrapper {
         if (data == null) {
             throw new NullPointerException();
         }
-        this.data = data;
-    }
-
-    public byte[] getData() {
-        return data;
     }
 
     @Override

@@ -94,7 +94,7 @@ class FriendQueryServiceTest {
         List<ByteArrayWrapper> phones = MemberFixture.getPhones(friendsCount);
 
         given(memberRepository.findMemberPhoneHash(anyLong())).willReturn(
-            Optional.of(MemberFixture.getPhoneBytes(startFriendsIndex)));
+            Optional.of(new ByteArrayWrapper(MemberFixture.getPhoneBytes(startFriendsIndex))));
 
         given(memberFriendRepository.findFriendsByPhone(anyLong(), anyList()))
             .willReturn(FriendDtoFixture.getFriendSummaryDtos(friendsCount));
