@@ -1,11 +1,9 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
-import jakarta.persistence.Access;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.TokenDto;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
-import site.timecapsulearchive.core.domain.auth.data.request.EmailSignInRequest;
-import site.timecapsulearchive.core.domain.auth.data.request.EmailSignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignInRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.SignUpRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.TemporaryTokenReIssueRequest;
@@ -191,46 +187,6 @@ public class AuthApiController implements AuthApi {
     ) {
         TokenDto token = authManager.validVerificationMessage(memberId,
             request.certificationNumber(), request.receiver());
-
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                token.toResponse()
-            )
-        );
-    }
-
-    @PostMapping(
-        value = "/sign-up/email",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<ApiSpec<TemporaryTokenResponse>> signUpWithEmail(
-        @Valid @RequestBody final EmailSignUpRequest request
-    ) {
-        TemporaryTokenDto temporaryToken = authManager.signUpWithEmail(request.email(),
-            request.password());
-
-        return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                temporaryToken.toResponse()
-            )
-        );
-    }
-
-    @PostMapping(
-        value = "/sign-in/email",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<ApiSpec<TokenResponse>> signInWithEmail(
-        @Valid @RequestBody final EmailSignInRequest request
-    ) {
-        TokenDto token = authManager.signInWithEmail(request.email(),
-            request.password());
 
         return ResponseEntity.ok(
             ApiSpec.success(

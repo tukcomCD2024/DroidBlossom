@@ -27,5 +27,13 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
         @Param("notificationEnabled") Boolean notificationEnabled
     );
 
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Member m SET m.nickname = :nickname, m.tag = :tag WHERE m.id = :memberId")
+    int updateMemberData(
+        @Param("memberId") Long memberId,
+        @Param("nickname") String nickname,
+        @Param("tag") String tag
+    );
+
     void delete(Member member);
 }

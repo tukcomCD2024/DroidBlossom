@@ -8,145 +8,68 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
-import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
-import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
+import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
+import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
-import site.timecapsulearchive.core.domain.notification.repository.NotificationRepository;
+import site.timecapsulearchive.core.global.error.ErrorCode;
 
 class MemberServiceTest {
 
     private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final NotificationRepository notificationRepository = mock(
-        NotificationRepository.class);
     private final MemberTemporaryRepository memberTemporaryRepository = mock(
         MemberTemporaryRepository.class);
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private final MemberMapper memberMapper = mock(MemberMapper.class);
 
     private final MemberService memberService = new MemberService(
         memberRepository,
-        notificationRepository,
-        memberTemporaryRepository,
-        passwordEncoder,
-        memberMapper
+        memberTemporaryRepository
     );
 
     @Test
-    void 이메일과_패스워드로_존재하지_않는_회원_아이디_검색하면_예외가_발생한다() {
+    void 인증된_사용자는_전화번호_인증을_했다() {
         //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(Optional.empty());
-
-        //when, then
-        assertThatThrownBy(
-            () -> memberService.findVerifiedEmailMemberIdBy(email, password))
-            .isExactlyInstanceOf(MemberNotFoundException.class);
-    }
-
-    @Test
-    void 이메일과_패스워드로_검증된_회원_아이디_검색하면_올바른_아이디가_반환된다() {
-        //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
+        String authId = "testAuthId";
+        SocialType socialType = SocialType.KAKAO;
+        given(memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType)).willReturn(
+            Boolean.TRUE);
 
         //when
-        Long id = memberService.findVerifiedEmailMemberIdBy(
-            email, password);
+        MemberStatusResponse memberStatusResponse = memberService.checkStatus(authId, socialType);
 
         //then
-        assertThat(id).isNotNull();
-    }
-
-    private Optional<EmailVerifiedCheckDto> getVerifiedCheckDto(Boolean isVerified, String email,
-        String password) {
-        return Optional.of(
-            new EmailVerifiedCheckDto(
-                1L,
-                isVerified,
-                email,
-                (password == null) ? null : passwordEncoder.encode(password)
-            )
-        );
+        assertThat(memberStatusResponse.isVerified()).isTrue();
     }
 
     @Test
-    void 이메일과_패스워드로_검증되지_않은_회원_아이디_검색하면_예외가_발생한다() {
+    void 인증되지_않은_사용자는_전화번호_인증을_하지_않았다() {
         //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(getVerifiedCheckDto(Boolean.FALSE, email, password));
+        String authId = "testAuthId";
+        SocialType socialType = SocialType.KAKAO;
+        given(memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType)).willReturn(
+            Boolean.FALSE);
 
-        //when, then
-        assertThatThrownBy(
-            () -> memberService.findVerifiedEmailMemberIdBy(email, password))
-            .isExactlyInstanceOf(NotVerifiedMemberException.class);
+        //when
+        MemberStatusResponse memberStatusResponse = memberService.checkStatus(authId, socialType);
+
+        //then
+        assertThat(memberStatusResponse.isVerified()).isFalse();
     }
 
     @Test
-    void 올바르지_않은_이메일로_검증된_회원_아이디_검색하면_예외가_발생한다() {
+    void 로그인을_할_때_인증되지_않은_사용자는_예외가_발생한다() {
         //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
+        String authId = "testAuthId";
+        SocialType socialType = SocialType.KAKAO;
+        VerifiedCheckDto verifiedCheckDto = new VerifiedCheckDto(1L, false);
+        given(memberRepository.findVerifiedCheckDtoByAuthIdAndSocialType(authId,
+            socialType)).willReturn(Optional.of(verifiedCheckDto));
 
-        //when, then
-        assertThatThrownBy(
-            () -> memberService.findVerifiedEmailMemberIdBy(email + "trash", password))
-            .isExactlyInstanceOf(CredentialsNotMatchedException.class);
-    }
-
-    @Test
-    void 올바르지_않은_비밀번호로_검증된_회원_아이디_검색하면_예외가_발생한다() {
-        //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
-
-        //when, then
-        assertThatThrownBy(
-            () -> memberService.findVerifiedEmailMemberIdBy(email, password + "trash"))
-            .isExactlyInstanceOf(CredentialsNotMatchedException.class);
-    }
-
-    @Test
-    void 비밀번호가_없는_검증된_회원_아이디_검색하면_예외가_발생한다() {
-        //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, null));
-
-        //when, then
-        assertThatThrownBy(
-            () -> memberService.findVerifiedEmailMemberIdBy(email, password))
-            .isExactlyInstanceOf(CredentialsNotMatchedException.class);
-    }
-
-    @Test
-    void 올바르지_않은_이메일과_비밀번호로_검증된_회원_아이디_검색하면_예외가_발생한다() {
-        //given
-        String email = "test@google.com";
-        String password = "test-password";
-        given(memberRepository.findEmailVerifiedCheckDtoByEmail(anyString()))
-            .willReturn(getVerifiedCheckDto(Boolean.TRUE, email, password));
-
-        //when, then
-        assertThatThrownBy(
-            () -> memberService.findVerifiedEmailMemberIdBy(email + "password",
-                password + "trash"))
-            .isExactlyInstanceOf(CredentialsNotMatchedException.class);
+        //when
+        assertThatThrownBy(() -> memberService.findVerifiedMemberIdByAuthIdAndSocialType(
+            authId, socialType))
+            .isInstanceOf(NotVerifiedMemberException.class)
+            .hasMessageContaining(ErrorCode.LOGIN_ON_NOT_VERIFIED_ERROR.getMessage());
     }
 }

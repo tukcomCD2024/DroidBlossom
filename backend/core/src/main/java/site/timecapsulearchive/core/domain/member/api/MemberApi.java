@@ -7,10 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
@@ -119,8 +119,8 @@ public interface MemberApi {
     );
 
     @Operation(
-        summary = "이메일 중복 조회",
-        description = "이메일의 중복을 조회한다.",
+        summary = "사용자 정보 수정",
+        description = "사용자 정보(닉네임, 태그)를 수정한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"member"}
     )
@@ -130,12 +130,15 @@ public interface MemberApi {
             description = "처리 완료"
         ),
         @ApiResponse(
-            responseCode = "400",
-            description = "입력 이메일이 없거나 형식이 안맞는 경우 발생하는 예외"
-        )
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
     })
-    ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
-        CheckEmailDuplicationRequest request);
+    ResponseEntity<ApiSpec<String>> updateMemberData(
+        Long memberId,
+        UpdateMemberDataRequest request
+    );
 
     @Operation(
         summary = "회원 탈퇴",

@@ -19,15 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.common.RepositoryTest;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFriendFixture;
-import site.timecapsulearchive.core.common.fixture.domain.NotificationCategoryFixture;
 import site.timecapsulearchive.core.common.fixture.domain.NotificationFixture;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.notification.data.dto.MemberNotificationDto;
-import site.timecapsulearchive.core.domain.notification.entity.CategoryName;
 import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.notification.entity.Notification;
-import site.timecapsulearchive.core.domain.notification.entity.NotificationCategory;
 
 @TestConstructor(autowireMode = AutowireMode.ALL)
 class MemberQueryRepositoryTest extends RepositoryTest {
@@ -52,16 +47,6 @@ class MemberQueryRepositoryTest extends RepositoryTest {
         zeroNotificationMember = MemberFixture.member(1);
         entityManager.persist(zeroNotificationMember);
 
-        NotificationCategory notificationCategory = NotificationCategoryFixture.notificationCategory(
-            CategoryName.CAPSULE_SKIN);
-        entityManager.persist(notificationCategory);
-
-        for (int count = 0; count < 20; count++) {
-            Notification notification = NotificationFixture.notification(member,
-                notificationCategory);
-            entityManager.persist(notification);
-        }
-
         for (int count = 2; count < 22; count++) {
             Member friend = MemberFixture.member(count);
             entityManager.persist(friend);
@@ -74,30 +59,6 @@ class MemberQueryRepositoryTest extends RepositoryTest {
 
             friendCount += 1;
         }
-    }
-
-    @Test
-    void 중복_이메일로_중복_체크하면_True가_반환된다() {
-        //given
-        String duplicatedEmail = "1test@google.com";
-
-        //when
-        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(duplicatedEmail);
-
-        //then
-        assertThat(isDuplicated).isTrue();
-    }
-
-    @Test
-    void 고유한_이메일로_중복_체크_테스트하면_False가_반환된다() {
-        //given
-        String uniqueEmail = "unique@google.com";
-
-        //when
-        Boolean isDuplicated = memberQueryRepository.checkEmailDuplication(uniqueEmail);
-
-        //then
-        assertThat(isDuplicated).isFalse();
     }
 
     @Test
