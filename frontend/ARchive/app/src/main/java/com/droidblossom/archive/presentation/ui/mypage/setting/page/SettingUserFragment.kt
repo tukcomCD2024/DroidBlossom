@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
-import com.droidblossom.archive.databinding.FragmentSettingNoticeBinding
 import com.droidblossom.archive.databinding.FragmentSettingUserBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModelImpl
@@ -29,6 +28,10 @@ class SettingUserFragment :
     private fun initView() {
         binding.backBtn.setOnClickListener {
             navController.popBackStack()
+        }
+
+        binding.modifyBtn.setOnClickListener{
+            navController.navigate(R.id.action_settingUserFragment_to_settingUserModifyFragment)
         }
     }
 

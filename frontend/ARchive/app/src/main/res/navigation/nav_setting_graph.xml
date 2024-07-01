@@ -38,11 +38,20 @@
         android:id="@+id/settingNoticeFragment"
         android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingNoticeFragment"
         android:label="SettingNoticeFragment"
-        tools:layout="@layout/fragment_setting_notice"/>
+        tools:layout="@layout/fragment_setting_notice" />
     <fragment
         android:id="@+id/settingUserFragment"
         android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingUserFragment"
         android:label="SettingUserFragment"
-        tools:layout="@layout/fragment_setting_user"/>
+        tools:layout="@layout/fragment_setting_user">
+        <action
+            android:id="@+id/action_settingUserFragment_to_settingUserModifyFragment"
+            app:destination="@id/settingUserModifyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingUserModifyFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingUserModifyFragment"
+        android:label="SettingUserModifyFragment"
+        tools:layout="@layout/fragment_setting_user_modify" />
 
 </navigation>

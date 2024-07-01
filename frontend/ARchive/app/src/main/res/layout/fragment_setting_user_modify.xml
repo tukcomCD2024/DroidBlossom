@@ -57,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/settingTitleT"
-            tools:src="@color/main_2" />
+            android:src="@drawable/app_symbol" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/profileNameT"
@@ -72,7 +72,7 @@
             android:lines="1"
             android:maxWidth="250dp"
             android:text="이름입니다"
-            android:textAppearance="@style/TextAppearance.App.h3"
+            android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +103,7 @@
             android:lines="1"
             android:maxWidth="250dp"
             android:text="tag"
-            android:textAppearance="@style/TextAppearance.App.h3"
+            android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/gray_700"
             app:layout_constraintEnd_toStartOf="@id/tagBtn"
             app:layout_constraintStart_toStartOf="parent"

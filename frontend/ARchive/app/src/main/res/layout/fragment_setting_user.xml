@@ -54,10 +54,10 @@
             android:layout_width="140dp"
             android:layout_height="140dp"
             android:layout_marginTop="24dp"
+            android:src="@color/main_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/settingTitleT"
-            tools:src="@color/main_2" />
+            app:layout_constraintTop_toBottomOf="@id/settingTitleT" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/profileNameT"
@@ -183,13 +183,13 @@
                     android:id="@+id/phoneT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="01012XXXX34"
                     android:layout_marginStart="16dp"
+                    android:text="01012XXXX34"
                     android:textAppearance="@style/TextAppearance.App.subtitle1"
                     android:textColor="@color/black"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/phoneIV"/>
+                    app:layout_constraintStart_toEndOf="@id/phoneIV"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -199,13 +199,13 @@
             android:id="@+id/quitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:layout_marginBottom="24dp"
             android:text="계정삭제"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
-            android:textColor="@color/red"
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="36dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:textColor="@color/gray_800"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

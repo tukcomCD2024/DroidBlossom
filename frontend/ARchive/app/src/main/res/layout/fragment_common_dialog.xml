@@ -47,7 +47,7 @@
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_4"
             android:gravity="center"
-            android:text="취소"
+            android:text="아니요"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/main_2"
             app:layout_constraintEnd_toStartOf="@id/rightBtn"
