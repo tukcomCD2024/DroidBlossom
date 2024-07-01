@@ -15,7 +15,6 @@ import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRep
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.infra.queue.manager.SocialNotificationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,6 @@ public class TreasureCapsuleService {
     private final MemberRepository memberRepository;
     private final CapsuleRepository capsuleRepository;
     private final CapsuleSkinRepository capsuleSkinRepository;
-    private final SocialNotificationManager socialNotificationManager;
     private final TransactionTemplate transactionTemplate;
 
     public TreasureCapsuleOpenDto openTreasureCapsule(final Long memberId, final Long capsuleId) {
@@ -47,10 +45,6 @@ public class TreasureCapsuleService {
 
             return imageUrl;
         });
-
-        // 알림 전송
-        socialNotificationManager.sendTreasureCaptureMessage(memberId, member.getNickname(),
-            treasureImageUrl);
 
         return new TreasureCapsuleOpenDto(treasureImageUrl);
     }

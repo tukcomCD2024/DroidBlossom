@@ -61,6 +61,10 @@ public class MemberFixture {
         return member;
     }
 
+    public static ByteArrayWrapper getPhoneByteWrapper(int dataPrefix) {
+        return new ByteArrayWrapper(getPhoneBytes(dataPrefix));
+    }
+
     /**
      * 테스트 픽스처 - 멤버마다 상이한 번호를 위해 dataPrefix를 주면 해당 dataPrefix에 대한 핸드폰 번호 바이트를 반환한다.
      * <br><u><b>주의</b></u> - 테스트에서 같은 prefix를 사용하면 오류가 발생하므로 서로 다른 prefix를 쓰도록 해야함.

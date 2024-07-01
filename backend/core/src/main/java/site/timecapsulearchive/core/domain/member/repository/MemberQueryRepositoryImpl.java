@@ -23,19 +23,20 @@ import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
+import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
 @Repository
 @RequiredArgsConstructor
 public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
-    private final JPAQueryFactory query;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public Boolean findIsVerifiedByAuthIdAndSocialType(
         final String authId,
         final SocialType socialType
     ) {
-        return query.select(member.isVerified)
+        return jpaQueryFactory.select(member.isVerified)
             .from(member)
             .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
             .fetchOne();
@@ -47,7 +48,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         final SocialType socialType
     ) {
         return Optional.ofNullable(
-            query
+            jpaQueryFactory
                 .select(
                     Projections.constructor(
                         VerifiedCheckDto.class,
@@ -64,7 +65,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     @Override
     public Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId) {
         return Optional.ofNullable(
-            query
+            jpaQueryFactory
                 .select(
                     Projections.constructor(
                         MemberDetailDto.class,
@@ -111,7 +112,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     ) {
-        return query
+        return jpaQueryFactory
             .select(
                 Projections.constructor(
                     MemberNotificationDto.class,
@@ -136,7 +137,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         final String email
     ) {
         return Optional.ofNullable(
-            query
+            jpaQueryFactory
                 .select(
                     Projections.constructor(
                         EmailVerifiedCheckDto.class,
@@ -154,7 +155,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
     @Override
     public Boolean checkEmailDuplication(final String email) {
-        final Integer count = query.selectOne()
+        final Integer count = jpaQueryFactory.selectOne()
             .from(member)
             .where(member.email.eq(email))
             .fetchFirst();
@@ -165,7 +166,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     @Override
     public Optional<Boolean> findIsAlarmByMemberId(final Long memberId) {
         return Optional.ofNullable(
-            query.select(member.notificationEnabled)
+            jpaQueryFactory.select(member.notificationEnabled)
                 .from(member)
                 .where(member.id.eq(memberId))
                 .fetchOne()
@@ -173,8 +174,8 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public List<Long> findMemberIdsByIds(List<Long> ids) {
-        return query
+    public List<Long> findMemberIdsByIds(final List<Long> ids) {
+        return jpaQueryFactory
             .select(member.id)
             .from(member)
             .where(member.id.in(ids))
@@ -182,12 +183,29 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public boolean checkTagDuplication(String tag) {
-        final Integer count = query.selectOne()
+    public boolean checkTagDuplication(final String tag) {
+        final Integer count = jpaQueryFactory.selectOne()
             .from(member)
             .where(member.tag.eq(tag))
             .fetchFirst();
 
         return count != null;
+    }
+
+    @Override
+    public Optional<ByteArrayWrapper> findMemberPhoneHash(final Long memberId) {
+        final byte[] phoneHash = jpaQueryFactory
+            .select(
+                member.phone_hash
+            )
+            .from(member)
+            .where(member.id.eq(memberId))
+            .fetchOne();
+
+        if (phoneHash != null) {
+            return Optional.of(new ByteArrayWrapper(phoneHash));
+        }
+
+        return Optional.empty();
     }
 }
