@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Slice;
-import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
@@ -32,16 +31,6 @@ public interface MemberQueryRepository {
         final ZonedDateTime createdAt
     );
 
-    List<MemberNotificationDto> findMemberNotificationDtos(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    );
-
-    Optional<EmailVerifiedCheckDto> findEmailVerifiedCheckDtoByEmail(final String email);
-
-    Boolean checkEmailDuplication(final String email);
-
     Optional<Boolean> findIsAlarmByMemberId(final Long memberId);
 
     List<Long> findMemberIdsByIds(final List<Long> ids);
@@ -49,4 +38,5 @@ public interface MemberQueryRepository {
     boolean checkTagDuplication(final String tag);
 
     Optional<ByteArrayWrapper> findMemberPhoneHash(final Long memberId);
+
 }

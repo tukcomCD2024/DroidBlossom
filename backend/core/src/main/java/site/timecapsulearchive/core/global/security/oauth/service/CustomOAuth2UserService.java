@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
@@ -24,7 +23,6 @@ import site.timecapsulearchive.core.global.security.oauth.dto.OAuthAttributes;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberRepository memberRepository;
-    private final MemberMapper memberMapper;
 
     @Override
     public OAuth2User loadUser(final OAuth2UserRequest userRequest)
@@ -71,11 +69,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private Member saveMember(final SocialType socialType, final OAuthAttributes attributes) {
-        final Member createMember = memberMapper.OAuthToEntity(
-            attributes.getAuthId(),
-            socialType,
-            attributes.getOauth2UserInfo()
-        );
+        final Member createMember = attributes.OAuthToMember(socialType);
 
         boolean isDuplicateTag = memberRepository.checkTagDuplication(createMember.getTag());
         if (isDuplicateTag) {

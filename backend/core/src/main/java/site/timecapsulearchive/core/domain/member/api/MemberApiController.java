@@ -3,6 +3,7 @@ package site.timecapsulearchive.core.domain.member.api;
 import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
-import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
@@ -25,6 +26,7 @@ import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResp
 import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +34,7 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class MemberApiController implements MemberApi {
 
     private final MemberService memberService;
+    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @GetMapping(produces = {"application/json"})
     @Override
@@ -111,24 +114,33 @@ public class MemberApiController implements MemberApi {
         @RequestParam(defaultValue = "20", value = "size") final int size,
         @RequestParam(value = "created_at") final ZonedDateTime createdAt
     ) {
+        final Slice<MemberNotificationDto> memberNotificationDtos = memberService.findNotificationSliceByMemberId(
+            memberId, size, createdAt);
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                memberService.findNotificationSliceByMemberId(memberId, size, createdAt)
+                MemberNotificationSliceResponse.createOf(
+                    memberNotificationDtos,
+                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
+                )
             )
         );
     }
 
-    @PostMapping("/check-duplication/email")
     @Override
-    public ResponseEntity<ApiSpec<CheckEmailDuplicationResponse>> checkEmailDuplication(
-        @Valid @RequestBody CheckEmailDuplicationRequest request
+    @PatchMapping("/data")
+    public ResponseEntity<ApiSpec<String>> updateMemberData(
+        @AuthenticationPrincipal Long memberId,
+        @Valid @RequestBody UpdateMemberDataRequest request
     ) {
+        memberService.updateMemberData(memberId, request.toDto());
+
         return ResponseEntity.ok(
-            ApiSpec.success(
-                SuccessCode.SUCCESS,
-                memberService.checkEmailDuplication(request.email())
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
             )
         );
     }
+
 }
