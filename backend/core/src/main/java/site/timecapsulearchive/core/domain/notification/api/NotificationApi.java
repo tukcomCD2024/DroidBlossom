@@ -18,7 +18,7 @@ public interface NotificationApi {
         summary = "회원 알림 목록 조회",
         description = "회원의 알림 목록을 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
-        tags = {"member"}
+        tags = {"notification"}
     )
     @ApiResponses(value = {
         @ApiResponse(

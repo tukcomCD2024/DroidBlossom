@@ -25,7 +25,7 @@ public class NotificationApiController implements NotificationApi {
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     @Override
-    @GetMapping(value = "/notifications")
+    @GetMapping
     public ResponseEntity<ApiSpec<MemberNotificationSliceResponse>> getMemberNotifications(
         @AuthenticationPrincipal final Long memberId,
         @RequestParam(defaultValue = "20", value = "size") final int size,
