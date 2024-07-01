@@ -1,13 +1,10 @@
 package site.timecapsulearchive.core.domain.member.service;
 
-import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.UpdateMemberDataDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
@@ -74,7 +71,7 @@ public class MemberService {
      * @return 인증된 사용자의 아이디
      * @throws NotVerifiedMemberException 인증되지 않은 사용자인 경우에 발생하는 예외
      */
-    public Long findVerifiedMemberIdByAuthIdAndSocialType(
+    public Long findVerifiedSocialMemberIdBy(
         final String authId,
         final SocialType socialType
     ) throws NotVerifiedMemberException {
@@ -97,7 +94,7 @@ public class MemberService {
      * @return 인증되지 않은 사용자의 아이디
      * @throws AlreadyVerifiedException 이미 인증된 사용자인 경우 발생하는 예외
      */
-    public Long findNotVerifiedMemberIdByAuthIdAndSocialType(
+    public Long findNotVerifiedMemberIdBy(
         final String authId,
         final SocialType socialType
     ) {
@@ -139,14 +136,6 @@ public class MemberService {
         }
     }
 
-    public Slice<MemberNotificationDto> findNotificationSliceByMemberId(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        return memberRepository.findNotificationSliceByMemberId(memberId, size, createdAt);
-    }
-
     public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
         final Boolean isAlarm = memberRepository.findIsAlarmByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -170,5 +159,10 @@ public class MemberService {
         if (updateMemberData != 1) {
             throw new MemberNotFoundException();
         }
+    }
+
+    @Transactional
+    public void delete(final Member member) {
+        memberRepository.delete(member);
     }
 }

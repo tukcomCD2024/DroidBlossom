@@ -1,6 +1,8 @@
 package site.timecapsulearchive.core.domain.friend.repository.friend_invite;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -26,6 +28,13 @@ public interface FriendInviteRepository extends Repository<FriendInvite, Long>,
     Optional<FriendInvite> findFriendReceivingInviteForUpdateByOwnerIdAndFriendId(
         @Param(value = "ownerId") Long ownerId,
         @Param(value = "friendId") Long friendId
+    );
+
+    @Query("UPDATE FriendInvite fi SET fi.deletedAt = :deletedAt WHERE fi.friend.id = :memberId or fi.owner.id = :memberId")
+    @Modifying
+    void deleteByMemberId(
+        @Param("memberId") Long memberId,
+        @Param("deletedAt") ZonedDateTime deletedAt
     );
 }
 

@@ -1,7 +1,7 @@
 package site.timecapsulearchive.core.domain.member.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -66,7 +66,7 @@ class MemberServiceTest {
             socialType)).willReturn(Optional.of(verifiedCheckDto));
 
         //when
-        assertThatThrownBy(() -> memberService.findVerifiedMemberIdByAuthIdAndSocialType(
+        assertThatThrownBy(() -> memberService.findVerifiedSocialMemberIdBy(
             authId, socialType))
             .isInstanceOf(NotVerifiedMemberException.class)
             .hasMessageContaining(ErrorCode.LOGIN_ON_NOT_VERIFIED_ERROR.getMessage());

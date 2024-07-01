@@ -34,4 +34,6 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
         @Param("nickname") String nickname,
         @Param("tag") String tag
     );
+
+    void delete(Member member);
 }

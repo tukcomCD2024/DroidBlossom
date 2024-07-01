@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
@@ -24,12 +23,6 @@ public interface MemberQueryRepository {
     );
 
     Optional<MemberDetailDto> findMemberDetailResponseDtoById(final Long memberId);
-
-    Slice<MemberNotificationDto> findNotificationSliceByMemberId(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    );
 
     Optional<Boolean> findIsAlarmByMemberId(final Long memberId);
 

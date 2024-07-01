@@ -6,8 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
-import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
+import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
@@ -35,7 +34,6 @@ public class MessageVerificationService {
     private final SmsApiManager smsApiManager;
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-    private final TokenManager tokenManager;
 
     private final AESEncryptionManager aesEncryptionManager;
     private final HashEncryptionManager hashEncryptionManager;
@@ -47,7 +45,7 @@ public class MessageVerificationService {
      * @param receiver   수신자 핸드폰 번호
      * @param appHashKey 앱의 해시 키(메시지 자동 파싱)
      */
-    public VerificationMessageSendResponse sendVerificationMessage(
+    public VerificationMessageSendDto sendVerificationMessage(
         final Long memberId,
         final String receiver,
         final String appHashKey
@@ -61,7 +59,7 @@ public class MessageVerificationService {
 
         messageAuthenticationCacheRepository.save(memberId, encrypt, code);
 
-        return VerificationMessageSendResponse.success(apiResponse.resultCode(),
+        return VerificationMessageSendDto.success(apiResponse.resultCode(),
             apiResponse.message());
     }
 
@@ -79,7 +77,7 @@ public class MessageVerificationService {
             + "타인 노출 금지";
     }
 
-    public TokenResponse validVerificationMessage(
+    public Long validVerificationMessage(
         final Long memberId,
         final String certificationNumber,
         final String receiver
@@ -95,9 +93,7 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        final Long verifiedMemberId = updateToVerifiedMember(memberId, plain);
-
-        return tokenManager.createNewToken(verifiedMemberId);
+        return updateToVerifiedMember(memberId, plain);
     }
 
     private boolean isNotMatch(final String certificationNumber,

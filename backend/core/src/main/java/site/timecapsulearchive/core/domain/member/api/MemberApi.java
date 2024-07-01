@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
@@ -15,7 +14,6 @@ import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataR
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
 import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -121,29 +119,6 @@ public interface MemberApi {
     );
 
     @Operation(
-        summary = "회원 알림 목록 조회",
-        description = "회원의 알림 목록을 조회한다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"member"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "처리 완료"
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        ),
-    })
-    ResponseEntity<ApiSpec<MemberNotificationSliceResponse>> getMemberNotifications(
-        Long memberId,
-        int size,
-        ZonedDateTime createdAt
-    );
-
-    @Operation(
         summary = "사용자 정보 수정",
         description = "사용자 정보(닉네임, 태그)를 수정한다.",
         security = {@SecurityRequirement(name = "user_token")},
@@ -165,4 +140,22 @@ public interface MemberApi {
         UpdateMemberDataRequest request
     );
 
+    @Operation(
+        summary = "회원 탈퇴",
+        description = """
+            가입한 사용자가 회원을 탈퇴한다.
+            """,
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "ok"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "사용자를 찾을 수 없는 경우 발생한다."
+        )
+    })
+    ResponseEntity<ApiSpec<String>> deleteMember(Long memberId, String accessToken);
 }

@@ -39,9 +39,10 @@ public class JwtAuthenticationToken implements Authentication {
     }
 
     public static JwtAuthenticationToken authenticatedWithAccess(
-        final Long memberId
+        final Long memberId,
+        final String accessToken
     ) {
-        return new JwtAuthenticationToken(null, memberId, getAuthorities(Role.USER), true);
+        return new JwtAuthenticationToken(accessToken, memberId, getAuthorities(Role.USER), true);
     }
 
     public static JwtAuthenticationToken unauthenticated(final String accessToken) {
