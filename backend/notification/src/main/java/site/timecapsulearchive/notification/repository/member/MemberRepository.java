@@ -16,7 +16,7 @@ public class MemberRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public String findFCMToken(Long memberId) {
-        String sql = "SELECT m.fcm_token FROM member m WHERE m.member_id = ?";
+        String sql = "SELECT m.fcm_token FROM member m WHERE m.member_id = ? and m.deleted_at is null";
 
         return jdbcTemplate.queryForObject(
             sql,
@@ -26,7 +26,7 @@ public class MemberRepository {
     }
 
     public List<String> findFCMTokens(List<Long> memberIds) {
-        final String sql = "SELECT m.fcm_token FROM member m WHERE m.member_id IN (:memberIds)";
+        final String sql = "SELECT m.fcm_token FROM member m WHERE m.member_id IN (:memberIds) and m.deleted_at is null";
 
         final SqlParameterSource parameters = new MapSqlParameterSource("memberIds", memberIds);
 

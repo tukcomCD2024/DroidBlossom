@@ -18,4 +18,6 @@ public abstract class BaseEntity {
 
     @LastModifiedDate
     private ZonedDateTime updatedAt;
+
+    private ZonedDateTime deletedAt;
 }
