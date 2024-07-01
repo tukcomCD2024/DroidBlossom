@@ -58,6 +58,7 @@
     <string name="maxMember">정원</string>
 
     <string name="currentMemberNumber">(%02d/30)</string>
+    <string name="nameMaxSize">(%02d/15)</string>
 
     <string-array name="spinner_capsule_type">
         <item>Secret</item>

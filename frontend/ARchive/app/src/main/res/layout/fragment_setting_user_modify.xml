@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
+            android:src="@drawable/ic_left_arrow_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/settingTitleT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="프로필 수정"
+            android:textAppearance="@style/TextAppearance.App.body2"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/modifyBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:text="수정완료"
+            android:textAppearance="@style/TextAppearance.App.caption4"
+            android:textColor="@color/main_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileImg"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/settingTitleT"
+            tools:src="@color/main_2" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/profileNameT"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="24dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:fontFamily="@font/suit_bold"
+            android:hint="닉네임"
+            android:lines="1"
+            android:maxWidth="250dp"
+            android:text="이름입니다"
+            android:textAppearance="@style/TextAppearance.App.h3"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileImg" />
+
+        <TextView
+            android:id="@+id/nameMaxT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{@string/nameMaxSize(12)}"
+            android:textAppearance="@style/TextAppearance.App.caption4"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="@id/profileNameT"
+            app:layout_constraintTop_toBottomOf="@id/profileNameT"
+            tools:text="(12/15)" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/tagT"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:fontFamily="@font/suit_bold"
+            android:hint="TAG"
+            android:lines="1"
+            android:maxWidth="250dp"
+            android:text="tag"
+            android:textAppearance="@style/TextAppearance.App.h3"
+            android:textColor="@color/gray_700"
+            app:layout_constraintEnd_toStartOf="@id/tagBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nameMaxT" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/tagBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/tagT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tagT"
+            app:strokeColor="@color/gray_400">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:text="중복확인"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                android:textColor="@color/black" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/duplicationT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.App.caption4"
+            android:textColor="@color/main_1"
+            app:layout_constraintStart_toStartOf="@id/tagT"
+            app:layout_constraintTop_toBottomOf="@id/tagT"
+            tools:text="사용가능합니다!" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
