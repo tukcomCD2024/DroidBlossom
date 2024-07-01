@@ -17,7 +17,7 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
-import site.timecapsulearchive.core.domain.member.repository.NotificationRepository;
+import site.timecapsulearchive.core.domain.notification.repository.NotificationRepository;
 
 class MemberServiceTest {
 

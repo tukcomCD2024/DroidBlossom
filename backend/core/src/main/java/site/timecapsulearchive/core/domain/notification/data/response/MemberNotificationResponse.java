@@ -1,10 +1,10 @@
-package site.timecapsulearchive.core.domain.member.data.response;
+package site.timecapsulearchive.core.domain.notification.data.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import lombok.Builder;
-import site.timecapsulearchive.core.domain.member.entity.CategoryName;
-import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
+import site.timecapsulearchive.core.domain.notification.entity.CategoryName;
+import site.timecapsulearchive.core.domain.notification.entity.NotificationStatus;
 
 @Schema(description = "알림 정보")
 @Builder
