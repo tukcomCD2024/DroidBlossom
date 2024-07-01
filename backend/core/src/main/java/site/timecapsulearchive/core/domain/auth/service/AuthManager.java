@@ -84,18 +84,6 @@ public class AuthManager {
         return tokenManager.createNewToken(verifiedMemberId);
     }
 
-    public TemporaryTokenDto signUpWithEmail(final String email, final String password) {
-        Long createdMemberId = memberService.createMemberWithEmail(email, password);
-
-        return tokenManager.createTemporaryToken(createdMemberId);
-    }
-
-    public TokenDto signInWithEmail(final String email, final String password) {
-        Long verifiedEmailMemberId = memberService.findVerifiedEmailMemberIdBy(email, password);
-
-        return tokenManager.createNewToken(verifiedEmailMemberId);
-    }
-
     public void signOut(Long memberId, String accessToken) {
         tokenManager.removeRefreshToken(memberId);
 
