@@ -179,5 +179,5 @@ public interface MemberApi {
             description = "사용자를 찾을 수 없는 경우 발생한다."
         )
     })
-    ResponseEntity<ApiSpec<String>> deleteMember(Authentication authentication);
+    ResponseEntity<ApiSpec<String>> deleteMember(Long memberId, String accessToken);
 }

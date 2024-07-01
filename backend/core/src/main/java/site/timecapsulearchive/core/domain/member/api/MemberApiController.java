@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.member.api;
 
+import jakarta.persistence.Access;
 import jakarta.validation.Valid;
 import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import site.timecapsulearchive.core.domain.member.data.response.MemberNotificati
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.facade.MemberFacade;
 import site.timecapsulearchive.core.domain.member.service.MemberService;
+import site.timecapsulearchive.core.global.common.argument.AccessToken;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
@@ -138,9 +140,11 @@ public class MemberApiController implements MemberApi {
 
     @DeleteMapping
     @Override
-    public ResponseEntity<ApiSpec<String>> deleteMember(Authentication authentication) {
-        memberFacade.deleteByMemberId((Long) authentication.getPrincipal(),
-            (String) authentication.getCredentials());
+    public ResponseEntity<ApiSpec<String>> deleteMember(
+        @AuthenticationPrincipal final Long memberId,
+        @AccessToken final String accessToken
+    ) {
+        memberFacade.deleteByMemberId(memberId, accessToken);
 
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
