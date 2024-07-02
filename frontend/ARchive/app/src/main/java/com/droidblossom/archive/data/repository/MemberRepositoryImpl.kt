@@ -50,6 +50,10 @@ class MemberRepositoryImpl @Inject constructor(
         }) { response: ResponseBody<NotificationResponseDto> -> response.result.toModel() }
     }
 
+    override suspend fun deleteAccount(): RetrofitResult<String> {
+        return apiHandler({ api.deleteAccountApi() }) { response: ResponseBody<String> -> response.result }
+    }
+
     override suspend fun getText(): RetrofitResult<Health> {
         return apiHandler({ api.getTextApi() }) { response: ResponseBody<HealthResponseDto> -> response.result.toModel() }
     }

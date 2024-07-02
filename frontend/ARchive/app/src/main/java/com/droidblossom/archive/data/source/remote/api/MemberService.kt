@@ -11,6 +11,7 @@ import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -46,6 +47,9 @@ interface MemberService {
         @Query("size") size : Int,
         @Query("created_at") createdAt : String
     ): Response<ResponseBody<NotificationResponseDto>>
+
+    @DELETE("me")
+    suspend fun deleteAccountApi(): Response<ResponseBody<String>>
 
 
     @GET("health")

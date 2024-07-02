@@ -23,5 +23,6 @@ interface MemberRepository {
 
     suspend fun getNotifications(request: PagingRequestDto) : RetrofitResult<NotificationPage>
 
+    suspend fun deleteAccount(): RetrofitResult<String>
     suspend fun getText() : RetrofitResult<Health>
 }
