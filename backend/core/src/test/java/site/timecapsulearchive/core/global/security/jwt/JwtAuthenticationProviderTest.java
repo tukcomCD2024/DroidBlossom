@@ -29,7 +29,7 @@ class JwtAuthenticationProviderTest {
         String accessToken = TokenFixture.accessToken(MEMBER_ID);
         JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
             accessToken);
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(null);
 
         //when
         Authentication authenticateResult = jwtAuthenticationProvider.authenticate(unauthenticated);
@@ -44,7 +44,7 @@ class JwtAuthenticationProviderTest {
         String accessToken = TokenFixture.accessToken(MEMBER_ID);
         JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
             accessToken);
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(null);
 
         //when
         Authentication authenticateResult = jwtAuthenticationProvider.authenticate(unauthenticated);
@@ -59,7 +59,7 @@ class JwtAuthenticationProviderTest {
         String accessToken = TokenFixture.accessToken(MEMBER_ID);
         JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
             accessToken);
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(null);
 
         //when
         Authentication authenticateResult = jwtAuthenticationProvider.authenticate(unauthenticated);
@@ -77,7 +77,7 @@ class JwtAuthenticationProviderTest {
         String temporaryAccessToken = TokenFixture.temporaryAccessToken(MEMBER_ID);
         JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
             temporaryAccessToken);
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(null);
 
         //when
         Authentication authenticateResult = jwtAuthenticationProvider.authenticate(unauthenticated);
@@ -92,7 +92,7 @@ class JwtAuthenticationProviderTest {
         String temporaryAccessToken = TokenFixture.temporaryAccessToken(MEMBER_ID);
         JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
             temporaryAccessToken);
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(null);
 
         //when
         Authentication authenticateResult = jwtAuthenticationProvider.authenticate(unauthenticated);
@@ -107,7 +107,7 @@ class JwtAuthenticationProviderTest {
         String temporaryAccessToken = TokenFixture.temporaryAccessToken(MEMBER_ID);
         JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
             temporaryAccessToken);
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(null);
 
         //when
         Authentication authenticateResult = jwtAuthenticationProvider.authenticate(unauthenticated);
@@ -134,9 +134,9 @@ class JwtAuthenticationProviderTest {
     @Test
     void 블랙리스트에_있는_토큰으로_접근하면_예외가_발생한다() {
         //given
-        JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
-            TokenFixture.accessToken(MEMBER_ID));
-        given(blackListCacheRepository.exist(MEMBER_ID)).willReturn(Boolean.TRUE);
+        String accessToken = TokenFixture.accessToken(MEMBER_ID);
+        JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(accessToken);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(accessToken);
 
         //when
         //then
