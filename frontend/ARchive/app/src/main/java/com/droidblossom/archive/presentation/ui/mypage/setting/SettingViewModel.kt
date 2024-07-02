@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface SettingViewModel {
 
     val settingMainEvents: SharedFlow<SettingMainEvent>
-
+    val isOnlyProfile: SharedFlow<Boolean>
     val notificationEnable : StateFlow<Boolean>
     val settingNotificationEvents : SharedFlow<SettingNotificationEvent>
 

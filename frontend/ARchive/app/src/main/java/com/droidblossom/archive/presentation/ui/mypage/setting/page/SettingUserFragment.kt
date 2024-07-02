@@ -1,7 +1,10 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting.page
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -15,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SettingUserFragment :
     BaseFragment<SettingViewModelImpl, FragmentSettingUserBinding>(R.layout.fragment_setting_user) {
 
-    override val viewModel: SettingViewModelImpl by viewModels()
+    override val viewModel: SettingViewModelImpl by activityViewModels()
     lateinit var navController: NavController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,12 +30,28 @@ class SettingUserFragment :
 
     private fun initView() {
         binding.backBtn.setOnClickListener {
-            navController.popBackStack()
+            if (viewModel.isOnlyProfile.value){
+                requireActivity().finish()
+            } else {
+                navController.popBackStack()
+            }
         }
 
         binding.modifyBtn.setOnClickListener{
             navController.navigate(R.id.action_settingUserFragment_to_settingUserModifyFragment)
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (viewModel.isOnlyProfile.value){
+                        requireActivity().finish()
+                    } else {
+                        navController.popBackStack()
+                    }
+                }
+            })
     }
 
     override fun observeData() {

@@ -63,7 +63,7 @@
             app:srcCompat="@drawable/ic_tag_copy_24"/>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/searchOpenBtnT"
+            android:id="@+id/myProfileBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="프로필 수정"

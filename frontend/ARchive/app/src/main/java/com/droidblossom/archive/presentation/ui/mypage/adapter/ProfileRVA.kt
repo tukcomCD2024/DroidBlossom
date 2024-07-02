@@ -15,7 +15,8 @@ class ProfileRVA(
     private val goFriendList: () -> Unit,
     private val goRequestList: () -> Unit,
     private val goSetting: () -> Unit,
-    private val tagCopy: (tag:String) -> Unit,
+    private val goMyProfile: () -> Unit,
+    private val tagCopy: (tag: String) -> Unit,
 ) : ListAdapter<ProfileData, ProfileRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -27,6 +28,7 @@ class ProfileRVA(
             binding.friendLayout.setOnClickListener { goFriendList() }
             binding.requestLayout.setOnClickListener { goRequestList() }
             binding.settingBtn.setOnClickListener { goSetting() }
+            binding.myProfileBtn.setOnClickListener { goMyProfile() }
             binding.profileTagT.setOnLongClickListener {
                 tagCopy(data.tag)
                 true

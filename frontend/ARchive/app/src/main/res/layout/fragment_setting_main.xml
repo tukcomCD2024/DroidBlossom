@@ -68,7 +68,7 @@
                         android:layout_marginHorizontal="24dp"
                         android:ellipsize="end"
                         android:lines="1"
-                        android:text="계정 관리"
+                        android:text="유저 정보"
                         android:textAppearance="@style/TextAppearance.App.body2"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/userArrow"

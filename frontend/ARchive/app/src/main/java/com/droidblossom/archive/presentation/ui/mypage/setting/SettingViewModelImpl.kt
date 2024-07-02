@@ -30,13 +30,17 @@ class SettingViewModelImpl @Inject constructor(
     private val _settingMainEvents = MutableSharedFlow<SettingViewModel.SettingMainEvent>()
     override val settingMainEvents: SharedFlow<SettingViewModel.SettingMainEvent>
         get() = _settingMainEvents.asSharedFlow()
+    private val _isOnlyProfile = MutableStateFlow(false)
+    override val isOnlyProfile :StateFlow<Boolean>
+        get() = _isOnlyProfile
 
     //notification
     private val _notificationEnable = MutableStateFlow<Boolean>(false)
     override val notificationEnable: StateFlow<Boolean>
         get() = _notificationEnable
 
-    private val _settingNotificationEvent = MutableSharedFlow<SettingViewModel.SettingNotificationEvent>()
+    private val _settingNotificationEvent =
+        MutableSharedFlow<SettingViewModel.SettingNotificationEvent>()
     override val settingNotificationEvents: SharedFlow<SettingViewModel.SettingNotificationEvent>
         get() = _settingNotificationEvent.asSharedFlow()
 
@@ -89,6 +93,12 @@ class SettingViewModelImpl @Inject constructor(
         }
     }
 
+    fun onlyProfile() {
+        viewModelScope.launch {
+            _isOnlyProfile.emit(true)
+        }
+    }
+
     //Notification Setting
     fun getNotificationEnable() {
         viewModelScope.launch {
@@ -103,10 +113,18 @@ class SettingViewModelImpl @Inject constructor(
                 notificationEnabledUseCase(enabled).collect { result ->
                     result.onSuccess {
                         Log.d("알림변경", "성공")
-                        _settingNotificationEvent.emit(SettingViewModel.SettingNotificationEvent.ShowToastMessage("알림 설정을 변경했습니다."))
+                        _settingNotificationEvent.emit(
+                            SettingViewModel.SettingNotificationEvent.ShowToastMessage(
+                                "알림 설정을 변경했습니다."
+                            )
+                        )
                     }.onFail {
                         Log.d("알림변경", "실패")
-                        _settingNotificationEvent.emit(SettingViewModel.SettingNotificationEvent.ShowToastMessage("알림을 변경 실패."))
+                        _settingNotificationEvent.emit(
+                            SettingViewModel.SettingNotificationEvent.ShowToastMessage(
+                                "알림을 변경 실패."
+                            )
+                        )
 
                     }
                 }

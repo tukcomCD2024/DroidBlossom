@@ -59,7 +59,10 @@ class MyPageFragment :
                 )
             },
             {
-                startActivity(SettingActivity.newIntent(requireContext()))
+                startActivity(SettingActivity.newIntent(requireContext(),false))
+            },
+            {
+                startActivity(SettingActivity.newIntent(requireContext(),true))
             },
             {
                 copyText("tag",it)
@@ -211,7 +214,7 @@ class MyPageFragment :
                         }
 
                         is MyPageViewModel.MyPageEvent.ClickSetting -> {
-                            startActivity(SettingActivity.newIntent(requireContext()))
+                            startActivity(SettingActivity.newIntent(requireContext(),false))
                         }
 
                         is MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading -> {

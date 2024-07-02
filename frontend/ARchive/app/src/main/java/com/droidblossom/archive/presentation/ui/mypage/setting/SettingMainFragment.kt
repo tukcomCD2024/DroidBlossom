@@ -3,7 +3,9 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +22,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +30,7 @@ import javax.inject.Inject
 class SettingMainFragment :
     BaseFragment<SettingViewModelImpl, FragmentSettingMainBinding>(R.layout.fragment_setting_main) {
 
-    override val viewModel: SettingViewModelImpl by viewModels()
+    override val viewModel: SettingViewModelImpl by activityViewModels()
 
     @Inject
     lateinit var dataStoreUtils: DataStoreUtils
@@ -37,6 +40,11 @@ class SettingMainFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
+
+        if (requireActivity().intent.getBooleanExtra(SettingActivity.ONLY_PROFILE, false)){
+            viewModel.onlyProfile()
+            navController.navigate(R.id.action_settingMainFragment_to_settingUserFragment)
+        }
     }
 
     override fun observeData() {
