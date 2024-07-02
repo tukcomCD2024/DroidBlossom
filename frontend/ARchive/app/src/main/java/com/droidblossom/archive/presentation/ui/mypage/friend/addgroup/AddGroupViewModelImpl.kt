@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -52,6 +53,7 @@ class AddGroupViewModelImpl @Inject constructor(
     override val groupTitle: MutableStateFlow<String> = MutableStateFlow("")
     override val groupContent: MutableStateFlow<String> = MutableStateFlow("")
     override val groupProfileUri: MutableStateFlow<Uri?> = MutableStateFlow(null)
+    override val searchFriendText: MutableStateFlow<String> = MutableStateFlow("")
     private val _profileImgFile = MutableStateFlow<File?>(null)
     private val profileImgFile: StateFlow<File?>
         get() = _profileImgFile
@@ -68,6 +70,10 @@ class AddGroupViewModelImpl @Inject constructor(
     override val friendListUI: StateFlow<List<FriendsSearchResponse>>
         get() = _friendListUI
 
+    private val _friendList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
+    override val friendList: StateFlow<List<FriendsSearchResponse>>
+        get() = _friendList
+
     private val _checkedList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
     override val checkedList: StateFlow<List<FriendsSearchResponse>>
         get() = _checkedList
@@ -77,7 +83,7 @@ class AddGroupViewModelImpl @Inject constructor(
     val notifyItemChangedPosition
         get() = _notifyItemChangedPosition.asSharedFlow()
 
-     private val friendHasNextPage = MutableStateFlow(true)
+    private val friendHasNextPage = MutableStateFlow(true)
 
     private val friendLastCreatedTime = MutableStateFlow(DateUtils.dataServerString)
 
@@ -106,15 +112,17 @@ class AddGroupViewModelImpl @Inject constructor(
             getFriendLstJob = viewModelScope.launch {
                 friendsForAddGroupPageUseCase(
                     PagingRequestDto(
-                        15,
+                        999,
                         friendLastCreatedTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
                         friendHasNextPage.value = it.hasNext
                         if (friendListUI.value.isEmpty()) {
+                            _friendList.emit(it.friends)
                             _friendListUI.emit(it.friends)
                         } else {
+                            _friendList.emit(_friendList.value + it.friends)
                             _friendListUI.emit(_friendListUI.value + it.friends)
                         }
                         friendLastCreatedTime.value = it.friends.last().createdAt
@@ -126,6 +134,16 @@ class AddGroupViewModelImpl @Inject constructor(
                         )
                     }
                 }
+            }
+        }
+    }
+
+    fun searchFriend() {
+        viewModelScope.launch {
+            if (searchFriendText.value.isBlank()) {
+                _friendListUI.emit(friendList.value)
+            } else {
+                _friendListUI.emit(friendList.value.filter { it.nickname.contains(searchFriendText.value) })
             }
         }
     }
@@ -151,7 +169,7 @@ class AddGroupViewModelImpl @Inject constructor(
             val newCheckList = checkedList.value.toMutableList()
             newCheckList.remove(friend)
             _checkedList.emit(newCheckList)
-            if (friendListUI.value.contains(friend)){
+            if (friendListUI.value.contains(friend)) {
                 val newUIList = friendListUI.value
                 newUIList.indexOf(friend).let {
                     newUIList[it].isChecked = false
