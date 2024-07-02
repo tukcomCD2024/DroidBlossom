@@ -20,6 +20,11 @@ interface SettingViewModel {
     fun goLicenses()
     fun goLogout()
 
+    fun goDeleteAccount()
+
+    fun singOutRequest()
+    fun deleteAccountRequest()
+
     sealed class SettingMainEvent {
         object Back : SettingMainEvent()
         object GoUser : SettingMainEvent()
@@ -29,11 +34,18 @@ interface SettingViewModel {
         object GoInquire : SettingMainEvent()
         object GoLicenses : SettingMainEvent()
         object GoLogout : SettingMainEvent()
+
+        object GoAuthActivity: SettingMainEvent()
+        object ShowLoading: SettingMainEvent()
+        object DismissLoading: SettingMainEvent()
+
+        object GoDeleteAccount : SettingMainEvent()
         data class ShowToastMessage(val message : String) : SettingMainEvent()
     }
 
     sealed class  SettingNotificationEvent {
         object  Back : SettingNotificationEvent()
         data class ShowToastMessage(val message : String) : SettingNotificationEvent()
+
     }
 }

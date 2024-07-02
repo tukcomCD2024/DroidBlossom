@@ -32,8 +32,6 @@ class SettingMainFragment :
 
     override val viewModel: SettingViewModelImpl by activityViewModels()
 
-    @Inject
-    lateinit var dataStoreUtils: DataStoreUtils
     lateinit var navController: NavController
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,12 +74,16 @@ class SettingMainFragment :
 
                         SettingViewModel.SettingMainEvent.GoLogout -> {
                             val sheet = CommonDialogFragment.newIntent("정말 로그아웃 하시겠습니까?", "로그아웃") {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    dataStoreUtils.resetTokenData()
-                                }
-                                AuthActivity.goAuth(requireContext())
+                                viewModel.singOutRequest()
                             }
                             sheet.show(parentFragmentManager, "logoutDialog")
+                        }
+
+                        SettingViewModel.SettingMainEvent.GoDeleteAccount -> {
+                            val sheet = CommonDialogFragment.newIntent("정말 탈퇴하시겠어요? \n 계정 탈퇴 후에는 모든 데이터가 영구적으로 삭제되며, 되돌릴 수 없습니다.", "계정 탈퇴") {
+                                viewModel.deleteAccountRequest()
+                            }
+                            sheet.show(parentFragmentManager, "deleteAccountDialog")
                         }
 
                         SettingViewModel.SettingMainEvent.GoNotice -> {
@@ -98,6 +100,17 @@ class SettingMainFragment :
 
                         is SettingViewModel.SettingMainEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+                        is SettingViewModel.SettingMainEvent.DismissLoading -> {
+                            dismissLoading()
+                        }
+
+                        is SettingViewModel.SettingMainEvent.ShowLoading -> {
+                            showLoading(requireContext())
+                        }
+
+                        is SettingViewModel.SettingMainEvent.GoAuthActivity -> {
+                            AuthActivity.goAuth(requireContext())
                         }
 
                         else -> {}

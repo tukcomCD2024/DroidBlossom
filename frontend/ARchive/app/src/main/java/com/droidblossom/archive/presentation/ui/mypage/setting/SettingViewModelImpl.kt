@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.usecase.auth.SignOutUseCase
+import com.droidblossom.archive.domain.usecase.member.DeleteAccountUseCase
 import com.droidblossom.archive.domain.usecase.member.NotificationEnabledUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
@@ -23,7 +25,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingViewModelImpl @Inject constructor(
     private val notificationEnabledUseCase: NotificationEnabledUseCase,
-    private val dataStoreUtils: DataStoreUtils
+    private val dataStoreUtils: DataStoreUtils,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val signOutUseCase: SignOutUseCase
 ) : BaseViewModel(), SettingViewModel {
 
     //main
@@ -31,7 +35,7 @@ class SettingViewModelImpl @Inject constructor(
     override val settingMainEvents: SharedFlow<SettingViewModel.SettingMainEvent>
         get() = _settingMainEvents.asSharedFlow()
     private val _isOnlyProfile = MutableStateFlow(false)
-    override val isOnlyProfile :StateFlow<Boolean>
+    override val isOnlyProfile: StateFlow<Boolean>
         get() = _isOnlyProfile
 
     //notification
@@ -97,6 +101,48 @@ class SettingViewModelImpl @Inject constructor(
         viewModelScope.launch {
             _isOnlyProfile.emit(true)
         }
+    }
+
+    override fun goDeleteAccount() {
+        viewModelScope.launch {
+            _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoDeleteAccount)
+        }
+    }
+
+    override fun singOutRequest() {
+        viewModelScope.launch {
+            _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowLoading)
+            signOutUseCase().collect{ result ->
+                result.onSuccess {
+                    dataStoreUtils.resetTokenData()
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("성공적으로 로그아웃되었습니다."))
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoAuthActivity)
+                }.onFail {
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("로그아웃을 실패했습니다."))
+                }
+            }
+            _settingMainEvents.emit(SettingViewModel.SettingMainEvent.DismissLoading)
+        }
+    }
+
+    override fun deleteAccountRequest() {
+        viewModelScope.launch {
+            _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowLoading)
+            deleteAccountUseCase().collect{ result ->
+                result.onSuccess {
+                    dataStoreUtils.resetTokenData()
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("성공적으로 탈퇴되었습니다. 다음에 또 ARchive를 찾아주세요!"))
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoAuthActivity)
+                }.onFail {
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("계정 탈퇴에 실패했습니다."))
+                }
+            }
+            _settingMainEvents.emit(SettingViewModel.SettingMainEvent.DismissLoading)
+        }
+    }
+
+    private fun goAuth(){
+
     }
 
     //Notification Setting
