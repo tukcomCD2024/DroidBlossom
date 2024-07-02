@@ -46,4 +46,7 @@ interface AuthService {
         @Body request: SignInRequestDto
     ) : Response<ResponseBody<TokenResponseDto>>
 
+    @POST("auth/sign-out")
+    suspend fun postSignOutApi(): Response<ResponseBody<String>>
+
 }

@@ -20,4 +20,6 @@ interface AuthRepository {
 
     suspend fun authSignIn(request : SignInRequestDto) : RetrofitResult<Token>
     suspend fun authSignUp(request: SignUpRequestDto) : RetrofitResult<TemporaryToken>
+
+    suspend fun authSignOut(): RetrofitResult<String>
 }
