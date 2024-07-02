@@ -69,7 +69,7 @@ public class TestMockMvcSecurityConfig {
     @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider() {
         BlackListCacheRepository blackListCacheRepository = mock(BlackListCacheRepository.class);
-        given(blackListCacheRepository.exist(anyLong())).willReturn(Boolean.FALSE);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(anyLong())).willReturn(null);
 
         return new JwtAuthenticationProvider(UnitTestDependency.jwtFactory(),
             blackListCacheRepository);
