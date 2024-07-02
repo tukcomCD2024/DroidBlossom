@@ -169,13 +169,14 @@ class AddGroupViewModelImpl @Inject constructor(
             val newCheckList = checkedList.value.toMutableList()
             newCheckList.remove(friend)
             _checkedList.emit(newCheckList)
+            friendList.value.indexOf(friend).let {
+                friendList.value[it].isChecked = false
+            }
             if (friendListUI.value.contains(friend)) {
-                val newUIList = friendListUI.value
-                newUIList.indexOf(friend).let {
-                    newUIList[it].isChecked = false
+                friendListUI.value.indexOf(friend).let {
+                    friendListUI.value[it].isChecked = false
                     _notifyItemChangedPosition.emit(it)
                 }
-                _friendListUI.emit(newUIList)
             }
         }
     }
