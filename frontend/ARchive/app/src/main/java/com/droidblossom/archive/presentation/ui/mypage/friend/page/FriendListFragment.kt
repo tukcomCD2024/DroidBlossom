@@ -1,6 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.page
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -34,7 +36,22 @@ class FriendListFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
 
+        initView()
         initRV()
+    }
+
+    private fun initView(){
+        binding.searchOpenEditT.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) =Unit
+
+            override fun afterTextChanged(p0: Editable?) {
+                p0?.let {
+                    viewModel.searchFriend()
+                }
+            }
+        })
     }
 
     private fun initRV() {

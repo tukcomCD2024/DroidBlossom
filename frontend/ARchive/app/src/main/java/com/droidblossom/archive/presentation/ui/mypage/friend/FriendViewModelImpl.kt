@@ -44,6 +44,7 @@ class FriendViewModelImpl @Inject constructor(
 
     override val isFriendSearchOpen: StateFlow<Boolean>
         get() = _isFriendSearchOpen
+    override val searchFriendText: MutableStateFlow<String> = MutableStateFlow("")
 
 
     private val _friendListUI = MutableStateFlow<List<Friend>>(listOf())
@@ -127,7 +128,13 @@ class FriendViewModelImpl @Inject constructor(
     }
 
     override fun searchFriend() {
-
+        viewModelScope.launch {
+            if (searchFriendText.value.isBlank()) {
+                _friendListUI.emit(friendList.value)
+            } else {
+                _friendListUI.emit(friendList.value.filter { it.nickname.contains(searchFriendText.value) })
+            }
+        }
     }
 
     override fun getFriendList() {
@@ -168,7 +175,7 @@ class FriendViewModelImpl @Inject constructor(
             getGroupListJob = viewModelScope.launch {
                 getGroupPageUseCase(
                     PagingRequestDto(
-                        15,
+                        100,
                         groupLastCreatedTime.value
                     )
                 ).collect { result ->
@@ -197,7 +204,7 @@ class FriendViewModelImpl @Inject constructor(
         getGroupListJob = viewModelScope.launch {
             getGroupPageUseCase(
                 PagingRequestDto(
-                    15,
+                    100,
                     DateUtils.dataServerString
                 )
             ).collect { result ->

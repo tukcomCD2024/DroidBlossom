@@ -23,98 +23,97 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/searchOpenBtn"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_marginHorizontal="16dp"
-                android:visibility="@{vm.isGroupSearchOpen ? View.VISIBLE  : View.GONE}"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/searchOpenBtn"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="36dp"-->
+<!--                android:layout_marginHorizontal="16dp"-->
+<!--                android:visibility="@{vm.isGroupSearchOpen ? View.VISIBLE  : View.GONE}"-->
+<!--                app:cardBackgroundColor="@color/white"-->
+<!--                app:cardCornerRadius="22dp"-->
+<!--                app:cardElevation="0dp"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/searchOpenBtnLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/searchOpenBtnLayout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent">-->
 
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/searchOpenEditT"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@null"
-                        android:ellipsize="start"
-                        android:imeOptions="actionDone"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                    <androidx.appcompat.widget.AppCompatEditText-->
+<!--                        android:id="@+id/searchOpenEditT"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="24dp"-->
+<!--                        android:layout_marginEnd="8dp"-->
+<!--                        android:background="@null"-->
+<!--                        android:ellipsize="start"-->
+<!--                        android:imeOptions="actionDone"-->
+<!--                        android:lines="1"-->
+<!--                        android:maxLines="1"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:textAppearance="@style/TextAppearance.App.body2"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                    <TextView
-                        android:id="@+id/searchOpenBtnT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:text="검색"
-                        android:textAppearance="@style/TextAppearance.App.caption1"
-                        android:textColor="@color/main_1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/searchOpenBtnT"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:paddingHorizontal="16dp"-->
+<!--                        android:paddingVertical="8dp"-->
+<!--                        android:text="검색"-->
+<!--                        android:textAppearance="@style/TextAppearance.App.caption1"-->
+<!--                        android:textColor="@color/main_1"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--            </androidx.cardview.widget.CardView>-->
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/searchBtn"
-                android:layout_width="58dp"
-                android:layout_height="36dp"
-                android:layout_marginHorizontal="16dp"
-                android:onClick="@{()->vm.openSearchGroup()}"
-                android:visibility="@{vm.isGroupSearchOpen ? View.GONE  : View.VISIBLE}"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/searchBtn"-->
+<!--                android:layout_width="58dp"-->
+<!--                android:layout_height="36dp"-->
+<!--                android:layout_marginHorizontal="16dp"-->
+<!--                android:onClick="@{()->vm.openSearchGroup()}"-->
+<!--                android:visibility="@{vm.isGroupSearchOpen ? View.GONE  : View.VISIBLE}"-->
+<!--                app:cardBackgroundColor="@color/white"-->
+<!--                app:cardCornerRadius="22dp"-->
+<!--                app:cardElevation="0dp"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                tools:visibility="gone">-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/searchBtnLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/searchBtnLayout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent">-->
 
-                    <TextView
-                        android:id="@+id/searchBtnT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="검색"
-                        android:textAppearance="@style/TextAppearance.App.caption1"
-                        android:textColor="@color/main_1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/searchBtnT"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="검색"-->
+<!--                        android:textAppearance="@style/TextAppearance.App.caption1"-->
+<!--                        android:textColor="@color/main_1"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--            </androidx.cardview.widget.CardView>-->
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshL"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

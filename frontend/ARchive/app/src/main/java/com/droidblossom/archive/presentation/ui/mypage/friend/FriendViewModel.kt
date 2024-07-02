@@ -4,6 +4,7 @@ import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.domain.model.group.GroupSummary
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -13,6 +14,7 @@ interface FriendViewModel {
 
     //friend
     val isFriendSearchOpen: StateFlow<Boolean>
+    val searchFriendText: MutableStateFlow<String>
     val friendList: StateFlow<List<Friend>>
     val friendListUI: StateFlow<List<Friend>>
 
