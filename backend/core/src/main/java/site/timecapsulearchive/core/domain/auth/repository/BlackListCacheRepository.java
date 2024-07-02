@@ -18,10 +18,8 @@ public class BlackListCacheRepository {
             .set(PREFIX + memberId, accessToken, leftTime, TimeUnit.MILLISECONDS);
     }
 
-    public boolean exist(Long memberId) {
-        String accessToken = redisTemplate.opsForValue()
+    public String findBlackListTokenByMemberId(Long memberId) {
+        return redisTemplate.opsForValue()
             .get(PREFIX + memberId);
-
-        return accessToken != null;
     }
 }
