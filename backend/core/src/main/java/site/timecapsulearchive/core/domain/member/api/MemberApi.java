@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.member.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -157,5 +158,9 @@ public interface MemberApi {
             description = "사용자를 찾을 수 없는 경우 발생한다."
         )
     })
-    ResponseEntity<ApiSpec<String>> deleteMember(Long memberId, String accessToken);
+    ResponseEntity<ApiSpec<String>> deleteMember(
+        Long memberId,
+
+        @Parameter(hidden = true) String accessToken
+    );
 }
