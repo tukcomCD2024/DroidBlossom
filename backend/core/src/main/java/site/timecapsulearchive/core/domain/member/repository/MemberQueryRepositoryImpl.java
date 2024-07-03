@@ -114,7 +114,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     public Optional<ByteArrayWrapper> findMemberPhoneHash(final Long memberId) {
         final byte[] phoneHash = jpaQueryFactory
             .select(
-                member.phone_hash
+                member.phoneHash
             )
             .from(member)
             .where(member.id.eq(memberId))

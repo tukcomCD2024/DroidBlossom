@@ -55,7 +55,7 @@ public class MemberFixture {
             .authId(dataPrefix + "test")
             .profileUrl(dataPrefix + "test.com")
             .tag(dataPrefix + "testTag")
-            .phone_hash(hashEncryptionManager.encrypt(number))
+            .phoneHash(hashEncryptionManager.encrypt(number))
             .build();
 
         return member;

@@ -79,7 +79,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             List<Member> friends = MemberFixture.members(FRIEND_START_ID.intValue(), MAX_COUNT);
             for (Member friend : friends) {
                 entityManager.persist(friend);
-                hashedFriendPhones.add(friend.getPhone_hash());
+                hashedFriendPhones.add(friend.getPhoneHash());
 
                 MemberFriend memberFriend = MemberFriendFixture.memberFriend(owner, friend);
                 entityManager.persist(memberFriend);
@@ -96,7 +96,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
                 MAX_COUNT);
             for (Member notFriend : notFriendMembers) {
                 entityManager.persist(notFriend);
-                hashedNotFriendPhones.add(notFriend.getPhone_hash());
+                hashedNotFriendPhones.add(notFriend.getPhoneHash());
             }
             //owner에게 친구 요청을 보내지 않은 데이터
             notFriendInviteTag = notFriendMembers.get(0).getTag();

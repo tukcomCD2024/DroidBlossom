@@ -109,7 +109,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                     member.nickname,
                     Projections.constructor(
                         ByteArrayWrapper.class,
-                        member.phone_hash
+                        member.phoneHash
                     ),
                     memberFriend.id.isNotNull(),
                     friendInviteToFriend.id.isNotNull(),
@@ -125,7 +125,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.friend.id.eq(memberId)
                 .and(friendInviteToMe.owner.id.eq(member.id)))
-            .where(member.phone_hash.in(hashes))
+            .where(member.phoneHash.in(hashes))
             .fetch();
     }
 
