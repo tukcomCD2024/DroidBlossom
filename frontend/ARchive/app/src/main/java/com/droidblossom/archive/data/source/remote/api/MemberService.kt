@@ -3,6 +3,7 @@ package com.droidblossom.archive.data.source.remote.api
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
+import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberDetailUpdateRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
@@ -27,10 +28,10 @@ interface MemberService {
         @Body checkStatusRequestDto: MemberStatusRequestDto
     ) : Response<ResponseBody<MemberStatusResponseDto>>
 
-//    @PATCH("me/")
-//    suspend fun patchMeApi(
-//        @Body request : MemberDetailUpdateRequestDto
-//    ): Response<ResponseBody<HealthResponseDto>>
+    @PATCH("me/data")
+    suspend fun patchMeApi(
+        @Body request : MemberDataRequestDto
+    ): Response<ResponseBody<String>>
 
     @PATCH("me/notification_enabled")
     suspend fun patchNotificationEnabled(

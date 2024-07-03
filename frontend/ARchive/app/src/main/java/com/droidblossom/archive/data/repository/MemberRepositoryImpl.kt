@@ -5,6 +5,7 @@ import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
+import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
@@ -25,6 +26,10 @@ class MemberRepositoryImpl @Inject constructor(
 ) : MemberRepository {
     override suspend fun getMe(): RetrofitResult<MemberDetail> {
         return apiHandler({ api.getMeApi() }) { response: ResponseBody<MemberDetailResponseDto> -> response.result.toModel() }
+    }
+
+    override suspend fun patchMe(request: MemberDataRequestDto): RetrofitResult<String> {
+        return apiHandler({ api.patchMeApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun postMemberStatus(request: MemberStatusRequestDto): RetrofitResult<MemberStatus> {
