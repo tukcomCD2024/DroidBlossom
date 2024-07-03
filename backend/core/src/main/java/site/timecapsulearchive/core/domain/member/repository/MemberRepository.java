@@ -36,4 +36,18 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
     );
 
     void delete(Member member);
+
+    @Query("UPDATE Member m SET m.tagSearchAvailable = :tagSearchAvailable WHERE m.id = :memberId")
+    @Modifying(clearAutomatically = true)
+    int updateMemberTagSearchAvailable(
+        @Param("memberId") Long memberId,
+        @Param("tagSearchAvailable") Boolean tagSearchAvailable
+    );
+
+    @Query("UPDATE Member m SET m.phoneSearchAvailable = :phoneSearchAvailable WHERE m.id = :memberId")
+    @Modifying(clearAutomatically = true)
+    int updateMemberPhoneSearchAvailable(
+        @Param("memberId") Long memberId,
+        @Param("phoneSearchAvailable") Boolean phoneSearchAvailable
+    );
 }
