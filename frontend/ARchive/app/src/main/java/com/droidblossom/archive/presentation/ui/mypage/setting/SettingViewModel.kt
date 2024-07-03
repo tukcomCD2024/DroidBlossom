@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -12,7 +13,11 @@ interface SettingViewModel {
     val notificationEnable : StateFlow<Boolean>
     val settingNotificationEvents : SharedFlow<SettingNotificationEvent>
 
+    val settingUserEvents: SharedFlow<SettingUserEvent>
     val myInfo : StateFlow<MemberDetail>
+    val modifyNameText: MutableStateFlow<String>
+    val modifyTagText: MutableStateFlow<String>
+    val isTagDuplication : MutableStateFlow<Boolean>
 
     fun back()
     fun goUser()
@@ -27,6 +32,8 @@ interface SettingViewModel {
 
     fun singOutRequest()
     fun deleteAccountRequest()
+
+    fun modifyMe()
 
     sealed class SettingMainEvent {
         object Back : SettingMainEvent()
@@ -44,6 +51,11 @@ interface SettingViewModel {
 
         object GoDeleteAccount : SettingMainEvent()
         data class ShowToastMessage(val message : String) : SettingMainEvent()
+    }
+    sealed class  SettingUserEvent {
+        object  Back : SettingUserEvent()
+        data class ShowToastMessage(val message : String) : SettingUserEvent()
+
     }
 
     sealed class  SettingNotificationEvent {

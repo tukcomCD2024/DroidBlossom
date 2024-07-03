@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
@@ -11,6 +14,7 @@ import com.droidblossom.archive.databinding.FragmentSettingUserBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingUserFragment :
@@ -28,14 +32,14 @@ class SettingUserFragment :
 
     private fun initView() {
         binding.backBtn.setOnClickListener {
-            if (viewModel.isOnlyProfile.value){
+            if (viewModel.isOnlyProfile.value) {
                 requireActivity().finish()
             } else {
                 navController.popBackStack()
             }
         }
 
-        binding.modifyBtn.setOnClickListener{
+        binding.modifyBtn.setOnClickListener {
             navController.navigate(R.id.action_settingUserFragment_to_settingUserModifyFragment)
         }
 
@@ -43,7 +47,7 @@ class SettingUserFragment :
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (viewModel.isOnlyProfile.value){
+                    if (viewModel.isOnlyProfile.value) {
                         requireActivity().finish()
                     } else {
                         navController.popBackStack()

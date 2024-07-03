@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="vm"
@@ -42,10 +45,12 @@
             android:id="@+id/modifyBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="@{(vm.myInfo.nickname.equals(vm.modifyNameText) &amp; vm.myInfo.tag.equals(vm.modifyTagText)) || vm.modifyTagText.length() > 30 || vm.modifyTagText.length() &lt; 1 || vm.modifyNameText.length() > 15 || vm.modifyNameText.length() &lt; 1 || vm.isTagDuplication? false : true}"
+            android:onClick="@{()->vm.modifyMe()}"
             android:padding="12dp"
             android:text="수정완료"
             android:textAppearance="@style/TextAppearance.App.caption4"
-            android:textColor="@color/main_1"
+            android:textColor="@{(vm.myInfo.nickname.equals(vm.modifyNameText) &amp; vm.myInfo.tag.equals(vm.modifyTagText))  || vm.modifyTagText.length() > 30 || vm.modifyTagText.length() &lt; 1 || vm.modifyNameText.length() > 15 || vm.modifyNameText.length() &lt; 1 || vm.isTagDuplication? @color/gray_400 : @color/main_1}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,10 +59,12 @@
             android:layout_width="140dp"
             android:layout_height="140dp"
             android:layout_marginTop="24dp"
+            android:src="@drawable/app_symbol"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/settingTitleT"
-            android:src="@drawable/app_symbol" />
+            bind:baseImg="@{@drawable/base_user}"
+            bind:url="@{vm.myInfo.profileUrl}" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/profileNameT"
@@ -69,9 +76,11 @@
             android:ellipsize="end"
             android:fontFamily="@font/suit_bold"
             android:hint="닉네임"
+            android:imeOptions="actionDone"
+            android:inputType="text"
             android:lines="1"
             android:maxWidth="250dp"
-            android:text="이름입니다"
+            android:text="@={vm.modifyNameText}"
             android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,9 +92,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@{@string/nameMaxSize(12)}"
+            android:text="@{@string/nameMaxSize(vm.modifyNameText.length())}"
             android:textAppearance="@style/TextAppearance.App.caption4"
-            android:textColor="@color/black"
+            android:textColor="@{vm.modifyNameText.length() > 15? @color/red :@color/black}"
             app:layout_constraintEnd_toEndOf="@id/profileNameT"
             app:layout_constraintTop_toBottomOf="@id/profileNameT"
             tools:text="(12/15)" />
@@ -100,36 +109,50 @@
             android:ellipsize="end"
             android:fontFamily="@font/suit_bold"
             android:hint="TAG"
+            android:imeOptions="actionDone"
+            android:inputType="text"
             android:lines="1"
             android:maxWidth="250dp"
-            android:text="tag"
+            android:text="@={vm.modifyTagText}"
             android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/gray_700"
-            app:layout_constraintEnd_toStartOf="@id/tagBtn"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nameMaxT" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tagBtn"
+        <TextView
+            android:id="@+id/tagMaxT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="6dp"
-            app:layout_constraintBottom_toBottomOf="@id/tagT"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tagT"
-            app:strokeColor="@color/gray_400">
+            android:layout_marginTop="4dp"
+            android:text="@{@string/currentMemberNumber(vm.modifyTagText.length())}"
+            android:textAppearance="@style/TextAppearance.App.caption4"
+            android:textColor="@{vm.modifyTagText.length() > 30? @color/red :@color/black}"
+            app:layout_constraintEnd_toEndOf="@id/tagT"
+            app:layout_constraintTop_toBottomOf="@id/tagT"
+            tools:text="(12/30)" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="6dp"
-                android:text="중복확인"
-                android:textAppearance="@style/TextAppearance.App.body2"
-                android:textColor="@color/black" />
+        <!--        <com.google.android.material.card.MaterialCardView-->
+        <!--            android:id="@+id/tagBtn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="12dp"-->
+        <!--            android:backgroundTint="@color/white"-->
+        <!--            app:cardCornerRadius="6dp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/tagT"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="@id/tagT"-->
+        <!--            app:strokeColor="@color/gray_400">-->
 
-        </com.google.android.material.card.MaterialCardView>
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:padding="6dp"-->
+        <!--                android:text="중복확인"-->
+        <!--                android:textAppearance="@style/TextAppearance.App.body2"-->
+        <!--                android:textColor="@color/black" />-->
+
+        <!--        </com.google.android.material.card.MaterialCardView>-->
 
         <TextView
             android:id="@+id/duplicationT"
@@ -137,9 +160,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textAppearance="@style/TextAppearance.App.caption4"
-            android:textColor="@color/main_1"
+            android:textColor="@color/red"
+            android:visibility="@{vm.isTagDuplication ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="@id/tagT"
             app:layout_constraintTop_toBottomOf="@id/tagT"
-            tools:text="사용가능합니다!" />
+            tools:text="이미 있는 TAG입니다." />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
