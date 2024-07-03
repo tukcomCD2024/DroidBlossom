@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberPhoneSearchAvailableRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberTagSearchAvailableRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
-import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberDetailResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
@@ -139,6 +139,50 @@ public interface MemberApi {
     ResponseEntity<ApiSpec<String>> updateMemberData(
         Long memberId,
         UpdateMemberDataRequest request
+    );
+
+    @Operation(
+        summary = "사용자 태그 검색 허용 상태 수정",
+        description = "사용자의 태그 검색 허용 상태를 수정한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<String>> updateMemberTagSearchAvailable(
+        Long memberId,
+        UpdateMemberTagSearchAvailableRequest request
+    );
+
+    @Operation(
+        summary = "사용자 핸드폰 검색 허용 상태 수정",
+        description = "사용자의 핸드폰 검색 허용 상태를 수정한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<String>> updateMemberTagSearchAvailable(
+        Long memberId,
+        UpdateMemberPhoneSearchAvailableRequest request
     );
 
     @Operation(
