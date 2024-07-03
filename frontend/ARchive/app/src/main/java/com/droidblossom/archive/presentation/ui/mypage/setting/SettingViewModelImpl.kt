@@ -2,8 +2,11 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.usecase.auth.SignOutUseCase
 import com.droidblossom.archive.domain.usecase.member.DeleteAccountUseCase
+import com.droidblossom.archive.domain.usecase.member.MemberDataModifyUseCase
+import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.member.NotificationEnabledUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
@@ -27,7 +30,9 @@ class SettingViewModelImpl @Inject constructor(
     private val notificationEnabledUseCase: NotificationEnabledUseCase,
     private val dataStoreUtils: DataStoreUtils,
     private val deleteAccountUseCase: DeleteAccountUseCase,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val memberUseCase: MemberUseCase,
+    private val memberModifyUseCase: MemberDataModifyUseCase,
 ) : BaseViewModel(), SettingViewModel {
 
     //main
@@ -48,6 +53,13 @@ class SettingViewModelImpl @Inject constructor(
     override val settingNotificationEvents: SharedFlow<SettingViewModel.SettingNotificationEvent>
         get() = _settingNotificationEvent.asSharedFlow()
 
+    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", 0, 0))
+    override val myInfo: StateFlow<MemberDetail>
+        get() = _myInfo
+
+    init {
+        getMe()
+    }
 
     override fun back() {
         viewModelScope.launch {
@@ -112,7 +124,7 @@ class SettingViewModelImpl @Inject constructor(
     override fun singOutRequest() {
         viewModelScope.launch {
             _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowLoading)
-            signOutUseCase().collect{ result ->
+            signOutUseCase().collect { result ->
                 result.onSuccess {
                     dataStoreUtils.resetTokenData()
                     _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("성공적으로 로그아웃되었습니다."))
@@ -128,7 +140,7 @@ class SettingViewModelImpl @Inject constructor(
     override fun deleteAccountRequest() {
         viewModelScope.launch {
             _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowLoading)
-            deleteAccountUseCase().collect{ result ->
+            deleteAccountUseCase().collect { result ->
                 result.onSuccess {
                     dataStoreUtils.resetTokenData()
                     _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("성공적으로 탈퇴되었습니다. 다음에 또 ARchive를 찾아주세요!"))
@@ -141,7 +153,7 @@ class SettingViewModelImpl @Inject constructor(
         }
     }
 
-    private fun goAuth(){
+    private fun goAuth() {
 
     }
 
@@ -178,6 +190,28 @@ class SettingViewModelImpl @Inject constructor(
             } else {
                 _settingNotificationEvent.emit(SettingViewModel.SettingNotificationEvent.Back)
             }
+        }
+    }
+
+    fun getMe() {
+        viewModelScope.launch {
+            memberUseCase().collect { result ->
+                result.onSuccess {
+                    _myInfo.emit(it)
+                }.onFail {
+                    _settingNotificationEvent.emit(
+                        SettingViewModel.SettingNotificationEvent.ShowToastMessage(
+                            "정보 불러오기 실패"
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun modifyMe() {
+        viewModelScope.launch {
+
         }
     }
 }

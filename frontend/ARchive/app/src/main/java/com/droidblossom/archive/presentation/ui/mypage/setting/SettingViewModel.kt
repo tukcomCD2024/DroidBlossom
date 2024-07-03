@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting
 
+import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,6 +11,8 @@ interface SettingViewModel {
     val isOnlyProfile: SharedFlow<Boolean>
     val notificationEnable : StateFlow<Boolean>
     val settingNotificationEvents : SharedFlow<SettingNotificationEvent>
+
+    val myInfo : StateFlow<MemberDetail>
 
     fun back()
     fun goUser()
