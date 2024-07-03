@@ -43,4 +43,15 @@ public class CapsuleSkinQueryRepositoryImpl implements CapsuleSkinQueryRepositor
 
         return SliceUtil.makeSlice(size, capsuleSkins);
     }
+
+    @Override
+    public boolean existByImageUrlAndMemberId(String imageUrl, Long memberId) {
+        Integer count = jpaQueryFactory
+            .selectOne()
+            .from(capsuleSkin)
+            .where(capsuleSkin.imageUrl.eq(imageUrl).and(capsuleSkin.member.id.eq(memberId)))
+            .fetchOne();
+
+        return count != null;
+    }
 }

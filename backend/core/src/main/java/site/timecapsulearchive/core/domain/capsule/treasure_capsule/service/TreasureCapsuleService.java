@@ -30,7 +30,6 @@ public class TreasureCapsuleService {
             MemberNotFoundException::new);
 
         String treasureImageUrl = transactionTemplate.execute(status -> {
-            // 이미지와 함께 캡슐 조회
             final Capsule treasureCapsule = capsuleRepository.findCapsuleWithImageByCapsuleId(
                 capsuleId).orElseThrow(CapsuleNotFondException::new);
 
@@ -38,7 +37,12 @@ public class TreasureCapsuleService {
             final String imageUrl = image.getImageUrl();
             capsuleRepository.delete(treasureCapsule);
 
-            // caspuleSkin 저장
+            final boolean isAlreadyGetTreasure = capsuleSkinRepository.existByImageUrlAndMemberId(
+                imageUrl, member.getId());
+            if (isAlreadyGetTreasure) {
+                return imageUrl;
+            }
+
             final CapsuleSkin myTreasureCapsuleSkin = CapsuleSkin.captureTreasureCapsuleSkin(
                 imageUrl, member);
             capsuleSkinRepository.save(myTreasureCapsuleSkin);

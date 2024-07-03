@@ -11,4 +11,6 @@ public interface CapsuleSkinQueryRepository {
         final int size,
         final ZonedDateTime createdAt
     );
+
+    boolean existByImageUrlAndMemberId(String imageUrl, Long memberId);
 }
