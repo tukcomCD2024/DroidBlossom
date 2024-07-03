@@ -1,7 +1,6 @@
 package site.timecapsulearchive.core.global.security.jwt;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         );
 
         final Long memberId = getMemberId(tokenParseResult);
-        final boolean isInBlackList = blackListCacheRepository.exist(memberId);
-        if (isInBlackList) {
-            log.error("블랙리스트 토큰으로 접근 시도 id: {}, accessToken: {}", memberId, accessToken);
+
+        final String blackListToken = blackListCacheRepository.findBlackListTokenByMemberId(
+            memberId);
+        if (accessToken.equals(blackListToken)) {
+            log.error("블랙리스트 토큰으로 접근 시도 id: {}, blackListToken: {}, accessToken: {}", memberId,
+                blackListToken, accessToken);
             throw new InvalidTokenException();
         }
 
