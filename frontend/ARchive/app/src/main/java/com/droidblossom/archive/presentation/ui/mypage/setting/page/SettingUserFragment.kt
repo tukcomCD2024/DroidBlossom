@@ -1,11 +1,9 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting.page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R

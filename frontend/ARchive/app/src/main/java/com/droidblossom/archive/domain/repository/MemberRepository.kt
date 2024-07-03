@@ -2,6 +2,7 @@ package com.droidblossom.archive.domain.repository
 
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
+import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
@@ -14,6 +15,8 @@ import com.droidblossom.archive.util.RetrofitResult
 interface MemberRepository {
 
     suspend fun getMe() : RetrofitResult<MemberDetail>
+
+    suspend fun patchMe(request: MemberDataRequestDto) : RetrofitResult<String>
 
     suspend fun postMemberStatus(request : MemberStatusRequestDto) : RetrofitResult<MemberStatus>
 
