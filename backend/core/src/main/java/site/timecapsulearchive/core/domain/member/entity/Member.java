@@ -70,6 +70,12 @@ public class Member extends BaseEntity {
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
 
+    @Column(name = "tag_search_available", nullable = false)
+    private Boolean tagSearchAvailable = Boolean.TRUE;
+
+    @Column(name = "phone_search_available", nullable = false)
+    private Boolean phoneSearchAvailable = Boolean.TRUE;
+
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,
         String authId, String password, String tag, byte[] phone, byte[] phoneHash) {

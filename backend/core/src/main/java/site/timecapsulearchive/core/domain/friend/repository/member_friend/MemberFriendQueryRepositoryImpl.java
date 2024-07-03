@@ -125,7 +125,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.friend.id.eq(memberId)
                 .and(friendInviteToMe.owner.id.eq(member.id)))
-            .where(member.phoneHash.in(hashes))
+            .where(member.phoneHash.in(hashes).and(member.phoneSearchAvailable.eq(Boolean.TRUE)))
             .fetch();
     }
 
@@ -170,7 +170,8 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.owner.id.eq(member.id)
                 .and(friendInviteToMe.friend.id.eq(memberId)))
-            .where(tagFullTextSearchTemplate.gt(MATCH_THRESHOLD))
+            .where(tagFullTextSearchTemplate.gt(MATCH_THRESHOLD)
+                .and(member.tagSearchAvailable.eq(Boolean.TRUE)))
             .orderBy(tagFullyMatchFirstOrder, tagFullTextSearchTemplate.desc())
             .limit(1L)
             .fetchOne()
