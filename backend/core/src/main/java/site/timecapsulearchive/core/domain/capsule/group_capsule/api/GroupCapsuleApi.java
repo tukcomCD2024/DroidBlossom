@@ -21,7 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.Gr
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMembersResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupSpecificCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -103,8 +103,8 @@ public interface GroupCapsuleApi {
     );
 
     @Operation(
-        summary = "그룹 캡슐 목록 조회",
-        description = "그룹원만 볼 수 있는 그룹 캡슐 목록을 조회한다.",
+        summary = "그룹 소유 캡슐 목록 조회",
+        description = "그룹이 소유한 그룹원만 볼 수 있는 그룹 캡슐 목록을 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group capsule"}
     )
@@ -119,7 +119,7 @@ public interface GroupCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<GroupCapsuleSliceResponse>> getGroupCapsules(
+    ResponseEntity<ApiSpec<GroupSpecificCapsuleSliceResponse>> getGroupSpecificCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "그룹 아이디", required = true)

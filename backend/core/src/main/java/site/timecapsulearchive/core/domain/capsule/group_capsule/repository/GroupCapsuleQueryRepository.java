@@ -26,7 +26,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.member.entity.QMember;
 import site.timecapsulearchive.core.global.util.SliceUtil;
@@ -173,7 +173,7 @@ public class GroupCapsuleQueryRepository {
             .fetchOne();
     }
 
-    public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
+    public Slice<CapsuleBasicInfoDto> findGroupSpecificCapsuleSlice(final GroupSpecificCapsuleSliceRequestDto dto) {
         final List<CapsuleBasicInfoDto> groupCapsuleDtos = jpaQueryFactory
             .select(
                 Projections.constructor(

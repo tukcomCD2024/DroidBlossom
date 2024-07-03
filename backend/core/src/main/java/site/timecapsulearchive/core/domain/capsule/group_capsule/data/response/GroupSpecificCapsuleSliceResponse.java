@@ -6,8 +6,8 @@ import java.util.function.UnaryOperator;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.data.response.CapsuleBasicInfoResponse;
 
-@Schema(description = "그룹 캡슐 목록 응답")
-public record GroupCapsuleSliceResponse(
+@Schema(description = "그룹 소유의 그룹 캡슐 목록 응답")
+public record GroupSpecificCapsuleSliceResponse(
 
     @Schema(description = "캡슐 기본 정보 목록")
     List<CapsuleBasicInfoResponse> capsuleBasicInfos,
@@ -16,7 +16,7 @@ public record GroupCapsuleSliceResponse(
     boolean hasNext
 ) {
 
-    public static GroupCapsuleSliceResponse create(
+    public static GroupSpecificCapsuleSliceResponse create(
         final List<CapsuleBasicInfoDto> dtos,
         final boolean hasNext,
         final UnaryOperator<String> preSignUrlFunction
@@ -25,6 +25,6 @@ public record GroupCapsuleSliceResponse(
             .map(dto -> dto.toResponse(preSignUrlFunction))
             .toList();
 
-        return new GroupCapsuleSliceResponse(capsuleBasicInfoResponses, hasNext);
+        return new GroupSpecificCapsuleSliceResponse(capsuleBasicInfoResponses, hasNext);
     }
 }

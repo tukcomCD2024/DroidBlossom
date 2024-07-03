@@ -29,7 +29,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
@@ -192,11 +192,11 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 사용자가_그룹_캡슐_목록을_조회하면_해당_그룹의_그룹캡슐이_나온다() {
         //then
         int size = 20;
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(groupLeaderId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(groupLeaderId,
             groupId, size, lastCapsuleId);
 
         //when
-        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
             dto);
 
         //then
@@ -219,18 +219,18 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 사용자가_그룹_캡슐_목록의_첫_페이지_이후_다음_페이지를_조회하면_다음_페이지의_그룹캡슐이_나온다() {
         //then
         int size = 10;
-        GroupCapsuleSliceRequestDto firstSliceDto = GroupCapsuleSliceRequestDto.createOf(
+        GroupSpecificCapsuleSliceRequestDto firstSliceDto = GroupSpecificCapsuleSliceRequestDto.createOf(
             groupLeaderId,
             groupId, size, null);
-        Slice<CapsuleBasicInfoDto> firstGroupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> firstGroupCapsuleSlice = groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
             firstSliceDto);
         CapsuleBasicInfoDto capsuleBasicInfoDto = firstGroupCapsuleSlice.getContent()
             .get(0);
 
         //when
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(groupLeaderId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(groupLeaderId,
             groupId, size, capsuleBasicInfoDto.capsuleId());
-        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
             dto);
 
         //then

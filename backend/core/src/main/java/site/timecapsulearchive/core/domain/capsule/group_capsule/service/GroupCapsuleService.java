@@ -20,7 +20,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
@@ -164,10 +164,10 @@ public class GroupCapsuleService {
         return GroupCapsuleOpenStateDto.opened();
     }
 
-    public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
+    public Slice<CapsuleBasicInfoDto> findGroupSpecificCapsuleSlice(final GroupSpecificCapsuleSliceRequestDto dto) {
         checkGroupAuthority(dto.memberId(), dto.groupId());
 
-        return groupCapsuleQueryRepository.findGroupCapsuleSlice(dto);
+        return groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(dto);
     }
 
     private void checkGroupAuthority(Long memberId, Long groupId) {
