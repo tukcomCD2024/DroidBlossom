@@ -18,6 +18,8 @@ import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundExcept
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
@@ -28,6 +30,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
+    private final HashEncryptionManager hashEncryptionManager;
+    private final AESEncryptionManager aesEncryptionManager;
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
@@ -164,5 +168,28 @@ public class MemberService {
     @Transactional
     public void delete(final Member member) {
         memberRepository.delete(member);
+    }
+
+    @Transactional
+    public Long updateVerifiedMember(final Long memberId, final byte[] plain) {
+        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        memberTemporaryRepository.delete(memberTemporary);
+
+        boolean isDuplicateTag = memberRepository.checkTagDuplication(memberTemporary.getTag());
+        if (isDuplicateTag) {
+            log.warn("member tag duplicate - email:{}, tag:{}", memberTemporary.getEmail(),
+                memberTemporary.getTag());
+            memberTemporary.updateTagLowerCaseSocialType();
+            log.warn("member tag update - tag: {}", memberTemporary.getTag());
+        }
+
+        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
+            aesEncryptionManager.encryptWithPrefixIV(plain));
+
+        memberRepository.save(verifiedMember);
+
+        return verifiedMember.getId();
     }
 }
