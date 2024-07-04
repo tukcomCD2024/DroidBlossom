@@ -192,4 +192,19 @@ public class MemberService {
 
         return verifiedMember.getId();
     }
+
+    @Transactional
+    public void updateMemberPhone(
+        final Long memberId,
+        final byte[] phonePlain
+    ) {
+        byte[] phoneHash = hashEncryptionManager.encrypt(phonePlain);
+        byte[] encryptedPhone = aesEncryptionManager.encryptWithPrefixIV(phonePlain);
+
+        int updatedCount = memberRepository.updateMemberPhoneHashAndPhone(memberId, phoneHash,
+            encryptedPhone);
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
 }
