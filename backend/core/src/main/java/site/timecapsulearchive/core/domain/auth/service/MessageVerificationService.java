@@ -87,6 +87,8 @@ public class MessageVerificationService {
         if (isNotMatch(certificationNumber, findCertificationNumber)) {
             throw new CertificationNumberNotMatchException();
         }
+
+        messageAuthenticationCacheRepository.delete(memberId, encrypt);
     }
 
     private boolean isNotMatch(final String certificationNumber,
