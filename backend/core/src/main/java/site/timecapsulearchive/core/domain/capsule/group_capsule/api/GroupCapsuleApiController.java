@@ -78,8 +78,7 @@ public class GroupCapsuleApiController implements GroupCapsuleApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                GroupCapsuleDetailResponse.createOf(
-                    detailDto,
+                detailDto.toResponse(
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     s3PreSignedUrlManager::getS3PreSignedUrlsForGet,
                     geoTransformManager::changePoint3857To4326

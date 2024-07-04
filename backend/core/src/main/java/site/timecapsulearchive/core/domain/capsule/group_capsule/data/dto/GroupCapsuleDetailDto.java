@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
@@ -9,11 +10,11 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.G
 
 public record GroupCapsuleDetailDto(
     CapsuleDetailDto capsuleDetailDto,
-    List<GroupCapsuleMemberSummaryDto> members
+    List<GroupCapsuleMemberSummaryDto> groupMembers
 ) {
 
     public List<GroupCapsuleMemberSummaryResponse> groupMemberSummaryDtoToResponse() {
-        return members.stream()
+        return groupMembers.stream()
             .map(GroupCapsuleMemberSummaryDto::toResponse)
             .toList();
     }
@@ -21,16 +22,16 @@ public record GroupCapsuleDetailDto(
     public GroupCapsuleDetailDto excludeDetailContents() {
         return new GroupCapsuleDetailDto(
             capsuleDetailDto.excludeTitleAndContentAndImagesAndVideos(),
-            members
+            groupMembers
         );
     }
 
     public GroupCapsuleDetailResponse toResponse(
-        final Function<String, String> singlePreSignUrlFunction,
+        final UnaryOperator<String> singlePreSignUrlFunction,
         final Function<String, List<String>> multiplePreSignUrlFunction,
-        final Function<Point, Point> changePointFunction
+        final UnaryOperator<Point> pointTransformFunction
     ) {
-        final Point changePoint = changePointFunction.apply(capsuleDetailDto.point());
+        final Point changePoint = pointTransformFunction.apply(capsuleDetailDto.point());
 
         final List<String> preSignedImageUrls = multiplePreSignUrlFunction.apply(
             capsuleDetailDto.images());
@@ -40,16 +41,16 @@ public record GroupCapsuleDetailDto(
         return GroupCapsuleDetailResponse.builder()
             .capsuleId(capsuleDetailDto.capsuleId())
             .capsuleSkinUrl(singlePreSignUrlFunction.apply(capsuleDetailDto.capsuleSkinUrl()))
-            .members(groupMemberSummaryDtoToResponse())
+            .groupMembers(groupMemberSummaryDtoToResponse())
             .dueDate(capsuleDetailDto.dueDate())
-            .nickname(capsuleDetailDto.nickname())
-            .profileUrl(capsuleDetailDto.profileUrl())
-            .createdDate(capsuleDetailDto.createdAt())
+            .creatorNickname(capsuleDetailDto.nickname())
+            .creatorProfileUrl(capsuleDetailDto.profileUrl())
+            .createdAt(capsuleDetailDto.createdAt())
             .latitude(changePoint.getX())
             .longitude(changePoint.getY())
             .address(capsuleDetailDto.address())
-            .roadName(capsuleDetailDto().roadName())
-            .title(capsuleDetailDto().title())
+            .roadName(capsuleDetailDto.roadName())
+            .title(capsuleDetailDto.title())
             .content(capsuleDetailDto.content())
             .imageUrls(preSignedImageUrls)
             .videoUrls(preSignedVideoUrls)

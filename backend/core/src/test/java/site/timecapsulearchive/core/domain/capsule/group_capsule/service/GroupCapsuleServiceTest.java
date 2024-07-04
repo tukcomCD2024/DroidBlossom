@@ -77,7 +77,7 @@ class GroupCapsuleServiceTest {
         //then
         assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
+            List<GroupCapsuleMemberSummaryDto> members = response.groupMembers();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isTrue();
             softly.assertThat(detailDto.title()).isNotBlank();
@@ -103,7 +103,7 @@ class GroupCapsuleServiceTest {
         //then
         assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
+            List<GroupCapsuleMemberSummaryDto> members = response.groupMembers();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isTrue();
             softly.assertThat(detailDto.title()).isNotBlank();
@@ -129,7 +129,7 @@ class GroupCapsuleServiceTest {
         //then
         assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
+            List<GroupCapsuleMemberSummaryDto> members = response.groupMembers();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isFalse();
             softly.assertThat(detailDto.title()).isNotBlank();
@@ -156,7 +156,7 @@ class GroupCapsuleServiceTest {
         //then
         assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
+            List<GroupCapsuleMemberSummaryDto> members = response.groupMembers();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isFalse();
             softly.assertThat(detailDto.images()).isNullOrEmpty();
@@ -181,7 +181,7 @@ class GroupCapsuleServiceTest {
         //then
         assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
+            List<GroupCapsuleMemberSummaryDto> members = response.groupMembers();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isFalse();
             softly.assertThat(detailDto.images()).isNullOrEmpty();
@@ -206,7 +206,7 @@ class GroupCapsuleServiceTest {
         //then
         assertSoftly(softly -> {
             CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
+            List<GroupCapsuleMemberSummaryDto> members = response.groupMembers();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isTrue();
             softly.assertThat(detailDto.images()).isNullOrEmpty();

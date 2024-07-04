@@ -3,11 +3,8 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.data.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
 import lombok.Builder;
-import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "그룹 캡슐 상세 정보")
@@ -21,19 +18,19 @@ public record GroupCapsuleDetailResponse(
     String capsuleSkinUrl,
 
     @Schema(description = "그룹원 요약 정보")
-    List<GroupCapsuleMemberSummaryResponse> members,
+    List<GroupCapsuleMemberSummaryResponse> groupMembers,
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,
 
     @Schema(description = "생성자 닉네임")
-    String nickname,
+    String creatorNickname,
 
     @Schema(description = "생성자 프로필 url")
-    String profileUrl,
+    String creatorProfileUrl,
 
     @Schema(description = "생성일")
-    ZonedDateTime createdDate,
+    ZonedDateTime createdAt,
 
     @Schema(description = "캡슐 위도 좌표")
     Double latitude,
@@ -71,17 +68,6 @@ public record GroupCapsuleDetailResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        createdAt = createdAt.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
     }
-
-    public static GroupCapsuleDetailResponse createOf(
-        final GroupCapsuleDetailDto groupCapsuleDetailDto,
-        final Function<String, String> singlePreSignUrlFunction,
-        final Function<String, List<String>> multiplePreSignUrlFunction,
-        final Function<Point, Point> changePointFunction
-    ) {
-        return groupCapsuleDetailDto.toResponse(singlePreSignUrlFunction,
-            multiplePreSignUrlFunction, changePointFunction);
-    }
-
 }

@@ -115,7 +115,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         //when
         GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        List<GroupCapsuleMemberSummaryDto> summaryDto = detailDto.members();
+        List<GroupCapsuleMemberSummaryDto> summaryDto = detailDto.groupMembers();
 
         //then
         assertSoftly(
