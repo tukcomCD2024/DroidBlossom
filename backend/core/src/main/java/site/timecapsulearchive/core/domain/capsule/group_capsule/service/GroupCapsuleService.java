@@ -18,6 +18,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.vi
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
@@ -162,6 +163,17 @@ public class GroupCapsuleService {
 
         groupCapsule.open();
         return GroupCapsuleOpenStateDto.opened();
+    }
+
+    public Slice<GroupCapsuleDto> findGroupCapsuleSlice(
+        final Long memberId,
+        final int size,
+        final Long lastCapsuleId
+    ) {
+        final List<Long> groupIds = memberGroupRepository.findGroupIdsByMemberId(memberId);
+
+        return groupCapsuleQueryRepository.findGroupCapsuleSlice(size, lastCapsuleId,
+            groupIds);
     }
 
     public Slice<CapsuleBasicInfoDto> findGroupSpecificCapsuleSlice(final GroupSpecificCapsuleSliceRequestDto dto) {
