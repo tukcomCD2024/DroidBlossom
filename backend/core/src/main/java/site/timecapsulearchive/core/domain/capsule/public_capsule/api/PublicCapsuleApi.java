@@ -57,7 +57,7 @@ public interface PublicCapsuleApi {
 
     @Operation(
         summary = "공개 캡슐 요약 조회",
-        description = "사용자의 친구들만 볼 수 있는 공개 캡슐 내용을 요약 조회한다.",
+        description = "사용자와 친구들이 만든 공개 캡슐 내용을 요약 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"public capsule"}
     )
@@ -86,7 +86,7 @@ public interface PublicCapsuleApi {
 
     @Operation(
         summary = "공개 캡슐 상세 조회",
-        description = "사용자의 친구들만 볼 수 있는 공개 캡슐 내용을 조회한다.",
+        description = "사용자와 친구들이 만든 공개 캡슐 내용을 상세 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"public capsule"}
     )
@@ -114,7 +114,7 @@ public interface PublicCapsuleApi {
     );
 
     @Operation(
-        summary = "친구가 만든 공개 캡슐 목록 조회",
+        summary = "사용자와 친구가 만든 공개 캡슐 목록 조회",
         description = "사용자와 친구가 만든 공개 캡슐 목록을 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"public capsule"}
