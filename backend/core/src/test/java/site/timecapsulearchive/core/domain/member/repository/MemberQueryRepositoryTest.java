@@ -69,6 +69,9 @@ class MemberQueryRepositoryTest extends RepositoryTest {
             softly.assertThat(detailDto.tag()).isNotBlank();
             softly.assertThat(detailDto.nickname()).isNotBlank();
             softly.assertThat(detailDto.profileUrl()).isNotBlank();
+            softly.assertThat(detailDto.socialType()).isNotNull();
+            softly.assertThat(detailDto.email()).isNotBlank();
+            softly.assertThat(detailDto.phone()).isNotNull();
             softly.assertThat(detailDto.friendCount()).isNotNull();
             softly.assertThat(detailDto.groupCount()).isNotNull();
         });
