@@ -31,7 +31,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.im
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
@@ -71,12 +71,12 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        GroupCapsuleWithMemberDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
+            CapsuleDetailDto detailDto = response.groupCapsuleDetailDto();
             List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isTrue();
@@ -97,12 +97,12 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        GroupCapsuleWithMemberDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
+            CapsuleDetailDto detailDto = response.groupCapsuleDetailDto();
             List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isTrue();
@@ -123,12 +123,12 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        GroupCapsuleWithMemberDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
+            CapsuleDetailDto detailDto = response.groupCapsuleDetailDto();
             List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isFalse();
@@ -150,12 +150,12 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        GroupCapsuleWithMemberDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
+            CapsuleDetailDto detailDto = response.groupCapsuleDetailDto();
             List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isFalse();
@@ -175,12 +175,12 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        GroupCapsuleWithMemberDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
+            CapsuleDetailDto detailDto = response.groupCapsuleDetailDto();
             List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isFalse();
@@ -200,12 +200,12 @@ class GroupCapsuleServiceTest {
         );
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        GroupCapsuleWithMemberDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
+            CapsuleDetailDto detailDto = response.groupCapsuleDetailDto();
             List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
             softly.assertThat(detailDto.isOpened()).isTrue();

@@ -27,7 +27,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
@@ -93,9 +93,9 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 그룹캡슐_아이디로_그룹_캡슐의_상세_조회_하면_상세_내용을_조회할_수_있다() {
         // given
         //when
-        GroupCapsuleDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        GroupCapsuleWithMemberDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        CapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.capsuleDetailDto();
+        CapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.groupCapsuleDetailDto();
 
         //then
         assertSoftly(
@@ -113,7 +113,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 그룹캡슐_아이디로_그룹_캡슐의_상세_조회_하면_그룹원_정보를_조회할_수_있다() {
         //given
         //when
-        GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        GroupCapsuleWithMemberDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
         List<GroupCapsuleMemberSummaryDto> summaryDto = detailDto.members();
 
@@ -133,7 +133,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         Long notCapsuleId = -1L;
 
         //when
-        Optional<GroupCapsuleDetailDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        Optional<GroupCapsuleWithMemberDetailDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             notCapsuleId);
 
         //then

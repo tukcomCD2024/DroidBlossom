@@ -6,10 +6,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 
 public class CapsuleDtoFixture {
 
@@ -34,10 +33,10 @@ public class CapsuleDtoFixture {
     }
 
 
-    public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long capsuleId,
+    public static Optional<GroupCapsuleWithMemberDetailDto> getGroupCapsuleDetailDto(Long capsuleId,
         boolean isOpened, ZonedDateTime now, int count) {
         return Optional.of(
-            new GroupCapsuleDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
+            new GroupCapsuleWithMemberDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
                 getGroupMemberSummaryDtos(count)));
     }
 
