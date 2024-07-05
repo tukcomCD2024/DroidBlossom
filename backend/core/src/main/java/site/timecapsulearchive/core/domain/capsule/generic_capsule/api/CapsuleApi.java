@@ -211,6 +211,11 @@ public interface CapsuleApi {
             responseCode = "404",
             description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "해당 캡슐을 신고할 권한이 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<String>> declarationCapsule(
