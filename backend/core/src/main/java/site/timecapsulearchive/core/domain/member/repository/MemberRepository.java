@@ -14,6 +14,8 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
 
     Member save(Member createMember);
 
+    void saveAndFlush(Member member);
+
     Optional<Member> findMemberById(Long memberId);
 
     @Modifying(clearAutomatically = true)

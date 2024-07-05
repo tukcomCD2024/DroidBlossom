@@ -89,4 +89,9 @@ public class Member extends BaseEntity {
     public void updateTagLowerCaseSocialType() {
         this.tag = TagGenerator.lowercase(email, socialType);
     }
+
+    public void updateData(String nickname, String tag) {
+        this.nickname = nickname;
+        this.tag = tag;
+    }
 }
