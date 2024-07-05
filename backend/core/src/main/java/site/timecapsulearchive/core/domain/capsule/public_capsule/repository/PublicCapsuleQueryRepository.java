@@ -38,7 +38,7 @@ public class PublicCapsuleQueryRepository {
         final Long memberId,
         final Long capsuleId
     ) {
-        return Optional.ofNullable(jpaQueryFactory
+        PublicCapsuleDetailDto publicCapsuleDetailDto = jpaQueryFactory
             .select(
                 Projections.constructor(
                     PublicCapsuleDetailDto.class,
@@ -71,8 +71,13 @@ public class PublicCapsuleQueryRepository {
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
                 .and(eqMemberIdOrFriendId(memberId)))
-            .fetchFirst()
-        );
+            .fetchFirst();
+
+        if (publicCapsuleDetailDto.capsuleId() == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(publicCapsuleDetailDto);
     }
 
     private StringExpression groupConcatDistinct(final StringExpression expression) {
@@ -158,7 +163,10 @@ public class PublicCapsuleQueryRepository {
                     groupConcatDistinct(image.imageUrl),
                     groupConcatDistinct(video.videoUrl),
                     capsule.isOpened,
-                    capsule.type
+                    capsule.type,
+                    new CaseBuilder()
+                        .when(eqMemberId(memberId)).then(true)
+                        .otherwise(false)
                 )
             )
             .from(capsule)
@@ -177,9 +185,6 @@ public class PublicCapsuleQueryRepository {
         return SliceUtil.makeSlice(size, publicCapsuleDetailDtos);
     }
 
-    private boolean canMoreRead(final int size, final int capsuleSize) {
-        return capsuleSize > size;
-    }
 
     public Slice<CapsuleBasicInfoDto> findMyPublicCapsuleSlice(
         final Long memberId,
