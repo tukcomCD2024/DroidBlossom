@@ -70,6 +70,9 @@ public class Member extends BaseEntity {
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
 
+    @Column(name = "declaration_count")
+    private Long declarationCount = 0L;
+
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,
         String authId, String password, String tag, byte[] phone, byte[] phone_hash) {
@@ -88,5 +91,9 @@ public class Member extends BaseEntity {
 
     public void updateTagLowerCaseSocialType() {
         this.tag = TagGenerator.lowercase(email, socialType);
+    }
+
+    public void upDeclarationCount() {
+        declarationCount++;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +78,9 @@ public class MemberApiController implements MemberApi {
         memberService.updateMemberFCMToken(memberId, request.fcmToken());
 
         return ResponseEntity.ok(
-            ApiSpec.empty(SuccessCode.SUCCESS)
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
         );
     }
 
@@ -89,7 +92,11 @@ public class MemberApiController implements MemberApi {
     ) {
         memberService.updateMemberNotificationEnabled(memberId, request.notificationEnabled());
 
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 
     @Override
@@ -127,6 +134,25 @@ public class MemberApiController implements MemberApi {
     ) {
         memberFacade.deleteByMemberId(memberId, accessToken);
 
-        return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
+    }
+
+    @PatchMapping(value = "/{target_id}/declaration", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<String>> declarationMember(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("target_id") final Long targetId
+    ) {
+        memberService.declarationMember(targetId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 }

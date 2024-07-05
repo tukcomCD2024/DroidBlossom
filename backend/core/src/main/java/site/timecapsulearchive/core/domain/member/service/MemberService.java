@@ -165,4 +165,12 @@ public class MemberService {
     public void delete(final Member member) {
         memberRepository.delete(member);
     }
+
+    @Transactional
+    public void declarationMember(final Long targetId) {
+        Member member = memberRepository.findMemberById(targetId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.upDeclarationCount();
+    }
 }
