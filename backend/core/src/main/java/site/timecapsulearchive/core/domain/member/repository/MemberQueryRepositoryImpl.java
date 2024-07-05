@@ -64,6 +64,12 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         member.nickname,
                         member.profileUrl,
                         member.tag,
+                        member.socialType,
+                        member.email,
+                        Projections.constructor(
+                            ByteArrayWrapper.class,
+                            member.phone
+                        ),
                         countDistinct(memberFriend.id),
                         countDistinct(memberGroup.id)
                     )
