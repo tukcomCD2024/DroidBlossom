@@ -27,6 +27,7 @@ import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
@@ -95,7 +96,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         //when
         GroupCapsuleWithMemberDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        CapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.groupCapsuleDetailDto();
+        GroupCapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.groupCapsuleDetailDto();
 
         //then
         assertSoftly(

@@ -37,7 +37,7 @@ public class GroupCapsuleOpenFixture {
             GroupCapsuleOpen groupCapsuleOpen = declaredConstructor.newInstance();
             setFieldValue(groupCapsuleOpen, "group", group);
             setFieldValue(groupCapsuleOpen, "capsule", capsule);
-            setFieldValue(groupCapsuleOpen, "isCapsuleOpened", isOpened);
+            setFieldValue(groupCapsuleOpen, "isOpened", isOpened);
             setFieldValue(groupCapsuleOpen, "member", member);
             return groupCapsuleOpen;
         } catch (Exception e) {
