@@ -198,7 +198,7 @@ public interface CapsuleApi {
 
     @Operation(
         summary = "공개, 그룹 캡슐 신고",
-        description = "캡슐을 열람 상태를 변경해준다.",
+        description = "공개, 그룹 캡슐을 신고한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"capsule"}
     )
