@@ -11,6 +11,7 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 
 @Service
@@ -44,7 +45,7 @@ public class PublicCapsuleService {
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public CapsuleSummaryDto findPublicCapsuleSummaryByMemberIdAndCapsuleId(
+    public PublicCapsuleSummaryDto findPublicCapsuleSummaryByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
