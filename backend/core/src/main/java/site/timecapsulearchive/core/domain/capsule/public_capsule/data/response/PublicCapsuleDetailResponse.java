@@ -3,8 +3,13 @@ package site.timecapsulearchive.core.domain.capsule.public_capsule.data.response
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.Function;
 import lombok.Builder;
+import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "공개 캡슐 상세 정보")
@@ -57,7 +62,10 @@ public record PublicCapsuleDetailResponse(
     Boolean isOpened,
 
     @Schema(description = "캡슐 타입")
-    CapsuleType capsuleType
+    CapsuleType capsuleType,
+
+    @Schema(description = "캡슐 소유 여부")
+    Boolean isOwner
 ) {
 
     public PublicCapsuleDetailResponse {
@@ -68,5 +76,15 @@ public record PublicCapsuleDetailResponse(
         if (createdDate != null) {
             createdDate = createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
+    }
+
+    public static PublicCapsuleDetailResponse createOf(
+        final PublicCapsuleDetailDto detailDto,
+        final Function<String, String> singlePreSignUrlFunction,
+        final Function<String, List<String>> multiplePreSignUrlFunction,
+        final Function<Point, Point> changePointFunction
+    ) {
+        return detailDto.toResponse(changePointFunction, singlePreSignUrlFunction,
+            multiplePreSignUrlFunction);
     }
 }

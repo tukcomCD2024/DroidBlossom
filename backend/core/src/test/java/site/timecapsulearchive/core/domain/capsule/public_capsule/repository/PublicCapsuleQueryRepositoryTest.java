@@ -108,7 +108,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     void 친구가_공개_캡슐을_상세_조회하면_공개_캡슐_상세_내용을_볼_수_있다() {
         //given
         //when
-        Optional<CapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        Optional<PublicCapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             friendId, myCapsuleId);
 
         //then
@@ -119,7 +119,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     void 친구가_아닌_사용자가_친구_캡슐을_상세_조회하면_친구_캡슐_상세_내용을_볼_수_없다() {
         //given
         //when
-        Optional<CapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        Optional<PublicCapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             notFriendId, friendCapsuleId);
 
         //then
@@ -130,7 +130,7 @@ class PublicCapsuleQueryRepositoryTest extends RepositoryTest {
     void 사용자가_만든_공개_캡슐을_상세_조회하면_공개_캡슐_상세_내용을_볼_수_있다() {
         //given
         //when
-        Optional<CapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        Optional<PublicCapsuleDetailDto> detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             memberId, myCapsuleId);
 
         //then

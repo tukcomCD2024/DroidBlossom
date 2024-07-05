@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
+import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 
 public record PublicCapsuleDetailDto(
@@ -22,8 +23,30 @@ public record PublicCapsuleDetailDto(
     String images,
     String videos,
     Boolean isOpened,
-    CapsuleType capsuleType
+    CapsuleType capsuleType,
+    Boolean isOwner
 ) {
+
+    public PublicCapsuleDetailDto excludeTitleAndContentAndImagesAndVideos() {
+        return new PublicCapsuleDetailDto(
+            capsuleId,
+            capsuleSkinUrl,
+            dueDate,
+            nickname,
+            profileUrl,
+            createdAt,
+            point,
+            address,
+            roadName,
+            "",
+            "",
+            "",
+            "",
+            isOpened,
+            capsuleType,
+            isOwner
+        );
+    }
 
     public PublicCapsuleDetailResponse toResponse(
         final Function<Point, Point> changePointFunction,
@@ -51,6 +74,7 @@ public record PublicCapsuleDetailDto(
             .videoUrls(preSignedVideoUrls)
             .isOpened(isOpened)
             .capsuleType(capsuleType)
+            .isOwner(isOwner)
             .build();
     }
 }

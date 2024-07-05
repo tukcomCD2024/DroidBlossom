@@ -21,6 +21,7 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
@@ -107,7 +108,7 @@ public interface PublicCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<CapsuleDetailResponse>> getPublicCapsuleDetailById(
+    ResponseEntity<ApiSpec<PublicCapsuleDetailResponse>> getPublicCapsuleDetailById(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true, schema = @Schema())

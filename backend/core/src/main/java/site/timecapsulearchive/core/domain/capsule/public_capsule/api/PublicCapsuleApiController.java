@@ -26,6 +26,7 @@ import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPub
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.service.PublicCapsuleService;
@@ -88,17 +89,17 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<CapsuleDetailResponse>> getPublicCapsuleDetailById(
+    public ResponseEntity<ApiSpec<PublicCapsuleDetailResponse>> getPublicCapsuleDetailById(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
-        final CapsuleDetailDto detailDto = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        final PublicCapsuleDetailDto detailDto = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                CapsuleDetailResponse.createOf(
+                PublicCapsuleDetailResponse.createOf(
                     detailDto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     s3PreSignedUrlManager::getS3PreSignedUrlsForGet,

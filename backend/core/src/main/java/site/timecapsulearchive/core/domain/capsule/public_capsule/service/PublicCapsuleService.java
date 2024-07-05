@@ -21,11 +21,11 @@ public class PublicCapsuleService {
 
     private final PublicCapsuleQueryRepository publicCapsuleQueryRepository;
 
-    public CapsuleDetailDto findPublicCapsuleDetailByMemberIdAndCapsuleId(
+    public PublicCapsuleDetailDto findPublicCapsuleDetailByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
-        final CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final PublicCapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
@@ -36,7 +36,7 @@ public class PublicCapsuleService {
         return detailDto;
     }
 
-    private boolean capsuleNotOpened(final CapsuleDetailDto detailDto) {
+    private boolean capsuleNotOpened(final PublicCapsuleDetailDto detailDto) {
         if (detailDto.dueDate() == null) {
             return false;
         }

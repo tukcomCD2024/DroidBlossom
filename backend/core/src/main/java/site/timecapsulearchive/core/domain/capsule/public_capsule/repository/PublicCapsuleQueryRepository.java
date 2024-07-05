@@ -34,14 +34,14 @@ public class PublicCapsuleQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Optional<CapsuleDetailDto> findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+    public Optional<PublicCapsuleDetailDto> findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
-        final CapsuleDetailDto detailDto = jpaQueryFactory
+        return Optional.ofNullable(jpaQueryFactory
             .select(
                 Projections.constructor(
-                    CapsuleDetailDto.class,
+                    PublicCapsuleDetailDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
@@ -56,7 +56,10 @@ public class PublicCapsuleQueryRepository {
                     groupConcatDistinct(image.imageUrl),
                     groupConcatDistinct(video.videoUrl),
                     capsule.isOpened,
-                    capsule.type
+                    capsule.type,
+                    new CaseBuilder()
+                        .when(eqMemberId(memberId)).then(true)
+                        .otherwise(false)
                 )
             )
             .from(capsule)
@@ -67,14 +70,9 @@ public class PublicCapsuleQueryRepository {
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
-                .and(capsule.member.id.eq(memberId).or(memberFriend.friend.id.eq(memberId))))
-            .fetchFirst();
-
-        if (detailDto.capsuleId() == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(detailDto);
+                .and(eqMemberIdOrFriendId(memberId)))
+            .fetchFirst()
+        );
     }
 
     private StringExpression groupConcatDistinct(final StringExpression expression) {
