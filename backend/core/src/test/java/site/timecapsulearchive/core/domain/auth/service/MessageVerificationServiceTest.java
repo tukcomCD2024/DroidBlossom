@@ -102,7 +102,7 @@ class MessageVerificationServiceTest {
             RECEIVER);
 
         //then
-        verify(memberRepository, times(1)).save(any(Member.class));
+        verify(memberRepository, times(1)).saveAndFlush(any(Member.class));
     }
 
     @Test
