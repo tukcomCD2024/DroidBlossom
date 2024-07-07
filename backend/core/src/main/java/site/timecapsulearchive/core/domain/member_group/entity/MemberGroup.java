@@ -12,11 +12,9 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import site.timecapsulearchive.core.domain.capsule.exception.NoCapsuleAuthorityException;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member_group.exception.GroupQuitException;
@@ -63,6 +61,12 @@ public class MemberGroup extends BaseEntity {
     public void checkGroupMemberOwner() {
         if (this.isOwner) {
             throw new GroupQuitException();
+        }
+    }
+
+    public void checkDeleteGroupCapsuleAuthority() {
+        if (!this.isOwner) {
+            throw new NoCapsuleAuthorityException();
         }
     }
 }

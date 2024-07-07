@@ -17,10 +17,14 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.Near
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
+import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
+import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
+import site.timecapsulearchive.core.global.common.supplier.ZonedDateTimeSupplier;
 import site.timecapsulearchive.core.global.geography.GeoTransformManager;
 
 @Service
@@ -30,6 +34,8 @@ public class CapsuleService {
 
     private final CapsuleRepository capsuleRepository;
     private final MemberFriendRepository memberFriendRepository;
+    private final MemberGroupRepository memberGroupRepository;
+    private final GroupCapsuleOpenRepository groupCapsuleOpenRepository;
     private final GeoTransformManager geoTransformManager;
     private final ImageRepository imageRepository;
     private final VideoRepository videoRepository;
@@ -152,10 +158,46 @@ public class CapsuleService {
     }
 
     @Transactional
-    public void deleteRelatedAllCapsuleByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+    public void deleteRelatedAllCapsuleByMemberId(
+        final Long memberId,
+        final ZonedDateTime deletedAt
+    ) {
         imageRepository.deleteByMemberId(memberId, deletedAt);
         videoRepository.deleteByMemberId(memberId, deletedAt);
         capsuleSkinRepository.deleteByMemberId(memberId, deletedAt);
         capsuleRepository.deleteExcludeGroupCapsuleByMemberId(memberId, deletedAt);
     }
+
+    @Transactional
+    public void deleteCapsule(
+        final Long memberId,
+        final Long capsuleId,
+        final CapsuleType capsuleType
+    ) {
+        final ZonedDateTime deletedAt = ZonedDateTimeSupplier.utc().get();
+
+        if (capsuleType.isGroupCapsule()) {
+            validateGroupCapsuleOwnership(memberId, capsuleId);
+        }
+
+        deleteCapsuleAssets(memberId, capsuleId, deletedAt);
+    }
+
+    private void validateGroupCapsuleOwnership(final Long memberId, final Long capsuleId) {
+        final Capsule capsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(memberId, capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+        final Long groupId = capsule.getGroup().getId();
+
+        final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(memberId, groupId)
+            .orElseThrow(CapsuleNotFondException::new);
+        memberGroup.checkDeleteGroupCapsuleAuthority();
+    }
+
+    private void deleteCapsuleAssets(final Long memberId, final Long capsuleId, final ZonedDateTime deletedAt) {
+        imageRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
+        videoRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
+        groupCapsuleOpenRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
+        capsuleRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
+    }
+
 }

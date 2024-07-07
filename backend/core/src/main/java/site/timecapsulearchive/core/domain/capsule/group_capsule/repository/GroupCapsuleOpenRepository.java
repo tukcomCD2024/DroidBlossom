@@ -26,4 +26,12 @@ public interface GroupCapsuleOpenRepository extends Repository<GroupCapsuleOpen,
         @Param("groupCapsuleIds") List<Long> groupCapsuleIds,
         @Param("deletedAt") ZonedDateTime deletedAt
     );
+
+    @Query("UPDATE GroupCapsuleOpen gco SET gco.deletedAt = :deletedAt WHERE gco.member.id = :memberId and gco.capsule.id = :capsuleId")
+    @Modifying
+    void deleteByMemberIdAndCapsuleId(
+        @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId,
+        @Param("deletedAt") ZonedDateTime deletedAt
+    );
 }

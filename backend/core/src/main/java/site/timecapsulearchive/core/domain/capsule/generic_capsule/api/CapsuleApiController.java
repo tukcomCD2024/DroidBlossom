@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -147,6 +148,22 @@ public class CapsuleApiController implements CapsuleApi {
             ApiSpec.success(
                 SuccessCode.SUCCESS,
                 capsuleFacade.updateCapsuleOpened(memberId, capsuleId)
+            )
+        );
+    }
+
+    @DeleteMapping(value = "/{capsule_id}/{capsule_type}", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<String>> deleteCapsule(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId,
+        @PathVariable("capsule_type") final CapsuleType capsuleType
+    ) {
+        capsuleService.deleteCapsule(memberId, capsuleId, capsuleType);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
             )
         );
     }

@@ -5,5 +5,10 @@ public enum CapsuleType {
     PUBLIC,
     GROUP,
     TREASURE,
-    ALL
+    ALL;
+
+    public boolean isGroupCapsule() {
+        return this.equals(CapsuleType.GROUP);
+    }
+
 }
