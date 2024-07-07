@@ -43,47 +43,48 @@ public class GroupCapsuleQueryRepository {
         final QMember owner = new QMember("owner");
         final QMember groupMember = new QMember("groupMember");
 
-        return Optional.ofNullable(jpaQueryFactory
-            .selectFrom(capsule)
-            .join(owner).on(capsule.member.id.eq(owner.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
-            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
-            .join(groupCapsuleOpen).on(groupCapsuleOpen.capsule.id.eq(capsuleId))
-            .join(groupMember).on(groupMember.id.eq(groupCapsuleOpen.member.id))
-            .groupBy(groupCapsuleOpen.id)
-            .where(groupCapsuleOpen.capsule.id.eq(capsuleId))
-            .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.GROUP)))
-            .transform(
-                groupBy(capsule.id).as(
-                    Projections.constructor(
-                        GroupCapsuleDetailDto.class,
+        return Optional.ofNullable(
+            jpaQueryFactory
+                .selectFrom(capsule)
+                .join(capsule.member, owner)
+                .join(capsule.capsuleSkin, capsuleSkin)
+                .leftJoin(image).on(capsule.id.eq(image.capsule.id))
+                .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+                .join(groupCapsuleOpen).on(groupCapsuleOpen.capsule.id.eq(capsule.id))
+                .join(groupMember).on(groupMember.id.eq(groupCapsuleOpen.member.id))
+                .where(groupCapsuleOpen.capsule.id.eq(capsuleId).and(capsule.id.eq(capsuleId))
+                    .and(capsule.type.eq(CapsuleType.GROUP)))
+                .groupBy(groupCapsuleOpen.id)
+                .transform(
+                    groupBy(capsule.id).as(
                         Projections.constructor(
-                            CapsuleDetailDto.class,
-                            capsule.id,
-                            capsuleSkin.imageUrl,
-                            capsule.dueDate,
-                            owner.nickname,
-                            owner.profileUrl,
-                            capsule.createdAt,
-                            capsule.point,
-                            capsule.address.fullRoadAddressName,
-                            capsule.address.roadName,
-                            capsule.title,
-                            capsule.content,
-                            groupConcatDistinct(image.imageUrl),
-                            groupConcatDistinct(video.videoUrl),
-                            capsule.isOpened,
-                            capsule.type
-                        ),
-                        list(Projections.constructor(GroupCapsuleMemberSummaryDto.class,
-                            groupMember.nickname,
-                            groupMember.profileUrl,
-                            groupCapsuleOpen.isOpened)
+                            GroupCapsuleDetailDto.class,
+                            Projections.constructor(
+                                CapsuleDetailDto.class,
+                                capsule.id,
+                                capsuleSkin.imageUrl,
+                                capsule.dueDate,
+                                owner.nickname,
+                                owner.profileUrl,
+                                capsule.createdAt,
+                                capsule.point,
+                                capsule.address.fullRoadAddressName,
+                                capsule.address.roadName,
+                                capsule.title,
+                                capsule.content,
+                                groupConcatDistinct(image.imageUrl),
+                                groupConcatDistinct(video.videoUrl),
+                                capsule.isOpened,
+                                capsule.type
+                            ),
+                            list(Projections.constructor(GroupCapsuleMemberSummaryDto.class,
+                                groupMember.nickname,
+                                groupMember.profileUrl,
+                                groupCapsuleOpen.isOpened)
+                            )
                         )
                     )
-                )
-            ).get(capsuleId));
+                ).get(capsuleId));
     }
 
     private StringExpression groupConcatDistinct(final StringExpression expression) {
