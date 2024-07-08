@@ -32,10 +32,6 @@ public class MessageVerificationService {
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
     private final SmsApiManager smsApiManager;
-    private final MemberRepository memberRepository;
-    private final MemberTemporaryRepository memberTemporaryRepository;
-
-    private final AESEncryptionManager aesEncryptionManager;
     private final HashEncryptionManager hashEncryptionManager;
 
     /**
@@ -77,12 +73,11 @@ public class MessageVerificationService {
             + "타인 노출 금지";
     }
 
-    public Long validVerificationMessage(
+    public void validVerificationMessage(
         final Long memberId,
         final String certificationNumber,
-        final String receiver
+        final byte[] plain
     ) {
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
         byte[] encrypt = hashEncryptionManager.encrypt(plain);
 
         final String findCertificationNumber = messageAuthenticationCacheRepository
@@ -93,33 +88,11 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        return updateToVerifiedMember(memberId, plain);
+        messageAuthenticationCacheRepository.delete(memberId, encrypt);
     }
 
     private boolean isNotMatch(final String certificationNumber,
         final String findCertificationNumber) {
         return !certificationNumber.equals(findCertificationNumber);
-    }
-
-    private Long updateToVerifiedMember(final Long memberId, final byte[] plain) {
-        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-
-        memberTemporaryRepository.delete(memberTemporary);
-
-        boolean isDuplicateTag = memberRepository.checkTagDuplication(memberTemporary.getTag());
-        if (isDuplicateTag) {
-            log.warn("member tag duplicate - email:{}, tag:{}", memberTemporary.getEmail(),
-                memberTemporary.getTag());
-            memberTemporary.updateTagLowerCaseSocialType();
-            log.warn("member tag update - tag: {}", memberTemporary.getTag());
-        }
-
-        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
-            aesEncryptionManager.encryptWithPrefixIV(plain));
-
-        memberRepository.save(verifiedMember);
-
-        return verifiedMember.getId();
     }
 }

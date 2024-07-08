@@ -7,9 +7,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckEmailDuplicationRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.PhoneVerificationMessageRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateNotificationEnabledRequest;
@@ -139,6 +146,45 @@ public interface MemberApi {
     ResponseEntity<ApiSpec<String>> updateMemberData(
         Long memberId,
         UpdateMemberDataRequest request
+    );
+
+    @Operation(
+        summary = "사용자 전화번호 변경을 위한 인증번호 전송",
+        description = "사용자 전화번호 변경을 위해 인증번호를 전송한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "202",
+            description = "처리 시작"
+        )
+    })
+    ResponseEntity<ApiSpec<String>> sendVerificationMessage(
+        Long memberId,
+        VerificationMessageSendRequest request
+    );
+
+    @Operation(
+        summary = "사용자 전화번호 변경을 위한 인증번호 검증",
+        description = "사용자 전화번호 변경을 위해 인증번호를 검증한다. 성공 시 전화번호가 업데이트된다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"member"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 멤버가 존재하지 않을 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+    })
+    ResponseEntity<ApiSpec<String>> validVerificationMessage(
+        Long memberId,
+        VerificationNumberValidRequest request
     );
 
     @Operation(

@@ -36,4 +36,12 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
     );
 
     void delete(Member member);
+
+    @Query("UPDATE Member m SET m.phone_hash = :phoneHash, m.phone = :encryptedPhone WHERE m.id = :memberId")
+    @Modifying(clearAutomatically = true)
+    int updateMemberPhoneHashAndPhone(
+        @Param("memberId") Long memberId,
+        @Param("phoneHash") byte[] phoneHash,
+        @Param("encryptedPhone") byte[] encryptedPhone
+    );
 }
