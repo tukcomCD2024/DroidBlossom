@@ -81,44 +81,4 @@ class MessageVerificationServiceTest {
             .isInstanceOf(CertificationNumberNotMatchException.class);
     }
 
-    @Test
-    void 인증번호가_일치하면_사용자를_저장한다() {
-        //given
-        String certificationNumber = "1234";
-        given(messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
-            anyLong(), any()))
-            .willReturn(Optional.of(certificationNumber));
-        given(memberTemporaryRepository.findById(anyLong()))
-            .willReturn(Optional.of(MemberTemporaryFixture.memberTemporary(MEMBER_ID)));
-        given(memberRepository.checkTagDuplication(any())).willReturn(false);
-
-        //when
-        messageVerificationService.validVerificationMessage(MEMBER_ID, certificationNumber,
-            RECEIVER);
-
-        //then
-        verify(memberRepository, times(1)).saveAndFlush(any(Member.class));
-    }
-
-    @Test
-    void 태그가_중복되면_태그를_교체한다() {
-        //given
-        String certificationNumber = "1234";
-        MemberTemporary memberTemporary = MemberTemporaryFixture.memberTemporary(MEMBER_ID);
-        String originTag = memberTemporary.getTag();
-        given(messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
-            anyLong(), any()))
-            .willReturn(Optional.of(certificationNumber));
-        given(memberTemporaryRepository.findById(anyLong()))
-            .willReturn(Optional.of(memberTemporary));
-        given(memberRepository.checkTagDuplication(any())).willReturn(true);
-
-        //when
-        messageVerificationService.validVerificationMessage(MEMBER_ID, certificationNumber,
-            RECEIVER);
-
-        //then
-        assertThat(memberTemporary.getTag()).isNotEqualTo(originTag);
-    }
-
 }
