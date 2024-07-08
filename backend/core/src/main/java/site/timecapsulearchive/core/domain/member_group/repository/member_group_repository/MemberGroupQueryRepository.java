@@ -25,4 +25,6 @@ public interface MemberGroupQueryRepository {
     boolean existMemberGroupByMemberIdAndGroupId(Long memberId, Long groupId);
 
     List<GroupCapsuleMemberDto> findGroupCapsuleMembers(Long groupId, Long capsuleId);
+
+    List<Long> findGroupIdsByMemberId(Long memberId);
 }

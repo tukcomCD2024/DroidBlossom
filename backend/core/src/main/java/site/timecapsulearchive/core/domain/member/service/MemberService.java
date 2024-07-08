@@ -6,11 +6,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.UpdateMemberDataDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -20,6 +20,8 @@ import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedE
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
@@ -30,6 +32,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
+    private final HashEncryptionManager hashEncryptionManager;
+    private final AESEncryptionManager aesEncryptionManager;
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
@@ -48,21 +52,12 @@ public class MemberService {
      * @param socialType 사용자의 소셜 프로바이더 타입
      * @return 사용자의 인증 상태 {@code isExist, isVerified}
      */
-    public MemberStatusResponse checkStatus(
+    public MemberStatusDto checkStatus(
         final String authId,
         final SocialType socialType
     ) {
-
-        final Boolean isVerified = memberRepository.findIsVerifiedByAuthIdAndSocialType(
-            authId,
-            socialType
+        return memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType
         );
-
-        if (isVerified == null) {
-            return MemberStatusResponse.empty();
-        }
-
-        return MemberStatusResponse.from(isVerified);
     }
 
     /**
@@ -167,7 +162,80 @@ public class MemberService {
     }
 
     @Transactional
+    public void updateMemberTagSearchAvailable(
+        final Long memberId,
+        final Boolean tagSearchAvailable
+    ) {
+        final int updatedCount = memberRepository.updateMemberTagSearchAvailable(memberId,
+            tagSearchAvailable);
+
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberPhoneSearchAvailable(
+        final Long memberId,
+        final Boolean phoneSearchAvailable
+    ) {
+        final int updatedCount = memberRepository.updateMemberPhoneSearchAvailable(memberId,
+            phoneSearchAvailable);
+
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
     public void delete(final Member member) {
         memberRepository.delete(member);
+    }
+
+    @Transactional
+    public void declarationMember(final Long targetId) {
+        Member member = memberRepository.findMemberById(targetId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.upDeclarationCount();
+
+    }
+
+    @Transactional
+    public Long updateVerifiedMember(final Long memberId, final byte[] plain) {
+        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        memberTemporaryRepository.delete(memberTemporary);
+
+        boolean isDuplicateTag = memberRepository.checkTagDuplication(memberTemporary.getTag());
+        if (isDuplicateTag) {
+            log.warn("member tag duplicate - email:{}, tag:{}", memberTemporary.getEmail(),
+                memberTemporary.getTag());
+            memberTemporary.updateTagLowerCaseSocialType();
+            log.warn("member tag update - tag: {}", memberTemporary.getTag());
+        }
+
+        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
+            aesEncryptionManager.encryptWithPrefixIV(plain));
+
+        memberRepository.save(verifiedMember);
+
+        return verifiedMember.getId();
+    }
+
+    @Transactional
+    public void updateMemberPhone(
+        final Long memberId,
+        final byte[] phonePlain
+    ) {
+        byte[] phoneHash = hashEncryptionManager.encrypt(phonePlain);
+        byte[] encryptedPhone = aesEncryptionManager.encryptWithPrefixIV(phonePlain);
+
+        int updatedCount = memberRepository.updateMemberPhoneHashAndPhone(memberId, phoneHash,
+            encryptedPhone);
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
     }
 }

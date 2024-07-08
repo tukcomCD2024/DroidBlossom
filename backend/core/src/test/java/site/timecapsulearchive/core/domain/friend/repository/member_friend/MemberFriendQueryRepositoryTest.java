@@ -44,6 +44,9 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private static final Long NOT_FRIEND_MEMBER_START_ID = FRIEND_START_ID + MAX_COUNT;
     private static final Long FRIEND_INVITE_START_ID =
         NOT_FRIEND_MEMBER_START_ID + NOT_FRIEND_MEMBER_START_ID;
+    private static final Long NOT_AVAILABLE_TAG_SEARCH_MEMBER_ID = FRIEND_INVITE_START_ID + 1;
+    private static final Long NOT_AVAILABLE_PHONE_SEARCH_MEMBER_ID =
+        NOT_AVAILABLE_TAG_SEARCH_MEMBER_ID + 1;
 
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
@@ -56,6 +59,8 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     private String notFriendTag;
     private String friendInviteTag;
     private String notFriendInviteTag;
+    private Member notAvailableTagSearchMember;
+    private Member notAvailablePhoneSearchMember;
 
     MemberFriendQueryRepositoryTest(@Autowired EntityManager entityManager) {
         this.memberFriendQueryRepository = new MemberFriendQueryRepositoryImpl(
@@ -79,7 +84,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             List<Member> friends = MemberFixture.members(FRIEND_START_ID.intValue(), MAX_COUNT);
             for (Member friend : friends) {
                 entityManager.persist(friend);
-                hashedFriendPhones.add(friend.getPhone_hash());
+                hashedFriendPhones.add(friend.getPhoneHash());
 
                 MemberFriend memberFriend = MemberFriendFixture.memberFriend(owner, friend);
                 entityManager.persist(memberFriend);
@@ -96,7 +101,7 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
                 MAX_COUNT);
             for (Member notFriend : notFriendMembers) {
                 entityManager.persist(notFriend);
-                hashedNotFriendPhones.add(notFriend.getPhone_hash());
+                hashedNotFriendPhones.add(notFriend.getPhoneHash());
             }
             //owner에게 친구 요청을 보내지 않은 데이터
             notFriendInviteTag = notFriendMembers.get(0).getTag();
@@ -110,6 +115,16 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
             FriendInvite friendInvite = FriendInviteFixture.friendInvite(owner, friendInviteMember);
             entityManager.persist(friendInvite);
             friendInviteTag = friendInviteMember.getTag();
+
+            // 태그 검색 비허용 멤버
+            notAvailableTagSearchMember = MemberFixture.notAvailableTagSearch(
+                NOT_AVAILABLE_TAG_SEARCH_MEMBER_ID.intValue());
+            entityManager.persist(notAvailableTagSearchMember);
+
+            // 번호 검색 비허용 멤버
+            notAvailablePhoneSearchMember = MemberFixture.notAvailablePhoneSearch(
+                NOT_AVAILABLE_PHONE_SEARCH_MEMBER_ID.intValue());
+            entityManager.persist(notAvailablePhoneSearchMember);
         });
     }
 
@@ -275,6 +290,17 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
+    void 전화번호_검색이_허용되지_않은_멤버를_조회하면_예외가_발생한다() {
+        //given
+        //when
+        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
+            notAvailablePhoneSearchMember.getId(),
+            List.of(notAvailablePhoneSearchMember.getPhoneHash()));
+
+        assertThat(friends).isEmpty();
+    }
+
+    @Test
     void 태그로_검색하면_가장_비슷한_태그를_가진_사용자_한_명만_반환한다() {
         //given
         String tag = "testTag";
@@ -351,5 +377,15 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
 
         //then
         assertThat(dto.isFriendInviteToMe()).isFalse();
+    }
+
+    @Test
+    void 태그_검색이_허용되지_않은_멤버를_조회하면_예외가_발생한다() {
+        //given
+        //when
+        Optional<SearchFriendSummaryDtoByTag> friend = memberFriendQueryRepository.findFriendsByTag(
+            notAvailableTagSearchMember.getId(), notAvailableTagSearchMember.getTag());
+
+        assertThat(friend).isEmpty();
     }
 }

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
@@ -31,17 +32,11 @@ class MessageVerificationServiceTest {
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository = mock(
         MessageAuthenticationCacheRepository.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final MemberTemporaryRepository memberTemporaryRepository = mock(
-        MemberTemporaryRepository.class);
     private final SmsApiManager smsApiManager = UnitTestDependency.smsApiManager();
 
     private final MessageVerificationService messageVerificationService = new MessageVerificationService(
         messageAuthenticationCacheRepository,
         smsApiManager,
-        memberRepository,
-        memberTemporaryRepository,
-        UnitTestDependency.aesEncryptionManager(),
         UnitTestDependency.hashEncryptionManager()
     );
 
@@ -67,7 +62,7 @@ class MessageVerificationServiceTest {
         //when
         //then
         assertThatThrownBy(() -> messageVerificationService.validVerificationMessage(
-            MEMBER_ID, certificationNumber, RECEIVER))
+            MEMBER_ID, certificationNumber, RECEIVER.getBytes(StandardCharsets.UTF_8)))
             .isInstanceOf(CertificationNumberNotFoundException.class);
     }
 
@@ -82,7 +77,7 @@ class MessageVerificationServiceTest {
         //when
         //then
         assertThatThrownBy(() -> messageVerificationService.validVerificationMessage(
-            MEMBER_ID, certificationNumber, RECEIVER))
+            MEMBER_ID, certificationNumber, RECEIVER.getBytes(StandardCharsets.UTF_8)))
             .isInstanceOf(CertificationNumberNotMatchException.class);
     }
 
@@ -125,4 +120,5 @@ class MessageVerificationServiceTest {
         //then
         assertThat(memberTemporary.getTag()).isNotEqualTo(originTag);
     }
+
 }

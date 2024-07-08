@@ -151,4 +151,19 @@ public class CapsuleApiController implements CapsuleApi {
         );
     }
 
+    @PatchMapping(value = "/{capsule_id}/declaration", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<String>> declarationCapsule(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
+    ) {
+        capsuleService.declarationCapsule(capsuleId);
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
+    }
+
 }
