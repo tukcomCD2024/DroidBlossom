@@ -16,7 +16,7 @@ import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
-import site.timecapsulearchive.core.domain.member.exception.MemberUpdateDataException;
+import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
@@ -161,7 +161,7 @@ public class MemberService {
         try {
             memberRepository.saveAndFlush(member);
         } catch (DataIntegrityViolationException e) {
-            throw new MemberUpdateDataException();
+            throw new MemberTagDuplicatedException();
         }
 
     }

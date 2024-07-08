@@ -14,7 +14,7 @@ import site.timecapsulearchive.core.domain.auth.repository.MessageAuthentication
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
-import site.timecapsulearchive.core.domain.member.exception.MemberUpdateDataException;
+import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
@@ -123,7 +123,7 @@ public class MessageVerificationService {
         try {
             memberRepository.saveAndFlush(verifiedMember);
         } catch (DataIntegrityViolationException e) {
-            throw new MemberUpdateDataException();
+            throw new MemberTagDuplicatedException();
         }
 
         return verifiedMember.getId();

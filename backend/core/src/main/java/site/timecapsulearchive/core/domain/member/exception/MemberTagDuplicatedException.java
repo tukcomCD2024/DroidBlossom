@@ -3,9 +3,9 @@ package site.timecapsulearchive.core.domain.member.exception;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.exception.BusinessException;
 
-public class MemberUpdateDataException extends BusinessException {
+public class MemberTagDuplicatedException extends BusinessException {
 
-    public MemberUpdateDataException() {
-        super(ErrorCode.MEMBER_UPDATE_DATA_ERROR);
+    public MemberTagDuplicatedException() {
+        super(ErrorCode.MEMBER_TAG_DUPLICATED_ERROR);
     }
 }

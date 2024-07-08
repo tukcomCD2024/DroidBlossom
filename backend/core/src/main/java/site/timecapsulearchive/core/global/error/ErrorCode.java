@@ -47,7 +47,7 @@ public enum ErrorCode {
 
     MEMBER_NOT_FOUND_ERROR(404, "MEMBER-003", "사용자 데이터를 찾지 못하였습니다."),
 
-    MEMBER_UPDATE_DATA_ERROR(400, "MEMBER-004", "사용자 정보 수정에 실패 하였습니다."),
+    MEMBER_TAG_DUPLICATED_ERROR(400, "MEMBER-004", "사용자의 태그가 중복 되었습니다."),
 
     //geo
     GEO_TRANSFORMED_ERROR(400, "GEO-001", "좌표 변환에 실패했습니다. 입력이 유효한지 확인해주세요"),
