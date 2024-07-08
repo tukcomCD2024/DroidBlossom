@@ -1,10 +1,12 @@
 package site.timecapsulearchive.core.domain.member.facade;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import site.timecapsulearchive.core.domain.auth.service.MessageVerificationService;
 import site.timecapsulearchive.core.domain.auth.service.TokenManager;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.service.CapsuleService;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.service.GroupCapsuleOpenService;
@@ -36,6 +38,8 @@ public class MemberFacade {
     private final GroupQueryService groupQueryService;
     private final GroupCapsuleService groupCapsuleService;
 
+    private final MessageVerificationService messageVerificationService;
+
     @Transactional
     public void deleteByMemberId(final Long memberId, final String accessToken) {
         final Member member = memberService.findMemberById(memberId);
@@ -57,5 +61,25 @@ public class MemberFacade {
 
         tokenManager.removeRefreshToken(memberId);
         tokenManager.addBlackList(memberId, accessToken);
+    }
+
+    public void sendVerificationMessage(
+        final Long memberId,
+        final String receiver,
+        final String appHashKey
+    ) {
+        messageVerificationService.sendVerificationMessage(memberId, receiver, appHashKey);
+    }
+
+    public void validVerificationMessage(
+        final Long memberId,
+        final String receiver,
+        final String certificationNumber
+    ) {
+        byte[] phonePlain = receiver.getBytes(StandardCharsets.UTF_8);
+        messageVerificationService.validVerificationMessage(memberId, certificationNumber,
+            phonePlain);
+
+        memberService.updateMemberPhone(memberId, phonePlain);
     }
 }
