@@ -36,7 +36,7 @@ public class Member extends BaseEntity {
     private byte[] phone;
 
     @Column(name = "phone_hash", unique = true)
-    private byte[] phone_hash;
+    private byte[] phoneHash;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
@@ -73,9 +73,15 @@ public class Member extends BaseEntity {
     @Column(name = "declaration_count")
     private Long declarationCount = 0L;
 
+    @Column(name = "tag_search_available", nullable = false)
+    private Boolean tagSearchAvailable = Boolean.TRUE;
+
+    @Column(name = "phone_search_available", nullable = false)
+    private Boolean phoneSearchAvailable = Boolean.TRUE;
+
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,
-        String authId, String password, String tag, byte[] phone, byte[] phone_hash) {
+        String authId, String password, String tag, byte[] phone, byte[] phoneHash) {
         this.profileUrl = NullCheck.validate(profileUrl, "Entity: profile");
         this.nickname = NullCheck.validate(nickname, "Entity: nickname");
         this.socialType = NullCheck.validate(socialType, "Entity: socialType");
@@ -86,7 +92,7 @@ public class Member extends BaseEntity {
         this.notificationEnabled = false;
         this.password = password;
         this.phone = phone;
-        this.phone_hash = phone_hash;
+        this.phoneHash = phoneHash;
     }
 
     public void updateTagLowerCaseSocialType() {
