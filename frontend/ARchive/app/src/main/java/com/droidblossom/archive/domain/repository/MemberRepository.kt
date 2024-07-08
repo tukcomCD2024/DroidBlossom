@@ -1,5 +1,6 @@
 package com.droidblossom.archive.domain.repository
 
+import com.droidblossom.archive.data.dto.auth.request.VerificationMessageSendRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
@@ -27,5 +28,7 @@ interface MemberRepository {
     suspend fun getNotifications(request: PagingRequestDto) : RetrofitResult<NotificationPage>
 
     suspend fun deleteAccount(): RetrofitResult<String>
+    suspend fun changePhoneMessageSend(request: VerificationMessageSendRequestDto): RetrofitResult<String>
     suspend fun getText() : RetrofitResult<Health>
+
 }
