@@ -7,6 +7,10 @@ public enum CapsuleType {
     TREASURE,
     ALL;
 
+    public boolean isGroupCapsule() {
+        return this.equals(CapsuleType.GROUP);
+    }
+
     public boolean isPublicOrGroup() {
         return this == PUBLIC || this == GROUP;
     }

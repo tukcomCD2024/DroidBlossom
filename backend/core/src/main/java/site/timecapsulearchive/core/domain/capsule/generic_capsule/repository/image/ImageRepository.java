@@ -25,4 +25,12 @@ public interface ImageRepository extends Repository<Image, Long>, ImageQueryRepo
         @Param("groupCapsuleIds") List<Long> groupCapsuleIds,
         @Param("deletedAt") ZonedDateTime deletedAt
     );
+
+    @Query("UPDATE Image i SET i.deletedAt = :deletedAt WHERE i.member.id =:memberId and i.capsule.id =:capsuleId")
+    @Modifying
+    void deleteByMemberIdAndCapsuleId(
+        @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId,
+        @Param("deletedAt") ZonedDateTime deletedAt
+    );
 }

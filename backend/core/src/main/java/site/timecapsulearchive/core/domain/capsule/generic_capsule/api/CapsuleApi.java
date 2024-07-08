@@ -197,6 +197,38 @@ public interface CapsuleApi {
     );
 
     @Operation(
+        summary = "캡슐 삭제",
+        description = "캡슐을 삭제한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "그룹 캡슐일 경우 그룹장이 아닐 때 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> deleteCapsule(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "캡슐 아이디", required = true)
+        Long capsuleId,
+
+        @Parameter(in = ParameterIn.PATH, description = "캡슐 타입", required = true)
+        CapsuleType capsuleType
+    );
+
+    @Operation(
         summary = "공개, 그룹 캡슐 신고",
         description = "공개, 그룹 캡슐을 신고한다.",
         security = {@SecurityRequirement(name = "user_token")},
@@ -226,4 +258,3 @@ public interface CapsuleApi {
     );
 
 }
-

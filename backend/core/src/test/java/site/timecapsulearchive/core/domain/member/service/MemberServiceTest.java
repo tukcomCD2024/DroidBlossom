@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.fixture.domain.MemberTemporaryFixture;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;

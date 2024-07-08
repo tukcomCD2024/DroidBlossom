@@ -22,8 +22,6 @@ import site.timecapsulearchive.core.common.fixture.domain.MemberFriendFixture;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;

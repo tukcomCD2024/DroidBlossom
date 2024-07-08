@@ -10,7 +10,6 @@ import site.timecapsulearchive.core.global.security.encryption.HashEncryptionMan
 import site.timecapsulearchive.core.global.security.encryption.HashProperties;
 import site.timecapsulearchive.core.global.security.jwt.JwtFactory;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
-import site.timecapsulearchive.core.infra.sms.exception.ExternalApiException;
 import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
 /**

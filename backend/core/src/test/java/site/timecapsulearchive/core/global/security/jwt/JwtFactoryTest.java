@@ -13,7 +13,7 @@ class JwtFactoryTest {
 
     private static final Long MEMBER_ID = 1L;
 
-    private JwtFactory jwtFactory = UnitTestDependency.jwtFactory();
+    private final JwtFactory jwtFactory = UnitTestDependency.jwtFactory();
 
     @Test
     void 사용자_아이디로_액세스_토큰을_생성하면_액세스_토큰이_나온다() {

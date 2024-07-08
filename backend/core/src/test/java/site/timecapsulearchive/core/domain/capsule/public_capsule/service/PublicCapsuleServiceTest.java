@@ -9,7 +9,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformConfig;

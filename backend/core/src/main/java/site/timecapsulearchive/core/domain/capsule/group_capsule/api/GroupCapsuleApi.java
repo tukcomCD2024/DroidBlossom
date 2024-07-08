@@ -22,8 +22,8 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.G
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMembersResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupSpecificCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupSpecificCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;

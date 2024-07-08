@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.capsule.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -40,45 +39,33 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Capsule extends BaseEntity {
 
+    @OneToMany(mappedBy = "capsule")
+    private final List<Image> images = new ArrayList<>();
+    @OneToMany(mappedBy = "capsule")
+    private final List<Video> videos = new ArrayList<>();
+    @OneToMany(mappedBy = "capsule")
+    private final List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
     @Id
     @Column(name = "capsule_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "due_date")
     private ZonedDateTime dueDate;
-
     @Column(name = "point", columnDefinition = "SRID 3857")
     private Point point;
-
     @Column(name = "title", nullable = false)
     private String title;
-
     @Column(name = "content", nullable = false)
     private String content;
-
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     private CapsuleType type;
-
     @Column(name = "is_opened", nullable = false)
     private Boolean isOpened;
-
     @Embedded
     private Address address;
-
     @Column(name = "declaration_count")
     private Long declarationCount = 0L;
-
-    @OneToMany(mappedBy = "capsule")
-    private final List<Image> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "capsule")
-    private final List<Video> videos = new ArrayList<>();
-
-    @OneToMany(mappedBy = "capsule")
-    private final List<GroupCapsuleOpen> groupCapsuleOpens = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;

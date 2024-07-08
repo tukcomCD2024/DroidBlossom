@@ -7,8 +7,8 @@ import java.util.stream.IntStream;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 
 public class CapsuleDtoFixture {
@@ -24,7 +24,8 @@ public class CapsuleDtoFixture {
         );
     }
 
-    public static Optional<PublicCapsuleDetailDto> getPublicCapsuleDetailDto(Long capsuleId, Boolean isOpened,
+    public static Optional<PublicCapsuleDetailDto> getPublicCapsuleDetailDto(Long capsuleId,
+        Boolean isOpened,
         ZonedDateTime dueDate) {
         return Optional.of(
             new PublicCapsuleDetailDto(capsuleId, "test", dueDate, "testNickname", "testUrl", now,
@@ -33,26 +34,31 @@ public class CapsuleDtoFixture {
         );
     }
 
-    public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long groupId, Long capsuleId, Boolean isOpened,
+    public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long groupId,
+        Long capsuleId, Boolean isOpened,
         ZonedDateTime dueDate) {
         return Optional.of(
-            new GroupCapsuleDetailDto(groupId, capsuleId, "testCapsuleSkinUrl", dueDate, 1L, "testNickName", "testProfileUrl",
+            new GroupCapsuleDetailDto(groupId, capsuleId, "testCapsuleSkinUrl", dueDate, 1L,
+                "testNickName", "testProfileUrl",
                 null, null, "testAddressName", "testRoadName", "testTitle", "testContent",
                 "testImages", "testVideos", isOpened, CapsuleType.PUBLIC)
         );
     }
 
 
-    public static Optional<GroupCapsuleWithMemberDetailDto> getGroupCapsuleWithMemberDetailDto(Long groupId, Long capsuleId,
+    public static Optional<GroupCapsuleWithMemberDetailDto> getGroupCapsuleWithMemberDetailDto(
+        Long groupId, Long capsuleId,
         boolean isOpened, ZonedDateTime now, int count) {
         return Optional.of(
-            new GroupCapsuleWithMemberDetailDto(getGroupCapsuleDetailDto(groupId, capsuleId, isOpened, now).get(),
+            new GroupCapsuleWithMemberDetailDto(
+                getGroupCapsuleDetailDto(groupId, capsuleId, isOpened, now).get(),
                 getGroupMemberSummaryDtos(count)));
     }
 
     private static List<GroupCapsuleMemberSummaryDto> getGroupMemberSummaryDtos(int count) {
         return IntStream.range(0, count)
-            .mapToObj(i -> new GroupCapsuleMemberSummaryDto(i + "testNickname", i + "testUrl", true))
+            .mapToObj(
+                i -> new GroupCapsuleMemberSummaryDto(i + "testNickname", i + "testUrl", true))
             .toList();
     }
 }

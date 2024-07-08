@@ -53,4 +53,12 @@ public interface CapsuleRepository extends Repository<Capsule, Long>, CapsuleQue
 
     @Query("select c from Capsule c where c.group.id in :groupIds")
     List<Capsule> findCapsulesByGroupIds(@Param("groupIds") List<Long> groupIds);
+
+    @Query("UPDATE Capsule c SET c.deletedAt = :deletedAt WHERE c.member.id = :memberId and c.id = :capsuleId")
+    @Modifying
+    void deleteByMemberIdAndCapsuleId(
+        @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId,
+        @Param("deletedAt") ZonedDateTime deletedAt
+    );
 }
