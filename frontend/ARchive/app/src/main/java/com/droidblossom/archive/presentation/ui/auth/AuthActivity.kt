@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityAuthBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
+import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.util.AppSignatureHelper
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,11 +34,15 @@ class AuthActivity : BaseActivity<AuthViewModelImpl, ActivityAuthBinding>(R.layo
 
     companion object{
         const val IS_CHANGE_PHONE = "change_phone"
-        fun goAuth(context: Context, isChangePhone :Boolean) {
+        fun goAuth(context: Context) {
             val intent = Intent(context, AuthActivity::class.java)
-            intent.putExtra(IS_CHANGE_PHONE, isChangePhone)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(intent)
         }
+
+        fun newIntent(context: Context, isChangePhone :Boolean) =
+            Intent(context, AuthActivity::class.java).apply {
+                putExtra(IS_CHANGE_PHONE, isChangePhone)
+            }
     }
 }

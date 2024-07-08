@@ -108,7 +108,7 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                         }
 
                         is AuthViewModel.CertificationEvent.NavigateFinish -> {
-                            MainActivity.goMain(requireContext())
+                            requireActivity().finish()
                         }
                     }
 
