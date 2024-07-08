@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
@@ -13,6 +14,7 @@ import site.timecapsulearchive.core.domain.auth.repository.MessageAuthentication
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;

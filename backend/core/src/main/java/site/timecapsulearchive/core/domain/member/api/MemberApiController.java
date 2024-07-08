@@ -185,7 +185,7 @@ public class MemberApiController implements MemberApi {
 
     @PatchMapping("/phone-search-available")
     @Override
-    public ResponseEntity<ApiSpec<String>> updateMemberTagSearchAvailable(
+    public ResponseEntity<ApiSpec<String>> updateMemberPhoneSearchAvailable(
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody UpdateMemberPhoneSearchAvailableRequest request
     ) {

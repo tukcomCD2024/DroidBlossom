@@ -2,6 +2,7 @@ package site.timecapsulearchive.core.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
@@ -15,6 +16,7 @@ import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
@@ -148,12 +150,15 @@ public class MemberService {
         final Long memberId,
         final UpdateMemberDataDto updateMemberDataDto
     ) {
-        final int updateMemberData = memberRepository.updateMemberData(memberId,
-            updateMemberDataDto.nickname(), updateMemberDataDto.tag());
+        final Member member = memberRepository.findMemberById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        if (updateMemberData != 1) {
-            throw new MemberNotFoundException();
+        member.updateData(updateMemberDataDto.nickname(), updateMemberDataDto.tag());
+        try {
+            memberRepository.saveAndFlush(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new MemberTagDuplicatedException();
         }
+
     }
 
     @Transactional

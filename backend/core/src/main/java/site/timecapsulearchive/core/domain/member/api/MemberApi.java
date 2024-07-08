@@ -222,7 +222,7 @@ public interface MemberApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         ),
     })
-    ResponseEntity<ApiSpec<String>> updateMemberTagSearchAvailable(
+    ResponseEntity<ApiSpec<String>> updateMemberPhoneSearchAvailable(
         Long memberId,
         UpdateMemberPhoneSearchAvailableRequest request
     );

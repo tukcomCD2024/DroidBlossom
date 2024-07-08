@@ -80,4 +80,5 @@ class MessageVerificationServiceTest {
             MEMBER_ID, certificationNumber, RECEIVER.getBytes(StandardCharsets.UTF_8)))
             .isInstanceOf(CertificationNumberNotMatchException.class);
     }
+
 }
