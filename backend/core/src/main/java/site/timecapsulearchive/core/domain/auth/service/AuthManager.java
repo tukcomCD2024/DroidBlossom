@@ -1,6 +1,7 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.core.domain.auth.data.dto.TemporaryTokenDto;
@@ -77,9 +78,12 @@ public class AuthManager {
         final String certificationNumber,
         final String receiver
     ) {
-        Long verifiedMemberId = messageVerificationService.validVerificationMessage(memberId,
-            certificationNumber,
-            receiver);
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+
+        messageVerificationService.validVerificationMessage(memberId,
+            certificationNumber, plain);
+
+        Long verifiedMemberId = memberService.updateVerifiedMember(memberId, plain);
 
         return tokenManager.createNewToken(verifiedMemberId);
     }
