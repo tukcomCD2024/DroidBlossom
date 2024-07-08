@@ -2,11 +2,10 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,14 +16,9 @@ import com.droidblossom.archive.databinding.FragmentSettingMainBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
-import com.droidblossom.archive.util.DataStoreUtils
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingMainFragment :
@@ -91,7 +85,8 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoNotification -> {
-                            navController.navigate(R.id.action_settingMainFragment_to_settingNotificationFragment)
+                            goNotificationIntent()
+                            //navController.navigate(R.id.action_settingMainFragment_to_settingNotificationFragment)
                         }
 
                         SettingViewModel.SettingMainEvent.GoUser -> {
@@ -118,6 +113,19 @@ class SettingMainFragment :
                 }
             }
         }
+    }
+
+    private fun goNotificationIntent() {
+        val notificationIntent = Intent()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationIntent.action = android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            notificationIntent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+        } else {
+            notificationIntent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+            notificationIntent.putExtra("app_package", requireContext().packageName)
+            notificationIntent.putExtra("app_uid", requireContext().applicationInfo.uid)
+        }
+        startActivity(notificationIntent)
     }
 
     private fun goEmailIntent() {
