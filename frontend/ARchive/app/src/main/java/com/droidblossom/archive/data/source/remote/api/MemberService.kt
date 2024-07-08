@@ -2,7 +2,9 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.request.VerificationMessageSendRequestDto
+import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
+import com.droidblossom.archive.data.dto.auth.response.TokenResponseDto
 import com.droidblossom.archive.data.dto.auth.response.VerificationMessageResponseDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
@@ -57,6 +59,11 @@ interface MemberService {
     @POST("me/phone/verification/send-message")
     suspend fun postChangePhoneSendMessageApi(
         @Body request : VerificationMessageSendRequestDto
+    ) : Response<ResponseBody<String>>
+
+    @POST("auth/verification/valid-message")
+    suspend fun postChangePhoneValidMessageApi(
+        @Body request : VerificationNumberValidRequestDto
     ) : Response<ResponseBody<String>>
 
     @GET("health")
