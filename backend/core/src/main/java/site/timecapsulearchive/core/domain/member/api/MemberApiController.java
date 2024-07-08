@@ -30,6 +30,7 @@ import site.timecapsulearchive.core.domain.member.service.MemberService;
 import site.timecapsulearchive.core.global.common.argument.AccessToken;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ public class MemberApiController implements MemberApi {
 
     private final MemberFacade memberFacade;
     private final MemberService memberService;
+    private final AESEncryptionManager aesEncryptionManager;
 
     @GetMapping(produces = {"application/json"})
     @Override
@@ -49,7 +51,7 @@ public class MemberApiController implements MemberApi {
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                MemberDetailResponse.createOf(detailDto)
+                MemberDetailResponse.createOf(detailDto, aesEncryptionManager::decryptWithPrefixIV)
             )
         );
     }
