@@ -8,7 +8,7 @@ import site.timecapsulearchive.core.global.common.valid.annotation.Phone;
 public record PhoneVerificationMessageRequest(
     @Schema(description = "핸드폰 번호")
     @Phone
-    @NotNull(message = "사용자 태그는 필수 입니다.")
+    @NotNull(message = "사용자 핸드폰 번호는 필수 입니다.")
     String phone
 
 ) {
