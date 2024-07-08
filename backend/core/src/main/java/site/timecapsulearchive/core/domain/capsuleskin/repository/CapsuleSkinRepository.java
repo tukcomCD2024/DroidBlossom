@@ -8,7 +8,8 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 
-public interface CapsuleSkinRepository extends Repository<CapsuleSkin, Long> {
+public interface CapsuleSkinRepository extends Repository<CapsuleSkin, Long>,
+    CapsuleSkinQueryRepository {
 
     Optional<CapsuleSkin> save(CapsuleSkin capsuleSkin);
 

@@ -195,5 +195,35 @@ public interface CapsuleApi {
         @Parameter(in = ParameterIn.PATH, description = "캡슐 아이디", required = true)
         Long capsuleId
     );
+
+    @Operation(
+        summary = "공개, 그룹 캡슐 신고",
+        description = "공개, 그룹 캡슐을 신고한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "해당 캡슐을 찾을 수 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "해당 캡슐을 신고할 권한이 없을 경우 발생하는 예외",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    ResponseEntity<ApiSpec<String>> declarationCapsule(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.PATH, description = "신고할 캡슐 아이디", required = true)
+        Long capsuleId
+    );
+
 }
 

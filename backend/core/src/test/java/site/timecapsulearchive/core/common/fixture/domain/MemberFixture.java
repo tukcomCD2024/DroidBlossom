@@ -57,7 +57,7 @@ public class MemberFixture {
             .authId(dataPrefix + "test")
             .profileUrl(dataPrefix + "test.com")
             .tag(dataPrefix + "testTag")
-            .phone_hash(hashEncryptionManager.encrypt(number))
+            .phoneHash(hashEncryptionManager.encrypt(number))
             .phone(aesEncryptionManager.encryptWithPrefixIV(number))
             .build();
     }
@@ -123,5 +123,29 @@ public class MemberFixture {
         }
 
         return result;
+    }
+
+    public static Member notAvailableTagSearch(int dataPrefix) {
+        Member member = member(dataPrefix);
+
+        try {
+            setFieldValue(member, "tagSearchAvailable", Boolean.FALSE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return member;
+    }
+
+    public static Member notAvailablePhoneSearch(int dataPrefix) {
+        Member member = member(dataPrefix);
+
+        try {
+            setFieldValue(member, "phoneSearchAvailable", Boolean.FALSE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return member;
     }
 }

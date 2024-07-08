@@ -5,10 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
+import javax.sql.DataSource;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +30,8 @@ class MemberQueryRepositoryTest extends RepositoryTest {
     private Member noFriendMember;
     private int friendCount;
 
-    MemberQueryRepositoryTest(EntityManager entityManager) {
-        this.memberQueryRepository = new MemberQueryRepositoryImpl(
+    MemberQueryRepositoryTest(DataSource dataSource, EntityManager entityManager) {
+        this.memberQueryRepository = new MemberQueryRepositoryImpl(new JdbcTemplate(dataSource),
             new JPAQueryFactory(entityManager));
     }
 

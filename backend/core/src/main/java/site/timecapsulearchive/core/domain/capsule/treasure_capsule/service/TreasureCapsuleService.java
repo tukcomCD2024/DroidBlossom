@@ -10,6 +10,7 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleOpenDto;
 import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureOpenStatus;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.capsuleskin.repository.CapsuleSkinRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -26,11 +27,10 @@ public class TreasureCapsuleService {
     private final TransactionTemplate transactionTemplate;
 
     public TreasureCapsuleOpenDto openTreasureCapsule(final Long memberId, final Long capsuleId) {
-        final Member member = memberRepository.findMemberById(memberId).orElseThrow(
-            MemberNotFoundException::new);
+        return transactionTemplate.execute(status -> {
+            final Member member = memberRepository.findMemberById(memberId).orElseThrow(
+                MemberNotFoundException::new);
 
-        String treasureImageUrl = transactionTemplate.execute(status -> {
-            // 이미지와 함께 캡슐 조회
             final Capsule treasureCapsule = capsuleRepository.findCapsuleWithImageByCapsuleId(
                 capsuleId).orElseThrow(CapsuleNotFondException::new);
 
@@ -38,15 +38,18 @@ public class TreasureCapsuleService {
             final String imageUrl = image.getImageUrl();
             capsuleRepository.delete(treasureCapsule);
 
-            // caspuleSkin 저장
+            final boolean isAlreadyGetTreasure = capsuleSkinRepository.existByImageUrlAndMemberId(
+                imageUrl, member.getId());
+            if (isAlreadyGetTreasure) {
+                return new TreasureCapsuleOpenDto(TreasureOpenStatus.DUPLICATE, imageUrl);
+            }
+
             final CapsuleSkin myTreasureCapsuleSkin = CapsuleSkin.captureTreasureCapsuleSkin(
                 imageUrl, member);
             capsuleSkinRepository.save(myTreasureCapsuleSkin);
 
-            return imageUrl;
+            return new TreasureCapsuleOpenDto(TreasureOpenStatus.SUCCESS, imageUrl);
         });
-
-        return new TreasureCapsuleOpenDto(treasureImageUrl);
     }
 
     @Transactional(readOnly = true)

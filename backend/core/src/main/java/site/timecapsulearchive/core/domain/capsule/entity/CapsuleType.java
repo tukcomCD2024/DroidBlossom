@@ -5,5 +5,9 @@ public enum CapsuleType {
     PUBLIC,
     GROUP,
     TREASURE,
-    ALL
+    ALL;
+
+    public boolean isPublicOrGroup() {
+        return this == PUBLIC || this == GROUP;
+    }
 }
