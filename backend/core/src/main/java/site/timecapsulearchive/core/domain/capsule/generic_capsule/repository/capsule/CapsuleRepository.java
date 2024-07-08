@@ -15,6 +15,8 @@ public interface CapsuleRepository extends Repository<Capsule, Long>, CapsuleQue
 
     void delete(Capsule capsule);
 
+    Optional<Capsule> findById(Long id);
+
     @Query("select c from Capsule c where c.id = :capsuleId and c.member.id = :memberId")
     Optional<Capsule> findCapsuleByMemberIdAndCapsuleId(
         @Param("memberId") Long memberId,

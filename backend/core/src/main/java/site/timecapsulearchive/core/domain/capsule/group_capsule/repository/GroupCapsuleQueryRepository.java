@@ -24,8 +24,9 @@ import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.member.entity.QMember;
@@ -90,7 +91,7 @@ public class GroupCapsuleQueryRepository {
     }
 
     private StringExpression groupConcatDistinct(final StringExpression expression) {
-        return Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", expression);
+        return Expressions.stringTemplate("GROUP_CONCAT({0})", expression);
     }
 
     public Optional<GroupCapsuleSummaryDto> findGroupCapsuleSummaryDtoByCapsuleId(
@@ -176,7 +177,7 @@ public class GroupCapsuleQueryRepository {
             .fetchOne();
     }
 
-    public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
+    public Slice<CapsuleBasicInfoDto> findGroupSpecificCapsuleSlice(final GroupSpecificCapsuleSliceRequestDto dto) {
         final List<CapsuleBasicInfoDto> groupCapsuleDtos = jpaQueryFactory
             .select(
                 Projections.constructor(
@@ -206,5 +207,51 @@ public class GroupCapsuleQueryRepository {
         }
 
         return capsule.id.lt(capsuleId);
+    }
+
+    public Slice<GroupCapsuleDto> findGroupCapsuleSlice(
+        final int size,
+        final Long lastCapsuleId,
+        final List<Long> groupIds
+    ) {
+        final List<GroupCapsuleDto> groupCapsules = jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    GroupCapsuleDto.class,
+                    capsule.id,
+                    capsuleSkin.imageUrl,
+                    capsule.dueDate,
+                    group.id,
+                    group.groupName,
+                    group.groupProfileUrl,
+                    member.nickname,
+                    member.profileUrl,
+                    capsule.createdAt,
+                    capsule.point,
+                    capsule.address.fullRoadAddressName,
+                    capsule.address.roadName,
+                    capsule.title,
+                    capsule.content,
+                    groupConcatDistinct(image.imageUrl),
+                    groupConcatDistinct(video.videoUrl),
+                    capsule.isOpened,
+                    capsule.type
+                )
+            )
+            .from(capsule)
+            .join(capsule.member, member)
+            .join(capsule.capsuleSkin, capsuleSkin)
+            .join(capsule.group, group)
+            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
+            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .where(capsule.type.eq(CapsuleType.GROUP)
+                .and(capsule.group.id.in(groupIds))
+                .and(capsuleIdPagingCursorCondition(lastCapsuleId)))
+            .groupBy(capsule.id)
+            .orderBy(capsule.id.desc())
+            .limit(size + 1)
+            .fetch();
+
+        return SliceUtil.makeSlice(size, groupCapsules);
     }
 }

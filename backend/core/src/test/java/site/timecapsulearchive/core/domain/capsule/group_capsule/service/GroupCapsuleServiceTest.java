@@ -33,7 +33,7 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.Combin
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -398,14 +398,14 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(memberId, groupId,
             size, capsuleId);
         given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
             .willReturn(false);
 
         //when
         //then
-        assertThatThrownBy(() -> groupCapsuleService.findGroupCapsuleSlice(dto))
+        assertThatThrownBy(() -> groupCapsuleService.findGroupSpecificCapsuleSlice(dto))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
@@ -415,17 +415,17 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(memberId, groupId,
             size, capsuleId);
         given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
             .willReturn(true);
-        given(groupCapsuleQueryRepository.findGroupCapsuleSlice(
-            any(GroupCapsuleSliceRequestDto.class)))
+        given(groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
+            any(GroupSpecificCapsuleSliceRequestDto.class)))
             .willReturn(
                 new SliceImpl<>(CapsuleBasicInfoDtoFixture.capsuleBasicInfoDtos(capsuleId, size)));
 
         //when
-        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupSpecificCapsuleSlice(
             dto);
 
         //then

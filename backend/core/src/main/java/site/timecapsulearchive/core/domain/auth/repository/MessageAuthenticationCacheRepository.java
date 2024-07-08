@@ -30,4 +30,8 @@ public class MessageAuthenticationCacheRepository {
 
         return Optional.of(code);
     }
+
+    public void delete(final Long memberId, final byte[] encrypt) {
+        redisTemplate.opsForHash().delete(PREFIX + memberId, encrypt);
+    }
 }
