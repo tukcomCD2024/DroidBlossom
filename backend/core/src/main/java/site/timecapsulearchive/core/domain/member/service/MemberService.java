@@ -157,6 +157,32 @@ public class MemberService {
     }
 
     @Transactional
+    public void updateMemberTagSearchAvailable(
+        final Long memberId,
+        final Boolean tagSearchAvailable
+    ) {
+        final int updatedCount = memberRepository.updateMemberTagSearchAvailable(memberId,
+            tagSearchAvailable);
+
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberPhoneSearchAvailable(
+        final Long memberId,
+        final Boolean phoneSearchAvailable
+    ) {
+        final int updatedCount = memberRepository.updateMemberPhoneSearchAvailable(memberId,
+            phoneSearchAvailable);
+
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
     public void delete(final Member member) {
         memberRepository.delete(member);
     }

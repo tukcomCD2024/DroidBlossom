@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberPhoneSearchAvailableRequest;
+import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberTagSearchAvailableRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
@@ -73,8 +75,8 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @Override
     @PatchMapping(value = "/fcm_token")
+    @Override
     public ResponseEntity<ApiSpec<String>> updateMemberFCMToken(
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final UpdateFCMTokenRequest request
@@ -86,8 +88,8 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @Override
     @PatchMapping(value = "/notification_enabled")
+    @Override
     public ResponseEntity<ApiSpec<String>> updateMemberNotificationEnabled(
         @AuthenticationPrincipal final Long memberId,
         @Valid @RequestBody final UpdateNotificationEnabledRequest request
@@ -97,8 +99,8 @@ public class MemberApiController implements MemberApi {
         return ResponseEntity.ok(ApiSpec.empty(SuccessCode.SUCCESS));
     }
 
-    @Override
     @GetMapping(value = "/notification_enabled")
+    @Override
     public ResponseEntity<ApiSpec<MemberNotificationStatusResponse>> checkMemberNotificationStatus(
         @AuthenticationPrincipal Long memberId) {
         return ResponseEntity.ok(
@@ -109,8 +111,8 @@ public class MemberApiController implements MemberApi {
         );
     }
 
-    @Override
     @PatchMapping("/data")
+    @Override
     public ResponseEntity<ApiSpec<String>> updateMemberData(
         @AuthenticationPrincipal Long memberId,
         @Valid @RequestBody UpdateMemberDataRequest request
@@ -155,6 +157,36 @@ public class MemberApiController implements MemberApi {
                     SuccessCode.ACCEPTED
                 )
             );
+    }
+
+    @PatchMapping("/tag-search-available")
+    @Override
+    public ResponseEntity<ApiSpec<String>> updateMemberTagSearchAvailable(
+        @AuthenticationPrincipal Long memberId,
+        @Valid @RequestBody UpdateMemberTagSearchAvailableRequest request
+    ) {
+        memberService.updateMemberTagSearchAvailable(memberId, request.tagSearchAvailable());
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
+    }
+
+    @PatchMapping("/phone-search-available")
+    @Override
+    public ResponseEntity<ApiSpec<String>> updateMemberTagSearchAvailable(
+        @AuthenticationPrincipal Long memberId,
+        @Valid @RequestBody UpdateMemberPhoneSearchAvailableRequest request
+    ) {
+        memberService.updateMemberPhoneSearchAvailable(memberId, request.phoneSearchAvailable());
+
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
     }
 
     @DeleteMapping

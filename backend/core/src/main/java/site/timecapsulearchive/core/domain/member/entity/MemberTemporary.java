@@ -67,7 +67,7 @@ public class MemberTemporary extends BaseEntity {
         this.tag = NullCheck.validate(tag, "Entity: tag");
     }
 
-    public Member toMember(final byte[] phone_hash, final byte[] phone) {
+    public Member toMember(final byte[] phoneHash, final byte[] phone) {
         return Member.builder()
             .profileUrl(profileUrl)
             .nickname(nickname)
@@ -75,7 +75,7 @@ public class MemberTemporary extends BaseEntity {
             .email(email)
             .authId(authId)
             .tag(tag)
-            .phone_hash(phone_hash)
+            .phoneHash(phoneHash)
             .phone(phone)
             .build();
     }
