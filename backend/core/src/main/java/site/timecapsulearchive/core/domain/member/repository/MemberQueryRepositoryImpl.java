@@ -11,8 +11,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
@@ -21,17 +24,26 @@ import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 @RequiredArgsConstructor
 public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
+    private final JdbcTemplate jdbcTemplate;
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Boolean findIsVerifiedByAuthIdAndSocialType(
+    public MemberStatusDto findIsVerifiedByAuthIdAndSocialType(
         final String authId,
         final SocialType socialType
     ) {
-        return jpaQueryFactory.select(member.isVerified)
-            .from(member)
-            .where(member.authId.eq(authId).and(member.socialType.eq(socialType)))
-            .fetchOne();
+        try {
+            return jdbcTemplate.queryForObject(
+                "select m.is_verified, m.deleted_at is not null as deleted_at "
+                    + "from member m "
+                    + "where m.auth_id = ? and m.social_type = ?",
+                (rs, rowNum) -> MemberStatusDto.exist(rs.getBoolean("is_verified"),
+                    rs.getBoolean("deleted_at")),
+                authId, socialType.name()
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return MemberStatusDto.notExist();
+        }
     }
 
     @Override

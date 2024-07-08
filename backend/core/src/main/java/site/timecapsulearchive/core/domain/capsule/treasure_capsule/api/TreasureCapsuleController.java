@@ -37,10 +37,7 @@ public class TreasureCapsuleController implements TreasureCapsuleApi {
         return ResponseEntity.accepted().body(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                TreasureCapsuleOpenResponse.createOf(
-                    treasureCapsuleOpenDto,
-                    s3PreSignedUrlManager::getS3PreSignedUrlForGet
-                )
+                treasureCapsuleOpenDto.toResponse(s3PreSignedUrlManager::getS3PreSignedUrlForGet)
             )
         );
     }

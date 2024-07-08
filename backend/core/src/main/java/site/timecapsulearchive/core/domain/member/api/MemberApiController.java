@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberPhoneSearchAvailableRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberTagSearchAvailableRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
@@ -59,13 +62,15 @@ public class MemberApiController implements MemberApi {
     public ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(
         @Valid @RequestBody final CheckStatusRequest request
     ) {
+        MemberStatusDto memberStatusDto = memberService.checkStatus(
+            request.authId(),
+            request.socialType()
+        );
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                memberService.checkStatus(
-                    request.authId(),
-                    request.socialType()
-                )
+                memberStatusDto.toResponse()
             )
         );
     }
@@ -119,6 +124,39 @@ public class MemberApiController implements MemberApi {
                 SuccessCode.SUCCESS
             )
         );
+    }
+
+    @PostMapping("/phone/verification/send-message")
+    @Override
+    public ResponseEntity<ApiSpec<String>> sendVerificationMessage(
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final VerificationMessageSendRequest request
+    ) {
+        memberFacade.sendVerificationMessage(memberId, request.receiver(), request.appHashKey());
+
+        return ResponseEntity.accepted()
+            .body(
+                ApiSpec.empty(
+                    SuccessCode.ACCEPTED
+                )
+            );
+    }
+
+    @PostMapping("/phone/verification/valid-message")
+    @Override
+    public ResponseEntity<ApiSpec<String>> validVerificationMessage(
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final VerificationNumberValidRequest request
+    ) {
+        memberFacade.validVerificationMessage(memberId, request.receiver(),
+            request.certificationNumber());
+
+        return ResponseEntity.accepted()
+            .body(
+                ApiSpec.empty(
+                    SuccessCode.ACCEPTED
+                )
+            );
     }
 
     @PatchMapping("/tag-search-available")

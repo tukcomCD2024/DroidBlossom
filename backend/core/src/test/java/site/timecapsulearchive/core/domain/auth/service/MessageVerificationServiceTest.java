@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
@@ -31,17 +32,11 @@ class MessageVerificationServiceTest {
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository = mock(
         MessageAuthenticationCacheRepository.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final MemberTemporaryRepository memberTemporaryRepository = mock(
-        MemberTemporaryRepository.class);
     private final SmsApiManager smsApiManager = UnitTestDependency.smsApiManager();
 
     private final MessageVerificationService messageVerificationService = new MessageVerificationService(
         messageAuthenticationCacheRepository,
         smsApiManager,
-        memberRepository,
-        memberTemporaryRepository,
-        UnitTestDependency.aesEncryptionManager(),
         UnitTestDependency.hashEncryptionManager()
     );
 
@@ -67,7 +62,7 @@ class MessageVerificationServiceTest {
         //when
         //then
         assertThatThrownBy(() -> messageVerificationService.validVerificationMessage(
-            MEMBER_ID, certificationNumber, RECEIVER))
+            MEMBER_ID, certificationNumber, RECEIVER.getBytes(StandardCharsets.UTF_8)))
             .isInstanceOf(CertificationNumberNotFoundException.class);
     }
 
@@ -82,47 +77,7 @@ class MessageVerificationServiceTest {
         //when
         //then
         assertThatThrownBy(() -> messageVerificationService.validVerificationMessage(
-            MEMBER_ID, certificationNumber, RECEIVER))
+            MEMBER_ID, certificationNumber, RECEIVER.getBytes(StandardCharsets.UTF_8)))
             .isInstanceOf(CertificationNumberNotMatchException.class);
-    }
-
-    @Test
-    void 인증번호가_일치하면_사용자를_저장한다() {
-        //given
-        String certificationNumber = "1234";
-        given(messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
-            anyLong(), any()))
-            .willReturn(Optional.of(certificationNumber));
-        given(memberTemporaryRepository.findById(anyLong()))
-            .willReturn(Optional.of(MemberTemporaryFixture.memberTemporary(MEMBER_ID)));
-        given(memberRepository.checkTagDuplication(any())).willReturn(false);
-
-        //when
-        messageVerificationService.validVerificationMessage(MEMBER_ID, certificationNumber,
-            RECEIVER);
-
-        //then
-        verify(memberRepository, times(1)).save(any(Member.class));
-    }
-
-    @Test
-    void 태그가_중복되면_태그를_교체한다() {
-        //given
-        String certificationNumber = "1234";
-        MemberTemporary memberTemporary = MemberTemporaryFixture.memberTemporary(MEMBER_ID);
-        String originTag = memberTemporary.getTag();
-        given(messageAuthenticationCacheRepository.findMessageAuthenticationCodeByMemberId(
-            anyLong(), any()))
-            .willReturn(Optional.of(certificationNumber));
-        given(memberTemporaryRepository.findById(anyLong()))
-            .willReturn(Optional.of(memberTemporary));
-        given(memberRepository.checkTagDuplication(any())).willReturn(true);
-
-        //when
-        messageVerificationService.validVerificationMessage(MEMBER_ID, certificationNumber,
-            RECEIVER);
-
-        //then
-        assertThat(memberTemporary.getTag()).isNotEqualTo(originTag);
     }
 }
