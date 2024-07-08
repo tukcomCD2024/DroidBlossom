@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.fixture.domain.MemberTemporaryFixture;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -49,10 +50,10 @@ class MemberServiceTest {
         String authId = "testAuthId";
         SocialType socialType = SocialType.KAKAO;
         given(memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType)).willReturn(
-            Boolean.TRUE);
+            new MemberStatusDto(true, true, true));
 
         //when
-        MemberStatusResponse memberStatusResponse = memberService.checkStatus(authId, socialType);
+        MemberStatusDto memberStatusResponse = memberService.checkStatus(authId, socialType);
 
         //then
         assertThat(memberStatusResponse.isVerified()).isTrue();
@@ -64,10 +65,10 @@ class MemberServiceTest {
         String authId = "testAuthId";
         SocialType socialType = SocialType.KAKAO;
         given(memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType)).willReturn(
-            Boolean.FALSE);
+            new MemberStatusDto(false, false, false));
 
         //when
-        MemberStatusResponse memberStatusResponse = memberService.checkStatus(authId, socialType);
+        MemberStatusDto memberStatusResponse = memberService.checkStatus(authId, socialType);
 
         //then
         assertThat(memberStatusResponse.isVerified()).isFalse();
