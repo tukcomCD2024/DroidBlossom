@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateMemberDataRequest;
@@ -57,13 +58,15 @@ public class MemberApiController implements MemberApi {
     public ResponseEntity<ApiSpec<MemberStatusResponse>> checkMemberStatus(
         @Valid @RequestBody final CheckStatusRequest request
     ) {
+        MemberStatusDto memberStatusDto = memberService.checkStatus(
+            request.authId(),
+            request.socialType()
+        );
+
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                memberService.checkStatus(
-                    request.authId(),
-                    request.socialType()
-                )
+                memberStatusDto.toResponse()
             )
         );
     }

@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
 import site.timecapsulearchive.core.domain.member.data.dto.UpdateMemberDataDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
@@ -46,21 +46,12 @@ public class MemberService {
      * @param socialType 사용자의 소셜 프로바이더 타입
      * @return 사용자의 인증 상태 {@code isExist, isVerified}
      */
-    public MemberStatusResponse checkStatus(
+    public MemberStatusDto checkStatus(
         final String authId,
         final SocialType socialType
     ) {
-
-        final Boolean isVerified = memberRepository.findIsVerifiedByAuthIdAndSocialType(
-            authId,
-            socialType
+        return memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType
         );
-
-        if (isVerified == null) {
-            return MemberStatusResponse.empty();
-        }
-
-        return MemberStatusResponse.from(isVerified);
     }
 
     /**
