@@ -200,4 +200,10 @@ public class CapsuleService {
         capsuleRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
     }
 
+    public void declarationCapsule(final Long capsuleId) {
+        Capsule capsuleToDeclaration = capsuleRepository.findById(capsuleId)
+            .orElseThrow(CapsuleNotFondException::new);
+
+        capsuleToDeclaration.upDeclarationCount();
+    }
 }

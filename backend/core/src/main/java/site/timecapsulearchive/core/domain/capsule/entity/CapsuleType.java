@@ -11,4 +11,7 @@ public enum CapsuleType {
         return this.equals(CapsuleType.GROUP);
     }
 
+    public boolean isPublicOrGroup() {
+        return this == PUBLIC || this == GROUP;
+    }
 }

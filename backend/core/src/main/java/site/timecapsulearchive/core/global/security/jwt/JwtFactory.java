@@ -162,7 +162,7 @@ public class JwtFactory {
     public long getLeftTime(final String accessToken) {
         Instant expiration;
         try {
-             expiration = jwtParser().parseClaimsJws(accessToken)
+            expiration = jwtParser().parseClaimsJws(accessToken)
                 .getBody()
                 .getExpiration()
                 .toInstant();

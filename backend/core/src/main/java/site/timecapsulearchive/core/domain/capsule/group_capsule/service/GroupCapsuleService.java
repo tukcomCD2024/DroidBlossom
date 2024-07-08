@@ -15,13 +15,15 @@ import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondExcep
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
@@ -58,26 +60,50 @@ public class GroupCapsuleService {
         return capsule;
     }
 
-    public GroupCapsuleDetailDto findGroupCapsuleDetailByGroupIdAndCapsuleId(
+    public CombinedGroupCapsuleDetailDto findGroupCapsuleDetailByGroupIdAndCapsuleId(
+        final Long memberId,
         final Long capsuleId
     ) {
-        final GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        final GroupCapsuleWithMemberDetailDto groupCapsuleWithMemberDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
-        if (capsuleNotOpened(detailDto)) {
-            return detailDto.excludeDetailContents();
+        List<GroupCapsuleMemberDto> groupCapsuleMembers = memberGroupRepository.findGroupCapsuleMembers(
+            groupCapsuleWithMemberDetailDto.groupCapsuleDetailDto().groupId(), capsuleId);
+
+        GroupCapsuleMemberDto requestMember = groupCapsuleMembers.stream()
+            .filter(dto -> memberId.equals(dto.id()))
+            .findAny()
+            .orElseThrow(NoGroupAuthorityException::new);
+
+        Boolean hasEditPermission = requestMember.id()
+            .equals(groupCapsuleWithMemberDetailDto.groupCapsuleDetailDto().creatorId());
+        Boolean hasDeletePermission = hasEditPermission || requestMember.isGroupOwner();
+
+        if (capsuleNotOpened(groupCapsuleWithMemberDetailDto)) {
+            return groupCapsuleWithMemberDetailDto.excludeDetailContents().combine(
+                requestMember.isOpened(),
+                hasEditPermission,
+                hasDeletePermission
+            );
         }
 
-        return detailDto;
+        return CombinedGroupCapsuleDetailDto.create(
+            groupCapsuleWithMemberDetailDto.groupCapsuleDetailDto(),
+            groupCapsuleWithMemberDetailDto.members(),
+            requestMember.isOpened(),
+            hasEditPermission,
+            hasDeletePermission
+        );
     }
 
-    private boolean capsuleNotOpened(final GroupCapsuleDetailDto detailDto) {
-        if (detailDto.capsuleDetailDto().dueDate() == null) {
+    private boolean capsuleNotOpened(final GroupCapsuleWithMemberDetailDto detailDto) {
+        if (detailDto.groupCapsuleDetailDto().dueDate() == null) {
             return false;
         }
 
-        return !detailDto.capsuleDetailDto().isOpened() || detailDto.capsuleDetailDto().dueDate()
+        return !detailDto.groupCapsuleDetailDto().isCapsuleOpened()
+            || detailDto.groupCapsuleDetailDto().dueDate()
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
@@ -164,10 +190,21 @@ public class GroupCapsuleService {
         return GroupCapsuleOpenStateDto.opened();
     }
 
-    public Slice<CapsuleBasicInfoDto> findGroupCapsuleSlice(final GroupCapsuleSliceRequestDto dto) {
+    public Slice<GroupCapsuleDto> findGroupCapsuleSlice(
+        final Long memberId,
+        final int size,
+        final Long lastCapsuleId
+    ) {
+        final List<Long> groupIds = memberGroupRepository.findGroupIdsByMemberId(memberId);
+
+        return groupCapsuleQueryRepository.findGroupCapsuleSlice(size, lastCapsuleId,
+            groupIds);
+    }
+
+    public Slice<CapsuleBasicInfoDto> findGroupSpecificCapsuleSlice(final GroupSpecificCapsuleSliceRequestDto dto) {
         checkGroupAuthority(dto.memberId(), dto.groupId());
 
-        return groupCapsuleQueryRepository.findGroupCapsuleSlice(dto);
+        return groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(dto);
     }
 
     private void checkGroupAuthority(Long memberId, Long groupId) {

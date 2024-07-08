@@ -171,7 +171,8 @@ public class FriendCommandService {
     }
 
     @Transactional
-    public void deleteRelatedAllFriendByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+    public void deleteRelatedAllFriendByMemberId(final Long memberId,
+        final ZonedDateTime deletedAt) {
         friendInviteRepository.deleteByMemberId(memberId, deletedAt);
         memberFriendRepository.deleteByMemberId(memberId, deletedAt);
     }

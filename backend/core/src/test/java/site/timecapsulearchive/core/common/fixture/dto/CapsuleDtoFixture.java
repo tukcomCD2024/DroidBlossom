@@ -7,7 +7,9 @@ import java.util.stream.IntStream;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 
 public class CapsuleDtoFixture {
 
@@ -22,10 +24,29 @@ public class CapsuleDtoFixture {
         );
     }
 
-    public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long capsuleId,
+    public static Optional<PublicCapsuleDetailDto> getPublicCapsuleDetailDto(Long capsuleId, Boolean isOpened,
+        ZonedDateTime dueDate) {
+        return Optional.of(
+            new PublicCapsuleDetailDto(capsuleId, "test", dueDate, "testNickname", "testUrl", now,
+                null, "testAddress", "testRoadName", "testTitle", "testContent", "testImages",
+                "testVideos", isOpened, CapsuleType.PUBLIC, true)
+        );
+    }
+
+    public static Optional<GroupCapsuleDetailDto> getGroupCapsuleDetailDto(Long groupId, Long capsuleId, Boolean isOpened,
+        ZonedDateTime dueDate) {
+        return Optional.of(
+            new GroupCapsuleDetailDto(groupId, capsuleId, "testCapsuleSkinUrl", dueDate, 1L, "testNickName", "testProfileUrl",
+                null, null, "testAddressName", "testRoadName", "testTitle", "testContent",
+                "testImages", "testVideos", isOpened, CapsuleType.PUBLIC)
+        );
+    }
+
+
+    public static Optional<GroupCapsuleWithMemberDetailDto> getGroupCapsuleWithMemberDetailDto(Long groupId, Long capsuleId,
         boolean isOpened, ZonedDateTime now, int count) {
         return Optional.of(
-            new GroupCapsuleDetailDto(getCapsuleDetailDto(capsuleId, isOpened, now).get(),
+            new GroupCapsuleWithMemberDetailDto(getGroupCapsuleDetailDto(groupId, capsuleId, isOpened, now).get(),
                 getGroupMemberSummaryDtos(count)));
     }
 

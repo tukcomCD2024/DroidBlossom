@@ -26,11 +26,12 @@ import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.entity.GroupCapsuleOpen;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -93,9 +94,9 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 그룹캡슐_아이디로_그룹_캡슐의_상세_조회_하면_상세_내용을_조회할_수_있다() {
         // given
         //when
-        GroupCapsuleDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        GroupCapsuleWithMemberDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
-        CapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.capsuleDetailDto();
+        GroupCapsuleDetailDto capsuleDetailDto = groupCapsuleDetailDto.groupCapsuleDetailDto();
 
         //then
         assertSoftly(
@@ -113,7 +114,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
     void 그룹캡슐_아이디로_그룹_캡슐의_상세_조회_하면_그룹원_정보를_조회할_수_있다() {
         //given
         //when
-        GroupCapsuleDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        GroupCapsuleWithMemberDetailDto detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             capsule.getId()).orElseThrow();
         List<GroupCapsuleMemberSummaryDto> summaryDto = detailDto.members();
 
@@ -133,7 +134,7 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
         Long notCapsuleId = -1L;
 
         //when
-        Optional<GroupCapsuleDetailDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        Optional<GroupCapsuleWithMemberDetailDto> detailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
             notCapsuleId);
 
         //then
@@ -190,13 +191,14 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
 
     @Test
     void 사용자가_그룹_캡슐_목록을_조회하면_해당_그룹의_그룹캡슐이_나온다() {
-        //then
+        //given
         int size = 20;
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(groupLeaderId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(
+            groupLeaderId,
             groupId, size, lastCapsuleId);
 
         //when
-        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
             dto);
 
         //then
@@ -217,21 +219,69 @@ class GroupCapsuleQueryRepositoryTest extends RepositoryTest {
 
     @Test
     void 사용자가_그룹_캡슐_목록의_첫_페이지_이후_다음_페이지를_조회하면_다음_페이지의_그룹캡슐이_나온다() {
-        //then
+        //given
         int size = 10;
-        GroupCapsuleSliceRequestDto firstSliceDto = GroupCapsuleSliceRequestDto.createOf(
+        GroupSpecificCapsuleSliceRequestDto firstSliceDto = GroupSpecificCapsuleSliceRequestDto.createOf(
             groupLeaderId,
             groupId, size, null);
-        Slice<CapsuleBasicInfoDto> firstGroupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> firstGroupCapsuleSlice = groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
             firstSliceDto);
         CapsuleBasicInfoDto capsuleBasicInfoDto = firstGroupCapsuleSlice.getContent()
-            .get(0);
+            .get(size - 1);
 
         //when
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(groupLeaderId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(
+            groupLeaderId,
             groupId, size, capsuleBasicInfoDto.capsuleId());
-        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
             dto);
+
+        //then
+        assertThat(groupCapsuleSlice.hasContent()).isTrue();
+    }
+
+    @Test
+    void 사용자가_속한_그룹의_그룹_캡슐_목록을_조회하면_사용자가_속한_그룹_캡슐_목록이_나온다() {
+        //given
+        int size = 20;
+
+        //when
+        Slice<GroupCapsuleDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+            size, null, List.of(groupId));
+
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(groupCapsuleSlice.hasContent()).isTrue();
+            softly.assertThat(groupCapsuleSlice.getContent()).allMatch(c -> c.capsuleId() != null);
+            softly.assertThat(groupCapsuleSlice.getContent()).allMatch(c -> c.groupId() != null);
+            softly.assertThat(groupCapsuleSlice.getContent()).allMatch(c -> c.groupName() != null);
+            softly.assertThat(groupCapsuleSlice.getContent())
+                .allMatch(c -> c.groupProfileUrl() != null);
+            softly.assertThat(groupCapsuleSlice.getContent())
+                .allMatch(c -> c.capsuleType().equals(CapsuleType.GROUP));
+            softly.assertThat(groupCapsuleSlice.getContent()).allMatch(c -> c.isOpened() != null);
+            softly.assertThat(groupCapsuleSlice.getContent()).allMatch(c -> c.dueDate() != null);
+            softly.assertThat(groupCapsuleSlice.getContent()).allMatch(c -> c.createdAt() != null);
+            softly.assertThat(groupCapsuleSlice.getContent())
+                .allMatch(c -> c.capsuleSkinUrl() != null && !c.capsuleSkinUrl().isBlank());
+            softly.assertThat(groupCapsuleSlice.getContent())
+                .allMatch(c -> c.title() != null && !c.title().isBlank());
+        });
+    }
+
+    @Test
+    void 사용자가_사용자가_속한_그룹_캡슐_목록의_첫_페이지_이후_다음_페이지를_조회하면_다음_페이지의_사용자가_속한_그룹_캡슐_목록이_나온다() {
+        //given
+        int size = 10;
+        List<Long> groupIds = List.of(groupId);
+        Slice<GroupCapsuleDto> firstGroupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+            size, null, groupIds);
+        GroupCapsuleDto groupCapsuleDto = firstGroupCapsuleSlice.getContent()
+            .get(size - 1);
+
+        //when
+        Slice<GroupCapsuleDto> groupCapsuleSlice = groupCapsuleQueryRepository.findGroupCapsuleSlice(
+            size, groupCapsuleDto.capsuleId(), groupIds);
 
         //then
         assertThat(groupCapsuleSlice.hasContent()).isTrue();

@@ -160,6 +160,20 @@ public class CapsuleApiController implements CapsuleApi {
         @PathVariable("capsule_type") final CapsuleType capsuleType
     ) {
         capsuleService.deleteCapsule(memberId, capsuleId, capsuleType);
+        return ResponseEntity.ok(
+            ApiSpec.empty(
+                SuccessCode.SUCCESS
+            )
+        );
+    }
+
+    @PatchMapping(value = "/{capsule_id}/declaration", produces = {"application/json"})
+    @Override
+    public ResponseEntity<ApiSpec<String>> declarationCapsule(
+        @AuthenticationPrincipal final Long memberId,
+        @PathVariable("capsule_id") final Long capsuleId
+    ) {
+        capsuleService.declarationCapsule(capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(

@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
@@ -13,6 +14,7 @@ import site.timecapsulearchive.core.domain.auth.repository.MessageAuthentication
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
@@ -32,10 +34,6 @@ public class MessageVerificationService {
 
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
     private final SmsApiManager smsApiManager;
-    private final MemberRepository memberRepository;
-    private final MemberTemporaryRepository memberTemporaryRepository;
-
-    private final AESEncryptionManager aesEncryptionManager;
     private final HashEncryptionManager hashEncryptionManager;
 
     /**
@@ -77,12 +75,11 @@ public class MessageVerificationService {
             + "타인 노출 금지";
     }
 
-    public Long validVerificationMessage(
+    public void validVerificationMessage(
         final Long memberId,
         final String certificationNumber,
-        final String receiver
+        final byte[] plain
     ) {
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
         byte[] encrypt = hashEncryptionManager.encrypt(plain);
 
         final String findCertificationNumber = messageAuthenticationCacheRepository
@@ -93,33 +90,11 @@ public class MessageVerificationService {
             throw new CertificationNumberNotMatchException();
         }
 
-        return updateToVerifiedMember(memberId, plain);
+        messageAuthenticationCacheRepository.delete(memberId, encrypt);
     }
 
     private boolean isNotMatch(final String certificationNumber,
         final String findCertificationNumber) {
         return !certificationNumber.equals(findCertificationNumber);
-    }
-
-    private Long updateToVerifiedMember(final Long memberId, final byte[] plain) {
-        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
-            .orElseThrow(MemberNotFoundException::new);
-
-        memberTemporaryRepository.delete(memberTemporary);
-
-        boolean isDuplicateTag = memberRepository.checkTagDuplication(memberTemporary.getTag());
-        if (isDuplicateTag) {
-            log.warn("member tag duplicate - email:{}, tag:{}", memberTemporary.getEmail(),
-                memberTemporary.getTag());
-            memberTemporary.updateTagLowerCaseSocialType();
-            log.warn("member tag update - tag: {}", memberTemporary.getTag());
-        }
-
-        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
-            aesEncryptionManager.encryptWithPrefixIV(plain));
-
-        memberRepository.save(verifiedMember);
-
-        return verifiedMember.getId();
     }
 }

@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 
 @Service
@@ -20,11 +19,11 @@ public class PublicCapsuleService {
 
     private final PublicCapsuleQueryRepository publicCapsuleQueryRepository;
 
-    public CapsuleDetailDto findPublicCapsuleDetailByMemberIdAndCapsuleId(
+    public PublicCapsuleDetailDto findPublicCapsuleDetailByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
-        final CapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+        final PublicCapsuleDetailDto detailDto = publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
                 memberId, capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
@@ -35,7 +34,7 @@ public class PublicCapsuleService {
         return detailDto;
     }
 
-    private boolean capsuleNotOpened(final CapsuleDetailDto detailDto) {
+    private boolean capsuleNotOpened(final PublicCapsuleDetailDto detailDto) {
         if (detailDto.dueDate() == null) {
             return false;
         }
@@ -44,7 +43,7 @@ public class PublicCapsuleService {
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public CapsuleSummaryDto findPublicCapsuleSummaryByMemberIdAndCapsuleId(
+    public PublicCapsuleSummaryDto findPublicCapsuleSummaryByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {

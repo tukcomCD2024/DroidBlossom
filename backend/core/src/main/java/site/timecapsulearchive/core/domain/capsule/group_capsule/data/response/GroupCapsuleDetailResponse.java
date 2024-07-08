@@ -4,15 +4,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import lombok.Builder;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleDetailDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 
 @Schema(description = "그룹 캡슐 상세 정보")
 @Builder
 public record GroupCapsuleDetailResponse(
+
+    @Schema(description = "그룹 아이디")
+    Long groupId,
 
     @Schema(description = "캡슐 아이디")
     Long capsuleId,
@@ -59,11 +63,20 @@ public record GroupCapsuleDetailResponse(
     @Schema(description = "비디오 url들")
     List<String> videoUrls,
 
-    @Schema(description = "개봉 여부")
-    Boolean isOpened,
+    @Schema(description = "캡슐 개봉 여부")
+    Boolean isCapsuleOpened,
 
     @Schema(description = "캡슐 타입")
-    CapsuleType capsuleType
+    CapsuleType capsuleType,
+
+    @Schema(description = "현재 사용자 캡슐 개봉 여부")
+    Boolean isRequestMemberCapsuleOpened,
+
+    @Schema(description = "캡슐 수정 권한 여부")
+    Boolean hasEditPermission,
+
+    @Schema(description = "캡슐 삭제 권한 여부")
+    Boolean hasDeletePermission
 ) {
 
     public GroupCapsuleDetailResponse {
@@ -71,17 +84,20 @@ public record GroupCapsuleDetailResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        createdDate = createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
     }
 
     public static GroupCapsuleDetailResponse createOf(
-        final GroupCapsuleDetailDto groupCapsuleDetailDto,
-        final Function<String, String> singlePreSignUrlFunction,
+        final CombinedGroupCapsuleDetailDto groupCapsuleDetailDto,
         final Function<String, List<String>> multiplePreSignUrlFunction,
-        final Function<Point, Point> changePointFunction
+        final UnaryOperator<String> singlePreSignUrlFunction,
+        final UnaryOperator<Point> changePointFunction
     ) {
-        return groupCapsuleDetailDto.toResponse(singlePreSignUrlFunction,
-            multiplePreSignUrlFunction, changePointFunction);
+        return groupCapsuleDetailDto.toResponse(
+            multiplePreSignUrlFunction,
+            singlePreSignUrlFunction,
+            changePointFunction
+        );
     }
 
 }

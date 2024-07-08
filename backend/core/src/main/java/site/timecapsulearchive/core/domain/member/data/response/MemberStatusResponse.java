@@ -9,14 +9,10 @@ public record MemberStatusResponse(
     Boolean isExist,
 
     @Schema(description = "전화번호 인증 여부")
-    Boolean isVerified
+    Boolean isVerified,
+
+    @Schema(description = "회원 탈퇴 여부")
+    Boolean isDeleted
 ) {
 
-    public static MemberStatusResponse empty() {
-        return new MemberStatusResponse(false, false);
-    }
-
-    public static MemberStatusResponse from(Boolean isVerified) {
-        return new MemberStatusResponse(true, isVerified);
-    }
 }
