@@ -188,15 +188,6 @@ public class MemberService {
     }
 
     @Transactional
-    public void declarationMember(final Long targetId) {
-        Member member = memberRepository.findMemberById(targetId)
-            .orElseThrow(MemberNotFoundException::new);
-
-        member.upDeclarationCount();
-
-    }
-
-    @Transactional
     public Long updateVerifiedMember(final Long memberId, final byte[] plain) {
         final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);

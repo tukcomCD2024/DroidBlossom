@@ -25,7 +25,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
-import site.timecapsulearchive.core.domain.capsule.exception.NoCapsuleAuthorityException;
 import site.timecapsulearchive.core.domain.capsuleskin.entity.CapsuleSkin;
 import site.timecapsulearchive.core.domain.group.entity.Group;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -66,9 +65,6 @@ public class Capsule extends BaseEntity {
 
     @Embedded
     private Address address;
-
-    @Column(name = "declaration_count")
-    private Long declarationCount = 0L;
 
     @OneToMany(mappedBy = "capsule")
     private final List<Image> images = new ArrayList<>();
@@ -146,14 +142,5 @@ public class Capsule extends BaseEntity {
         }
 
         return isCapsuleOpened;
-    }
-
-    public void upDeclarationCount() {
-        if (type.isPublicOrGroup()) {
-            declarationCount++;
-
-            return;
-        }
-        throw new NoCapsuleAuthorityException();
     }
 }

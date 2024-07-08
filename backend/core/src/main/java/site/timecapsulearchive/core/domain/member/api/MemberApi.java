@@ -2,7 +2,6 @@ package site.timecapsulearchive.core.domain.member.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -249,29 +248,4 @@ public interface MemberApi {
 
         @Parameter(hidden = true) String accessToken
     );
-
-    @Operation(
-        summary = "회원 신고",
-        description = "부적절한 회원을 신고할 수 있다.",
-        security = {@SecurityRequirement(name = "user_token")},
-        tags = {"member"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "처리 완료"
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "해당 회원을 찾을 수 없을 경우 발생하는 예외",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-        )
-    })
-    ResponseEntity<ApiSpec<String>> declarationMember(
-        Long memberId,
-
-        @Parameter(in = ParameterIn.PATH, description = "신고할 회원 아이디", required = true)
-        Long targetId
-    );
-
 }

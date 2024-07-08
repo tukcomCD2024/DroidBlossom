@@ -158,12 +158,4 @@ public class CapsuleService {
         capsuleSkinRepository.deleteByMemberId(memberId, deletedAt);
         capsuleRepository.deleteExcludeGroupCapsuleByMemberId(memberId, deletedAt);
     }
-
-    @Transactional
-    public void declarationCapsule(final Long capsuleId) {
-        Capsule capsuleToDeclaration = capsuleRepository.findById(capsuleId)
-            .orElseThrow(CapsuleNotFondException::new);
-
-        capsuleToDeclaration.upDeclarationCount();
-    }
 }
