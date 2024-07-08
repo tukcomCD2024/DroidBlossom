@@ -61,7 +61,7 @@ interface MemberService {
         @Body request : VerificationMessageSendRequestDto
     ) : Response<ResponseBody<String>>
 
-    @POST("auth/verification/valid-message")
+    @POST("me/phone/verification/valid-message")
     suspend fun postChangePhoneValidMessageApi(
         @Body request : VerificationNumberValidRequestDto
     ) : Response<ResponseBody<String>>

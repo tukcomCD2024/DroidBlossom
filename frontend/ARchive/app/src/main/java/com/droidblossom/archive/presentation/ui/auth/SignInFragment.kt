@@ -83,6 +83,11 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         navController = Navigation.findNavController(view)
 
+        if (requireActivity().intent.getBooleanExtra(AuthActivity.IS_CHANGE_PHONE, false)){
+            viewModel.changePhoneMode()
+            navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+        }
+
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
             override fun onLoginSuccess(memberStatusCheckData : CheckStatus,signUpData : SignUp) {
                 viewModel.memberStatusCheck(memberStatusCheckData, signUpData)

@@ -14,6 +14,8 @@ import com.droidblossom.archive.domain.usecase.auth.SignInUseCase
 import com.droidblossom.archive.domain.usecase.auth.SignUpUseCase
 import com.droidblossom.archive.domain.usecase.auth.TemporaryTokenReIssueUseCase
 import com.droidblossom.archive.domain.usecase.auth.ValidMessageUseCase
+import com.droidblossom.archive.domain.usecase.member.ChangePhoneSendMessageUseCase
+import com.droidblossom.archive.domain.usecase.member.ChangePhoneValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.SharedPreferencesUtils
@@ -41,12 +43,18 @@ class AuthViewModelImpl @Inject constructor(
     private val reIssueUseCase: ReIssueUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val signInUseCase: SignInUseCase,
-    private val signUpUseCase : SignUpUseCase,
+    private val signUpUseCase: SignUpUseCase,
     private val validMessageUseCase: ValidMessageUseCase,
     private val memberStatusUseCase: MemberStatusUseCase,
     private val temporaryTokenReIssueUseCase: TemporaryTokenReIssueUseCase,
-    private val dataStoreUtils: DataStoreUtils
+    private val changePhoneSendMessageUseCase: ChangePhoneSendMessageUseCase,
+    private val changePhoneValidMessageUseCase: ChangePhoneValidMessageUseCase,
+    private val dataStoreUtils: DataStoreUtils,
 ) : BaseViewModel(), AuthViewModel {
+
+    private val _isPhoneChange = MutableStateFlow<Boolean>(false)
+    override val isPhoneChange: StateFlow<Boolean>
+        get() = _isPhoneChange
 
     // SignInFragment
     private val _signInEvents = MutableSharedFlow<AuthViewModel.SignInEvent>()
@@ -63,13 +71,13 @@ class AuthViewModelImpl @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val rawPhoneNumber: StateFlow<String> = _rawPhoneNumber
 
-    private var appHash : String = ""
-
+    private var appHash: String = ""
 
 
     // CertificationFragment
-    private val _certificationEvents =  MutableSharedFlow<AuthViewModel.CertificationEvent>()
-    override val certificationEvents: SharedFlow<AuthViewModel.CertificationEvent> = _certificationEvents.asSharedFlow()
+    private val _certificationEvents = MutableSharedFlow<AuthViewModel.CertificationEvent>()
+    override val certificationEvents: SharedFlow<AuthViewModel.CertificationEvent> =
+        _certificationEvents.asSharedFlow()
 
     private val _remainTime = MutableStateFlow(300)
     override val remainTime: StateFlow<Int> = _remainTime
@@ -91,6 +99,12 @@ class AuthViewModelImpl @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
     override val certificationNumber: StateFlow<String> = _certificationNumber
 
+    fun changePhoneMode() {
+        viewModelScope.launch {
+            _isPhoneChange.emit(true)
+        }
+    }
+
     // SignInFragment
     override fun signInEvent(event: AuthViewModel.SignInEvent) {
         viewModelScope.launch {
@@ -98,7 +112,7 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
-    private fun authDataReset(){
+    private fun authDataReset() {
         certificationNumber4.value = ""
         certificationNumber3.value = ""
         certificationNumber2.value = ""
@@ -106,28 +120,38 @@ class AuthViewModelImpl @Inject constructor(
         phoneNumber.value = ""
     }
 
-    override fun memberStatusCheck(memberStatusCheckData : CheckStatus, signUpData : SignUp){
+    override fun memberStatusCheck(memberStatusCheckData: CheckStatus, signUpData: SignUp) {
         viewModelScope.launch {
-            memberStatusUseCase(memberStatusCheckData.toDto()).collect{ result ->
+            memberStatusUseCase(memberStatusCheckData.toDto()).collect { result ->
                 result.onSuccess { it ->
-                    if (it.isVerified){
-                        submitSignInData(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
-                    }else if(it.isExist){
-                        getTemporaryToken(SignIn(memberStatusCheckData.authId, memberStatusCheckData.socialType))
-                    }else{
+                    if (it.isVerified) {
+                        submitSignInData(
+                            SignIn(
+                                memberStatusCheckData.authId,
+                                memberStatusCheckData.socialType
+                            )
+                        )
+                    } else if (it.isExist) {
+                        getTemporaryToken(
+                            SignIn(
+                                memberStatusCheckData.authId,
+                                memberStatusCheckData.socialType
+                            )
+                        )
+                    } else {
                         submitSignUpData(signUpData)
                     }
                     authDataReset()
                 }.onFail {
-                    Log.d("티티","memberStatusCheck 실패")
+                    Log.d("티티", "memberStatusCheck 실패")
                 }
             }
         }
     }
 
-    override fun submitSignInData(signInData : SignIn){
+    override fun submitSignInData(signInData: SignIn) {
         viewModelScope.launch {
-            signInUseCase(signInData.toDto()).collect{ result ->
+            signInUseCase(signInData.toDto()).collect { result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
                     dataStoreUtils.resetTokenData()
@@ -135,15 +159,15 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
                 }.onFail {
-                    Log.d("티티","submitSignInData 실패")
+                    Log.d("티티", "submitSignInData 실패")
                 }
             }
         }
     }
 
-    override fun submitSignUpData(signUpData : SignUp){
+    override fun submitSignUpData(signUpData: SignUp) {
         viewModelScope.launch {
-            signUpUseCase(signUpData.toDto()).collect{result ->
+            signUpUseCase(signUpData.toDto()).collect { result ->
                 result.onSuccess {
                     // 토큰 저장 로직 추가
                     dataStoreUtils.resetTokenData()
@@ -151,21 +175,21 @@ class AuthViewModelImpl @Inject constructor(
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
                     // ToastMessage 있으면 좋을듯
-                    Log.d("티티","submitSignUpData 에러")
+                    Log.d("티티", "submitSignUpData 에러")
                 }
             }
         }
     }
 
-    override fun getTemporaryToken(temporaryTokenReIssue : SignIn){
+    override fun getTemporaryToken(temporaryTokenReIssue: SignIn) {
         viewModelScope.launch {
-            temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect{ result ->
+            temporaryTokenReIssueUseCase(temporaryTokenReIssue.toDto()).collect { result ->
                 result.onSuccess {
                     dataStoreUtils.resetTokenData()
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-                    Log.d("티티","temporaryTokenReIssue 실패")
+                    Log.d("티티", "temporaryTokenReIssue 실패")
                 }
             }
         }
@@ -178,9 +202,10 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
-    override fun setHash(hash : String) {
+    override fun setHash(hash: String) {
         appHash = hash
     }
+
     override fun checkPhoneNumber(): Boolean {
         val pattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$"
         if (!Pattern.matches(pattern, rawPhoneNumber.value)) {
@@ -190,29 +215,47 @@ class AuthViewModelImpl @Inject constructor(
         return true
     }
 
-    override fun clearPhoneNumber(){
+    override fun clearPhoneNumber() {
         viewModelScope.launch {
             phoneNumber.emit("")
         }
     }
 
-    override fun submitPhoneNumber(){
+    override fun submitPhoneNumber() {
         // 임시토큰 헤더에 넣고 해야함.
         viewModelScope.launch {
-            sendMessageUseCase(VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()).collect{result ->
-                result.onSuccess{
-                    signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
-                }.onFail {
-                    if (it == 429){
-                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
-                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+            if (isPhoneChange.value) {
+                changePhoneSendMessageUseCase(
+                    VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()
+                ).collect { result ->
+                    result.onSuccess {
+                        signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
+                    }.onFail {
+                        if (it == 429) {
+                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
+                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                        }
+                        Log.d("티티", "$it : submitPhoneNumber 실패")
                     }
-                    Log.d("티티","$it : submitPhoneNumber 실패")
-                }
 
+                }
+            } else {
+                sendMessageUseCase(
+                    VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()
+                ).collect { result ->
+                    result.onSuccess {
+                        signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
+                    }.onFail {
+                        if (it == 429) {
+                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
+                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                        }
+                        Log.d("티티", "$it : submitPhoneNumber 실패")
+                    }
+
+                }
             }
         }
-
     }
 
     // CertificationFragment
@@ -238,29 +281,47 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
-    override fun submitCertificationNumber(){
+    override fun submitCertificationNumber() {
         viewModelScope.launch {
-            validMessageUseCase(
-                VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()
-            ).collect{ result ->
-                result.onSuccess {
-                    dataStoreUtils.saveAccessToken(it.accessToken)
-                    dataStoreUtils.saveRefreshToken(it.refreshToken)
-                    certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
+            if (isPhoneChange.value) {
+                changePhoneValidMessageUseCase(
+                    VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()
+                ).collect { result ->
+                    result.onSuccess {
+                        certificationEvent(AuthViewModel.CertificationEvent.NavigateFinish)
 
-                }.onFail {
-                    // Toast 메시지 있으면 좋을듯
-                    if (it == 400){
-                        certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
-                        certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                    }.onFail {
+                        // Toast 메시지 있으면 좋을듯
+                        if (it == 400) {
+                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
+                            certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                        }
+
                     }
+                }
+            } else {
+                validMessageUseCase(
+                    VerificationNumberValid(certificationNumber.value, rawPhoneNumber.value).toDto()
+                ).collect { result ->
+                    result.onSuccess {
+                        dataStoreUtils.saveAccessToken(it.accessToken)
+                        dataStoreUtils.saveRefreshToken(it.refreshToken)
+                        certificationEvent(AuthViewModel.CertificationEvent.NavigateToSignUpSuccess)
 
+                    }.onFail {
+                        // Toast 메시지 있으면 좋을듯
+                        if (it == 400) {
+                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
+                            certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                        }
+
+                    }
                 }
             }
         }
     }
 
-    override fun reSend(){
+    override fun reSend() {
         initTimer()
         submitPhoneNumber()
     }

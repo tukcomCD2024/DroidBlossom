@@ -32,8 +32,10 @@ class AuthActivity : BaseActivity<AuthViewModelImpl, ActivityAuthBinding>(R.layo
     }
 
     companion object{
-        fun goAuth(context: Context) {
+        const val IS_CHANGE_PHONE = "change_phone"
+        fun goAuth(context: Context, isChangePhone :Boolean) {
             val intent = Intent(context, AuthActivity::class.java)
+            intent.putExtra(IS_CHANGE_PHONE, isChangePhone)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(intent)
         }

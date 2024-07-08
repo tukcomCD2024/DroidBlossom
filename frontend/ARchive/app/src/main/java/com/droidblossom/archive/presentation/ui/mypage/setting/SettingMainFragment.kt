@@ -105,7 +105,7 @@ class SettingMainFragment :
                         }
 
                         is SettingViewModel.SettingMainEvent.GoAuthActivity -> {
-                            AuthActivity.goAuth(requireContext())
+                            AuthActivity.goAuth(requireContext(),false)
                         }
 
                         else -> {}

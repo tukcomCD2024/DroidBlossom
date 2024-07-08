@@ -12,6 +12,8 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSettingUserBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.CommonDialogFragment
+import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -37,6 +39,13 @@ class SettingUserFragment :
             } else {
                 navController.popBackStack()
             }
+        }
+
+        binding.phoneCV.setOnClickListener {
+            val sheet = CommonDialogFragment.newIntent("번호를 바꾸겠습니까?", "네") {
+                AuthActivity.goAuth(requireContext(),true)
+            }
+            sheet.show(parentFragmentManager, "logoutDialog")
         }
 
         binding.modifyBtn.setOnClickListener {

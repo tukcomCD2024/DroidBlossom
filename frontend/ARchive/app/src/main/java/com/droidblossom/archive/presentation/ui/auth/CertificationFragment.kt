@@ -19,6 +19,7 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCertificationBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.AuthOtpReceiver
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import dagger.hilt.android.AndroidEntryPoint
@@ -106,6 +107,9 @@ class CertificationFragment : AuthOtpReceiver.OtpReceiveListener,BaseFragment<Au
                             showToastMessage(event.message)
                         }
 
+                        is AuthViewModel.CertificationEvent.NavigateFinish -> {
+                            MainActivity.goMain(requireContext())
+                        }
                     }
 
                 }

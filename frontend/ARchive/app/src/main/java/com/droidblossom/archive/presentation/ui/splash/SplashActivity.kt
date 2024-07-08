@@ -41,7 +41,7 @@ class SplashActivity : BaseActivity<Nothing?, ActivitySplashBinding>(R.layout.ac
             if (dataStoreUtils.fetchAccessToken().isNotEmpty() && dataStoreUtils.fetchRefreshToken().isNotEmpty()) {
                 essentialPermissionLauncher.launch(essentialPermissionList)
             } else {
-                AuthActivity.goAuth(this@SplashActivity)
+                AuthActivity.goAuth(this@SplashActivity,false)
                 finish()
             }
         }

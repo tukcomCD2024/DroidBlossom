@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface AuthViewModel {
 
+    val isPhoneChange : StateFlow<Boolean>
+
     // SignIn
     val signInEvents: SharedFlow<SignInEvent>
 
@@ -73,6 +75,7 @@ interface AuthViewModel {
         object NavigateToSignUpSuccess : CertificationEvent()
 
         object VerificationCodeMismatch : CertificationEvent()
+        object NavigateFinish : CertificationEvent()
         data class ShowToastMessage(val message : String) : CertificationEvent()
 
     }
