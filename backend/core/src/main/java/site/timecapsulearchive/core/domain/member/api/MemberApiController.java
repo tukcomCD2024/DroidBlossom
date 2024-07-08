@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
+import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.reqeust.CheckStatusRequest;
 import site.timecapsulearchive.core.domain.member.data.reqeust.UpdateFCMTokenRequest;
@@ -117,6 +119,39 @@ public class MemberApiController implements MemberApi {
                 SuccessCode.SUCCESS
             )
         );
+    }
+
+    @PostMapping("/phone/verification/send-message")
+    @Override
+    public ResponseEntity<ApiSpec<String>> sendVerificationMessage(
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final VerificationMessageSendRequest request
+    ) {
+        memberFacade.sendVerificationMessage(memberId, request.receiver(), request.appHashKey());
+
+        return ResponseEntity.accepted()
+            .body(
+                ApiSpec.empty(
+                    SuccessCode.ACCEPTED
+                )
+            );
+    }
+
+    @PostMapping("/phone/verification/valid-message")
+    @Override
+    public ResponseEntity<ApiSpec<String>> validVerificationMessage(
+        @AuthenticationPrincipal final Long memberId,
+        @Valid @RequestBody final VerificationNumberValidRequest request
+    ) {
+        memberFacade.validVerificationMessage(memberId, request.receiver(),
+            request.certificationNumber());
+
+        return ResponseEntity.accepted()
+            .body(
+                ApiSpec.empty(
+                    SuccessCode.ACCEPTED
+                )
+            );
     }
 
     @DeleteMapping
