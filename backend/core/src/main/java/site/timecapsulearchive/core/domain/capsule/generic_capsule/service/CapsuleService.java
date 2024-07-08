@@ -152,7 +152,8 @@ public class CapsuleService {
     }
 
     @Transactional
-    public void deleteRelatedAllCapsuleByMemberId(final Long memberId, final ZonedDateTime deletedAt) {
+    public void deleteRelatedAllCapsuleByMemberId(final Long memberId,
+        final ZonedDateTime deletedAt) {
         imageRepository.deleteByMemberId(memberId, deletedAt);
         videoRepository.deleteByMemberId(memberId, deletedAt);
         capsuleSkinRepository.deleteByMemberId(memberId, deletedAt);

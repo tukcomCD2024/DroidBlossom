@@ -14,5 +14,12 @@ public record GroupCapsuleWithMemberDetailDto(
         );
     }
 
-
+    public CombinedGroupCapsuleDetailDto combine(
+        boolean isOpened,
+        boolean hasEditPermission,
+        boolean hasDeletePermission
+    ) {
+        return CombinedGroupCapsuleDetailDto.create(groupCapsuleDetailDto, members, isOpened,
+            hasEditPermission, hasDeletePermission);
+    }
 }

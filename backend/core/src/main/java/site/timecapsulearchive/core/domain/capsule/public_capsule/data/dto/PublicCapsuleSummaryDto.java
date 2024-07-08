@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
 
 public record PublicCapsuleSummaryDto(

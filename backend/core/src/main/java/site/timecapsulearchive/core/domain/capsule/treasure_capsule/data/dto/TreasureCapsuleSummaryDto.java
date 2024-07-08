@@ -14,7 +14,8 @@ public record TreasureCapsuleSummaryDto(
 
 ) {
 
-    public TreasureCapsuleSummaryResponse toResponse(final Function<String, String> s3PreSignedUrlForGet) {
+    public TreasureCapsuleSummaryResponse toResponse(
+        final Function<String, String> s3PreSignedUrlForGet) {
         final String treasureSkinUrl = s3PreSignedUrlForGet.apply(skinUrl);
 
         return TreasureCapsuleSummaryResponse.builder()

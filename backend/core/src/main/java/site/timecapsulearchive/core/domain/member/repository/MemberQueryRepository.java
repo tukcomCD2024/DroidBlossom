@@ -1,9 +1,7 @@
 package site.timecapsulearchive.core.domain.member.repository;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Slice;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;

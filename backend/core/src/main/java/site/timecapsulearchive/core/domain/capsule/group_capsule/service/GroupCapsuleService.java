@@ -80,10 +80,7 @@ public class GroupCapsuleService {
         Boolean hasDeletePermission = hasEditPermission || requestMember.isGroupOwner();
 
         if (capsuleNotOpened(groupCapsuleWithMemberDetailDto)) {
-            GroupCapsuleWithMemberDetailDto excludeDetailContentsDto = groupCapsuleWithMemberDetailDto.excludeDetailContents();
-            return CombinedGroupCapsuleDetailDto.create(
-                excludeDetailContentsDto.groupCapsuleDetailDto(),
-                excludeDetailContentsDto.members(),
+            return groupCapsuleWithMemberDetailDto.excludeDetailContents().combine(
                 requestMember.isOpened(),
                 hasEditPermission,
                 hasDeletePermission

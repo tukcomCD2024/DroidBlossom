@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import java.util.function.Function;
 import lombok.Builder;
 import org.locationtech.jts.geom.Point;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.global.common.response.ResponseMappingConstant;
 

@@ -84,7 +84,7 @@ public record GroupCapsuleDetailResponse(
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
         }
 
-        createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
+        createdDate = createdDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);
     }
 
     public static GroupCapsuleDetailResponse createOf(

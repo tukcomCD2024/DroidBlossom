@@ -11,7 +11,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
@@ -22,8 +21,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.global.util.SliceUtil;
@@ -33,6 +30,18 @@ import site.timecapsulearchive.core.global.util.SliceUtil;
 public class PublicCapsuleQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    private static BooleanExpression eqMemberIdOrFriendId(Long memberId) {
+        return eqMemberId(memberId).or(eqFriendId(memberId));
+    }
+
+    private static BooleanExpression eqMemberId(Long memberId) {
+        return capsule.member.id.eq(memberId);
+    }
+
+    private static BooleanExpression eqFriendId(Long memberId) {
+        return memberFriend.friend.id.eq(memberId);
+    }
 
     public Optional<PublicCapsuleDetailDto> findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
         final Long memberId,
@@ -118,18 +127,6 @@ public class PublicCapsuleQueryRepository {
                 .groupBy(capsule.id)
                 .fetchOne()
         );
-    }
-
-    private static BooleanExpression eqMemberIdOrFriendId(Long memberId) {
-        return eqMemberId(memberId).or(eqFriendId(memberId));
-    }
-
-    private static BooleanExpression eqMemberId(Long memberId) {
-        return capsule.member.id.eq(memberId);
-    }
-
-    private static BooleanExpression eqFriendId(Long memberId) {
-        return memberFriend.friend.id.eq(memberId);
     }
 
     public Slice<PublicCapsuleDetailDto> findPublicCapsulesDtoMadeByFriend(

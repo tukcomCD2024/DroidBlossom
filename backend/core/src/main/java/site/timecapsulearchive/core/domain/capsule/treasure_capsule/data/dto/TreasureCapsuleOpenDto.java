@@ -7,7 +7,8 @@ public record TreasureCapsuleOpenDto(
     String treasureImageUrl
 ) {
 
-    public TreasureCapsuleOpenResponse toResponse(final Function<String, String> s3PreSignedUrlForGet) {
+    public TreasureCapsuleOpenResponse toResponse(
+        final Function<String, String> s3PreSignedUrlForGet) {
         String imageUrl = s3PreSignedUrlForGet.apply(treasureImageUrl);
         return new TreasureCapsuleOpenResponse(imageUrl);
     }
