@@ -23,12 +23,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.member.entity.QMember;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
@@ -38,7 +38,7 @@ public class GroupCapsuleQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Optional<GroupCapsuleDetailDto> findGroupCapsuleDetailDtoByCapsuleId(
+    public Optional<GroupCapsuleWithMemberDetailDto> findGroupCapsuleDetailDtoByCapsuleId(
         final Long capsuleId
     ) {
         final QMember owner = new QMember("owner");
@@ -48,6 +48,7 @@ public class GroupCapsuleQueryRepository {
             .selectFrom(capsule)
             .join(owner).on(capsule.member.id.eq(owner.id))
             .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .join(capsule.group, group)
             .leftJoin(image).on(capsule.id.eq(image.capsule.id))
             .leftJoin(video).on(capsule.id.eq(video.capsule.id))
             .join(groupCapsuleOpen).on(groupCapsuleOpen.capsule.id.eq(capsuleId))
@@ -58,12 +59,14 @@ public class GroupCapsuleQueryRepository {
             .transform(
                 groupBy(capsule.id).as(
                     Projections.constructor(
-                        GroupCapsuleDetailDto.class,
+                        GroupCapsuleWithMemberDetailDto.class,
                         Projections.constructor(
-                            CapsuleDetailDto.class,
+                            GroupCapsuleDetailDto.class,
+                            group.id,
                             capsule.id,
                             capsuleSkin.imageUrl,
                             capsule.dueDate,
+                            owner.id,
                             owner.nickname,
                             owner.profileUrl,
                             capsule.createdAt,

@@ -148,6 +148,7 @@ public class Capsule extends BaseEntity {
         return isCapsuleOpened;
     }
 
+
     public void upDeclarationCount() {
         if (type.isPublicOrGroup()) {
             declarationCount++;
