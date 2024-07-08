@@ -184,16 +184,19 @@ public class CapsuleService {
     }
 
     private void validateGroupCapsuleOwnership(final Long memberId, final Long capsuleId) {
-        final Capsule capsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(memberId, capsuleId)
+        final Capsule capsule = capsuleRepository.findCapsuleByMemberIdAndCapsuleId(memberId,
+                capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
         final Long groupId = capsule.getGroup().getId();
 
-        final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(memberId, groupId)
+        final MemberGroup memberGroup = memberGroupRepository.findMemberGroupByMemberIdAndGroupId(
+                memberId, groupId)
             .orElseThrow(CapsuleNotFondException::new);
         memberGroup.checkDeleteGroupCapsuleAuthority();
     }
 
-    private void deleteCapsuleAssets(final Long memberId, final Long capsuleId, final ZonedDateTime deletedAt) {
+    private void deleteCapsuleAssets(final Long memberId, final Long capsuleId,
+        final ZonedDateTime deletedAt) {
         imageRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
         videoRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);
         groupCapsuleOpenRepository.deleteByMemberIdAndCapsuleId(memberId, capsuleId, deletedAt);

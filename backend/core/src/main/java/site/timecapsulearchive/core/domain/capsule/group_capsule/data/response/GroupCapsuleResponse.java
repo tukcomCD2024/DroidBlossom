@@ -67,6 +67,7 @@ public record GroupCapsuleResponse(
     @Schema(description = "캡슐 타입")
     CapsuleType capsuleType
 ) {
+
     public GroupCapsuleResponse {
         if (dueDate != null) {
             dueDate = dueDate.withZoneSameInstant(ResponseMappingConstant.ZONE_ID);

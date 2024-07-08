@@ -150,7 +150,8 @@ public class MemberService {
         final Long memberId,
         final UpdateMemberDataDto updateMemberDataDto
     ) {
-        final Member member = memberRepository.findMemberById(memberId).orElseThrow(MemberNotFoundException::new);
+        final Member member = memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
 
         member.updateData(updateMemberDataDto.nickname(), updateMemberDataDto.tag());
         try {

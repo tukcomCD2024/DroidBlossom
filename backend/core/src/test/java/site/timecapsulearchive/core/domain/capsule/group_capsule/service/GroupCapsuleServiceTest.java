@@ -89,7 +89,6 @@ class GroupCapsuleServiceTest {
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
-
         //when
         CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             memberId, capsuleId);
@@ -107,7 +106,6 @@ class GroupCapsuleServiceTest {
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
-
 
         //when
         CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
@@ -127,7 +125,6 @@ class GroupCapsuleServiceTest {
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
-
 
         //when
         CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
@@ -152,7 +149,6 @@ class GroupCapsuleServiceTest {
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
-
         //when
         CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
             memberId, capsuleId);
@@ -175,7 +171,6 @@ class GroupCapsuleServiceTest {
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
-
 
         //when
         CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
@@ -398,7 +393,8 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(memberId, groupId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(
+            memberId, groupId,
             size, capsuleId);
         given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
             .willReturn(false);
@@ -415,7 +411,8 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(memberId, groupId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(
+            memberId, groupId,
             size, capsuleId);
         given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
             .willReturn(true);
@@ -479,7 +476,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto).isNotNull();
@@ -500,7 +496,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             groupMemberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isFalse();
@@ -521,7 +516,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             groupMemberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isFalse();
@@ -541,7 +535,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isTrue();
@@ -561,7 +554,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isTrue();
@@ -581,7 +573,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isTrue();
@@ -601,7 +592,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isFalse();

@@ -135,8 +135,10 @@ class JwtAuthenticationProviderTest {
     void 블랙리스트에_있는_토큰으로_접근하면_예외가_발생한다() {
         //given
         String accessToken = TokenFixture.accessToken(MEMBER_ID);
-        JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(accessToken);
-        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(accessToken);
+        JwtAuthenticationToken unauthenticated = JwtAuthenticationToken.unauthenticated(
+            accessToken);
+        given(blackListCacheRepository.findBlackListTokenByMemberId(MEMBER_ID)).willReturn(
+            accessToken);
 
         //when
         //then

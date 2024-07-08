@@ -1,7 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.api;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
