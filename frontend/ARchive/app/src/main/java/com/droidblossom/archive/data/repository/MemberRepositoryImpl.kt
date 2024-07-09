@@ -12,6 +12,7 @@ import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
+import com.droidblossom.archive.data.dto.member.request.TagSearchRequestDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
@@ -71,6 +72,10 @@ class MemberRepositoryImpl @Inject constructor(
 
     override suspend fun changePhoneValidMessage(request: VerificationNumberValidRequestDto): RetrofitResult<String> {
         return apiHandler({ api.postChangePhoneValidMessageApi(request) }) { response : ResponseBody<String> -> response.result.toModel()}
+    }
+
+    override suspend fun changeTagSearchAvailable(request: TagSearchRequestDto): RetrofitResult<String> {
+        return apiHandler({api.patchTagSearchApi(request)}) { response : ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun getText(): RetrofitResult<Health> {

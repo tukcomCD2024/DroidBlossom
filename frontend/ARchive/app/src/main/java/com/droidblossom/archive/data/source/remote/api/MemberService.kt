@@ -11,6 +11,7 @@ import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberDetailUpdateRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
+import com.droidblossom.archive.data.dto.member.request.TagSearchRequestDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
@@ -65,6 +66,11 @@ interface MemberService {
     suspend fun postChangePhoneValidMessageApi(
         @Body request : VerificationNumberValidRequestDto
     ) : Response<ResponseBody<String>>
+
+    @PATCH("me/tag-search-available")
+    suspend fun patchTagSearchApi(
+        @Body request : TagSearchRequestDto
+    ): Response<ResponseBody<String>>
 
     @GET("health")
     suspend fun getTextApi() : Response<ResponseBody<HealthResponseDto>>
