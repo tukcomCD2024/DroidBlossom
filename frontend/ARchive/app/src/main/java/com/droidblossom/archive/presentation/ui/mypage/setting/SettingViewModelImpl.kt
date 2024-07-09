@@ -59,7 +59,7 @@ class SettingViewModelImpl @Inject constructor(
     override val settingUserEvents: SharedFlow<SettingViewModel.SettingUserEvent>
         get() = _settingUserEvent.asSharedFlow()
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", 0, 0))
+    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", "","","",0, 0))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
     override val modifyNameText = MutableStateFlow<String>("")

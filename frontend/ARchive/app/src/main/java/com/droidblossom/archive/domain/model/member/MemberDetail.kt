@@ -6,6 +6,9 @@ data class MemberDetail(
     val nickname : String,
     val profileUrl : String,
     val tag : String,
+    val socialType : String,
+    val email: String,
+    val phone: String,
     val friendCount: Int,
     val groupCount: Int
 ){

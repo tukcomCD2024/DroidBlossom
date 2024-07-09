@@ -39,7 +39,7 @@ class MyPageViewModelImpl @Inject constructor(
         get() = _myPageEvents.asSharedFlow()
 
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", 0, 0))
+    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", "","","",0, 0))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
