@@ -7,6 +7,7 @@ import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
+import com.droidblossom.archive.data.dto.member.request.PhoneSearchRequestDto
 import com.droidblossom.archive.data.dto.member.request.TagSearchRequestDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
 import com.droidblossom.archive.domain.model.auth.Health
@@ -33,6 +34,7 @@ interface MemberRepository {
     suspend fun changePhoneMessageSend(request: VerificationMessageSendRequestDto): RetrofitResult<String>
     suspend fun changePhoneValidMessage(request: VerificationNumberValidRequestDto): RetrofitResult<String>
     suspend fun changeTagSearchAvailable(request: TagSearchRequestDto) : RetrofitResult<String>
+    suspend fun changePhoneSearchAvailable(request: PhoneSearchRequestDto) : RetrofitResult<String>
     suspend fun getText() : RetrofitResult<Health>
 
 }
