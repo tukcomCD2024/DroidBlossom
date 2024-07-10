@@ -5,10 +5,12 @@ import java.io.Serializable
 
 data class MemberStatusResponseDto(
     val isExist : Boolean,
-    val isVerified : Boolean
+    val isVerified : Boolean,
+    val isDeleted: Boolean
 ) : Serializable {
     fun toModel() = MemberStatus(
         isExist = this.isExist,
-        isVerified = this.isVerified
+        isVerified = this.isVerified,
+        isDeleted = this.isDeleted
     )
 }

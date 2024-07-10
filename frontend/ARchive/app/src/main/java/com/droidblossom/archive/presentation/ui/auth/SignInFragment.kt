@@ -16,6 +16,7 @@ import com.droidblossom.archive.databinding.FragmentSignInBinding
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
@@ -128,6 +129,14 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
                         is AuthViewModel.SignInEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
+                        }
+
+                        is AuthViewModel.SignInEvent.DeactivatedUserChecked -> {
+                            val sheet = CommonDialogFragment.newIntent("탈퇴된 계정입니다. \n 계정을 복구하시겠습니까?", "계정 복구") {
+                                // 복구하는 로직 어떻게?
+                                // 새로운 api? 그냥 로그인?
+                            }
+                            sheet.show(parentFragmentManager, "reactivateAccountDialog")
                         }
 
                     }

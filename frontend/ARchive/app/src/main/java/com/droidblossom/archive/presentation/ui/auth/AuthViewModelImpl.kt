@@ -124,22 +124,26 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             memberStatusUseCase(memberStatusCheckData.toDto()).collect { result ->
                 result.onSuccess { it ->
-                    if (it.isVerified) {
-                        submitSignInData(
-                            SignIn(
-                                memberStatusCheckData.authId,
-                                memberStatusCheckData.socialType
+                    if (it.isDeleted){
+                        signInEvent(AuthViewModel.SignInEvent.DeactivatedUserChecked)
+                    }else{
+                        if (it.isVerified) {
+                            submitSignInData(
+                                SignIn(
+                                    memberStatusCheckData.authId,
+                                    memberStatusCheckData.socialType
+                                )
                             )
-                        )
-                    } else if (it.isExist) {
-                        getTemporaryToken(
-                            SignIn(
-                                memberStatusCheckData.authId,
-                                memberStatusCheckData.socialType
+                        } else if (it.isExist) {
+                            getTemporaryToken(
+                                SignIn(
+                                    memberStatusCheckData.authId,
+                                    memberStatusCheckData.socialType
+                                )
                             )
-                        )
-                    } else {
-                        submitSignUpData(signUpData)
+                        } else {
+                            submitSignUpData(signUpData)
+                        }
                     }
                     authDataReset()
                 }.onFail {
