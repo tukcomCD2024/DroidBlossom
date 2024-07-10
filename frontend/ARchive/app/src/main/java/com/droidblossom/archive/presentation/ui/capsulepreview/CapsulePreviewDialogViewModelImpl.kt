@@ -6,6 +6,7 @@ import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenStateResponse
+import com.droidblossom.archive.domain.model.treasure.response.TreasureOpenStatus
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummaryUseCase
@@ -461,10 +462,26 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private suspend fun openTreasureCapsule() {
         openTreasureCapsuleUseCase(capsuleId.value).collect { result ->
             result.onSuccess {
-                _treasureOpenResult.emit(it.treasureImageUrl)
-                _capsuleOpenState.emit(true)
-                _treasureRemove.value = true
-                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
+                when(it.treasureOpenStatus){
+                    TreasureOpenStatus.SUCCESS -> {
+                        _treasureOpenResult.emit(it.treasureImageUrl)
+                        _capsuleOpenState.emit(true)
+                        _treasureRemove.value = true
+                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
+                    }
+                    TreasureOpenStatus.DUPLICATE -> {
+                        _treasureRemove.value = true
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                "이미 보유하고 있는 스킨입니다."
+                            )
+                        )
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                        )
+                    }
+                }
+
             }.onFail {
                 if (it == 404){
                     _treasureRemove.value = true
