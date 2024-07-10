@@ -20,10 +20,10 @@ import javax.inject.Inject
 class ChangeTagSearchAvailableUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(request: TagSearchRequestDto) =
+    suspend operator fun invoke(available: Boolean) =
         flow<RetrofitResult<String>> {
             try {
-                emit(repository.changeTagSearchAvailable(request).onSuccess {
+                emit(repository.changeTagSearchAvailable(TagSearchRequestDto(available)).onSuccess {
 
                 }.onFail {
 

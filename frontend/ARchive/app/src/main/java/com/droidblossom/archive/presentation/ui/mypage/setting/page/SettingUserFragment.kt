@@ -14,6 +14,7 @@ import com.droidblossom.archive.databinding.FragmentSettingUserBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
+import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModel
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,13 +44,21 @@ class SettingUserFragment :
 
         binding.phoneCV.setOnClickListener {
             val sheet = CommonDialogFragment.newIntent("번호를 바꾸겠습니까?", "네") {
-                startActivity(AuthActivity.newIntent(requireContext(),true))
+                startActivity(AuthActivity.newIntent(requireContext(), true))
             }
             sheet.show(parentFragmentManager, "logoutDialog")
         }
 
         binding.modifyBtn.setOnClickListener {
             navController.navigate(R.id.action_settingUserFragment_to_settingUserModifyFragment)
+        }
+
+        binding.tagSwitch.setOnCheckedChangeListener { _, b ->
+            viewModel.changeTagSearch(b)
+        }
+
+        binding.phoneSwitch.setOnCheckedChangeListener { _, b ->
+            viewModel.changePhoneSearchV(b)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -66,6 +75,18 @@ class SettingUserFragment :
     }
 
     override fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.settingUserEvents.collect {  event ->
+                    when(event) {
+                        is SettingViewModel.SettingUserEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
 
+                        else -> Unit
+                    }
+                }
+            }
+        }
     }
 }

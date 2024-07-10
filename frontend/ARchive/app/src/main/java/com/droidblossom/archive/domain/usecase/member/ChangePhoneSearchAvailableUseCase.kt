@@ -21,10 +21,10 @@ import javax.inject.Inject
 class ChangePhoneSearchAvailableUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(request: PhoneSearchRequestDto) =
+    suspend operator fun invoke(available: Boolean) =
         flow<RetrofitResult<String>> {
             try {
-                emit(repository.changePhoneSearchAvailable(request).onSuccess {
+                emit(repository.changePhoneSearchAvailable(PhoneSearchRequestDto(available)).onSuccess {
 
                 }.onFail {
 

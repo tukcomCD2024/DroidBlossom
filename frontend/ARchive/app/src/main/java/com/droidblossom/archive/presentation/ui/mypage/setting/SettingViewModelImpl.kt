@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.usecase.auth.SignOutUseCase
+import com.droidblossom.archive.domain.usecase.member.ChangePhoneSearchAvailableUseCase
+import com.droidblossom.archive.domain.usecase.member.ChangePhoneValidMessageUseCase
+import com.droidblossom.archive.domain.usecase.member.ChangeTagSearchAvailableUseCase
 import com.droidblossom.archive.domain.usecase.member.DeleteAccountUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberDataModifyUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
@@ -34,6 +37,8 @@ class SettingViewModelImpl @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val memberUseCase: MemberUseCase,
     private val memberModifyUseCase: MemberDataModifyUseCase,
+    private val changeTagSearchAvailableUseCase: ChangeTagSearchAvailableUseCase,
+    private val changePhoneSearchAvailableUseCase: ChangePhoneSearchAvailableUseCase,
 ) : BaseViewModel(), SettingViewModel {
 
     //main
@@ -59,7 +64,7 @@ class SettingViewModelImpl @Inject constructor(
     override val settingUserEvents: SharedFlow<SettingViewModel.SettingUserEvent>
         get() = _settingUserEvent.asSharedFlow()
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", "","","",0, 0))
+    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", "", "", "", 0, 0))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
     override val modifyNameText = MutableStateFlow<String>("")
@@ -239,6 +244,64 @@ class SettingViewModelImpl @Inject constructor(
                 }.onFail {
                     isTagDuplication.emit(true)
                     _settingUserEvent.emit(SettingViewModel.SettingUserEvent.ShowToastMessage("정보 수정 실패"))
+                }
+            }
+        }
+    }
+
+    fun changeTagSearch(available: Boolean) {
+        viewModelScope.launch {
+            changeTagSearchAvailableUseCase(available).collect { result ->
+                result.onSuccess {
+                    if (available) {
+                        _settingUserEvent.emit(
+                            SettingViewModel.SettingUserEvent.ShowToastMessage(
+                                "테그 검색을 허용합니다."
+                            )
+                        )
+                    } else {
+                        _settingUserEvent.emit(
+                            SettingViewModel.SettingUserEvent.ShowToastMessage(
+                                "테그 검색을 허용하지 않습니다."
+                            )
+                        )
+                    }
+                }.onFail {
+                    _settingUserEvent.emit(
+                        SettingViewModel.SettingUserEvent.ShowToastMessage(
+                            "서버와 통신이 불안합니다."
+                        )
+                    )
+
+                }
+            }
+        }
+    }
+
+    fun changePhoneSearchV(available: Boolean) {
+        viewModelScope.launch {
+            changePhoneSearchAvailableUseCase(available).collect { result ->
+                result.onSuccess {
+                    if (available) {
+                        _settingUserEvent.emit(
+                            SettingViewModel.SettingUserEvent.ShowToastMessage(
+                                "전화번호 검색을 허용합니다."
+                            )
+                        )
+                    } else {
+                        _settingUserEvent.emit(
+                            SettingViewModel.SettingUserEvent.ShowToastMessage(
+                                "전화번호 검색을 허용하지 않습니다."
+                            )
+                        )
+                    }
+                }.onFail {
+                    _settingUserEvent.emit(
+                        SettingViewModel.SettingUserEvent.ShowToastMessage(
+                            "서버와 통신이 불안합니다."
+                        )
+                    )
+
                 }
             }
         }
