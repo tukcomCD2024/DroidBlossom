@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="32dp"
-            app:cardCornerRadius="6dp"
+            app:cardCornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line"
@@ -129,7 +129,7 @@
                     android:layout_height="24dp"
                     android:layout_marginVertical="12dp"
                     android:layout_marginStart="12dp"
-                    android:src="@drawable/ic_google_logo"
+                    bind:socialType="@{vm.myInfo.socialType}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +141,7 @@
                     android:layout_marginStart="16dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="ARchive@gmail.com"
+                    android:text="@{vm.myInfo.email}"
                     android:textAppearance="@style/TextAppearance.App.subtitle1"
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="@id/logoIV"
@@ -159,7 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="6dp"
+            app:cardCornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/emailCV"
@@ -187,16 +187,96 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="01012XXXX34"
+                    android:text=""
                     android:textAppearance="@style/TextAppearance.App.subtitle1"
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/phoneIV"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:numberBlind="@{vm.myInfo.phone}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tagSearchCV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/corner_radius_12_stroke_1"
+            app:layout_constraintTop_toBottomOf="@id/phoneCV"
+            tools:layout_editor_absoluteX="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="16dp"
+                android:text="TAG 검색허용"
+                android:textAppearance="@style/TextAppearance.App.caption2"
+                android:textColor="@color/gray_700"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/tagSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:background="@null"
+                android:thumb="@drawable/switch_thumb_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:switchMinWidth="32dp"
+                app:thumbTint="@null"
+                tools:checked="true"
+                app:track="@drawable/switch_track_selector"
+                app:trackTint="@null" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/PhoneSearchCV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/corner_radius_12_stroke_1"
+            app:layout_constraintTop_toBottomOf="@id/tagSearchCV"
+            tools:layout_editor_absoluteX="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="16dp"
+                android:text="전화번호 검색허용"
+                android:textAppearance="@style/TextAppearance.App.caption2"
+                android:textColor="@color/gray_700"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/PhoneSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:background="@null"
+                android:thumb="@drawable/switch_thumb_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:switchMinWidth="32dp"
+                app:thumbTint="@null"
+                tools:checked="true"
+                app:track="@drawable/switch_track_selector"
+                app:trackTint="@null" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <TextView
             android:id="@+id/quitBtn"

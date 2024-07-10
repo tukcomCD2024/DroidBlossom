@@ -226,6 +226,40 @@ fun ImageView.setCapsuleType2Img(type: String?) {
     }
 }
 
+@BindingAdapter("bind:socialType")
+fun ImageView.setSocialType(type: String?) {
+    when (type) {
+        "KAKAO" -> {
+            this.setImageResource(R.drawable.ic_kakao_logo)
+        }
+
+        "GOOGLE" -> {
+            this.setImageResource(R.drawable.ic_google_logo)
+        }
+
+        else -> {}
+    }
+}
+
+@BindingAdapter("bind:numberBlind")
+fun TextView.setSocialType(phoneNum: String?) {
+    phoneNum?.let {
+
+        if (phoneNum.length <6){
+            this.text = ""
+        } else if (phoneNum.length in 6..10) {
+            val firstPart = phoneNum.substring(0, 5)
+            this.text = "${firstPart}XXXX"
+        } else {
+            val firstPart = phoneNum.substring(0, 5)
+            val lastPart = phoneNum.substring(9)
+            this.text = "${firstPart}XXXX$lastPart"
+        }
+    } ?:run {
+        this.text = ""
+    }
+}
+
 @BindingAdapter("bind:setCapsuleTypeColor")
 fun View.setCapsuleTypeColor(type: String?) {
     when (type) {
