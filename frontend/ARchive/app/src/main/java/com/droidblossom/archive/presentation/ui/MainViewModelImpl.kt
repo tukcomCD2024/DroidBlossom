@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModelImpl @Inject constructor(
     private val dataStoreUtils: DataStoreUtils
-): BaseViewModel(), MainViewModel {
+) : BaseViewModel(), MainViewModel {
 
 
     private val _mainEvents = MutableSharedFlow<MainViewModel.MainEvent>()
@@ -30,12 +30,12 @@ class MainViewModelImpl @Inject constructor(
         viewModelScope.launch {
             val selectedTabId = dataStoreUtils.fetchSelectedTab()
             val selectedTab = MainActivity.MainPage.values().find { it.name == selectedTabId }
-            _selectedMainTab.value = selectedTab ?: MainActivity.MainPage.HOME
+            //_selectedMainTab.value = selectedTab ?: MainActivity.MainPage.HOME
         }
     }
 
-    override fun setMainTab(selectedTab : MainActivity.MainPage) {
-        _selectedMainTab.value = selectedTab
+    override fun setMainTab(selectedTab: MainActivity.MainPage) {
+            _selectedMainTab.value = selectedTab
     }
 
     override fun mainEvent(event: MainViewModel.MainEvent) {
@@ -43,6 +43,4 @@ class MainViewModelImpl @Inject constructor(
             _mainEvents.emit(event)
         }
     }
-
-
 }

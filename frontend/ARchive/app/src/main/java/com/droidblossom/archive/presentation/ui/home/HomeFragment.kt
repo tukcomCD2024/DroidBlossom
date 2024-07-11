@@ -2,6 +2,7 @@ package com.droidblossom.archive.presentation.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -36,6 +37,7 @@ import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 
@@ -156,11 +158,9 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     override fun observeData() {
         //FAB 상태
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.filterCapsuleSelect.collect {
-                    viewModel.resetNearbyCapsules()
-                    fetchCapsulesInCameraFocus()
-                }
+            viewModel.filterCapsuleSelect.collectLatest {
+                viewModel.resetNearbyCapsules()
+                fetchCapsulesInCameraFocus()
             }
         }
 
@@ -216,25 +216,23 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isFriendsCapsuleDisplay.collect { state ->
-                    clusterer.map?.let { map ->
-                        if (state && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
-                                    || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
-                        ) {
-                            viewModel.getNearbyFriendsCapsules(
-                                map.cameraPosition.target.latitude,
-                                map.cameraPosition.target.longitude,
-                                getRadiusForCurrentZoom(),
-                            )
-                        } else {
-                            viewModel.getNearbyMyCapsules(
-                                map.cameraPosition.target.latitude,
-                                map.cameraPosition.target.longitude,
-                                getRadiusForCurrentZoom(),
-                                viewModel.filterCapsuleSelect.value.name
-                            )
-                        }
+            viewModel.isFriendsCapsuleDisplay.collectLatest { state ->
+                clusterer.map?.let { map ->
+                    if (state && (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL
+                                || viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+                    ) {
+                        viewModel.getNearbyFriendsCapsules(
+                            map.cameraPosition.target.latitude,
+                            map.cameraPosition.target.longitude,
+                            getRadiusForCurrentZoom(),
+                        )
+                    } else {
+                        viewModel.getNearbyMyCapsules(
+                            map.cameraPosition.target.latitude,
+                            map.cameraPosition.target.longitude,
+                            getRadiusForCurrentZoom(),
+                            viewModel.filterCapsuleSelect.value.name
+                        )
                     }
                 }
             }
@@ -392,8 +390,13 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         TREASURE
     }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d("생명주기","onResume")
+    }
     override fun onResume() {
         super.onResume()
+        Log.d("생명주기","onResume")
         fetchCapsulesNearUser()
     }
 

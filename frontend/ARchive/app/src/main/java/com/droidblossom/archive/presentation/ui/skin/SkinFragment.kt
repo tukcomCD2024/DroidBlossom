@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.skin
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -203,6 +204,11 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     fun scrollToTop(){
         binding.skinRV.scrollToPosition(0)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("생명주기","onResume SKIN")
     }
 
 

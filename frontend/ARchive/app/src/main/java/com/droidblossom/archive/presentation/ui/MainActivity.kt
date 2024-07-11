@@ -273,7 +273,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
         Log.d("흠", "온 크리에이트 ${viewModel.selectedMainTab.value}")
 
         initBottomNav()
