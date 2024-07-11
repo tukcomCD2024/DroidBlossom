@@ -45,7 +45,7 @@ interface GroupCapsuleService {
         @Query("created_at") createdAt: String
     ): Response<ResponseBody<MyGroupCapsulePageResponseDto>>
 
-    @GET("group-capsules")
+    @GET("group-capsules/specific")
     suspend fun getCapsulesOfGroupApi(
         @Query("group_id") groupId: Long,
         @Query("size") size: Int,
