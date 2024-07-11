@@ -17,6 +17,7 @@ data class TreasureCapsuleSummary(
         address = this.address,
         roadName = this.roadName,
         isOpened = false,
-        createdAt = ""
+        createdAt = "",
+        isOwner = false
     )
 }

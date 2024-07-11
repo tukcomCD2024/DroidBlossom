@@ -9,5 +9,6 @@ data class CapsuleSummaryResponse(
     val address: String,
     val roadName: String,
     val isOpened: Boolean,
-    val createdAt: String
+    val createdAt: String,
+    val isOwner: Boolean
 )

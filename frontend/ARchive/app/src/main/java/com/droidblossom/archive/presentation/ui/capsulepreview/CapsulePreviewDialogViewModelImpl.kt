@@ -55,7 +55,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         _capsulePreviewDialogEvents.asSharedFlow()
 
     private val _capsuleSummaryResponse =
-        MutableStateFlow(CapsuleSummaryResponse("", "", "", "", "", "", "", false, ""))
+        MutableStateFlow(CapsuleSummaryResponse("", "", "", "", "", "", "", false, "", true))
     override val capsuleSummaryResponse: StateFlow<CapsuleSummaryResponse>
         get() = _capsuleSummaryResponse
 

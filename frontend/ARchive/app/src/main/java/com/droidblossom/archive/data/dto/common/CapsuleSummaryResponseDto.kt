@@ -13,7 +13,8 @@ data class CapsuleSummaryResponseDto(
     val address: String,
     val roadName: String?,
     val isOpened: Boolean,
-    val createdAt: String
+    val createdAt: String,
+    val isOwner: Boolean?
 ){
     fun toModel() = CapsuleSummaryResponse(
         nicknameOrGroupName = this.nickname,
@@ -25,5 +26,6 @@ data class CapsuleSummaryResponseDto(
         roadName = this.roadName ?: "",
         isOpened = this.isOpened,
         createdAt = this.createdAt,
+        isOwner = this.isOwner ?: true
     )
 }

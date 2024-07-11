@@ -31,7 +31,8 @@ data class GroupCapsuleSummaryResponse(
         address = this.address,
         roadName = this.roadName,
         isOpened = this.isCapsuleOpened,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        isOwner = this.hasDeletePermission
     )
 }
 
