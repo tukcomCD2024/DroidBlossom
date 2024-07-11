@@ -17,7 +17,6 @@ class MainViewModelImpl @Inject constructor(
     private val dataStoreUtils: DataStoreUtils
 ) : BaseViewModel(), MainViewModel {
 
-
     private val _mainEvents = MutableSharedFlow<MainViewModel.MainEvent>()
     override val mainEvents: SharedFlow<MainViewModel.MainEvent>
         get() = _mainEvents.asSharedFlow()
@@ -30,12 +29,12 @@ class MainViewModelImpl @Inject constructor(
         viewModelScope.launch {
             val selectedTabId = dataStoreUtils.fetchSelectedTab()
             val selectedTab = MainActivity.MainPage.values().find { it.name == selectedTabId }
-            //_selectedMainTab.value = selectedTab ?: MainActivity.MainPage.HOME
+            _selectedMainTab.value = selectedTab ?: MainActivity.MainPage.HOME
         }
     }
 
     override fun setMainTab(selectedTab: MainActivity.MainPage) {
-            _selectedMainTab.value = selectedTab
+        _selectedMainTab.value = selectedTab
     }
 
     override fun mainEvent(event: MainViewModel.MainEvent) {
