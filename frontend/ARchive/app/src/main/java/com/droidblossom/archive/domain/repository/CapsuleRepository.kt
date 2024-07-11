@@ -48,4 +48,9 @@ interface CapsuleRepository {
         size : Int,
         capsuleId : Int,
     ): RetrofitResult<CapsuleImages>
+
+    suspend fun deleteCapsule(
+        capsuleId: Long,
+        capsuleType: String
+    ): RetrofitResult<String>
 }

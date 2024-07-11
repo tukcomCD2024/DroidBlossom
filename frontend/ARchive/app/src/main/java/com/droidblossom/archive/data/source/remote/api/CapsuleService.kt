@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.capsule.response.CapsuleImagesDto
 import com.droidblossom.archive.data.dto.capsule.response.CapsuleOpenedResponseDto
 import com.droidblossom.archive.data.dto.capsule.response.NearbyCapsuleResponseDto
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.Path
@@ -59,4 +60,10 @@ interface CapsuleService {
         @Query("size") size : Int,
         @Query("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<CapsuleImagesDto>>
+
+    @DELETE("capsules/{capsule_id}/capsule_type")
+    suspend fun deleteCapsuleApi(
+        @Path("capsule_id") capsuleId: Long,
+        @Path("capsule_type") capsuleType: String
+    ): Response<ResponseBody<String>>
 }

@@ -53,6 +53,8 @@ interface CapsulePreviewDialogViewModel {
 
     fun setGroupCapsuleOpenState()
 
+    fun deleteCapsule()
+
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
 

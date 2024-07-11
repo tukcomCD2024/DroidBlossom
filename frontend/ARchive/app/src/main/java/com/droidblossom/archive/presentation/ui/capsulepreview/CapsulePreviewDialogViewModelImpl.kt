@@ -7,6 +7,7 @@ import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenStateResponse
 import com.droidblossom.archive.domain.model.treasure.response.TreasureOpenStatus
+import com.droidblossom.archive.domain.usecase.capsule.DeleteCapsuleUseCase
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummaryUseCase
@@ -17,6 +18,7 @@ import com.droidblossom.archive.domain.usecase.treasure.GetTreasureCapsuleSummar
 import com.droidblossom.archive.domain.usecase.treasure.OpenTreasureCapsuleUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.util.CapsuleTypeUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +45,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val groupCapsuleSummaryUseCase: GroupCapsuleSummaryUseCase,
     private val groupMembersCapsuleOpenStatusUseCase: GroupMembersCapsuleOpenStatusUseCase,
     private val openTreasureCapsuleUseCase: OpenTreasureCapsuleUseCase,
-    private val getTreasureCapsuleSummaryUseCase: GetTreasureCapsuleSummaryUseCase
+    private val getTreasureCapsuleSummaryUseCase: GetTreasureCapsuleSummaryUseCase,
+    private val deleteCapsuleUseCase: DeleteCapsuleUseCase
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents =
@@ -509,6 +512,18 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         _visibleOpenProgressBar.value = true
         _canOpenCapsule.value = true
         _capsuleOpenState.value = true
+    }
+
+    override fun deleteCapsule() {
+        viewModelScope.launch {
+            deleteCapsuleUseCase(capsuleId.value, CapsuleTypeUtils.enumToString(capsuleType.value)).collect{
+                it.onSuccess {
+
+                }.onFail {
+
+                }
+            }
+        }
     }
 
 }

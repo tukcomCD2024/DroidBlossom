@@ -81,4 +81,16 @@ class CapsuleRepositoryImpl @Inject constructor(
             )
         }) { response: ResponseBody<CapsuleImagesDto> -> response.result.toModel() }
     }
+
+    override suspend fun deleteCapsule(
+        capsuleId: Long,
+        capsuleType: String
+    ): RetrofitResult<String> {
+        return apiHandler({
+            api.deleteCapsuleApi(
+                capsuleId = capsuleId,
+                capsuleType = capsuleType
+            )
+        }) { response: ResponseBody<String> -> response.result.toString() }
+    }
 }
