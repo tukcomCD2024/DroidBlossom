@@ -19,6 +19,7 @@ data class CapsuleDetailResponseDto(
     val nickname: String,
     val title: String,
     val capsuleType: String,
+    val isOwner: Boolean?
 ){
     fun toModel() = CapsuleDetail(
         address = this.address,
@@ -33,6 +34,7 @@ data class CapsuleDetailResponseDto(
         videoUrls = this.videoUrls,
         nickname = this.nickname,
         title =  this.title,
-        capsuleType=this.capsuleType
+        capsuleType=this.capsuleType,
+        isOwner = this.isOwner ?: true
     )
 }

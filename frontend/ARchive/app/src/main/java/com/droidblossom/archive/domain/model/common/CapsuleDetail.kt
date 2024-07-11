@@ -17,7 +17,8 @@ data class CapsuleDetail(
     val videoUrls: List<String>?,
     val nickname: String,
     val title: String,
-    val capsuleType: String
+    val capsuleType: String,
+    val isOwner: Boolean
 ) {
     constructor() : this(
         "",
@@ -33,6 +34,7 @@ data class CapsuleDetail(
         listOf(),
         "",
         "",
-        ""
+        "",
+        isOwner = true
     )
 }

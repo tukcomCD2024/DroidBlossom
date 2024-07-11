@@ -20,6 +20,8 @@ data class GroupCapsuleDetailResponseDto(
     val nickname: String,
     val title: String,
     val capsuleType: String,
+    val hasEditPermission: Boolean,
+    val hasDeletePermission: Boolean
 ){
     fun toModel() = CapsuleDetail(
         address = this.address,
@@ -36,6 +38,7 @@ data class GroupCapsuleDetailResponseDto(
         title =  this.title,
         capsuleType=this.capsuleType,
         members = this.members.map { it.toModel() },
+        isOwner = this.hasDeletePermission
     )
 }
 
