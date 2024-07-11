@@ -19,6 +19,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialFriendBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
@@ -131,6 +132,18 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        parentFragmentManager.setFragmentResultListener(
+            CapsulePreviewDialogFragment.DELETE_CAPSULE,
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                //viewModel.deleteCapsule()
+            }
+        }
 
         initRVA()
         initSearchEdit()

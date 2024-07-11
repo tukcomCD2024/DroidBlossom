@@ -25,6 +25,8 @@ interface MyPageViewModel {
     fun myPageEvent(event: MyPageEvent)
     fun onScrollNearBottom()
 
+    fun deleteCapsule(capsuleIndex: Int, capsuleId: Long)
+
     sealed class MyPageEvent {
         data class ShowToastMessage(val message : String) : MyPageEvent()
 

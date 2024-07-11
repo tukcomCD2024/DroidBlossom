@@ -30,7 +30,7 @@ interface CapsulePreviewDialogViewModel {
     val myGroupCapsuleOpenStatus: StateFlow<Boolean>
     val groupId: StateFlow<Long>
     val treasureOpenResult: StateFlow<String>
-    val treasureRemove: StateFlow<Boolean>
+    val removeCapsule: StateFlow<Boolean>
 
     fun setCapsuleId(capsuleId:Long)
     fun capsulePreviewDialogEvent(event: CapsulePreviewDialogEvent)
@@ -63,6 +63,9 @@ interface CapsulePreviewDialogViewModel {
         object DismissCapsulePreviewDialog : CapsulePreviewDialogEvent()
 
         object ShowTreasureCapsuleResult: CapsulePreviewDialogEvent()
+        object ShowLoading : CapsulePreviewDialogEvent()
+
+        object DismissLoading : CapsulePreviewDialogEvent()
 
     }
 }

@@ -20,6 +20,8 @@ interface SocialFriendViewModel {
     fun getPublicCapsulePage()
     fun onScrollNearBottom()
     fun getLatestPublicCapsule()
+
+    fun deleteCapsule(capsuleIndex: Int, capsuleId: Long)
     sealed class SocialFriendEvent{
         data class ShowToastMessage(val message : String) : SocialFriendEvent()
         object SwipeRefreshLayoutDismissLoading : SocialFriendEvent()

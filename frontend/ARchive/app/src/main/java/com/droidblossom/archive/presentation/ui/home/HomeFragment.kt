@@ -16,8 +16,8 @@ import com.droidblossom.archive.domain.model.capsule.CapsuleMarker
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.home.createcapsule.CreateCapsuleActivity
 import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment.Companion.DELETE_CAPSULE
 import com.droidblossom.archive.presentation.ui.home.notification.NotificationActivity
-import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -115,7 +115,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
         initMap()
 
         parentFragmentManager.setFragmentResultListener(
-            "treasureCapsule",
+            DELETE_CAPSULE,
             viewLifecycleOwner
         ) { key, bundle ->
             val capsuleIndex = bundle.getInt("capsuleIndex")

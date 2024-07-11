@@ -102,6 +102,7 @@ class CapsuleDetailActivity :
     }
 
     private fun showPopupMenu(view: View) {
+
         val popupMenuBinding = PopupMenuCapsuleBinding.inflate(
             LayoutInflater.from(this@CapsuleDetailActivity),
             null,
@@ -118,13 +119,14 @@ class CapsuleDetailActivity :
             true
         )
 
-        // 메뉴 클릭 리스너 설정
-//        popupMenuBinding.menuMap.setOnClickListener {
-//            popupWindow.dismiss()
-//        }
-//        popupMenuBinding.menuModify.setOnClickListener {
-//            popupWindow.dismiss()
-//        }
+        if (viewModel.capsuleDetail.value.isOwner) {
+            popupMenuBinding.menuDelete.visibility = View.VISIBLE
+            popupMenuBinding.menuReport.visibility = View.GONE
+        } else {
+            popupMenuBinding.menuDelete.visibility = View.GONE
+            popupMenuBinding.menuReport.visibility = View.VISIBLE
+        }
+
         popupMenuBinding.menuDelete.setOnClickListener {
             popupWindow.dismiss()
         }

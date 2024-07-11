@@ -99,4 +99,10 @@ class SocialGroupViewModelImpl @Inject constructor(
         getGroupCapsuleListJob?.cancel()
     }
 
+    override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
+        val currentList = _groupCapsules.value.toMutableList()
+        currentList.removeAt(capsuleIndex)
+        _groupCapsules.value = currentList
+    }
+
 }

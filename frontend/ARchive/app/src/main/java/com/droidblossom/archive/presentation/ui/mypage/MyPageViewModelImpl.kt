@@ -89,7 +89,6 @@ class MyPageViewModelImpl @Inject constructor(
         scrollEventChannel.trySend(Unit)
     }
 
-
     override fun myPageEvent(event: MyPageViewModel.MyPageEvent) {
         viewModelScope.launch {
             _myPageEvents.emit(event)
@@ -292,6 +291,13 @@ class MyPageViewModelImpl @Inject constructor(
             _myCapsules.emit(newList)
         }
     }
+
+    override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
+        val currentList = _myCapsules.value.toMutableList()
+        currentList.removeAt(capsuleIndex)
+        _myCapsules.value = currentList
+    }
+
 
     override fun clickSetting() {
         viewModelScope.launch {

@@ -100,6 +100,18 @@ class GroupCapsuleFragment :
                 capsuleRVA.notifyItemChanged(capsuleIndex)
             }
         }
+        parentFragmentManager.setFragmentResultListener(
+            CapsulePreviewDialogFragment.DELETE_CAPSULE,
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                viewModel.deleteCapsule(capsuleIndex,capsuleId)
+            }
+        }
+
         initRV()
     }
 

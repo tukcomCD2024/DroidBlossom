@@ -229,4 +229,10 @@ class GroupDetailViewModelImpl @Inject constructor(
         }
     }
 
+    override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
+        val currentList = _capsules.value.toMutableList()
+        currentList.removeAt(capsuleIndex)
+        _capsules.value = currentList
+    }
+
 }

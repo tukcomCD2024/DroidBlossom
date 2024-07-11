@@ -61,7 +61,7 @@ interface CapsuleService {
         @Query("capsule_id") capsuleId : Int,
     ) : Response<ResponseBody<CapsuleImagesDto>>
 
-    @DELETE("capsules/{capsule_id}/capsule_type")
+    @DELETE("capsules/{capsule_id}/{capsule_type}")
     suspend fun deleteCapsuleApi(
         @Path("capsule_id") capsuleId: Long,
         @Path("capsule_type") capsuleType: String

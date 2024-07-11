@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -25,7 +24,7 @@ import com.droidblossom.archive.presentation.customview.PermissionDialogButtonCl
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
-import com.droidblossom.archive.presentation.ui.home.CapsuleClusteringKey
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment.Companion.DELETE_CAPSULE
 import com.droidblossom.archive.util.CustomLifecycleOwner
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.droidblossom.archive.util.LocationUtil
@@ -273,7 +272,7 @@ class CameraFragment :
         arSceneView = binding.sceneView
 
         parentFragmentManager.setFragmentResultListener(
-            "treasureCapsule",
+            DELETE_CAPSULE,
             viewLifecycleOwner
         ) { key, bundle ->
             val capsuleIndex = bundle.getInt("capsuleIndex")

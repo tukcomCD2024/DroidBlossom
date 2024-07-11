@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -27,16 +25,11 @@ import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.customview.ImageWithTitleDialogFragment
-import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
-import com.droidblossom.archive.presentation.ui.capsule.ImagesActivity
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.droidblossom.archive.presentation.ui.capsulepreview.adapter.GroupCapsuleMemberRVA
 import com.droidblossom.archive.util.CapsuleTypeUtils
-import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -203,6 +196,14 @@ class CapsulePreviewDialogFragment :
                             dismiss()
                         }
 
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowLoading -> {
+                            showLoading(requireContext())
+                        }
+
+                        is CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissLoading -> {
+                            dismissLoading()
+                        }
+
                         else -> {}
                     }
 
@@ -222,7 +223,6 @@ class CapsulePreviewDialogFragment :
                 }
             }
         }
-
     }
 
     private fun updateSkinCardViewConstraints(isVisible: Boolean) {
@@ -301,6 +301,7 @@ class CapsulePreviewDialogFragment :
     }
 
     private fun showPopupMenu(view: View) {
+
         val popupMenuBinding =
             PopupMenuCapsuleBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
@@ -314,10 +315,25 @@ class CapsulePreviewDialogFragment :
             true
         )
 
+        if (viewModel.capsuleSummaryResponse.value.isOwner) {
+            popupMenuBinding.menuDelete.visibility = View.VISIBLE
+            popupMenuBinding.menuReport.visibility = View.GONE
+        } else {
+            popupMenuBinding.menuDelete.visibility = View.GONE
+            popupMenuBinding.menuReport.visibility = View.VISIBLE
+        }
+
         popupMenuBinding.menuReport.setOnClickListener {
             popupWindow.dismiss()
         }
         popupMenuBinding.menuDelete.setOnClickListener {
+            val sheet = CommonDialogFragment.newIntent(
+                "캡슐을 삭제하면 모든 데이터가 사라지며, 되돌릴 수 없습니다.",
+                "캡슐 삭제"
+            ) {
+                viewModel.deleteCapsule()
+            }
+            sheet.show(parentFragmentManager, "deleteCapsuleDialog")
             popupWindow.dismiss()
         }
 
@@ -346,14 +362,17 @@ class CapsulePreviewDialogFragment :
             putBoolean("isOpened", viewModel.capsuleOpenState.value)
         }
 
-        val treasureCapsule = Bundle().apply {
+        val removeCapsule = Bundle().apply {
             putInt("capsuleIndex", capsuleIndex)
             putLong("capsuleId", capsuleId.toLong())
-            putBoolean("remove", viewModel.treasureRemove.value)
+            putBoolean("remove", viewModel.removeCapsule.value)
         }
 
+
+
         setFragmentResult("capsuleState", capsuleState)
-        setFragmentResult("treasureCapsule", treasureCapsule)
+        setFragmentResult(DELETE_CAPSULE, removeCapsule)
+
     }
 
     private fun setColor(progressBarColor: Int, titleColor: Int) {
@@ -368,6 +387,7 @@ class CapsulePreviewDialogFragment :
     companion object {
 
         const val TAG = "CapsulePreView"
+        const val DELETE_CAPSULE = "removeCapsule"
         fun newInstance(
             capsuleIndex: String,
             capsuleId: String,

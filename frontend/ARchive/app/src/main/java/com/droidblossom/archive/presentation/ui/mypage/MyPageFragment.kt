@@ -138,6 +138,19 @@ class MyPageFragment :
             }
             reload = true
         }
+
+        parentFragmentManager.setFragmentResultListener(
+            CapsulePreviewDialogFragment.DELETE_CAPSULE,
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                viewModel.deleteCapsule(capsuleIndex,capsuleId)
+            }
+        }
+
         initCustomLifeCycle()
         initMyPageRVA()
         val layoutParams =

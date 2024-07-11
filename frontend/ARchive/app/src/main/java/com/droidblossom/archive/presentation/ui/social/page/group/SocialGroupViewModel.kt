@@ -25,6 +25,8 @@ interface SocialGroupViewModel {
     fun getLatestGroupCapsule()
     fun onScrollNearBottom()
 
+    fun deleteCapsule(capsuleIndex: Int, capsuleId: Long)
+
     sealed class SocialGroupEvent{
         data class ShowToastMessage(val message : String) : SocialGroupEvent()
         object SwipeRefreshLayoutDismissLoading : SocialGroupEvent()

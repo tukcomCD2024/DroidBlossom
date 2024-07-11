@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.capsule
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
+import com.droidblossom.archive.domain.usecase.capsule.DeleteCapsuleUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleDetailUseCase
 import com.droidblossom.archive.domain.usecase.open.PublicCapsuleDetailUseCase
 import com.droidblossom.archive.domain.usecase.secret.SecretCapsuleDetailUseCase
@@ -23,6 +24,7 @@ class CapsuleDetailViewModelImpl @Inject constructor(
     private val secretCapsuleDetailUseCase: SecretCapsuleDetailUseCase,
     private val publicCapsuleDetailUseCase: PublicCapsuleDetailUseCase,
     private val groupCapsuleDetailUseCase: GroupCapsuleDetailUseCase,
+    private val deleteCapsuleUseCase: DeleteCapsuleUseCase
 ) : BaseViewModel(), CapsuleDetailViewModel {
 
     private val _detailEvent = MutableSharedFlow<CapsuleDetailViewModel.DetailEvent>()
@@ -70,6 +72,18 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 }.onFail {
                     Log.d("디테일", "${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                }
+            }
+        }
+    }
+
+    override fun deleteCapsule(id: Long, capsuleType: String) {
+        viewModelScope.launch {
+            deleteCapsuleUseCase(capsuleId = id, capsuleType = capsuleType).collect{
+                it.onSuccess {
+
+                }.onFail {
+
                 }
             }
         }

@@ -119,9 +119,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     override val treasureOpenResult: StateFlow<String>
         get() = _treasureOpenResult
 
-    private val _treasureRemove = MutableStateFlow(false)
-    override val treasureRemove: StateFlow<Boolean> get() = _treasureRemove
-
+    private val _removeCapsule = MutableStateFlow(false)
+    override val removeCapsule: StateFlow<Boolean> get() = _removeCapsule
 
     override fun setCapsuleId(capsuleId: Long) {
         _capsuleId.value = capsuleId
@@ -219,7 +218,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     _canOpenCapsule.emit(true)
                 }.onFail {
                     if (it == 404){
-                        _treasureRemove.value = true
+                        _removeCapsule.value = true
                         capsulePreviewDialogEvent(
                             CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                                 "안타깝게도 이미 누군가가 발견했어요."
@@ -469,11 +468,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     TreasureOpenStatus.SUCCESS -> {
                         _treasureOpenResult.emit(it.treasureImageUrl)
                         _capsuleOpenState.emit(true)
-                        _treasureRemove.value = true
+                        _removeCapsule.value = true
                         capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
                     }
                     TreasureOpenStatus.DUPLICATE -> {
-                        _treasureRemove.value = true
+                        _removeCapsule.value = true
                         capsulePreviewDialogEvent(
                             CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                                 "이미 보유하고 있는 스킨입니다."
@@ -487,7 +486,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
             }.onFail {
                 if (it == 404){
-                    _treasureRemove.value = true
+                    _removeCapsule.value = true
                     capsulePreviewDialogEvent(
                         CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                             "안타깝게도 이미 누군가가 발견했어요."
@@ -515,14 +514,23 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     }
 
     override fun deleteCapsule() {
+        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowLoading)
         viewModelScope.launch {
             deleteCapsuleUseCase(capsuleId.value, CapsuleTypeUtils.enumToString(capsuleType.value)).collect{
                 it.onSuccess {
-
+                    _removeCapsule.value = true
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 삭제를 성공했습니다."))
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                    )
                 }.onFail {
-
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                    )
                 }
             }
+            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissLoading)
         }
     }
 

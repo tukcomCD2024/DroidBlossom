@@ -1,9 +1,7 @@
 package com.droidblossom.archive.domain.usecase.capsule
 
 import android.util.Log
-import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.repository.CapsuleRepository
-import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
