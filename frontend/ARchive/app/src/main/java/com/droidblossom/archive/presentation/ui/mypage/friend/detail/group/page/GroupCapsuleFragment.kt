@@ -1,8 +1,11 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.page
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -25,11 +28,13 @@ class GroupCapsuleFragment :
     BaseFragment<GroupDetailViewModelImpl, FragmentGroupCapsuleBinding>(R.layout.fragment_group_capsule) {
 
     override val viewModel: GroupDetailViewModelImpl by activityViewModels()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
 
     private val capsuleRVA: CapsuleRVA by lazy {
         CapsuleRVA(
             { id, type ->
-                startActivity(
+                activityResultLauncher.launch(
                     CapsuleDetailActivity.newIntent(
                         requireContext(),
                         id,
@@ -110,6 +115,23 @@ class GroupCapsuleFragment :
             if (remove) {
                 viewModel.deleteCapsule(capsuleIndex,capsuleId)
             }
+        }
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){result ->
+            if (result.resultCode == CapsuleDetailActivity.DELETE_CAPSULE) {
+                val data = result.data
+                data?.let {
+                    val capsuleIndex = it.getIntExtra("capsuleIndex", -1)
+                    val capsuleId = it.getLongExtra("capsuleId", -1L)
+                    val remove = it.getBooleanExtra("remove", false)
+                    if (remove){
+                        viewModel.deleteCapsule(capsuleIndex, capsuleId)
+                    }
+                }
+            }
+
         }
 
         initRV()

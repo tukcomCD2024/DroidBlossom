@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.social.page.group
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -34,11 +37,12 @@ import kotlinx.coroutines.launch
 class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocialGroupBinding>(R.layout.fragment_social_group) {
 
     override val viewModel: SocialGroupViewModelImpl by viewModels<SocialGroupViewModelImpl>()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private val socialFriendCapsuleRVA by lazy {
         SocialFriendCapsuleRVA(
             { id ->
-                startActivity(
+                activityResultLauncher.launch(
                     CapsuleDetailActivity.newIntent(
                         requireContext(),
                         id,
@@ -110,6 +114,24 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){ result ->
+            if (result.resultCode == CapsuleDetailActivity.DELETE_CAPSULE) {
+                val data = result.data
+                data?.let {
+                    val capsuleIndex = it.getIntExtra("capsuleIndex", -1)
+                    val capsuleId = it.getLongExtra("capsuleId", -1L)
+                    val remove = it.getBooleanExtra("remove", false)
+                    if (remove){
+                        viewModel.deleteCapsule(capsuleIndex,capsuleId)
+                    }
+                }
+            }
+
+        }
+
         initRVA()
         initSearchEdit()
     }

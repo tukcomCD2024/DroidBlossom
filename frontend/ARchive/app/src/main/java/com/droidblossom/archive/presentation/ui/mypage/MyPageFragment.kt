@@ -1,10 +1,13 @@
 package com.droidblossom.archive.presentation.ui.mypage
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -37,6 +40,7 @@ class MyPageFragment :
     BaseFragment<MyPageViewModelImpl, FragmentMyPageBinding>(R.layout.fragment_my_page) {
 
     override val viewModel: MyPageViewModelImpl by viewModels()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private val visibleLifecycleOwner: CustomLifecycleOwner by lazy {
         CustomLifecycleOwner()
@@ -73,7 +77,7 @@ class MyPageFragment :
         CapsuleRVA(
             { id, type ->
                 reload = false
-                startActivity(
+                activityResultLauncher.launch(
                     CapsuleDetailActivity.newIntent(
                         requireContext(),
                         id,
@@ -149,6 +153,24 @@ class MyPageFragment :
             if (remove) {
                 viewModel.deleteCapsule(capsuleIndex,capsuleId)
             }
+        }
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){ result ->
+
+            if (result.resultCode == CapsuleDetailActivity.DELETE_CAPSULE) {
+                val data = result.data
+                data?.let {
+                    val capsuleIndex = it.getIntExtra("capsuleIndex", -1)
+                    val capsuleId = it.getLongExtra("capsuleId", -1L)
+                    val remove = it.getBooleanExtra("remove", false)
+                    if (remove){
+                        viewModel.deleteCapsule(capsuleIndex,capsuleId)
+                    }
+                }
+            }
+
         }
 
         initCustomLifeCycle()

@@ -294,7 +294,7 @@ class MyPageViewModelImpl @Inject constructor(
 
     override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
         val currentList = _myCapsules.value.toMutableList()
-        currentList.removeAt(capsuleIndex)
+        currentList.removeAt(_myCapsules.value.indexOfFirst{it.capsuleId == capsuleId})
         _myCapsules.value = currentList
     }
 

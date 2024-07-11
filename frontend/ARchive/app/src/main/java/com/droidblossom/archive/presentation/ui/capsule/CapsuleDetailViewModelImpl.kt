@@ -35,14 +35,16 @@ class CapsuleDetailViewModelImpl @Inject constructor(
     override val capsuleDetail: StateFlow<CapsuleDetail>
         get() = _capsuleDetail
 
+    private val _removeCapsule = MutableStateFlow(false)
+    override val removeCapsule: StateFlow<Boolean> get() = _removeCapsule
+
+
     override fun getSecretCapsuleDetail(id: Long) {
         viewModelScope.launch {
             secretCapsuleDetailUseCase(id).collect { result ->
                 result.onSuccess { detail ->
-                    Log.d("디테일", "${detail}")
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    Log.d("디테일", "${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }
             }
@@ -53,10 +55,8 @@ class CapsuleDetailViewModelImpl @Inject constructor(
         viewModelScope.launch {
             publicCapsuleDetailUseCase(id).collect { result ->
                 result.onSuccess { detail ->
-                    Log.d("디테일", "${detail}")
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    Log.d("디테일", "${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }
             }
@@ -67,10 +67,8 @@ class CapsuleDetailViewModelImpl @Inject constructor(
         viewModelScope.launch {
             groupCapsuleDetailUseCase(id).collect { result ->
                 result.onSuccess { detail ->
-                    Log.d("디테일", "${detail}")
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    Log.d("디테일", "${it}")
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
                 }
             }
@@ -79,13 +77,16 @@ class CapsuleDetailViewModelImpl @Inject constructor(
 
     override fun deleteCapsule(id: Long, capsuleType: String) {
         viewModelScope.launch {
+            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowLoading)
             deleteCapsuleUseCase(capsuleId = id, capsuleType = capsuleType).collect{
                 it.onSuccess {
-
+                    _removeCapsule.value = true
+                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 성공했습니다."))
                 }.onFail {
-
+                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
                 }
             }
+            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.DismissLoading)
         }
     }
 }

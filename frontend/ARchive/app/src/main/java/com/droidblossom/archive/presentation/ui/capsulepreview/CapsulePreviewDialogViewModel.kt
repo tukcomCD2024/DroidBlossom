@@ -53,6 +53,7 @@ interface CapsulePreviewDialogViewModel {
 
     fun setGroupCapsuleOpenState()
 
+    fun setRemoveCapsule(remove: Boolean)
     fun deleteCapsule()
 
     sealed class CapsulePreviewDialogEvent{

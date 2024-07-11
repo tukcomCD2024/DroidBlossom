@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.social.page.friend
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -33,11 +36,12 @@ import kotlinx.coroutines.launch
 class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSocialFriendBinding>(R.layout.fragment_social_friend) {
 
     override val viewModel: SocialFriendViewModelImpl by viewModels<SocialFriendViewModelImpl>()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private val socialFriendCapsuleRVA by lazy {
         SocialFriendCapsuleRVA(
             { id ->
-                startActivity(
+                activityResultLauncher.launch(
                     CapsuleDetailActivity.newIntent(
                         requireContext(),
                         id,
@@ -143,6 +147,23 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
             if (remove) {
                 //viewModel.deleteCapsule()
             }
+        }
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){ result ->
+            if (result.resultCode == CapsuleDetailActivity.DELETE_CAPSULE) {
+                val data = result.data
+                data?.let {
+                    val capsuleIndex = it.getIntExtra("capsuleIndex", -1)
+                    val capsuleId = it.getLongExtra("capsuleId", -1L)
+                    val remove = it.getBooleanExtra("remove", false)
+                    if (remove){
+                        viewModel.deleteCapsule(capsuleIndex,capsuleId)
+                    }
+                }
+            }
+
         }
 
         initRVA()

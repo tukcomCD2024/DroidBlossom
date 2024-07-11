@@ -4,8 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,8 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -37,6 +41,7 @@ class CapsulePreviewDialogFragment :
     BaseDialogFragment<FragmentCapsulePreviewDialogBinding>(R.layout.fragment_capsule_preview_dialog) {
 
     private val viewModel: CapsulePreviewDialogViewModelImpl by viewModels()
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     val capsuleIndex: Int by lazy {
         arguments?.getString("capsule_index")!!.toInt()
@@ -81,6 +86,27 @@ class CapsulePreviewDialogFragment :
 
         binding.vm = viewModel
         viewModel.setCapsuleId(capsuleId)
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ){ result ->
+            if (result.resultCode == CapsuleDetailActivity.DELETE_CAPSULE) {
+                val data = result.data
+                data?.let {
+                    val capsuleIndex = it.getIntExtra("capsuleIndex", -1)
+                    val capsuleId = it.getLongExtra("capsuleId", -1L)
+                    val remove = it.getBooleanExtra("remove", false)
+
+                    dismiss()
+//                    api 재호출 때문에 오류, 나갔다오면 새로고침 되는데 api 콜 5번 쏴버림
+//                    if (remove){
+//                        viewModel.setRemoveCapsule(true)
+//                        dismiss()
+//                    }
+
+                }
+            }
+        }
 
         when (capsuleType) {
             HomeFragment.CapsuleType.SECRET -> {
@@ -260,9 +286,14 @@ class CapsulePreviewDialogFragment :
     }
 
     private fun moveCapsuleDetail() {
-        val intent =
-            CapsuleDetailActivity.newIntent(requireContext(), capsuleId.toLong(), capsuleType!!)
-        startActivity(intent)
+        activityResultLauncher.launch(
+            CapsuleDetailActivity.newIntent(
+                requireContext(),
+                capsuleId,
+                capsuleType!!
+            )
+        )
+
     }
 
     private fun moveTreasureDialog() {

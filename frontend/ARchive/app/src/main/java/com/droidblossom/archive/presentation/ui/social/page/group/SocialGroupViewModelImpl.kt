@@ -101,7 +101,7 @@ class SocialGroupViewModelImpl @Inject constructor(
 
     override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
         val currentList = _groupCapsules.value.toMutableList()
-        currentList.removeAt(capsuleIndex)
+        currentList.removeAt(_groupCapsules.value.indexOfFirst { it.capsuleId == capsuleId })
         _groupCapsules.value = currentList
     }
 

@@ -9,6 +9,8 @@ interface CapsuleDetailViewModel {
     val detailEvents : SharedFlow<DetailEvent>
 
     val capsuleDetail :StateFlow<CapsuleDetail>
+    val removeCapsule: StateFlow<Boolean>
+
     fun getSecretCapsuleDetail(id:Long)
     fun getPublicCapsuleDetail(id:Long)
     fun getGroupCapsuleDetail(id:Long)
@@ -17,5 +19,7 @@ interface CapsuleDetailViewModel {
 
     sealed class DetailEvent {
         data class ShowToastMessage(val message : String) : DetailEvent()
+        object ShowLoading : DetailEvent()
+        object DismissLoading : DetailEvent()
     }
 }

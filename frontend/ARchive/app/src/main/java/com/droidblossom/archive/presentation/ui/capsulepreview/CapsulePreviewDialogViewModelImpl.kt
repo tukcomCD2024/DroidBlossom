@@ -534,4 +534,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
+    override fun setRemoveCapsule(remove: Boolean) {
+        _removeCapsule.value = remove
+    }
+
 }
