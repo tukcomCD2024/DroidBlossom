@@ -65,8 +65,8 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleWithMemberDetailDto(groupId, capsuleId, true,
-                ZonedDateTime.now(), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, true,
+                ZonedDateTime.now())
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
@@ -84,7 +84,7 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleWithMemberDetailDto(groupId, capsuleId, true, null, 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, true, null)
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
@@ -102,7 +102,7 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleWithMemberDetailDto(groupId, capsuleId, false, null, 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, false, null)
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
@@ -120,8 +120,8 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleWithMemberDetailDto(groupId, capsuleId, false,
-                ZonedDateTime.now().minusDays(5), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, false,
+                ZonedDateTime.now().minusDays(5))
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
@@ -143,8 +143,8 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleWithMemberDetailDto(groupId, capsuleId, false,
-                ZonedDateTime.now().plusDays(5), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, false,
+                ZonedDateTime.now().plusDays(5))
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));
@@ -166,8 +166,8 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleWithMemberDetailDto(groupId, capsuleId, true,
-                ZonedDateTime.now().plusDays(5), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, true,
+                ZonedDateTime.now().plusDays(5))
         );
         given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
             GroupCapsuleMemberDtoFixture.members(1, 3, false));

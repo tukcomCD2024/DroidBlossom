@@ -7,7 +7,7 @@ import java.util.function.UnaryOperator;
 import org.locationtech.jts.geom.Point;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMemberSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMemberResponse;
 
 public record CombinedGroupCapsuleDetailDto(
     Long groupId,
@@ -30,12 +30,12 @@ public record CombinedGroupCapsuleDetailDto(
     Boolean isRequestMemberCapsuleOpen,
     Boolean hasEditPermission,
     Boolean hasDeletePermission,
-    List<GroupCapsuleMemberSummaryDto> groupMembers
+    List<GroupCapsuleMemberDto> groupMembers
 ) {
 
     public static CombinedGroupCapsuleDetailDto create(
         final GroupCapsuleDetailDto groupCapsuleDetailDto,
-        final List<GroupCapsuleMemberSummaryDto> groupCapsuleMemberSummaryDtos,
+        final List<GroupCapsuleMemberDto> groupCapsuleMemberDtos,
         final Boolean isRequestMemberCapsuleOpen,
         final Boolean hasEditPermission,
         final Boolean hasDeletePermission
@@ -61,7 +61,7 @@ public record CombinedGroupCapsuleDetailDto(
             isRequestMemberCapsuleOpen,
             hasEditPermission,
             hasDeletePermission,
-            groupCapsuleMemberSummaryDtos
+            groupCapsuleMemberDtos
         );
     }
 
@@ -72,8 +72,8 @@ public record CombinedGroupCapsuleDetailDto(
     ) {
         final Point changePoint = changePointFunction.apply(point);
 
-        final List<GroupCapsuleMemberSummaryResponse> groupMembers = this.groupMembers.stream()
-            .map(GroupCapsuleMemberSummaryDto::toResponse)
+        final List<GroupCapsuleMemberResponse> groupMembers = this.groupMembers.stream()
+            .map(GroupCapsuleMemberDto::toResponse)
             .toList();
 
         return GroupCapsuleDetailResponse.builder()

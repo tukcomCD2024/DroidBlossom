@@ -25,7 +25,7 @@ public record GroupCapsuleDetailResponse(
     String capsuleSkinUrl,
 
     @Schema(description = "그룹원 요약 정보")
-    List<GroupCapsuleMemberSummaryResponse> members,
+    List<GroupCapsuleMemberResponse> members,
 
     @Schema(description = "개봉일")
     ZonedDateTime dueDate,

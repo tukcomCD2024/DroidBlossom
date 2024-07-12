@@ -18,11 +18,11 @@ import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.vi
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleCreateRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleWithMemberDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
@@ -64,12 +64,12 @@ public class GroupCapsuleService {
         final Long memberId,
         final Long capsuleId
     ) {
-        final GroupCapsuleWithMemberDetailDto groupCapsuleWithMemberDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
+        final GroupCapsuleDetailDto groupCapsuleDetailDto = groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(
                 capsuleId)
             .orElseThrow(CapsuleNotFondException::new);
 
         List<GroupCapsuleMemberDto> groupCapsuleMembers = memberGroupRepository.findGroupCapsuleMembers(
-            groupCapsuleWithMemberDetailDto.groupCapsuleDetailDto().groupId(), capsuleId);
+            groupCapsuleDetailDto.groupId(), capsuleId);
 
         GroupCapsuleMemberDto requestMember = groupCapsuleMembers.stream()
             .filter(dto -> memberId.equals(dto.id()))
@@ -77,11 +77,13 @@ public class GroupCapsuleService {
             .orElseThrow(NoGroupAuthorityException::new);
 
         Boolean hasEditPermission = requestMember.id()
-            .equals(groupCapsuleWithMemberDetailDto.groupCapsuleDetailDto().creatorId());
+            .equals(groupCapsuleDetailDto.creatorId());
         Boolean hasDeletePermission = hasEditPermission || requestMember.isGroupOwner();
 
-        if (capsuleNotOpened(groupCapsuleWithMemberDetailDto)) {
-            return groupCapsuleWithMemberDetailDto.excludeDetailContents().combine(
+        if (capsuleNotOpened(groupCapsuleDetailDto)) {
+            return CombinedGroupCapsuleDetailDto.create(
+                groupCapsuleDetailDto.excludeTitleAndContentAndImagesAndVideos(),
+                groupCapsuleMembers,
                 requestMember.isOpened(),
                 hasEditPermission,
                 hasDeletePermission
@@ -89,21 +91,21 @@ public class GroupCapsuleService {
         }
 
         return CombinedGroupCapsuleDetailDto.create(
-            groupCapsuleWithMemberDetailDto.groupCapsuleDetailDto(),
-            groupCapsuleWithMemberDetailDto.members(),
+            groupCapsuleDetailDto,
+            groupCapsuleMembers,
             requestMember.isOpened(),
             hasEditPermission,
             hasDeletePermission
         );
     }
 
-    private boolean capsuleNotOpened(final GroupCapsuleWithMemberDetailDto detailDto) {
-        if (detailDto.groupCapsuleDetailDto().dueDate() == null) {
+    private boolean capsuleNotOpened(final GroupCapsuleDetailDto detailDto) {
+        if (detailDto.dueDate() == null) {
             return false;
         }
 
-        return !detailDto.groupCapsuleDetailDto().isCapsuleOpened()
-            || detailDto.groupCapsuleDetailDto().dueDate()
+        return !detailDto.isCapsuleOpened()
+            || detailDto.dueDate()
             .isAfter(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
