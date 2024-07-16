@@ -11,30 +11,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/messageLayout"
+            android:id="@+id/permissionLayout"
             android:layout_width="0dp"
-            android:layout_height="156dp"
-            android:layout_marginHorizontal="16dp"
+            android:layout_height="wrap_content"
+            android:minHeight="156dp"
+            android:layout_marginHorizontal="@dimen/margin"
             android:background="@drawable/corner_radius_30"
-            android:theme="@style/NumberPickerTextAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/titleT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="앱 권한 요청"
+                android:textAppearance="@style/TextAppearance.App.h4"
+                android:fontFamily="@font/suit_bold"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/gray_700"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/titleT" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/messageT"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin"
                 android:gravity="center"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.App.h4"
+                android:textAppearance="@style/TextAppearance.App.body2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="캡슐을 삭제하겠습니까?" />
+                app:layout_constraintTop_toBottomOf="@id/line" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -42,34 +65,34 @@
             android:id="@+id/leftBtn"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            app:layout_constraintHorizontal_chainStyle="packed"
             android:layout_marginTop="16dp"
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_4"
             android:gravity="center"
-            android:text="아니요"
+            android:text="닫기"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/main_2"
             app:layout_constraintEnd_toStartOf="@id/rightBtn"
-            app:layout_constraintStart_toStartOf="@id/messageLayout"
-            app:layout_constraintTop_toBottomOf="@id/messageLayout" />
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/permissionLayout"
+            app:layout_constraintTop_toBottomOf="@id/permissionLayout" />
 
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/rightBtn"
             android:layout_width="0dp"
             android:layout_height="60dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/corner_radius_30"
             android:backgroundTint="@color/main_2"
             android:gravity="center"
-            android:layout_marginStart="10dp"
-            tools:text="삭제하기"
+            android:text=""
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@id/messageLayout"
+            app:layout_constraintEnd_toEndOf="@id/permissionLayout"
             app:layout_constraintStart_toEndOf="@id/leftBtn"
-            app:layout_constraintTop_toBottomOf="@id/messageLayout" />
+            app:layout_constraintTop_toBottomOf="@id/permissionLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

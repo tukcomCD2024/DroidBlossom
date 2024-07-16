@@ -43,7 +43,7 @@ class SettingUserFragment :
         }
 
         binding.phoneCV.setOnClickListener {
-            val sheet = CommonDialogFragment.newIntent("번호를 바꾸겠습니까?", "네") {
+            val sheet = CommonDialogFragment.newIntent("휴대폰 변경","번호를 바꾸겠습니까?", "네") {
                 startActivity(AuthActivity.newIntent(requireContext(), true))
             }
             sheet.show(parentFragmentManager, "logoutDialog")

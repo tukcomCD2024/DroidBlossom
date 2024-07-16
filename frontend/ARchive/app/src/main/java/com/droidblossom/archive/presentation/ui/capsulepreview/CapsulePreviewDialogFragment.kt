@@ -359,6 +359,7 @@ class CapsulePreviewDialogFragment :
         }
         popupMenuBinding.menuDelete.setOnClickListener {
             val sheet = CommonDialogFragment.newIntent(
+                "캡슐 삭제",
                 "캡슐을 삭제하면 모든 데이터가 사라지며, 되돌릴 수 없습니다.",
                 "캡슐 삭제"
             ) {

@@ -24,7 +24,8 @@ class CommonDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.messageT.text = arguments?.getString(DIALOG_TITLE) ?: ""
+        binding.titleT.text = arguments?.getString(DIALOG_TITLE) ?: ""
+        binding.messageT.text = arguments?.getString(DIALOG_MESSAGE) ?: ""
         binding.rightBtn.text = arguments?.getString(DIALOG_RIGHT_BTN_TEXT) ?: "확인"
 
         binding.leftBtn.setOnClickListener {
@@ -40,15 +41,18 @@ class CommonDialogFragment(
     companion object {
 
         private const val DIALOG_TITLE = "title"
+        private const val DIALOG_MESSAGE = "message"
         private const val DIALOG_RIGHT_BTN_TEXT = "rightBtnT"
 
         fun newIntent(
             title: String,
+            message: String,
             rightBtnT: String,
             onRightClick: () -> Unit
         ): CommonDialogFragment {
             val args = Bundle().apply {
                 putString(DIALOG_TITLE, title)
+                putString(DIALOG_MESSAGE, message)
                 putString(DIALOG_RIGHT_BTN_TEXT, rightBtnT)
             }
             return CommonDialogFragment(onRightClick).apply {

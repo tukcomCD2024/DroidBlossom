@@ -67,7 +67,7 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoLogout -> {
-                            val sheet = CommonDialogFragment.newIntent("정말 로그아웃 하시겠습니까?", "로그아웃") {
+                            val sheet = CommonDialogFragment.newIntent("로그아웃","정말 로그아웃 하시겠습니까?", "로그아웃") {
                                 viewModel.singOutRequest()
                             }
                             sheet.show(parentFragmentManager, "logoutDialog")
@@ -75,7 +75,7 @@ class SettingMainFragment :
 
                         SettingViewModel.SettingMainEvent.GoDeleteAccount -> {
                             val sheet = CommonDialogFragment.newIntent(
-                                "정말 탈퇴하시겠어요? \n 계정 탈퇴 후에는 24시간 이내에 복구가 가능하고 그 이후에는 모든 데이터가 영구적으로 삭제되며, 되돌릴 수 없습니다.",
+                                "계정 탈퇴","정말 탈퇴하시겠어요? \n 계정 탈퇴 후에는 24시간 이내에 복구가 가능하고 그 이후에는 모든 데이터가 영구적으로 삭제되며, 되돌릴 수 없습니다.",
                                 "계정 탈퇴"
                             ) {
                                 viewModel.deleteAccountRequest()

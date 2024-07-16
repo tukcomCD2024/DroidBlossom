@@ -36,7 +36,7 @@ class SettingUserModifyFragment :
 
     private fun initView() {
         binding.backBtn.setOnClickListener {
-            val sheet = CommonDialogFragment.newIntent("변경을 취소하겠습니까?", "네") {
+            val sheet = CommonDialogFragment.newIntent("프로필 수정","프로필 수정을 취소하겠습니까?", "네") {
                 navController.popBackStack()
             }
             sheet.show(parentFragmentManager, "logoutDialog")
@@ -46,7 +46,7 @@ class SettingUserModifyFragment :
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val sheet = CommonDialogFragment.newIntent("변경을 취소하겠습니까?", "네") {
+                    val sheet = CommonDialogFragment.newIntent("프로필 수정","프로필 수정을 취소하겠습니까?", "네") {
                         navController.popBackStack()
                     }
                     sheet.show(parentFragmentManager, "logoutDialog")
