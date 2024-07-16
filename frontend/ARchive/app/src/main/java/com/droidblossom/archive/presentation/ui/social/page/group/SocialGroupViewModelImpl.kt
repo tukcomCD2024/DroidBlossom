@@ -1,11 +1,17 @@
 package com.droidblossom.archive.presentation.ui.social.page.group
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
+import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.SocialCapsules
+import com.droidblossom.archive.domain.usecase.group_capsule.CapsulesOfGroupsPageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.base.BaseViewModel.Companion.throttleFirst
 import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendViewModel
 import com.droidblossom.archive.util.DateUtils
+import com.droidblossom.archive.util.onFail
+import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SocialGroupViewModelImpl @Inject constructor(
-
+    private val getCapsulesOfGroupsPageUseCase: CapsulesOfGroupsPageUseCase
 ): BaseViewModel(), SocialGroupViewModel {
 
     private val _socialGroupEvents = MutableSharedFlow<SocialGroupViewModel.SocialGroupEvent>()
@@ -91,12 +97,47 @@ class SocialGroupViewModelImpl @Inject constructor(
         viewModelScope.launch {
             if (hasNextPage.value) {
                 getGroupCapsuleListJob?.cancel()
+                getGroupCapsuleListJob = viewModelScope.launch {
+                    getCapsulesOfGroupsPageUseCase(
+                        IdBasedPagingRequestDto(
+                            15,
+                            groupCapsules.value.lastOrNull()?.capsuleId
+                        )
+                    ).collect { result ->
+                        result.onSuccess {
+                            _hasNextPage.value = it.hasNext
+                            _groupCapsules.emit(groupCapsules.value + it.groupCapsules)
+                        }.onFail {
+                            socialGroupEvent(SocialGroupViewModel.SocialGroupEvent.ShowToastMessage("그룹캡슐 불러오기 실패"))
+                        }
+
+                    }
+                }
             }
         }
     }
 
     override fun getLatestGroupCapsule(){
         getGroupCapsuleListJob?.cancel()
+        getGroupCapsuleListJob = viewModelScope.launch {
+            getGroupCapsuleListJob = viewModelScope.launch {
+                getCapsulesOfGroupsPageUseCase(
+                    IdBasedPagingRequestDto(
+                        15,
+                        null
+                    )
+                ).collect { result ->
+                    result.onSuccess {
+                        Log.d("머여",it.toString())
+                        _hasNextPage.value = it.hasNext
+                        _groupCapsules.value = it.groupCapsules
+                    }.onFail {
+                        socialGroupEvent(SocialGroupViewModel.SocialGroupEvent.ShowToastMessage("그룹캡슐 불러오기 실패"))
+                    }
+                }
+                socialGroupEvent(SocialGroupViewModel.SocialGroupEvent.SwipeRefreshLayoutDismissLoading)
+            }
+        }
     }
 
     override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {

@@ -6,12 +6,17 @@ import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleDetailResponseDto
 import com.droidblossom.archive.domain.model.common.CapsuleDetail
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenStateResponse
+import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleSliceResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupMembersCapsuleOpenStatusResponse
 import com.droidblossom.archive.domain.model.secret.CapsulePageList
 import com.droidblossom.archive.util.RetrofitResult
 
 interface GroupCapsuleRepository {
+
+    suspend fun getCapsulesOfGroupsPage(
+        request: IdBasedPagingRequestDto
+    ): RetrofitResult<GroupCapsuleSliceResponse>
 
     suspend fun createGroupCapsuleCapsule(
         groupId: Long,

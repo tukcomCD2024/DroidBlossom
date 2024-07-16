@@ -6,6 +6,7 @@ import com.droidblossom.archive.data.dto.group.response.MyGroupCapsulePageRespon
 import com.droidblossom.archive.data.dto.group_capsule.CapsulesOfGroupResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleDetailResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleOpenStateResponseDto
+import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleSliceResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupCapsuleSummaryResponseDto
 import com.droidblossom.archive.data.dto.group_capsule.GroupMembersCapsuleOpenStatusResponseDto
 import retrofit2.Response
@@ -17,6 +18,11 @@ import retrofit2.http.Query
 
 interface GroupCapsuleService {
 
+    @GET("group-capsules")
+    suspend fun getCapsulesOfGroupsPageApi(
+        @Query("size") size: Int,
+        @Query("last_capsule_id") pagingId: Long?
+    ) : Response<ResponseBody<GroupCapsuleSliceResponseDto>>
     @POST("group-capsules/{group_id}")
     suspend fun postGroupCapsuleApi(
         @Path("group_id") groupId : Long,

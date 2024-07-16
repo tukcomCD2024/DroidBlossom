@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
@@ -21,13 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSocialGroupBinding
-import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.capsule.CapsuleDetailActivity
+import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
+import com.droidblossom.archive.presentation.ui.social.SocialFragment
 import com.droidblossom.archive.presentation.ui.social.adapter.SocialFriendCapsuleRVA
-import com.droidblossom.archive.presentation.ui.social.adapter.TestSocialFriendModel
-import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendViewModel
 import com.droidblossom.archive.util.SpaceItemDecoration
 import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +37,7 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
     override val viewModel: SocialGroupViewModelImpl by viewModels<SocialGroupViewModelImpl>()
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
-    private val socialFriendCapsuleRVA by lazy {
+    private val socialGroupCapsuleRVA by lazy {
         SocialFriendCapsuleRVA(
             { id ->
                 activityResultLauncher.launch(
@@ -49,6 +47,7 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
                         HomeFragment.CapsuleType.GROUP
                     )
                 )
+                SocialFragment.setReloadFalse()
             },
             {
                 showToastMessage("개봉되지 않은 캡슐입니다.")
@@ -59,7 +58,7 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.socialFriendSwipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
+                    val layoutParams = binding.socialGroupSwipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.updateTopConstraintsForSearch(
                         isSearchOpen = it,
                         searchOpenView = binding.searchOpenBtn,
@@ -80,9 +79,9 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.groupCapsules.collect{ groupCapsules ->
-                    socialFriendCapsuleRVA.submitList(groupCapsules){
-                        if (binding.socialFriendSwipeRefreshLayout.isRefreshing){
-                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
+                    socialGroupCapsuleRVA.submitList(groupCapsules){
+                        if (binding.socialGroupSwipeRefreshLayout.isRefreshing){
+                            binding.socialGroupSwipeRefreshLayout.isRefreshing = false
                             binding.socialGroupRV.scrollToPosition(0)
                         }
                     }
@@ -99,8 +98,9 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
                         }
 
                         is SocialGroupViewModel.SocialGroupEvent.SwipeRefreshLayoutDismissLoading ->{
-                            binding.socialFriendSwipeRefreshLayout.isRefreshing = false
-                            binding.socialGroupRV.scrollToPosition(0)
+                            if (binding.socialGroupSwipeRefreshLayout.isRefreshing){
+                                binding.socialGroupSwipeRefreshLayout.isRefreshing = false
+                            }
                         }
                         else -> {
 
@@ -114,6 +114,18 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+
+        parentFragmentManager.setFragmentResultListener(
+            CapsulePreviewDialogFragment.DELETE_CAPSULE,
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val capsuleIndex = bundle.getInt("capsuleIndex")
+            val capsuleId = bundle.getLong("capsuleId")
+            val remove = bundle.getBoolean("remove")
+            if (remove) {
+                //viewModel.deleteCapsule()
+            }
+        }
 
         activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -137,10 +149,10 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
     }
 
     private fun initRVA() {
-        binding.socialGroupRV.adapter = socialFriendCapsuleRVA
+        binding.socialGroupRV.adapter = socialGroupCapsuleRVA
         val spaceInPixels = resources.getDimensionPixelSize(R.dimen.margin)
         binding.socialGroupRV.addItemDecoration(SpaceItemDecoration(spaceBottom = spaceInPixels))
-        binding.socialFriendSwipeRefreshLayout.setOnRefreshListener {
+        binding.socialGroupSwipeRefreshLayout.setOnRefreshListener {
             viewModel.getLatestGroupCapsule()
         }
         
