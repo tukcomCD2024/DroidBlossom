@@ -21,24 +21,21 @@
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
         app:strokeColor="@{item.isClicked ? @color/main_2 : @color/main_bg_2}"
-        app:strokeWidth="4dp">
+        app:strokeWidth="@{item.isClicked ? 8 : 0}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@{item.isClicked ? @color/white : @color/main_bg_2}"
-            >
+            android:background="@{item.isClicked ? @color/white : @color/main_bg_2}">
 
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/skinImg"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@drawable/corner_radius_8"
                 android:clipToOutline="true"
                 android:alpha="@{item.isClicked ? 1.0F : 0.2F}"
-                android:padding="12dp"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="w,4:3"
                 app:layout_constraintEnd_toEndOf="parent"

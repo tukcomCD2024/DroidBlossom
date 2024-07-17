@@ -75,7 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitXY"
                     bind:baseImg="@{@drawable/base_skin}"
                     bind:url="@{vm.skin.skinUrl}" />
 
