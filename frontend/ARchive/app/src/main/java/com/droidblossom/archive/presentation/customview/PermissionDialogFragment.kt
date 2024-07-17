@@ -7,13 +7,9 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.DialogPermissionBinding
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 
-interface PermissionDialogButtonClickListener {
-    fun onLeftButtonClicked()
-    fun onRightButtonClicked()
-}
-
 class PermissionDialogFragment(
-    private val listener: PermissionDialogButtonClickListener,
+    private val onNegativeClick: () -> Unit,
+    private val onPositiveClick: () -> Unit
 ) : BaseDialogFragment<DialogPermissionBinding>(R.layout.dialog_permission) {
 
     override fun onStart() {
@@ -36,12 +32,12 @@ class PermissionDialogFragment(
         binding.leftBtn.text = if (permissionType == PermissionType.ESSENTIAL.name) "앱 종료" else "취소"
 
         binding.leftBtn.setOnClickListener {
-            listener.onLeftButtonClicked()
+            onNegativeClick()
             this.dismiss()
         }
 
         binding.rightBtn.setOnClickListener {
-            listener.onRightButtonClicked()
+            onPositiveClick()
             this.dismiss()
         }
     }
@@ -94,12 +90,13 @@ class PermissionDialogFragment(
         const val TAG = "PERMISSION_DIALOG"
         fun newInstance(
             permission: String,
-            listener: PermissionDialogButtonClickListener
+            onNegativeClick: () -> Unit,
+            onPositiveClick: () -> Unit
         ): PermissionDialogFragment {
             val args = Bundle().apply {
                 putString("permission", permission)
             }
-            return PermissionDialogFragment(listener).apply {
+            return PermissionDialogFragment(onNegativeClick, onPositiveClick).apply {
                 arguments = args
             }
         }

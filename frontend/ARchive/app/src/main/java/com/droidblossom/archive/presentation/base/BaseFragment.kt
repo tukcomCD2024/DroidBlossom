@@ -20,7 +20,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
@@ -88,12 +87,12 @@ abstract class BaseFragment<VM: BaseViewModel, V: ViewDataBinding>(@LayoutRes va
         toast.show()
     }
 
-    fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, listener: PermissionDialogButtonClickListener) {
+    fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, onNegativeClick: () -> Unit, onPositiveClick: () -> Unit) {
 
         val existingDialog = parentFragmentManager.findFragmentByTag(PermissionDialogFragment.TAG) as DialogFragment?
 
         if (existingDialog == null) {
-            val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
+            val dialog = PermissionDialogFragment.newInstance(permissionType.name, onNegativeClick, onPositiveClick)
             dialog.show(parentFragmentManager, PermissionDialogFragment.TAG)
         }
 

@@ -17,7 +17,6 @@ import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.CommonDialogFragment
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
@@ -26,21 +25,23 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.layout.fragment_sign_in) {
+class SignInFragment :
+    BaseFragment<AuthViewModelImpl, FragmentSignInBinding>(R.layout.fragment_sign_in) {
 
 
     lateinit var navController: NavController
 
-    override val viewModel : AuthViewModelImpl by activityViewModels()
+    override val viewModel: AuthViewModelImpl by activityViewModels()
 
     private lateinit var socialLoginUtil: SocialLoginUtil
 
-    private var googleLoginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            socialLoginUtil.handleGoogleSignInResult(task)
+    private var googleLoginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                socialLoginUtil.handleGoogleSignInResult(task)
+            }
         }
-    }
 
     private val essentialPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -65,17 +66,18 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
         } else {
             showSettingsDialog(
                 PermissionDialogFragment.PermissionType.ESSENTIAL,
-                object : PermissionDialogButtonClickListener {
-                    override fun onLeftButtonClicked() {
-                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
-                        requireActivity().finish()
+                {
+                    showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                    requireActivity().finish()
+                },
+                {
+                    navigateToAppSettings {
+                        essentialPermissionLauncher.launch(
+                            essentialPermissionList
+                        )
                     }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings{essentialPermissionLauncher.launch(essentialPermissionList)}
-                    }
-
-                })
+                }
+            )
         }
     }
 
@@ -84,13 +86,13 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
         navController = Navigation.findNavController(view)
 
-        if (requireActivity().intent.getBooleanExtra(AuthActivity.IS_CHANGE_PHONE, false)){
+        if (requireActivity().intent.getBooleanExtra(AuthActivity.IS_CHANGE_PHONE, false)) {
             viewModel.changePhoneMode()
             navController.navigate(R.id.action_signInFragment_to_signUpFragment)
         }
 
         socialLoginUtil = SocialLoginUtil(requireContext(), object : SocialLoginUtil.LoginCallback {
-            override fun onLoginSuccess(memberStatusCheckData : CheckStatus,signUpData : SignUp) {
+            override fun onLoginSuccess(memberStatusCheckData: CheckStatus, signUpData: SignUp) {
                 viewModel.memberStatusCheck(memberStatusCheckData, signUpData)
             }
 
@@ -111,7 +113,7 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
     override fun observeData() {
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.signInEvents.collect { event ->
                     when (event) {
@@ -122,7 +124,7 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
 
                         is AuthViewModel.SignInEvent.NavigateToSignUp -> {
                             // 회원가입 화면으로 이동
-                            if(navController.currentDestination?.id != R.id.signUpFragment) {
+                            if (navController.currentDestination?.id != R.id.signUpFragment) {
                                 navController.navigate(R.id.action_signInFragment_to_signUpFragment)
                             }
                         }
@@ -132,7 +134,11 @@ class SignInFragment : BaseFragment<AuthViewModelImpl,FragmentSignInBinding>(R.l
                         }
 
                         is AuthViewModel.SignInEvent.DeactivatedUserChecked -> {
-                            val sheet = CommonDialogFragment.newIntent("계정 탈퇴","탈퇴된 계정입니다. \n 계정을 복구하시겠습니까?", "계정 복구") {
+                            val sheet = CommonDialogFragment.newIntent(
+                                "계정 탈퇴",
+                                "탈퇴된 계정입니다. \n 계정을 복구하시겠습니까?",
+                                "계정 복구"
+                            ) {
                                 // 복구하는 로직 어떻게?
                                 // 새로운 api? 그냥 로그인?
                             }

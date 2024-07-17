@@ -18,7 +18,6 @@ import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.databinding.ActivityMainBinding
 import com.droidblossom.archive.domain.usecase.member.FcmTokenUseCase
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.home.HomeFragment
@@ -27,8 +26,6 @@ import com.droidblossom.archive.presentation.ui.mypage.friend.FriendActivity
 import com.droidblossom.archive.presentation.ui.mypage.friendaccept.FriendAcceptActivity
 import com.droidblossom.archive.presentation.ui.skin.SkinFragment
 import com.droidblossom.archive.presentation.ui.social.SocialFragment
-import com.droidblossom.archive.presentation.ui.social.page.friend.SocialFriendFragment
-import com.droidblossom.archive.presentation.ui.social.page.group.SocialGroupFragment
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.MyFirebaseMessagingService
 import com.droidblossom.archive.util.onFail
@@ -103,16 +100,13 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         } else {
             showSettingsDialog(
                 PermissionDialogFragment.PermissionType.AR,
-                object : PermissionDialogButtonClickListener {
-                    override fun onLeftButtonClicked() {
-                        showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
-                    }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
-                    }
-
-                })
+                {
+                    showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+                },
+                {
+                    navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
+                }
+            )
         }
     }
 
@@ -142,28 +136,25 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
         } else {
             showSettingsDialog(PermissionDialogFragment.PermissionType.ESSENTIAL,
-                object : PermissionDialogButtonClickListener {
-                    override fun onLeftButtonClicked() {
-                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
-                        finish()
-                    }
-
-                    override fun onRightButtonClicked() {
-                        isPermissionRequested = false
-                        navigateToAppSettings {
-                            if (essentialPermissionList.any {
-                                    ActivityCompat.checkSelfPermission(
-                                        this@MainActivity,
-                                        it
-                                    ) != PackageManager.PERMISSION_GRANTED
-                                }) {
-                                showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
-                                goMain(this@MainActivity)
-                            }
+                {
+                    showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                    finish()
+                },
+                {
+                    isPermissionRequested = false
+                    navigateToAppSettings {
+                        if (essentialPermissionList.any {
+                                ActivityCompat.checkSelfPermission(
+                                    this@MainActivity,
+                                    it
+                                ) != PackageManager.PERMISSION_GRANTED
+                            }) {
+                            showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                            goMain(this@MainActivity)
                         }
                     }
-
-                })
+                }
+            )
         }
     }
 
@@ -172,16 +163,15 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
         if (shouldShowRequestPermissionRationale(permissionType.toString())) {
             showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
         } else {
-            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener {
-                override fun onLeftButtonClicked() {
+            showSettingsDialog(
+                permissionType,
+                {
                     showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
-                }
-
-                override fun onRightButtonClicked() {
+                },
+                {
                     navigateToAppSettings { arPermissionLauncher.launch(arPermissionList) }
                 }
-
-            })
+            )
         }
 
     }
@@ -198,35 +188,35 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                         when (tab) {
                             MainPage.HOME -> {
                                 showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
-                                if (binding.bottomNavigation.selectedItemId != R.id.menuHome){
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuHome) {
                                     binding.bottomNavigation.selectedItemId = R.id.menuHome
                                 }
                             }
 
                             MainPage.SKIN -> {
                                 showFragment(SkinFragment.newIntent(), SkinFragment.TAG)
-                                if (binding.bottomNavigation.selectedItemId != R.id.menuSkin){
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuSkin) {
                                     binding.bottomNavigation.selectedItemId = R.id.menuSkin
                                 }
                             }
 
                             MainPage.AR -> {
                                 showFragment(CameraFragment.newIntent(), CameraFragment.TAG)
-                                if (binding.bottomNavigation.selectedItemId != R.id.menuCamera){
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuCamera) {
                                     binding.bottomNavigation.selectedItemId = R.id.menuCamera
                                 }
                             }
 
                             MainPage.SOCIAL -> {
                                 showFragment(SocialFragment.newIntent(), SocialFragment.TAG)
-                                if (binding.bottomNavigation.selectedItemId != R.id.menuSocial){
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuSocial) {
                                     binding.bottomNavigation.selectedItemId = R.id.menuSocial
                                 }
                             }
 
                             MainPage.MY_PAGE -> {
                                 showFragment(MyPageFragment.newIntent(), MyPageFragment.TAG)
-                                if (binding.bottomNavigation.selectedItemId != R.id.menuMyPage){
+                                if (binding.bottomNavigation.selectedItemId != R.id.menuMyPage) {
                                     binding.bottomNavigation.selectedItemId = R.id.menuMyPage
                                 }
                             }
@@ -317,19 +307,24 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                     R.id.menuHome -> {
                         return@setOnItemSelectedListener true
                     }
+
                     R.id.menuSkin -> {
                         (supportFragmentManager.findFragmentByTag(SkinFragment.TAG) as? SkinFragment)?.scrollToTop()
                         return@setOnItemSelectedListener true
                     }
+
                     R.id.menuSocial -> {
-                        val socialFragment = supportFragmentManager.findFragmentByTag(SocialFragment.TAG) as? SocialFragment
+                        val socialFragment =
+                            supportFragmentManager.findFragmentByTag(SocialFragment.TAG) as? SocialFragment
                         socialFragment?.scrollToTopCurrentFragment()
                         return@setOnItemSelectedListener true
                     }
+
                     R.id.menuMyPage -> {
                         (supportFragmentManager.findFragmentByTag(MyPageFragment.TAG) as? MyPageFragment)?.scrollToTop()
                         return@setOnItemSelectedListener true
                     }
+
                     else -> {
                         return@setOnItemSelectedListener false
                     }
@@ -342,18 +337,22 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                         viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
                         return@setOnItemSelectedListener true
                     }
+
                     R.id.menuSkin -> {
                         viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSkin)
                         return@setOnItemSelectedListener true
                     }
+
                     R.id.menuSocial -> {
                         viewModel.mainEvent(MainViewModel.MainEvent.NavigateToSocial)
                         return@setOnItemSelectedListener true
                     }
+
                     R.id.menuMyPage -> {
                         viewModel.mainEvent(MainViewModel.MainEvent.NavigateToMyPage)
                         return@setOnItemSelectedListener true
                     }
+
                     else -> {
                         return@setOnItemSelectedListener false
                     }

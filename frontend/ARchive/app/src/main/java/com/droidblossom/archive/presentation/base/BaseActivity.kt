@@ -1,9 +1,6 @@
 package com.droidblossom.archive.presentation.base
 
 import android.Manifest
-import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -11,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,16 +18,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
-import com.droidblossom.archive.presentation.customview.HomeSnackBarSmall
 import com.droidblossom.archive.presentation.customview.LoadingDialog
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.model.AppEvent
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes val layoutResource :Int): AppCompatActivity() {
 
@@ -138,10 +131,10 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         toast.show()
     }
 
-    fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, listener: PermissionDialogButtonClickListener) {
+    fun showSettingsDialog(permissionType: PermissionDialogFragment.PermissionType, onNegativeClick: () -> Unit, onPositiveClick: () -> Unit) {
         val existingDialog = supportFragmentManager.findFragmentByTag(PermissionDialogFragment.TAG) as DialogFragment?
         if (existingDialog == null) {
-            val dialog = PermissionDialogFragment.newInstance(permissionType.name, listener)
+            val dialog = PermissionDialogFragment.newInstance(permissionType.name, onNegativeClick, onPositiveClick)
             dialog.show(supportFragmentManager, PermissionDialogFragment.TAG)
         }
     }

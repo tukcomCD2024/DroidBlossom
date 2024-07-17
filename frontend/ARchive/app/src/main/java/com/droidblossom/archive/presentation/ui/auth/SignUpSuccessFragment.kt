@@ -10,15 +10,15 @@ import androidx.fragment.app.activityViewModels
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSignUpSuccessBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpSuccessFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpSuccessBinding>(R.layout.fragment_sign_up_success) {
+class SignUpSuccessFragment :
+    BaseFragment<AuthViewModelImpl, FragmentSignUpSuccessBinding>(R.layout.fragment_sign_up_success) {
 
-    override val viewModel : AuthViewModelImpl by activityViewModels()
+    override val viewModel: AuthViewModelImpl by activityViewModels()
 
     override fun observeData() {}
 
@@ -51,17 +51,18 @@ class SignUpSuccessFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpSucc
         } else {
             showSettingsDialog(
                 PermissionDialogFragment.PermissionType.ESSENTIAL,
-                object : PermissionDialogButtonClickListener {
-                    override fun onLeftButtonClicked() {
-                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
-                        requireActivity().finish()
+                {
+                    showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                    requireActivity().finish()
+                },
+                {
+                    navigateToAppSettings {
+                        essentialPermissionLauncher.launch(
+                            essentialPermissionList
+                        )
                     }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings{essentialPermissionLauncher.launch(essentialPermissionList)}
-                    }
-
-                })
+                }
+            )
         }
     }
 

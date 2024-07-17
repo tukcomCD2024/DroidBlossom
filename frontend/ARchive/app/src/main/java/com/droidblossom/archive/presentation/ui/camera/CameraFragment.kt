@@ -20,7 +20,6 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentCameraBinding
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
@@ -110,18 +109,13 @@ class CameraFragment :
         } else {
             showSettingsDialog(
                 PermissionDialogFragment.PermissionType.AR,
-                object : PermissionDialogButtonClickListener {
-                    override fun onLeftButtonClicked() {
-                        showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
-                        //requireActivity().finish()
-
-                    }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
-                    }
-
-                })
+                {
+                    showToastMessage("AR 기능을 사용하려면 카메라, 위치 권한이 필요합니다.")
+                },
+                {
+                    navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
+                }
+            )
         }
     }
 
@@ -148,17 +142,14 @@ class CameraFragment :
         if (shouldShowRequestPermissionRationale(permissionType.toString())) {
             showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
         } else {
-            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener {
-                override fun onLeftButtonClicked() {
+            showSettingsDialog(permissionType,
+                {
                     showToastMessage("AR 기능을 사용하려면 ${permissionType.description} 권한이 필요합니다.")
-                    //requireActivity().finish()
-                }
-
-                override fun onRightButtonClicked() {
+                },
+                {
                     navigateToAppSettings { requestPermissionLauncher.launch(arPermissionList) }
                 }
-
-            })
+            )
         }
 
     }
@@ -320,7 +311,7 @@ class CameraFragment :
             config.planeFindingMode = Config.PlaneFindingMode.DISABLED
         }
 
-        with(binding){
+        with(binding) {
             refreshBtn.setOnClickListener {
                 showLoading(requireContext())
                 arSceneView.clearChildNodes()

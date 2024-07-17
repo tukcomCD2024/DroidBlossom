@@ -2,19 +2,15 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -25,14 +21,11 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentFriendSearchNumberBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
 import com.droidblossom.archive.util.ContactsUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 
 
 @AndroidEntryPoint
@@ -67,9 +60,11 @@ class SearchFriendNumberFragment :
                 permissions.all { it.value } -> {
                     viewModel.contactsSearch(ContactsUtils.getContacts(requireContext()))
                 }
+
                 permissions.none { it.value } -> {
                     handleAllPermissionsDenied()
                 }
+
                 else -> {
                     handlePartialPermissionsDenied(permissions)
                 }
@@ -83,32 +78,38 @@ class SearchFriendNumberFragment :
             ) {
                 showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
             } else {
-                showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS_AND_CALL, object : PermissionDialogButtonClickListener{
-                    override fun onLeftButtonClicked() {
+                showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS_AND_CALL,
+                    {
                         showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
                         requireActivity().finish()
+                    },
+                    {
+                        navigateToAppSettings {
+                            requestContactsCallPermissionLauncher.launch(
+                                permissionsToRequest
+                            )
+                        }
                     }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings{requestContactsCallPermissionLauncher.launch(permissionsToRequest)}
-                    }
-                })
+                )
             }
         } else {
             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
                 showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다.")
             } else {
-                showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS, object : PermissionDialogButtonClickListener{
-                    override fun onLeftButtonClicked() {
+                showSettingsDialog(
+                    PermissionDialogFragment.PermissionType.CONTACTS,
+                    {
                         showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다.")
                         requireActivity().finish()
+                    },
+                    {
+                        navigateToAppSettings {
+                            requestContactsCallPermissionLauncher.launch(
+                                permissionsToRequest
+                            )
+                        }
                     }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings{requestContactsCallPermissionLauncher.launch(permissionsToRequest)}
-                    }
-
-                })
+                )
             }
         }
     }
@@ -118,10 +119,10 @@ class SearchFriendNumberFragment :
             if (!granted) {
                 when (perm) {
                     Manifest.permission.READ_CONTACTS ->
-                        showPermissionDialog( PermissionDialogFragment.PermissionType.CONTACTS )
+                        showPermissionDialog(PermissionDialogFragment.PermissionType.CONTACTS)
 
                     Manifest.permission.READ_PHONE_NUMBERS ->
-                        showPermissionDialog( PermissionDialogFragment.PermissionType.CALL )
+                        showPermissionDialog(PermissionDialogFragment.PermissionType.CALL)
                 }
             }
         }
@@ -131,17 +132,19 @@ class SearchFriendNumberFragment :
         if (shouldShowRequestPermissionRationale(permissionType.toString())) {
             showToastMessage("앱에서 친구를 찾기 위해 ${permissionType.description} 권한이 필요합니다.")
         } else {
-            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener{
-                override fun onLeftButtonClicked() {
+            showSettingsDialog(permissionType,
+                {
                     showToastMessage("앱에서 친구를 찾기 위해 ${permissionType.description} 권한이 필요합니다.")
                     requireActivity().finish()
+                },
+                {
+                    navigateToAppSettings {
+                        requestContactsCallPermissionLauncher.launch(
+                            permissionsToRequest
+                        )
+                    }
                 }
-
-                override fun onRightButtonClicked() {
-                    navigateToAppSettings{requestContactsCallPermissionLauncher.launch(permissionsToRequest)}
-                }
-
-            })
+            )
         }
     }
 

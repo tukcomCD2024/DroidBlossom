@@ -3,15 +3,12 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,9 +18,7 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentFriendSearchNicknameBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
-import com.droidblossom.archive.presentation.ui.camera.CameraFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -59,9 +54,11 @@ class SearchFriendNicknameFragment :
                 permissions.all { it.value } -> {
                     navController.navigate(R.id.action_searchFriendNicknameFragment_to_searchFriendNumberFragment)
                 }
+
                 permissions.none { it.value } -> {
                     handleAllPermissionsDenied()
                 }
+
                 else -> {
                     handlePartialPermissionsDenied(permissions)
                 }
@@ -76,15 +73,13 @@ class SearchFriendNicknameFragment :
                 showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
             } else {
                 showSettingsDialog(
-                    PermissionDialogFragment.PermissionType.CONTACTS_AND_CALL, object : PermissionDialogButtonClickListener {
-                        override fun onLeftButtonClicked() {
-                            showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
-                        }
-
-                        override fun onRightButtonClicked() {
-                            navigateToAppSettings {
-                                requestContactsCallPermissionLauncher.launch(permissionsToRequest)
-                            }
+                    PermissionDialogFragment.PermissionType.CONTACTS_AND_CALL,
+                    {
+                        showToastMessage("앱에서 친구를 찾기 위해 연락처, 전화 접근 권한이 필요합니다.")
+                    },
+                    {
+                        navigateToAppSettings {
+                            requestContactsCallPermissionLauncher.launch(permissionsToRequest)
                         }
                     }
                 )
@@ -93,17 +88,17 @@ class SearchFriendNicknameFragment :
             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
                 showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다.")
             } else {
-                showSettingsDialog(PermissionDialogFragment.PermissionType.CONTACTS, object : PermissionDialogButtonClickListener{
-                    override fun onLeftButtonClicked() {
+                showSettingsDialog(
+                    PermissionDialogFragment.PermissionType.CONTACTS,
+                    {
                         showToastMessage("앱에서 친구를 찾기 위해 연락처 접근 권한이 필요합니다.")
-                    }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings{
+                    },
+                    {
+                        navigateToAppSettings {
                             requestContactsCallPermissionLauncher.launch(permissionsToRequest)
                         }
                     }
-                })
+                )
             }
         }
     }
@@ -126,18 +121,16 @@ class SearchFriendNicknameFragment :
         if (shouldShowRequestPermissionRationale(permissionType.toString())) {
             showToastMessage("앱에서 친구를 찾기 위해 ${permissionType.description} 권한이 필요합니다.")
         } else {
-            showSettingsDialog(permissionType, object : PermissionDialogButtonClickListener {
-                override fun onLeftButtonClicked() {
+            showSettingsDialog(permissionType,
+                {
                     showToastMessage("앱에서 친구를 찾기 위해 ${permissionType.description} 권한이 필요합니다.")
-                }
-
-                override fun onRightButtonClicked() {
+                },
+                {
                     navigateToAppSettings {
                         requestContactsCallPermissionLauncher.launch(permissionsToRequest)
                     }
                 }
-
-            })
+            )
         }
     }
 

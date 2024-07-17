@@ -2,17 +2,13 @@ package com.droidblossom.archive.presentation.ui.splash
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivitySplashBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
-import com.droidblossom.archive.presentation.customview.PermissionDialogButtonClickListener
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
-import com.droidblossom.archive.presentation.ui.MainViewModelImpl
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.util.DataStoreUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +19,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<Nothing?, ActivitySplashBinding>(R.layout.activity_splash) {
 
-    @Inject lateinit var dataStoreUtils: DataStoreUtils
+    @Inject
+    lateinit var dataStoreUtils: DataStoreUtils
 
     override val viewModel: Nothing? = null
     override fun observeData() {}
@@ -38,7 +35,9 @@ class SplashActivity : BaseActivity<Nothing?, ActivitySplashBinding>(R.layout.ac
         // dataStoreUtils 사용
         lifecycleScope.launch {
             delay(1000)
-            if (dataStoreUtils.fetchAccessToken().isNotEmpty() && dataStoreUtils.fetchRefreshToken().isNotEmpty()) {
+            if (dataStoreUtils.fetchAccessToken().isNotEmpty() && dataStoreUtils.fetchRefreshToken()
+                    .isNotEmpty()
+            ) {
                 essentialPermissionLauncher.launch(essentialPermissionList)
             } else {
                 AuthActivity.goAuth(this@SplashActivity)
@@ -71,17 +70,18 @@ class SplashActivity : BaseActivity<Nothing?, ActivitySplashBinding>(R.layout.ac
         } else {
             showSettingsDialog(
                 PermissionDialogFragment.PermissionType.ESSENTIAL,
-                object : PermissionDialogButtonClickListener {
-                    override fun onLeftButtonClicked() {
-                        showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
-                        finish()
+                {
+                    showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
+                    finish()
+                },
+                {
+                    navigateToAppSettings {
+                        essentialPermissionLauncher.launch(
+                            essentialPermissionList
+                        )
                     }
-
-                    override fun onRightButtonClicked() {
-                        navigateToAppSettings{essentialPermissionLauncher.launch(essentialPermissionList)}
-                    }
-
-                })
+                }
+            )
         }
     }
 
