@@ -15,8 +15,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/permissionLayout"
             android:layout_width="0dp"
-            android:layout_height="156dp"
+            android:layout_height="wrap_content"
+            android:minHeight="240dp"
             android:layout_marginHorizontal="@dimen/margin"
+
             android:background="@drawable/corner_radius_30"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,12 +49,13 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/permissionImg"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="@dimen/margin"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:tint="@color/main_3"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="@dimen/margin"
+                app:layout_constraintBottom_toTopOf="@id/messageT"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/line"
                 app:srcCompat="@drawable/ic_camera_outline" />
 
@@ -60,13 +63,14 @@
                 android:id="@+id/messageT"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_margin="@dimen/margin"
                 android:textAppearance="@style/TextAppearance.App.body2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/permissionImg"
-                app:layout_constraintTop_toBottomOf="@id/line" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/permissionImg" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
