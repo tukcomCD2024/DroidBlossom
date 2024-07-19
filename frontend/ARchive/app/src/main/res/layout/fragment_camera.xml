@@ -35,6 +35,7 @@
             android:gravity="center"
             android:paddingHorizontal="14dp"
             android:text="필터"
+            android:visibility="gone"
             android:drawableEnd="@drawable/ic_filter_24"
             android:textAppearance="@style/TextAppearance.App.caption1"
             android:textColor="@color/gray_700"
