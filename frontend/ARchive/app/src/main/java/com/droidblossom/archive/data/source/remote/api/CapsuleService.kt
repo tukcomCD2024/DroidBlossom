@@ -66,4 +66,9 @@ interface CapsuleService {
         @Path("capsule_id") capsuleId: Long,
         @Path("capsule_type") capsuleType: String
     ): Response<ResponseBody<String>>
+
+    @PATCH("capsules/{capsule_id}/declaration")
+    suspend fun patchCapsuleDeclarationApi(
+        @Path("capsule_id") capsuleId : Long,
+    ) : Response<ResponseBody<String>>
 }

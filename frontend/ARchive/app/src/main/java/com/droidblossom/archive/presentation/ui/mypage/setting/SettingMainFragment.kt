@@ -131,5 +131,4 @@ class SettingMainFragment :
         }
         startActivity(notificationIntent)
     }
-
 }

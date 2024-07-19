@@ -5,6 +5,7 @@ import com.droidblossom.archive.data.dto.capsule.response.AddressDataDto
 import com.droidblossom.archive.data.dto.capsule.response.CapsuleImagesDto
 import com.droidblossom.archive.data.dto.capsule.response.CapsuleOpenedResponseDto
 import com.droidblossom.archive.data.dto.capsule.response.NearbyCapsuleResponseDto
+import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.source.remote.api.CapsuleService
 import com.droidblossom.archive.domain.model.capsule.CapsuleImages
 import com.droidblossom.archive.domain.model.capsule.CapsuleOpenedResponse
@@ -93,4 +94,9 @@ class CapsuleRepositoryImpl @Inject constructor(
             )
         }) { response: ResponseBody<String> -> response.result.toString() }
     }
+
+    override suspend fun reportCapsule(capsuleId: Long): RetrofitResult<String> {
+        return apiHandler({ api.patchCapsuleDeclarationApi(capsuleId = capsuleId) }) { response: ResponseBody<String> -> response.result.toModel() }
+    }
+
 }

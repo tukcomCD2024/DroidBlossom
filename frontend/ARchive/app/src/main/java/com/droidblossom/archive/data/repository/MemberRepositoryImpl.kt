@@ -83,8 +83,11 @@ class MemberRepositoryImpl @Inject constructor(
         return apiHandler({api.patchPhoneSearchApi(request)}) { response : ResponseBody<String> -> response.result.toModel()}
     }
 
+    override suspend fun reportUser(userId: Long): RetrofitResult<String> {
+        return apiHandler({ api.patchUserDeclarationApi(targetId = userId) }) { response: ResponseBody<String> -> response.result.toModel() }
+    }
+
     override suspend fun getText(): RetrofitResult<Health> {
         return apiHandler({ api.getTextApi() }) { response: ResponseBody<HealthResponseDto> -> response.result.toModel() }
     }
-
 }

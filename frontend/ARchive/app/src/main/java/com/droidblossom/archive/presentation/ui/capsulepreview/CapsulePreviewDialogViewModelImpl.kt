@@ -9,6 +9,7 @@ import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
 import com.droidblossom.archive.domain.model.treasure.response.TreasureOpenStatus
 import com.droidblossom.archive.domain.usecase.capsule.DeleteCapsuleUseCase
 import com.droidblossom.archive.domain.usecase.capsule.PatchCapsuleOpenedUseCase
+import com.droidblossom.archive.domain.usecase.capsule.ReportCapsuleUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleOpenUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupCapsuleSummaryUseCase
 import com.droidblossom.archive.domain.usecase.group_capsule.GroupMembersCapsuleOpenStatusUseCase
@@ -46,7 +47,8 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
     private val groupMembersCapsuleOpenStatusUseCase: GroupMembersCapsuleOpenStatusUseCase,
     private val openTreasureCapsuleUseCase: OpenTreasureCapsuleUseCase,
     private val getTreasureCapsuleSummaryUseCase: GetTreasureCapsuleSummaryUseCase,
-    private val deleteCapsuleUseCase: DeleteCapsuleUseCase
+    private val deleteCapsuleUseCase: DeleteCapsuleUseCase,
+    private val reportCapsuleUseCase: ReportCapsuleUseCase,
 ) : BaseViewModel(), CapsulePreviewDialogViewModel {
 
     private val _capsulePreviewDialogEvents =
@@ -531,6 +533,21 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 }
             }
             capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissLoading)
+        }
+    }
+
+    override fun reportCapsule() {
+        viewModelScope.launch {
+            reportCapsuleUseCase(capsuleId.value).collect{
+                it.onSuccess {
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("신고를 완료했습니다.\n관리자의 검토 후 삭제 조치될 예정입니다."))
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                    )
+                }.onFail {
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("신고를 실패했습니다."))
+                }
+            }
         }
     }
 

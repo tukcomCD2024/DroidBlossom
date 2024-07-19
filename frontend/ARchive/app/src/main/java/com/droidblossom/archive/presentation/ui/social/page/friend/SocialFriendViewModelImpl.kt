@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SocialFriendViewModelImpl @Inject constructor(
-    private val publicCapsulePageUseCase: PublicCapsulePageUseCase
+    private val publicCapsulePageUseCase: PublicCapsulePageUseCase,
 ) : BaseViewModel(), SocialFriendViewModel {
 
     private val _socialFriendEvents = MutableSharedFlow<SocialFriendViewModel.SocialFriendEvent>()

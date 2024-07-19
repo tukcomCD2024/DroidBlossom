@@ -22,6 +22,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MemberService {
@@ -80,4 +81,10 @@ interface MemberService {
 
     @GET("health")
     suspend fun getTextApi() : Response<ResponseBody<HealthResponseDto>>
+
+    @PATCH("me/{target_id}/declaration")
+    suspend fun patchUserDeclarationApi(
+        @Path("target_id") targetId : Long,
+    ) : Response<ResponseBody<String>>
+
 }
