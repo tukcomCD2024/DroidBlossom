@@ -53,4 +53,8 @@ interface CapsuleRepository {
         capsuleId: Long,
         capsuleType: String
     ): RetrofitResult<String>
+
+    suspend fun reportCapsule(
+        capsuleId : Long
+    ): RetrofitResult<String>
 }
