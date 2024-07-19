@@ -134,8 +134,17 @@ class CapsuleDetailActivity :
         }
 
         popupMenuBinding.menuReport.setOnClickListener {
+            val sheet = CommonDialogFragment.newIntent(
+                "캡슐 신고",
+                "캡슐에 부적절한 콘텐츠가 존재 하나요?",
+                "캡슐 신고"
+            ) {
+                viewModel.reportCapsule(capsuleId)
+            }
+            sheet.show(supportFragmentManager, "reportCapsuleDialog")
             popupWindow.dismiss()
         }
+
         popupMenuBinding.menuDelete.setOnClickListener {
             val sheet = CommonDialogFragment.newIntent(
                 "캡슐 삭제",
@@ -189,6 +198,10 @@ class CapsuleDetailActivity :
                             showToastMessage(it.message)
                         }
 
+                        is CapsuleDetailViewModel.DetailEvent.FinishActivity -> {
+                            finish()
+                        }
+
                         is CapsuleDetailViewModel.DetailEvent.DismissLoading -> {
                             dismissLoading()
                         }
@@ -204,8 +217,8 @@ class CapsuleDetailActivity :
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.removeCapsule.filter { it }.collect{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.removeCapsule.filter { it }.collect {
                     setResult(DELETE_CAPSULE, Intent().apply {
                         putExtra("capsuleIndex", -1)
                         putExtra("capsuleId", capsuleId)

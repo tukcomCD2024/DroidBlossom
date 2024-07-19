@@ -355,6 +355,14 @@ class CapsulePreviewDialogFragment :
         }
 
         popupMenuBinding.menuReport.setOnClickListener {
+            val sheet = CommonDialogFragment.newIntent(
+                "캡슐 신고",
+                "캡슐에 부적절한 콘텐츠가 존재 하나요?",
+                "캡슐 신고"
+            ) {
+                viewModel.reportCapsule()
+            }
+            sheet.show(parentFragmentManager, "reportCapsuleDialog")
             popupWindow.dismiss()
         }
         popupMenuBinding.menuDelete.setOnClickListener {

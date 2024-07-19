@@ -14,11 +14,12 @@ interface CapsuleDetailViewModel {
     fun getSecretCapsuleDetail(id:Long)
     fun getPublicCapsuleDetail(id:Long)
     fun getGroupCapsuleDetail(id:Long)
-
     fun deleteCapsule(id: Long, capsuleType: String)
+    fun reportCapsule(id: Long)
 
     sealed class DetailEvent {
         data class ShowToastMessage(val message : String) : DetailEvent()
+        object FinishActivity : DetailEvent()
         object ShowLoading : DetailEvent()
         object DismissLoading : DetailEvent()
     }

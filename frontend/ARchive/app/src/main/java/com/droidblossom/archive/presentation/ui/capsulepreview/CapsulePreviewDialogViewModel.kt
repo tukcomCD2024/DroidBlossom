@@ -55,6 +55,7 @@ interface CapsulePreviewDialogViewModel {
 
     fun setRemoveCapsule(remove: Boolean)
     fun deleteCapsule()
+    fun reportCapsule()
 
     sealed class CapsulePreviewDialogEvent{
         data class ShowToastMessage(val message : String) : CapsulePreviewDialogEvent()
