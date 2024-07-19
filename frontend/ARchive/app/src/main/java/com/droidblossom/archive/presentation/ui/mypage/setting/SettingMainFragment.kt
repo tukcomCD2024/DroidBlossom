@@ -16,6 +16,7 @@ import com.droidblossom.archive.databinding.FragmentSettingMainBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
+import com.droidblossom.archive.util.InquiryEmailSender
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -53,7 +54,7 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoInquire -> {
-                            goEmailIntent()
+                            InquiryEmailSender.sendEmail(context = requireContext())
                         }
 
                         SettingViewModel.SettingMainEvent.GoLicenses -> {
@@ -131,26 +132,4 @@ class SettingMainFragment :
         startActivity(notificationIntent)
     }
 
-    private fun goEmailIntent() {
-        val emailSelectorIntent = Intent(Intent.ACTION_SENDTO)
-        emailSelectorIntent.data = Uri.parse("mailto:")
-
-        val address = arrayOf("archivetimecapsule@gmail.com")
-
-        val emailIntent = Intent(Intent.ACTION_SEND)
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, address)
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "<ARchive 문의사항 보내기>")
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "")
-
-        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        emailIntent.selector = emailSelectorIntent
-
-        startActivity(emailIntent)
-//        if (emailIntent.resolveActivity((activity as SettingActivity).packageManager) != null) {
-//            startActivity(emailIntent)
-//        } else {
-//            showToastMessage("메일을 연결할 앱이 없습니다.")
-//        }
-    }
 }

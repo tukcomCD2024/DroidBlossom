@@ -1,14 +1,16 @@
 package com.droidblossom.archive.presentation.ui
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityErrorBinding
 import com.droidblossom.archive.presentation.ui.auth.AuthActivity
 import com.droidblossom.archive.util.DataStoreUtils
+import com.droidblossom.archive.util.InquiryEmailSender
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,11 +30,16 @@ class ErrorActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_error)
+        binding = ActivityErrorBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
         binding.btnReload.setOnClickListener {
             navigateBasedOnAuthStatus()
+        }
+
+        binding.inquireBtn.setOnClickListener {
+            InquiryEmailSender.sendEmail(context = this)
         }
     }
 
@@ -47,7 +54,6 @@ class ErrorActivity : AppCompatActivity() {
             finish()
         }
     }
-
 
     companion object {
         const val EXTRA_INTENT = "EXTRA_INTENT"

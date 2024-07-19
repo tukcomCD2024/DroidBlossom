@@ -1,92 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <data>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/temporaryMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="일시적인 오류입니다."
+        android:textAppearance="@style/TextAppearance.App.h1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35" />
 
-    </data>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/restartMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="새로고침을 눌러 페이지를 다시 불러올 수 있습니다."
+        android:textAppearance="@style/TextAppearance.App.body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temporaryMessageTextView" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_reload"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rectangle_solid_corner_30dp"
+        android:backgroundTint="@color/main_1"
+        android:text="새로고침"
+        android:textAppearance="@style/TextAppearance.App.caption1"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restartMessageTextView" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/temporaryMessageTextView"
+            android:id="@+id/repeatMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="일시적인 오류입니다."
-            android:textAppearance="@style/TextAppearance.App.h1"
+            android:text="같은 문제가 반복되시나요?"
+            android:textAppearance="@style/TextAppearance.App.body2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintEnd_toStartOf="@id/inquireBtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.35" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/restartMessageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/temporaryMessageTextView"
-            android:text="새로고침을 눌러 페이지를 다시 불러올 수 있습니다."
-            android:textAppearance="@style/TextAppearance.App.body1" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_reload"
-            android:layout_width="200dp"
+            android:id="@+id/inquireBtn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_solid_corner_30dp"
-            android:backgroundTint="@color/main_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/restartMessageTextView"
-            android:text="새로고침"
+            android:background="@drawable/rectangle_solid_corner_main2_30dp"
+            android:text="문의하기"
             android:textAppearance="@style/TextAppearance.App.caption1"
-            android:textColor="@color/white" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/main_2"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="20dp">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/repeatMessageTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="같은 문제가 반복되시나요?"
-                app:layout_constraintEnd_toStartOf="@id/inquireBtn"
-                android:textAppearance="@style/TextAppearance.App.body2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/inquireBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="문의하기"
-                app:layout_constraintStart_toEndOf="@id/repeatMessageTextView"
-                android:textAppearance="@style/TextAppearance.App.caption1"
-                android:background="@drawable/rectangle_solid_corner_main2_30dp"
-                android:textColor="@color/main_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/repeatMessageTextView"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>
