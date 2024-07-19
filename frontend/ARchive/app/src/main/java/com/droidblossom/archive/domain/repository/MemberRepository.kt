@@ -35,6 +35,7 @@ interface MemberRepository {
     suspend fun changePhoneValidMessage(request: VerificationNumberValidRequestDto): RetrofitResult<String>
     suspend fun changeTagSearchAvailable(request: TagSearchRequestDto) : RetrofitResult<String>
     suspend fun changePhoneSearchAvailable(request: PhoneSearchRequestDto) : RetrofitResult<String>
+    suspend fun reportUser(userId: Long): RetrofitResult<String>
     suspend fun getText() : RetrofitResult<Health>
 
 }
