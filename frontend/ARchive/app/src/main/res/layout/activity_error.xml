@@ -6,14 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/main_bg_1">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/temporaryMessageTextView"
+        android:id="@+id/errorTitleMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="일시적인 오류입니다."
         android:textAppearance="@style/TextAppearance.App.h1"
+        android:textColor="@color/design_default_color_error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -21,8 +23,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.35" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/closeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
+        android:src="@drawable/ic_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/restartMessageTextView"
+        android:id="@+id/informationMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -30,10 +41,10 @@
         android:textAppearance="@style/TextAppearance.App.body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/temporaryMessageTextView" />
+        app:layout_constraintTop_toBottomOf="@id/errorTitleMessage" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_reload"
+        android:id="@+id/reloadBtn"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -44,7 +55,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/restartMessageTextView" />
+        app:layout_constraintTop_toBottomOf="@id/informationMessage" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"

@@ -34,12 +34,16 @@ class ErrorActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        binding.btnReload.setOnClickListener {
+        binding.reloadBtn.setOnClickListener {
             navigateBasedOnAuthStatus()
         }
 
         binding.inquireBtn.setOnClickListener {
             InquiryEmailSender.sendEmail(context = this)
+        }
+
+        binding.closeBtn.setOnClickListener {
+            finish()
         }
     }
 
