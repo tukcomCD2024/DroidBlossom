@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.model.AppEvent
+import com.droidblossom.archive.presentation.ui.NetworkConnectionActivity
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
@@ -65,7 +66,7 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
     fun onEvent(event: AppEvent) {
         when (event) {
             is AppEvent.NetworkDisconnectedEvent -> {
-                showToastMessage("네트워크")
+                startActivity(NetworkConnectionActivity.newIntent(this))
             }
             is AppEvent.NotificationReceivedEvent -> {
                 showToastMessage("알림")
