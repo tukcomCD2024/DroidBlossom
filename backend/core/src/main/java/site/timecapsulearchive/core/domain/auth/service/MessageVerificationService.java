@@ -10,12 +10,6 @@ import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSend
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
-import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
-import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
-import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;

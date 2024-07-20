@@ -25,4 +25,12 @@ public interface VideoRepository extends Repository<Video, Long>, VideoQueryRepo
         @Param("groupCapsuleIds") List<Long> groupCapsuleIds,
         @Param("deletedAt") ZonedDateTime deletedAt
     );
+
+    @Query("UPDATE Video v SET v.deletedAt = :deletedAt WHERE v.member.id = :memberId and v.capsule.id = :capsuleId")
+    @Modifying
+    void deleteByMemberIdAndCapsuleId(
+        @Param("memberId") Long memberId,
+        @Param("capsuleId") Long capsuleId,
+        @Param("deletedAt") ZonedDateTime deletedAt
+    );
 }

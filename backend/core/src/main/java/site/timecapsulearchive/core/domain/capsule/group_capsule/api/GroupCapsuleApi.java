@@ -9,26 +9,26 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import java.time.ZonedDateTime;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleCreateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.reqeust.GroupCapsuleUpdateRequest;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleMembersResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleOpenStateResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupCapsuleSummaryResponse;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.GroupSpecificCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.response.MyGroupCapsuleSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 
-@Validated
 public interface GroupCapsuleApi {
 
     @Operation(
@@ -103,8 +103,31 @@ public interface GroupCapsuleApi {
     );
 
     @Operation(
-        summary = "그룹 캡슐 목록 조회",
-        description = "그룹원만 볼 수 있는 그룹 캡슐 목록을 조회한다.",
+        summary = "사용자가 속해있는 그룹들의 캡슐 목록 조회",
+        description = "사용자가 속해있는 그룹들의 그룹 캡슐 목록을 조회한다.",
+        security = {@SecurityRequirement(name = "user_token")},
+        tags = {"group capsule"}
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "처리 완료"
+        )
+    })
+    ResponseEntity<ApiSpec<GroupCapsuleSliceResponse>> getGroupCapsules(
+        Long memberId,
+
+        @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
+        @Max(value = 40, message = "최대 페이징 크기는 40입니다.")
+        int size,
+
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
+        Long lastCapsuleId
+    );
+
+    @Operation(
+        summary = "그룹 소유 캡슐 목록 조회",
+        description = "그룹이 소유한 그룹원만 볼 수 있는 그룹 캡슐 목록을 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"group capsule"}
     )
@@ -119,7 +142,7 @@ public interface GroupCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<GroupCapsuleSliceResponse>> getGroupCapsules(
+    ResponseEntity<ApiSpec<GroupSpecificCapsuleSliceResponse>> getGroupSpecificCapsules(
         Long memberId,
 
         @Parameter(in = ParameterIn.QUERY, description = "그룹 아이디", required = true)

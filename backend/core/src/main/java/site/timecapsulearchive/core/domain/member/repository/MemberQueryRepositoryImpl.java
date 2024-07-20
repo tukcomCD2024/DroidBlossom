@@ -76,6 +76,12 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         member.nickname,
                         member.profileUrl,
                         member.tag,
+                        member.socialType,
+                        member.email,
+                        Projections.constructor(
+                            ByteArrayWrapper.class,
+                            member.phone
+                        ),
                         countDistinct(memberFriend.id),
                         countDistinct(memberGroup.id)
                     )
@@ -126,7 +132,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     public Optional<ByteArrayWrapper> findMemberPhoneHash(final Long memberId) {
         final byte[] phoneHash = jpaQueryFactory
             .select(
-                member.phone_hash
+                member.phoneHash
             )
             .from(member)
             .where(member.id.eq(memberId))

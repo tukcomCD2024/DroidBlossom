@@ -14,6 +14,8 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
 
     Member save(Member createMember);
 
+    void saveAndFlush(Member member);
+
     Optional<Member> findMemberById(Long memberId);
 
     @Modifying(clearAutomatically = true)
@@ -37,11 +39,25 @@ public interface MemberRepository extends Repository<Member, Long>, MemberQueryR
 
     void delete(Member member);
 
-    @Query("UPDATE Member m SET m.phone_hash = :phoneHash, m.phone = :encryptedPhone WHERE m.id = :memberId")
+    @Query("UPDATE Member m SET m.phoneHash = :phoneHash, m.phone = :encryptedPhone WHERE m.id = :memberId")
     @Modifying(clearAutomatically = true)
     int updateMemberPhoneHashAndPhone(
         @Param("memberId") Long memberId,
         @Param("phoneHash") byte[] phoneHash,
         @Param("encryptedPhone") byte[] encryptedPhone
+    );
+
+    @Query("UPDATE Member m SET m.tagSearchAvailable = :tagSearchAvailable WHERE m.id = :memberId")
+    @Modifying(clearAutomatically = true)
+    int updateMemberTagSearchAvailable(
+        @Param("memberId") Long memberId,
+        @Param("tagSearchAvailable") Boolean tagSearchAvailable
+    );
+
+    @Query("UPDATE Member m SET m.phoneSearchAvailable = :phoneSearchAvailable WHERE m.id = :memberId")
+    @Modifying(clearAutomatically = true)
+    int updateMemberPhoneSearchAvailable(
+        @Param("memberId") Long memberId,
+        @Param("phoneSearchAvailable") Boolean phoneSearchAvailable
     );
 }

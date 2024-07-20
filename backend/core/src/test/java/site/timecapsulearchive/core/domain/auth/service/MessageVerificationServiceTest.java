@@ -6,22 +6,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
-import site.timecapsulearchive.core.common.fixture.domain.MemberTemporaryFixture;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
-import site.timecapsulearchive.core.domain.member.entity.Member;
-import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
-import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
-import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
 class MessageVerificationServiceTest {
@@ -80,4 +73,5 @@ class MessageVerificationServiceTest {
             MEMBER_ID, certificationNumber, RECEIVER.getBytes(StandardCharsets.UTF_8)))
             .isInstanceOf(CertificationNumberNotMatchException.class);
     }
+
 }

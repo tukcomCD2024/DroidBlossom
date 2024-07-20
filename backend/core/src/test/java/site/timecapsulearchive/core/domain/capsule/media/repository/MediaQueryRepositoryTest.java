@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.domain.capsule.media.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import javax.sql.DataSource;

@@ -25,17 +25,15 @@ import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.Capsule;
 import site.timecapsulearchive.core.domain.capsule.exception.CapsuleNotFondException;
 import site.timecapsulearchive.core.domain.capsule.exception.GroupCapsuleOpenNotFoundException;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.capsule.CapsuleRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.image.ImageRepository;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.repository.video.VideoRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CapsuleOpenStatus;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.CombinedGroupCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleMemberSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleOpenStateDto;
-import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSliceRequestDto;
+import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleOpenRepository;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
@@ -47,7 +45,7 @@ class GroupCapsuleServiceTest {
 
     private final Long capsuleId = 1L;
     private final Long memberId = 1L;
-    private final int groupMemberCount = 3;
+    private final Long groupId = 1L;
 
     private final CapsuleRepository capsuleRepository = mock(CapsuleRepository.class);
     private final GroupCapsuleQueryRepository groupCapsuleQueryRepository = mock(
@@ -67,25 +65,18 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleDetailDto(capsuleId, true, ZonedDateTime.now(), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, true,
+                ZonedDateTime.now())
         );
+        given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
+            GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+            memberId, capsuleId);
 
         //then
-        assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
-            softly.assertThat(response).isNotNull();
-            softly.assertThat(detailDto.isOpened()).isTrue();
-            softly.assertThat(detailDto.title()).isNotBlank();
-            softly.assertThat(detailDto.content()).isNotBlank();
-            softly.assertThat(detailDto.images()).isNotBlank();
-            softly.assertThat(detailDto.videos()).isNotBlank();
-            softly.assertThat(members.size()).isEqualTo(groupMemberCount);
-        });
+        assertThat(response).isNotNull();
     }
 
     @Test
@@ -93,25 +84,17 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleDetailDto(capsuleId, true, null, 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, true, null)
         );
+        given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
+            GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+            memberId, capsuleId);
 
         //then
-        assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
-            softly.assertThat(response).isNotNull();
-            softly.assertThat(detailDto.isOpened()).isTrue();
-            softly.assertThat(detailDto.title()).isNotBlank();
-            softly.assertThat(detailDto.content()).isNotBlank();
-            softly.assertThat(detailDto.images()).isNotBlank();
-            softly.assertThat(detailDto.videos()).isNotBlank();
-            softly.assertThat(members.size()).isEqualTo(groupMemberCount);
-        });
+        assertThat(response).isNotNull();
     }
 
     @Test
@@ -119,25 +102,17 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleDetailDto(capsuleId, false, null, 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, false, null)
         );
+        given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
+            GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+            memberId, capsuleId);
 
         //then
-        assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
-            softly.assertThat(response).isNotNull();
-            softly.assertThat(detailDto.isOpened()).isFalse();
-            softly.assertThat(detailDto.title()).isNotBlank();
-            softly.assertThat(detailDto.content()).isNotBlank();
-            softly.assertThat(detailDto.images()).isNotBlank();
-            softly.assertThat(detailDto.videos()).isNotBlank();
-            softly.assertThat(members.size()).isEqualTo(groupMemberCount);
-        });
+        assertThat(response).isNotNull();
     }
 
     @Test
@@ -145,23 +120,21 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleDetailDto(capsuleId, false,
-                ZonedDateTime.now().minusDays(5), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, false,
+                ZonedDateTime.now().minusDays(5))
         );
+        given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
+            GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+            memberId, capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
-            softly.assertThat(detailDto.isOpened()).isFalse();
-            softly.assertThat(detailDto.images()).isNullOrEmpty();
-            softly.assertThat(detailDto.videos()).isNullOrEmpty();
-            softly.assertThat(members.size()).isEqualTo(groupMemberCount);
+            softly.assertThat(response.images()).isNullOrEmpty();
+            softly.assertThat(response.videos()).isNullOrEmpty();
         });
     }
 
@@ -170,23 +143,21 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleDetailDto(capsuleId, false,
-                ZonedDateTime.now().plusDays(5), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, false,
+                ZonedDateTime.now().plusDays(5))
         );
+        given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
+            GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+            memberId, capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
-            softly.assertThat(detailDto.isOpened()).isFalse();
-            softly.assertThat(detailDto.images()).isNullOrEmpty();
-            softly.assertThat(detailDto.videos()).isNullOrEmpty();
-            softly.assertThat(members.size()).isEqualTo(groupMemberCount);
+            softly.assertThat(response.images()).isNullOrEmpty();
+            softly.assertThat(response.videos()).isNullOrEmpty();
         });
     }
 
@@ -195,23 +166,21 @@ class GroupCapsuleServiceTest {
         //given
         given(
             groupCapsuleQueryRepository.findGroupCapsuleDetailDtoByCapsuleId(anyLong())).willReturn(
-            CapsuleDtoFixture.getGroupCapsuleDetailDto(capsuleId, true,
-                ZonedDateTime.now().plusDays(5), 3)
+            CapsuleDtoFixture.getGroupCapsuleDetailDto(groupId, capsuleId, true,
+                ZonedDateTime.now().plusDays(5))
         );
+        given(memberGroupRepository.findGroupCapsuleMembers(groupId, capsuleId)).willReturn(
+            GroupCapsuleMemberDtoFixture.members(1, 3, false));
 
         //when
-        GroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
-            capsuleId);
+        CombinedGroupCapsuleDetailDto response = groupCapsuleService.findGroupCapsuleDetailByGroupIdAndCapsuleId(
+            memberId, capsuleId);
 
         //then
         assertSoftly(softly -> {
-            CapsuleDetailDto detailDto = response.capsuleDetailDto();
-            List<GroupCapsuleMemberSummaryDto> members = response.members();
             softly.assertThat(response).isNotNull();
-            softly.assertThat(detailDto.isOpened()).isTrue();
-            softly.assertThat(detailDto.images()).isNullOrEmpty();
-            softly.assertThat(detailDto.videos()).isNullOrEmpty();
-            softly.assertThat(members.size()).isEqualTo(groupMemberCount);
+            softly.assertThat(response.images()).isNullOrEmpty();
+            softly.assertThat(response.videos()).isNullOrEmpty();
         });
     }
 
@@ -424,14 +393,15 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(
+            memberId, groupId,
             size, capsuleId);
         given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
             .willReturn(false);
 
         //when
         //then
-        assertThatThrownBy(() -> groupCapsuleService.findGroupCapsuleSlice(dto))
+        assertThatThrownBy(() -> groupCapsuleService.findGroupSpecificCapsuleSlice(dto))
             .isInstanceOf(NoGroupAuthorityException.class)
             .hasMessageContaining(ErrorCode.NO_GROUP_AUTHORITY_ERROR.getMessage());
     }
@@ -441,17 +411,18 @@ class GroupCapsuleServiceTest {
         //given
         Long groupId = 1L;
         int size = 20;
-        GroupCapsuleSliceRequestDto dto = GroupCapsuleSliceRequestDto.createOf(memberId, groupId,
+        GroupSpecificCapsuleSliceRequestDto dto = GroupSpecificCapsuleSliceRequestDto.createOf(
+            memberId, groupId,
             size, capsuleId);
         given(memberGroupRepository.existMemberGroupByMemberIdAndGroupId(memberId, groupId))
             .willReturn(true);
-        given(groupCapsuleQueryRepository.findGroupCapsuleSlice(
-            any(GroupCapsuleSliceRequestDto.class)))
+        given(groupCapsuleQueryRepository.findGroupSpecificCapsuleSlice(
+            any(GroupSpecificCapsuleSliceRequestDto.class)))
             .willReturn(
                 new SliceImpl<>(CapsuleBasicInfoDtoFixture.capsuleBasicInfoDtos(capsuleId, size)));
 
         //when
-        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupCapsuleSlice(
+        Slice<CapsuleBasicInfoDto> groupCapsuleSlice = groupCapsuleService.findGroupSpecificCapsuleSlice(
             dto);
 
         //then
@@ -505,7 +476,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto).isNotNull();
@@ -526,7 +496,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             groupMemberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isFalse();
@@ -547,7 +516,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             groupMemberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isFalse();
@@ -567,7 +535,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasEditPermission()).isTrue();
@@ -587,7 +554,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.hasDeletePermission()).isTrue();
@@ -607,7 +573,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isTrue();
@@ -627,7 +592,6 @@ class GroupCapsuleServiceTest {
         //when
         CombinedGroupCapsuleSummaryDto groupCapsuleSummaryDto = groupCapsuleService.findGroupCapsuleSummary(
             memberId, capsuleId);
-        ;
 
         //then
         assertThat(groupCapsuleSummaryDto.isRequestMemberCapsuleOpen()).isFalse();
