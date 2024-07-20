@@ -3,6 +3,8 @@ package site.timecapsulearchive.core.domain.capsuleskin.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,6 +16,7 @@ import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkin
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinStatusResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface CapsuleSkinApi {
 
@@ -75,7 +78,8 @@ public interface CapsuleSkinApi {
         ),
         @ApiResponse(
             responseCode = "500",
-            description = "외부 API 요청 실패"
+            description = "외부 API 요청 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<CapsuleSkinStatusResponse>> createCapsuleSkin(
@@ -112,7 +116,8 @@ public interface CapsuleSkinApi {
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "캡슐 스킨을 찾을 수 없을 때 발생한다."
+            description = "캡슐 스킨을 찾을 수 없을 때 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<CapsuleSkinDeleteResultResponse>> deleteCapsuleSkin(
