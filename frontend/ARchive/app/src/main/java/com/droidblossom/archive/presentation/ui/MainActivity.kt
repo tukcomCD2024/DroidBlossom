@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -293,6 +294,18 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
     }
 
     private fun initBottomNav() {
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewModel.selectedMainTab.value == MainPage.HOME) {
+                    finish()
+                    //moveTaskToBack(true)
+                } else {
+                    viewModel.setMainTab(MainPage.HOME)
+                }
+            }
+        })
+
         binding.fab.setOnClickListener {
             viewModel.mainEvent(MainViewModel.MainEvent.NavigateToCamera)
         }
@@ -428,7 +441,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             }
         }
     }
-
 
     companion object {
         fun goMain(context: Context) {
