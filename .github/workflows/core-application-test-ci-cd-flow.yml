@@ -111,7 +111,7 @@ jobs:
 
       - name: Add Github Actions IP to Security group
         run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_TEST_ENV_SG_ID }} --group-name ${{secrets.AWS_TEST_ENV_SG_NAME}} --cidr ${{ steps.ip.outputs.ipv4 }}/32 --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "UserIdGroupPairs": [{"VpcId": "${{ secrets.AWS_VPC_ID }}"}]}]'
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_TEST_ENV_SG_ID }} --group-name ${{secrets.AWS_TEST_ENV_SG_NAME}} --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "${{ steps.ip.outputs.ipv4 }}", "Description": "SSH access"}], "UserIdGroupPairs": [{"VpcId": "${{ secrets.AWS_VPC_ID }}"}]}]'
 
       - name: Connect ec2 and Run Docker Container
         uses: appleboy/ssh-action@v0.1.6
