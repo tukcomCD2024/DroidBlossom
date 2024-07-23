@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_settingMainFragment_to_settingUserFragment"
             app:destination="@id/settingUserFragment" />
+        <action
+            android:id="@+id/action_settingMainFragment_to_settingPrivacyPolicyFragment"
+            app:destination="@id/settingPrivacyPolicyFragment" />
     </fragment>
 
     <fragment
@@ -53,5 +56,9 @@
         android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingUserModifyFragment"
         android:label="SettingUserModifyFragment"
         tools:layout="@layout/fragment_setting_user_modify" />
+    <fragment
+        android:id="@+id/settingPrivacyPolicyFragment"
+        android:name="com.droidblossom.archive.presentation.ui.mypage.setting.page.SettingPrivacyPolicyFragment"
+        android:label="SettingPrivacyPolicyFragment" />
 
 </navigation>

@@ -111,6 +111,12 @@ class SettingViewModelImpl @Inject constructor(
         }
     }
 
+    override fun goPrivacyPolicy(){
+        viewModelScope.launch {
+            _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoPrivacyPolicy)
+        }
+    }
+
     override fun goLicenses() {
         viewModelScope.launch {
             _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoLicenses)

@@ -96,6 +96,9 @@ class SettingMainFragment :
                         SettingViewModel.SettingMainEvent.GoUser -> {
                             navController.navigate(R.id.action_settingMainFragment_to_settingUserFragment)
                         }
+                        SettingViewModel.SettingMainEvent.GoPrivacyPolicy -> {
+                            navController.navigate(R.id.action_settingMainFragment_to_settingPrivacyPolicyFragment)
+                        }
 
                         is SettingViewModel.SettingMainEvent.ShowToastMessage -> {
                             showToastMessage(event.message)

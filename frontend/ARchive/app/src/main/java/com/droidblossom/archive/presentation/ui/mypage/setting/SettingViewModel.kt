@@ -25,6 +25,7 @@ interface SettingViewModel {
     fun goNotice()
     fun goAgree()
     fun goInquire()
+    fun goPrivacyPolicy()
     fun goLicenses()
     fun goLogout()
 
@@ -40,7 +41,9 @@ interface SettingViewModel {
         object GoUser : SettingMainEvent()
         object GoNotification : SettingMainEvent()
         object GoNotice : SettingMainEvent()
+        object GoPrivacyPolicy : SettingMainEvent()
         object GoAgree : SettingMainEvent()
+
         object GoInquire : SettingMainEvent()
         object GoLicenses : SettingMainEvent()
         object GoLogout : SettingMainEvent()
@@ -61,6 +64,6 @@ interface SettingViewModel {
     sealed class  SettingNotificationEvent {
         object  Back : SettingNotificationEvent()
         data class ShowToastMessage(val message : String) : SettingNotificationEvent()
-
     }
+
 }
