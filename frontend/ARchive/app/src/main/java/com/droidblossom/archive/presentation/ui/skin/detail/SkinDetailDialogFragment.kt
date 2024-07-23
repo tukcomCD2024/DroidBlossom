@@ -83,6 +83,7 @@ class SkinDetailDialogFragment :
         )
 
         popupMenuBinding.menuDelete.setOnClickListener {
+            viewModel.deleteSkin()
             popupWindow.dismiss()
         }
 

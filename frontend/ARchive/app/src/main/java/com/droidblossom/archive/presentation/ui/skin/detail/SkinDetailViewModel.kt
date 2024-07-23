@@ -12,6 +12,8 @@ interface SkinDetailViewModel {
     fun skinDetailEvent(event:SkinDetailEvent)
     fun setSkin(skin:CapsuleSkinSummary)
 
+    fun deleteSkin()
+
     sealed class SkinDetailEvent {
         object ModifySkin : SkinDetailEvent()
         object DeleteSkin : SkinDetailEvent()
