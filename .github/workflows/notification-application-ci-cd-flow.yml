@@ -95,7 +95,7 @@ jobs:
           images: |
             ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_TEST_ENV_NOTIFICATION_REPOSITORY_NAME }}
           tags: |
-            type=schedule,pattern={{date 'YYYYMMDD-hhmmss'}
+            type=schedule,pattern={{date 'YYYYMMDD-hhmmss'}}
 
       - name: Build and push
         uses: docker/build-push-action@v5
