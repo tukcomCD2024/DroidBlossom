@@ -279,9 +279,9 @@ class CameraFragment :
             arSceneView
         )
 
-        val layoutParams = binding.filterIcon.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = binding.scrollview.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
-        binding.filterIcon.layoutParams = layoutParams
+        binding.scrollview.layoutParams = layoutParams
 
         initCustomLifeCycle()
 
