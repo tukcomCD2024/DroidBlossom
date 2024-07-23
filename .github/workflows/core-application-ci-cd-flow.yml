@@ -5,6 +5,7 @@ on:
     branches:
       - develop_back_core
       - 'hotfix/[0-9a-zA-z]+-B-core-#[0-9a-zA-z]+'
+      - build/cicd-B-#572
   pull_request:
     branches:
       - develop_back_core

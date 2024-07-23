@@ -5,6 +5,7 @@ on:
     branches:
       - develop_back_notification
       - 'hotfix/[0-9a-zA-z]+-B-notification-#[0-9a-zA-z]+'
+      - build/cicd-B-#572
   pull_request:
     branches:
       - develop_back_notification
