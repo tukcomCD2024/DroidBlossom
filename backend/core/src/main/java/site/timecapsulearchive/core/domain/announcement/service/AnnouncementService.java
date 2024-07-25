@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.announcement.service;
 
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,10 @@ public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
 
     public List<AnnouncementDto> findAll() {
-        return announcementRepository.findAll();
+        List<AnnouncementDto> announcements = announcementRepository.findAll();
+
+        announcements.sort(Comparator.comparing(AnnouncementDto::createdAt).reversed());
+
+        return announcements;
     }
 }
