@@ -13,7 +13,7 @@ import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
 
 @RestController
-@RequestMapping
+@RequestMapping("/announcement")
 @RequiredArgsConstructor
 public class AnnouncementApiController implements AnnouncementApi {
 
