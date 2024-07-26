@@ -75,8 +75,9 @@ class SettingMainFragment :
                         }
 
                         SettingViewModel.SettingMainEvent.GoDeleteAccount -> {
+                            // 계정 탈퇴 후에는 24시간 이내에 복구가 가능하고 그 이후에는 모든 데이터가 영구적으로 삭제되며, 되돌릴 수 없습니다."
                             val sheet = CommonDialogFragment.newIntent(
-                                "계정 탈퇴","정말 탈퇴하시겠어요? \n 계정 탈퇴 후에는 24시간 이내에 복구가 가능하고 그 이후에는 모든 데이터가 영구적으로 삭제되며, 되돌릴 수 없습니다.",
+                                "계정 탈퇴", "정말 탈퇴하시겠어요? \n 계정 탈퇴 후에는 24시간 동안 로그인, 회원가입이 불가능하며, 그 이후에는 모든 데이터가 영구적으로 삭제되며, 되돌릴 수 없습니다.",
                                 "계정 탈퇴"
                             ) {
                                 viewModel.deleteAccountRequest()

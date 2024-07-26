@@ -134,15 +134,16 @@ class SignInFragment :
                         }
 
                         is AuthViewModel.SignInEvent.DeactivatedUserChecked -> {
-                            val sheet = CommonDialogFragment.newIntent(
-                                "계정 탈퇴",
-                                "탈퇴된 계정입니다. \n 계정을 복구하시겠습니까?",
-                                "계정 복구"
-                            ) {
-                                // 복구하는 로직 어떻게?
-                                // 새로운 api? 그냥 로그인?
-                            }
-                            sheet.show(parentFragmentManager, "reactivateAccountDialog")
+                            showToastMessage("계정이 탈퇴되었습니다. \n 탈퇴 후 24시간이 지나야 재가입이 가능합니다.");
+//                            val sheet = CommonDialogFragment.newIntent(
+//                                "계정 탈퇴",
+//                                "탈퇴된 계정입니다. \n 계정을 복구하시겠습니까?",
+//                                "계정 복구"
+//                            ) {
+//                                // 복구하는 로직 어떻게?
+//                                // 새로운 api? 그냥 로그인?
+//                            }
+//                            sheet.show(parentFragmentManager, "reactivateAccountDialog")
                         }
 
                     }
