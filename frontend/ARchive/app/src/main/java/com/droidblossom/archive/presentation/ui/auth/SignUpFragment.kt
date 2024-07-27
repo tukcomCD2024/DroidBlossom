@@ -58,16 +58,18 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
         binding.viewHeaderTitle.layoutParams = layoutParams
 
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val sheet = CommonDialogFragment.newIntent("휴대폰 변경","휴대폰 변을 취소하겠습니까?", "네") {
-                        requireActivity().finish()
+        if (viewModel.isPhoneChange.value){
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        val sheet = CommonDialogFragment.newIntent("휴대폰 변경","휴대폰 변을 취소하겠습니까?", "네") {
+                            requireActivity().finish()
+                        }
+                        sheet.show(parentFragmentManager, "logoutDialog")
                     }
-                    sheet.show(parentFragmentManager, "logoutDialog")
-                }
-            })
+                })
+        }
     }
 
     override fun observeData() {
