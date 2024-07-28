@@ -75,6 +75,9 @@ dependencies {
     //aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+    //locki
+    implementation 'com.github.loki4j:loki-logback-appender:1.4.1'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
