@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinCreateDto;
+import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinDeleteResultDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinSummaryDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinStatusResponse;
@@ -73,5 +74,22 @@ public class CapsuleSkinService {
     public CapsuleSkin findCapsuleSkinById(final Long capsuleSkinId) {
         return capsuleSkinRepository.findCapsuleSkinById(capsuleSkinId)
             .orElseThrow(CapsuleSkinNotFoundException::new);
+    }
+
+    @Transactional
+    public CapsuleSkinDeleteResultDto deleteCapsuleSkin(
+        final Long memberId,
+        final Long capsuleSkinId
+    ) {
+        boolean existRelatedCapsule = capsuleSkinRepository.existRelatedCapsule(memberId, capsuleSkinId);
+        if (existRelatedCapsule) {
+            return CapsuleSkinDeleteResultDto.fail();
+        }
+
+        CapsuleSkin capsuleSkin = capsuleSkinRepository.findCapsuleSkinByMemberIdAndId(memberId, capsuleSkinId)
+            .orElseThrow(CapsuleSkinNotFoundException::new);
+        capsuleSkinRepository.delete(capsuleSkin);
+
+        return CapsuleSkinDeleteResultDto.success();
     }
 }

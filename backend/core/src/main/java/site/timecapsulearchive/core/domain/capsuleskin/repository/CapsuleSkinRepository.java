@@ -21,4 +21,8 @@ public interface CapsuleSkinRepository extends Repository<CapsuleSkin, Long>,
         @Param("memberId") Long memberId,
         @Param("deletedAt") ZonedDateTime deletedAt
     );
+
+    void delete(CapsuleSkin capsuleSkin);
+
+    Optional<CapsuleSkin> findCapsuleSkinByMemberIdAndId(Long memberId, Long capsuleSkinId);
 }

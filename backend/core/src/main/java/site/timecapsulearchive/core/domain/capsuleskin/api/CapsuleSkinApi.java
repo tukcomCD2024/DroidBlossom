@@ -3,16 +3,20 @@ package site.timecapsulearchive.core.domain.capsuleskin.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.time.ZonedDateTime;
 import org.springframework.http.ResponseEntity;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinDeleteResultResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinStatusResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
+import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface CapsuleSkinApi {
 
@@ -74,7 +78,8 @@ public interface CapsuleSkinApi {
         ),
         @ApiResponse(
             responseCode = "500",
-            description = "외부 API 요청 실패"
+            description = "외부 API 요청 실패",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
     ResponseEntity<ApiSpec<CapsuleSkinStatusResponse>> createCapsuleSkin(
@@ -100,17 +105,24 @@ public interface CapsuleSkinApi {
 
     @Operation(
         summary = "캡슐 스킨 삭제",
-        description = "사용자가 소유한 캡슐 스킨을 삭제한다.",
+        description = "사용자가 소유한 캡슐 스킨을 삭제한다. 캡슐에 사용되는 경우 삭제되지 않는다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"capsule skin"}
     )
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "204",
+            responseCode = "200",
             description = "처리 완료"
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "캡슐 스킨을 찾을 수 없을 때 발생한다.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(
+    ResponseEntity<ApiSpec<CapsuleSkinDeleteResultResponse>> deleteCapsuleSkin(
+        Long memberId,
+
         @Parameter(in = ParameterIn.PATH, description = "캡슐 스킨 아이디", required = true)
         Long capsuleSkinId
     );

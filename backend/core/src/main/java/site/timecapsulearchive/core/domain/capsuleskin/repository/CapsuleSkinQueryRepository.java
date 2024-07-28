@@ -13,4 +13,6 @@ public interface CapsuleSkinQueryRepository {
     );
 
     boolean existByImageUrlAndMemberId(String imageUrl, Long memberId);
+
+    boolean existRelatedCapsule(Long memberId, Long capsuleSkinId);
 }
