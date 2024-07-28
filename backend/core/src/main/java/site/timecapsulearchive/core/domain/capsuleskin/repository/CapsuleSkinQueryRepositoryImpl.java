@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.capsuleskin.repository;
 
+import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
 import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
 
 import com.querydsl.core.types.Projections;
@@ -48,6 +49,18 @@ public class CapsuleSkinQueryRepositoryImpl implements CapsuleSkinQueryRepositor
             .selectOne()
             .from(capsuleSkin)
             .where(capsuleSkin.imageUrl.eq(imageUrl).and(capsuleSkin.member.id.eq(memberId)))
+            .fetchOne();
+
+        return count != null;
+    }
+
+    @Override
+    public boolean existRelatedCapsule(final Long memberId, final Long capsuleSkinId) {
+        Integer count = jpaQueryFactory
+            .selectOne()
+            .from(capsuleSkin)
+            .join(capsule).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .where(capsuleSkin.id.eq(capsuleSkinId).and(capsuleSkin.member.id.eq(memberId)))
             .fetchOne();
 
         return count != null;
