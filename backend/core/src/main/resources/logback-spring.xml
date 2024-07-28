@@ -22,8 +22,21 @@
       </message>
     </format>
   </appender>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>
+        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+      </Pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.hibernate" level="error" additivity="false">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="LOKI"/>
+  </logger>
 
   <root level="INFO">
+    <appender-ref ref="STDOUT"/>
     <appender-ref ref="LOKI" />
   </root>
 </configuration>
