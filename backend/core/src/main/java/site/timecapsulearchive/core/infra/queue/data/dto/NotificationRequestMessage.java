@@ -1,6 +1,6 @@
 package site.timecapsulearchive.core.infra.queue.data.dto;
 
-import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
+import site.timecapsulearchive.core.domain.notification.entity.NotificationStatus;
 
 public enum NotificationRequestMessage {
     CAPSULE_SKIN(NotificationStatus.SUCCESS, "캡슐 스킨 생성 알림", "이 생성되었습니다."),

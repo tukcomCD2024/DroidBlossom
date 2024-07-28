@@ -22,8 +22,30 @@ public record PublicCapsuleDetailDto(
     String images,
     String videos,
     Boolean isOpened,
-    CapsuleType capsuleType
+    CapsuleType capsuleType,
+    Boolean isOwner
 ) {
+
+    public PublicCapsuleDetailDto excludeTitleAndContentAndImagesAndVideos() {
+        return new PublicCapsuleDetailDto(
+            capsuleId,
+            capsuleSkinUrl,
+            dueDate,
+            nickname,
+            profileUrl,
+            createdAt,
+            point,
+            address,
+            roadName,
+            "",
+            "",
+            "",
+            "",
+            isOpened,
+            capsuleType,
+            isOwner
+        );
+    }
 
     public PublicCapsuleDetailResponse toResponse(
         final Function<Point, Point> changePointFunction,
@@ -51,6 +73,7 @@ public record PublicCapsuleDetailDto(
             .videoUrls(preSignedVideoUrls)
             .isOpened(isOpened)
             .capsuleType(capsuleType)
+            .isOwner(isOwner)
             .build();
     }
 }

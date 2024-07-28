@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.service.command;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -167,5 +168,12 @@ public class FriendCommandService {
             .orElseThrow(FriendInviteNotFoundException::new);
 
         friendInviteRepository.delete(friendInvite);
+    }
+
+    @Transactional
+    public void deleteRelatedAllFriendByMemberId(final Long memberId,
+        final ZonedDateTime deletedAt) {
+        friendInviteRepository.deleteByMemberId(memberId, deletedAt);
+        memberFriendRepository.deleteByMemberId(memberId, deletedAt);
     }
 }

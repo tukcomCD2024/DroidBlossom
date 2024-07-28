@@ -10,15 +10,12 @@ import site.timecapsulearchive.core.infra.queue.data.dto.FriendReqNotificationDt
 import site.timecapsulearchive.core.infra.queue.data.dto.FriendsReqNotificationsDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.core.infra.queue.data.dto.GroupInviteNotificationDto;
-import site.timecapsulearchive.core.infra.queue.data.dto.TreasureCaptureNotificationDto;
-import site.timecapsulearchive.core.infra.s3.manager.S3PreSignedUrlManager;
 
 @Component
 @RequiredArgsConstructor
 public class SocialNotificationManager {
 
     private final RabbitTemplate basicRabbitTemplate;
-    private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
     /**
      * 단건의 친구 요청을 받아서 알림 전송을 요청한다
@@ -89,20 +86,6 @@ public class SocialNotificationManager {
             RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getSuccessComponent(),
             RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
             GroupAcceptNotificationDto.createOf(targetId, groupMemberNickname)
-        );
-    }
-
-    public void sendTreasureCaptureMessage(
-        final Long targetId,
-        final String memberNickname,
-        final String treasureImageUrl
-    ) {
-        String preSignedUrl = s3PreSignedUrlManager.getS3PreSignedUrlForGet(treasureImageUrl);
-
-        basicRabbitTemplate.convertAndSend(
-            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getSuccessComponent(),
-            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_QUEUE.getSuccessComponent(),
-            TreasureCaptureNotificationDto.createOf(targetId, preSignedUrl, memberNickname)
         );
     }
 }

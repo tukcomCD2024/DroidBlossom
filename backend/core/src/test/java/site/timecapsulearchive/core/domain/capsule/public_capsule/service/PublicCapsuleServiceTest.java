@@ -9,7 +9,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import site.timecapsulearchive.core.common.fixture.dto.CapsuleDtoFixture;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.repository.PublicCapsuleQueryRepository;
 import site.timecapsulearchive.core.global.geography.GeoTransformConfig;
 import site.timecapsulearchive.core.infra.s3.config.S3Config;
@@ -34,10 +34,10 @@ class PublicCapsuleServiceTest {
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
             .willReturn(
-                CapsuleDtoFixture.getCapsuleDetailDto(capsuleId, true, ZonedDateTime.now()));
+                CapsuleDtoFixture.getPublicCapsuleDetailDto(capsuleId, true, ZonedDateTime.now()));
 
         //when
-        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        PublicCapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -56,10 +56,10 @@ class PublicCapsuleServiceTest {
         //given
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(CapsuleDtoFixture.getCapsuleDetailDto(capsuleId, true, null));
+            .willReturn(CapsuleDtoFixture.getPublicCapsuleDetailDto(capsuleId, true, null));
 
         //when
-        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        PublicCapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -78,10 +78,10 @@ class PublicCapsuleServiceTest {
         //given
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(CapsuleDtoFixture.getCapsuleDetailDto(capsuleId, false, null));
+            .willReturn(CapsuleDtoFixture.getPublicCapsuleDetailDto(capsuleId, false, null));
 
         //when
-        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        PublicCapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -100,11 +100,11 @@ class PublicCapsuleServiceTest {
         //given
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(CapsuleDtoFixture.getCapsuleDetailDto(capsuleId, false,
+            .willReturn(CapsuleDtoFixture.getPublicCapsuleDetailDto(capsuleId, false,
                 ZonedDateTime.now().minusDays(5)));
 
         //when
-        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        PublicCapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -121,11 +121,11 @@ class PublicCapsuleServiceTest {
         //given
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(CapsuleDtoFixture.getCapsuleDetailDto(capsuleId, false,
+            .willReturn(CapsuleDtoFixture.getPublicCapsuleDetailDto(capsuleId, false,
                 ZonedDateTime.now().plusDays(5)));
 
         //when
-        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        PublicCapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then
@@ -142,11 +142,11 @@ class PublicCapsuleServiceTest {
         //given
         given(publicCapsuleQueryRepository.findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
             anyLong(), anyLong()))
-            .willReturn(CapsuleDtoFixture.getCapsuleDetailDto(capsuleId, true,
+            .willReturn(CapsuleDtoFixture.getPublicCapsuleDetailDto(capsuleId, true,
                 ZonedDateTime.now().plusDays(5)));
 
         //when
-        CapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        PublicCapsuleDetailDto response = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         //then

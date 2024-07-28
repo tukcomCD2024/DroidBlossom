@@ -13,14 +13,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
+@Table(name = "member")
 @Getter
+@SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE member_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER")
 public class Member extends BaseEntity {
 
     @Id
@@ -32,7 +36,7 @@ public class Member extends BaseEntity {
     private byte[] phone;
 
     @Column(name = "phone_hash", unique = true)
-    private byte[] phone_hash;
+    private byte[] phoneHash;
 
     @Column(name = "profile_url", nullable = false)
     private String profileUrl;
@@ -66,9 +70,18 @@ public class Member extends BaseEntity {
     @Column(name = "tag", nullable = false, unique = true)
     private String tag;
 
+    @Column(name = "declaration_count")
+    private Long declarationCount = 0L;
+
+    @Column(name = "tag_search_available", nullable = false)
+    private Boolean tagSearchAvailable = Boolean.TRUE;
+
+    @Column(name = "phone_search_available", nullable = false)
+    private Boolean phoneSearchAvailable = Boolean.TRUE;
+
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,
-        String authId, String password, String tag, byte[] phone, byte[] phone_hash) {
+        String authId, String password, String tag, byte[] phone, byte[] phoneHash) {
         this.profileUrl = NullCheck.validate(profileUrl, "Entity: profile");
         this.nickname = NullCheck.validate(nickname, "Entity: nickname");
         this.socialType = NullCheck.validate(socialType, "Entity: socialType");
@@ -79,10 +92,19 @@ public class Member extends BaseEntity {
         this.notificationEnabled = false;
         this.password = password;
         this.phone = phone;
-        this.phone_hash = phone_hash;
+        this.phoneHash = phoneHash;
     }
 
     public void updateTagLowerCaseSocialType() {
         this.tag = TagGenerator.lowercase(email, socialType);
+    }
+
+    public void updateData(String nickname, String tag) {
+        this.nickname = nickname;
+        this.tag = tag;
+    }
+
+    public void upDeclarationCount() {
+        declarationCount++;
     }
 }
