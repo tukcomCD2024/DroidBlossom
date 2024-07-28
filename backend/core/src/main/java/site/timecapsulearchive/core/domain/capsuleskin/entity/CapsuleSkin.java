@@ -23,7 +23,7 @@ import site.timecapsulearchive.core.global.entity.BaseEntity;
 @Entity
 @Table(name = "capsule_skin")
 @Getter
-@SQLDelete(sql = "UPDATE `capsule_skin` SET deleted_at = now() WHERE caspuel_skin_id = ?")
+@SQLDelete(sql = "UPDATE `capsule_skin` SET deleted_at = now() WHERE capsule_skin_id = ?")
 @Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CapsuleSkin extends BaseEntity {
