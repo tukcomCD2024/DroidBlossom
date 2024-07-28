@@ -83,7 +83,9 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                             member.phone
                         ),
                         countDistinct(memberFriend.id),
-                        countDistinct(memberGroup.id)
+                        countDistinct(memberGroup.id),
+                        member.tagSearchAvailable,
+                        member.phoneSearchAvailable
                     )
                 )
                 .from(member)

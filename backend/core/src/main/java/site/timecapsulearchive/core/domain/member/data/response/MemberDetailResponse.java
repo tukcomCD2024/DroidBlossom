@@ -30,7 +30,13 @@ public record MemberDetailResponse(
     Long friendCount,
 
     @Schema(description = "그룹수")
-    Long groupCount
+    Long groupCount,
+
+    @Schema(description = "태그 검색 허용 여부")
+    Boolean tagSearchAvailable,
+
+    @Schema(description = "핸드폰 번호 검색 허용 여부")
+    Boolean phoneSearchAvailable
 ) {
 
     public static MemberDetailResponse createOf(
@@ -45,7 +51,9 @@ public record MemberDetailResponse(
             detailDto.email(),
             phoneDecryption.apply(detailDto.phone().data()),
             detailDto.friendCount(),
-            detailDto.groupCount()
+            detailDto.groupCount(),
+            detailDto.tagSearchAvailable(),
+            detailDto.phoneSearchAvailable()
         );
     }
 }
