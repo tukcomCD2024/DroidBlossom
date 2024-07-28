@@ -13,7 +13,9 @@ public record MemberDetailDto(
     String email,
     ByteArrayWrapper phone,
     Long friendCount,
-    Long groupCount
+    Long groupCount,
+    Boolean tagSearchAvailable,
+    Boolean phoneSearchAvailable
 ) {
 
 }

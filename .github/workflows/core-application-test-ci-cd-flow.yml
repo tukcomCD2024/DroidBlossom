@@ -1,13 +1,13 @@
-name: notification-ci/cd
+name: core-test-ci/cd
 
 on:
   push:
     branches:
-      - develop_back_notification
-      - 'hotfix/[0-9a-zA-z]+-B-notification-#[0-9a-zA-z]+'
+      - develop_back_core
+      - 'hotfix/[0-9a-zA-z]+-B-core-#[0-9a-zA-z]+'
   pull_request:
     branches:
-      - develop_back_notification
+      - develop_back_core
 
 jobs:
   build_and_test:
@@ -44,14 +44,14 @@ jobs:
       - name: test
         run: ./gradlew clean test
 
-  deploy-notification:
-    name: notification application deploy
+  deploy-core:
+    name: core application deploy
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: ./backend/notification
+        working-directory: ./backend/core
 
     permissions:
       id-token: write
@@ -83,12 +83,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -98,15 +92,14 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_ECR_NOTIFICATION_REPOSITORY_NAME }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_TEST_ENV_ECR_CORE_REPOSITORY_NAME }}
           tags: |
-            type=raw,value=latest
+            type=raw,value={{date 'YYYYMMDD-HHmmss'}}
 
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./backend/notification
-          platforms: linux/arm64
+          context: ./backend/core
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           provenance: false
@@ -117,29 +110,29 @@ jobs:
 
       - name: Add Github Actions IP to Security group
         run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_TEST_ENV_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - name: Connect ec2 and Run Docker Container
         uses: appleboy/ssh-action@v0.1.6
         env:
           AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
-          host: ${{ secrets.SSH_CORE_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_CORE_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_TEST_ENV_HOST }}
+          username: ${{ secrets.SSH_TEST_ENV_USERNAME }}
+          key: ${{ secrets.SSH_TEST_ENV_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_TEST_ENV_PORT }}
           script: |
-            docker ps -q --filter "name=notification" | xargs -r docker stop
-            docker ps -aq --filter "name=notification" | xargs -r docker rm
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_DOCKER_USER }} --password-stdin ${{ secrets.AWS_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            docker ps -q --filter "name=core" | xargs -r docker stop
+            docker ps -aq --filter "name=core" | xargs -r docker rm
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_TEST_ENV_DOCKER_USER }} --password-stdin ${{ secrets.AWS_TEST_ENV_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker image prune -f
             docker pull ${{ steps.meta.outputs.tags }}
-            docker run -d -p 8081:8081 -e ENVIRONMENT=dev --name notification --network test_backend ${{ steps.meta.outputs.tags }}
+            docker run -d -p 8080:8080 -e ENVIRONMENT=container --name core --network test_backend ${{ steps.meta.outputs.tags }}
 
       - name: Remove Github Actions IP from security group
         if: always()
         run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_EC2_CORE_SG_ID }} --group-name ${{secrets.AWS_EC2_CORE_SG_NAME}} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_TEST_ENV_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - uses: sarisia/actions-status-discord@v1
         if: success()
@@ -147,8 +140,8 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
           content: "여러분 <@384742716933668867> <@1084774841460215839> <@545902166842408960> <@1081452554149449748>\n 배포 완료했습니다!!"
-          title: "알림 서버 배포 완료 알림"
-          description: "백엔드 알림 개발 브랜치에 깃허브 액션으로 배포 완료"
+          title: "코어 테스트 서버 배포 완료 알림"
+          description: "백엔드 개발 브랜치에서 테스트 환경으로 깃허브 액션으로 배포 완료"
           image: ${{ secrets.EMBED_IMAGE }}
           color: 0x0000ff
           url: "https://github.com/tukcomCD2024/DroidBlossom/actions"
