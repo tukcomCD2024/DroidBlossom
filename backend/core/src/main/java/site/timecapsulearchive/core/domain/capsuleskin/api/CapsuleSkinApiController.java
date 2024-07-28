@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.timecapsulearchive.core.domain.capsuleskin.data.dto.CapsuleSkinDeleteResultDto;
 import site.timecapsulearchive.core.domain.capsuleskin.data.mapper.CapsuleSkinMapper;
 import site.timecapsulearchive.core.domain.capsuleskin.data.reqeust.CapsuleSkinCreateRequest;
+import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinDeleteResultResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinSearchPageResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinStatusResponse;
 import site.timecapsulearchive.core.domain.capsuleskin.data.response.CapsuleSkinsSliceResponse;
@@ -85,9 +87,18 @@ public class CapsuleSkinApiController implements CapsuleSkinApi {
 
     @DeleteMapping(value = "/{capsule_skin_id}")
     @Override
-    public ResponseEntity<ApiSpec<String>> deleteCapsuleSkin(
+    public ResponseEntity<ApiSpec<CapsuleSkinDeleteResultResponse>> deleteCapsuleSkin(
+        @AuthenticationPrincipal final Long memberId,
         @PathVariable(name = "capsule_skin_id") final Long capsuleSkinId
     ) {
-        return null;
+        CapsuleSkinDeleteResultDto capsuleSkinDeleteResultDto = capsuleSkinService.deleteCapsuleSkin(
+            memberId, capsuleSkinId);
+
+        return ResponseEntity.ok(
+            ApiSpec.success(
+                SuccessCode.SUCCESS,
+                CapsuleSkinDeleteResultResponse.createOf(capsuleSkinDeleteResultDto)
+            )
+        );
     }
 }

@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.CapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
@@ -57,7 +57,7 @@ public interface PublicCapsuleApi {
 
     @Operation(
         summary = "공개 캡슐 요약 조회",
-        description = "사용자의 친구들만 볼 수 있는 공개 캡슐 내용을 요약 조회한다.",
+        description = "사용자와 친구들이 만든 공개 캡슐 내용을 요약 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"public capsule"}
     )
@@ -77,7 +77,7 @@ public interface PublicCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getPublicCapsuleSummaryById(
+    ResponseEntity<ApiSpec<PublicCapsuleSummaryResponse>> getPublicCapsuleSummaryById(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true, schema = @Schema())
@@ -86,7 +86,7 @@ public interface PublicCapsuleApi {
 
     @Operation(
         summary = "공개 캡슐 상세 조회",
-        description = "사용자의 친구들만 볼 수 있는 공개 캡슐 내용을 조회한다.",
+        description = "사용자와 친구들이 만든 공개 캡슐 내용을 상세 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"public capsule"}
     )
@@ -106,7 +106,7 @@ public interface PublicCapsuleApi {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
     })
-    ResponseEntity<ApiSpec<CapsuleDetailResponse>> getPublicCapsuleDetailById(
+    ResponseEntity<ApiSpec<PublicCapsuleDetailResponse>> getPublicCapsuleDetailById(
         Long memberId,
 
         @Parameter(in = ParameterIn.PATH, description = "조회할 캡슐 아이디", required = true, schema = @Schema())
@@ -114,7 +114,7 @@ public interface PublicCapsuleApi {
     );
 
     @Operation(
-        summary = "친구가 만든 공개 캡슐 목록 조회",
+        summary = "사용자와 친구가 만든 공개 캡슐 목록 조회",
         description = "사용자와 친구가 만든 공개 캡슐 목록을 조회한다.",
         security = {@SecurityRequirement(name = "user_token")},
         tags = {"public capsule"}

@@ -124,27 +124,6 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Queue treasureCaptureQueue() {
-        return new Queue(
-            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_QUEUE.getSuccessComponent(),
-            true);
-    }
-
-    @Bean
-    public DirectExchange treasureCaptureExchange() {
-        return new DirectExchange(
-            RabbitmqComponentConstants.TREASURE_CAPTURE_NOTIFICATION_EXCHANGE.getSuccessComponent());
-    }
-
-    @Bean
-    public Binding treasureCaptureBinding() {
-        return BindingBuilder
-            .bind(treasureCaptureQueue())
-            .to(treasureCaptureExchange())
-            .withQueueName();
-    }
-
-    @Bean
     public RabbitTemplate publisherConfirmsRabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(publisherConfirmsConnectionFactory());
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
