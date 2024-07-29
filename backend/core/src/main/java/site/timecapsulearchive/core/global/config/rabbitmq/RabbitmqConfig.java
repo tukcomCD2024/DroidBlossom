@@ -7,7 +7,6 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +18,6 @@ public class RabbitmqConfig {
 
     private static final int MAX_RETRY_COUNT = 3;
     private static final String RETRY_HEADER = "x-retry-count";
-
-    private final RabbitmqProperties rabbitmqProperties;
 
     @Bean
     public Queue capsuleSkinQueue() {
@@ -156,13 +153,7 @@ public class RabbitmqConfig {
     public CachingConnectionFactory publisherConfirmsConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
 
-        connectionFactory.setHost(rabbitmqProperties.host());
-        connectionFactory.setPort(rabbitmqProperties.port());
-        connectionFactory.setUsername(rabbitmqProperties.userName());
-        connectionFactory.setPassword(rabbitmqProperties.password());
-        connectionFactory.setVirtualHost(rabbitmqProperties.virtualHost());
-        connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
-        connectionFactory.setPublisherReturns(true);
+        connectionFactory.afterPropertiesSet();
 
         return connectionFactory;
     }
