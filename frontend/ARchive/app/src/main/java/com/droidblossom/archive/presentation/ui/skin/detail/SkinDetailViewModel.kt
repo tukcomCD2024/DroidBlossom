@@ -8,6 +8,7 @@ interface SkinDetailViewModel {
 
     val skinDetailEvents: SharedFlow<SkinDetailEvent>
     val skin: StateFlow<CapsuleSkinSummary>
+    val removeSkin: StateFlow<Boolean>
 
     fun skinDetailEvent(event:SkinDetailEvent)
     fun setSkin(skin:CapsuleSkinSummary)

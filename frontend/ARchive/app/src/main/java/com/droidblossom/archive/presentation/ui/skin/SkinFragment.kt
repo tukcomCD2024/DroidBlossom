@@ -20,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.presentation.ui.skin.adapter.MySkinRVA
 import com.droidblossom.archive.presentation.ui.skin.detail.SkinDetailDialogFragment
+import com.droidblossom.archive.presentation.ui.skin.detail.SkinDetailDialogFragment.Companion.DELETE_SKIN
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity
 import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +46,18 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        parentFragmentManager.setFragmentResultListener(
+            DELETE_SKIN,
+            viewLifecycleOwner
+        ) { key, bundle ->
+            val skinId = bundle.getLong("skin")
+            val skinDeleteState = bundle.getBoolean("isDelete")
+            if (skinDeleteState){
+                viewModel.deleteSkin(skinId)
+            }
+        }
+
         binding.vm = viewModel
         initRVA()
         initSearchEdit()
@@ -54,6 +68,8 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         val layoutParams = binding.viewHeaderTitle.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.viewHeaderTitle.layoutParams = layoutParams
+
+
     }
 
 

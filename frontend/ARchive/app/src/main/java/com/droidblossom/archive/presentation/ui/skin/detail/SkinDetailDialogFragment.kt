@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.skin.detail
 
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +12,11 @@ import android.view.ViewTreeObserver
 import android.view.animation.OvershootInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinDetailDialogBinding
 import com.droidblossom.archive.databinding.PopupMenuCapsuleBinding
@@ -19,10 +24,12 @@ import com.droidblossom.archive.databinding.PopupMenuSkinBinding
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.presentation.base.BaseDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SkinDetailDialogFragment :
-    BaseDialogFragment<FragmentSkinDetailDialogBinding>(R.layout.fragment_skin_detail_dialog){
+    BaseDialogFragment<FragmentSkinDetailDialogBinding>(R.layout.fragment_skin_detail_dialog) {
 
     private val viewModel: SkinDetailViewModelImpl by viewModels()
 
@@ -59,18 +66,42 @@ class SkinDetailDialogFragment :
         }
 
         initView()
+        initObserver()
     }
 
-    private fun initView(){
-        with(binding){
+    private fun initView() {
+        with(binding) {
             menuImg.setOnClickListener { view ->
                 showPopupMenu(view)
             }
         }
     }
 
+    private fun initObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.skinDetailEvents.collect { event ->
+                    when (event) {
+                        is SkinDetailViewModel.SkinDetailEvent.DeleteSkin -> {
+                            dismiss()
+                        }
+
+                        is SkinDetailViewModel.SkinDetailEvent.ModifySkin -> {
+
+                        }
+
+                        is SkinDetailViewModel.SkinDetailEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun showPopupMenu(view: View) {
-        val popupMenuBinding = PopupMenuSkinBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+        val popupMenuBinding =
+            PopupMenuSkinBinding.inflate(LayoutInflater.from(requireContext()), null, false)
 
         val density = requireContext().resources.displayMetrics.density
         val widthPixels = (120 * density).toInt()
@@ -89,7 +120,10 @@ class SkinDetailDialogFragment :
 
         view.post {
 
-            popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+            popupWindow.contentView.measure(
+                View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED
+            )
             val popupWidth = popupWindow.contentView.measuredWidth
             //val popupHeight = popupWindow.contentView.measuredHeight
 
@@ -100,9 +134,21 @@ class SkinDetailDialogFragment :
 
         }
     }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val skinState = Bundle().apply {
+            skin?.let { putLong("skin", it.id) }
+            putBoolean("isDelete", viewModel.removeSkin.value)
+        }
+
+        setFragmentResult(DELETE_SKIN, skinState)
+    }
+
     companion object {
 
         const val TAG = "SkinDetail"
+        const val DELETE_SKIN = "removeSkin"
 
         fun newInstance(skin: CapsuleSkinSummary): SkinDetailDialogFragment {
             val args = Bundle().apply {

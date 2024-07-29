@@ -35,6 +35,10 @@ class SkinDetailViewModelImpl @Inject constructor(
     override val skin: StateFlow<CapsuleSkinSummary>
         get() = _skin
 
+    private val _removeSkin = MutableStateFlow(false)
+    override val removeSkin: StateFlow<Boolean> get() = _removeSkin
+
+
     override fun skinDetailEvent(event: SkinDetailViewModel.SkinDetailEvent) {
         viewModelScope.launch {
             _skinDetailEvents.emit(event)
@@ -51,14 +55,17 @@ class SkinDetailViewModelImpl @Inject constructor(
                 it.onSuccess { result ->
                     when(result.capsuleSkinDeleteResult){
                         "SUCCESS" -> {
-
+                            _removeSkin.value = true
+                            skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.ShowToastMessage("스킨 삭제를 성공했습니다."))
+                            skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.DeleteSkin)
                         }
                         "FAIL" -> {
-
+                            _removeSkin.value = false
+                            skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.ShowToastMessage("사용중인 스킨은 삭제할 수 없습니다."))
                         }
                     }
-                    Log.d("캡스", "$result")
                 }.onFail {
+                    _removeSkin.value = false
 
                 }
             }

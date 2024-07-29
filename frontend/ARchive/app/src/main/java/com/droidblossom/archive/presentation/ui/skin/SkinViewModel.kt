@@ -24,6 +24,8 @@ interface SkinViewModel {
 
     fun onScrollNearBottom()
 
+    fun deleteSkin(skinId: Long)
+
     sealed class SkinEvent {
         object ToSkinMake : SkinEvent()
         data class ShowToastMessage(val message : String) : SkinEvent()
