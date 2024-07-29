@@ -60,7 +60,8 @@ public class CapsuleSkinQueryRepositoryImpl implements CapsuleSkinQueryRepositor
             .selectOne()
             .from(capsuleSkin)
             .join(capsule).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .where(capsuleSkin.id.eq(capsuleSkinId).and(capsuleSkin.member.id.eq(memberId)))
+            .where(capsuleSkin.id.eq(capsuleSkinId).and(capsuleSkin.member.id.eq(memberId))
+                .and(capsule.deletedAt.isNull()))
             .fetchOne();
 
         return count != null;
