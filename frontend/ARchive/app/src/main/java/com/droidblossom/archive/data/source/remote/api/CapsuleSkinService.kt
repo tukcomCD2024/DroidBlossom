@@ -2,6 +2,7 @@ package com.droidblossom.archive.data.source.remote.api
 
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsMakeRequestDto
+import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinDeleteResultResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsMakeResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsSearchPageResponseDto
@@ -35,7 +36,7 @@ interface CapsuleSkinService {
     @DELETE("capsule-skins/{capsule_skin_id}")
     suspend fun deleteCapsuleSkinsApi(
         @Path("capsule_skin_id") capsuleSkinId : Long,
-    ) : Response<ResponseBody<String>>
+    ) : Response<ResponseBody<CapsuleSkinDeleteResultResponseDto>>
 
     @PATCH("capsule-skins/{capsule_skin_id}")
     suspend fun patchCapsuleSkinsModifyApi(

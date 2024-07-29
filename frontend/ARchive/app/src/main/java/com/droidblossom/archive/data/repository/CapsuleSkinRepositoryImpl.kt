@@ -3,12 +3,14 @@ package com.droidblossom.archive.data.repository
 import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsMakeRequestDto
 import com.droidblossom.archive.data.dto.capsule_skin.request.CapsuleSkinsSearchPageRequestDto
+import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinDeleteResultResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsMakeResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsPageResponseDto
 import com.droidblossom.archive.data.dto.capsule_skin.response.CapsuleSkinsSearchPageResponseDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.source.remote.api.CapsuleSkinService
+import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinDeleteResultResponse
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsMakeResponse
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsPageResponse
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsSearchPageResponse
@@ -29,8 +31,8 @@ class CapsuleSkinRepositoryImpl @Inject constructor(
         return apiHandler({api.postCapsuleSkinsApi(request) }) { response: ResponseBody<CapsuleSkinsMakeResponseDto> -> response.result.toModel()}
     }
 
-    override suspend fun deleteCapsuleSkin(capsuleSKinId: Long): RetrofitResult<String> {
-        return apiHandler({api.deleteCapsuleSkinsApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<String> -> response.result.toModel()}
+    override suspend fun deleteCapsuleSkin(capsuleSKinId: Long): RetrofitResult<CapsuleSkinDeleteResultResponse> {
+        return apiHandler({api.deleteCapsuleSkinsApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<CapsuleSkinDeleteResultResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun modifyCapsuleSkin(capsuleSKinId: Long): RetrofitResult<String> {

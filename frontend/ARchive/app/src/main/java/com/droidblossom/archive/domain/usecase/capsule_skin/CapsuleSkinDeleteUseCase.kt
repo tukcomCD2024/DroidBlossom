@@ -1,6 +1,7 @@
 package com.droidblossom.archive.domain.usecase.capsule_skin
 
 import android.util.Log
+import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinDeleteResultResponse
 import com.droidblossom.archive.domain.repository.CapsuleSkinRepository
 import com.droidblossom.archive.util.RetrofitResult
 import com.droidblossom.archive.util.onException
@@ -14,7 +15,7 @@ class CapsuleSkinDeleteUseCase @Inject constructor(
 ){
 
     suspend operator fun invoke(capsuleSkinId :Long) =
-        flow<RetrofitResult<String>> {
+        flow<RetrofitResult<CapsuleSkinDeleteResultResponse>> {
             try {
                 emit(repository.deleteCapsuleSkin(capsuleSkinId).onSuccess {
 

@@ -48,10 +48,18 @@ class SkinDetailViewModelImpl @Inject constructor(
     override fun deleteSkin(){
         viewModelScope.launch {
             capsuleSkinDeleteUseCase(skin.value.id).collect{
-                it.onSuccess {
+                it.onSuccess { result ->
+                    when(result.capsuleSkinDeleteResult){
+                        "SUCCESS" -> {
 
+                        }
+                        "FAIL" -> {
+
+                        }
+                    }
+                    Log.d("캡스", "$result")
                 }.onFail {
-                    
+
                 }
             }
         }
