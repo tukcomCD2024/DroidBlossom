@@ -38,20 +38,10 @@ class SettingNoticeFragment :
         noticeAdapter.submitList(
             listOf(
                 Notice(
-                    "아카이브 업데이트 : 1.1.0",
-                    "2024/03/01",
+                    "ARhive 출시 : 1.0.0",
+                    "2024/08/20",
                     listOf(
-                        NoticeContent("업데이트"),
-                        NoticeContent("했습니다 : 1.1.0")
-                    )
-                ),
-                Notice(
-                    "아카이브 업데이트 : 1.0.9",
-                    "2024/03/01",
-                    listOf(
-                        NoticeContent("업데이트"),
-                        NoticeContent("hey"),
-                        NoticeContent("keep going"),
+                        NoticeContent("✨앞으로 많은 관심 부탁드립니다!✨"),
                     )
                 )
             )

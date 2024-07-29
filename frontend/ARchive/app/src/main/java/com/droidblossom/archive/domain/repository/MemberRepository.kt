@@ -11,6 +11,7 @@ import com.droidblossom.archive.data.dto.member.request.PhoneSearchRequestDto
 import com.droidblossom.archive.data.dto.member.request.TagSearchRequestDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
 import com.droidblossom.archive.domain.model.auth.Health
+import com.droidblossom.archive.domain.model.member.Announcements
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.model.member.MemberStatus
 import com.droidblossom.archive.domain.model.member.NotificationPage
@@ -36,6 +37,8 @@ interface MemberRepository {
     suspend fun changeTagSearchAvailable(request: TagSearchRequestDto) : RetrofitResult<String>
     suspend fun changePhoneSearchAvailable(request: PhoneSearchRequestDto) : RetrofitResult<String>
     suspend fun reportUser(userId: Long): RetrofitResult<String>
+
+    suspend fun getAnnouncements() : RetrofitResult<Announcements>
     suspend fun getText() : RetrofitResult<Health>
 
 }

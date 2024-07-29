@@ -14,6 +14,7 @@ import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.request.PhoneSearchRequestDto
 import com.droidblossom.archive.data.dto.member.request.TagSearchRequestDto
+import com.droidblossom.archive.data.dto.member.response.AnnouncementsResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
@@ -21,6 +22,7 @@ import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.domain.model.auth.Health
 import com.droidblossom.archive.domain.model.auth.Token
 import com.droidblossom.archive.domain.model.auth.VerificationMessageResult
+import com.droidblossom.archive.domain.model.member.Announcements
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.model.member.MemberStatus
 import com.droidblossom.archive.domain.model.member.NotificationPage
@@ -85,6 +87,10 @@ class MemberRepositoryImpl @Inject constructor(
 
     override suspend fun reportUser(userId: Long): RetrofitResult<String> {
         return apiHandler({ api.patchUserDeclarationApi(targetId = userId) }) { response: ResponseBody<String> -> response.result.toModel() }
+    }
+
+    override suspend fun getAnnouncements(): RetrofitResult<Announcements> {
+        return apiHandler({ api.getAnnouncementsApi() }) { response: ResponseBody<AnnouncementsResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getText(): RetrofitResult<Health> {
