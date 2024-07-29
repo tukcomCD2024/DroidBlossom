@@ -22,6 +22,7 @@
       </message>
     </format>
   </appender>
+
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <Pattern>
@@ -30,13 +31,25 @@
     </encoder>
   </appender>
 
-  <logger name="org.hibernate" level="error" additivity="false">
-    <appender-ref ref="STDOUT"/>
-    <appender-ref ref="LOKI"/>
-  </logger>
+  <springProfile name="prod | container">
+    <logger name="org.hibernate" level="error" additivity="false">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="LOKI"/>
+    </logger>
 
-  <root level="INFO">
-    <appender-ref ref="STDOUT"/>
-    <appender-ref ref="LOKI" />
-  </root>
+    <root level="INFO">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="LOKI"/>
+    </root>
+  </springProfile>
+
+  <springProfile name="local | dev | test">
+    <logger name="org.hibernate" level="error" additivity="false">
+      <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="INFO">
+      <appender-ref ref="STDOUT"/>
+    </root>
+  </springProfile>
 </configuration>
