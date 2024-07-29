@@ -43,7 +43,7 @@ class SettingUserFragment :
         }
 
         binding.phoneCV.setOnClickListener {
-            val sheet = CommonDialogFragment.newIntent("휴대폰 변경","번호를 바꾸겠습니까?", "네") {
+            val sheet = CommonDialogFragment.newIntent("휴대폰 변경", "번호를 바꾸겠습니까?", "네") {
                 startActivity(AuthActivity.newIntent(requireContext(), true))
             }
             sheet.show(parentFragmentManager, "logoutDialog")
@@ -53,12 +53,12 @@ class SettingUserFragment :
             navController.navigate(R.id.action_settingUserFragment_to_settingUserModifyFragment)
         }
 
-        binding.tagSwitch.setOnCheckedChangeListener { _, b ->
-            viewModel.changeTagSearch(b)
+        binding.tagSwitch.setOnClickListener {
+            viewModel.changeTagSearch()
         }
 
-        binding.phoneSwitch.setOnCheckedChangeListener { _, b ->
-            viewModel.changePhoneSearchV(b)
+        binding.phoneSwitch.setOnClickListener {
+            viewModel.changePhoneSearchV()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -77,8 +77,8 @@ class SettingUserFragment :
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.settingUserEvents.collect {  event ->
-                    when(event) {
+                viewModel.settingUserEvents.collect { event ->
+                    when (event) {
                         is SettingViewModel.SettingUserEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }

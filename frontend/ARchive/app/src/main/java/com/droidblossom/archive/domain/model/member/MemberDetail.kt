@@ -10,7 +10,9 @@ data class MemberDetail(
     val email: String,
     val phone: String,
     val friendCount: Int,
-    val groupCount: Int
+    val groupCount: Int,
+    val tagSearchAvailable : Boolean,
+    val phoneSearchAvailable : Boolean,
 ){
     fun toUIModel() = ProfileData(
         profileId = 0,

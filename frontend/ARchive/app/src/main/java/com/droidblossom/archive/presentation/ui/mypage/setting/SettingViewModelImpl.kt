@@ -6,21 +6,16 @@ import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.usecase.auth.SignOutUseCase
 import com.droidblossom.archive.domain.usecase.member.ChangePhoneSearchAvailableUseCase
-import com.droidblossom.archive.domain.usecase.member.ChangePhoneValidMessageUseCase
 import com.droidblossom.archive.domain.usecase.member.ChangeTagSearchAvailableUseCase
 import com.droidblossom.archive.domain.usecase.member.DeleteAccountUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberDataModifyUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.member.NotificationEnabledUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
-import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
-import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -64,7 +59,13 @@ class SettingViewModelImpl @Inject constructor(
     override val settingUserEvents: SharedFlow<SettingViewModel.SettingUserEvent>
         get() = _settingUserEvent.asSharedFlow()
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", "", "", "", 0, 0))
+    private val _myInfo = MutableStateFlow(
+        MemberDetail(
+            "USER", "", "", "", "", "", 0, 0,
+            tagSearchAvailable = false,
+            phoneSearchAvailable = false
+        )
+    )
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
     override val modifyNameText = MutableStateFlow<String>("")
@@ -111,7 +112,7 @@ class SettingViewModelImpl @Inject constructor(
         }
     }
 
-    override fun goPrivacyPolicy(){
+    override fun goPrivacyPolicy() {
         viewModelScope.launch {
             _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoPrivacyPolicy)
         }
@@ -255,11 +256,11 @@ class SettingViewModelImpl @Inject constructor(
         }
     }
 
-    fun changeTagSearch(available: Boolean) {
+    fun changeTagSearch() {
         viewModelScope.launch {
-            changeTagSearchAvailableUseCase(available).collect { result ->
+            changeTagSearchAvailableUseCase(!myInfo.value.tagSearchAvailable).collect { result ->
                 result.onSuccess {
-                    if (available) {
+                    if (!myInfo.value.tagSearchAvailable) {
                         _settingUserEvent.emit(
                             SettingViewModel.SettingUserEvent.ShowToastMessage(
                                 "테그 검색을 허용합니다."
@@ -284,11 +285,11 @@ class SettingViewModelImpl @Inject constructor(
         }
     }
 
-    fun changePhoneSearchV(available: Boolean) {
+    fun changePhoneSearchV() {
         viewModelScope.launch {
-            changePhoneSearchAvailableUseCase(available).collect { result ->
+            changePhoneSearchAvailableUseCase(!myInfo.value.phoneSearchAvailable).collect { result ->
                 result.onSuccess {
-                    if (available) {
+                    if (!myInfo.value.phoneSearchAvailable) {
                         _settingUserEvent.emit(
                             SettingViewModel.SettingUserEvent.ShowToastMessage(
                                 "전화번호 검색을 허용합니다."

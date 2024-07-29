@@ -11,7 +11,9 @@ data class MemberDetailResponseDto(
     val email: String,
     val phone: String,
     val friendCount: Int,
-    val groupCount: Int
+    val groupCount: Int,
+    val tagSearchAvailable : Boolean,
+    val phoneSearchAvailable : Boolean,
 ) : Serializable {
 
     fun toModel() = MemberDetail(
@@ -23,5 +25,7 @@ data class MemberDetailResponseDto(
         phone = this.phone,
         friendCount = this.friendCount,
         groupCount = this.groupCount,
+        tagSearchAvailable = this.tagSearchAvailable,
+        phoneSearchAvailable = this.phoneSearchAvailable,
     )
 }

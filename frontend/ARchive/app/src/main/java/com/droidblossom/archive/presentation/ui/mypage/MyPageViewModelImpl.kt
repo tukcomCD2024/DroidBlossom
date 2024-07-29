@@ -39,7 +39,11 @@ class MyPageViewModelImpl @Inject constructor(
         get() = _myPageEvents.asSharedFlow()
 
 
-    private val _myInfo = MutableStateFlow(MemberDetail("USER", "", "", "","","",0, 0))
+    private val _myInfo =
+        MutableStateFlow(MemberDetail("USER", "", "", "", "", "", 0, 0,
+            tagSearchAvailable = false,
+            phoneSearchAvailable = false
+        ))
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
@@ -71,9 +75,9 @@ class MyPageViewModelImpl @Inject constructor(
         load()
         viewModelScope.launch {
             scrollEventFlow.collect {
-                if (myCapsules.value.isEmpty()){
+                if (myCapsules.value.isEmpty()) {
                     getLatestCapsulePage()
-                }else{
+                } else {
                     getCapsulePage()
                 }
             }
@@ -124,7 +128,7 @@ class MyPageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getLatestCapsulePage(){
+    override fun getLatestCapsulePage() {
         when (capsuleType.value) {
             MyPageFragment.SpinnerCapsuleType.SECRET -> {
                 getLatestSecretCapsulePage()
@@ -294,7 +298,7 @@ class MyPageViewModelImpl @Inject constructor(
 
     override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
         val currentList = _myCapsules.value.toMutableList()
-        currentList.removeAt(_myCapsules.value.indexOfFirst{it.capsuleId == capsuleId})
+        currentList.removeAt(_myCapsules.value.indexOfFirst { it.capsuleId == capsuleId })
         _myCapsules.value = currentList
     }
 
@@ -306,7 +310,7 @@ class MyPageViewModelImpl @Inject constructor(
     }
 
     override fun selectSpinnerItem(item: MyPageFragment.SpinnerCapsuleType) {
-        if (capsuleType.value != item){
+        if (capsuleType.value != item) {
             viewModelReload = true
             _capsuleType.value = item
         }
