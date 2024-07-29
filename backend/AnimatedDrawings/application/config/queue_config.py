@@ -2,9 +2,11 @@ from application.config.root_config import RootConfig
 
 
 class QueueConfig:
+    PROTOCOL = RootConfig.CONFIG_FILE['rabbitmq']['protocol']
     USERNAME = RootConfig.CONFIG_FILE['rabbitmq']['username']
     BROKER_HOST = RootConfig.CONFIG_FILE['rabbitmq']['host']
     PASSWORD = RootConfig.CONFIG_FILE['rabbitmq']['password']
+    PORT = RootConfig.CONFIG_FILE['rabbitmq']['port']
     VIRTUAL_HOST = RootConfig.CONFIG_FILE['rabbitmq']['virtual-host']
     CAPSULE_SKIN_REQUEST_QUEUE_NAME = RootConfig.CONFIG_FILE['rabbitmq'][
         'queue_name']
@@ -16,12 +18,12 @@ class QueueConfig:
         'notification_queue_name']
 
     @staticmethod
-    def get_celery_broker_url() -> str:
-        return 'pyamqp://%s:%s@%s:5672%s' % (QueueConfig.USERNAME,
-                                             QueueConfig.PASSWORD,
-                                             QueueConfig.BROKER_HOST,
-                                             QueueConfig.VIRTUAL_HOST)
-
-    @staticmethod
-    def get_kombu_broker_url() -> str:
-        return f'amqp://{QueueConfig.USERNAME}:{QueueConfig.PASSWORD}@{QueueConfig.BROKER_HOST}/{QueueConfig.VIRTUAL_HOST}'
+    def get_broker_url() -> str:
+        return (
+            f'{QueueConfig.PROTOCOL}://'
+            f'{QueueConfig.USERNAME}:'
+            f'{QueueConfig.PASSWORD}@'
+            f'{QueueConfig.BROKER_HOST}:'
+            f'{QueueConfig.PORT}'
+            f'{QueueConfig.VIRTUAL_HOST}'
+        )
