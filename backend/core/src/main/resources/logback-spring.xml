@@ -31,7 +31,7 @@
     </encoder>
   </appender>
 
-  <springProfile name="prod | container">
+  <springProfile name="prod">
     <logger name="org.hibernate" level="error" additivity="false">
       <appender-ref ref="STDOUT"/>
       <appender-ref ref="LOKI"/>
@@ -43,7 +43,7 @@
     </root>
   </springProfile>
 
-  <springProfile name="local | dev | test">
+  <springProfile name="local | dev | test | container">
     <logger name="org.hibernate" level="error" additivity="false">
       <appender-ref ref="STDOUT"/>
     </logger>
