@@ -1,5 +1,7 @@
 package site.timecapsulearchive.notification.global.config;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -11,6 +13,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import site.timecapsulearchive.notification.global.error.InternalServerException;
 
 @Configuration
 @EnableRabbit
@@ -141,6 +144,15 @@ public class RabbitmqConfig {
         connectionFactory.setUsername(rabbitmqProperties.userName());
         connectionFactory.setPassword(rabbitmqProperties.password());
         connectionFactory.setVirtualHost(rabbitmqProperties.virtualHost());
+
+        if (rabbitmqProperties.isSslEnabled()) {
+            try {
+                connectionFactory.getRabbitConnectionFactory().useSslProtocol();
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new InternalServerException(e);
+            }
+        }
+
         return connectionFactory;
     }
 }
