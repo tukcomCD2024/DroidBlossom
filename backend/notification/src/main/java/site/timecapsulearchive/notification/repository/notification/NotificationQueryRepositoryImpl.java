@@ -31,9 +31,10 @@ public class NotificationQueryRepositoryImpl implements NotificationQueryReposit
                     image_url,
                     created_at,
                     updated_at,
-                    status
+                    status,
+                    deleted_at
                 ) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
             new BatchPreparedStatementSetter() {
 
@@ -49,6 +50,7 @@ public class NotificationQueryRepositoryImpl implements NotificationQueryReposit
                     ps.setTimestamp(7, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setTimestamp(8, Timestamp.valueOf(ZonedDateTime.now().toLocalDateTime()));
                     ps.setString(9, String.valueOf(NotificationStatus.SUCCESS));
+                    ps.setNull(10, Types.TIMESTAMP);
                 }
 
                 @Override
