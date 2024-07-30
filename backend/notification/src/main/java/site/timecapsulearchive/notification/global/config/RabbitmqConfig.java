@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class RabbitmqConfig {
 
-    private final RabbitmqProperties rabbitmqProperties;
-
     @Bean
     public Queue capsuleSkinQueue() {
         return new Queue(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getSuccessComponent(), true);
@@ -136,11 +134,8 @@ public class RabbitmqConfig {
     public CachingConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
 
-        connectionFactory.setHost(rabbitmqProperties.host());
-        connectionFactory.setPort(rabbitmqProperties.port());
-        connectionFactory.setUsername(rabbitmqProperties.userName());
-        connectionFactory.setPassword(rabbitmqProperties.password());
-        connectionFactory.setVirtualHost(rabbitmqProperties.virtualHost());
+        connectionFactory.afterPropertiesSet();
+
         return connectionFactory;
     }
 }
