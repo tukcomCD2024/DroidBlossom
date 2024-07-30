@@ -13,14 +13,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
 import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
+@Table(name = "member_temporary")
 @Getter
+@SQLDelete(sql = "UPDATE member_temporary SET deleted_at = now() WHERE member_temporary_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_TEMPORARY")
 public class MemberTemporary extends BaseEntity {
 
     @Id
@@ -41,6 +45,7 @@ public class MemberTemporary extends BaseEntity {
     @Email
     @Column(name = "email", nullable = false)
     private String email;
+
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
 
@@ -62,7 +67,7 @@ public class MemberTemporary extends BaseEntity {
         this.tag = NullCheck.validate(tag, "Entity: tag");
     }
 
-    public Member toMember(final byte[] phone_hash, final byte[] phone) {
+    public Member toMember(final byte[] phoneHash, final byte[] phone) {
         return Member.builder()
             .profileUrl(profileUrl)
             .nickname(nickname)
@@ -70,7 +75,7 @@ public class MemberTemporary extends BaseEntity {
             .email(email)
             .authId(authId)
             .tag(tag)
-            .phone_hash(phone_hash)
+            .phoneHash(phoneHash)
             .phone(phone)
             .build();
     }

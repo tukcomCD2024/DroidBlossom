@@ -146,4 +146,15 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
             .where(memberGroup.group.id.eq(groupId).and(groupCapsuleOpen.capsule.id.eq(capsuleId)))
             .fetch();
     }
+
+    @Override
+    public List<Long> findGroupIdsByMemberId(Long memberId) {
+        return jpaQueryFactory
+            .select(
+                memberGroup.group.id
+            )
+            .from(memberGroup)
+            .where(memberGroup.member.id.eq(memberId))
+            .fetch();
+    }
 }

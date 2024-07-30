@@ -131,7 +131,8 @@ class FriendCommandServiceTest {
         //given
         Long memberId = 1L;
         Long friendId = 2L;
-        given(friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdAndFriendId(anyLong(), anyLong()))
+        given(friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdAndFriendId(anyLong(),
+            anyLong()))
             .willReturn(FriendInviteMemberIdsDtoFixture.duplicate(memberId, friendId));
 
         //when
@@ -146,7 +147,8 @@ class FriendCommandServiceTest {
         //given
         Long memberId = 1L;
         Long friendId = 2L;
-        given(friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdAndFriendId(anyLong(), anyLong()))
+        given(friendInviteRepository.findFriendInviteMemberIdsDtoByMemberIdAndFriendId(anyLong(),
+            anyLong()))
             .willReturn(FriendInviteMemberIdsDtoFixture.twoWay(memberId, friendId));
 
         //when
