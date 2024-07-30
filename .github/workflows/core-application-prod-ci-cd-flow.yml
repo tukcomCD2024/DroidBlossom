@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - prod_back_core
-      - build/cicd-prod-B-#580
       - 'hotfix/[0-9a-zA-z]+-B-prod-core-#[0-9a-zA-z]+'
   pull_request:
     branches:
