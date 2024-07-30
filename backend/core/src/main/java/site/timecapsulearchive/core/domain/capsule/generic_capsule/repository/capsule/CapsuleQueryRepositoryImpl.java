@@ -9,7 +9,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.ComparablePath;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,6 @@ import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyARCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.NearbyCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.treasure_capsule.data.dto.TreasureCapsuleSummaryDto;
-import site.timecapsulearchive.core.domain.member_group.entity.MemberGroup;
 
 @Repository
 @RequiredArgsConstructor
@@ -69,11 +67,13 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
             .join(capsule.member, member)
-            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
+            .where(
+                ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
             .fetch();
     }
 
-    private BooleanExpression capsuleFilter(CapsuleType capsuleType, Long memberId, List<Long> groupIds) {
+    private BooleanExpression capsuleFilter(CapsuleType capsuleType, Long memberId,
+        List<Long> groupIds) {
         return switch (capsuleType) {
             case ALL -> capsule.member.id.eq(memberId).or(capsule.group.id.in(groupIds));
             case TREASURE -> capsule.type.eq(capsuleType);
@@ -116,7 +116,8 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
             .from(capsule)
             .join(capsule.capsuleSkin, capsuleSkin)
             .join(capsule.member, member)
-            .where(ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
+            .where(
+                ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
             .fetch();
     }
 

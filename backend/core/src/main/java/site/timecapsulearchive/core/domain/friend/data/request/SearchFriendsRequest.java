@@ -3,7 +3,7 @@ package site.timecapsulearchive.core.domain.friend.data.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import site.timecapsulearchive.core.domain.friend.data.dto.PhoneBook;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
 
@@ -15,7 +15,7 @@ public record SearchFriendsRequest(
 ) {
 
     public List<ByteArrayWrapper> toPhoneEncryption(
-        final Function<byte[], byte[]> hashEncryptionFunction
+        final UnaryOperator<byte[]> hashEncryptionFunction
     ) {
         return phoneBooks.stream()
             .map(phoneBook -> new ByteArrayWrapper(hashEncryptionFunction.apply(
