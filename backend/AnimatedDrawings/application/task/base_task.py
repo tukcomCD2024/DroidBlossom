@@ -5,7 +5,6 @@ from celery import Task
 from celery.utils.log import get_task_logger
 from kombu import Queue, Exchange
 
-from application.config.logger_config import LoggerConfig
 from application.config.queue_config import QueueConfig
 from application.kombu_connection_pool import producers, connection
 from application.logging.logger_factory import LoggerFactory
@@ -24,7 +23,7 @@ class LogErrorsTask(Task):
 
     @celery.signals.after_setup_task_logger.connect
     def on_after_setup_logger(logger, **kwargs):
-        LoggerFactory.setup_logger(logger, LoggerConfig.CELERY_OUTPUT_FILE_PATH)
+        LoggerFactory.setup_logger(logger)
 
     def before_start(self, task_id, args, kwargs):
         self.task_logger.debug(kwargs)

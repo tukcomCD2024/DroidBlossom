@@ -25,4 +25,6 @@ RUN pip install -e .
 
 WORKDIR /app/application
 
+RUN mkdir log
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
