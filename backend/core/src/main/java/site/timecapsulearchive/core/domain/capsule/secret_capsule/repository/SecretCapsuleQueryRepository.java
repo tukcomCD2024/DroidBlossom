@@ -82,10 +82,11 @@ public class SecretCapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.eq(member.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
-            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
+            .leftJoin(image).on(capsule.eq(image.capsule), image.deletedAt.isNull())
+            .leftJoin(video).on(capsule.eq(video.capsule), video.deletedAt.isNull())
             .where(
                 capsule.id.eq(capsuleId)
                     .and(capsule.member.id.eq(memberId))
@@ -122,7 +123,8 @@ public class SecretCapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
             .where(
                 capsule.member.id.eq(memberId),
                 capsule.createdAt.lt(createdAt),

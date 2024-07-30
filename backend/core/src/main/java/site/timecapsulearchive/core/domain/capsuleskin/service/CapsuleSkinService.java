@@ -81,12 +81,14 @@ public class CapsuleSkinService {
         final Long memberId,
         final Long capsuleSkinId
     ) {
-        boolean existRelatedCapsule = capsuleSkinRepository.existRelatedCapsule(memberId, capsuleSkinId);
+        boolean existRelatedCapsule = capsuleSkinRepository.existRelatedCapsule(memberId,
+            capsuleSkinId);
         if (existRelatedCapsule) {
             return CapsuleSkinDeleteResultDto.fail();
         }
 
-        CapsuleSkin capsuleSkin = capsuleSkinRepository.findCapsuleSkinByMemberIdAndId(memberId, capsuleSkinId)
+        CapsuleSkin capsuleSkin = capsuleSkinRepository.findCapsuleSkinByMemberIdAndId(memberId,
+                capsuleSkinId)
             .orElseThrow(CapsuleSkinNotFoundException::new);
         capsuleSkinRepository.delete(capsuleSkin);
 
