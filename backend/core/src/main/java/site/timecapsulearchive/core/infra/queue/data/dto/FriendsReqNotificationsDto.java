@@ -1,7 +1,7 @@
 package site.timecapsulearchive.core.infra.queue.data.dto;
 
 import java.util.List;
-import site.timecapsulearchive.core.domain.member.entity.NotificationStatus;
+import site.timecapsulearchive.core.domain.notification.entity.NotificationStatus;
 
 public record FriendsReqNotificationsDto(
     String profileUrl,

@@ -25,12 +25,7 @@ public enum RabbitmqComponentConstants {
     GROUP_ACCEPT_NOTIFICATION_QUEUE("notification.groupAccept.queue",
         "fail.notification.groupAccept.queue"),
     GROUP_ACCEPT_NOTIFICATION_EXCHANGE("notification.groupAccept.exchange",
-        "fail.notification.groupAccept.exchange"),
-
-    TREASURE_CAPTURE_NOTIFICATION_QUEUE("notification.treasureCapture.queue",
-        "fail.notification.treasureCapture.queue"),
-    TREASURE_CAPTURE_NOTIFICATION_EXCHANGE("notification.treasureCapture.exchange",
-        "fail.notification.treasureCapture.exchange");
+        "fail.notification.groupAccept.exchange");
 
     private final String successComponent;
     private final String failComponent;
