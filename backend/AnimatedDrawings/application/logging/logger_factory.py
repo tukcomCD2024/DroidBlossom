@@ -18,13 +18,13 @@ class LoggerFactory:
 
         LoggerFactory._setup_handler(LoggerConfig.FORMAT_STRING,
                                      LoggerConfig.LOGGING_LEVEL,
-                                     logger,
-                                     LoggerConfig.APPLICATION_OUTPUT_FILE_PATH)
+                                     logger
+                                     )
 
         return logger
 
     @staticmethod
-    def setup_logger(logger: logging.Logger, output_file_path: str) -> None:
+    def setup_logger(logger: logging.Logger) -> None:
         """
         파라미터로 받은 로거에 포맷터를 설정한다.
         :param logger: 설정할 로거
@@ -32,20 +32,15 @@ class LoggerFactory:
         """
         LoggerFactory._setup_handler(LoggerConfig.FORMAT_STRING,
                                      LoggerConfig.LOGGING_LEVEL,
-                                     logger,
-                                     output_file_path)
+                                     logger
+                                     )
 
     @staticmethod
-    def _setup_handler(format_string, level, logger, output_file_path):
+    def _setup_handler(format_string, level, logger):
         formatter = logging.Formatter(format_string)
 
         stream_handler = logging.StreamHandler(sys.stdout)
         stream_handler.setLevel(level)
         stream_handler.setFormatter(formatter)
 
-        file_handler = logging.FileHandler(filename=output_file_path)
-        file_handler.setLevel(level)
-        file_handler.setFormatter(formatter)
-
-        logger.addHandler(file_handler)
         logger.addHandler(stream_handler)

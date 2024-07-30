@@ -18,8 +18,16 @@ def errback(exc, interval):
 connections = pools.Connections(limit=2)
 producers = pools.Producers(limit=2)
 
-connection = Connection(hostname=QueueConfig.get_kombu_broker_url(),
+if QueueConfig.PROTOCOL == 'amqps':
+    import ssl
+    ssl_option = {
+        'cert_reqs': ssl.CERT_REQUIRED
+    }
+else:
+    ssl_option = None
+connection = Connection(hostname=QueueConfig.get_broker_url(),
                         connect_timeout=7,
+                        ssl=ssl_option,
                         errback=errback)
 
 logger.info('레빗 엠큐 커넥션 풀 연결 설정 완료')
