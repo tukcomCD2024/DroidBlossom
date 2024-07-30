@@ -1,5 +1,7 @@
 package site.timecapsulearchive.core.global.config.rabbitmq;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -11,6 +13,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import site.timecapsulearchive.core.global.error.exception.InternalServerException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -18,6 +21,8 @@ public class RabbitmqConfig {
 
     private static final int MAX_RETRY_COUNT = 3;
     private static final String RETRY_HEADER = "x-retry-count";
+
+    private final RabbitmqProperties rabbitmqProperties;
 
     @Bean
     public Queue capsuleSkinQueue() {
@@ -153,7 +158,21 @@ public class RabbitmqConfig {
     public CachingConnectionFactory publisherConfirmsConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
 
-        connectionFactory.afterPropertiesSet();
+        connectionFactory.setHost(rabbitmqProperties.host());
+        connectionFactory.setPort(rabbitmqProperties.port());
+        connectionFactory.setUsername(rabbitmqProperties.userName());
+        connectionFactory.setPassword(rabbitmqProperties.password());
+        connectionFactory.setVirtualHost(rabbitmqProperties.virtualHost());
+        connectionFactory.setPublisherConfirmType(rabbitmqProperties.publisherConfirmType());
+        connectionFactory.setPublisherReturns(rabbitmqProperties.publisherReturns());
+
+        if (rabbitmqProperties.isSslEnabled()) {
+            try {
+                connectionFactory.getRabbitConnectionFactory().useSslProtocol();
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new InternalServerException(e);
+            }
+        }
 
         return connectionFactory;
     }
