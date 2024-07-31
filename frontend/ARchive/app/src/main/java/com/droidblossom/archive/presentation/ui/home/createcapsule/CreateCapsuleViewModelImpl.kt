@@ -204,11 +204,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     init {
         viewModelScope.launch {
-            scrollSkinEventFlow.collect {
-                getSkinList()
+            launch {
+                scrollSkinEventFlow.collect {
+                    getSkinList()
+                }
             }
-            scrollGroupEventFlow.collect {
-                getGroupList()
+
+            launch {
+                scrollGroupEventFlow.collect {
+                    getGroupList()
+                }
             }
         }
     }
