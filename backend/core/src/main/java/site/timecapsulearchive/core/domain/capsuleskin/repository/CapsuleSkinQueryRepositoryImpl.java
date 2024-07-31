@@ -59,7 +59,7 @@ public class CapsuleSkinQueryRepositoryImpl implements CapsuleSkinQueryRepositor
         Integer count = jpaQueryFactory
             .selectOne()
             .from(capsuleSkin)
-            .join(capsule).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .join(capsule).on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
             .where(capsuleSkin.id.eq(capsuleSkinId).and(capsuleSkin.member.id.eq(memberId))
                 .and(capsule.deletedAt.isNull()))
             .fetchOne();

@@ -47,7 +47,7 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                 )
             )
             .from(memberGroup)
-            .join(memberGroup.group, group)
+            .join(group).on(memberGroup.group.eq(group), group.deletedAt.isNull())
             .where(memberGroup.member.id.eq(memberId).and(memberGroup.createdAt.lt(createdAt)))
             .orderBy(group.id.desc())
             .limit(size + 1)
@@ -66,8 +66,8 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
         return jpaQueryFactory
             .select(member.profileUrl)
             .from(memberGroup)
-            .join(memberGroup.group, group)
-            .join(memberGroup.member, member)
+            .join(group).on(memberGroup.group.eq(group), group.deletedAt.isNull())
+            .join(member).on(memberGroup.member.eq(member), member.deletedAt.isNull())
             .where(memberGroup.group.id.in(groupIds)
                 .and(memberGroup.isOwner.eq(true)))
             .orderBy(group.id.desc())
@@ -98,8 +98,10 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
         GroupDetailDto groupDetailDtoIncludeMe =
             jpaQueryFactory
                 .selectFrom(group)
-                .join(memberGroup).on(memberGroup.group.id.eq(group.id))
-                .join(member).on(member.id.eq(memberGroup.member.id))
+                .join(memberGroup).on(memberGroup.group.eq(group),
+                    memberGroup.deletedAt.isNull())
+                .join(member).on(member.eq(memberGroup.member),
+                    member.deletedAt.isNull())
                 .where(group.id.eq(groupId))
                 .transform(
                     groupBy(group.id).as(

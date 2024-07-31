@@ -51,8 +51,8 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                 )
             )
             .from(memberFriend)
-            .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
-            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
+            .join(member).on(memberFriend.owner.eq(member), member.deletedAt.isNull())
+            .join(member).on(memberFriend.friend.eq(member), member.deletedAt.isNull())
             .where(memberFriend.owner.id.eq(memberId).and(memberFriend.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
@@ -118,13 +118,16 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             )
             .from(member)
             .leftJoin(memberFriend)
-            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)),
+                memberFriend.deletedAt.isNull())
             .leftJoin(friendInviteToFriend)
             .on(friendInviteToFriend.friend.id.eq(member.id)
-                .and(friendInviteToFriend.owner.id.eq(memberId)))
+                    .and(friendInviteToFriend.owner.id.eq(memberId)),
+                friendInviteToFriend.deletedAt.isNull())
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.friend.id.eq(memberId)
-                .and(friendInviteToMe.owner.id.eq(member.id)))
+                    .and(friendInviteToMe.owner.id.eq(member.id)),
+                friendInviteToMe.deletedAt.isNull())
             .where(member.phoneHash.in(hashes).and(member.phoneSearchAvailable.eq(Boolean.TRUE)))
             .fetch();
     }
@@ -163,13 +166,16 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             )
             .from(member)
             .leftJoin(memberFriend)
-            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)),
+                memberFriend.deletedAt.isNull())
             .leftJoin(friendInviteToFriend)
             .on(friendInviteToFriend.friend.id.eq(member.id)
-                .and(friendInviteToFriend.owner.id.eq(memberId)))
+                    .and(friendInviteToFriend.owner.id.eq(memberId)),
+                friendInviteToFriend.deletedAt.isNull())
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.owner.id.eq(member.id)
-                .and(friendInviteToMe.friend.id.eq(memberId)))
+                    .and(friendInviteToMe.friend.id.eq(memberId)),
+                friendInviteToMe.deletedAt.isNull())
             .where(tagFullTextSearchTemplate.gt(MATCH_THRESHOLD)
                 .and(member.tagSearchAvailable.eq(Boolean.TRUE)))
             .orderBy(tagFullyMatchFirstOrder, tagFullTextSearchTemplate.desc())
