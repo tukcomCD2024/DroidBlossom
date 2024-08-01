@@ -9,21 +9,21 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemNoticeBinding
-import com.droidblossom.archive.domain.model.setting.Notice
+import com.droidblossom.archive.domain.model.member.Announcement
 
 
 class NoticeRVA :
-    ListAdapter<Notice, NoticeRVA.ItemViewHolder>(differ) {
+    ListAdapter<Announcement, NoticeRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
         private val binding: ItemNoticeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Notice) {
+        fun bind(data: Announcement) {
             binding.item = data
             val adapter = NoticeContentRVA()
             binding.contentRVA.adapter = adapter
-            adapter.submitList(data.contents)
-            binding.noticeLayout.setOnClickListener{
+            adapter.submitList(listOf(data.content))
+            binding.noticeLayout.setOnClickListener {
                 if (data.isOpen) {
                     data.isOpen = false
                     binding.contentLayout.isGone = true
@@ -59,12 +59,12 @@ class NoticeRVA :
     }
 
     companion object {
-        val differ = object : DiffUtil.ItemCallback<Notice>() {
-            override fun areItemsTheSame(oldItem: Notice, newItem: Notice): Boolean {
+        val differ = object : DiffUtil.ItemCallback<Announcement>() {
+            override fun areItemsTheSame(oldItem: Announcement, newItem: Announcement): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: Notice, newItem: Notice): Boolean {
+            override fun areContentsTheSame(oldItem: Announcement, newItem: Announcement): Boolean {
                 return oldItem == newItem
             }
         }

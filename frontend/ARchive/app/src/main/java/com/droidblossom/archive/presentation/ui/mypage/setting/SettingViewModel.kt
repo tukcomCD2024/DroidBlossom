@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting
 
+import com.droidblossom.archive.domain.model.member.Announcement
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +11,7 @@ interface SettingViewModel {
 
     val settingMainEvents: SharedFlow<SettingMainEvent>
     val isOnlyProfile: SharedFlow<Boolean>
+    val announcements: StateFlow<List<Announcement>>
     val notificationEnable : StateFlow<Boolean>
     val settingNotificationEvents : SharedFlow<SettingNotificationEvent>
 
@@ -18,7 +20,6 @@ interface SettingViewModel {
     val modifyNameText: MutableStateFlow<String>
     val modifyTagText: MutableStateFlow<String>
     val isTagDuplication : MutableStateFlow<Boolean>
-
     fun back()
     fun goUser()
     fun goNotification()

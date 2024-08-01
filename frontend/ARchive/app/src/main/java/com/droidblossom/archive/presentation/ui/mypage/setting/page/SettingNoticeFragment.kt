@@ -3,6 +3,9 @@ package com.droidblossom.archive.presentation.ui.mypage.setting.page
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.droidblossom.archive.R
@@ -13,6 +16,7 @@ import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.ui.mypage.setting.SettingViewModelImpl
 import com.droidblossom.archive.presentation.ui.mypage.setting.adapter.NoticeRVA
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingNoticeFragment :
@@ -30,28 +34,24 @@ class SettingNoticeFragment :
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
         initView()
+        viewModel.getAnnouncements()
     }
 
     private fun initView() {
         binding.adapter.adapter = noticeAdapter
         binding.adapter.setHasFixedSize(true)
-        noticeAdapter.submitList(
-            listOf(
-                Notice(
-                    "ARhive 출시 : 1.0.0",
-                    "2024/08/20",
-                    listOf(
-                        NoticeContent("✨앞으로 많은 관심 부탁드립니다!✨"),
-                    )
-                )
-            )
-        )
         binding.backBtn.setOnClickListener {
             navController.popBackStack()
         }
     }
 
     override fun observeData() {
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.announcements.collect { announcements ->
+                    noticeAdapter.submitList(announcements)
+                }
+            }
+        }
     }
 }

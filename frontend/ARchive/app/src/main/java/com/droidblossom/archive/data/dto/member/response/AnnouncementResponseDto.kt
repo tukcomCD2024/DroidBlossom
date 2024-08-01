@@ -1,6 +1,7 @@
 package com.droidblossom.archive.data.dto.member.response
 
 import com.droidblossom.archive.domain.model.member.Announcement
+import com.droidblossom.archive.domain.model.setting.NoticeContent
 
 data class AnnouncementResponseDto(
     val content: String,
@@ -9,7 +10,7 @@ data class AnnouncementResponseDto(
     val version: String
 ) {
     fun toModel() = Announcement(
-        content = listOf(content),
+        content = NoticeContent(content),
         createdAt = createdAt,
         title = title,
         version = version,

@@ -3,11 +3,14 @@ package com.droidblossom.archive.presentation.ui.mypage.setting
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
+import com.droidblossom.archive.domain.model.member.Announcement
+import com.droidblossom.archive.domain.model.member.Announcements
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.usecase.auth.SignOutUseCase
 import com.droidblossom.archive.domain.usecase.member.ChangePhoneSearchAvailableUseCase
 import com.droidblossom.archive.domain.usecase.member.ChangeTagSearchAvailableUseCase
 import com.droidblossom.archive.domain.usecase.member.DeleteAccountUseCase
+import com.droidblossom.archive.domain.usecase.member.GetAnnouncementsUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberDataModifyUseCase
 import com.droidblossom.archive.domain.usecase.member.MemberUseCase
 import com.droidblossom.archive.domain.usecase.member.NotificationEnabledUseCase
@@ -34,6 +37,7 @@ class SettingViewModelImpl @Inject constructor(
     private val memberModifyUseCase: MemberDataModifyUseCase,
     private val changeTagSearchAvailableUseCase: ChangeTagSearchAvailableUseCase,
     private val changePhoneSearchAvailableUseCase: ChangePhoneSearchAvailableUseCase,
+    private val getAnnouncementsUseCase: GetAnnouncementsUseCase
 ) : BaseViewModel(), SettingViewModel {
 
     //main
@@ -43,6 +47,10 @@ class SettingViewModelImpl @Inject constructor(
     private val _isOnlyProfile = MutableStateFlow(false)
     override val isOnlyProfile: StateFlow<Boolean>
         get() = _isOnlyProfile
+
+    private val _announcements = MutableStateFlow(listOf<Announcement>())
+    override val announcements: StateFlow<List<Announcement>>
+        get() = _announcements
 
     //notification
     private val _notificationEnable = MutableStateFlow<Boolean>(false)
@@ -309,6 +317,24 @@ class SettingViewModelImpl @Inject constructor(
                         )
                     )
 
+                }
+            }
+        }
+    }
+
+    fun getAnnouncements() {
+        viewModelScope.launch {
+            getAnnouncementsUseCase().collect { result ->
+                result.onSuccess {
+                    _announcements.emit(
+                        it.announcements
+                    )
+                }.onFail {
+                    _settingUserEvent.emit(
+                        SettingViewModel.SettingUserEvent.ShowToastMessage(
+                            "서버와 통신이 불안합니다."
+                        )
+                    )
                 }
             }
         }

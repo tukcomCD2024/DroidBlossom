@@ -2,10 +2,8 @@ package com.droidblossom.archive.domain.usecase.member
 
 import android.util.Log
 import com.droidblossom.archive.domain.model.member.Announcements
-import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.util.RetrofitResult
-import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
