@@ -1,0 +1,2 @@
+ALTER TABLE friend_invite DROP INDEX unique_owner_friend_pair
+ALTER TABLE member_friend DROP INDEX unique_owner_friend_relation
