@@ -18,9 +18,9 @@ class NotificationEnabledUseCase @Inject constructor(
             try {
                 emit(repository.patchNotificationEnabled(NotificationEnabledRequestDto(enabled))
                     .onSuccess {
-                        Log.d("알림", "성공")
+
                     }.onFail {
-                        Log.d("알림", "실녀")
+
                     }.onException {
                         throw Exception(it)
                     })

@@ -392,11 +392,9 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     override fun onStop() {
         super.onStop()
-        Log.d("생명주기","onResume")
     }
     override fun onResume() {
         super.onResume()
-        Log.d("생명주기","onResume")
         fetchCapsulesNearUser()
     }
 

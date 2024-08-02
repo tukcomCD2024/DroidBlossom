@@ -22,11 +22,11 @@ class SendMessageUseCase @Inject constructor(
         flow<RetrofitResult<VerificationMessageResult>> {
             try {
                 emit(repository.authValidMessageSend(request).onSuccess {
-                    Log.d("티티", "유스케이스 : submitPhoneNumber 에러")
+
                 }.onFail {
-                    Log.d("티티", "유스케이스 : submitPhoneNumber 실패 $it")
+
                 }.onException {
-                    Log.d("티티", "유스케이스 : submitPhoneNumber 예외 :$it")
+
                     throw Exception(it)
                 })
             } catch (e: Exception) {

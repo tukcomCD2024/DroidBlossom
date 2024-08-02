@@ -326,7 +326,6 @@ class CameraFragment :
 
 
     private fun addAnchorNode(anchor: Anchor, capsule: CapsuleAnchor) {
-        Log.d("CameraFragmentAR", "${capsule.id} addAnchorNode added")
         arSceneView.let { sceneView ->
             viewAttachmentManager.let { attachManager ->
                 ARContentNode(

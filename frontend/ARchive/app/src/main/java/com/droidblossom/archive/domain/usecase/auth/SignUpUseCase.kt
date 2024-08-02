@@ -17,12 +17,11 @@ class SignUpUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(request: SignUpRequestDto) =
         flow<RetrofitResult<TemporaryToken>> {
-            Log.d("후후후", "request ${request}")
             try {
                 emit(repository.authSignUp(request).onSuccess {
-                    Log.d("후후후", "성공 - 재발급")
+
                 }.onFail {
-                    Log.d("후후후", "실후 - 재발급${it}")
+
                 }.onException {
                     throw Exception(it)
                 })

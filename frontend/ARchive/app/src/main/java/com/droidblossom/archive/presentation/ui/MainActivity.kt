@@ -185,7 +185,7 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                     .filterNotNull()
                     .collect { tab ->
                         dataStoreUtils.saveSelectedTab(tab.name)
-                        Log.d("알림", tab.name)
+
                         when (tab) {
                             MainPage.HOME -> {
                                 showFragment(HomeFragment.newIntent(), HomeFragment.TAG)
@@ -263,9 +263,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.d("흠", "온 크리에이트 ${viewModel.selectedMainTab.value}")
-
         initBottomNav()
         initFCM()
         handleIntent(intent)
@@ -285,9 +282,9 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                 FcmTokenRequsetDto(MyFirebaseMessagingService().getFirebaseToken())
             ).collect { result ->
                 result.onSuccess {
-                    Log.d("FCM", "fcm patch 성공")
+
                 }.onFail {
-                    Log.d("FCM", "fcm patch 실패")
+
                 }
             }
         }
@@ -315,7 +312,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
             val selectedItemId = menuItem.itemId
             if (currentItemId == selectedItemId) {
                 // 같음 - 스크롤 추가
-                Log.d("생명", "같음")
                 when (selectedItemId) {
                     R.id.menuHome -> {
                         return@setOnItemSelectedListener true
@@ -344,7 +340,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
                 }
             } else {
                 // 같음 - 스크롤 x
-                Log.d("생명", "다름")
                 when (selectedItemId) {
                     R.id.menuHome -> {
                         viewModel.mainEvent(MainViewModel.MainEvent.NavigateToHome)
@@ -392,7 +387,6 @@ class MainActivity : BaseActivity<MainViewModelImpl, ActivityMainBinding>(R.layo
     // 현재 포그라운드에서만 이동 됨 - 서버와 얘기해야함
     private fun handleIntent(intent: Intent) {
         val destination = intent.getStringExtra("fragmentDestination")
-        Log.d("알림", destination.toString())
 
         when (destination) {
             MyFirebaseMessagingService.FragmentDestination.HOME_FRAGMENT.name -> {

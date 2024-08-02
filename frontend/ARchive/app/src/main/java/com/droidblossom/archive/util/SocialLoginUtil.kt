@@ -35,20 +35,20 @@ class SocialLoginUtil(private val context: Context, private val callback: LoginC
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                 if (error != null) {
-                    Log.e("카카오", "로그인 실패 $error")
+
                     callback.onLoginFailure(error)
                 } else if (token != null) {
-                    //Log.e("카카오", "로그인 성공 ${token.accessToken}")
+
                     kakaoGetUserInfo()
                 }
             }
         } else {
             UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
                 if (error != null) {
-                    Log.e("카카오", "로그인 실패 $error")
+
                     callback.onLoginFailure(error)
                 } else if (token != null) {
-                    //Log.e("카카오", "로그인 성공 ${token.accessToken}")
+
                     kakaoGetUserInfo()
                 }
             }

@@ -125,7 +125,6 @@ class HomeViewModelImpl @Inject constructor(
         distance: Double,
         capsuleType: String
     ) {
-        Log.d("티티", "$latitude, $longitude, $distance, $capsuleType")
         viewModelScope.launch {
             nearbyMyCapsulesHomeUseCase(
                 latitude,
@@ -136,7 +135,7 @@ class HomeViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _capsuleList.emit(it.capsuleMarkers)
                 }.onFail {
-                    Log.d("티티", "getNearbyCapsules 실패")
+
                 }
             }
         }
@@ -152,7 +151,7 @@ class HomeViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _capsuleList.emit(capsuleList.value + it.capsuleMarkers)
                 }.onFail {
-                    Log.d("티티", "getNearbyCapsules 실패")
+
                 }
             }
         }
@@ -181,11 +180,11 @@ class HomeViewModelImpl @Inject constructor(
                         result.onSuccess {
                             _capsuleList.emit(capsuleList.value + it.capsuleMarkers)
                         }.onFail {
-                            Log.d("티티", "getNearbyCapsules 실패")
+
                         }
                     }
                 }.onFail {
-                    Log.d("티티", "getNearbyCapsules 실패")
+
                 }
             }
         }

@@ -43,10 +43,9 @@ class PermissionActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (permissionsUtil.areEssentialPermissionsGranted()) {
-            Log.d("권한", "모두 되어있음")
+
         } else {
-            //permissionsUtil.showEssentialPermissionDeniedDialog()
-            Log.d("권한", "하나라도 안 되어있음")
+
 
         }
     }

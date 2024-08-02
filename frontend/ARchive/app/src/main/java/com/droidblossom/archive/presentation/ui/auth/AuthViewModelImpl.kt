@@ -147,7 +147,7 @@ class AuthViewModelImpl @Inject constructor(
                     }
                     authDataReset()
                 }.onFail {
-                    Log.d("티티", "memberStatusCheck 실패")
+
                 }
             }
         }
@@ -163,7 +163,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
                 }.onFail {
-                    Log.d("티티", "submitSignInData 실패")
+
                 }
             }
         }
@@ -173,13 +173,11 @@ class AuthViewModelImpl @Inject constructor(
         viewModelScope.launch {
             signUpUseCase(signUpData.toDto()).collect { result ->
                 result.onSuccess {
-                    // 토큰 저장 로직 추가
                     dataStoreUtils.resetTokenData()
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-                    // ToastMessage 있으면 좋을듯
-                    Log.d("티티", "submitSignUpData 에러")
+
                 }
             }
         }
@@ -193,7 +191,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
                 }.onFail {
-                    Log.d("티티", "temporaryTokenReIssue 실패")
+
                 }
             }
         }
@@ -239,7 +237,7 @@ class AuthViewModelImpl @Inject constructor(
                             signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
                             certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
                         }
-                        Log.d("티티", "$it : submitPhoneNumber 실패")
+
                     }
 
                 }
@@ -254,7 +252,7 @@ class AuthViewModelImpl @Inject constructor(
                             signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
                             certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
                         }
-                        Log.d("티티", "$it : submitPhoneNumber 실패")
+
                     }
 
                 }

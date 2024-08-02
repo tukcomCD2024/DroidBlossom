@@ -17,9 +17,9 @@ class MemberUseCase @Inject constructor(
     operator fun invoke() = flow<RetrofitResult<MemberDetail>> {
         try {
             emit(repository.getMe().onSuccess {
-                Log.d("qwer", "성공")
+
             }.onFail {
-                Log.d("qwer", "${it}")
+
             }.onException {
                 throw Exception(it)
             })

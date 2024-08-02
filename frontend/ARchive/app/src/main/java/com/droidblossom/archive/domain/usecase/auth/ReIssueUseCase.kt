@@ -20,12 +20,10 @@ class ReIssueUseCase @Inject constructor(
 
             emit(repository.authReIssue(request)
                 .onSuccess {
-                    Log.d("후후후", "성공 - 재발급")
+
                 }.onFail {
-                    Log.d("후후후", "실패 - 재발급")
 
                 }.onException {
-                    Log.d("후후후", "예외 - 재발급")
                     throw Exception(it)
                 })
         } catch (e: Exception) {

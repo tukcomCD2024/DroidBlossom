@@ -368,7 +368,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     //creat3
     override fun moveFinish() {
-        Log.d("캡슐생성", "${capsuleTypeCreateIs.value.title},${address.value},${dueTime.value}")
         viewModelScope.launch {
             if (isSelectTimeCapsule.value && (capsuleLatitude.value == 0.0 || capsuleTitle.value.isEmpty() || capsuleContent.value.isEmpty() || dueTime.value.isEmpty())) {
                 _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("타임캡슐은 시간, 제목, 내용이 필수 입니다."))
@@ -547,7 +546,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
         viewModelScope.launch {
             s3UrlsGetUseCase(getS3UrlData.toDto()).collect { result ->
                 result.onSuccess {
-                    Log.d("getUploadUrls", "$it")
                     uploadFilesToS3(
                         imageFiles.value,
                         videoFiles.value,
@@ -556,7 +554,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                     )
                 }.onFail {
                     _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
-                    Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
             }
         }
@@ -649,7 +646,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                                     "캡슐이 생성되었습니다."
                                 )
                             )
-                            Log.d("캡슐생성", "$it")
                         }.onFail {
                             _create3Events.emit(
                                 CreateCapsuleViewModel.Create3Event.ShowToastMessage(
@@ -681,7 +677,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                                     "캡슐이 생성되었습니다."
                                 )
                             )
-                            Log.d("캡슐생성", "$it")
                         }.onFail {
                             _create3Events.emit(
                                 CreateCapsuleViewModel.Create3Event.ShowToastMessage(
@@ -714,7 +709,6 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                                     "캡슐이 생성되었습니다."
                                 )
                             )
-                            Log.d("캡슐생성", "$it")
                         }.onFail {
                             _create3Events.emit(
                                 CreateCapsuleViewModel.Create3Event.ShowToastMessage(

@@ -40,7 +40,6 @@ class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityC
 
         val locationUtil = LocationUtil(this)
         locationUtil.getCurrentLocation { latitude, longitude ->
-            Log.d("위치", "위도 : $latitude, 경도 : $longitude")
             viewModel.coordToAddress(latitude = latitude, longitude = longitude)
         }
         viewModel.getSkinList()

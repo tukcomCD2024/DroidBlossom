@@ -311,10 +311,8 @@ class MyPageFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
-            Log.d("생명", "onHiddenChanged - hide")
             onHidden()
         } else {
-            Log.d("생명", "onHiddenChanged - show")
             onShow()
         }
     }
@@ -338,12 +336,10 @@ class MyPageFragment :
     override fun onResume() {
         super.onResume()
         isActive = true
-        Log.d("생명", "onResume")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d("생명", "onPause")
         isActive = false
     }
 
@@ -360,7 +356,6 @@ class MyPageFragment :
 
 
         fun newIntent(): MyPageFragment{
-            Log.d("생명", "뉴 인텐트")
             return MyPageFragment()
         }
     }

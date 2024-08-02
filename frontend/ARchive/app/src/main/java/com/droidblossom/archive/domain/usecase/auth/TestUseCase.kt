@@ -17,13 +17,12 @@ class TestUseCase @Inject constructor(
     operator fun invoke() = flow<RetrofitResult<Health>> {
         try {
             emit(repository.getText().onSuccess {
-                Log.d("qwer", "${it.message}")
+
 
             }.onFail {
-                Log.d("qwer", "실패")
+
 
             }.onException {
-                Log.d("qwer", "예외")
                 throw Exception(it)
             })
         } catch (e: Exception){

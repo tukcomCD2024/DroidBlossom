@@ -43,23 +43,21 @@ class CreateCapsule3Fragment :
                     val mimeType = activity?.contentResolver?.getType(uri)
                     when {
                         mimeType?.startsWith("image/") == true -> {
-                            Log.d("MediaType", "Image URI: $uri")
                             dummyList.add(Dummy(uri, ContentType.IMAGE, false))
                         }
 
                         mimeType?.startsWith("video/") == true -> {
-                            Log.d("MediaType", "Video URI: $uri")
                             dummyList.add(Dummy(uri, ContentType.VIDEO, false))
                         }
 
                         else -> {
-                            Log.d("MediaType", "Unknown media type: $uri")
+
                         }
                     }
                 }
                 viewModel.addContentUris(dummyList)
             } else {
-                Log.d("Photo", "No media selected")
+
             }
         }
 
@@ -71,12 +69,10 @@ class CreateCapsule3Fragment :
                 val mimeType = activity?.contentResolver?.getType(uri)
                 when {
                     mimeType?.startsWith("image/") == true -> {
-                        Log.d("MediaType", "Image URI: $uri")
                         viewModel.addContentUris(listOf(Dummy(uri, ContentType.IMAGE, false)))
                     }
 
                     mimeType?.startsWith("video/") == true -> {
-                        Log.d("MediaType", "Video URI: $uri")
                         viewModel.addContentUris(listOf(Dummy(uri, ContentType.VIDEO, false)))
                     }
 
@@ -85,7 +81,7 @@ class CreateCapsule3Fragment :
                     }
                 }
             } else {
-                Log.d("포토", "No Media selected")
+
             }
         }
 

@@ -36,7 +36,6 @@ class ImageRVA(val onClick: () -> Unit, val flowData: (List<Dummy>) -> Unit) :
             } else {
                 when (data.contentType) {
                     ContentType.IMAGE -> {
-                        Log.d("머냐","왜 안됨?")
                         data.string?.let { _ ->
                             binding.postImg.setImageURI(data.string)
                         }

@@ -402,7 +402,6 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
                 }
             }.onFail {
-                Log.d("개봉", " 개봉 실패 코드 : $it")
                 capsulePreviewDialogEvent(
                     CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
                         "캡슐 열기 실패"

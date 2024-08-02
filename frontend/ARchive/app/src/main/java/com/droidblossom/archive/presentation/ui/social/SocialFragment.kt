@@ -48,7 +48,6 @@ class SocialFragment : BaseFragment<SocialViewModelImpl, FragmentSocialBinding>(
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     currentPage = position
-                    Log.d("생명", "다름")
                 }
             })
 

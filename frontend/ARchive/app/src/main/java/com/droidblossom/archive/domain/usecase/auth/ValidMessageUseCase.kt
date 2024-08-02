@@ -19,11 +19,11 @@ class ValidMessageUseCase @Inject constructor(
         flow<RetrofitResult<Token>> {
             try {
                 emit(repository.authValidMessage(request).onSuccess {
-                    Log.d("성패", "$it")
+
                 }.onFail {
-                    Log.d("실패", "$it")
+
                 }.onException {
-                    Log.d("실패", "$it")
+
                     throw Exception(it)
                 })
             } catch (e: Exception) {
