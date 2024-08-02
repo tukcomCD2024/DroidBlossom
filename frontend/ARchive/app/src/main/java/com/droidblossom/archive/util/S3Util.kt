@@ -2,35 +2,19 @@ package com.droidblossom.archive.util
 
 import android.content.Context
 import android.util.Log
-import com.amazonaws.HttpMethod
-import com.amazonaws.auth.AWSCredentials
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferNetworkLossHandler
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
-import com.amazonaws.regions.Region
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
-import com.droidblossom.archive.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.Date
 import javax.inject.Inject
 
 class S3Util @Inject constructor(private val context: Context) {
 
+    /*
     private val accessKey = BuildConfig.S3ACCESSKEY;
     private val secretKey = BuildConfig.S3SECRETKEY
     private var region: Region = Region.getRegion(Regions.AP_NORTHEAST_2)
@@ -65,7 +49,7 @@ class S3Util @Inject constructor(private val context: Context) {
             }
         })
     }
-
+    */
     suspend fun uploadImageWithPresignedUrl(file: File, signedUrl: String) = withContext(Dispatchers.IO) {
         val requestBody = file.asRequestBody("image/png".toMediaTypeOrNull())
 
