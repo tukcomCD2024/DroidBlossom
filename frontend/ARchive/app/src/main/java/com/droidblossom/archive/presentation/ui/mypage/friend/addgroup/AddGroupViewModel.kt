@@ -32,6 +32,7 @@ interface AddGroupViewModel {
 
     sealed class AddGroupEvent {
         data class ShowToastMessage(val message: String) : AddGroupEvent()
+        object DismissLoading: AddGroupEvent()
         object Finish : AddGroupEvent()
     }
 }

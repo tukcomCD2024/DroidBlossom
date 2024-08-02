@@ -247,9 +247,9 @@ class AddGroupViewModelImpl @Inject constructor(
                 }.onFail {
                     _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.ShowToastMessage("서버와 연결을 실패했습니다."))
                     Log.d("addgroup", "그룹 생성 실패")
-
                 }
             }
+            _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.DismissLoading)
         }
     }
 

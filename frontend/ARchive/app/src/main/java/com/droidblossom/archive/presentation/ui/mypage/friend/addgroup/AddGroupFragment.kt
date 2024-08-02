@@ -27,6 +27,7 @@ import com.droidblossom.archive.util.FileUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -71,6 +72,7 @@ class AddGroupFragment :
                 return@setOnClickListener
             } else {
 
+                showLoading(requireContext())
                 val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentTime = dateFormat.format(Date())
 
@@ -162,7 +164,7 @@ class AddGroupFragment :
         binding.searchOpenEditT.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) =Unit
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
             override fun afterTextChanged(p0: Editable?) {
                 p0?.let {
@@ -186,6 +188,21 @@ class AddGroupFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.notifyItemChangedPosition.collect { position ->
                     friendRVA.notifyItemChanged(position)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addGroupEvent.collect { event ->
+                    when (event) {
+                        AddGroupViewModel.AddGroupEvent.DismissLoading -> {
+                            dismissLoading()
+                        }
+                        else -> {
+
+                        }
+                    }
                 }
             }
         }
