@@ -69,7 +69,7 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
                 startActivity(NetworkConnectionActivity.newIntent(this))
             }
             is AppEvent.NotificationReceivedEvent -> {
-                showToastMessage("알림")
+                //showToastMessage("알림")
             }
         }
     }

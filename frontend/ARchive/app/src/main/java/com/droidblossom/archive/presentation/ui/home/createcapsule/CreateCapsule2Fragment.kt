@@ -57,10 +57,6 @@ class CreateCapsule2Fragment :
         navController = Navigation.findNavController(view)
 
         initRVA()
-
-        //테스트용
-        Toast.makeText(requireContext(), viewModel.capsuleTypeCreateIs.value.title, Toast.LENGTH_SHORT)
-            .show()
     }
 
     override fun observeData() {
