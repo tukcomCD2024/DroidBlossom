@@ -59,6 +59,26 @@
 
     <string name="currentMemberNumber">(%02d/30)</string>
     <string name="nameMaxSize">(%02d/15)</string>
+    <string name="userAgreementFragmentTitle">이용 약관에 동의해주세요</string>
+    <string name="userAgreementFragmentSubTitle">ARchive가 제공하는 서비스를 이용하시려면\n약관에 동의가 필요합니다.</string>
+    <string name="FullAgreementText">아래 내용에 전체 동의합니다.</string>
+    <string name="privacyAgreeText">
+    <![CDATA[
+    <a href="https://comst19.notion.site/ARchive-0dc6fb51699c46c785e45cb240a6bb1d?pvs=4">개인정보 수집 및 이용</a> 동의  (필수)
+    ]]>
+    </string>
+    <string name="serviceAgreeText">
+    <![CDATA[
+    <a href="https://comst19.notion.site/ARchive-d1905dd643784d4da9c546e120b0fa77?pvs=4">이용약관</a> 동의  (필수)
+    ]]>
+    </string>
+    <string name="locationAgreeText">
+    <![CDATA[
+    <a href="https://comst19.notion.site/ARchive-ef03bffd906d4836aaa5ac9fdd20ccad?pvs=4">위치기반 서비스 약관</a> 동의  (필수)
+    ]]>
+    </string>
+    <string name="ageVerification">본인은 만 14세 이상임을 확인합니다 (필수)</string>
+    <string name="agreeText">동의하기</string>
 
     <string-array name="spinner_capsule_type">
         <item>Secret</item>

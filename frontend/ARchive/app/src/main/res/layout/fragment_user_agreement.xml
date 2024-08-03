@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_1"
+        tools:context=".presentation.ui.auth.UserAgreementFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/padding">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/viewHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/userAgreementFragmentTitle"
+                android:textAppearance="@style/TextAppearance.App.h2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.068" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/viewHeaderSubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:text="@string/userAgreementFragmentSubTitle"
+                android:textAppearance="@style/TextAppearance.App.subtitle1"
+                android:textColor="@color/gray_600"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fullAgreementTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/corner_radius_12"
+                android:backgroundTint="@color/main_2"
+                android:drawableEnd="@drawable/ic_check_box_24"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/padding"
+                android:text="@string/FullAgreementText"
+                android:textAppearance="@style/TextAppearance.App.subtitle1"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderSubTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/privacyAgreeTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="@dimen/padding"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fullAgreementTV"
+                app:layout_constraintEnd_toStartOf="@id/privacyAgreeIV"
+                android:layout_marginEnd="@dimen/margin_small"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/privacyAgreeIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_check_box_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/padding"
+                app:layout_constraintTop_toTopOf="@id/privacyAgreeTV"
+                app:layout_constraintBottom_toBottomOf="@id/privacyAgreeTV"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/serviceAgreementTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="@dimen/padding"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/privacyAgreeTV"
+                app:layout_constraintEnd_toStartOf="@id/serviceAgreementIV"
+                android:layout_marginEnd="@dimen/margin_small"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/serviceAgreementIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_check_box_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/padding"
+                app:layout_constraintTop_toTopOf="@id/serviceAgreementTV"
+                app:layout_constraintBottom_toBottomOf="@id/serviceAgreementTV"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/locationAgreeTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="@dimen/padding"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/serviceAgreementTV"
+                app:layout_constraintEnd_toStartOf="@id/locationAgreeIV"
+                android:layout_marginEnd="@dimen/margin_small"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/locationAgreeIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_check_box_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/padding"
+                app:layout_constraintTop_toTopOf="@id/locationAgreeTV"
+                app:layout_constraintBottom_toBottomOf="@id/locationAgreeTV"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ageVerificationTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="@dimen/padding"
+                android:text="@string/ageVerification"
+                android:textAppearance="@style/TextAppearance.App.body2"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/locationAgreeTV"
+                app:layout_constraintEnd_toStartOf="@id/ageVerificationIV"
+                android:layout_marginEnd="@dimen/margin_small"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ageVerificationIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_check_box_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/padding"
+                app:layout_constraintTop_toTopOf="@id/ageVerificationTV"
+                app:layout_constraintBottom_toBottomOf="@id/ageVerificationTV"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/agreeBtn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/rectangle_solid_corner_8dp"
+                android:backgroundTint="@color/main_1"
+                android:text="@string/agreeText"
+                android:textAppearance="@style/TextAppearance.App.button"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+</layout>
