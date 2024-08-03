@@ -1,6 +1,5 @@
 package com.droidblossom.archive.presentation.ui.auth
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.model.auth.SignIn
 import com.droidblossom.archive.domain.model.auth.SignUp
@@ -18,8 +17,6 @@ import com.droidblossom.archive.domain.usecase.member.ChangePhoneSendMessageUseC
 import com.droidblossom.archive.domain.usecase.member.ChangePhoneValidMessageUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.DataStoreUtils
-import com.droidblossom.archive.util.SharedPreferencesUtils
-import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,6 +56,37 @@ class AuthViewModelImpl @Inject constructor(
     // SignInFragment
     private val _signInEvents = MutableSharedFlow<AuthViewModel.SignInEvent>()
     override val signInEvents: SharedFlow<AuthViewModel.SignInEvent> = _signInEvents.asSharedFlow()
+
+    // UserAgreementFragment
+    private val _userAgreementEvents = MutableSharedFlow<AuthViewModel.UserAgreementEvent>()
+    override val userAgreementEvents: SharedFlow<AuthViewModel.UserAgreementEvent> = _userAgreementEvents.asSharedFlow()
+
+    private val _privacyAgreementState = MutableStateFlow(false)
+    override val privacyAgreementState: StateFlow<Boolean>
+        get() = _privacyAgreementState
+
+    private val _serviceAgreementState = MutableStateFlow(false)
+    override val serviceAgreementState: StateFlow<Boolean>
+        get() = _serviceAgreementState
+
+    private val _locationAgreementState = MutableStateFlow(false)
+    override val locationAgreementState: StateFlow<Boolean>
+        get() = _locationAgreementState
+
+    private val _ageVerificationState = MutableStateFlow(false)
+    override val ageVerificationState: StateFlow<Boolean>
+        get() = _ageVerificationState
+
+    private val _fullAgreementCheckState: StateFlow<Boolean> = combine(
+        privacyAgreementState,
+        serviceAgreementState,
+        locationAgreementState,
+        ageVerificationState
+    ) { privacyAgreement, serviceAgreement, locationAgreement, ageVerification ->
+        privacyAgreement && serviceAgreement && locationAgreement && ageVerification
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    override val fullAgreementCheckState: StateFlow<Boolean>
+        get() = _fullAgreementCheckState
 
     // SignUpFragment
     private val _signUpEvents = MutableSharedFlow<AuthViewModel.SignUpEvent>()
@@ -112,11 +140,49 @@ class AuthViewModelImpl @Inject constructor(
         }
     }
 
+    // UserAgreementFragment
+    override fun userAgreementEvent(event: AuthViewModel.UserAgreementEvent) {
+        viewModelScope.launch {
+            _userAgreementEvents.emit(event)
+        }
+    }
+    override fun onFullAgreementClick(){
+        val setState = !fullAgreementCheckState.value
+        _privacyAgreementState.value = setState
+        _serviceAgreementState.value = setState
+        _locationAgreementState.value = setState
+        _ageVerificationState.value = setState
+    }
+    override fun onPrivacyAgreementClick(){
+        _privacyAgreementState.value = !_privacyAgreementState.value
+    }
+    override fun onServiceAgreementClick(){
+        _serviceAgreementState.value = !_serviceAgreementState.value
+    }
+    override fun onLocationAgreementClick(){
+        _locationAgreementState.value = !_locationAgreementState.value
+    }
+    override fun onAgeVerificationClick(){
+        _ageVerificationState.value = !_ageVerificationState.value
+    }
+
+    override fun onAgreeClick() {
+        if (fullAgreementCheckState.value){
+            userAgreementEvent(AuthViewModel.UserAgreementEvent.NavigateToSignUp)
+        }else{
+            userAgreementEvent(AuthViewModel.UserAgreementEvent.ShowToastMessage("필수 조건을 모두 동의해야 회원가입을 진행할 수 있습니다."))
+        }
+    }
+
     private fun authDataReset() {
         certificationNumber4.value = ""
         certificationNumber3.value = ""
         certificationNumber2.value = ""
         certificationNumber1.value = ""
+        _privacyAgreementState.value = false
+        _serviceAgreementState.value = false
+        _locationAgreementState.value = false
+        _ageVerificationState.value = false
         phoneNumber.value = ""
     }
 
@@ -175,7 +241,7 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess {
                     dataStoreUtils.resetTokenData()
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
-                    signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToUserAgreement)
                 }.onFail {
 
                 }
@@ -189,7 +255,7 @@ class AuthViewModelImpl @Inject constructor(
                 result.onSuccess {
                     dataStoreUtils.resetTokenData()
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
-                    signInEvent(AuthViewModel.SignInEvent.NavigateToSignUp)
+                    signInEvent(AuthViewModel.SignInEvent.NavigateToUserAgreement)
                 }.onFail {
 
                 }

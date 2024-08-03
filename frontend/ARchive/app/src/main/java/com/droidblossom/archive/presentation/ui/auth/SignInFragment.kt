@@ -16,7 +16,6 @@ import com.droidblossom.archive.databinding.FragmentSignInBinding
 import com.droidblossom.archive.domain.model.auth.SignUp
 import com.droidblossom.archive.domain.model.member.CheckStatus
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.customview.CommonDialogFragment
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.MainActivity
 import com.droidblossom.archive.util.SocialLoginUtil
@@ -122,10 +121,10 @@ class SignInFragment :
                             essentialPermissionLauncher.launch(essentialPermissionList)
                         }
 
-                        is AuthViewModel.SignInEvent.NavigateToSignUp -> {
+                        is AuthViewModel.SignInEvent.NavigateToUserAgreement -> {
                             // 회원가입 화면으로 이동
-                            if (navController.currentDestination?.id != R.id.signUpFragment) {
-                                navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+                            if (navController.currentDestination?.id != R.id.userAgreementFragment) {
+                                navController.navigate(R.id.action_signInFragment_to_userAgreementFragment)
                             }
                         }
 

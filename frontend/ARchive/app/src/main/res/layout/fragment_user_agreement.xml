@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.droidblossom.archive.presentation.ui.auth.AuthViewModel" />
     </data>
 
     <FrameLayout
@@ -46,11 +50,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:background="@drawable/corner_radius_12"
-                android:backgroundTint="@color/main_2"
-                android:drawableEnd="@drawable/ic_check_box_24"
+                android:backgroundTint="@color/main_1"
+                android:drawableEnd="@{vm.fullAgreementCheckState ? @drawable/ic_check_box_24 : @drawable/ic_check_box_blank_24}"
                 android:drawableTint="@color/white"
+                android:alpha="@{vm.fullAgreementCheckState ? 1f : 0.5f}"
+                android:elevation="2dp"
                 android:padding="@dimen/padding"
                 android:text="@string/FullAgreementText"
+                android:onClick="@{() -> vm.onFullAgreementClick()}"
                 android:textAppearance="@style/TextAppearance.App.subtitle1"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,28 +65,30 @@
                 app:layout_constraintTop_toBottomOf="@id/viewHeaderSubTitle" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/privacyAgreeTV"
+                android:id="@+id/privacyAgreementTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:paddingHorizontal="@dimen/padding"
                 android:textAppearance="@style/TextAppearance.App.body2"
-                android:textColor="@color/black"
+                android:textColor="@{vm.privacyAgreementState ? @color/black : @color/gray_600}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fullAgreementTV"
-                app:layout_constraintEnd_toStartOf="@id/privacyAgreeIV"
+                app:layout_constraintEnd_toStartOf="@id/privacyAgreementIV"
                 android:layout_marginEnd="@dimen/margin_small"/>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/privacyAgreeIV"
+                android:id="@+id/privacyAgreementIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_check_box_24"
+                bind:checkBox="@{vm.privacyAgreementState}"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:tint="@{vm.privacyAgreementState ? @color/main_1 : @color/gray_600}"
+                android:onClick="@{() -> vm.onPrivacyAgreementClick()}"
                 android:layout_marginEnd="@dimen/padding"
-                app:layout_constraintTop_toTopOf="@id/privacyAgreeTV"
-                app:layout_constraintBottom_toBottomOf="@id/privacyAgreeTV"/>
+                app:layout_constraintTop_toTopOf="@id/privacyAgreementTV"
+                app:layout_constraintBottom_toBottomOf="@id/privacyAgreementTV"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/serviceAgreementTV"
@@ -88,10 +97,10 @@
                 android:layout_marginTop="20dp"
                 android:paddingHorizontal="@dimen/padding"
                 android:textAppearance="@style/TextAppearance.App.body2"
-                android:textColor="@color/black"
+                android:textColor="@{vm.serviceAgreementState ? @color/black : @color/gray_600}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/privacyAgreeTV"
+                app:layout_constraintTop_toBottomOf="@id/privacyAgreementTV"
                 app:layout_constraintEnd_toStartOf="@id/serviceAgreementIV"
                 android:layout_marginEnd="@dimen/margin_small"/>
 
@@ -99,35 +108,39 @@
                 android:id="@+id/serviceAgreementIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_check_box_24"
+                bind:checkBox="@{vm.serviceAgreementState}"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:tint="@{vm.serviceAgreementState ? @color/main_1 : @color/gray_600}"
+                android:onClick="@{() -> vm.onServiceAgreementClick()}"
                 android:layout_marginEnd="@dimen/padding"
                 app:layout_constraintTop_toTopOf="@id/serviceAgreementTV"
                 app:layout_constraintBottom_toBottomOf="@id/serviceAgreementTV"/>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/locationAgreeTV"
+                android:id="@+id/locationAgreementTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:paddingHorizontal="@dimen/padding"
                 android:textAppearance="@style/TextAppearance.App.body2"
-                android:textColor="@color/black"
+                android:textColor="@{vm.locationAgreementState ? @color/black : @color/gray_600}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/serviceAgreementTV"
-                app:layout_constraintEnd_toStartOf="@id/locationAgreeIV"
+                app:layout_constraintEnd_toStartOf="@id/locationAgreementIV"
                 android:layout_marginEnd="@dimen/margin_small"/>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/locationAgreeIV"
+                android:id="@+id/locationAgreementIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_check_box_24"
                 app:layout_constraintEnd_toEndOf="parent"
+                bind:checkBox="@{vm.locationAgreementState}"
+                android:onClick="@{() -> vm.onLocationAgreementClick()}"
+                android:tint="@{vm.locationAgreementState ? @color/main_1 : @color/gray_600}"
                 android:layout_marginEnd="@dimen/padding"
-                app:layout_constraintTop_toTopOf="@id/locationAgreeTV"
-                app:layout_constraintBottom_toBottomOf="@id/locationAgreeTV"/>
+                app:layout_constraintTop_toTopOf="@id/locationAgreementTV"
+                app:layout_constraintBottom_toBottomOf="@id/locationAgreementTV"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/ageVerificationTV"
@@ -135,12 +148,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:paddingHorizontal="@dimen/padding"
+                android:textColor="@{vm.ageVerificationState ? @color/black : @color/gray_600}"
                 android:text="@string/ageVerification"
                 android:textAppearance="@style/TextAppearance.App.body2"
-                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/locationAgreeTV"
+                app:layout_constraintTop_toBottomOf="@id/locationAgreementTV"
                 app:layout_constraintEnd_toStartOf="@id/ageVerificationIV"
                 android:layout_marginEnd="@dimen/margin_small"/>
 
@@ -148,9 +161,11 @@
                 android:id="@+id/ageVerificationIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_check_box_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="@dimen/padding"
+                bind:checkBox="@{vm.ageVerificationState}"
+                android:onClick="@{() -> vm.onAgeVerificationClick()}"
+                android:tint="@{vm.ageVerificationState ? @color/main_1 : @color/gray_600}"
                 app:layout_constraintTop_toTopOf="@id/ageVerificationTV"
                 app:layout_constraintBottom_toBottomOf="@id/ageVerificationTV"/>
 
@@ -162,6 +177,8 @@
                 android:background="@drawable/rectangle_solid_corner_8dp"
                 android:backgroundTint="@color/main_1"
                 android:text="@string/agreeText"
+                android:onClick="@{() -> vm.onAgreeClick()}"
+                android:alpha="@{vm.fullAgreementCheckState ? 1f : 0.5f}"
                 android:textAppearance="@style/TextAppearance.App.button"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"

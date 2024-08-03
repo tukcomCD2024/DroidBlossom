@@ -14,6 +14,14 @@ interface AuthViewModel {
     // SignIn
     val signInEvents: SharedFlow<SignInEvent>
 
+    // UserAgreement
+    val userAgreementEvents: SharedFlow<UserAgreementEvent>
+    val fullAgreementCheckState: StateFlow<Boolean>
+    val privacyAgreementState: StateFlow<Boolean>
+    val serviceAgreementState: StateFlow<Boolean>
+    val locationAgreementState: StateFlow<Boolean>
+    val ageVerificationState: StateFlow<Boolean>
+
     // SignUp
     val signUpEvents: SharedFlow<SignUpEvent>
 
@@ -42,6 +50,15 @@ interface AuthViewModel {
 
     fun getTemporaryToken(temporaryTokenReIssue : SignIn)
 
+    // UserAgreement
+    fun userAgreementEvent(event: UserAgreementEvent)
+    fun onFullAgreementClick()
+    fun onPrivacyAgreementClick()
+    fun onServiceAgreementClick()
+    fun onLocationAgreementClick()
+    fun onAgeVerificationClick()
+    fun onAgreeClick()
+
     // SignUp
     fun signUpEvent(event: SignUpEvent)
 
@@ -59,12 +76,19 @@ interface AuthViewModel {
     fun submitCertificationNumber()
 
     sealed class SignInEvent {
-        object NavigateToSignUp : SignInEvent()
+        object NavigateToUserAgreement : SignInEvent()
         object NavigateToMain : SignInEvent()
         object DeactivatedUserChecked : SignInEvent()
         data class ShowToastMessage(val message : String) : SignInEvent()
 
     }
+
+    sealed class UserAgreementEvent {
+        object NavigateToSignUp : UserAgreementEvent()
+        data class ShowToastMessage(val message : String) : UserAgreementEvent()
+
+    }
+
 
     sealed class SignUpEvent {
         object NavigateToCertification : SignUpEvent()

@@ -226,6 +226,12 @@ fun ImageView.setCapsuleType2Img(type: String?) {
     }
 }
 
+@BindingAdapter("bind:checkBox")
+fun ImageView.setCheckBox(state: Boolean) {
+    if (state) this.setImageResource(R.drawable.ic_check_box_24)
+    else this.setImageResource(R.drawable.ic_check_box_blank_24)
+}
+
 @BindingAdapter("bind:socialType")
 fun ImageView.setSocialType(type: String?) {
     when (type) {
