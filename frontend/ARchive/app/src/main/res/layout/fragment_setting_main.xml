@@ -233,7 +233,7 @@
                         android:layout_marginHorizontal="24dp"
                         android:ellipsize="end"
                         android:lines="1"
-                        android:text="약관 및 정책"
+                        android:text="서비스 이용약관"
                         android:textAppearance="@style/TextAppearance.App.body2"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/agreeArrow"

@@ -1,10 +1,13 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting.page
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebSettings
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSettingAgreeBinding
 import com.droidblossom.archive.domain.model.setting.Agree
@@ -20,29 +23,27 @@ class SettingAgreeFragment :
     override val viewModel: SettingViewModelImpl by viewModels()
     lateinit var navController: NavController
 
-    private val agreeAdapter by lazy {
-        AgreeRVA()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
-        initRVA()
+        initView()
     }
 
-    private fun initRVA() {
-        binding.adapter.adapter = agreeAdapter
-        binding.adapter.setHasFixedSize(true)
-        agreeAdapter.submitList(
-            listOf(
-                Agree("이용약관 1장", getString(R.string.agree_content)),
-                Agree("이용약관 2장", getString(R.string.agree_content)),
-                Agree("사용자 정보 정책", getString(R.string.agree_content)),
-            )
-        )
-        binding.backBtn.setOnClickListener {
-            navController.popBackStack()
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun initView() {
+        with(binding){
+            with(webView.settings) {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                mediaPlaybackRequiresUserGesture = false
+                cacheMode = WebSettings.LOAD_DEFAULT
+                textZoom = 100
+            }
+            webView.loadUrl(BuildConfig.TERMS_OF_USE_URL)
+            backBtn.setOnClickListener {
+                navController.popBackStack()
+            }
         }
     }
 
