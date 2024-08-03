@@ -7,6 +7,7 @@
         <item name="elevationOverlayEnabled">false</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/main_bg_1</item>
+        <item name="android:windowIsTranslucent">true</item> <!-- 스플래시 삭제 -->
     </style>
 
     <style name="Theme.ARchive" parent="Base.Theme.ARchive" />
