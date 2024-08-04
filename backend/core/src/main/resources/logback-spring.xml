@@ -1,55 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-    <http>
-      <url>http://10.0.0.8:3100/loki/api/v1/push</url>
-    </http>
-    <format>
-      <label>
-        <pattern>app=${name},host=${HOSTNAME},level=%level</pattern>
-        <readMarkers>true</readMarkers>
-      </label>
-      <message>
-        <pattern>
-          {
-          "level":"%level",
-          "class":"%logger{36}",
-          "thread":"%thread",
-          "message": "%message",
-          "requestId": "%X{X-Request-ID}"
-          }
-        </pattern>
-      </message>
-    </format>
-  </appender>
-
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{36} - %msg%n
       </Pattern>
-    </encoder>
+    </layout>
   </appender>
-
-  <springProfile name="prod">
+  <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/info.log</file>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder>
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n
+      </pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>./logs/info.%d{yyyy-MM-dd}.%i.log.gz
+      </fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      <maxHistory>180</maxHistory>
+    </rollingPolicy>
+  </appender>
+  <root level="INFO">
     <logger name="org.hibernate" level="error" additivity="false">
-      <appender-ref ref="STDOUT"/>
-      <appender-ref ref="LOKI"/>
+      <appender-ref ref="INFO_LOG"/>
     </logger>
-
-    <root level="INFO">
-      <appender-ref ref="STDOUT"/>
-      <appender-ref ref="LOKI"/>
-    </root>
-  </springProfile>
-
-  <springProfile name="local | dev | test | container">
-    <logger name="org.hibernate" level="error" additivity="false">
-      <appender-ref ref="STDOUT"/>
-    </logger>
-
-    <root level="INFO">
-      <appender-ref ref="STDOUT"/>
-    </root>
-  </springProfile>
+    <appender-ref ref="INFO_LOG"/>
+  </root>
 </configuration>
