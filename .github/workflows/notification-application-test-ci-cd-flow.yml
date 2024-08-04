@@ -125,9 +125,9 @@ jobs:
             docker ps -q --filter "name=notification" | xargs -r docker stop
             docker ps -aq --filter "name=notification" | xargs -r docker rm
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_TEST_ENV_DOCKER_USER }} --password-stdin ${{ secrets.AWS_TEST_ENV_USER_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker image prune -f
+            docker image prune -f -a
             docker pull ${{ steps.meta.outputs.tags }}
-            docker run -d -p 8081:8081 -e ENVIRONMENT=container --name notification --network test_backend ${{ steps.meta.outputs.tags }}
+            docker run -d -p 8081:8081 -e ENVIRONMENT=container -v /home/ec2-user/logs-noti:/logs-noti --name notification --network test_backend ${{ steps.meta.outputs.tags }}
 
       - name: Remove Github Actions IP from security group
         if: always()
