@@ -17,18 +17,20 @@ interface SkinMakeViewModel {
     val skinImgFile: StateFlow<File?>
     val skinMotions: StateFlow<List<SkinMotion>>
     val skinMotionIndex: StateFlow<Int>
+    val firstAddMotionClick: StateFlow<Boolean>
 
     fun skinMakeEvent(event: SkinMakeEvent)
     fun selectAddMotion()
+    fun showExampleImg()
     fun setFile(skinImgFile: File)
     fun makeSkin()
-
     fun selectSkinMotion(previousPosition : Int?, currentPosition : Int)
+    fun setFirstAddMotionClick(state: Boolean)
 
     sealed class SkinMakeEvent {
         object SuccessSkinMake : SkinMakeEvent()
-
         object DismissLoading : SkinMakeEvent()
+        object ShowExampleImage : SkinMakeEvent()
         data class ShowToastMessage(val message : String) : SkinMakeEvent()
     }
 }

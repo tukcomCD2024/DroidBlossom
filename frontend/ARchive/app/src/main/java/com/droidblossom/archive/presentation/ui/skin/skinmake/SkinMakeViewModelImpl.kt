@@ -107,6 +107,11 @@ class SkinMakeViewModelImpl @Inject constructor(
     private val _skinMotionIndex = MutableStateFlow<Int>(-1)
     override val skinMotionIndex: StateFlow<Int>
         get() = _skinMotionIndex
+
+    private val _firstAddMotionClick = MutableStateFlow(true)
+    override val firstAddMotionClick: StateFlow<Boolean> get() = _firstAddMotionClick
+
+
     override fun selectSkinMotion(previousPosition: Int?, currentPosition: Int) {
         viewModelScope.launch {
             val newList = _skinMotions.value
@@ -126,6 +131,9 @@ class SkinMakeViewModelImpl @Inject constructor(
     override val skinName = MutableStateFlow("")
 
     override fun selectAddMotion() {
+        if (firstAddMotionClick.value){
+            skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowExampleImage)
+        }
         viewModelScope.launch {
             if (addMotion.value) {
                 val newList = skinMotions.value.map { skinMotion ->
@@ -151,6 +159,14 @@ class SkinMakeViewModelImpl @Inject constructor(
             getUploadUrls(getS3UrlData)
 
         }
+    }
+
+    override fun showExampleImg(){
+        skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowExampleImage)
+    }
+
+    override fun setFirstAddMotionClick(state: Boolean) {
+        _firstAddMotionClick.value = state
     }
 
     private fun getUploadUrls(getS3UrlData: S3UrlRequest) {

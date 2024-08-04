@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,13 +16,13 @@ import androidx.navigation.Navigation
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinMakeBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
+import com.droidblossom.archive.presentation.customview.ExampleImageDialog
 import com.droidblossom.archive.presentation.ui.skin.adapter.SkinMotionRVA
 import com.droidblossom.archive.util.FileUtils
 import com.droidblossom.archive.util.S3Util
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -65,6 +66,16 @@ class SkinMakeFragment :
 
                         is SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake -> {
                             navController.navigate(R.id.action_skinMakeFragment_to_skinMakeSuccessFragment)
+                        }
+
+                        is SkinMakeViewModel.SkinMakeEvent.ShowExampleImage -> {
+                            viewModel.setFirstAddMotionClick(false)
+                            val existingDialog = parentFragmentManager.findFragmentByTag(
+                                ExampleImageDialog.TAG) as DialogFragment?
+                            if (existingDialog == null){
+                                val dialog = ExampleImageDialog.newInstance()
+                                dialog.show(parentFragmentManager, ExampleImageDialog.TAG)
+                            }
                         }
 
                         is SkinMakeViewModel.SkinMakeEvent.DismissLoading -> {

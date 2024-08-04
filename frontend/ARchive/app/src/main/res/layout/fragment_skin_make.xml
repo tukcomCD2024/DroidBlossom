@@ -141,7 +141,6 @@
                     android:backgroundTint="@color/white"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    android:onClick="@{() -> vm.selectAddMotion()}"
                     app:layout_constraintEnd_toEndOf="@id/skinImageCardView"
                     app:layout_constraintStart_toStartOf="@id/skinImageCardView"
                     app:layout_constraintTop_toBottomOf="@id/skinImageCardView">
@@ -165,7 +164,18 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/imagePlusBtn"
+                            android:id="@+id/exampleImageBtn"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/ic_example_image_24"
+                            android:backgroundTint="@color/main_2"
+                            android:layout_marginEnd="20dp"
+                            android:onClick="@{() -> vm.showExampleImg()}"
+                            app:layout_constraintEnd_toStartOf="@id/motionPlusBtn"
+                            app:layout_constraintTop_toTopOf="@id/addMotionTextView" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/motionPlusBtn"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:background="@drawable/corner_radius_12"
@@ -173,6 +183,7 @@
                             android:tint="@color/white"
                             android:layout_marginEnd="20dp"
                             bind:minus_plus="@{vm.addMotion}"
+                            android:onClick="@{() -> vm.selectAddMotion()}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@id/addMotionTextView" />
 
@@ -206,6 +217,8 @@
                     android:text="@string/complete"
                     android:textAppearance="@style/TextAppearance.App.button"
                     android:textColor="@color/white"
+                    android:layout_marginBottom="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinMotionAddCardView" />
