@@ -34,8 +34,8 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
                 )
             )
             .from(memberGroup)
-            .join(memberGroup.member, member)
-            .join(memberGroup.group, group)
+            .join(member).on(memberGroup.member.eq(member), member.deletedAt.isNull())
+            .join(group).on(memberGroup.group.eq(group), group.deletedAt.isNull())
             .where(memberGroup.group.id.eq(groupId)
                 .and(memberGroup.member.id.eq(memberId)))
             .fetchFirst()
@@ -90,7 +90,7 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
                 )
             )
             .from(memberGroup)
-            .join(memberGroup.member, member)
+            .join(member).on(memberGroup.member.eq(member), member.deletedAt.isNull())
             .where(memberGroup.group.id.eq(groupId))
             .fetch();
     }
@@ -141,8 +141,9 @@ public class MemberGroupQueryRepositoryImpl implements MemberGroupQueryRepositor
                 )
             )
             .from(memberGroup)
-            .join(memberGroup.member, member)
-            .join(groupCapsuleOpen).on(memberGroup.member.id.eq(groupCapsuleOpen.member.id))
+            .join(member).on(memberGroup.member.eq(member), member.deletedAt.isNull())
+            .join(groupCapsuleOpen).on(memberGroup.member.id.eq(groupCapsuleOpen.member.id),
+                groupCapsuleOpen.deletedAt.isNull())
             .where(memberGroup.group.id.eq(groupId).and(groupCapsuleOpen.capsule.id.eq(capsuleId)))
             .fetch();
     }

@@ -9,13 +9,11 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-// swagger 접속 url -> http://localhost:8080/api/swagger-ui/index.html#/
-
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI openApi() {
         return new OpenAPI()
             .servers(getServers())
             .info(getInfo())

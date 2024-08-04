@@ -89,8 +89,10 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                     )
                 )
                 .from(member)
-                .leftJoin(memberFriend).on(member.id.eq(memberFriend.owner.id))
-                .leftJoin(memberGroup).on(member.id.eq(memberGroup.member.id))
+                .leftJoin(memberFriend).on(member.eq(memberFriend.owner),
+                    memberFriend.deletedAt.isNull())
+                .leftJoin(memberGroup).on(member.eq(memberGroup.member),
+                    memberGroup.deletedAt.isNull())
                 .where(member.id.eq(memberId))
                 .groupBy(member.id)
                 .fetchOne()
