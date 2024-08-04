@@ -65,8 +65,9 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member)
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
             .where(
                 ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
             .fetch();
@@ -114,8 +115,6 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member)
             .where(
                 ST_Contains(mbr, capsule.point).and(capsuleFilter(capsuleType, memberId, groupIds)))
             .fetch();
@@ -143,8 +142,6 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member)
             .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.in(friendIds))
                 .and(capsule.type.eq(CapsuleType.PUBLIC)))
             .fetch();
@@ -181,8 +178,9 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.member, member)
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
             .where(ST_Contains(mbr, capsule.point).and(capsule.member.id.in(friendIds))
                 .and(capsule.type.eq(CapsuleType.PUBLIC)))
             .fetch();
@@ -201,7 +199,8 @@ public class CapsuleQueryRepositoryImpl implements CapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsule.capsuleSkin, capsuleSkin)
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
             .where(capsule.id.eq(capsuleId))
             .fetchOne()
         );

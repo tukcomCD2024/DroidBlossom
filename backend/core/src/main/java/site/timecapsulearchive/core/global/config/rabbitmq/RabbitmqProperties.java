@@ -16,13 +16,14 @@ public record RabbitmqProperties(
     @NestedConfigurationProperty
     SSL ssl
 ) {
+
+    public boolean isSslEnabled() {
+        return ssl != null && ssl.enabled;
+    }
+
     protected record SSL(
         boolean enabled
     ) {
 
-    }
-
-    public boolean isSslEnabled() {
-        return ssl != null && ssl.enabled;
     }
 }

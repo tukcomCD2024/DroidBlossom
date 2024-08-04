@@ -6,7 +6,8 @@ public record CapsuleSkinDeleteResultDto(
 ) {
 
     public static CapsuleSkinDeleteResultDto fail() {
-        return new CapsuleSkinDeleteResultDto(CapsuleSkinDeleteResult.FAIL, "캡슐 스킨이 존재하지 않거나 캡슐에 사용되고 있습니다.");
+        return new CapsuleSkinDeleteResultDto(CapsuleSkinDeleteResult.FAIL,
+            "캡슐 스킨이 존재하지 않거나 캡슐에 사용되고 있습니다.");
     }
 
     public static CapsuleSkinDeleteResultDto success() {

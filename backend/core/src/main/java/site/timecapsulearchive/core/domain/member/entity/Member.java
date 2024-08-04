@@ -77,7 +77,7 @@ public class Member extends BaseEntity {
     private Boolean tagSearchAvailable = Boolean.TRUE;
 
     @Column(name = "phone_search_available", nullable = false)
-    private Boolean phoneSearchAvailable = Boolean.TRUE;
+    private Boolean phoneSearchAvailable = Boolean.FALSE;
 
     @Builder
     private Member(String profileUrl, String nickname, SocialType socialType, String email,

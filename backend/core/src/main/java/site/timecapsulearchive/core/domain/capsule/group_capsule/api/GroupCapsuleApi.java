@@ -121,7 +121,7 @@ public interface GroupCapsuleApi {
         @Max(value = 40, message = "최대 페이징 크기는 40입니다.")
         int size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디")
         Long lastCapsuleId
     );
 
@@ -151,7 +151,7 @@ public interface GroupCapsuleApi {
         @Parameter(in = ParameterIn.QUERY, description = "페이지 크기", required = true)
         int size,
 
-        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디", required = true)
+        @Parameter(in = ParameterIn.QUERY, description = "마지막 캡슐 아이디")
         Long lastCapsuleId
     );
 
