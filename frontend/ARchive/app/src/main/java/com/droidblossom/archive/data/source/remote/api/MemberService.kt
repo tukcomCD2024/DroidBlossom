@@ -4,11 +4,8 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.request.VerificationMessageSendRequestDto
 import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
-import com.droidblossom.archive.data.dto.auth.response.TokenResponseDto
-import com.droidblossom.archive.data.dto.auth.response.VerificationMessageResponseDto
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
 import com.droidblossom.archive.data.dto.member.request.MemberDataRequestDto
-import com.droidblossom.archive.data.dto.member.request.MemberDetailUpdateRequestDto
 import com.droidblossom.archive.data.dto.member.request.MemberStatusRequestDto
 import com.droidblossom.archive.data.dto.member.request.NotificationEnabledRequestDto
 import com.droidblossom.archive.data.dto.member.request.PhoneSearchRequestDto
@@ -81,7 +78,7 @@ interface MemberService {
     ): Response<ResponseBody<String>>
 
     @GET("health")
-    suspend fun getTextApi(): Response<ResponseBody<HealthResponseDto>>
+    suspend fun getServerCheckApi(): Response<ResponseBody<HealthResponseDto>>
 
     @GET("announcement")
     suspend fun getAnnouncementsApi(): Response<ResponseBody<AnnouncementsResponseDto>>

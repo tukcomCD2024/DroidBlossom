@@ -4,19 +4,18 @@ import android.util.Log
 import com.droidblossom.archive.domain.model.auth.Health
 import com.droidblossom.archive.domain.repository.MemberRepository
 import com.droidblossom.archive.util.RetrofitResult
-import com.droidblossom.archive.util.onError
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class TestUseCase @Inject constructor(
+class ServerCheckUseCase @Inject constructor(
     private val repository: MemberRepository
 ) {
     operator fun invoke() = flow<RetrofitResult<Health>> {
         try {
-            emit(repository.getText().onSuccess {
+            emit(repository.getServerCheck().onSuccess {
 
 
             }.onFail {

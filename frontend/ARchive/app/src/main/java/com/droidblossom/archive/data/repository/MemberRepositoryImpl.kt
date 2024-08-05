@@ -4,8 +4,6 @@ import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.data.dto.auth.request.VerificationMessageSendRequestDto
 import com.droidblossom.archive.data.dto.auth.request.VerificationNumberValidRequestDto
 import com.droidblossom.archive.data.dto.auth.response.HealthResponseDto
-import com.droidblossom.archive.data.dto.auth.response.TokenResponseDto
-import com.droidblossom.archive.data.dto.auth.response.VerificationMessageResponseDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.common.toModel
 import com.droidblossom.archive.data.dto.member.request.FcmTokenRequsetDto
@@ -20,8 +18,6 @@ import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
 import com.droidblossom.archive.data.source.remote.api.MemberService
 import com.droidblossom.archive.domain.model.auth.Health
-import com.droidblossom.archive.domain.model.auth.Token
-import com.droidblossom.archive.domain.model.auth.VerificationMessageResult
 import com.droidblossom.archive.domain.model.member.Announcements
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.model.member.MemberStatus
@@ -93,7 +89,7 @@ class MemberRepositoryImpl @Inject constructor(
         return apiHandler({ api.getAnnouncementsApi() }) { response: ResponseBody<AnnouncementsResponseDto> -> response.result.toModel() }
     }
 
-    override suspend fun getText(): RetrofitResult<Health> {
-        return apiHandler({ api.getTextApi() }) { response: ResponseBody<HealthResponseDto> -> response.result.toModel() }
+    override suspend fun getServerCheck(): RetrofitResult<Health> {
+        return apiHandler({ api.getServerCheckApi() }) { response: ResponseBody<HealthResponseDto> -> response.result.toModel() }
     }
 }

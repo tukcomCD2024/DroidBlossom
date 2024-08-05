@@ -39,6 +39,6 @@ interface MemberRepository {
     suspend fun reportUser(userId: Long): RetrofitResult<String>
 
     suspend fun getAnnouncements() : RetrofitResult<Announcements>
-    suspend fun getText() : RetrofitResult<Health>
+    suspend fun getServerCheck() : RetrofitResult<Health>
 
 }
