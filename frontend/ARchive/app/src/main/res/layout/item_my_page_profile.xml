@@ -66,7 +66,7 @@
             android:id="@+id/myProfileBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="프로필 수정"
+            android:text="유저 정보"
             android:paddingVertical="@dimen/padding_small"
             android:paddingHorizontal="@dimen/padding"
             android:textAppearance="@style/TextAppearance.App.body2"
