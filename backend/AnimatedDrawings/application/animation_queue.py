@@ -10,7 +10,7 @@ from application.model.motion import Motion
 from application.model.retarget import Retarget
 from application.task.tasks import create_animation, save_capsule_skin, \
     send_notification
-from kombu_connection_pool import connection, connections
+from application.kombu_connection_pool import connection, connections
 
 
 class AnimationQueueController:
