@@ -57,7 +57,7 @@ class AnimationQueueController:
         :return:
         """
         try:
-            self.logger.debug('메시지 수신 완료, 콜백 동작')
+            self.logger.info('메시지 수신 완료, 콜백 동작')
             parsed_data = self.parse_body(body)
 
             filename = f"capsuleSkin/{parsed_data['memberId']}/{uuid.uuid4()}.gif"
@@ -77,9 +77,10 @@ class AnimationQueueController:
             ).apply_async(
                 ignore_result=True
             )
+            self.logger.info("celery 작업 전달 완료")
 
             message.ack()
-            self.logger.debug('celery에 작업 전달 완료')
+            self.logger.info("메시지 큐 ack 전달 완료")
         except Exception as e:
             self.logger.exception('작업 큐 메시지 처리 오류 %r', e)
             message.reject()
