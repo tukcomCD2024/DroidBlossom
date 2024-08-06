@@ -27,7 +27,7 @@ class LogErrorsTask(Task):
 
     def before_start(self, task_id, args, kwargs):
         self.task_logger.debug(kwargs)
-        self.task_logger.debug('태스크 처리 시작 %s', task_id)
+        self.task_logger.info('태스크 처리 시작 %s', task_id)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         self.task_logger.exception('태스크 처리 실패 %s', task_id, exc_info=einfo)
@@ -63,4 +63,4 @@ class LogErrorsTask(Task):
     def on_success(self, retval, task_id, args, kwargs):
         self.task_logger.debug(args)
 
-        self.task_logger.debug('태스크 처리 성공 %s', task_id)
+        self.task_logger.info('태스크 처리 성공 %s', task_id)
