@@ -2,10 +2,13 @@ package site.timecapsulearchive.core.domain.capsule.group_capsule.service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
@@ -198,6 +201,10 @@ public class GroupCapsuleService {
         final Long lastCapsuleId
     ) {
         final List<Long> groupIds = memberGroupRepository.findGroupIdsByMemberId(memberId);
+
+        if (groupIds.isEmpty()) {
+            return new SliceImpl<>(Collections.emptyList());
+        }
 
         return groupCapsuleQueryRepository.findGroupCapsuleSlice(size, lastCapsuleId,
             groupIds);
