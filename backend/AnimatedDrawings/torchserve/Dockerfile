@@ -36,7 +36,7 @@ RUN pip install mmpose==0.29.0
 RUN mkdir -p /home/torchserve/model-store
 RUN wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_detector.mar -P /home/torchserve/model-store/
 RUN wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_pose_estimator.mar -P /home/torchserve/model-store/
-COPY config.properties /home/torchserve/config.properties
+COPY config.properties.template /home/torchserve/config.properties.template
 COPY log4j2.xml /home/torchserve/log4j2.xml
 
 ENV MAX_HEAP_SIZE=8g

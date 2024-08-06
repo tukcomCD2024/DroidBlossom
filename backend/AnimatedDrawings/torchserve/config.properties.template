@@ -8,7 +8,7 @@ metrics_address=http://0.0.0.0:8082
 model_store=/home/torchserve/model-store
 load_models=all
 
-vmargs=-Xmx{{MAX_HEAP_SIZE}} -Xms{{INI_HEAP_SIZE}} -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -Dlog4j.configurationFile=file:///home/torchserve/log4j2.xml
+vmargs=-Xmx{{MAX_HEAP_SIZE}} -Xms{{INIT_HEAP_SIZE}} -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -Dlog4j.configurationFile=file:///home/torchserve/log4j2.xml
 
 ipex_enable=true
 cpu_launcher_enable=true
