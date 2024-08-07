@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:24.1.2-0
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -7,16 +7,19 @@ COPY . /app
 RUN mkdir -p /app/application/capsuleSkin
 WORKDIR /app
 
-RUN conda create --name animated_drawings python=3.8.13
-
-SHELL ["conda", "run", "-n", "animated_drawings", "/bin/bash", "-c"]
+RUN conda install python=3.8.13 -y
 
 # Install gcc and python3-dev
-RUN apt-get update && apt-get install -y gcc python3-dev supervisor
-
-RUN apt-get install -y libosmesa6-dev freeglut3-dev &&  \
-    apt-get install -y libglfw3-dev libgles2-mesa-dev &&  \
-    apt-get install -y libosmesa6
+RUN apt-get clean
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+    supervisor gcc build-essential \
+    libosmesa6-dev freeglut3-dev  \
+    libglfw3-dev libgles2-mesa-dev \
+    libosmesa6 \
+    libglib2.0-0 libsm6 libxrender1 libxext6 \
+    ffmpeg libavcodec-extra \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
