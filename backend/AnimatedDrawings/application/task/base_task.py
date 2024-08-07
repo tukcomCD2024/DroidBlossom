@@ -27,10 +27,10 @@ class LogErrorsTask(Task):
 
     def before_start(self, task_id, args, kwargs):
         self.task_logger.debug(kwargs)
-        self.task_logger.info('태스크 처리 시작 %s', task_id)
+        self.task_logger.info('task_id: %s - 태스크 처리 시작', task_id)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        self.task_logger.exception('태스크 처리 실패 %s', task_id, exc_info=einfo)
+        self.task_logger.exception('task_id: %s - 태스크 처리 실패', task_id, exc_info=einfo)
         request_data = json.dumps({
             'memberId': kwargs['input_data']['memberId'],
             'skinName': kwargs['input_data']['skinName'],
@@ -40,27 +40,27 @@ class LogErrorsTask(Task):
             'status': NotificationStatus.FAIL.value
         }, ensure_ascii=False)
         with producers[connection].acquire(block=True) as producer:
-            exchange = Exchange(name=QueueConfig.NOTIFICATION_EXCHANGE_NAME,
+            notification_exchange = Exchange(name=QueueConfig.NOTIFICATION_EXCHANGE_NAME,
                                 type='direct',
                                 durable=True)
 
-            queue = Queue(name=QueueConfig.NOTIFICATION_QUEUE_NAME,
-                          exchange=exchange,
+            notification_queue = Queue(name=QueueConfig.NOTIFICATION_QUEUE_NAME,
+                          exchange=notification_exchange,
                           routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME)
 
             producer.publish(
                 request_data,
-                declare=[queue],
-                exchange=exchange,
+                declare=[notification_queue],
+                exchange=notification_exchange,
                 content_type='application/json',
                 routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME,
             )
 
     def on_retry(self, exc, task_id, args, kwargs, einfo):
         self.task_logger.debug(kwargs)
-        self.task_logger.exception('태스크 재시도 %s', task_id, exc_info=einfo)
+        self.task_logger.exception('task_id: %s - 태스크 재시도', task_id, exc_info=einfo)
 
     def on_success(self, retval, task_id, args, kwargs):
         self.task_logger.debug(args)
 
-        self.task_logger.info('태스크 처리 성공 %s', task_id)
+        self.task_logger.info('task_id: %s - 태스크 처리 성공', task_id)
