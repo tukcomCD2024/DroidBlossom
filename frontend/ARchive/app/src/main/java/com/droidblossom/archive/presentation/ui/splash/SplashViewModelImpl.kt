@@ -1,8 +1,11 @@
 package com.droidblossom.archive.presentation.ui.splash
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.domain.usecase.auth.ServerCheckUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.util.onError
+import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,9 +36,7 @@ class SplashViewModelImpl @Inject constructor(
                 result.onSuccess {
                     splashEvent(SplashViewModel.SplashEvent.Navigation)
                 }.onFail {
-                    splashEvent(
-                        SplashViewModel.SplashEvent.ShowToastMessage("더 나은 서비스를 위해 잠시 서버 점검 중이에요")
-                    )
+
                 }
             }
         }

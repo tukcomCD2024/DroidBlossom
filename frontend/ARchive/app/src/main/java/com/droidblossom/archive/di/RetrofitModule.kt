@@ -4,6 +4,7 @@ import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.util.AccessTokenInterceptor
 import com.droidblossom.archive.util.DataStoreUtils
+import com.droidblossom.archive.util.ErrorHandlingInterceptor
 import com.droidblossom.archive.util.TokenAuthenticator
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -46,11 +47,11 @@ object RetrofitModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder().apply {
-
             addInterceptor (interceptor)
-            connectTimeout(5, TimeUnit.SECONDS)
-            readTimeout(5, TimeUnit.SECONDS)
-            writeTimeout(5, TimeUnit.SECONDS)
+            addInterceptor(ErrorHandlingInterceptor())
+            connectTimeout(30, TimeUnit.SECONDS)
+            readTimeout(30, TimeUnit.SECONDS)
+            writeTimeout(30, TimeUnit.SECONDS)
             authenticator(TokenAuthenticator(ds, authServiceLazy))
             addNetworkInterceptor(AccessTokenInterceptor(ds))
         }.build()
@@ -66,9 +67,9 @@ object RetrofitModule {
         return OkHttpClient.Builder().apply {
 
             addInterceptor (interceptor)
-            connectTimeout(5, TimeUnit.SECONDS)
-            readTimeout(5, TimeUnit.SECONDS)
-            writeTimeout(5, TimeUnit.SECONDS)
+            connectTimeout(30, TimeUnit.SECONDS)
+            readTimeout(30, TimeUnit.SECONDS)
+            writeTimeout(30, TimeUnit.SECONDS)
         }.build()
     }
 

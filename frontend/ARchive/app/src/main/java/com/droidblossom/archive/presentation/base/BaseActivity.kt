@@ -20,6 +20,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import com.droidblossom.archive.presentation.customview.LoadingDialog
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
+import com.droidblossom.archive.presentation.customview.SystemMaintenanceDialog
 import com.droidblossom.archive.presentation.model.AppEvent
 import com.droidblossom.archive.presentation.ui.NetworkConnectionActivity
 import com.droidblossom.archive.util.ClipboardUtil
@@ -67,6 +68,14 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
         when (event) {
             is AppEvent.NetworkDisconnectedEvent -> {
                 startActivity(NetworkConnectionActivity.newIntent(this))
+            }
+            is AppEvent.BadGateEvent -> {
+                val existingDialog = supportFragmentManager.findFragmentByTag(
+                    SystemMaintenanceDialog.TAG) as DialogFragment?
+                if (existingDialog == null){
+                    val dialog = SystemMaintenanceDialog.newInstance()
+                    dialog.show(supportFragmentManager, SystemMaintenanceDialog.TAG)
+                }
             }
             is AppEvent.NotificationReceivedEvent -> {
                 //showToastMessage("알림")
