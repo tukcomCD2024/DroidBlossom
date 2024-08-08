@@ -11,6 +11,7 @@ import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
+import site.timecapsulearchive.notification.global.aop.Trace;
 import site.timecapsulearchive.notification.infra.fcm.group.GroupFcmManager;
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;
@@ -26,7 +27,8 @@ public class GroupAlarmService implements GroupAlarmListener {
     private final MemberRepository memberRepository;
     private final TransactionTemplate transactionTemplate;
 
-
+    @Trace
+    @Override
     public void sendGroupInviteNotification(final GroupInviteNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -44,6 +46,7 @@ public class GroupAlarmService implements GroupAlarmListener {
         }
     }
 
+    @Trace
     @Override
     public void sendGroupAcceptNotification(GroupAcceptNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {

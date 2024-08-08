@@ -11,6 +11,7 @@ import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
+import site.timecapsulearchive.notification.global.aop.Trace;
 import site.timecapsulearchive.notification.infra.fcm.friend.FriendFcmManager;
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;
@@ -26,7 +27,8 @@ public class FriendAlarmService implements FriendAlarmListener {
     private final MemberRepository memberRepository;
     private final TransactionTemplate transactionTemplate;
 
-
+    @Trace
+    @Override
     public void sendFriendRequestNotification(final FriendNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -46,6 +48,8 @@ public class FriendAlarmService implements FriendAlarmListener {
         }
     }
 
+    @Trace
+    @Override
     public void sendFriendAcceptNotification(final FriendNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -65,7 +69,8 @@ public class FriendAlarmService implements FriendAlarmListener {
         }
     }
 
-
+    @Trace
+    @Override
     public void sendFriendRequestNotifications(final FriendNotificationsDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override

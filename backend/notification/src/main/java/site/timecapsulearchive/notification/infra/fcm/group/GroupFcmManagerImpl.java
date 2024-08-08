@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
+import site.timecapsulearchive.notification.global.aop.Trace;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 import site.timecapsulearchive.notification.infra.fcm.FCMMessageData;
 import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
@@ -20,6 +21,7 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
 
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
+    @Trace
     public void sendGroupInviteNotifications(
         final GroupInviteNotificationDto dto,
         final CategoryName categoryName,
@@ -44,6 +46,7 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
         }
     }
 
+    @Trace
     public void sendGroupAcceptNotification(
         final GroupAcceptNotificationDto dto,
         final CategoryName categoryName,
