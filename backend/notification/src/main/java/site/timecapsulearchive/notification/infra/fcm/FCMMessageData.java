@@ -1,6 +1,6 @@
 package site.timecapsulearchive.notification.infra.fcm;
 
-public enum FcmMessageData {
+public enum FCMMessageData {
     TOPIC("topic"),
     STATUS("status"),
 
@@ -11,7 +11,7 @@ public enum FcmMessageData {
 
     private final String data;
 
-    FcmMessageData(String data) {
+    FCMMessageData(String data) {
         this.data = data;
     }
 
