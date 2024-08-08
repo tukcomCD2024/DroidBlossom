@@ -28,19 +28,18 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
     lateinit var dataStoreUtils: DataStoreUtils
 
     override val viewModel: SplashViewModelImpl by viewModels()
+
     override fun observeData() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.splashEvents.collect{ event ->
-                    when(event){
-                        is SplashViewModel.SplashEvent.ShowToastMessage->{
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.splashEvents.collect { event ->
+                    when (event) {
+                        is SplashViewModel.SplashEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
                         is SplashViewModel.SplashEvent.Navigation -> {
-                            lifecycleScope.launch{
-                                if (dataStoreUtils.fetchAccessToken().isNotEmpty() && dataStoreUtils.fetchRefreshToken()
-                                        .isNotEmpty()
-                                ) {
+                            lifecycleScope.launch {
+                                if (dataStoreUtils.fetchAccessToken().isNotEmpty() && dataStoreUtils.fetchRefreshToken().isNotEmpty()) {
                                     essentialPermissionLauncher.launch(essentialPermissionList)
                                 } else {
                                     AuthActivity.goAuth(this@SplashActivity)
@@ -56,8 +55,16 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        performHealthCheck()
+    }
+
+    private fun performHealthCheck() {
         lifecycleScope.launch {
-            delay(1000)
+            delay(500)
             viewModel.getServerCheck()
         }
     }
@@ -68,19 +75,16 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
                 permissions.all { it.value } -> {
                     MainActivity.goMain(this@SplashActivity)
                 }
-
                 else -> {
                     handleEssentialPermissionsDenied()
                 }
             }
-
         }
 
     private fun handleEssentialPermissionsDenied() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) || shouldShowRequestPermissionRationale(
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-        ) {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
             showToastMessage("ARchive 앱을 사용하려면 카메라, 위치 권한은 필수입니다.")
         } else {
             showSettingsDialog(
@@ -91,13 +95,10 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
                 },
                 {
                     navigateToAppSettings {
-                        essentialPermissionLauncher.launch(
-                            essentialPermissionList
-                        )
+                        essentialPermissionLauncher.launch(essentialPermissionList)
                     }
                 }
             )
         }
     }
-
 }
