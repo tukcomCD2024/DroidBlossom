@@ -21,14 +21,6 @@ class ErrorHandlingInterceptor : Interceptor {
 
         if (!response.isSuccessful) {
             when (response.code) {
-                404 -> {
-                    // 404 에러 처리 로직
-                    throw IOException("Resource not found")
-                }
-                500 -> {
-                    // 500 에러 처리 로직
-                    throw IOException("Server error")
-                }
                 502 -> {
                     EventBus.getDefault().post(AppEvent.BadGateEvent)
                 }

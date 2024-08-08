@@ -15,13 +15,8 @@ class SystemMaintenanceDialog(
 
     override fun onStart() {
         super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.WRAP_CONTENT
-            dialog.window?.setLayout(width, height)
-            dialog.setCancelable(false)
-        }
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog?.setCancelable(false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,7 +26,12 @@ class SystemMaintenanceDialog(
 
             val dialogText =
                 "현재 더 나은 서비스 제공을 위해 <b><font color='#FF5C5C'>점검</font></b> 중입니다.<br>이로 인해 사이트 접속이 어려울 수 있습니다.<br>여러분의 양해와 협조에 감사드립니다."
-            maintenanceText.text = Html.fromHtml(dialogText, Html.FROM_HTML_MODE_LEGACY);
+            maintenanceText.text = Html.fromHtml(dialogText, Html.FROM_HTML_MODE_LEGACY)
+
+            confirmBtn.setOnClickListener {
+                dismiss()
+                activity?.finishAffinity()
+            }
         }
     }
 
