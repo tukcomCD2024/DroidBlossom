@@ -24,6 +24,7 @@ import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
 import com.droidblossom.archive.data.source.remote.api.TreasureService
+import com.droidblossom.archive.data.source.remote.api.UnAuthenticatedService
 import com.droidblossom.archive.domain.repository.AuthRepository
 import com.droidblossom.archive.domain.repository.CapsuleRepository
 import com.droidblossom.archive.domain.repository.CapsuleSkinRepository
@@ -53,8 +54,10 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun providesMemberRepository(api: MemberService): MemberRepository =
-        MemberRepositoryImpl(api)
+    fun providesMemberRepository(
+        unAuthenticatedService: UnAuthenticatedService,
+        memberService: MemberService
+    ): MemberRepository = MemberRepositoryImpl(unAuthenticatedService = unAuthenticatedService, memberService = memberService)
 
     @Provides
     @ViewModelScoped

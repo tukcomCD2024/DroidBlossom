@@ -28,11 +28,6 @@ interface MemberService {
     @GET("me")
     suspend fun getMeApi(): Response<ResponseBody<MemberDetailResponseDto>>
 
-    @POST("me/status")
-    suspend fun postMeStatusApi(
-        @Body checkStatusRequestDto: MemberStatusRequestDto
-    ): Response<ResponseBody<MemberStatusResponseDto>>
-
     @PATCH("me/data")
     suspend fun patchMeApi(
         @Body request: MemberDataRequestDto
@@ -76,9 +71,6 @@ interface MemberService {
     suspend fun patchPhoneSearchApi(
         @Body request: PhoneSearchRequestDto
     ): Response<ResponseBody<String>>
-
-    @GET("health")
-    suspend fun getServerCheckApi(): Response<ResponseBody<HealthResponseDto>>
 
     @GET("announcement")
     suspend fun getAnnouncementsApi(): Response<ResponseBody<AnnouncementsResponseDto>>

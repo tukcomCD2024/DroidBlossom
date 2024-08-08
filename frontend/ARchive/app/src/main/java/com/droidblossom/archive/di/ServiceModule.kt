@@ -11,6 +11,7 @@ import com.droidblossom.archive.data.source.remote.api.PublicService
 import com.droidblossom.archive.data.source.remote.api.S3Service
 import com.droidblossom.archive.data.source.remote.api.SecretService
 import com.droidblossom.archive.data.source.remote.api.TreasureService
+import com.droidblossom.archive.data.source.remote.api.UnAuthenticatedService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,45 +26,49 @@ object ServiceModule {
 
     @Singleton
     @Provides
-    fun providesAuthService(retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
+    fun providesAuthService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : AuthService = retrofit.create(AuthService::class.java)
 
     @Singleton
     @Provides
-    fun providesMemberService(retrofit: Retrofit) : MemberService = retrofit.create(MemberService::class.java)
+    fun providesMemberService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : MemberService = retrofit.create(MemberService::class.java)
 
     @Singleton
     @Provides
-    fun providesSecretService(retrofit: Retrofit) : SecretService = retrofit.create(SecretService::class.java)
+    fun providesSecretService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : SecretService = retrofit.create(SecretService::class.java)
 
     @Singleton
     @Provides
-    fun providesS3Service(retrofit: Retrofit) : S3Service = retrofit.create(S3Service::class.java)
+    fun providesS3Service(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : S3Service = retrofit.create(S3Service::class.java)
 
     @Singleton
     @Provides
-    fun providesCapsuleService(retrofit: Retrofit) : CapsuleService = retrofit.create(CapsuleService::class.java)
+    fun providesCapsuleService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : CapsuleService = retrofit.create(CapsuleService::class.java)
 
     @Singleton
     @Provides
-    fun providesCapsuleSkinService(retrofit: Retrofit) : CapsuleSkinService = retrofit.create(CapsuleSkinService::class.java)
+    fun providesCapsuleSkinService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : CapsuleSkinService = retrofit.create(CapsuleSkinService::class.java)
 
     @Singleton
     @Provides
-    fun providesFriendService(retrofit : Retrofit) : FriendService = retrofit.create(FriendService::class.java)
+    fun providesFriendService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : FriendService = retrofit.create(FriendService::class.java)
 
     @Singleton
     @Provides
-    fun providesPublicService(retrofit: Retrofit) : PublicService = retrofit.create(PublicService::class.java)
+    fun providesPublicService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : PublicService = retrofit.create(PublicService::class.java)
 
     @Singleton
     @Provides
-    fun providesGroupService(retrofit: Retrofit) : GroupService = retrofit.create(GroupService::class.java)
+    fun providesGroupService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : GroupService = retrofit.create(GroupService::class.java)
 
     @Singleton
     @Provides
-    fun providesGroupCapsuleService(retrofit: Retrofit) : GroupCapsuleService = retrofit.create(GroupCapsuleService::class.java)
+    fun providesGroupCapsuleService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : GroupCapsuleService = retrofit.create(GroupCapsuleService::class.java)
 
     @Singleton
     @Provides
-    fun providesTreasureService(retrofit: Retrofit) : TreasureService = retrofit.create(TreasureService::class.java)
+    fun providesTreasureService(@RetrofitModule.AuthenticatedRetrofit retrofit: Retrofit) : TreasureService = retrofit.create(TreasureService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesUnAuthenticatedService(@RetrofitModule.UnAuthenticatedRetrofit retrofit: Retrofit) : UnAuthenticatedService = retrofit.create(UnAuthenticatedService::class.java)
 }

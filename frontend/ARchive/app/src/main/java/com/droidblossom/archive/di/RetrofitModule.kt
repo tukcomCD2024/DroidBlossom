@@ -19,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -26,6 +27,21 @@ import javax.inject.Singleton
 object RetrofitModule {
     const val NETWORK_EXCEPTION_OFFLINE = "network_exception_offline"
     const val NETWORK_EXCEPTION_RESULT_IS_NULL = "network_exception_result_is_null"
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class UnAuthenticatedOkHttpClient
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthenticatedOkHttpClient
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class UnAuthenticatedRetrofit
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthenticatedRetrofit
 
     @Provides
     @Singleton
@@ -39,7 +55,24 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun providesOkHttpClient(
+    @UnAuthenticatedOkHttpClient
+    fun providesUnAuthenticatedOkHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder().apply {
+            addInterceptor (interceptor)
+            addInterceptor(ErrorHandlingInterceptor())
+            connectTimeout(30, TimeUnit.SECONDS)
+            readTimeout(30, TimeUnit.SECONDS)
+            writeTimeout(30, TimeUnit.SECONDS)
+        }.build()
+    }
+
+    @Provides
+    @Singleton
+    @AuthenticatedOkHttpClient
+    fun providesAuthenticatedOkHttpClient(
         ds: DataStoreUtils,
         authServiceLazy: Lazy<AuthService>,
     ): OkHttpClient {
@@ -73,11 +106,25 @@ object RetrofitModule {
         }.build()
     }
 
+    @Provides
+    @Singleton
+    @UnAuthenticatedRetrofit
+    fun providesUnAuthenticatedRetrofit(
+        @UnAuthenticatedOkHttpClient client: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("${BuildConfig.BASE_URL}api/")
+            .addConverterFactory(gsonConverterFactory)
+            .client(client)
+            .build()
+    }
 
     @Provides
     @Singleton
-    fun providesRetrofit(
-        client: OkHttpClient,
+    @AuthenticatedRetrofit
+    fun providesAuthenticatedRetrofit(
+        @AuthenticatedOkHttpClient client: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()

@@ -17,6 +17,7 @@ import com.droidblossom.archive.data.dto.member.response.MemberDetailResponseDto
 import com.droidblossom.archive.data.dto.member.response.MemberStatusResponseDto
 import com.droidblossom.archive.data.dto.member.response.NotificationResponseDto
 import com.droidblossom.archive.data.source.remote.api.MemberService
+import com.droidblossom.archive.data.source.remote.api.UnAuthenticatedService
 import com.droidblossom.archive.domain.model.auth.Health
 import com.droidblossom.archive.domain.model.member.Announcements
 import com.droidblossom.archive.domain.model.member.MemberDetail
@@ -28,33 +29,34 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class MemberRepositoryImpl @Inject constructor(
-    private val api: MemberService
+    private val unAuthenticatedService: UnAuthenticatedService,
+    private val memberService: MemberService
 ) : MemberRepository {
     override suspend fun getMe(): RetrofitResult<MemberDetail> {
-        return apiHandler({ api.getMeApi() }) { response: ResponseBody<MemberDetailResponseDto> -> response.result.toModel() }
+        return apiHandler({ memberService.getMeApi() }) { response: ResponseBody<MemberDetailResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun patchMe(request: MemberDataRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.patchMeApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ memberService.patchMeApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun postMemberStatus(request: MemberStatusRequestDto): RetrofitResult<MemberStatus> {
-        return apiHandler({ api.postMeStatusApi(request) }) { response: ResponseBody<MemberStatusResponseDto> -> response.result.toModel() }
+        return apiHandler({ unAuthenticatedService.postMeStatusApi(request) }) { response: ResponseBody<MemberStatusResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun patchNotificationEnabled(request: NotificationEnabledRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.patchNotificationEnabled(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ memberService.patchNotificationEnabled(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun patchFcmToken(request: FcmTokenRequsetDto): RetrofitResult<String> {
-        return apiHandler({ api.patchFcmToken(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ memberService.patchFcmToken(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun getNotifications(
         request: PagingRequestDto
     ): RetrofitResult<NotificationPage> {
         return apiHandler({
-            api.getNotifications(
+            memberService.getNotifications(
                 size = request.size,
                 createdAt = request.createdAt
             )
@@ -62,34 +64,34 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAccount(): RetrofitResult<String> {
-        return apiHandler({ api.deleteAccountApi() }) { response: ResponseBody<String> -> response.result }
+        return apiHandler({ memberService.deleteAccountApi() }) { response: ResponseBody<String> -> response.result }
     }
 
     override suspend fun changePhoneMessageSend(request: VerificationMessageSendRequestDto): RetrofitResult<String>{
-        return apiHandler({ api.postChangePhoneSendMessageApi(request) }) { response : ResponseBody<String> -> response.result.toModel()}
+        return apiHandler({ memberService.postChangePhoneSendMessageApi(request) }) { response : ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun changePhoneValidMessage(request: VerificationNumberValidRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.postChangePhoneValidMessageApi(request) }) { response : ResponseBody<String> -> response.result.toModel()}
+        return apiHandler({ memberService.postChangePhoneValidMessageApi(request) }) { response : ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun changeTagSearchAvailable(request: TagSearchRequestDto): RetrofitResult<String> {
-        return apiHandler({api.patchTagSearchApi(request)}) { response : ResponseBody<String> -> response.result.toModel()}
+        return apiHandler({memberService.patchTagSearchApi(request)}) { response : ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun changePhoneSearchAvailable(request: PhoneSearchRequestDto): RetrofitResult<String> {
-        return apiHandler({api.patchPhoneSearchApi(request)}) { response : ResponseBody<String> -> response.result.toModel()}
+        return apiHandler({memberService.patchPhoneSearchApi(request)}) { response : ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun reportUser(userId: Long): RetrofitResult<String> {
-        return apiHandler({ api.patchUserDeclarationApi(targetId = userId) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ memberService.patchUserDeclarationApi(targetId = userId) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun getAnnouncements(): RetrofitResult<Announcements> {
-        return apiHandler({ api.getAnnouncementsApi() }) { response: ResponseBody<AnnouncementsResponseDto> -> response.result.toModel() }
+        return apiHandler({ memberService.getAnnouncementsApi() }) { response: ResponseBody<AnnouncementsResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getServerCheck(): RetrofitResult<Health> {
-        return apiHandler({ api.getServerCheckApi() }) { response: ResponseBody<HealthResponseDto> -> response.result.toModel() }
+        return apiHandler({ unAuthenticatedService.getServerCheckApi() }) { response: ResponseBody<HealthResponseDto> -> response.result.toModel() }
     }
 }
