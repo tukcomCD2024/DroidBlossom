@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="data"
             type="com.droidblossom.archive.presentation.model.mypage.CapsuleData" />
@@ -34,16 +35,15 @@
             tools:ignore="UnusedAttribute"
             tools:src="@drawable/base_skin" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/capsuleImg"
-            app:layout_constraintBottom_toBottomOf="@id/capsuleImg"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_height="0dp"
+            android:layout_width="0dp"
             app:layout_constraintStart_toStartOf="@id/capsuleImg"
             app:layout_constraintEnd_toEndOf="@id/capsuleImg"
-            android:text="@{data.isOpened ? `` : `CLOSE`}"
-            android:textAppearance="@style/TextAppearance.App.h1"
-            android:textColor="@color/white"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintTop_toTopOf="@id/capsuleImg"
+            app:layout_constraintBottom_toBottomOf="@id/capsuleImg"
+            app:srcCompat="@drawable/ic_lock"
+            android:visibility="@{data.isOpened ? View.GONE : View.VISIBLE}"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/capsuleT"

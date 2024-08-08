@@ -22,6 +22,8 @@
     <color name="gray_900">#FF1C1C1C</color>
     <color name="kakao">#FEE500</color>
     <color name="purple">#FFA46CFF</color>
+    <color name="gold_light">#FFFFD700</color>
+    <color name="gold_dark">#FFB8860B</color>
 
 
     <color name="main_1_alpha20">#324263F7</color>
