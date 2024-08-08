@@ -25,7 +25,7 @@ class ErrorHandlingInterceptor : Interceptor {
                     EventBus.getDefault().post(AppEvent.BadGateEvent)
                 }
                 else -> {
-                    throw IOException(RetrofitModule.NETWORK_EXCEPTION_RESULT_IS_NULL)
+
                 }
             }
         }

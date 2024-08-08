@@ -57,50 +57,7 @@ class SkinMakeViewModelImpl @Inject constructor(
     override val skinImgFile: StateFlow<File?> = _skinImgFile
 
     private val _skinMotions = MutableStateFlow<List<SkinMotion>>(
-        listOf(
-            SkinMotion(
-                1L,
-                "https://github.com/comst19/GradProjectHub/blob/main/db7457be-b654-48ac-8b20-b47c3644fcab_1.gif?raw=true",
-                Motion.JUMPING_JACKS,
-                Retarget.CMU,
-                false
-            ),
-            SkinMotion(
-                2L,
-                "https://github.com/comst19/GradProjectHub/blob/main/7a87f9b0-19dd-4ae8-b88e-3e1e142c5122_2.gif?raw=true",
-                Motion.DAB,
-                Retarget.FAIR,
-                false
-            ),
-            SkinMotion(
-                3L,
-                "https://github.com/comst19/GradProjectHub/blob/main/45696698-7cad-4838-a947-2b07cb5b2c05_3.gif?raw=true",
-                Motion.JUMPING,
-                Retarget.FAIR,
-                false
-            ),
-            SkinMotion(
-                4L,
-                "https://github.com/comst19/GradProjectHub/blob/main/b8112cd6-48fb-42de-b326-80efa4d20150_4.gif?raw=true",
-                Motion.WAVE_HELLO,
-                Retarget.FAIR,
-                false
-            ),
-            SkinMotion(
-                5L,
-                "https://github.com/comst19/GradProjectHub/blob/main/02a9fb2b-f126-461c-886a-5f232e93c12b_5.gif?raw=true",
-                Motion.ZOMBIE,
-                Retarget.FAIR,
-                false
-            ),
-            SkinMotion(
-                6L,
-                "https://github.com/comst19/GradProjectHub/blob/main/fd145d45-ba3b-41b3-9e58-6f089a4267a0_6.gif?raw=true",
-                Motion.JESSE_DANCE,
-                Retarget.ROKOKO,
-                false
-            )
-        )
+        listOf()
     )
     override val skinMotions get() = _skinMotions
 
@@ -224,11 +181,10 @@ class SkinMakeViewModelImpl @Inject constructor(
             ).collect { result ->
                 result.onSuccess {
                     skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
-                    Log.d("스킨 생성", "생성 성공")
                 }.onFail {
-                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
-                    Log.d("스킨 생성", "생성 실패")
+                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요."))
                 }
+                skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
             }
         }
     }
