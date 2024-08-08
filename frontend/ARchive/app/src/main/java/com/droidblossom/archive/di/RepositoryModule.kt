@@ -49,8 +49,8 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun providesAuthRepository(api: AuthService): AuthRepository =
-        AuthRepositoryImpl(api)
+    fun providesAuthRepository(authService: AuthService): AuthRepository =
+        AuthRepositoryImpl(authService)
 
     @Provides
     @ViewModelScoped
@@ -61,44 +61,44 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun providesSecretRepository(api: SecretService): SecretRepository =
-        SecretRepositoryImpl(api)
+    fun providesSecretRepository(secretService: SecretService): SecretRepository =
+        SecretRepositoryImpl(secretService)
 
     @Provides
     @ViewModelScoped
-    fun providesS3Repository(api: S3Service): S3Repository =
-        S3RepositoryImpl(api)
+    fun providesS3Repository(s3Service: S3Service): S3Repository =
+        S3RepositoryImpl(s3Service)
 
     @Provides
     @ViewModelScoped
-    fun providesKakaoRepository(api: KakaoService): KakaoRepository =
-        KakaoRepositoryImpl(api)
+    fun providesKakaoRepository(kakaoService: KakaoService): KakaoRepository =
+        KakaoRepositoryImpl(kakaoService)
 
     @Provides
     @ViewModelScoped
-    fun providesCapsuleRepository(api : CapsuleService) : CapsuleRepository = CapsuleRepositoryImpl(api)
+    fun providesCapsuleRepository(capsuleService : CapsuleService) : CapsuleRepository = CapsuleRepositoryImpl(capsuleService)
 
     @Provides
     @ViewModelScoped
-    fun providesCapsuleSkinRepository(api : CapsuleSkinService) : CapsuleSkinRepository = CapsuleSkinRepositoryImpl(api)
+    fun providesCapsuleSkinRepository(capsuleSkinService : CapsuleSkinService) : CapsuleSkinRepository = CapsuleSkinRepositoryImpl(capsuleSkinService)
 
     @Provides
     @ViewModelScoped
-    fun providesFriendRepository(api : FriendService) : FriendRepository = FriendRepositoryImpl(api)
+    fun providesFriendRepository(friendService : FriendService) : FriendRepository = FriendRepositoryImpl(friendService)
 
     @Provides
     @ViewModelScoped
-    fun providesPublicRepository(api : PublicService) : PublicRepository = PublicRepositoryImpl(api)
+    fun providesPublicRepository(publicService : PublicService) : PublicRepository = PublicRepositoryImpl(publicService)
 
     @Provides
     @ViewModelScoped
-    fun providesGroupRepository(api : GroupService) : GroupRepository = GroupRepositoryImpl(api)
+    fun providesGroupRepository(groupService : GroupService) : GroupRepository = GroupRepositoryImpl(groupService)
 
     @Provides
     @ViewModelScoped
-    fun providesGroupCapsuleRepository(api : GroupCapsuleService) : GroupCapsuleRepository = GroupCapsuleRepositoryImpl(api)
+    fun providesGroupCapsuleRepository(groupCapsuleService : GroupCapsuleService) : GroupCapsuleRepository = GroupCapsuleRepositoryImpl(groupCapsuleService)
 
     @Provides
     @ViewModelScoped
-    fun providesTreasureRepository(api: TreasureService) : TreasureRepository = TreasureRepositoryImpl(api)
+    fun providesTreasureRepository(treasureService: TreasureService) : TreasureRepository = TreasureRepositoryImpl(treasureService)
 }

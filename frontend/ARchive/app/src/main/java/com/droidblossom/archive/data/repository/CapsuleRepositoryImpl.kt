@@ -18,10 +18,10 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class CapsuleRepositoryImpl @Inject constructor(
-    private val api: CapsuleService
+    private val capsuleService: CapsuleService
 ) : CapsuleRepository {
     override suspend fun openCapsule(capsuleId: Long): RetrofitResult<CapsuleOpenedResponse> {
-        return apiHandler({ api.patchCapsuleOpenApi(capsuleId = capsuleId) }) { response: ResponseBody<CapsuleOpenedResponseDto> -> response.result.toModel() }
+        return apiHandler({ capsuleService.patchCapsuleOpenApi(capsuleId = capsuleId) }) { response: ResponseBody<CapsuleOpenedResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun nearbyMyCapsulesHome(
@@ -30,7 +30,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         distance: Double,
         capsuleType: String
     ): RetrofitResult<CapsuleMarkers> {
-        return apiHandler({ api.getNearbyMyCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
+        return apiHandler({ capsuleService.getNearbyMyCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
     }
 
     override suspend fun nearbyFriendsCapsulesHome(
@@ -38,7 +38,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         longitude: Double,
         distance: Double
     ): RetrofitResult<CapsuleMarkers> {
-        return apiHandler({ api.getNearbyFriendsCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance ) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
+        return apiHandler({ capsuleService.getNearbyFriendsCapsulesHomeApi(latitude = latitude, longitude = longitude, distance= distance ) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toMarkerModel() }
 
     }
 
@@ -48,7 +48,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         distance: Double,
         capsuleType: String
     ): RetrofitResult<CapsuleAnchors> {
-        return apiHandler({ api.getNearbyMyCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
+        return apiHandler({ capsuleService.getNearbyMyCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance, capsuleType= capsuleType) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
     }
 
     override suspend fun nearbyFriendsCapsulesAR(
@@ -56,7 +56,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         longitude: Double,
         distance: Double,
     ): RetrofitResult<CapsuleAnchors> {
-        return apiHandler({ api.getNearbyFriendsCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
+        return apiHandler({ capsuleService.getNearbyFriendsCapsulesARApi(latitude = latitude, longitude = longitude, distance= distance) }) { response : ResponseBody<NearbyCapsuleResponseDto> -> response.result.toAnchorModel() }
     }
 
     override suspend fun getAddress(
@@ -64,7 +64,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         longitude: Double
     ): RetrofitResult<AddressData> {
         return apiHandler({
-            api.getAddressApi(
+            capsuleService.getAddressApi(
                 latitude = latitude,
                 longitude = longitude
             )
@@ -76,7 +76,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         capsuleId: Int
     ): RetrofitResult<CapsuleImages> {
         return apiHandler({
-            api.getCapsuleImagesApi(
+            capsuleService.getCapsuleImagesApi(
                 size = size,
                 capsuleId = capsuleId
             )
@@ -88,7 +88,7 @@ class CapsuleRepositoryImpl @Inject constructor(
         capsuleType: String
     ): RetrofitResult<String> {
         return apiHandler({
-            api.deleteCapsuleApi(
+            capsuleService.deleteCapsuleApi(
                 capsuleId = capsuleId,
                 capsuleType = capsuleType
             )
@@ -96,7 +96,7 @@ class CapsuleRepositoryImpl @Inject constructor(
     }
 
     override suspend fun reportCapsule(capsuleId: Long): RetrofitResult<String> {
-        return apiHandler({ api.patchCapsuleDeclarationApi(capsuleId = capsuleId) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ capsuleService.patchCapsuleDeclarationApi(capsuleId = capsuleId) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
 }

@@ -19,34 +19,34 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val api: AuthService
+    private val authService: AuthService
 ) : AuthRepository {
     override suspend fun authValidMessageSend(request: VerificationMessageSendRequestDto): RetrofitResult<VerificationMessageResult>{
-        return apiHandler({ api.postValidSendMessageApi(request) }) { response : ResponseBody<VerificationMessageResponseDto> -> response.result.toModel()}
+        return apiHandler({ authService.postValidSendMessageApi(request) }) { response : ResponseBody<VerificationMessageResponseDto> -> response.result.toModel()}
 
     }
 
     override suspend fun authValidMessage(request: VerificationNumberValidRequestDto): RetrofitResult<Token> {
-        return apiHandler({ api.postValidMessageApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
+        return apiHandler({ authService.postValidMessageApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun authReIssue(request: TokenReIssueRequestDto): RetrofitResult<Token> {
-        return apiHandler({ api.postReIssueApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
+        return apiHandler({ authService.postReIssueApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun authTemporaryTokenReIssue(request: SignInRequestDto): RetrofitResult<TemporaryToken> {
-        return apiHandler({ api.postTemporaryTokenReIssueApi(request) }) { response : ResponseBody<TemporaryTokenResponseDto> -> response.result.toModel() }
+        return apiHandler({ authService.postTemporaryTokenReIssueApi(request) }) { response : ResponseBody<TemporaryTokenResponseDto> -> response.result.toModel() }
     }
 
 
     override suspend fun authSignIn(request: SignInRequestDto) : RetrofitResult<Token> {
-        return apiHandler({ api.postSignIpApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
+        return apiHandler({ authService.postSignIpApi(request) }) { response : ResponseBody<TokenResponseDto> -> response.result.toModel()}
     }
     override suspend fun authSignUp(request: SignUpRequestDto): RetrofitResult<TemporaryToken> {
-        return apiHandler({ api.postSignUpApi(request) }) { response: ResponseBody<TemporaryTokenResponseDto> -> response.result.toModel() }
+        return apiHandler({ authService.postSignUpApi(request) }) { response: ResponseBody<TemporaryTokenResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun authSignOut(): RetrofitResult<String> {
-        return apiHandler({ api.postSignOutApi() }) { response: ResponseBody<String> -> response.result }
+        return apiHandler({ authService.postSignOutApi() }) { response: ResponseBody<String> -> response.result }
     }
 }

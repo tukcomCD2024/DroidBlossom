@@ -20,27 +20,27 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class CapsuleSkinRepositoryImpl @Inject constructor(
-    private val api : CapsuleSkinService
+    private val capsuleSkinService : CapsuleSkinService
 ) : CapsuleSkinRepository{
     
     override suspend fun getCapsuleSkinPage(request: PagingRequestDto): RetrofitResult<CapsuleSkinsPageResponse> {
-        return apiHandler({ api.getCapsuleSkinsPageApi(request.size, request.createdAt) }) { response: ResponseBody<CapsuleSkinsPageResponseDto> -> response.result.toModel() }
+        return apiHandler({ capsuleSkinService.getCapsuleSkinsPageApi(request.size, request.createdAt) }) { response: ResponseBody<CapsuleSkinsPageResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun postCapsuleSkinMake(request: CapsuleSkinsMakeRequestDto): RetrofitResult<CapsuleSkinsMakeResponse> {
-        return apiHandler({api.postCapsuleSkinsApi(request) }) { response: ResponseBody<CapsuleSkinsMakeResponseDto> -> response.result.toModel()}
+        return apiHandler({capsuleSkinService.postCapsuleSkinsApi(request) }) { response: ResponseBody<CapsuleSkinsMakeResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun deleteCapsuleSkin(capsuleSKinId: Long): RetrofitResult<CapsuleSkinDeleteResultResponse> {
-        return apiHandler({api.deleteCapsuleSkinsApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<CapsuleSkinDeleteResultResponseDto> -> response.result.toModel()}
+        return apiHandler({capsuleSkinService.deleteCapsuleSkinsApi(capsuleSkinId = capsuleSKinId)}){ response: ResponseBody<CapsuleSkinDeleteResultResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun modifyCapsuleSkin(capsuleSKinId: Long): RetrofitResult<String> {
-        return apiHandler({api.patchCapsuleSkinsModifyApi(capsuleSkinId = capsuleSKinId)}){response: ResponseBody<String> -> response.result.toModel()}
+        return apiHandler({capsuleSkinService.patchCapsuleSkinsModifyApi(capsuleSkinId = capsuleSKinId)}){ response: ResponseBody<String> -> response.result.toModel()}
     }
 
     override suspend fun getCapsuleSkinSearch(request: CapsuleSkinsSearchPageRequestDto): RetrofitResult<CapsuleSkinsSearchPageResponse> {
-        return apiHandler({ api.getCapsuleSkinSearchApi(request.capsule_skin_name, request.size, request.capsule_skin_id) }) { response: ResponseBody<CapsuleSkinsSearchPageResponseDto> -> response.result.toModel() }
+        return apiHandler({ capsuleSkinService.getCapsuleSkinSearchApi(request.capsule_skin_name, request.size, request.capsule_skin_id) }) { response: ResponseBody<CapsuleSkinsSearchPageResponseDto> -> response.result.toModel() }
     }
 
 }

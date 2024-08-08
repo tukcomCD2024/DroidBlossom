@@ -24,15 +24,15 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class GroupRepositoryImpl @Inject constructor(
-    private val api: GroupService
+    private val groupService: GroupService
 ) : GroupRepository {
     override suspend fun postGroupCreateRequest(request: CreateGroupRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.postCrateGroupApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ groupService.postCrateGroupApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun getGroupPageRequest(request: PagingRequestDto): RetrofitResult<GroupPage<GroupSummary>> {
         return apiHandler({
-            api.getGroupsPageApi(
+            groupService.getGroupsPageApi(
                 request.size,
                 request.createdAt
             )
@@ -42,7 +42,7 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun getGroupInvitesPageRequest(request: PagingRequestDto): RetrofitResult<GroupPage<GroupInviteSummary>> {
         return apiHandler({
-            api.getGroupInvitesPageApi(
+            groupService.getGroupInvitesPageApi(
                 request.size,
                 request.createdAt
             )
@@ -54,7 +54,7 @@ class GroupRepositoryImpl @Inject constructor(
         groupId: Long
     ): RetrofitResult<String> {
         return apiHandler({
-            api.postAcceptGroupInviteApi(
+            groupService.postAcceptGroupInviteApi(
                 groupId,
             )
         }) { response: ResponseBody<String> -> response.result.toModel() }
@@ -65,7 +65,7 @@ class GroupRepositoryImpl @Inject constructor(
         targetId: Long
     ): RetrofitResult<String> {
         return apiHandler({
-            api.deleteRejectGroupInviteApi(
+            groupService.deleteRejectGroupInviteApi(
                 groupId,
                 targetId
             )
@@ -73,30 +73,30 @@ class GroupRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getGroupDetailRequest(groupId: Long): RetrofitResult<GroupDetail> {
-        return apiHandler({ api.getGroupDetailApi(groupId) }) { response: ResponseBody<GroupDetailResponseDto> -> response.result.toModel() }
+        return apiHandler({ groupService.getGroupDetailApi(groupId) }) { response: ResponseBody<GroupDetailResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun postGroupInviteRequest(request: InviteGroupRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.postGroupsInviteApi(request) }) { response: ResponseBody<String> -> response.result.toString() }
+        return apiHandler({ groupService.postGroupsInviteApi(request) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
     override suspend fun getGroupMemberRequest(groupId: Long): RetrofitResult<GroupMembersInfo> {
-        return apiHandler({ api.getGroupMembersApi(groupId) }) { response: ResponseBody<GroupMembersInfoResponseDto> -> response.result.toModel() }
+        return apiHandler({ groupService.getGroupMembersApi(groupId) }) { response: ResponseBody<GroupMembersInfoResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getGroupInvitedUsersRequest(groupId: Long,pagingRequest: IdBasedPagingRequestDto): RetrofitResult<GroupInvitedUsersPage> {
-        return apiHandler({ api.getGroupInvitedUsersApi(groupId = groupId, size = pagingRequest.size, pagingId = pagingRequest.pagingId) }) { response: ResponseBody<GroupInvitedUsersPageResponseDto> -> response.result.toModel() }
+        return apiHandler({ groupService.getGroupInvitedUsersApi(groupId = groupId, size = pagingRequest.size, pagingId = pagingRequest.pagingId) }) { response: ResponseBody<GroupInvitedUsersPageResponseDto> -> response.result.toModel() }
     }
     override suspend fun deleteLeaveGroupRequest(groupId: Long): RetrofitResult<String> {
-        return apiHandler({ api.deleteLeaveGroupApi(groupId) }) { response: ResponseBody<String> -> response.result.toString() }
+        return apiHandler({ groupService.deleteLeaveGroupApi(groupId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
     override suspend fun deleteGroupInviteRequest(groupInviteId: Long): RetrofitResult<String> {
-        return apiHandler({ api.deleteGroupInviteApi(groupInviteId = groupInviteId) }) { response: ResponseBody<String> -> response.result.toString() }
+        return apiHandler({ groupService.deleteGroupInviteApi(groupInviteId = groupInviteId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
     override suspend fun deleteGroupRequest(groupId: Long): RetrofitResult<String> {
-        return apiHandler({ api.deleteGroupApi(groupId = groupId) }) { response: ResponseBody<String> -> response.result.toString() }
+        return apiHandler({ groupService.deleteGroupApi(groupId = groupId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
 }

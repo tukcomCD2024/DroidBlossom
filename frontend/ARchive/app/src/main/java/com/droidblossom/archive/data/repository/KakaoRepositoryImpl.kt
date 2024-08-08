@@ -6,11 +6,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class KakaoRepositoryImpl @Inject constructor(
-    @Named("kakao") private val api: KakaoService
+    @Named("kakao") private val kakaoService: KakaoService
 ) : KakaoRepository {
 
     override suspend fun getAddress(x: String, y: String): String {
-        val response = api.getAddressApi(x, y)
+        val response = kakaoService.getAddressApi(x, y)
         return if (response.isSuccessful) {
             response.body()?.documents?.first()?.road_address?.road_name ?: "null"
         } else {

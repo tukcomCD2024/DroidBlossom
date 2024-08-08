@@ -13,14 +13,14 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class S3RepositoryImpl @Inject constructor(
-    private val api: S3Service
+    private val s3Service: S3Service
 ) : S3Repository {
 
     override suspend fun getS3Url(request: S3UrlRequestDto): RetrofitResult<S3Urls> {
-        return apiHandler({ api.getUploadUrlsApi(request) }) { response: ResponseBody<S3UrlResponseDto> -> response.result.toModel() }
+        return apiHandler({ s3Service.getUploadUrlsApi(request) }) { response: ResponseBody<S3UrlResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getS3OneUrl(request: S3OneUrlRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.getUpLoadUrlApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ s3Service.getUpLoadUrlApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 }

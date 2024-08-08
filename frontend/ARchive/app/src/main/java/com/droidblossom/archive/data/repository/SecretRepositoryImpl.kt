@@ -20,29 +20,29 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class SecretRepositoryImpl @Inject constructor(
-    private val api: SecretService
+    private val secretService: SecretService
 ) : SecretRepository {
 
     override suspend fun getSecretCapsulePage(request: PagingRequestDto): RetrofitResult<CapsulePageList> {
-        return apiHandler({ api.getSecretCapsulePageApi(request.size, request.createdAt) }) { response: ResponseBody<SecretCapsulePageResponseDto> -> response.result.toModel() }
+        return apiHandler({ secretService.getSecretCapsulePageApi(request.size, request.createdAt) }) { response: ResponseBody<SecretCapsulePageResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun createSecretCapsule(request: CapsuleCreateRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.postSecretCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ secretService.postSecretCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun getSecretCapsuleDetail(capsuleId: Long): RetrofitResult<CapsuleDetail> {
-        return apiHandler({ api.getSecretCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel() }
+        return apiHandler({ secretService.getSecretCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getSecretCapsuleSummary (capsuleId: Long) : RetrofitResult<CapsuleSummaryResponse> {
-        return apiHandler({ api.getSecretCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<CapsuleSummaryResponseDto> -> response.result.toModel()}
+        return apiHandler({ secretService.getSecretCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<CapsuleSummaryResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun modifySecretCapsule(
         capsuleId: Long,
         request: SecretCapsuleModifyRequestDto
     ): RetrofitResult<SecretCapsuleModify> {
-        return apiHandler({ api.modifySecretCapsuleApi(capsuleId , request) }) { response: ResponseBody<SecretCapsuleModifyResponseDto> -> response.result.toModel() }
+        return apiHandler({ secretService.modifySecretCapsuleApi(capsuleId , request) }) { response: ResponseBody<SecretCapsuleModifyResponseDto> -> response.result.toModel() }
     }
 }

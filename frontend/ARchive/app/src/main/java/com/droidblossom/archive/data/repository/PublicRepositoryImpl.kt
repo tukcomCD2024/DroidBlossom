@@ -19,25 +19,25 @@ import com.droidblossom.archive.util.apiHandler
 import javax.inject.Inject
 
 class PublicRepositoryImpl @Inject constructor(
-    private val api: PublicService
+    private val publicService: PublicService
 ): PublicRepository {
     override suspend fun createPublicCapsule(request: CapsuleCreateRequestDto): RetrofitResult<String> {
-        return apiHandler({ api.postPublicCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
+        return apiHandler({ publicService.postPublicCapsuleApi(request) }) { response: ResponseBody<String> -> response.result.toModel() }
     }
 
     override suspend fun getPublicCapsuleSummary(capsuleId: Long): RetrofitResult<CapsuleSummaryResponse> {
-        return apiHandler({ api.getPublicCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<CapsuleSummaryResponseDto> -> response.result.toModel()}
+        return apiHandler({ publicService.getPublicCapsuleSummaryApi(capsuleId) }) { response: ResponseBody<CapsuleSummaryResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun getPublicCapsuleDetail(capsuleId: Long): RetrofitResult<CapsuleDetail> {
-        return apiHandler({ api.getPublicCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel()}
+        return apiHandler({ publicService.getPublicCapsuleDetailApi(capsuleId) }) { response: ResponseBody<CapsuleDetailResponseDto> -> response.result.toModel()}
     }
 
     override suspend fun getPublicCapsulesPage(request: PagingRequestDto): RetrofitResult<PublicCapsuleSliceResponse> {
-        return apiHandler({ api.getPublicCapsulesPageApi(request.size, request.createdAt) }){ response: ResponseBody<PublicCapsuleSliceResponseDto> -> response.result.toModel() }
+        return apiHandler({ publicService.getPublicCapsulesPageApi(request.size, request.createdAt) }){ response: ResponseBody<PublicCapsuleSliceResponseDto> -> response.result.toModel() }
     }
 
     override suspend fun getMyPublicCapsulesPage(request: PagingRequestDto): RetrofitResult<CapsulePageList> {
-        return apiHandler({ api.getMyPublicCapsulePageApi(request.size, request.createdAt) }){ response: ResponseBody<MyPublicCapsulePageResponseDto> -> response.result.toModel() }
+        return apiHandler({ publicService.getMyPublicCapsulePageApi(request.size, request.createdAt) }){ response: ResponseBody<MyPublicCapsulePageResponseDto> -> response.result.toModel() }
     }
 }
