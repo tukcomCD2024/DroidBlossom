@@ -30,6 +30,7 @@ android {
         buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties['kakao_native_app_key']
         buildConfigField "String", "GOOGLE_LOGIN_CLIENT_ID", properties['google_login_client_id']
         buildConfigField "String", "BASE_URL", properties['base_url']
+        buildConfigField "String", "RELEASE_BASE_URL", properties['release_base_url']
         buildConfigField "String", "REISSUETOKEN", properties['re_issue_token']
         buildConfigField "String", "KAKAO_REST_KEY", properties['kakao_rest_api_key']
         buildConfigField "String", "KAKAO_URL", properties["kakao_url"]
@@ -146,8 +147,8 @@ dependencies {
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha06'
 
     // DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "androidx.datastore:datastore-preferences-core:1.0.0"
+    implementation "androidx.datastore:datastore-preferences:1.1.1"
+    implementation "androidx.datastore:datastore-preferences-core:1.1.1"
 
     // Google location
     implementation 'com.google.android.gms:play-services-location:21.1.0'
@@ -174,7 +175,7 @@ dependencies {
     implementation("org.greenrobot:eventbus:3.3.1")
 
     // oss-licenses : https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.1.0'
 
     // Swiperefreshlayout: https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=ko#kts
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
