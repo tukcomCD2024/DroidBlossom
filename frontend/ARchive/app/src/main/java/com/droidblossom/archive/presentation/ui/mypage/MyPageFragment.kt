@@ -236,6 +236,11 @@ class MyPageFragment :
                             binding.myPageRV.scrollToPosition(0)
                         }
                     }
+                    if(capsule.isEmpty()){
+                        binding.listIsEmptyT.visibility = View.VISIBLE
+                    } else {
+                        binding.listIsEmptyT.visibility = View.GONE
+                    }
                 }
             }
         }

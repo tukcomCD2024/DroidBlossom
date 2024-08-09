@@ -32,5 +32,18 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/listIsEmptyT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="500dp"
+            android:text="캡슐이 없습니다."
+            android:textAppearance="@style/TextAppearance.App.body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
