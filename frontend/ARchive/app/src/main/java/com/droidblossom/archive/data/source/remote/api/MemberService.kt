@@ -43,7 +43,7 @@ interface MemberService {
         @Body request: FcmTokenRequsetDto
     ): Response<ResponseBody<String>>
 
-    @GET("me/notifications")
+    @GET("notifications")
     suspend fun getNotifications(
         @Query("size") size: Int,
         @Query("created_at") createdAt: String
