@@ -57,25 +57,6 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
     }
 
     override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.socialFriendSwipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.updateTopConstraintsForSearch(
-                        isSearchOpen = it,
-                        searchOpenView = binding.searchOpenBtn,
-                        searchView = binding.searchBtn,
-                        additionalMarginDp = 16f,
-                        resources = resources
-                    )
-                    if (it){
-                        binding.searchOpenEditT.requestFocus()
-                        val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                        imm.showSoftInput(binding.searchOpenEditT, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                }
-            }
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -167,7 +148,6 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
         }
 
         initRVA()
-        initSearchEdit()
     }
 
     private fun initRVA() {
@@ -193,56 +173,6 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
                 }
             }
         })
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun initSearchEdit(){
-        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
-                    viewModel.searchFriendCapsule()
-                }
-                true
-            }
-            false
-        }
-        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel.closeSearchFriendCapsule()
-            }
-        }
-        binding.root.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.socialFriendRV.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.searchOpenBtnT.setOnClickListener {
-            val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-        }
     }
 
     fun scrollToTop(){

@@ -55,26 +55,6 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         )
     }
     override fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.socialGroupSwipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.updateTopConstraintsForSearch(
-                        isSearchOpen = it,
-                        searchOpenView = binding.searchOpenBtn,
-                        searchView = binding.searchBtn,
-                        additionalMarginDp = 16f,
-                        resources = resources
-                    )
-                    if (it){
-                        binding.searchOpenEditT.requestFocus()
-                        val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                        imm.showSoftInput(binding.searchOpenEditT, InputMethodManager.SHOW_IMPLICIT);
-
-                    }
-                }
-            }
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -145,7 +125,6 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
         }
 
         initRVA()
-        initSearchEdit()
     }
 
     private fun initRVA() {
@@ -177,63 +156,62 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun initSearchEdit(){
-        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
-                    viewModel.searchGroupCapsule()
-                }
-                true
-            }
-            false
-        }
-        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel.closeSearchGroupCapsule()
-            }
-        }
-        binding.root.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.socialGroupRV.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.searchOpenBtnT.setOnClickListener {
-            val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-        }
-    }
-
-    private fun updateRecyclerViewConstraints(isSearchOpen: Boolean) {
-        val layoutParams = binding.socialGroupRV.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.topToBottom = if (isSearchOpen) binding.searchOpenBtn.id else binding.searchBtn.id
-        val additionalMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15f, resources.displayMetrics).toInt()
-        layoutParams.topMargin = additionalMargin
-        binding.socialGroupRV.layoutParams = layoutParams
-    }
-
+//    @SuppressLint("ClickableViewAccessibility")
+//    fun initSearchEdit(){
+//        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
+//            if (i == EditorInfo.IME_ACTION_DONE) {
+//                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
+//                    viewModel.searchGroupCapsule()
+//                }
+//                true
+//            }
+//            false
+//        }
+//        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
+//            if (!hasFocus) {
+//                viewModel.closeSearchGroupCapsule()
+//            }
+//        }
+//        binding.root.setOnTouchListener { _, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                val focusedView = binding.searchOpenBtn
+//                val outRect = Rect()
+//                focusedView.getGlobalVisibleRect(outRect)
+//                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+//                    focusedView.clearFocus()
+//                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
+//                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
+//                }
+//            }
+//            false
+//        }
+//
+//        binding.socialGroupRV.setOnTouchListener { _, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                val focusedView = binding.searchOpenBtn
+//                val outRect = Rect()
+//                focusedView.getGlobalVisibleRect(outRect)
+//                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+//                    focusedView.clearFocus()
+//                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
+//                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
+//                }
+//            }
+//            false
+//        }
+//
+//        binding.searchOpenBtnT.setOnClickListener {
+//            val imm = requireActivity().getSystemService(InputMethodManager::class.java)
+//            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+//        }
+//    }
+//
+//    private fun updateRecyclerViewConstraints(isSearchOpen: Boolean) {
+//        val layoutParams = binding.socialGroupRV.layoutParams as ConstraintLayout.LayoutParams
+//        layoutParams.topToBottom = if (isSearchOpen) binding.searchOpenBtn.id else binding.searchBtn.id
+//        val additionalMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15f, resources.displayMetrics).toInt()
+//        layoutParams.topMargin = additionalMargin
+//        binding.socialGroupRV.layoutParams = layoutParams
+//    }
 
 }
