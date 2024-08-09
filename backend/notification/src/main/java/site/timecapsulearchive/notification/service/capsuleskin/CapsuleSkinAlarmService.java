@@ -40,6 +40,9 @@ public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
         });
 
         final String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN, fcmToken);
+        if (fcmToken != null && fcmToken.isBlank()) {
+            capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN,
+                fcmToken);
+        }
     }
 }
