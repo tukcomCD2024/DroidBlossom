@@ -14,12 +14,15 @@ import site.timecapsulearchive.notification.infra.fcm.capsuleskin.CapsuleSkinFcm
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationRepository;
+import site.timecapsulearchive.notification.service.dto.MemberNotificationInfoDto;
+import site.timecapsulearchive.notification.service.validator.NotificationSendValidator;
 
 @Service
 @RequiredArgsConstructor
 public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
 
     private final CapsuleSkinFcmManager capsuleSkinFcmManager;
+    private final NotificationSendValidator notificationSendValidator;
     private final NotificationRepository notificationRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
@@ -39,10 +42,11 @@ public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
             }
         });
 
-        final String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        if (fcmToken != null && fcmToken.isBlank()) {
+        final MemberNotificationInfoDto notificationInfoDto = memberRepository.findFCMToken(
+            dto.memberId());
+        if (notificationSendValidator.canSend(notificationInfoDto)) {
             capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN,
-                fcmToken);
+                notificationInfoDto.fcmToken());
         }
     }
 }
