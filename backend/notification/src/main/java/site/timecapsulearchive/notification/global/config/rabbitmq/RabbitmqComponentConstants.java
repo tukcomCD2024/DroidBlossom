@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.global.config;
+package site.timecapsulearchive.notification.global.config.rabbitmq;
 
 import java.util.Arrays;
 import lombok.Getter;

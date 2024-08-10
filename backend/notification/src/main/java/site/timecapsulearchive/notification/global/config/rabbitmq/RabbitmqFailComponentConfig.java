@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.global.config;
+package site.timecapsulearchive.notification.global.config.rabbitmq;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
