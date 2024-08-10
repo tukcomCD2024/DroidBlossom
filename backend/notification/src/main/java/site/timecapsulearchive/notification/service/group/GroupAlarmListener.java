@@ -21,7 +21,8 @@ public interface GroupAlarmListener {
             key = "notification.groupInvite.queue"
         ),
         returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
+        messageConverter = "jsonMessageConverter",
+        errorHandler = "rabbitMQErrorHandler"
     )
     void sendGroupInviteNotification(final GroupInviteNotificationDto dto);
 
@@ -37,7 +38,8 @@ public interface GroupAlarmListener {
             key = "notification.groupAccept.queue"
         ),
         returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
+        messageConverter = "jsonMessageConverter",
+        errorHandler = "rabbitMQErrorHandler"
     )
     void sendGroupAcceptNotification(final GroupAcceptNotificationDto dto);
 }

@@ -20,7 +20,8 @@ public interface CapsuleSkinAlarmListener {
             key = "notification.createCapsuleSkin.queue"
         ),
         returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
+        messageConverter = "jsonMessageConverter",
+        errorHandler = "rabbitMQErrorHandler"
     )
     void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto);
 

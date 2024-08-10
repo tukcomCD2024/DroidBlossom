@@ -21,7 +21,8 @@ public interface FriendAlarmListener {
             key = "notification.friendRequest.queue"
         ),
         returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
+        messageConverter = "jsonMessageConverter",
+        errorHandler = "rabbitMQErrorHandler"
     )
     void sendFriendRequestNotification(final FriendNotificationDto dto);
 
@@ -36,7 +37,8 @@ public interface FriendAlarmListener {
             key = "notification.friendAccept.queue"
         ),
         returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
+        messageConverter = "jsonMessageConverter",
+        errorHandler = "rabbitMQErrorHandler"
     )
     void sendFriendAcceptNotification(final FriendNotificationDto dto);
 
@@ -52,7 +54,8 @@ public interface FriendAlarmListener {
             key = "batch.notification.friendRequests.queue"
         ),
         returnExceptions = "false",
-        messageConverter = "jsonMessageConverter"
+        messageConverter = "jsonMessageConverter",
+        errorHandler = "rabbitMQErrorHandler"
     )
     void sendFriendRequestNotifications(final FriendNotificationsDto dto);
 
