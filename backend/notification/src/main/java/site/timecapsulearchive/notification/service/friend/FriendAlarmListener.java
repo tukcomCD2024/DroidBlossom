@@ -34,8 +34,8 @@ public interface FriendAlarmListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "notification.friendRequests.queue", durable = "true"),
-            exchange = @Exchange(value = "notification.friendRequests.exchange"),
+            value = @Queue(value = "batch.notification.friendRequests.queue", durable = "true"),
+            exchange = @Exchange(value = "batch.notification.friendRequests.exchange"),
             key = "notification.friendRequests.queue"
         ),
         returnExceptions = "false",
