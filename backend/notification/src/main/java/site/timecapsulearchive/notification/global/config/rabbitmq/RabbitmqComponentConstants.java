@@ -38,12 +38,4 @@ public enum RabbitmqComponentConstants {
         this.successComponent = successComponent;
         this.failComponent = failComponent;
     }
-
-    public static String getFailComponent(String successComponent) {
-        return Arrays.stream(RabbitmqComponentConstants.values())
-            .filter(constants -> constants.getSuccessComponent().equals(successComponent))
-            .map(RabbitmqComponentConstants::getFailComponent)
-            .toList()
-            .get(0);
-    }
 }
