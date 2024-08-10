@@ -1,5 +1,6 @@
 package site.timecapsulearchive.notification.service.group;
 
+import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -11,7 +12,11 @@ public interface GroupAlarmListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "notification.groupInvite.queue", durable = "true"),
+            value = @Queue(
+                value = "notification.groupInvite.queue",
+                durable = "true",
+                arguments = @Argument(name = "x-dead-letter-exchange", value = "fail.notification.groupInvite.exchange")
+            ),
             exchange = @Exchange(value = "notification.groupInvite.exchange"),
             key = "notification.groupInvite.queue"
         ),
@@ -23,7 +28,11 @@ public interface GroupAlarmListener {
 
     @RabbitListener(
         bindings = @QueueBinding(
-            value = @Queue(value = "notification.groupAccept.queue", durable = "true"),
+            value = @Queue(
+                value = "notification.groupAccept.queue",
+                durable = "true",
+                arguments = @Argument(name = "x-dead-letter-exchange", value = "fail.notification.groupAccept.exchange")
+            ),
             exchange = @Exchange(value = "notification.groupAccept.exchange"),
             key = "notification.groupAccept.queue"
         ),
