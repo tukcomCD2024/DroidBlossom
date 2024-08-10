@@ -60,8 +60,8 @@ public class SocialNotificationManager {
         }
 
         basicRabbitTemplate.convertAndSend(
-            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getSuccessComponent(),
-            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_EXCHANGE.getSuccessComponent(),
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_QUEUE.getSuccessComponent(),
             FriendsReqNotificationsDto.createOf(ownerNickname, profileUrl, targetIds)
         );
     }

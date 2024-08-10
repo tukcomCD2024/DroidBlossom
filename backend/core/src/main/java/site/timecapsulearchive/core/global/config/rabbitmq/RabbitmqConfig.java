@@ -104,6 +104,27 @@ public class RabbitmqConfig {
             .withQueueName();
     }
 
+     @Bean
+    public Queue batchFriendRequestsQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_QUEUE.getSuccessComponent(),
+            true);
+    }
+
+    @Bean
+    public DirectExchange batchFriendRequestsExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_EXCHANGE.getSuccessComponent());
+    }
+
+    @Bean
+    public Binding batchFriendRequestsBinding() {
+        return BindingBuilder
+            .bind(batchFriendRequestsQueue())
+            .to(batchFriendRequestsExchange())
+            .withQueueName();
+    }
+
     @Bean
     public Queue friendAcceptQueue() {
         return new Queue(
