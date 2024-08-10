@@ -43,16 +43,16 @@ public class GroupAlarmService implements GroupAlarmListener {
             }
         });
 
-        List<MemberNotificationInfoDto> notificationInfoDtos = memberRepository.findFCMTokens(
-            dto.targetIds());
-        if (notificationInfoDtos != null && !notificationInfoDtos.isEmpty()) {
-            List<String> filteredFcmTokens = notificationInfoDtos.stream()
-                .filter(notificationSendValidator::canSend)
-                .map(MemberNotificationInfoDto::fcmToken)
-                .toList();
+        List<String> filteredFCMTokens = memberRepository.findFCMTokens(
+                dto.targetIds())
+            .stream()
+            .filter(notificationSendValidator::canSend)
+            .map(MemberNotificationInfoDto::fcmToken)
+            .toList();
 
+        if (!filteredFCMTokens.isEmpty()) {
             groupFcmManager.sendGroupInviteNotifications(dto, CategoryName.GROUP_INVITE,
-                filteredFcmTokens);
+                filteredFCMTokens);
         }
     }
 
