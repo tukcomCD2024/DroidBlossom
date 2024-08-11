@@ -27,8 +27,8 @@ import javax.inject.Inject
 class FriendRepositoryImpl @Inject constructor(
     private val friendService : FriendService
 ) : FriendRepository {
-    override suspend fun postFriendsRequest(request: FriendReqRequestDto): RetrofitResult<FriendReqStatusResponse> {
-        return apiHandler({ friendService.postFriendsRequestApi(request.friendId) }) { response: ResponseBody<FriendReqStatusResponseDto> -> response.result.toModel() }
+    override suspend fun postFriendsRequest(request: FriendReqRequestDto): RetrofitResult<String> {
+        return apiHandler({ friendService.postFriendsRequestApi(request.friendId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
     override suspend fun postFriendsListRequest(request: FriendsReqRequestDto): RetrofitResult<String> {

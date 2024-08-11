@@ -16,7 +16,7 @@ import com.droidblossom.archive.util.RetrofitResult
 
 interface FriendRepository {
 
-    suspend fun postFriendsRequest(request: FriendReqRequestDto) : RetrofitResult<FriendReqStatusResponse>
+    suspend fun postFriendsRequest(request: FriendReqRequestDto) : RetrofitResult<String>
     suspend fun postFriendsListRequest(request: FriendsReqRequestDto) : RetrofitResult<String>
     suspend fun postFriendsAcceptRequest(request: FriendAcceptRequestDto) : RetrofitResult<String>
     suspend fun postFriendsSearch(request: FriendsSearchRequestDto) : RetrofitResult<FriendsSearchResponse>
