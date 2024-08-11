@@ -10,16 +10,15 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
-import site.timecapsulearchive.notification.infra.fcm.FCMManager;
-import site.timecapsulearchive.notification.infra.fcm.FcmMessageData;
+import site.timecapsulearchive.notification.infra.fcm.FCMMessageData;
 
 @Component
 @RequiredArgsConstructor
 public class FriendFcmManagerImpl implements FriendFcmManager {
 
-    private final FCMManager fcmManager;
-
+    @Trace
     public void sendFriendNotification(
         final FriendNotificationDto dto,
         final CategoryName categoryName,
@@ -29,11 +28,11 @@ public class FriendFcmManagerImpl implements FriendFcmManager {
             FirebaseMessaging.getInstance()
                 .send(
                     Message.builder()
-                        .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
-                        .putData(FcmMessageData.STATUS.getData(),
+                        .putData(FCMMessageData.TOPIC.getData(), String.valueOf(categoryName))
+                        .putData(FCMMessageData.STATUS.getData(),
                             String.valueOf(dto.notificationStatus()))
-                        .putData(FcmMessageData.TITLE.getData(), dto.title())
-                        .putData(FcmMessageData.TEXT.getData(), dto.text())
+                        .putData(FCMMessageData.TITLE.getData(), dto.title())
+                        .putData(FCMMessageData.TEXT.getData(), dto.text())
                         .setToken(fcmToken)
                         .build()
                 );
@@ -42,6 +41,7 @@ public class FriendFcmManagerImpl implements FriendFcmManager {
         }
     }
 
+    @Trace
     public void sendFriendNotifications(
         final FriendNotificationsDto dto,
         final CategoryName categoryName,
@@ -52,11 +52,11 @@ public class FriendFcmManagerImpl implements FriendFcmManager {
                 .sendEachForMulticast(
                     MulticastMessage.builder()
                         .addAllTokens(fcmTokens)
-                        .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
-                        .putData(FcmMessageData.STATUS.getData(),
+                        .putData(FCMMessageData.TOPIC.getData(), String.valueOf(categoryName))
+                        .putData(FCMMessageData.STATUS.getData(),
                             String.valueOf(dto.notificationStatus()))
-                        .putData(FcmMessageData.TITLE.getData(), dto.title())
-                        .putData(FcmMessageData.TEXT.getData(), dto.text())
+                        .putData(FCMMessageData.TITLE.getData(), dto.title())
+                        .putData(FCMMessageData.TEXT.getData(), dto.text())
                         .build()
                 );
         } catch (FirebaseMessagingException exception) {
