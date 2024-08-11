@@ -99,7 +99,11 @@ class AddFriendViewModelImpl @Inject constructor(
                 result.onSuccess { response ->
                     _addFriendListUI.emit(listOf(response))
                 }.onFail {
-                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("검색이 불가능 합니다."))
+                    if (it == 404){
+
+                    }else{
+                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("검색이 불가능 합니다."))
+                    }
                 }
             }
         }
