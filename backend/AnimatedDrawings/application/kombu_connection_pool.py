@@ -20,6 +20,7 @@ producers = pools.Producers(limit=2)
 
 if QueueConfig.PROTOCOL == 'amqps':
     import ssl
+
     ssl_option = {
         'cert_reqs': ssl.CERT_REQUIRED
     }
@@ -44,6 +45,18 @@ with connections[connection].acquire(block=True) as conn:
             routing_key=QueueConfig.CAPSULE_SKIN_REQUEST_QUEUE_NAME)
         capsule_skin_queue.declare(channel=channel)
 
+        notification_dlx_name = f'fail.{QueueConfig.NOTIFICATION_EXCHANGE_NAME}'
+        notification_dlq_name = f'fail.{QueueConfig.NOTIFICATION_QUEUE_NAME}'
+        notification_dlx = Exchange(
+            name=notification_dlx_name,
+            type='fanout',
+            durable=True)
+        notification_dlq = Queue(
+            name=notification_dlq_name,
+            exchange=notification_dlx,
+            routing_key=notification_dlx_name)
+        notification_dlq.declare(channel=channel)
+
         notification_exchange = Exchange(
             name=QueueConfig.NOTIFICATION_EXCHANGE_NAME,
             type='direct',
@@ -51,6 +64,9 @@ with connections[connection].acquire(block=True) as conn:
 
         notification_queue = Queue(name=QueueConfig.NOTIFICATION_QUEUE_NAME,
                                    exchange=notification_exchange,
-                                   routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME)
+                                   routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME,
+                                   queue_arguments={
+                                       'x-dead-letter-exchange': notification_dlx_name,
+                                   })
         notification_queue.declare(channel=channel)
 logger.info('레빗 엠큐 큐, 익스체인지 설정 완료')
