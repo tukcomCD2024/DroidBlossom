@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationStatus;
+import site.timecapsulearchive.notification.global.log.Trace;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class NotificationQueryRepositoryImpl implements NotificationQueryReposit
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Trace
     public void bulkSave(List<Notification> notifications) {
         jdbcTemplate.batchUpdate(
             """

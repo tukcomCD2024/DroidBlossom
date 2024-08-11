@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationDto;
 import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 import site.timecapsulearchive.notification.infra.fcm.FCMMessageData;
 
@@ -17,6 +18,7 @@ import site.timecapsulearchive.notification.infra.fcm.FCMMessageData;
 @RequiredArgsConstructor
 public class FriendFcmManagerImpl implements FriendFcmManager {
 
+    @Trace
     public void sendFriendNotification(
         final FriendNotificationDto dto,
         final CategoryName categoryName,
@@ -39,6 +41,7 @@ public class FriendFcmManagerImpl implements FriendFcmManager {
         }
     }
 
+    @Trace
     public void sendFriendNotifications(
         final FriendNotificationsDto dto,
         final CategoryName categoryName,

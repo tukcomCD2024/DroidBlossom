@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSendDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
 import site.timecapsulearchive.notification.infra.fcm.FCMMessageData;
 import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
@@ -17,6 +18,7 @@ public class CapsuleSkinFcmManagerImpl implements CapsuleSkinFcmManager {
 
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
+    @Trace
     public void sendCapsuleSkinNotification(
         final CapsuleSkinNotificationSendDto dto,
         final CategoryName categoryName,

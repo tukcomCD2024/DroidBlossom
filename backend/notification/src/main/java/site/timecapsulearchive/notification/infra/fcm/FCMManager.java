@@ -7,9 +7,11 @@ import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FCMManager {
@@ -18,12 +20,14 @@ public class FCMManager {
 
     @PostConstruct
     public void initialize() throws IOException {
+        log.info("fcm manager 초기화 시작");
         FirebaseOptions options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(getCredential()))
             .setProjectId(fcmProperties.projectId())
             .build();
 
         FirebaseApp.initializeApp(options);
+        log.info("fcm manager 초기화 완료");
     }
 
     private InputStream getCredential() throws IOException {
