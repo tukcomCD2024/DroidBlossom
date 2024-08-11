@@ -8,6 +8,7 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -43,10 +44,14 @@ public class RabbitmqConfig {
             .withQueueName();
     }
 
+
     @Bean
     public Queue groupInviteQueue() {
-        return new Queue(
-            RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getSuccessComponent(), true);
+        return QueueBuilder.durable(
+                RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_QUEUE.getSuccessComponent())
+            .withArgument("x-dead-letter-exchange",
+                RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getFailComponent())
+            .build();
     }
 
     @Bean
@@ -65,8 +70,11 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue groupAcceptQueue() {
-        return new Queue(
-            RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(), true);
+        return QueueBuilder.durable(
+                RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent())
+            .withArgument("x-dead-letter-exchange",
+                RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getFailComponent())
+            .build();
     }
 
     @Bean
@@ -85,9 +93,11 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue friendRequestQueue() {
-        return new Queue(
-            RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent(),
-            true);
+        return QueueBuilder.durable(
+                RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_QUEUE.getSuccessComponent())
+            .withArgument("x-dead-letter-exchange",
+                RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getFailComponent())
+            .build();
     }
 
     @Bean
@@ -106,9 +116,11 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue friendAcceptQueue() {
-        return new Queue(
-            RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent(),
-            true);
+        return QueueBuilder.durable(
+                RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_QUEUE.getSuccessComponent())
+            .withArgument("x-dead-letter-exchange",
+                RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_EXCHANGE.getFailComponent())
+            .build();
     }
 
     @Bean
@@ -122,6 +134,29 @@ public class RabbitmqConfig {
         return BindingBuilder
             .bind(friendAcceptQueue())
             .to(friendAcceptExchange())
+            .withQueueName();
+    }
+
+    @Bean
+    public Queue batchFriendRequestsQueue() {
+        return QueueBuilder.durable(
+                RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_QUEUE.getSuccessComponent())
+            .withArgument("x-dead-letter-exchange",
+                RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_EXCHANGE.getFailComponent())
+            .build();
+    }
+
+    @Bean
+    public DirectExchange batchFriendRequestsExchange() {
+        return new DirectExchange(
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_EXCHANGE.getSuccessComponent());
+    }
+
+    @Bean
+    public Binding batchFriendRequestsBinding() {
+        return BindingBuilder
+            .bind(batchFriendRequestsQueue())
+            .to(batchFriendRequestsExchange())
             .withQueueName();
     }
 
