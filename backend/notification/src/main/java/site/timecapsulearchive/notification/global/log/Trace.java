@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.global.aop;
+package site.timecapsulearchive.notification.global.log;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

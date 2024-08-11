@@ -9,7 +9,7 @@ import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSend
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
-import site.timecapsulearchive.notification.global.aop.Trace;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.fcm.capsuleskin.CapsuleSkinFcmManager;
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;

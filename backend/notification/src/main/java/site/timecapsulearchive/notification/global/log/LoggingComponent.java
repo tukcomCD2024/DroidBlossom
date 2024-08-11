@@ -1,4 +1,4 @@
-package site.timecapsulearchive.notification.global.aop;
+package site.timecapsulearchive.notification.global.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingComponent {
 
-    @Before("@annotation(site.timecapsulearchive.notification.global.aop.Trace)")
+    @Before("@annotation(site.timecapsulearchive.notification.global.log.Trace)")
     public void doTraceBefore(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
 
         log.info("[before] {} args={}", joinPoint.getSignature(), args);
     }
 
-    @After("@annotation(site.timecapsulearchive.notification.global.aop.Trace)")
+    @After("@annotation(site.timecapsulearchive.notification.global.log.Trace)")
     public void doTraceAfter(JoinPoint joinPoint) {
         log.info("[after] {}", joinPoint.getSignature());
     }
