@@ -38,7 +38,9 @@ public class NotificationQueryRepositoryImpl implements NotificationQueryReposit
                 )
             )
             .from(notification)
-            .join(notification.notificationCategory, notificationCategory)
+            .join(notificationCategory)
+            .on(notification.notificationCategory.eq(notificationCategory),
+                notificationCategory.deletedAt.isNull())
             .where(notification.createdAt.lt(createdAt).and(notification.member.id.eq(memberId)))
             .orderBy(notification.id.desc())
             .limit(size + 1)

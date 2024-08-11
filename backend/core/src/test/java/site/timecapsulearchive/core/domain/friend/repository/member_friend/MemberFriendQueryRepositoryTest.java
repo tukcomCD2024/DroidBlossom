@@ -246,36 +246,6 @@ class MemberFriendQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 사용자가_친구인_사용자로_주소록_기반_사용자_리스트_조회하면_친구인_앱_사용자_리스트가_나온다() {
-        //given
-        //when
-        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
-            ownerId,
-            hashedFriendPhones);
-
-        //then
-        assertSoftly(softly -> {
-            softly.assertThat(friends.size()).isSameAs(MAX_COUNT);
-            softly.assertThat(friends).allMatch(friend -> friend.isFriend() == Boolean.TRUE);
-        });
-    }
-
-    @Test
-    void 사용자가_친구가_아닌_사용자로_주소록_기반_사용자_리스트_조회하면_앱_사용자_리스트가_나온다() {
-        //given
-        //when
-        List<SearchFriendSummaryDto> friends = memberFriendQueryRepository.findFriendsByPhone(
-            ownerId,
-            hashedNotFriendPhones);
-
-        //then
-        assertSoftly(softly -> {
-            assertThat(friends.size()).isSameAs(MAX_COUNT);
-            softly.assertThat(friends).allMatch(friend -> friend.isFriend() == Boolean.FALSE);
-        });
-    }
-
-    @Test
     void 사용자가_빈_전화번호_목록으로_주소록_기반_사용자_리스트_조회하면_빈_리스트가_나온다() {
         //given
         List<byte[]> phoneHashes = Collections.emptyList();

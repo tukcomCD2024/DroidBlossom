@@ -1,8 +1,6 @@
 package site.timecapsulearchive.core.domain.capsule.group_capsule.repository;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
 import static site.timecapsulearchive.core.domain.capsule.entity.QCapsule.capsule;
-import static site.timecapsulearchive.core.domain.capsule.entity.QGroupCapsuleOpen.groupCapsuleOpen;
 import static site.timecapsulearchive.core.domain.capsule.entity.QImage.image;
 import static site.timecapsulearchive.core.domain.capsule.entity.QVideo.video;
 import static site.timecapsulearchive.core.domain.capsuleskin.entity.QCapsuleSkin.capsuleSkin;
@@ -26,7 +24,6 @@ import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupC
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.data.dto.GroupSpecificCapsuleSliceRequestDto;
-import site.timecapsulearchive.core.domain.member.entity.QMember;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
@@ -63,10 +60,11 @@ public class GroupCapsuleQueryRepository {
             )
             .from(capsule)
             .join(capsule.member, member)
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .join(capsule.group, group)
-            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
-            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(group).on(capsule.group.eq(group), group.deletedAt.isNull())
+            .leftJoin(image).on(capsule.eq(image.capsule), image.deletedAt.isNull())
+            .leftJoin(video).on(capsule.eq(video.capsule), video.deletedAt.isNull())
             .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.GROUP)))
             .fetchOne()
         );
@@ -101,9 +99,10 @@ public class GroupCapsuleQueryRepository {
                     )
                 )
                 .from(capsule)
-                .join(capsule.member, member)
-                .join(capsule.capsuleSkin, capsuleSkin)
-                .join(capsule.group, group)
+                .join(capsuleSkin)
+                .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+                .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
+                .join(group).on(capsule.group.eq(group), group.deletedAt.isNull())
                 .where(capsule.id.eq(capsuleId)
                     .and(capsule.type.eq(CapsuleType.GROUP))
                 )
@@ -130,8 +129,9 @@ public class GroupCapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.eq(member.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
             .where(capsule.member.id.eq(memberId)
                 .and(capsule.createdAt.lt(createdAt))
                 .and(capsule.type.eq(CapsuleType.GROUP)))
@@ -222,11 +222,12 @@ public class GroupCapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(capsule.member, member)
-            .join(capsule.capsuleSkin, capsuleSkin)
-            .join(capsule.group, group)
-            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
-            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
+            .join(group).on(capsule.group.eq(group), group.deletedAt.isNull())
+            .leftJoin(image).on(capsule.eq(image.capsule), image.deletedAt.isNull())
+            .leftJoin(video).on(capsule.eq(video.capsule), video.deletedAt.isNull())
             .where(capsule.type.eq(CapsuleType.GROUP)
                 .and(capsule.group.id.in(groupIds))
                 .and(capsuleIdPagingCursorCondition(lastCapsuleId)))
