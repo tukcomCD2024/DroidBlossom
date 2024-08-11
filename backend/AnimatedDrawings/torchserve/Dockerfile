@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.2
 
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:24.1.2-0
 
 # install os dependencies
 RUN mkdir -p /usr/share/man/man1
@@ -8,7 +8,6 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     ca-certificates \
     curl \
-    python3-pip \
     vim \
     sudo \
     default-jre \
@@ -17,26 +16,37 @@ RUN apt-get update && \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+RUN conda install python=3.8.13 -y
+
 # install python dependencies
-RUN pip install openmim==0.3.9
-RUN pip install torch==2.1.2
-RUN pip install mmcv-full==1.7.0
+RUN pip install openmim
+RUN pip install torch==2.0.0
+RUN mim install mmcv-full==1.7.0
 RUN pip install mmdet==2.27.0
-RUN pip install torchserve==0.9.0
+RUN pip install torchserve
 
 # bugfix for xtcocoapi, an mmpose dependency
-RUN git clone https://github.com/hjessmith/xtcocoapi-bugfix.git
-WORKDIR xtcocoapi-bugfix
+RUN git clone https://github.com/jin-s13/xtcocoapi.git
+WORKDIR xtcocoapi
 RUN pip install -r requirements.txt
 RUN python setup.py install
 WORKDIR /
 RUN pip install mmpose==0.29.0
+RUN pip install torchvision==0.15.1  # solve torch version problem
+RUN pip install numpy==1.24.4  #solve numpy version problem
 
+# prep torchserve
 # prep torchserve
 RUN mkdir -p /home/torchserve/model-store
 RUN wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_detector.mar -P /home/torchserve/model-store/
 RUN wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_pose_estimator.mar -P /home/torchserve/model-store/
-COPY config.properties /home/torchserve/config.properties
+COPY config.properties.template /home/torchserve/config.properties.template
+COPY log4j2.xml /home/torchserve/log4j2.xml
 
-# starting command
-CMD /opt/conda/bin/torchserve --start --ts-config /home/torchserve/config.properties && sleep infinity
+ENV MAX_HEAP_SIZE=8g
+ENV INIT_HEAP_SIZE=4g
+
+CMD sed "s/{{MAX_HEAP_SIZE}}/$MAX_HEAP_SIZE/g; s/{{INIT_HEAP_SIZE}}/$INIT_HEAP_SIZE/g" \
+    /home/torchserve/config.properties.template > /home/torchserve/config.properties && \
+    /opt/conda/bin/torchserve --start --ts-config /home/torchserve/config.properties --disable-token-auth && \
+    sleep infinity

@@ -1,0 +1,23 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+inference_address=http://0.0.0.0:8080
+management_address=http://0.0.0.0:8081
+metrics_address=http://0.0.0.0:8082
+model_store=/home/torchserve/model-store
+load_models=all
+
+vmargs=-Xmx{{MAX_HEAP_SIZE}} -Xms{{INIT_HEAP_SIZE}} -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -Dlog4j.configurationFile=file:///home/torchserve/log4j2.xml
+
+ipex_enable=true
+cpu_launcher_enable=true
+cpu_launcher_args=--use_logical_core
+
+async_logging=true
+
+batch_size = 1
+batch_delay=100
+concurrency=1
+default_workers_per_model=1
+job_queue_size=1000
