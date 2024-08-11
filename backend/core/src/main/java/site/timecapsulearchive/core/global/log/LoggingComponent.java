@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class LoggingComponent {
 
     @Before("execution(* site.timecapsulearchive..*(..)) "
+        + "&& !within(site.timecapsulearchive.core.infra..config..*)"
         + "&& !within(site.timecapsulearchive.core.domain..api..*)"
         + "&& !within(site.timecapsulearchive.core.global..*)")
     public void doTraceBefore(JoinPoint joinPoint) {
@@ -22,6 +23,7 @@ public class LoggingComponent {
     }
 
     @After("execution(* site.timecapsulearchive..*(..)) "
+        + "&& !within(site.timecapsulearchive.core.infra..config..*)"
         + "&& !within(site.timecapsulearchive.core.domain..api..*)"
         + "&& !within(site.timecapsulearchive.core.global..*)")
     public void doTraceAfter(JoinPoint joinPoint) {
