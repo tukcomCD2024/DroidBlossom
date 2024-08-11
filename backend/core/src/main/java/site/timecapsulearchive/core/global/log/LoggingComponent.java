@@ -15,7 +15,9 @@ public class LoggingComponent {
     @Before("execution(* site.timecapsulearchive..*(..)) "
         + "&& !within(site.timecapsulearchive.core.infra..config..*)"
         + "&& !within(site.timecapsulearchive.core.domain..api..*)"
-        + "&& !within(site.timecapsulearchive.core.global..*)")
+        + "&& !within(site.timecapsulearchive.core.global..*)"
+        + "|| within(site.timecapsulearchive.core.global.api..*)"
+        + "|| within(site.timecapsulearchive.core.global.geography..*)")
     public void doTraceBefore(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
 
@@ -25,7 +27,9 @@ public class LoggingComponent {
     @After("execution(* site.timecapsulearchive..*(..)) "
         + "&& !within(site.timecapsulearchive.core.infra..config..*)"
         + "&& !within(site.timecapsulearchive.core.domain..api..*)"
-        + "&& !within(site.timecapsulearchive.core.global..*)")
+        + "&& !within(site.timecapsulearchive.core.global..*)"
+        + "|| within(site.timecapsulearchive.core.global.api..*)"
+        + "|| within(site.timecapsulearchive.core.global.geography..*)")
     public void doTraceAfter(JoinPoint joinPoint) {
         log.info("[after] {}", joinPoint.getSignature());
     }
