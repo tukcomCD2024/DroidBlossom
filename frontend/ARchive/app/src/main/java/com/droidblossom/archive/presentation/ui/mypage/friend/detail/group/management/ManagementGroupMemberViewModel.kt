@@ -33,6 +33,8 @@ interface ManagementGroupMemberViewModel {
     fun getLatestInvitedUserList()
     fun onInvitedUsersRVScrollNearBottom()
 
+    fun kickGroupMember(groupMember: GroupMember)
+
     fun onClickInvitableFriend(position: Int)
 
     fun inviteFriendsToGroup()

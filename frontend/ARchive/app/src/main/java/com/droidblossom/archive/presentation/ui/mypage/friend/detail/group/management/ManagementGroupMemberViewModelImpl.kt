@@ -9,6 +9,7 @@ import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
 import com.droidblossom.archive.domain.usecase.group.CancelGroupInviteUseCase
+import com.droidblossom.archive.domain.usecase.group.DeleteGroupMemberUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupInvitedUsersUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupMembersInfoUseCase
 import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
@@ -36,7 +37,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val groupInviteUseCase: GroupInviteUseCase,
     private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase,
     private val getGroupInvitedUsersUseCase: GetGroupInvitedUsersUseCase,
-    private val cancelGroupInviteUseCase: CancelGroupInviteUseCase
+    private val cancelGroupInviteUseCase: CancelGroupInviteUseCase,
+    private val deleteGroupMemberUseCase: DeleteGroupMemberUseCase
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -294,6 +296,20 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
                 }
 
+            }
+        }
+    }
+
+    override fun kickGroupMember(groupMember: GroupMember) {
+        viewModelScope.launch {
+            deleteGroupMemberUseCase(
+                groupId = groupId.value,
+                groupMemberId = groupMember.memberId
+            ).collect{ result ->
+                result.onSuccess {
+                    _groupMembers.value -= groupMember
+                }.onFail {
+                }
             }
         }
     }

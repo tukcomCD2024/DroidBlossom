@@ -25,7 +25,11 @@ class ManagementGroupMembersFragment :
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
     private val managementGroupMemberRVA by lazy {
-        ManagementGroupMemberRVA()
+        ManagementGroupMemberRVA(
+            kickGroupMember = { member ->
+                viewModel.kickGroupMember(member)
+            }
+        )
     }
 
     override fun observeData() {

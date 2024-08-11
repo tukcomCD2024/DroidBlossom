@@ -9,7 +9,7 @@ import com.droidblossom.archive.databinding.ItemGroupMemberBinding
 import com.droidblossom.archive.domain.model.group.GroupMember
 
 class GroupMemberRVA(
-
+    private val requestFriend: (Long) -> Unit,
 ): ListAdapter<GroupMember,GroupMemberRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -17,6 +17,10 @@ class GroupMemberRVA(
     ): RecyclerView.ViewHolder(binding.root){
         fun bind(data: GroupMember){
             binding.data = data
+            binding.addFriend.setOnClickListener {
+                requestFriend(data.memberId)
+                notifyItemChanged(bindingAdapterPosition)
+            }
         }
     }
 

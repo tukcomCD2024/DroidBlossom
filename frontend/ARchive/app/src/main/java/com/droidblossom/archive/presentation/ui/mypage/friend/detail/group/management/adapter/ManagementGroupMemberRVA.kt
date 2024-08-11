@@ -10,7 +10,7 @@ import com.droidblossom.archive.databinding.ItemManagementGroupMemberBinding
 import com.droidblossom.archive.domain.model.group.GroupMember
 
 class ManagementGroupMemberRVA(
-
+    private val kickGroupMember: (GroupMember) -> Unit
 ) : ListAdapter<GroupMember, RecyclerView.ViewHolder>(differ){
 
     inner class GroupMasterItemViewHolder(
@@ -28,6 +28,9 @@ class ManagementGroupMemberRVA(
 
         fun groupMemberBind(data: GroupMember){
             binding.item = data
+            binding.denyBtn.setOnClickListener {
+                kickGroupMember(data)
+            }
         }
     }
 
