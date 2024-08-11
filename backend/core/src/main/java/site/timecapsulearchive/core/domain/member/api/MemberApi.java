@@ -232,6 +232,7 @@ public interface MemberApi {
         description = """
             가입한 사용자가 회원을 탈퇴한다.
             """,
+        security = {@SecurityRequirement(name = "user_token")},
         tags = {"member"}
     )
     @ApiResponses(value = {

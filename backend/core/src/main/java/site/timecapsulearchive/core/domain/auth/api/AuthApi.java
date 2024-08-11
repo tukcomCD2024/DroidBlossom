@@ -139,6 +139,7 @@ public interface AuthApi {
                         
             로그인된 사용자만 가능하다.
             """,
+        security = {@SecurityRequirement(name = "user_token")},
         tags = {"auth"}
     )
     @ApiResponses(value = {
