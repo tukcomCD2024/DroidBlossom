@@ -16,8 +16,8 @@ public class LoggingComponent {
         + "&& !within(site.timecapsulearchive.core.infra..config..*)"
         + "&& !within(site.timecapsulearchive.core.domain..api..*)"
         + "&& !within(site.timecapsulearchive.core.global..*)"
-        + "|| within(site.timecapsulearchive.core.global.api..*)"
-        + "|| within(site.timecapsulearchive.core.global.geography..*)")
+        + "|| within(site.timecapsulearchive.core.global.api.limit.ApiLimitCheckInterceptor)"
+        + "|| within(site.timecapsulearchive.core.global.geography.GeoTransformManager)")
     public void doTraceBefore(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
 
@@ -28,8 +28,8 @@ public class LoggingComponent {
         + "&& !within(site.timecapsulearchive.core.infra..config..*)"
         + "&& !within(site.timecapsulearchive.core.domain..api..*)"
         + "&& !within(site.timecapsulearchive.core.global..*)"
-        + "|| within(site.timecapsulearchive.core.global.api..*)"
-        + "|| within(site.timecapsulearchive.core.global.geography..*)")
+        + "|| within(site.timecapsulearchive.core.global.api.limit.ApiLimitCheckInterceptor)"
+        + "|| within(site.timecapsulearchive.core.global.geography.GeoTransformManager)")
     public void doTraceAfter(JoinPoint joinPoint) {
         log.info("[after] {}", joinPoint.getSignature());
     }
