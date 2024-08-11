@@ -36,7 +36,8 @@
         <activity
             android:name=".presentation.ui.NetworkConnectionActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".presentation.ui.mypage.friend.detail.group.management.ManagementGroupMemberActivity"
             android:exported="false"
@@ -53,7 +54,8 @@
         <activity
             android:name=".presentation.ui.mypage.friend.addgroup.AddGroupActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".presentation.ui.mypage.friendaccept.FriendAcceptActivity"
             android:exported="false"
@@ -69,7 +71,8 @@
         <activity
             android:name=".presentation.ui.home.notification.NotificationActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".presentation.ui.mypage.setting.SettingActivity"
             android:exported="false"
@@ -77,7 +80,8 @@
         <activity
             android:name=".presentation.ui.ErrorActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".presentation.ui.permission.PermissionActivity"
             android:exported="false"
@@ -117,12 +121,14 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".presentation.ui.skin.skinmake.SkinMakeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".presentation.ui.MainActivity"
             android:exported="true"
