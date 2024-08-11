@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -131,12 +132,18 @@ class GroupDetailActivity :
         binding.appBarLayout.layoutParams = layoutParams
         initView()
         initTab()
+        onBackPressedDispatcher.addCallback(this) {
+            finish()
+        }
         viewModel.setGroupId(groupId)
     }
 
     private fun initView(){
         with(binding){
             setSupportActionBar(groupDetailToolbar)
+            groupDetailToolbar.setNavigationOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
             swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
                 val fragment = groupVPA.getFragment(vp.currentItem)
                 when (fragment) {
