@@ -28,7 +28,7 @@ class ManagementGroupMemberRVA(
 
         fun groupMemberBind(data: GroupMember){
             binding.item = data
-            binding.denyBtn.setOnClickListener {
+            binding.kickBtn.setOnClickListener {
                 kickGroupMember(data)
             }
         }

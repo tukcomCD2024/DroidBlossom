@@ -155,7 +155,6 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     }
 
     override fun inviteFriendsToGroup(){
-        // 성공한다면?
         viewModelScope.launch {
             val targetIds = groupInviteeList.value.map { it.id }
             groupInviteUseCase(
@@ -165,13 +164,11 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                 )
             ).collect{ result ->
                 result.onSuccess {
-                    // 다른 api 호출을 해서 동기화 or list 조작
-                    // 타입 맞춰야하는데 api 나오면 할 예정
-                    //_invitedUsers.value += _groupInviteeList.value
-                    // _groupInviteeList.value = emptyList()
                     load()
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 성공했습니다."))
                 }.onFail {
-                    // Toast와 다시 계산
+                    load()
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
         }
@@ -292,6 +289,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
             cancelGroupInviteUseCase(groupInviteId = user.groupInviteId).collect{ result ->
                 result.onSuccess {
                     _invitedUsers.value -= user
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 성공했습니다."))
                 }.onFail {
                     managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
                 }
@@ -308,7 +306,10 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
             ).collect{ result ->
                 result.onSuccess {
                     _groupMembers.value -= groupMember
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 성공했습니다."))
+
                 }.onFail {
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다."))
                 }
             }
         }
