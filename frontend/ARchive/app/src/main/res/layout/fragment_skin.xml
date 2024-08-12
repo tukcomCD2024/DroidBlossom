@@ -34,104 +34,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.068" />
 
-            <androidx.cardview.widget.CardView
-                android:visibility="@{vm.isSearchOpen ? View.VISIBLE  : View.GONE}"
-                android:id="@+id/searchOpenBtn"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintVertical_bias="0.0610">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/searchOpenBtnLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/searchOpenEditT"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@null"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:imeOptions="actionDone"
-                        android:textAppearance="@style/TextAppearance.App.body2"
-                        android:ellipsize="start"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/searchOpenBtnT"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/searchOpenBtnT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="검색"
-                        android:paddingVertical="8dp"
-                        android:paddingHorizontal="16dp"
-                        android:layout_marginEnd="5dp"
-                        android:textAppearance="@style/TextAppearance.App.caption1"
-                        android:textColor="@color/main_1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                tools:visibility="gone"
-                android:visibility="@{vm.isSearchOpen ? View.GONE  : View.VISIBLE}"
-                android:id="@+id/searchBtn"
-                android:layout_width="58dp"
-                android:layout_height="36dp"
-                android:onClick="@{()->vm.openSearchSkin()}"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="17dp"
-                app:cardElevation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle"
-                app:layout_constraintVertical_bias="0.0610">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/searchBtnLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/searchBtnT"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="검색"
-                        android:textAppearance="@style/TextAppearance.App.caption1"
-                        android:textColor="@color/main_1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshLayout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/margin"
+                android:layout_marginTop="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchBtn">
+                app:layout_constraintTop_toBottomOf="@id/viewHeaderTitle">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/skinRV"

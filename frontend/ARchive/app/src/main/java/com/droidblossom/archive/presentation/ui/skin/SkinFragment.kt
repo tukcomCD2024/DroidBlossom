@@ -1,15 +1,9 @@
 package com.droidblossom.archive.presentation.ui.skin
 
-import android.annotation.SuppressLint
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,12 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.FragmentSkinBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
-import com.droidblossom.archive.presentation.ui.mypage.MyPageFragment
 import com.droidblossom.archive.presentation.ui.skin.adapter.MySkinRVA
 import com.droidblossom.archive.presentation.ui.skin.detail.SkinDetailDialogFragment
 import com.droidblossom.archive.presentation.ui.skin.detail.SkinDetailDialogFragment.Companion.DELETE_SKIN
 import com.droidblossom.archive.presentation.ui.skin.skinmake.SkinMakeActivity
-import com.droidblossom.archive.util.updateTopConstraintsForSearch
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -60,7 +52,6 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
 
         binding.vm = viewModel
         initRVA()
-        initSearchEdit()
         binding.createCapsuleLayout.setOnClickListener {
             SkinMakeActivity.goSkinMake(requireContext())
         }
@@ -131,28 +122,6 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
                 }
             }
         }
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isSearchOpen.collect {
-                    val layoutParams = binding.swipeRefreshLayout.layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.updateTopConstraintsForSearch(
-                        isSearchOpen = it,
-                        searchOpenView = binding.searchOpenBtn,
-                        searchView = binding.searchBtn,
-                        additionalMarginDp = 16f,
-                        resources = resources
-                    )
-                    if (it){
-                        binding.searchOpenEditT.requestFocus()
-                        val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                        imm.showSoftInput(binding.searchOpenEditT, InputMethodManager.SHOW_IMPLICIT);
-
-                    }
-                }
-            }
-        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -168,55 +137,55 @@ class SkinFragment : BaseFragment<SkinViewModelImpl, FragmentSkinBinding>(R.layo
         viewModel.closeSearchSkin()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun initSearchEdit(){
-        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
-                    viewModel.searchSkin()
-                }
-                true
-            }
-            false
-        }
-        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel.closeSearchSkin()
-            }
-        }
-        binding.root.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.skinRV.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val focusedView = binding.searchOpenBtn
-                val outRect = Rect()
-                focusedView.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    focusedView.clearFocus()
-                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
-                }
-            }
-            false
-        }
-
-        binding.searchOpenBtnT.setOnClickListener {
-            val imm = requireActivity().getSystemService(InputMethodManager::class.java)
-            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-        }
-    }
+//    @SuppressLint("ClickableViewAccessibility")
+//    fun initSearchEdit(){
+//        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
+//            if (i == EditorInfo.IME_ACTION_DONE) {
+//                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
+//                    viewModel.searchSkin()
+//                }
+//                true
+//            }
+//            false
+//        }
+//        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
+//            if (!hasFocus) {
+//                viewModel.closeSearchSkin()
+//            }
+//        }
+//        binding.root.setOnTouchListener { _, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                val focusedView = binding.searchOpenBtn
+//                val outRect = Rect()
+//                focusedView.getGlobalVisibleRect(outRect)
+//                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+//                    focusedView.clearFocus()
+//                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
+//                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
+//                }
+//            }
+//            false
+//        }
+//
+//        binding.skinRV.setOnTouchListener { _, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                val focusedView = binding.searchOpenBtn
+//                val outRect = Rect()
+//                focusedView.getGlobalVisibleRect(outRect)
+//                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+//                    focusedView.clearFocus()
+//                    val imm = requireActivity().getSystemService(InputMethodManager::class.java)
+//                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
+//                }
+//            }
+//            false
+//        }
+//
+//        binding.searchOpenBtnT.setOnClickListener {
+//            val imm = requireActivity().getSystemService(InputMethodManager::class.java)
+//            imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
+//        }
+//    }
 
     fun scrollToTop(){
         binding.skinRV.scrollToPosition(0)

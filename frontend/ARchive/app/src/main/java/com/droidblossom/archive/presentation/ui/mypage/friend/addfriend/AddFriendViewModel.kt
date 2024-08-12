@@ -14,7 +14,7 @@ interface AddFriendViewModel {
     val addFriendListUI : StateFlow<List<FriendsSearchResponse>>
     val checkedList : StateFlow<List<FriendsSearchResponse>>
     val tagT : MutableStateFlow<String>
-
+    val searchFriendText: MutableStateFlow<String>
     //searchNum
     val isSearchNumOpen : StateFlow<Boolean>
     val addFriendList: StateFlow<List<FriendsSearchResponse>>

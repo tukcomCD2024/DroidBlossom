@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -209,6 +211,18 @@ class SearchFriendNumberFragment :
             }
             false
         }
+
+        binding.searchOpenEditT.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun afterTextChanged(p0: Editable?) {
+                p0?.let {
+                    viewModel.searchFriend()
+                }
+            }
+        })
 
         binding.recycleView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {

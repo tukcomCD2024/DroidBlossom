@@ -45,7 +45,7 @@ class AddFriendViewModelImpl @Inject constructor(
     override val addFriendList: StateFlow<List<FriendsSearchResponse>>
         get() = _addFriendList
 
-
+    override val searchFriendText: MutableStateFlow<String> = MutableStateFlow("")
     private val _checkedList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
     override val checkedList: StateFlow<List<FriendsSearchResponse>>
         get() = _checkedList
@@ -148,6 +148,16 @@ class AddFriendViewModelImpl @Inject constructor(
                     _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("주소록 불러오기 실패."))
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }
+            }
+        }
+    }
+
+    fun searchFriend() {
+        viewModelScope.launch {
+            if (searchFriendText.value.isBlank()) {
+                _addFriendListUI.emit(_addFriendList.value)
+            } else {
+                _addFriendListUI.emit(_addFriendList.value.filter { it.nickname.contains(searchFriendText.value) })
             }
         }
     }
