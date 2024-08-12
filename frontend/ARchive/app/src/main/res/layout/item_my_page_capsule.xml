@@ -42,7 +42,7 @@
             app:layout_constraintEnd_toEndOf="@id/capsuleImg"
             app:layout_constraintTop_toTopOf="@id/capsuleImg"
             app:layout_constraintBottom_toBottomOf="@id/capsuleImg"
-            app:srcCompat="@drawable/ic_lock"
+            app:srcCompat="@drawable/ic_lock_chain"
             android:visibility="@{data.isOpened ? View.GONE : View.VISIBLE}"/>
 
         <androidx.appcompat.widget.AppCompatTextView

@@ -1,6 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.management.page
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -25,14 +26,18 @@ class ManagementGroupMembersFragment :
     override val viewModel: ManagementGroupMemberViewModelImpl by activityViewModels()
 
     private val managementGroupMemberRVA by lazy {
-        ManagementGroupMemberRVA()
+        ManagementGroupMemberRVA(
+            kickGroupMember = { member ->
+                viewModel.kickGroupMember(member)
+            }
+        )
     }
 
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupMembers.collect { members ->
-                    viewModel.remainingInvites = 29 - viewModel.groupMembers.value.size
+                    viewModel.remainingInvites = 30 - viewModel.groupMembers.value.size
                     managementGroupMemberRVA.submitList(members)
                     if (binding.swipeRefreshLayout.isRefreshing){
                         binding.swipeRefreshLayout.isRefreshing = false

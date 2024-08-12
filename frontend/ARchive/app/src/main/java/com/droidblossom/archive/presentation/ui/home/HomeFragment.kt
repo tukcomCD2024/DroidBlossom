@@ -268,6 +268,7 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
     override fun onMapReady(naverMap: NaverMap) {
         this.clusterer.map = naverMap
         naverMap.uiSettings.isRotateGesturesEnabled = false
+        naverMap.uiSettings.isZoomControlEnabled = false
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         naverMap.minZoom = MINZOOM

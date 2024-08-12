@@ -84,9 +84,19 @@ class GroupRepositoryImpl @Inject constructor(
         return apiHandler({ groupService.getGroupMembersApi(groupId) }) { response: ResponseBody<GroupMembersInfoResponseDto> -> response.result.toModel() }
     }
 
-    override suspend fun getGroupInvitedUsersRequest(groupId: Long,pagingRequest: IdBasedPagingRequestDto): RetrofitResult<GroupInvitedUsersPage> {
-        return apiHandler({ groupService.getGroupInvitedUsersApi(groupId = groupId, size = pagingRequest.size, pagingId = pagingRequest.pagingId) }) { response: ResponseBody<GroupInvitedUsersPageResponseDto> -> response.result.toModel() }
+    override suspend fun getGroupInvitedUsersRequest(
+        groupId: Long,
+        pagingRequest: IdBasedPagingRequestDto
+    ): RetrofitResult<GroupInvitedUsersPage> {
+        return apiHandler({
+            groupService.getGroupInvitedUsersApi(
+                groupId = groupId,
+                size = pagingRequest.size,
+                pagingId = pagingRequest.pagingId
+            )
+        }) { response: ResponseBody<GroupInvitedUsersPageResponseDto> -> response.result.toModel() }
     }
+
     override suspend fun deleteLeaveGroupRequest(groupId: Long): RetrofitResult<String> {
         return apiHandler({ groupService.deleteLeaveGroupApi(groupId) }) { response: ResponseBody<String> -> response.result.toString() }
     }
@@ -97,6 +107,18 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun deleteGroupRequest(groupId: Long): RetrofitResult<String> {
         return apiHandler({ groupService.deleteGroupApi(groupId = groupId) }) { response: ResponseBody<String> -> response.result.toString() }
+    }
+
+    override suspend fun deleteGroupMember(
+        groupId: Long,
+        groupMemberId: Long
+    ): RetrofitResult<String> {
+        return apiHandler({
+            groupService.deleteGroupMemberApi(
+                groupId = groupId,
+                groupMemberId = groupMemberId
+            )
+        }) { response: ResponseBody<String> -> response.result.toString() }
     }
 
 }

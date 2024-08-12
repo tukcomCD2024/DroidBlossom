@@ -68,6 +68,12 @@ interface GroupService {
         @Query("group_invite_id") pagingId : Long?,
     ) : Response<ResponseBody<GroupInvitedUsersPageResponseDto>>
 
+    @DELETE("groups/{group_id}/members/{group_member_id}")
+    suspend fun deleteGroupMemberApi(
+        @Path("group_id") groupId : Long,
+        @Path("group_member_id") groupMemberId : Long,
+    ): Response<ResponseBody<String>>
+
     @DELETE("groups/{group_id}/members/quit")
     suspend fun deleteLeaveGroupApi(
         @Path("group_id") groupId : Long,

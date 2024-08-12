@@ -9,6 +9,7 @@ import com.droidblossom.archive.domain.model.group.GroupInvitedUser
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.usecase.friend.FriendForGroupInvitePageUseCase
 import com.droidblossom.archive.domain.usecase.group.CancelGroupInviteUseCase
+import com.droidblossom.archive.domain.usecase.group.DeleteGroupMemberUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupInvitedUsersUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupMembersInfoUseCase
 import com.droidblossom.archive.domain.usecase.group.GroupInviteUseCase
@@ -36,7 +37,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val groupInviteUseCase: GroupInviteUseCase,
     private val getGroupMembersInfoUseCase: GetGroupMembersInfoUseCase,
     private val getGroupInvitedUsersUseCase: GetGroupInvitedUsersUseCase,
-    private val cancelGroupInviteUseCase: CancelGroupInviteUseCase
+    private val cancelGroupInviteUseCase: CancelGroupInviteUseCase,
+    private val deleteGroupMemberUseCase: DeleteGroupMemberUseCase
 ) : BaseViewModel(), ManagementGroupMemberViewModel{
 
     private val _groupId = MutableStateFlow(-1L)
@@ -153,7 +155,6 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     }
 
     override fun inviteFriendsToGroup(){
-        // 성공한다면?
         viewModelScope.launch {
             val targetIds = groupInviteeList.value.map { it.id }
             groupInviteUseCase(
@@ -163,13 +164,11 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                 )
             ).collect{ result ->
                 result.onSuccess {
-                    // 다른 api 호출을 해서 동기화 or list 조작
-                    // 타입 맞춰야하는데 api 나오면 할 예정
-                    //_invitedUsers.value += _groupInviteeList.value
-                    // _groupInviteeList.value = emptyList()
                     load()
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 성공했습니다."))
                 }.onFail {
-                    // Toast와 다시 계산
+                    load()
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
         }
@@ -290,10 +289,28 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
             cancelGroupInviteUseCase(groupInviteId = user.groupInviteId).collect{ result ->
                 result.onSuccess {
                     _invitedUsers.value -= user
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 성공했습니다."))
                 }.onFail {
                     managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
                 }
 
+            }
+        }
+    }
+
+    override fun kickGroupMember(groupMember: GroupMember) {
+        viewModelScope.launch {
+            deleteGroupMemberUseCase(
+                groupId = groupId.value,
+                groupMemberId = groupMember.memberId
+            ).collect{ result ->
+                result.onSuccess {
+                    _groupMembers.value -= groupMember
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 성공했습니다."))
+
+                }.onFail {
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다."))
+                }
             }
         }
     }
