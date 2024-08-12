@@ -44,13 +44,8 @@ class LogErrorsTask(Task):
                                 type='direct',
                                 durable=True)
 
-            notification_queue = Queue(name=QueueConfig.NOTIFICATION_QUEUE_NAME,
-                          exchange=notification_exchange,
-                          routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME)
-
             producer.publish(
                 request_data,
-                declare=[notification_queue],
                 exchange=notification_exchange,
                 content_type='application/json',
                 routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME,

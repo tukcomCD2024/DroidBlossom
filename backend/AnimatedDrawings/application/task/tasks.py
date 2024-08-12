@@ -119,13 +119,8 @@ def send_notification(self, _, input_data: dict, filename: str):
                             type='direct',
                             durable=True)
 
-        queue = Queue(name=QueueConfig.NOTIFICATION_QUEUE_NAME,
-                      exchange=exchange,
-                      routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME)
-
         producer.publish(
             request_data,
-            declare=[queue],
             exchange=exchange,
             content_type='application/json',
             routing_key=QueueConfig.NOTIFICATION_QUEUE_NAME,
