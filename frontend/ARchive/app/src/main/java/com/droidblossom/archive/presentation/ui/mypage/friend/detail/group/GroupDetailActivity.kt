@@ -60,7 +60,7 @@ class GroupDetailActivity :
                 viewModel.groupDetailEvents.collect { event ->
                     when(event){
                         is GroupDetailViewModel.GroupDetailEvent.ShowToastMessage -> {
-
+                            showToastMessage(event.message)
                         }
                         GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading -> {
                             if (binding.swipeRefreshLayout.isRefreshing){
