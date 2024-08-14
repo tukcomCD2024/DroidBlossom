@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Slice;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelations;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
@@ -34,4 +35,6 @@ public interface MemberFriendQueryRepository {
         final FriendBeforeGroupInviteRequest request);
 
     List<Long> findFriendIds(final List<Long> groupMemberIds, final Long memberId);
+
+    FriendRelations findFriendRelations(List<Long> memberIds, Long ownerId);
 }

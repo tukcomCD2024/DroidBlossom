@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelationDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelations;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
@@ -198,5 +201,45 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .where(
                 memberFriend.friend.id.in(groupMemberIds).and(memberFriend.owner.id.eq(memberId)))
             .fetch();
+    }
+
+    @Override
+    public FriendRelations findFriendRelations(final List<Long> memberIds,
+        final Long ownerId) {
+        final QFriendInvite friendInviteToFriend = new QFriendInvite(FRIEND_INVITE_TO_FRIEND_PATH);
+        final QFriendInvite friendInviteToMe = new QFriendInvite(FRIEND_INVITE_TO_ME_PATH);
+
+        return new FriendRelations(
+            jpaQueryFactory
+                .select(
+                    member.id,
+                    memberFriend.id.isNotNull(),
+                    friendInviteToFriend.isNotNull(),
+                    friendInviteToMe.isNotNull()
+                )
+                .from(member)
+                .leftJoin(memberFriend)
+                .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(ownerId)),
+                    memberFriend.deletedAt.isNull())
+                .leftJoin(friendInviteToFriend)
+                .on(friendInviteToFriend.friend.id.eq(member.id)
+                        .and(friendInviteToFriend.owner.id.eq(ownerId)),
+                    friendInviteToFriend.deletedAt.isNull())
+                .leftJoin(friendInviteToMe)
+                .on(friendInviteToMe.owner.id.eq(member.id)
+                        .and(friendInviteToMe.friend.id.eq(ownerId)),
+                    friendInviteToMe.deletedAt.isNull())
+                .where(member.id.in(memberIds))
+                .transform(
+                    groupBy(member.id).as(
+                        Projections.constructor(
+                            FriendRelationDto.class,
+                            memberFriend.id.isNotNull(),
+                            friendInviteToFriend.isNotNull(),
+                            friendInviteToMe.isNotNull()
+                        )
+                    )
+                )
+        );
     }
 }
