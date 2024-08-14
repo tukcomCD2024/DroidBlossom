@@ -35,6 +35,8 @@ interface GroupDetailViewModel {
 
     fun deleteCapsule(capsuleIndex: Int, capsuleId: Long)
 
+    fun requestFriend(friendId : Long)
+
 
     sealed class GroupDetailEvent{
         object SwipeRefreshLayoutDismissLoading : GroupDetailEvent()

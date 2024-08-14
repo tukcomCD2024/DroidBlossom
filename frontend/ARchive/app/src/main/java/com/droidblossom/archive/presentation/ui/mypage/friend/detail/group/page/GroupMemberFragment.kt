@@ -20,7 +20,11 @@ class GroupMemberFragment:
     override val viewModel: GroupDetailViewModelImpl by activityViewModels()
 
     private val groupMemberRVA by lazy {
-        GroupMemberRVA()
+        GroupMemberRVA(
+            requestFriend = { friendId ->
+                viewModel.requestFriend(friendId)
+            }
+        )
     }
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {

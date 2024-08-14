@@ -75,12 +75,27 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:text="@{data.nickname}"
+                    android:layout_marginTop="10dp"
                     android:textAppearance="@style/TextAppearance.App.body2"
                     android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
                     app:layout_constraintEnd_toStartOf="@id/addFriend"
                     app:layout_constraintStart_toEndOf="@id/profileImg"
                     app:layout_constraintTop_toTopOf="@id/profileImg" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tagT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintEnd_toEndOf="@id/nicknameT"
+                    app:layout_constraintStart_toStartOf="@id/nicknameT"
+                    app:layout_constraintTop_toBottomOf="@id/nicknameT"
+                    bind:friendName="@{data.tag}"
+                    bind:isFriend="@{data.friend}"
+                    bind:isInviteToMe="@{data.friendInviteToMe}"
+                    bind:isInviteToFriend="@{data.friendInviteToFriend}" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/addFriend"
@@ -88,7 +103,7 @@
                     android:layout_height="32dp"
                     android:layout_marginEnd="@dimen/margin"
                     android:backgroundTint="@color/main_2"
-                    android:visibility="@{data.isFriend ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{data.isFriend || data.friendInviteToMe || data.friendInviteToFriend ? View.GONE : View.VISIBLE}"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="@id/profileImg"

@@ -8,7 +8,9 @@ data class GroupMemberResponseDto(
     val nickname: String,
     val tag: String,
     val isOwner: Boolean,
-    val isFriend: Boolean
+    val isFriend: Boolean,
+    val isFriendInviteToFriend: Boolean,
+    val isFriendInviteToMe: Boolean
 ){
     fun toGroupDetailModel() = GroupMember(
         memberId = this.memberId,
@@ -16,7 +18,9 @@ data class GroupMemberResponseDto(
         nickname = this.nickname,
         tag = this.tag,
         isOwner = this.isOwner,
-        isFriend = this.isFriend
+        isFriend = this.isFriend,
+        isFriendInviteToFriend = this.isFriendInviteToFriend,
+        isFriendInviteToMe = this.isFriendInviteToMe
     )
 
     fun toGroupMemberListModel() = GroupMember(
@@ -25,6 +29,8 @@ data class GroupMemberResponseDto(
         nickname = this.nickname,
         tag = this.tag,
         isOwner = this.isOwner,
-        isFriend = false
+        isFriend = this.isFriend,
+        isFriendInviteToFriend = this.isFriendInviteToFriend,
+        isFriendInviteToMe = this.isFriendInviteToMe
     )
 }

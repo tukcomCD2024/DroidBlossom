@@ -19,7 +19,6 @@ class GroupMemberRVA(
             binding.data = data
             binding.addFriend.setOnClickListener {
                 requestFriend(data.memberId)
-                notifyItemChanged(bindingAdapterPosition)
             }
         }
     }

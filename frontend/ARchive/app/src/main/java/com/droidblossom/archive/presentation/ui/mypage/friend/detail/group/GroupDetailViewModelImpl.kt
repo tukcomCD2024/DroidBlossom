@@ -3,9 +3,10 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
-import com.droidblossom.archive.data.dto.common.PagingRequestDto
+import com.droidblossom.archive.domain.model.friend.FriendReqRequest
 import com.droidblossom.archive.domain.model.group.GroupMember
 import com.droidblossom.archive.domain.model.group.toGroupProfileData
+import com.droidblossom.archive.domain.usecase.friend.FriendsRequestUseCase
 import com.droidblossom.archive.domain.usecase.group.DeleteGroupUseCase
 import com.droidblossom.archive.domain.usecase.group.GetGroupDetailUseCase
 import com.droidblossom.archive.domain.usecase.group.LeaveGroupUseCase
@@ -13,7 +14,6 @@ import com.droidblossom.archive.domain.usecase.group_capsule.CapsulesOfGroupPage
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.presentation.model.mypage.CapsuleData
 import com.droidblossom.archive.presentation.model.mypage.detail.GroupProfileData
-import com.droidblossom.archive.util.DateUtils
 import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
@@ -35,6 +35,7 @@ class GroupDetailViewModelImpl @Inject constructor(
     private val getGroupDetailUseCase: GetGroupDetailUseCase,
     private val leaveGroupUseCase: LeaveGroupUseCase,
     private val deleteGroupUseCase: DeleteGroupUseCase,
+    private val friendsRequestUseCase: FriendsRequestUseCase,
     private val capsulesOfGroupPageUseCase: CapsulesOfGroupPageUseCase
 ) : BaseViewModel(), GroupDetailViewModel {
 
@@ -105,7 +106,6 @@ class GroupDetailViewModelImpl @Inject constructor(
 
     override fun setGroupId(groupId: Long) {
         _groupId.value = groupId
-        Log.d("아니", "setGroupId, $groupId")
         getGroupDetail()
         getLatestCapsuleList()
     }
@@ -233,6 +233,25 @@ class GroupDetailViewModelImpl @Inject constructor(
         val currentList = _capsules.value.toMutableList()
         currentList.removeAt(_capsules.value.indexOfFirst { it.capsuleId == capsuleId })
         _capsules.value = currentList
+    }
+
+    override fun requestFriend(friendId: Long) {
+        viewModelScope.launch {
+            friendsRequestUseCase(FriendReqRequest(friendId)).collect { result ->
+                result.onSuccess {
+                    _groupMembers.value = _groupMembers.value.map { member ->
+                        if (member.memberId == friendId) {
+                            member.copy(isFriendInviteToFriend = true)
+                        } else {
+                            member
+                        }
+                    }
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("친구 요청을 보냈습니다."))
+                }.onFail {
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("친구 요청 오류 발생"))
+                }
+            }
+        }
     }
 
 }
