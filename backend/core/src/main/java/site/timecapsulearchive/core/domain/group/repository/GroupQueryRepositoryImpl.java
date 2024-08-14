@@ -93,7 +93,7 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
      * @return 그룹의 상세정보({@code memberId} 제외 그룹원)
      */
     @Override
-    public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
+    public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberIdExcludeMemberId(final Long groupId,
         final Long memberId) {
         GroupDetailDto groupDetailDtoIncludeMe =
             jpaQueryFactory

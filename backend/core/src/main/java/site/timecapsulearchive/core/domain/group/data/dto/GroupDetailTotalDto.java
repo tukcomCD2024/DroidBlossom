@@ -1,8 +1,10 @@
 package site.timecapsulearchive.core.domain.group.data.dto;
 
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelations;
 import site.timecapsulearchive.core.domain.group.data.response.GroupDetailResponse;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberWithRelationResponse;
 
@@ -19,12 +21,15 @@ public record GroupDetailTotalDto(
     public static GroupDetailTotalDto as(
         final GroupDetailDto groupDetailDto,
         final Long groupCapsuleTotalCount,
-        final List<Long> friendIds
+        final FriendRelations friendRelations
     ) {
-        final List<GroupMemberWithRelationDto> membersWithRelation = groupDetailDto.members()
-            .stream()
-            .map(dto -> dto.toRelationDto(friendIds))
-            .toList();
+        List<GroupMemberWithRelationDto> membersWithRelation = Collections.emptyList();
+        if (friendRelations != null) {
+            membersWithRelation = groupDetailDto.members()
+                .stream()
+                .map(dto -> dto.toRelationDto(friendRelations.getFriendRelation(dto.memberId())))
+                .toList();
+        }
 
         return new GroupDetailTotalDto(
             groupDetailDto.groupName(),
