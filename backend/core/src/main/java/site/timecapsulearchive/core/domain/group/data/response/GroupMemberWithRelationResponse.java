@@ -23,7 +23,13 @@ public record GroupMemberWithRelationResponse(
     Boolean isOwner,
 
     @Schema(description = "친구 여부")
-    Boolean isFriend
+    Boolean isFriend,
+
+    @Schema(description = "친구한테 친구 요청 유무")
+    Boolean isFriendInviteToFriend,
+
+    @Schema(description = "친구로부터 친구 요청 유무")
+    Boolean isFriendInviteToMe
 ) {
 
 }

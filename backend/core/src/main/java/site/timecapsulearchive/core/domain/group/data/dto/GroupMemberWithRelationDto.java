@@ -23,6 +23,8 @@ public record GroupMemberWithRelationDto(
             .tag(tag)
             .isOwner(isOwner)
             .isFriend(isFriend)
+            .isFriendInviteToFriend(isFriendInviteToFriend)
+            .isFriendInviteToMe(isFriendInviteToMe)
             .build();
     }
 }
