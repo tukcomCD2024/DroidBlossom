@@ -9,6 +9,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.capsule.group_capsule.repository.GroupCapsuleQueryRepository;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelations;
 import site.timecapsulearchive.core.domain.friend.repository.member_friend.MemberFriendRepository;
 import site.timecapsulearchive.core.domain.group.data.dto.CompleteGroupSummaryDto;
 import site.timecapsulearchive.core.domain.group.data.dto.GroupDetailDto;
@@ -62,7 +63,7 @@ public class GroupQueryService {
     }
 
     public GroupDetailTotalDto findGroupDetailByGroupId(final Long memberId, final Long groupId) {
-        final GroupDetailDto groupDetailDto = groupRepository.findGroupDetailByGroupIdAndMemberId(
+        final GroupDetailDto groupDetailDto = groupRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
             groupId, memberId).orElseThrow(GroupNotFoundException::new);
 
         final Long groupCapsuleCount = groupCapsuleQueryRepository.findGroupCapsuleCount(groupId);
@@ -70,9 +71,13 @@ public class GroupQueryService {
         final List<Long> groupMemberIds = groupDetailDto.members().stream()
             .map(GroupMemberDto::memberId)
             .toList();
-        final List<Long> friendIds = memberFriendRepository.findFriendIds(groupMemberIds, memberId);
 
-        return GroupDetailTotalDto.as(groupDetailDto, groupCapsuleCount, friendIds);
+        FriendRelations friendRelations = null;
+        if (!groupMemberIds.isEmpty()) {
+            friendRelations = memberFriendRepository.findFriendRelations(groupMemberIds, memberId);
+        }
+
+        return GroupDetailTotalDto.as(groupDetailDto, groupCapsuleCount, friendRelations);
     }
 
     public List<Group> findAllOwnerGroupsByMemberId(Long memberId) {

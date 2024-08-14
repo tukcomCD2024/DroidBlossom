@@ -155,7 +155,7 @@ class GroupQueryRepositoryTest extends RepositoryTest {
     void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_상세가_반환된다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
             groupId, ownerId).orElseThrow();
 
         //then
@@ -166,7 +166,7 @@ class GroupQueryRepositoryTest extends RepositoryTest {
     void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_그룹_정보를_볼_수_있다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
             groupId, ownerId).orElseThrow();
 
         //then
@@ -183,7 +183,7 @@ class GroupQueryRepositoryTest extends RepositoryTest {
     void 그룹_아이디와_멤버_아이디_그룹을_조회하면_그룹원들의_정보를_볼_수_있다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
             groupId, groupMemberId).orElseThrow();
 
         //then
@@ -203,7 +203,7 @@ class GroupQueryRepositoryTest extends RepositoryTest {
     void 그룹_아이디와_멤버_아이디로_그룹을_조회하면_본인은_포함되어_조회되지_않는다() {
         //given
         //when
-        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        GroupDetailDto groupDetail = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
             groupId, groupMemberId).orElseThrow();
 
         List<GroupMemberDto> groupMemberDtos = groupDetail.members();
@@ -219,7 +219,7 @@ class GroupQueryRepositoryTest extends RepositoryTest {
     void 그룹_아이디로_그룹을_상세정보를_조회하면_사용자를_제외한_그룹원의_정보를_볼_수_있다() {
         //given
         //when
-        GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
                 groupId, ownerId)
             .orElseThrow();
 
@@ -233,7 +233,7 @@ class GroupQueryRepositoryTest extends RepositoryTest {
         Long notExistGroupId = 999L;
 
         //when
-        Optional<GroupDetailDto> groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        Optional<GroupDetailDto> groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
             notExistGroupId, ownerId);
 
         //then
@@ -241,22 +241,10 @@ class GroupQueryRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    void 그룹장이_그룹을_상세정보를_조회하면_그룹의_수정권한을_가진다() {
-        //given
-        //when
-        GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
-                groupId, ownerId)
-            .orElseThrow();
-
-        //then
-        assertThat(groupDetailDto.isOwner()).isTrue();
-    }
-
-    @Test
     void 그룹원이_그룹을_상세정보를_조회하면_그룹의_수정권한이_없다() {
         //given
         //when
-        GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberId(
+        GroupDetailDto groupDetailDto = groupQueryRepository.findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
                 groupId, groupMemberId)
             .orElseThrow();
 
