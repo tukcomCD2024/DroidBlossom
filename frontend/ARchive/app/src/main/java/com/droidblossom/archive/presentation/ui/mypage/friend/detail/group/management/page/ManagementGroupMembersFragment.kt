@@ -38,7 +38,7 @@ class ManagementGroupMembersFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupMembers.collect { members ->
                     viewModel.remainingInvites = 30 - viewModel.groupMembers.value.size
-                    managementGroupMemberRVA.submitList(members)
+                    managementGroupMemberRVA.submitList(members.filter { !it.isOwner })
                     if (binding.swipeRefreshLayout.isRefreshing){
                         binding.swipeRefreshLayout.isRefreshing = false
                     }
@@ -58,8 +58,13 @@ class ManagementGroupMembersFragment :
     private fun initView() {
 
         with(binding) {
-
-
+            actionMessage.setOnClickListener {
+                viewModel.managementGroupMemberEvent(
+                    ManagementGroupMemberViewModel.ManagementGroupMemberEvent.NavigateToPage(
+                        ManagementGroupMemberActivity.INVITABLE_FRIENDS
+                    )
+                )
+            }
         }
     }
 

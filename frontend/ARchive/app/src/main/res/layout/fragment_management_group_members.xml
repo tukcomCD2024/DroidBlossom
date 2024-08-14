@@ -26,7 +26,38 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:orientation="vertical"
+                android:visibility="@{vm.groupMembers.size() == 1 ? View.GONE : View.VISIBLE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+            <LinearLayout
+                android:id="@+id/messageLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="@{vm.groupMembers.size() == 1 ? View.VISIBLE : View.GONE}">
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/noActionMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="120dp"
+                    android:text="아직 그룹원이 없어요."
+                    android:textAppearance="@style/TextAppearance.App.body1" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/actionMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin"
+                    android:text="친구들을 그룹에 초대해 보세요."
+                    android:textAppearance="@style/TextAppearance.App.caption1"
+                    android:textColor="@color/main_2" />
+
+            </LinearLayout>
 
 
         </FrameLayout>

@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="120dp"
-                    android:text='@{vm.groupMembers.size() >= 30 ? "죄송합니다, 그룹이 최대 인원을 초과했어요." : "친구들을 그룹에 초대해 보세요."}'
+                    android:text='@{vm.groupMembers.size() >= 30 ? "죄송합니다, 그룹이 최대 인원을 초과했어요." : "아직 그룹원이 없어요."}'
                     android:textAppearance="@style/TextAppearance.App.body1" />
 
                 <androidx.appcompat.widget.AppCompatTextView
