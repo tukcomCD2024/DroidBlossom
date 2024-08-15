@@ -9,16 +9,19 @@ import com.droidblossom.archive.util.onException
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModelImpl @Inject constructor(
     private val serverCheckUseCase: ServerCheckUseCase
-): BaseViewModel(), SplashViewModel {
+) : BaseViewModel(), SplashViewModel {
 
     private val _splashEvents = MutableSharedFlow<SplashViewModel.SplashEvent>()
     override val splashEvents: SharedFlow<SplashViewModel.SplashEvent>
@@ -31,8 +34,9 @@ class SplashViewModelImpl @Inject constructor(
     }
 
     override fun getServerCheck() {
-        viewModelScope.launch{
-            serverCheckUseCase().collect{ result ->
+        viewModelScope.launch {
+            delay(1000)
+            serverCheckUseCase().collect { result ->
                 result.onSuccess {
                     splashEvent(SplashViewModel.SplashEvent.Navigation)
                 }.onFail {
@@ -41,5 +45,4 @@ class SplashViewModelImpl @Inject constructor(
             }
         }
     }
-
 }
