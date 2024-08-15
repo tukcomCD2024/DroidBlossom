@@ -23,3 +23,15 @@
 -keep class com.google.android.gms.location.** { *; }
 -keep class com.google.android.gms.auth.** { *; }
 -keep class com.google.android.gms.tasks.** { *; }
+
+# Retrofit 관련 제네릭 타입 정보 보호
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class retrofit2.Response
+
+# 코루틴 관련 제네릭 타입 정보 보호
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# 코루틴의 Flow 클래스 제네릭 타입 보호
+-keep,allowobfuscation,allowshrinking class kotlinx.coroutines.flow.Flow
+
+-keep class com.droidblossom.archive.data.dto.**{ *; }
