@@ -198,10 +198,10 @@ class GroupDetailViewModelImpl @Inject constructor(
             leaveGroupUseCase(groupId.value).collect { result ->
                 result.onSuccess {
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹에서 나왔습니다. 함께해 주셔서 고마워요!"))
-                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.LeaveGroupSuccess)
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                 }.onFail {
                     if (it == 404){
-                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.LeaveGroupSuccess)
+                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                     }else{
                         groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 탈퇴를 실패했습니다."))
                     }
@@ -217,14 +217,18 @@ class GroupDetailViewModelImpl @Inject constructor(
             deleteGroupUseCase(groupId.value).collect{ result ->
                 result.onSuccess {
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹이 폐쇄되었습니다."))
-                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SuccessClosureGroup)
+                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                 }.onFail {
-                    if (it == 400){
-                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹원, 그룹 캡슐이 존재하면 그룹을 폐쇄할 수 없습니다."))
-                    }else if (it == 404){
-                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SuccessClosureGroup)
-                    }else{
-                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 폐쇄를 실패했습니다."))
+                    when (it) {
+                        400 -> {
+                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹원, 그룹 캡슐이 존재하면 그룹을 폐쇄할 수 없습니다."))
+                        }
+                        404 -> {
+                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
+                        }
+                        else -> {
+                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 폐쇄를 실패했습니다."))
+                        }
                     }
                 }
             }
