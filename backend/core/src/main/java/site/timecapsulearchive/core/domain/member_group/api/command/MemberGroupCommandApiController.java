@@ -78,13 +78,13 @@ public class MemberGroupCommandApiController implements MemberGroupCommandApi {
         );
     }
 
-    @DeleteMapping(value = "/{group_id}/member/{target_id}/reject")
+    @DeleteMapping(value = "/{group_id}/reject")
     public ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
         @AuthenticationPrincipal final Long memberId,
-        @PathVariable("group_id") final Long groupId,
-        @PathVariable("target_id") final Long targetId) {
+        @PathVariable("group_id") final Long groupId
+    ) {
 
-        memberGroupCommandService.rejectRequestGroup(memberId, groupId, targetId);
+        memberGroupCommandService.rejectRequestGroup(memberId, groupId);
 
         return ResponseEntity.ok(
             ApiSpec.empty(
