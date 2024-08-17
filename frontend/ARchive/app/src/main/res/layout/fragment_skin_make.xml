@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -25,14 +26,15 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingHorizontal="@dimen/padding">
+                android:paddingHorizontal="@dimen/padding"
+                android:paddingBottom="@dimen/padding">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/viewHeaderTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/skinMakeFragmentTitle"
                     android:layout_marginTop="@dimen/margin"
+                    android:text="@string/skinMakeFragmentTitle"
                     android:textAppearance="@style/TextAppearance.App.h2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/closeBtn" />
@@ -55,15 +57,15 @@
                     android:layout_marginTop="60dp"
                     android:background="@drawable/corner_radius_16"
                     android:backgroundTint="@color/white"
-                    android:gravity="center"
                     android:ellipsize="end"
+                    android:gravity="center"
+                    android:hint="@string/skinMakeHint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="16dp"
-                    android:hint="@string/skinMakeHint"
                     android:text="@={vm.skinName}"
-                    android:maxLines="1"
-                    android:inputType="text"
-                    android:imeOptions="actionDone"
                     android:textAppearance="@style/TextAppearance.App.h2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -73,6 +75,7 @@
                     android:id="@+id/skinImageCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:layout_constraintDimensionRatio="1:1"
@@ -82,12 +85,12 @@
                     app:layout_constraintTop_toBottomOf="@id/skinNameEditText"
                     app:layout_constraintWidth_max="450dp"
                     app:strokeColor="@color/main_4"
-                    android:layout_marginTop="@dimen/margin"
                     app:strokeWidth="2dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:padding="@dimen/padding">
 
                         <androidx.appcompat.widget.AppCompatImageView
@@ -101,9 +104,9 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintDimensionRatio="w,1:1"
                             app:layout_constraintEnd_toEndOf="parent"
-                            bind:imageUrl="@{vm.skinImgUri}"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            bind:imageUrl="@{vm.skinImgUri}" />
 
                         <View
                             android:id="@+id/plusV"
@@ -111,21 +114,22 @@
                             android:layout_height="60dp"
                             android:background="@drawable/corner_radius_30"
                             android:backgroundTint="@color/main_4"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:visibility="@{vm.skinImgUri == null ? View.VISIBLE : View.GONE}"                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:visibility="@{vm.skinImgUri == null ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@id/postImg"
+                            app:layout_constraintEnd_toEndOf="@id/postImg"
+                            app:layout_constraintStart_toStartOf="@id/postImg"
+                            app:layout_constraintTop_toTopOf="@id/postImg" />
 
                         <ImageView
                             android:id="@+id/plusImg"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_plus_main_40"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
                             android:visibility="@{vm.skinImgUri == null ? View.VISIBLE : View.GONE}"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="@id/plusV"
+                            app:layout_constraintEnd_toEndOf="@id/plusV"
+                            app:layout_constraintStart_toStartOf="@id/plusV"
+                            app:layout_constraintTop_toTopOf="@id/plusV"
                             app:tint="@color/white" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -141,8 +145,8 @@
                     android:backgroundTint="@color/white"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    app:layout_constraintEnd_toEndOf="@id/skinImageCardView"
-                    app:layout_constraintStart_toStartOf="@id/skinImageCardView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinImageCardView">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -154,10 +158,10 @@
                             android:id="@+id/addMotionTextView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
                             android:ellipsize="middle"
                             android:maxLines="1"
                             android:text="@string/addMotion"
-                            android:layout_marginStart="20dp"
                             android:textAppearance="@style/TextAppearance.App.body2"
                             android:textColor="@color/main_1"
                             app:layout_constraintStart_toStartOf="parent"
@@ -167,9 +171,9 @@
                             android:id="@+id/exampleImageBtn"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
+                            android:layout_marginEnd="20dp"
                             android:background="@drawable/ic_example_image_24"
                             android:backgroundTint="@color/main_2"
-                            android:layout_marginEnd="20dp"
                             android:onClick="@{() -> vm.showExampleImg()}"
                             app:layout_constraintEnd_toStartOf="@id/motionPlusBtn"
                             app:layout_constraintTop_toTopOf="@id/addMotionTextView" />
@@ -178,30 +182,30 @@
                             android:id="@+id/motionPlusBtn"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
+                            android:layout_marginEnd="20dp"
                             android:background="@drawable/corner_radius_12"
                             android:backgroundTint="@color/main_2"
-                            android:tint="@color/white"
-                            android:layout_marginEnd="20dp"
-                            bind:minus_plus="@{vm.addMotion}"
                             android:onClick="@{() -> vm.selectAddMotion()}"
+                            android:tint="@color/white"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@id/addMotionTextView" />
+                            app:layout_constraintTop_toTopOf="@id/addMotionTextView"
+                            bind:minus_plus="@{vm.addMotion}" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/skinMotionRV"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:orientation="vertical"
                             android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="20dp"
                             android:clipToPadding="false"
-                            android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
                             android:elevation="1dp"
+                            android:orientation="vertical"
+                            android:visibility="@{vm.addMotion ? View.VISIBLE : View.GONE}"
                             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/addMotionTextView"
-                            app:spanCount="3"/>
+                            app:spanCount="3" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
@@ -212,13 +216,12 @@
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_marginTop="52dp"
+                    android:layout_marginBottom="14dp"
                     android:background="@drawable/rectangle_solid_corner_8dp"
                     android:backgroundTint="@color/main_1"
                     android:text="@string/complete"
                     android:textAppearance="@style/TextAppearance.App.button"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/skinMotionAddCardView" />
