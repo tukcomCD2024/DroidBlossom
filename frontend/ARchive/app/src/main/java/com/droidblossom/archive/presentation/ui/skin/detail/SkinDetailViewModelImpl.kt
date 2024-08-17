@@ -65,7 +65,12 @@ class SkinDetailViewModelImpl @Inject constructor(
                         }
                     }
                 }.onFail {
-                    _removeSkin.value = false
+                    if (it == 404){
+                        _removeSkin.value = true
+                        skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.DeleteSkin)
+                    }else{
+                        _removeSkin.value = false
+                    }
 
                 }
             }

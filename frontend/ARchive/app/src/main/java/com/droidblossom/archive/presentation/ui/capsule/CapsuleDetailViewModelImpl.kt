@@ -47,7 +47,12 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 result.onSuccess { detail ->
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                    if (it == 404){
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
+                    }else {
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                    }
                 }
             }
         }
@@ -59,7 +64,12 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 result.onSuccess { detail ->
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                    if (it == 404){
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
+                    }else {
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                    }
                 }
             }
         }
@@ -71,7 +81,19 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 result.onSuccess { detail ->
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                    when(it){
+                        403 -> {
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("해당 캡슐의 그룹원이 아닙니다."))
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
+                        }
+                        404 -> {
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
+                        }
+                        else -> {
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                        }
+                    }
                 }
             }
         }
@@ -85,7 +107,18 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                     _removeCapsule.value = true
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 성공했습니다."))
                 }.onFail {
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
+                    when(it){
+                        403 -> {
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("그룹 캡슐은 그룹장만 삭제할 수 있습니다."))
+                        }
+                        404 -> {
+                            _removeCapsule.value = true
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("이미 삭제된 캡슐입니다."))
+                        }
+                        else -> {
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
+                        }
+                    }
                 }
             }
             _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.DismissLoading)

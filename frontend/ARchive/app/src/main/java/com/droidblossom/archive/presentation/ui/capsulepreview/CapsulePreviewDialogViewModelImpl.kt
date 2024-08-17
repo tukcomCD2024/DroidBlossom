@@ -525,10 +525,21 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
                     )
                 }.onFail {
-                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
-                    capsulePreviewDialogEvent(
-                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
-                    )
+                    when (it) {
+                        403 -> {
+                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("그룹 캡슐은 그룹장만 삭제할 수 있습니다."))
+                        }
+                        404 -> {
+                            _removeCapsule.value = true
+                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("이미 삭제된 캡슐입니다."))
+                            capsulePreviewDialogEvent(
+                                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                            )
+                        }
+                        else -> {
+                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
+                        }
+                    }
                 }
             }
             capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissLoading)

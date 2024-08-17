@@ -68,14 +68,7 @@ class GroupDetailActivity :
                             }
                         }
 
-                        GroupDetailViewModel.GroupDetailEvent.LeaveGroupSuccess -> {
-                            showToastMessage("그룹에서 나왔습니다. 함께해 주셔서 고마워요!")
-                            setResult(SUCCESS_GROUP_DELETE, Intent().putExtra(GROUP_ID, viewModel.groupId.value))
-                            finish()
-                        }
-
-                        GroupDetailViewModel.GroupDetailEvent.SuccessClosureGroup -> {
-                            showToastMessage("그룹이 폐쇄되었습니다.")
+                        GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail -> {
                             setResult(SUCCESS_GROUP_DELETE, Intent().putExtra(GROUP_ID, viewModel.groupId.value))
                             finish()
                         }

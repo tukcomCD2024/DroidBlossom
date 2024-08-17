@@ -243,11 +243,17 @@ class FriendViewModelImpl @Inject constructor(
                     list.remove(friend)
                     _friendListUI.emit(list)
                 }.onFail {
-                    _friendEvent.emit(
-                        FriendViewModel.FriendEvent.ShowToastMessage(
-                            "친구 삭제 실패. 잠시후 시도해 주세요"
+                    if (it == 400){
+                        val list = friendListUI.value.toMutableList()
+                        list.remove(friend)
+                        _friendListUI.emit(list)
+                    }else{
+                        _friendEvent.emit(
+                            FriendViewModel.FriendEvent.ShowToastMessage(
+                                "친구 삭제 실패. 잠시후 시도해 주세요"
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

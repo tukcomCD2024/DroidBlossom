@@ -291,7 +291,12 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     _invitedUsers.value -= user
                     managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 성공했습니다."))
                 }.onFail {
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
+                    if (it == 404){
+                        _invitedUsers.value -= user
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("이미 처리된 요청입니다."))
+                    }else{
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
+                    }
                 }
 
             }
@@ -309,7 +314,12 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 성공했습니다."))
 
                 }.onFail {
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다."))
+                    if (it == 404){
+                        _groupMembers.value -= groupMember
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("이 그룹원은 이미 그룹에 속해 있지 않습니다."))
+                    }else{
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다."))
+                    }
                 }
             }
         }

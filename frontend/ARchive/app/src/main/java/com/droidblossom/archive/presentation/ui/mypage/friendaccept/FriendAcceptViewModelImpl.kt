@@ -181,11 +181,20 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 result.onSuccess {
                     removeFriendItem(friend)
                 }.onFail {
-                    _friendAcceptEvent.emit(
-                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "요청 실패. 잠시후 시도해 주세요"
+                    if (it == 404){
+                        removeFriendItem(friend)
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "이미 처리된 요청입니다."
+                            )
                         )
-                    )
+                    }else{
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "요청 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
                 }
 
             }
@@ -198,13 +207,24 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 result.onSuccess {
                     removeFriendItem(friend)
                 }.onFail {
-                    _friendAcceptEvent.emit(
-                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "요청 실패. 잠시후 시도해 주세요"
+                    if (it == 404){
+                        removeFriendItem(friend)
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "이미 처리된 요청입니다."
+                            )
                         )
-                    )
+                    }else if (it == 500){
+                        removeFriendItem(friend)
+                    }
+                    else{
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "요청 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
                 }
-
             }
         }
     }
@@ -276,13 +296,21 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 result.onSuccess {
                     removeGroupItem(group)
                 }.onFail {
-                    _friendAcceptEvent.emit(
-                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "요청 실패. 잠시후 시도해 주세요"
+                    if (it == 404){
+                        removeGroupItem(group)
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "이미 처리된 요청입니다."
+                            )
                         )
-                    )
+                    }else {
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "요청 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
                 }
-
             }
         }
     }
@@ -293,11 +321,20 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 result.onSuccess {
                     removeGroupItem(group)
                 }.onFail {
-                    _friendAcceptEvent.emit(
-                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "요청 실패. 잠시후 시도해 주세요"
+                    if (it == 404){
+                        removeGroupItem(group)
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "이미 처리된 요청입니다."
+                            )
                         )
-                    )
+                    }else{
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "요청 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
                 }
 
             }
@@ -344,11 +381,20 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 result.onSuccess {
                     removeFriendSendItem(friend)
                 }.onFail {
-                    _friendAcceptEvent.emit(
-                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "요청 실패. 잠시후 시도해 주세요"
+                    if (it == 404){
+                        removeFriendSendItem(friend)
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "이미 처리된 요청입니다."
+                            )
                         )
-                    )
+                    }else{
+                        _friendAcceptEvent.emit(
+                            FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                                "요청 실패. 잠시후 시도해 주세요"
+                            )
+                        )
+                    }
                 }
 
             }

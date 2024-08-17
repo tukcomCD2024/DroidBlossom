@@ -40,10 +40,8 @@ interface GroupDetailViewModel {
 
     sealed class GroupDetailEvent{
         object SwipeRefreshLayoutDismissLoading : GroupDetailEvent()
-        object LeaveGroupSuccess: GroupDetailEvent()
+        object FinishGroupDetail: GroupDetailEvent()
         data class ShowToastMessage(val message : String) : GroupDetailEvent()
-        object SuccessClosureGroup: GroupDetailEvent()
-
         object DismissLoading : GroupDetailEvent()
         object ShowLoading : GroupDetailEvent()
 
