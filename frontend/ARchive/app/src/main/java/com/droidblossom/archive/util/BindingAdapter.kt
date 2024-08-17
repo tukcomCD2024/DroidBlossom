@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.droidblossom.archive.R
+import com.droidblossom.archive.presentation.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayout
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
@@ -41,6 +42,28 @@ fun ImageView.setImage(imageUrl: Uri?, placeholder: Drawable?) {
         .apply {
             if (placeholder != null) {
                 placeholder(placeholder)
+            }
+        }
+        .into(this)
+}
+
+@SuppressLint("CheckResult")
+@BindingAdapter(value = ["capsulePreviewImageUrl", "capsuleType", "userPlaceholder", "appPlaceholder"], requireAll = false)
+fun CircleImageView.capsulePreviewSetImage(
+    imageUrl: String?,
+    capsuleType: HomeFragment.CapsuleType?,
+    userPlaceholder: Drawable?,
+    appPlaceholder: Drawable?
+) {
+
+    Glide.with(this.context)
+        .load(imageUrl)
+        .transition(DrawableTransitionOptions.withCrossFade(300))
+        .override(this.width, this.height)
+        .apply {
+            when (capsuleType) {
+                HomeFragment.CapsuleType.TREASURE -> placeholder(appPlaceholder)
+                else -> placeholder(userPlaceholder)
             }
         }
         .into(this)

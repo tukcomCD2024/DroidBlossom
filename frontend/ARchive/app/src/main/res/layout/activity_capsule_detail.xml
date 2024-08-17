@@ -57,7 +57,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/closeBtn"
                     bind:imageUrl="@{vm.capsuleDetail.profileUrl}"
-                    bind:placeholder="@{@drawable/app_symbol}" />
+                    bind:placeholder="@{@drawable/base_user}" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/capsuleDetailLayout"
