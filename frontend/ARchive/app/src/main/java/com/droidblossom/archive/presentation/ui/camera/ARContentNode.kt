@@ -8,6 +8,7 @@ import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ItemCapsuleSkinBinding
 import com.droidblossom.archive.domain.model.capsule.CapsuleAnchor
 import com.droidblossom.archive.presentation.ui.capsulepreview.CapsulePreviewDialogFragment
+import com.droidblossom.archive.util.FlipTransformation
 import com.droidblossom.archive.util.FragmentManagerProvider
 import com.google.ar.sceneform.rendering.ViewAttachmentManager
 import com.google.ar.sceneform.rendering.ViewRenderable
@@ -40,6 +41,7 @@ class ARContentNode(
             .override(350, 350)
             .error(R.drawable.base_skin)
             .fallback(R.drawable.base_skin)
+            .transform(FlipTransformation())
             .into(capsuleSkin.capsuleSkin)
 
         ViewRenderable.builder()
