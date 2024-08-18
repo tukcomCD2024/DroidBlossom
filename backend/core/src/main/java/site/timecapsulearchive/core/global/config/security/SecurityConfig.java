@@ -8,35 +8,31 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 import site.timecapsulearchive.core.domain.member.entity.Role;
+import site.timecapsulearchive.core.global.security.jwt.JwtAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOauth2UserService;
-    private final AuthenticationSuccessHandler oAuth2LoginSuccessHandler;
-
-    private final AuthenticationFailureHandler oauth2LoginFailureHandler;
     private final AuthenticationProvider jwtAuthenticationProvider;
     private final ObjectMapper objectMapper;
-
     private final AccessDeniedHandler accessDeniedHandler;
 
     @Bean
@@ -45,13 +41,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(1)
     public SecurityFilterChain filterChainWithJwt(final HttpSecurity http) throws Exception {
-        http.apply(
-            CommonSecurityDsl.commonSecurityDsl()
-        );
-
         http
+            .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .headers(header -> header.frameOptions(FrameOptionsConfig::disable))
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .securityMatchers(
                 c -> c.requestMatchers(new NegatedRequestMatcher(antMatcher("/auth/login/**")))
             )
@@ -63,17 +61,24 @@ public class SecurityConfig {
                 ).hasRole(Role.TEMPORARY.name())
                 .anyRequest().hasRole(Role.USER.name())
             )
-            .exceptionHandling(error -> error.accessDeniedHandler(accessDeniedHandler));
-
-        http.apply(
-            JwtDsl.jwtDsl(
-                jwtAuthenticationProvider,
-                objectMapper,
-                notRequireAuthenticationMatcher()
-            )
-        );
+            .exceptionHandling(error -> error.accessDeniedHandler(accessDeniedHandler))
+            .authenticationProvider(jwtAuthenticationProvider)
+            .addFilterBefore(
+                jwtAuthenticationFilter(http.getSharedObject(AuthenticationManager.class)),
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
+    }
+
+    private JwtAuthenticationFilter jwtAuthenticationFilter(
+        final AuthenticationManager authenticationManager
+    ) {
+        return new JwtAuthenticationFilter(
+            authenticationManager,
+            objectMapper,
+            notRequireAuthenticationMatcher()
+        );
     }
 
     private RequestMatcher notRequireAuthenticationMatcher() {
@@ -92,30 +97,6 @@ public class SecurityConfig {
             antMatcher(HttpMethod.POST, "/me/check-duplication/email"),
             antMatcher(HttpMethod.GET, "/actuator/**")
         );
-    }
-
-    @Bean
-    @Order(2)
-    public SecurityFilterChain filterChainWithOAuth(final HttpSecurity http) throws Exception {
-        http.apply(
-            CommonSecurityDsl.commonSecurityDsl()
-        );
-
-        http
-            .securityMatcher("/auth/login/**")
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
-
-        http.apply(
-            OAuthDsl.oauthDsl(
-                customOauth2UserService,
-                oAuth2LoginSuccessHandler,
-                oauth2LoginFailureHandler
-            )
-        );
-
-        return http.build();
     }
 }
 
