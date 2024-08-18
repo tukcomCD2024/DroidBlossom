@@ -48,10 +48,11 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                     _capsuleDetail.emit(detail)
                 }.onFail {
                     if (it == 404){
+                        _removeCapsule.value = true
                         _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
                         _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
                     }else {
-                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
             }
@@ -65,10 +66,11 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                     _capsuleDetail.emit(detail)
                 }.onFail {
                     if (it == 404){
+                        _removeCapsule.value = true
                         _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
                         _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
                     }else {
-                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
             }
@@ -83,15 +85,17 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 }.onFail {
                     when(it){
                         403 -> {
-                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("해당 캡슐의 그룹원이 아닙니다."))
+                            _removeCapsule.value = true
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("해당 캡슐에 접근 권한이 없습니다."))
                             _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
                         }
                         404 -> {
+                            _removeCapsule.value = true
                             _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
                             _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
                         }
                         else -> {
-                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("상세정보 불러오기 실패"))
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                         }
                     }
                 }
@@ -116,7 +120,7 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                             _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("이미 삭제된 캡슐입니다."))
                         }
                         else -> {
-                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 실패했습니다."))
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 삭제를 실패했습니다. 잠시 후 다시 시도해주세요."))
                         }
                     }
                 }
@@ -129,10 +133,10 @@ class CapsuleDetailViewModelImpl @Inject constructor(
         viewModelScope.launch {
             reportCapsuleUseCase(capsuleId = id).collect{
                 it.onSuccess {
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("신고를 완료했습니다.\n관리자의 검토 후 삭제 조치될 예정입니다."))
+                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 신고를 완료했습니다.\n관리자의 검토 후 삭제 조치될 예정입니다."))
                     _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
                 }.onFail {
-                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("신고를 실패했습니다."))
+                    _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 신고를 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
         }
