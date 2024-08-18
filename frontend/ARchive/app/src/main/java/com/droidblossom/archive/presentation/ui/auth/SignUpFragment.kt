@@ -48,9 +48,6 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
             if (viewModel.checkPhoneNumber()){
                 viewModel.submitPhoneNumber()
             }
-            else{
-                // ToastMessage 있으면 좋을듯
-            }
         }
 
         val layoutParams = binding.viewHeaderTitle.layoutParams as ViewGroup.MarginLayoutParams

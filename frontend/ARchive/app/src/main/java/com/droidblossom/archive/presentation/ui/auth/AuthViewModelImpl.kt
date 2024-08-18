@@ -213,7 +213,7 @@ class AuthViewModelImpl @Inject constructor(
                     }
                     authDataReset()
                 }.onFail {
-
+                    signInEvent(AuthViewModel.SignInEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                 }
             }
         }
@@ -229,7 +229,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.accessToken)
                     dataStoreUtils.saveRefreshToken(it.refreshToken)
                 }.onFail {
-
+                    signInEvent(AuthViewModel.SignInEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                 }
             }
         }
@@ -243,7 +243,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToUserAgreement)
                 }.onFail {
-
+                    signInEvent(AuthViewModel.SignInEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                 }
             }
         }
@@ -257,7 +257,7 @@ class AuthViewModelImpl @Inject constructor(
                     dataStoreUtils.saveAccessToken(it.temporaryAccessToken)
                     signInEvent(AuthViewModel.SignInEvent.NavigateToUserAgreement)
                 }.onFail {
-
+                    signInEvent(AuthViewModel.SignInEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                 }
             }
         }
@@ -302,10 +302,10 @@ class AuthViewModelImpl @Inject constructor(
                         if (it == 429) {
                             signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
                             certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                        }else{
+                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                         }
-
                     }
-
                 }
             } else {
                 sendMessageUseCase(
@@ -317,10 +317,10 @@ class AuthViewModelImpl @Inject constructor(
                         if (it == 429) {
                             signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
                             certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                        }else{
+                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                         }
-
                     }
-
                 }
             }
         }
@@ -363,6 +363,8 @@ class AuthViewModelImpl @Inject constructor(
                         if (it == 400) {
                             certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
                             certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                        }else{
+                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                         }
 
                     }
@@ -381,6 +383,8 @@ class AuthViewModelImpl @Inject constructor(
                         if (it == 400) {
                             certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("인증번호가 일치하지 않습니다."))
                             certificationEvent(AuthViewModel.CertificationEvent.VerificationCodeMismatch)
+                        }else{
+                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
                         }
 
                     }
