@@ -109,6 +109,7 @@ class CameraViewModelImpl@Inject constructor(
                         capsuleListSize = 0
                     }
                 }.onFail {
+                    cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("캡슐을 불러오는데 문제가 발생했습니다. 잠시 후 다시 시도해주세요."))
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }
@@ -126,6 +127,7 @@ class CameraViewModelImpl@Inject constructor(
                         capsuleListSize = 0
                     }
                 }.onFail {
+                    cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("캡슐을 불러오는데 문제가 발생했습니다. 잠시 후 다시 시도해주세요."))
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }
