@@ -149,7 +149,11 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
-
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                            "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                        )
+                    )
                 }
             }
         }
@@ -165,7 +169,19 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         calculateCapsuleOpenTime(it.createdAt, it.dueDate)
                     }
                 }.onFail {
-
+                    if (it == 404){
+                        _removeCapsule.value = true
+                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("삭제된 캡슐입니다."))
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                        )
+                    }else{
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -184,7 +200,29 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }
                     _groupCapsuleMembers.emit(it.groupMembers)
                 }.onFail {
-
+                    when(it){
+                        403 -> {
+                            _removeCapsule.value = true
+                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("해당 캡슐에 접근 권한이 없습니다."))
+                            capsulePreviewDialogEvent(
+                                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                            )
+                        }
+                        404 -> {
+                            _removeCapsule.value = true
+                            capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("삭제된 캡슐입니다."))
+                            capsulePreviewDialogEvent(
+                                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                            )
+                        }
+                        else -> {
+                            capsulePreviewDialogEvent(
+                                CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                    "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -197,9 +235,22 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 capsuleId = capsuleId.value
             ).collect { result ->
                 result.onSuccess {
+                    Log.d("흠","$it")
                     _groupCapsuleMembers.emit(it.groupMemberCapsuleOpenStatus)
                 }.onFail {
-
+                    if (it == 403){
+                        _removeCapsule.value = true
+                        capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("해당 캡슐에 접근 권한이 없습니다."))
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                        )
+                    }else{
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                "캡슐 오픈 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -228,6 +279,13 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         )
                         capsulePreviewDialogEvent(
                             CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                        )
+                    }else{
+                        _removeCapsule.value = true
+                        capsulePreviewDialogEvent(
+                            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                                "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            )
                         )
                     }
                 }
@@ -402,11 +460,20 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.CapsuleOpenSuccess)
                 }
             }.onFail {
-                capsulePreviewDialogEvent(
-                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "캡슐 열기 실패"
+                if (it == 404){
+                    _removeCapsule.value = true
+                    capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("이미 삭제된 캡슐입니다."))
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
                     )
-                )
+                }else{
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                            "캡슐 개봉을 실패했습니다. 잠시 후 다시 시도해주세요."
+                        )
+                    )
+                }
+
             }
         }
     }
@@ -427,7 +494,7 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
 
     private suspend fun handleGroupCapsuleOpen() {
         groupCapsuleOpenUseCase(capsuleId.value).collect { result ->
-            result.onSuccess { handleSuccess(it) }.onFail { handleFailure() }
+            result.onSuccess { handleSuccess(it) }.onFail { handleFailure(it) }
         }
     }
 
@@ -454,12 +521,30 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
         }
     }
 
-    private fun handleFailure() {
-        capsulePreviewDialogEvent(
-            CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                "캡슐 열기 실패"
-            )
-        )
+    private fun handleFailure(code: Int) {
+        when(code){
+            403 -> {
+                _removeCapsule.value = true
+                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("해당 캡슐에 접근 권한이 없습니다."))
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                )
+            }
+            404 -> {
+                _removeCapsule.value = true
+                capsulePreviewDialogEvent(CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage("이미 삭제된 캡슐입니다."))
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                )
+            }
+            else -> {
+                capsulePreviewDialogEvent(
+                    CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                        "캡슐 개봉을 실패했습니다. 잠시 후 다시 시도해주세요."
+                    )
+                )
+            }
+        }
     }
 
     private suspend fun openTreasureCapsule() {
@@ -495,6 +580,12 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     )
                     capsulePreviewDialogEvent(
                         CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.DismissCapsulePreviewDialog
+                    )
+                }else{
+                    capsulePreviewDialogEvent(
+                        CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
+                            "캡슐 개봉을 실패했습니다. 잠시 후 다시 시도해주세요."
+                        )
                     )
                 }
             }
