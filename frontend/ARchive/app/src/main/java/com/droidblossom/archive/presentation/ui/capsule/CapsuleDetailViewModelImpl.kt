@@ -65,12 +65,20 @@ class CapsuleDetailViewModelImpl @Inject constructor(
                 result.onSuccess { detail ->
                     _capsuleDetail.emit(detail)
                 }.onFail {
-                    if (it == 404){
-                        _removeCapsule.value = true
-                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
-                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
-                    }else {
-                        _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    when (it) {
+                        404 -> {
+                            _removeCapsule.value = true
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("삭제된 캡슐입니다."))
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
+                        }
+                        403 -> {
+                            _removeCapsule.value = true
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("해당 캡슐에 접근 권한이 없습니다."))
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.FinishActivity)
+                        }
+                        else -> {
+                            _detailEvent.emit(CapsuleDetailViewModel.DetailEvent.ShowToastMessage("캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        }
                     }
                 }
             }

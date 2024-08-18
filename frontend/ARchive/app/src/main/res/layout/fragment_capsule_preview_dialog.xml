@@ -48,7 +48,7 @@
             android:text="@string/capsule_open_message"
             android:textAppearance="@style/TextAppearance.App.caption1"
             android:textColor="@color/main_1"
-            android:visibility="@{vm.visibleCapsuleOpenMessage ? View.VISIBLE : View.GONE}"
+            android:visibility="@{vm.visibleCapsuleOpenMessage &amp;&amp; vm.capsuleSummaryResponse.isOwner ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
