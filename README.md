@@ -38,8 +38,8 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7e3625c-389b-4a7b-95b7-b56117309e79" width="260px" height="350px">
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/68e6f0f5-5281-469e-b637-d343ac7fcfc7" width="260px" height="350px">
 
-## ⚙️ 운용 환경
-<img src="https://github.com/user-attachments/assets/3fba3190-b38d-4f34-9476-ccc96fe65696">
+## ⚙️ 운영 환경
+<img src="https://github.com/user-attachments/assets/fcba2bff-1807-41d6-b4e2-2db8e240c4e5">
 
 ## 🛢 ERD
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/59e02146-a89c-4a71-b31a-debef38cb30d">
