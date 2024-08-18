@@ -96,14 +96,7 @@ class CapsulePreviewDialogFragment :
                     val capsuleIndex = it.getIntExtra("capsuleIndex", -1)
                     val capsuleId = it.getLongExtra("capsuleId", -1L)
                     val remove = it.getBooleanExtra("remove", false)
-
                     dismiss()
-//                    api 재호출 때문에 오류, 나갔다오면 새로고침 되는데 api 콜 5번 쏴버림
-//                    if (remove){
-//                        viewModel.setRemoveCapsule(true)
-//                        dismiss()
-//                    }
-
                 }
             }
         }

@@ -126,7 +126,7 @@ class SocialFriendFragment : BaseFragment<SocialFriendViewModelImpl, FragmentSoc
             val capsuleId = bundle.getLong("capsuleId")
             val remove = bundle.getBoolean("remove")
             if (remove) {
-                //viewModel.deleteCapsule()
+                viewModel.deleteCapsule(capsuleIndex, capsuleId)
             }
         }
 

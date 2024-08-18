@@ -125,7 +125,8 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
             val remove = bundle.getBoolean("remove")
             if (remove) {
                 clusterer.map?.let { _ ->
-                    clusterer.remove(keyMaps[capsuleId]!!)
+                    val node = keyMaps[capsuleId]
+                    node?.let { clusterer.remove(node) }
                 }
             }
         }

@@ -16,7 +16,7 @@ class AccessTokenInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val builder: Request.Builder = chain.request().newBuilder()
         val jwt: String = runBlocking { ds.fetchAccessToken() }
-
+        Log.d("토큰",jwt)
         jwt.let {
             builder.addHeader("Authorization", "Bearer $jwt")
         } ?: run {

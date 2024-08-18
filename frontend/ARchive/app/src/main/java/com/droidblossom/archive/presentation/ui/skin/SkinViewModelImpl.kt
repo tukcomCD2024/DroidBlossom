@@ -144,9 +144,9 @@ class SkinViewModelImpl @Inject constructor(
         }
     }
 
-    override fun deleteSkin(skinId: Long){
-        val currentList = skins.value.toMutableList()
-        currentList.removeAt(_skins.value.indexOfFirst{it.id == skinId})
-        _skins.value = currentList
+    override fun deleteSkin(skinId: Long) {
+        skins.value.find { it.id == skinId }?.let { skin ->
+            _skins.value -= skin
+        }
     }
 }

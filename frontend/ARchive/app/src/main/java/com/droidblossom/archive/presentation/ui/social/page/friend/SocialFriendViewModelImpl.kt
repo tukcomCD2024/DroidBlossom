@@ -140,9 +140,9 @@ class SocialFriendViewModelImpl @Inject constructor(
     }
 
     override fun deleteCapsule(capsuleIndex: Int, capsuleId: Long) {
-        val currentList = _publicCapsules.value.toMutableList()
-        currentList.removeAt(_publicCapsules.value.indexOfFirst { it.capsuleId == capsuleId })
-        _publicCapsules.value = currentList
+        _publicCapsules.value.find { it.capsuleId == capsuleId }?.let { capsule ->
+            _publicCapsules.value -= capsule
+        }
     }
 
 }

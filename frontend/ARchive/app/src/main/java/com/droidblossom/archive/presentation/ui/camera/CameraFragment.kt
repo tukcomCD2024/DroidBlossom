@@ -270,7 +270,9 @@ class CameraFragment :
             val capsuleId = bundle.getLong("capsuleId")
             val remove = bundle.getBoolean("remove")
             if (remove) {
-                arSceneView.removeChildNode(keyMaps[capsuleId] as Node)
+                (keyMaps[capsuleId] as? Node)?.let { node ->
+                    arSceneView.removeChildNode(node)
+                }
             }
         }
 

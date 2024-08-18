@@ -103,7 +103,7 @@ class SocialGroupFragment : BaseFragment<SocialGroupViewModelImpl, FragmentSocia
             val capsuleId = bundle.getLong("capsuleId")
             val remove = bundle.getBoolean("remove")
             if (remove) {
-                //viewModel.deleteCapsule()
+                viewModel.deleteCapsule(capsuleIndex, capsuleId)
             }
         }
 
