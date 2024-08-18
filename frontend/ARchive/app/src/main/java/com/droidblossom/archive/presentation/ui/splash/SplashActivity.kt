@@ -91,6 +91,8 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
     override fun onResume() {
         super.onResume()
         inAppUpdate.onResume()
+        // 디버그용
+        viewModel.getServerCheck()
     }
 
     override fun onDestroy() {
