@@ -85,7 +85,7 @@ class NotificationViewModelImpl @Inject constructor(
                     }.onFail {
                         _notificationEvent.emit(
                             NotificationViewModel.NotificationEvent.ShowToastMessage(
-                                "알림 불러오기 실패"
+                                "알림 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
                             )
                         )
                     }
@@ -113,7 +113,7 @@ class NotificationViewModelImpl @Inject constructor(
                 }.onFail {
                     _notificationEvent.emit(
                         NotificationViewModel.NotificationEvent.ShowToastMessage(
-                            "알림 불러오기 실패"
+                            "알림 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
                         )
                     )
                 }
