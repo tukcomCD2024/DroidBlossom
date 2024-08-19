@@ -129,7 +129,7 @@ class AddGroupViewModelImpl @Inject constructor(
                     }.onFail {
                         _addGroupEvent.emit(
                             AddGroupViewModel.AddGroupEvent.ShowToastMessage(
-                                "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                                "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
                             )
                         )
                     }
@@ -198,7 +198,14 @@ class AddGroupViewModelImpl @Inject constructor(
                     Log.d("addgroup", "S3 URL : $it")
                     uploadFilesToS3(profileImgFile.value!!, it)
                 }.onFail {
-                    //skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
+                    _addGroupEvent.emit(
+                        AddGroupViewModel.AddGroupEvent.ShowToastMessage(
+                            "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                        )
+                    )
+                    _addGroupEvent.emit(
+                        AddGroupViewModel.AddGroupEvent.DismissLoading
+                    )
                     Log.d("addgroup", "S3 URL 받기 실패")
                 }
             }
@@ -222,8 +229,15 @@ class AddGroupViewModelImpl @Inject constructor(
                 Log.d("addgroup", "S3 사진 업로드 성공")
                 createGroup()
             } else {
+                _addGroupEvent.emit(
+                    AddGroupViewModel.AddGroupEvent.ShowToastMessage(
+                        "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                    )
+                )
+                _addGroupEvent.emit(
+                    AddGroupViewModel.AddGroupEvent.DismissLoading
+                )
                 Log.d("addgroup", "S3 사진 업로드 실패")
-                //skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
             }
         }
     }
@@ -242,11 +256,32 @@ class AddGroupViewModelImpl @Inject constructor(
                 )
             ).collect { result ->
                 result.onSuccess {
+                    _addGroupEvent.emit(
+                        AddGroupViewModel.AddGroupEvent.ShowToastMessage(
+                            "그룹이 생성되었습니다."
+                        )
+                    )
                     _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.Finish)
-                    Log.d("addgroup", "그룹 생성 성공")
                 }.onFail {
-                    _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.ShowToastMessage("서버와 연결을 실패했습니다."))
-                    Log.d("addgroup", "그룹 생성 실패")
+                    if (it == 500){
+                        _addGroupEvent.emit(
+                            AddGroupViewModel.AddGroupEvent.ShowToastMessage(
+                                "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                            )
+                        )
+                        _addGroupEvent.emit(
+                            AddGroupViewModel.AddGroupEvent.Finish
+                        )
+                    }else{
+                        _addGroupEvent.emit(
+                            AddGroupViewModel.AddGroupEvent.ShowToastMessage(
+                                "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                            )
+                        )
+                        _addGroupEvent.emit(
+                            AddGroupViewModel.AddGroupEvent.Finish
+                        )
+                    }
                 }
             }
             _addGroupEvent.emit(AddGroupViewModel.AddGroupEvent.DismissLoading)

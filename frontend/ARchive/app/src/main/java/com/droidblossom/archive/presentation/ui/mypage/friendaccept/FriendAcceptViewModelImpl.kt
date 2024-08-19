@@ -137,7 +137,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                                "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -165,7 +165,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 }.onFail {
                     _friendAcceptEvent.emit(
                         FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                            "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                         )
                     )
 
@@ -191,7 +191,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 실패. 잠시후 시도해 주세요"
+                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -220,7 +220,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 실패. 잠시후 시도해 주세요"
+                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -249,7 +249,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "서버 통신 실패. 잠시후 시도해 주세요"
+                                "요청 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -277,7 +277,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 }.onFail {
                     _friendAcceptEvent.emit(
                         FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "서버 통신 실패. 잠시후 시도해 주세요"
+                            "요청 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                         )
                     )
                 }
@@ -306,7 +306,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 실패. 잠시후 시도해 주세요"
+                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -331,7 +331,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 실패. 잠시후 시도해 주세요"
+                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -361,7 +361,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                                "요청 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }
@@ -391,7 +391,7 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 실패. 잠시후 시도해 주세요"
+                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
                     }

@@ -196,6 +196,7 @@ class AddGroupFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.addGroupEvent.collect { event ->
                     when (event) {
+
                         AddGroupViewModel.AddGroupEvent.DismissLoading -> {
                             dismissLoading()
                         }

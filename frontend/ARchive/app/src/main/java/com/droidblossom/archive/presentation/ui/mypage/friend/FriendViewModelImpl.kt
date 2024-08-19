@@ -160,7 +160,7 @@ class FriendViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
-                                "친구 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                                "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
                             )
                         )
                     }
@@ -181,7 +181,7 @@ class FriendViewModelImpl @Inject constructor(
                 ).collect { result ->
                     result.onSuccess {
                         groupHasNextPage.value = it.hasNext
-                        if (friendListUI.value.isEmpty()) {
+                        if (_groupListUi.value.isEmpty()) {
                             _groupListUi.emit(it.groups)
                         } else {
                             _groupListUi.emit(_groupListUi.value + it.groups)
@@ -190,7 +190,7 @@ class FriendViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
-                                "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                                "그룹 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
                             )
                         )
                     }
@@ -211,12 +211,12 @@ class FriendViewModelImpl @Inject constructor(
                 result.onSuccess {
                     groupHasNextPage.value = it.hasNext
                     _groupListUi.emit(it.groups)
-                    friendLastCreatedTime.value = it.groups.last().createdAt
+                    groupLastCreatedTime.value = it.groups.last().createdAt
                     _friendEvent.emit(FriendViewModel.FriendEvent.OnRefreshEnd)
                 }.onFail {
                     _friendEvent.emit(
                         FriendViewModel.FriendEvent.ShowToastMessage(
-                            "그룹 리스트 불러오기 실패. 잠시후 시도해 주세요"
+                            "그룹 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
                         )
                     )
                 }

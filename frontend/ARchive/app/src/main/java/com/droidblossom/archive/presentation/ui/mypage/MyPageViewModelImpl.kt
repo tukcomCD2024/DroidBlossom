@@ -40,10 +40,13 @@ class MyPageViewModelImpl @Inject constructor(
 
 
     private val _myInfo =
-        MutableStateFlow(MemberDetail("USER", "", "", "", "", "", 0, 0,
-            tagSearchAvailable = false,
-            phoneSearchAvailable = false
-        ))
+        MutableStateFlow(
+            MemberDetail(
+                "USER", "", "", "", "", "", 0, 0,
+                tagSearchAvailable = false,
+                phoneSearchAvailable = false
+            )
+        )
     override val myInfo: StateFlow<MemberDetail>
         get() = _myInfo
 
@@ -106,7 +109,12 @@ class MyPageViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _myInfo.emit(it)
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                    myPageEvent(
+                        MyPageViewModel.MyPageEvent.ShowToastMessage
+                            (
+                            "정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                        )
+                    )
                 }
             }
         }
@@ -161,7 +169,11 @@ class MyPageViewModelImpl @Inject constructor(
                             _lastCreatedTime.value = myCapsules.value.last().createdDate
                         }
                     }.onFail {
-                        myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                        myPageEvent(
+                            MyPageViewModel.MyPageEvent.ShowToastMessage(
+                                "캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            )
+                        )
                     }
                 }
             }
@@ -185,7 +197,7 @@ class MyPageViewModelImpl @Inject constructor(
                             _lastCreatedTime.value = myCapsules.value.last().createdDate
                         }
                     }.onFail {
-                        myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                        myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
             }
@@ -210,7 +222,7 @@ class MyPageViewModelImpl @Inject constructor(
                                 _lastCreatedTime.value = myCapsules.value.last().createdDate
                             }
                         }.onFail {
-                            myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                            myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                         }
                     }
                 }
@@ -234,7 +246,7 @@ class MyPageViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
@@ -257,7 +269,7 @@ class MyPageViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
@@ -280,7 +292,7 @@ class MyPageViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("정보 불러오기 실패"))
+                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)

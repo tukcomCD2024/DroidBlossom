@@ -159,7 +159,7 @@ class SettingViewModelImpl @Inject constructor(
                     _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("성공적으로 로그아웃되었습니다."))
                     _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoAuthActivity)
                 }.onFail {
-                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("로그아웃을 실패했습니다."))
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("로그아웃을 실패했습니다. 잠시 후 다시 시도해 주세요."))
                 }
             }
             _settingMainEvents.emit(SettingViewModel.SettingMainEvent.DismissLoading)
@@ -175,7 +175,7 @@ class SettingViewModelImpl @Inject constructor(
                     _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("성공적으로 탈퇴되었습니다. 다음에 또 ARchive를 찾아주세요!"))
                     _settingMainEvents.emit(SettingViewModel.SettingMainEvent.GoAuthActivity)
                 }.onFail {
-                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("계정 탈퇴에 실패했습니다."))
+                    _settingMainEvents.emit(SettingViewModel.SettingMainEvent.ShowToastMessage("계정 탈퇴에 실패했습니다. 잠시 후 다시 시도해 주세요."))
                 }
             }
             _settingMainEvents.emit(SettingViewModel.SettingMainEvent.DismissLoading)
@@ -199,17 +199,15 @@ class SettingViewModelImpl @Inject constructor(
                 dataStoreUtils.saveNotificationsEnabled(enabled)
                 notificationEnabledUseCase(enabled).collect { result ->
                     result.onSuccess {
-                        Log.d("알림변경", "성공")
                         _settingNotificationEvent.emit(
                             SettingViewModel.SettingNotificationEvent.ShowToastMessage(
                                 "알림 설정을 변경했습니다."
                             )
                         )
                     }.onFail {
-                        Log.d("알림변경", "실패")
                         _settingNotificationEvent.emit(
                             SettingViewModel.SettingNotificationEvent.ShowToastMessage(
-                                "알림을 변경 실패."
+                                "알림 설정을 실패했습니다. 잠시 후 다시 시도해 주세요."
                             )
                         )
 
@@ -232,7 +230,7 @@ class SettingViewModelImpl @Inject constructor(
                 }.onFail {
                     _settingNotificationEvent.emit(
                         SettingViewModel.SettingNotificationEvent.ShowToastMessage(
-                            "정보 불러오기 실패"
+                            "정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                         )
                     )
                 }
@@ -258,7 +256,11 @@ class SettingViewModelImpl @Inject constructor(
                     _settingUserEvent.emit(SettingViewModel.SettingUserEvent.Back)
                 }.onFail {
                     isTagDuplication.emit(true)
-                    _settingUserEvent.emit(SettingViewModel.SettingUserEvent.ShowToastMessage("정보 수정 실패"))
+                    _settingUserEvent.emit(
+                        SettingViewModel.SettingUserEvent.ShowToastMessage(
+                            "정보 수정에 실패했습니다. 잠시 후 다시 시도해 주세요."
+                        )
+                    )
                 }
             }
         }
@@ -284,7 +286,7 @@ class SettingViewModelImpl @Inject constructor(
                 }.onFail {
                     _settingUserEvent.emit(
                         SettingViewModel.SettingUserEvent.ShowToastMessage(
-                            "서버와 통신이 불안합니다."
+                            "태그 검색 설정을 실패했습니다. 잠시 후 다시 시도해 주세요."
                         )
                     )
 
@@ -313,7 +315,7 @@ class SettingViewModelImpl @Inject constructor(
                 }.onFail {
                     _settingUserEvent.emit(
                         SettingViewModel.SettingUserEvent.ShowToastMessage(
-                            "서버와 통신이 불안합니다."
+                            "전화번호 검색 설정을 실패했습니다. 잠시 후 다시 시도해 주세요."
                         )
                     )
 
@@ -332,7 +334,7 @@ class SettingViewModelImpl @Inject constructor(
                 }.onFail {
                     _settingUserEvent.emit(
                         SettingViewModel.SettingUserEvent.ShowToastMessage(
-                            "서버와 통신이 불안합니다."
+                            "공지사항을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
                         )
                     )
                 }

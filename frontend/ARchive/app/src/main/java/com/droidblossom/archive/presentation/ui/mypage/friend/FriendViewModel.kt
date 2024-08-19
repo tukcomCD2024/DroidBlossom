@@ -22,7 +22,7 @@ interface FriendViewModel {
     val isGroupSearchOpen: StateFlow<Boolean>
     val groupListUI: StateFlow<List<GroupSummary>>
 
-    fun setEvent(event: FriendViewModel.FriendEvent)
+    fun setEvent(event:FriendEvent)
     fun onScrollNearBottomFriend()
     fun onScrollNearBottomGroup()
 
@@ -43,7 +43,7 @@ interface FriendViewModel {
     fun removeGroup(groupId: Long)
 
     sealed class FriendEvent {
-        data class ShowToastMessage(val message: String) : FriendViewModel.FriendEvent()
+        data class ShowToastMessage(val message: String) : FriendEvent()
         object OnRefreshEnd : FriendEvent()
     }
 }

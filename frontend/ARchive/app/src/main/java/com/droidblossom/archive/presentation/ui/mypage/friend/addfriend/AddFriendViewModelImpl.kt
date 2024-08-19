@@ -66,9 +66,13 @@ class AddFriendViewModelImpl @Inject constructor(
             checkedList.value.forEach { friend ->
                 friendsRequestUseCase(FriendReqRequest(friendId = friend.id)).collect { result ->
                     result.onSuccess {
-                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다"))
+                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
                     }.onFail {
-                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청 오류 발생"))
+                        if (it == 500){
+                            _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
+                        }else {
+                            _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        }
                     }
                 }
                 changeRequestUI(friend.id)
@@ -102,7 +106,7 @@ class AddFriendViewModelImpl @Inject constructor(
                     if (it == 404){
 
                     }else{
-                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("검색이 불가능 합니다."))
+                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("사용자 검색에 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
             }
@@ -149,7 +153,7 @@ class AddFriendViewModelImpl @Inject constructor(
                     _addFriendListUI.emit(response.friends)
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }.onFail {
-                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("주소록 불러오기 실패."))
+                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("사용자 검색에 실패했습니다. 잠시 후 다시 시도해주세요."))
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }
             }

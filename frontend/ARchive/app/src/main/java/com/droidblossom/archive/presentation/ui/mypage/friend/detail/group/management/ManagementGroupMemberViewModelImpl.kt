@@ -148,7 +148,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _groupMembers.value = it.groupMemberResponses
                 }.onFail {
-
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
         }
@@ -192,7 +192,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                             _invitableFriendsCreatedTime.value = it.friends.last().createdAt
                         }
                     }.onFail {
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 가능한 친구 불러오기 실패"))
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
             }
@@ -217,7 +217,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                         _invitableFriendsCreatedTime.value = it.friends.last().createdAt
                     }
                 }.onFail {
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 가능한 친구 불러오기 실패"))
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                 }
             }
             managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
@@ -253,7 +253,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                         _invitedUsers.value += it.groupSendingInviteMembers
                         _invitedUsersHasNextPage.value = it.hasNext
                     }.onFail {
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 보낸 유저 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                         managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
                     }
                 }
@@ -276,6 +276,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     _invitedUsers.value = it.groupSendingInviteMembers
                     _invitedUsersHasNextPage.value = it.hasNext
                 }.onFail {
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 보낸 유저 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
                     managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
                 }
             }
@@ -289,13 +290,13 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
             cancelGroupInviteUseCase(groupInviteId = user.groupInviteId).collect{ result ->
                 result.onSuccess {
                     _invitedUsers.value -= user
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 성공했습니다."))
+                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 취소했습니다."))
                 }.onFail {
                     if (it == 404){
                         _invitedUsers.value -= user
                         managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("이미 처리된 요청입니다."))
                     }else{
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다."))
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
 
@@ -318,7 +319,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                         _groupMembers.value -= groupMember
                         managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("이 그룹원은 이미 그룹에 속해 있지 않습니다."))
                     }else{
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다."))
+                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다. 잠시 후 다시 시도해주세요."))
                     }
                 }
             }
