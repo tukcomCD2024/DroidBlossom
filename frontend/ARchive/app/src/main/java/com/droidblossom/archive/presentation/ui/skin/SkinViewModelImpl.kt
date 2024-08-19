@@ -1,6 +1,8 @@
 package com.droidblossom.archive.presentation.ui.skin
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication.Companion.getString
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinsPageUseCase
@@ -24,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SkinViewModelImpl @Inject constructor(
     private val capsuleSkinsPageUseCase: CapsuleSkinsPageUseCase
-):BaseViewModel(), SkinViewModel {
+) : BaseViewModel(), SkinViewModel {
 
     private val _skinEvents = MutableSharedFlow<SkinViewModel.SkinEvent>()
     override val skinEvents: SharedFlow<SkinViewModel.SkinEvent>
@@ -49,16 +51,17 @@ class SkinViewModelImpl @Inject constructor(
         get() = _isSearchOpen
 
     private val scrollEventChannel = Channel<Unit>(Channel.CONFLATED)
-    private val scrollEventFlow = scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+    private val scrollEventFlow =
+        scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
     private var getSkinLstJob: Job? = null
 
     init {
         viewModelScope.launch {
-            scrollEventFlow.collect{
-                if (skins.value.isEmpty()){
+            scrollEventFlow.collect {
+                if (skins.value.isEmpty()) {
                     getLatestSkinList()
-                }else{
+                } else {
                     getSkinList()
                 }
             }
@@ -71,7 +74,7 @@ class SkinViewModelImpl @Inject constructor(
 
 
     override fun getSkinList() {
-        if (hasNextSkins.value){
+        if (hasNextSkins.value) {
             getSkinLstJob?.cancel()
             getSkinLstJob = viewModelScope.launch {
                 capsuleSkinsPageUseCase(
@@ -87,7 +90,13 @@ class SkinViewModelImpl @Inject constructor(
                             _lastCreatedSkinTime.value = skins.value.last().createdAt
                         }
                     }.onFail {
-                        _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
+                        _skinEvents.emit(
+                            SkinViewModel.SkinEvent.ShowToastMessage(
+                                "스킨 목록을 불러오는데 실패했습니다. " + getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
 
                 }
@@ -95,7 +104,7 @@ class SkinViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getLatestSkinList(){
+    override fun getLatestSkinList() {
         getSkinLstJob?.cancel()
         getSkinLstJob = viewModelScope.launch {
             capsuleSkinsPageUseCase(
@@ -111,7 +120,13 @@ class SkinViewModelImpl @Inject constructor(
                         _lastCreatedSkinTime.value = skins.value.last().createdAt
                     }
                 }.onFail {
-                    _skinEvents.emit(SkinViewModel.SkinEvent.ShowToastMessage("스킨 불러오기 실패."))
+                    _skinEvents.emit(
+                        SkinViewModel.SkinEvent.ShowToastMessage(
+                            "스킨 목록을 불러오는데 실패했습니다. " + getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
 
             }

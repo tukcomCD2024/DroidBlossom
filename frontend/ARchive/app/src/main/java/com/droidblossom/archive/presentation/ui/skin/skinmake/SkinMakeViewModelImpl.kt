@@ -179,6 +179,11 @@ class SkinMakeViewModelImpl @Inject constructor(
                     Log.d("getUploadUrls", "$it")
                     uploadFilesToS3(skinImgFile.value!!, it.preSignedImageUrls[0])
                 }.onFail {
+                    SkinMakeViewModel.SkinMakeEvent.ShowToastMessage(
+                        "스킨 생성을 실패했습니다. " + ARchiveApplication.getString(
+                            R.string.reTryMessage
+                        )
+                    )
                     skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
                     Log.d("getUploadUrls", "getUploadUrl 실패")
                 }
@@ -231,10 +236,13 @@ class SkinMakeViewModelImpl @Inject constructor(
                 }.onFail {
                     skinMakeEvent(
                         SkinMakeViewModel.SkinMakeEvent.ShowToastMessage(
-                            "서버에서 오류가 발생했습니다. " + ARchiveApplication.getString(
+                            "스킨 생성을 실패했습니다. " + ARchiveApplication.getString(
                                 R.string.reTryMessage
                             )
                         )
+                    )
+                    skinMakeEvent(
+                        SkinMakeViewModel.SkinMakeEvent.FinishActivity
                     )
                 }
                 skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)

@@ -82,6 +82,10 @@ class SkinMakeFragment :
                             dismissLoading()
                         }
 
+                        is SkinMakeViewModel.SkinMakeEvent.FinishActivity -> {
+                            activity?.finish()
+                        }
+
                         else -> {}
 
                     }

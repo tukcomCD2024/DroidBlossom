@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.skin.detail
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication.Companion.getString
+import com.droidblossom.archive.R
 import com.droidblossom.archive.domain.model.common.CapsuleSkinSummary
 import com.droidblossom.archive.domain.usecase.capsule_skin.CapsuleSkinDeleteUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
@@ -19,19 +21,21 @@ import javax.inject.Inject
 @HiltViewModel
 class SkinDetailViewModelImpl @Inject constructor(
     private val capsuleSkinDeleteUseCase: CapsuleSkinDeleteUseCase
-): BaseViewModel(), SkinDetailViewModel {
-    
+) : BaseViewModel(), SkinDetailViewModel {
+
     private val _skinDetailEvents = MutableSharedFlow<SkinDetailViewModel.SkinDetailEvent>()
     override val skinDetailEvents: SharedFlow<SkinDetailViewModel.SkinDetailEvent>
         get() = _skinDetailEvents.asSharedFlow()
-    
-    private val _skin = MutableStateFlow(CapsuleSkinSummary(
-        id = 0,
-        skinUrl = "",
-        name = "",
-        createdAt = "",
-        isClicked = false
-    ))
+
+    private val _skin = MutableStateFlow(
+        CapsuleSkinSummary(
+            id = 0,
+            skinUrl = "",
+            name = "",
+            createdAt = "",
+            isClicked = false
+        )
+    )
     override val skin: StateFlow<CapsuleSkinSummary>
         get() = _skin
 
@@ -49,29 +53,36 @@ class SkinDetailViewModelImpl @Inject constructor(
         _skin.value = skin
     }
 
-    override fun deleteSkin(){
+    override fun deleteSkin() {
         viewModelScope.launch {
-            capsuleSkinDeleteUseCase(skin.value.id).collect{
+            capsuleSkinDeleteUseCase(skin.value.id).collect {
                 it.onSuccess { result ->
-                    when(result.capsuleSkinDeleteResult){
+                    when (result.capsuleSkinDeleteResult) {
                         "SUCCESS" -> {
                             _removeSkin.value = true
                             skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.ShowToastMessage("스킨 삭제를 성공했습니다."))
                             skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.DeleteSkin)
                         }
+
                         "FAIL" -> {
                             _removeSkin.value = false
                             skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.ShowToastMessage("사용중인 스킨은 삭제할 수 없습니다."))
                         }
                     }
                 }.onFail {
-                    if (it == 404){
+                    if (it == 404) {
                         _removeSkin.value = true
                         skinDetailEvent(SkinDetailViewModel.SkinDetailEvent.DeleteSkin)
-                    }else{
+                    } else {
+                        skinDetailEvent(
+                            SkinDetailViewModel.SkinDetailEvent.ShowToastMessage(
+                                "스킨 삭제를 실패했습니다. " + getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                         _removeSkin.value = false
                     }
-
                 }
             }
         }

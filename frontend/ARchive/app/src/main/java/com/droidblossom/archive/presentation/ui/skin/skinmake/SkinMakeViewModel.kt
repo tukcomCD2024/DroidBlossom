@@ -28,6 +28,7 @@ interface SkinMakeViewModel {
     fun setFirstAddMotionClick(state: Boolean)
 
     sealed class SkinMakeEvent {
+        object FinishActivity: SkinMakeEvent()
         object SuccessSkinMake : SkinMakeEvent()
         object DismissLoading : SkinMakeEvent()
         object ShowExampleImage : SkinMakeEvent()
