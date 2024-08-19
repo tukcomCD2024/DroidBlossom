@@ -6,25 +6,47 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivityCreateCapsuleBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
 import com.droidblossom.archive.util.LocationUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityCreateCapsuleBinding>(R.layout.activity_create_capsule) {
+class CreateCapsuleActivity :
+    BaseActivity<CreateCapsuleViewModelImpl, ActivityCreateCapsuleBinding>(R.layout.activity_create_capsule) {
 
-    override val viewModel: CreateCapsuleViewModelImpl  by viewModels()
+    override val viewModel: CreateCapsuleViewModelImpl by viewModels()
 
-    override fun observeData() {}
+    override fun observeData() {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.createEvents.collect{ event ->
+                    when(event){
+                        is CreateCapsuleViewModel.CreateEvent.FinishActivity -> {
+                            finish()
+                        }
+                        is CreateCapsuleViewModel.CreateEvent.ShowToastMessage -> {
+                            showToastMessage(event.message)
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       initView()
+        initView()
     }
 
-    private fun initView(){
+    private fun initView() {
         val layoutParams = binding.closeBtn.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
@@ -33,7 +55,7 @@ class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityC
             finish()
         }
 
-        (intent.getIntExtra(CREATE_CAPSULE,1)).let {
+        (intent.getIntExtra(CREATE_CAPSULE, 1)).let {
             viewModel.groupTypeInt = it
             viewModel.choseCapsuleType(it)
         }
@@ -49,7 +71,7 @@ class CreateCapsuleActivity : BaseActivity<CreateCapsuleViewModelImpl, ActivityC
     companion object {
         const val CREATE_CAPSULE = "create_capsule"
 
-        fun newIntent(context: Context,capsuleType : Int) =
+        fun newIntent(context: Context, capsuleType: Int) =
             Intent(context, CreateCapsuleActivity::class.java).apply {
                 putExtra(CREATE_CAPSULE, capsuleType)
             }

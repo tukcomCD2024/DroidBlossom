@@ -17,6 +17,8 @@ interface CreateCapsuleViewModel {
     var groupTypeInt: Int
     val capsuleTypeCreateIs: StateFlow<CapsuleTypeCreate>
 
+    val createEvents: SharedFlow<CreateEvent>
+
     //Create1
     val create1Events: SharedFlow<Create1Event>
     val groupId: StateFlow<Long>
@@ -94,6 +96,11 @@ interface CreateCapsuleViewModel {
     fun setFiles(imageFiles: List<File>, videoFiles: List<File>)
     fun closeTimeSetting()
     fun openTimeSetting()
+
+    sealed class CreateEvent {
+        object FinishActivity : CreateEvent()
+        data class ShowToastMessage(val message : String) : CreateEvent()
+    }
 
     sealed class Create1Event {
         object NavigateTo2 : Create1Event()
