@@ -247,14 +247,10 @@ class FriendViewModelImpl @Inject constructor(
         viewModelScope.launch {
             friendDeleteUseCase(friend.id).collect { result ->
                 result.onSuccess {
-                    val list = friendListUI.value.toMutableList()
-                    list.remove(friend)
-                    _friendListUI.emit(list)
+                    _friendListUI.value -= friend
                 }.onFail {
                     if (it == 400){
-                        val list = friendListUI.value.toMutableList()
-                        list.remove(friend)
-                        _friendListUI.emit(list)
+                        _friendListUI.value -= friend
                     }else{
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(

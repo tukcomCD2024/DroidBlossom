@@ -425,25 +425,19 @@ class FriendAcceptViewModelImpl @Inject constructor(
 
     private fun removeFriendItem(friend: Friend) {
         viewModelScope.launch {
-            val newList = _friendAcceptList.value.toMutableList()
-            newList.remove(friend)
-            _friendAcceptList.emit(newList)
+            _friendAcceptList.value -= friend
         }
     }
 
     private fun removeGroupItem(group: GroupInviteSummary) {
         viewModelScope.launch {
-            val newList = _groupAcceptList.value.toMutableList()
-            newList.remove(group)
-            _groupAcceptList.emit(newList)
+            _groupAcceptList.value -= group
         }
     }
 
     private fun removeFriendSendItem(friend: Friend) {
         viewModelScope.launch {
-            val newList = _friendSendAcceptList.value.toMutableList()
-            newList.remove(friend)
-            _friendSendAcceptList.emit(newList)
+            _friendSendAcceptList.value -= friend
         }
     }
 
