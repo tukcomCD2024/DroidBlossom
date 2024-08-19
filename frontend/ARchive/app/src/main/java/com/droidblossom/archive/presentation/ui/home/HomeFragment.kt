@@ -173,6 +173,10 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
                             startActivity(NotificationActivity.newIntent(requireContext()))
                         }
 
+                        is HomeViewModel.HomeEvent.ShowToast -> {
+                            showToastMessage(event.message)
+                        }
+
                         is HomeViewModel.HomeEvent.ShowCapsulePreviewDialog -> {
                             val existingDialog =
                                 parentFragmentManager.findFragmentByTag(CapsulePreviewDialogFragment.TAG) as DialogFragment?

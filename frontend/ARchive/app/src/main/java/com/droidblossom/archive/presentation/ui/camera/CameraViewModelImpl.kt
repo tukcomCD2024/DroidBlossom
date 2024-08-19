@@ -109,7 +109,11 @@ class CameraViewModelImpl@Inject constructor(
                         capsuleListSize = 0
                     }
                 }.onFail {
-                    cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("캡슐을 불러오는데 문제가 발생했습니다. 잠시 후 다시 시도해주세요."))
+                    if (it == 400){
+                        cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다."))
+                    }else{
+                        cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("캡슐을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    }
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }
@@ -127,7 +131,11 @@ class CameraViewModelImpl@Inject constructor(
                         capsuleListSize = 0
                     }
                 }.onFail {
-                    cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("캡슐을 불러오는데 문제가 발생했습니다. 잠시 후 다시 시도해주세요."))
+                    if (it == 400){
+                        cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다."))
+                    }else{
+                        cameraEvent(CameraViewModel.CameraEvent.ShowToastMessage("캡슐을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    }
                     cameraEvent(CameraViewModel.CameraEvent.DismissLoading)
                 }
             }

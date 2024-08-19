@@ -135,7 +135,11 @@ class HomeViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _capsuleList.emit(it.capsuleMarkers)
                 }.onFail {
-
+                    if (it == 400){
+                        homeEvent(HomeViewModel.HomeEvent.ShowToast("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다."))
+                    }else{
+                        homeEvent(HomeViewModel.HomeEvent.ShowToast("주변 캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    }
                 }
             }
         }
@@ -151,7 +155,11 @@ class HomeViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _capsuleList.emit(capsuleList.value + it.capsuleMarkers)
                 }.onFail {
-
+                    if (it == 400){
+                        homeEvent(HomeViewModel.HomeEvent.ShowToast("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다."))
+                    }else{
+                        homeEvent(HomeViewModel.HomeEvent.ShowToast("주변 캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    }
                 }
             }
         }
@@ -180,11 +188,19 @@ class HomeViewModelImpl @Inject constructor(
                         result.onSuccess {
                             _capsuleList.emit(capsuleList.value + it.capsuleMarkers)
                         }.onFail {
-
+                            if (it == 400){
+                                homeEvent(HomeViewModel.HomeEvent.ShowToast("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다."))
+                            }else{
+                                homeEvent(HomeViewModel.HomeEvent.ShowToast("주변 캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            }
                         }
                     }
                 }.onFail {
-
+                    if (it == 400){
+                        homeEvent(HomeViewModel.HomeEvent.ShowToast("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다."))
+                    }else{
+                        homeEvent(HomeViewModel.HomeEvent.ShowToast("주변 캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    }
                 }
             }
         }
