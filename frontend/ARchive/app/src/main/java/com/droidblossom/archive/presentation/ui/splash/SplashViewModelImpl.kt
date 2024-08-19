@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.splash
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.domain.usecase.auth.ServerCheckUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
 import com.droidblossom.archive.util.onError
@@ -40,7 +42,11 @@ class SplashViewModelImpl @Inject constructor(
                 result.onSuccess {
                     splashEvent(SplashViewModel.SplashEvent.Navigation)
                 }.onFail {
-
+                    splashEvent(
+                        SplashViewModel.SplashEvent.ShowToastMessage(
+                            "서버가 불안정합니다. " + ARchiveApplication.getString(R.string.reTryMessage)
+                        )
+                    )
                 }
             }
         }

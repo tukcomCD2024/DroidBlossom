@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.social.page.group
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.SocialCapsules
@@ -28,11 +30,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SocialGroupViewModelImpl @Inject constructor(
     private val getCapsulesOfGroupsPageUseCase: CapsulesOfGroupsPageUseCase
-): BaseViewModel(), SocialGroupViewModel {
+) : BaseViewModel(), SocialGroupViewModel {
 
     private val _socialGroupEvents = MutableSharedFlow<SocialGroupViewModel.SocialGroupEvent>()
     override val socialGroupEvents: SharedFlow<SocialGroupViewModel.SocialGroupEvent>
-        get() =_socialGroupEvents.asSharedFlow()
+        get() = _socialGroupEvents.asSharedFlow()
 
     private val _isSearchOpen = MutableStateFlow(false)
     override val isSearchOpen: StateFlow<Boolean>
@@ -54,12 +56,13 @@ class SocialGroupViewModelImpl @Inject constructor(
         scrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
 
     private var getGroupCapsuleListJob: Job? = null
+
     init {
         viewModelScope.launch {
             scrollEventFlow.collect {
-                if (groupCapsules.value.isEmpty()){
+                if (groupCapsules.value.isEmpty()) {
                     getLatestGroupCapsule()
-                }else{
+                } else {
                     getGroupCapsulePage()
                 }
             }
@@ -89,11 +92,11 @@ class SocialGroupViewModelImpl @Inject constructor(
         }
     }
 
-    override fun searchGroupCapsule(){
+    override fun searchGroupCapsule() {
 
     }
 
-    override fun getGroupCapsulePage(){
+    override fun getGroupCapsulePage() {
         viewModelScope.launch {
             if (hasNextPage.value) {
                 getGroupCapsuleListJob?.cancel()
@@ -108,7 +111,11 @@ class SocialGroupViewModelImpl @Inject constructor(
                             _hasNextPage.value = it.hasNext
                             _groupCapsules.emit(groupCapsules.value + it.groupCapsules)
                         }.onFail {
-                            socialGroupEvent(SocialGroupViewModel.SocialGroupEvent.ShowToastMessage("그룹캡슐 불러오기 실패"))
+                            socialGroupEvent(
+                                SocialGroupViewModel.SocialGroupEvent.ShowToastMessage(
+                                    "캡슐을 불러오는데 실패했습니다. " + ARchiveApplication.getString(R.string.reTryMessage)
+                                )
+                            )
                         }
 
                     }
@@ -117,7 +124,7 @@ class SocialGroupViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getLatestGroupCapsule(){
+    override fun getLatestGroupCapsule() {
         getGroupCapsuleListJob?.cancel()
         getGroupCapsuleListJob = viewModelScope.launch {
             getGroupCapsuleListJob = viewModelScope.launch {
@@ -128,11 +135,15 @@ class SocialGroupViewModelImpl @Inject constructor(
                     )
                 ).collect { result ->
                     result.onSuccess {
-                        Log.d("머여",it.toString())
+                        Log.d("머여", it.toString())
                         _hasNextPage.value = it.hasNext
                         _groupCapsules.value = it.groupCapsules
                     }.onFail {
-                        socialGroupEvent(SocialGroupViewModel.SocialGroupEvent.ShowToastMessage("그룹캡슐 불러오기 실패"))
+                        socialGroupEvent(
+                            SocialGroupViewModel.SocialGroupEvent.ShowToastMessage(
+                                "캡슐을 불러오는데 실패했습니다. " + ARchiveApplication.getString(R.string.reTryMessage)
+                            )
+                        )
                     }
                 }
                 socialGroupEvent(SocialGroupViewModel.SocialGroupEvent.SwipeRefreshLayoutDismissLoading)

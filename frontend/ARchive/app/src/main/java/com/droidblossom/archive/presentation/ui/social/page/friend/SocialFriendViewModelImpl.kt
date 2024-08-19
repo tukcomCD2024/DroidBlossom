@@ -1,6 +1,8 @@
 package com.droidblossom.archive.presentation.ui.social.page.friend
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication.Companion.getString
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.SocialCapsules
 import com.droidblossom.archive.domain.usecase.open.PublicCapsulePageUseCase
@@ -55,9 +57,9 @@ class SocialFriendViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollEventFlow.collect {
-                if (publicCapsules.value.isEmpty()){
+                if (publicCapsules.value.isEmpty()) {
                     getLatestPublicCapsule()
-                }else{
+                } else {
                     getPublicCapsulePage()
                 }
             }
@@ -89,7 +91,7 @@ class SocialFriendViewModelImpl @Inject constructor(
 
 
     override fun getPublicCapsulePage() {
-        if (hasNextPage.value){
+        if (hasNextPage.value) {
             getPublicCapsuleListJob?.cancel()
             getPublicCapsuleListJob = viewModelScope.launch {
                 publicCapsulePageUseCase(
@@ -105,7 +107,11 @@ class SocialFriendViewModelImpl @Inject constructor(
                             _lastCreatedTime.value = it.publicCapsules.last().createdDate
                         }
                     }.onFail {
-                        socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
+                        socialFriendEvent(
+                            SocialFriendViewModel.SocialFriendEvent.ShowToastMessage(
+                                "캡슐을 불러오는데 실패했습니다. " + getString(R.string.reTryMessage)
+                            )
+                        )
                     }
                 }
             }
@@ -128,7 +134,11 @@ class SocialFriendViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = it.publicCapsules.last().createdDate
                     }
                 }.onFail {
-                    socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.ShowToastMessage("공개캡슐 불러오기 실패"))
+                    socialFriendEvent(
+                        SocialFriendViewModel.SocialFriendEvent.ShowToastMessage(
+                            "캡슐을 불러오는데 실패했습니다. " + getString(R.string.reTryMessage)
+                        )
+                    )
                 }
             }
             socialFriendEvent(SocialFriendViewModel.SocialFriendEvent.SwipeRefreshLayoutDismissLoading)
