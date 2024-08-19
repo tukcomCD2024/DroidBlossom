@@ -20,7 +20,7 @@ public interface GroupQueryRepository {
 
     List<Long> getTotalGroupMemberCount(final List<Long> groupIds);
 
-    Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
+    Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberIdExcludeMemberId(final Long groupId,
         final Long memberId);
 
     Optional<Long> getTotalGroupMemberCount(Long groupId);

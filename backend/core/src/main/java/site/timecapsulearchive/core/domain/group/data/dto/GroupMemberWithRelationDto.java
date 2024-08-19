@@ -10,7 +10,9 @@ public record GroupMemberWithRelationDto(
     String nickname,
     String tag,
     Boolean isOwner,
-    Boolean isFriend
+    Boolean isFriend,
+    Boolean isFriendInviteToFriend,
+    Boolean isFriendInviteToMe
 ) {
 
     public GroupMemberWithRelationResponse toResponse() {
@@ -21,6 +23,8 @@ public record GroupMemberWithRelationDto(
             .tag(tag)
             .isOwner(isOwner)
             .isFriend(isFriend)
+            .isFriendInviteToFriend(isFriendInviteToFriend)
+            .isFriendInviteToMe(isFriendInviteToMe)
             .build();
     }
 }
