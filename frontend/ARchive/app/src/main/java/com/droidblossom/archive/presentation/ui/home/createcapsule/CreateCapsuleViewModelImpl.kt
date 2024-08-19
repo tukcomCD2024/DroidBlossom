@@ -3,6 +3,8 @@ package com.droidblossom.archive.presentation.ui.home.createcapsule
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.common.AddressData
 import com.droidblossom.archive.domain.model.common.CapsuleCreateRequest
@@ -250,7 +252,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         }
                         groupLastCreatedTime.value = it.groups.last().createdAt
                     }.onFail {
-                        _create1Events.emit(CreateCapsuleViewModel.Create1Event.ShowToastMessage("그룹 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        _create1Events.emit(
+                            CreateCapsuleViewModel.Create1Event.ShowToastMessage(
+                                "그룹 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
 
                 }
@@ -361,7 +369,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         }
                         _lastCreatedSkinTime.value = _skins.value.last().createdAt
                     }.onFail {
-                        _create2Events.emit(CreateCapsuleViewModel.Create2Event.ShowToastMessage("스킨 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        _create2Events.emit(
+                            CreateCapsuleViewModel.Create2Event.ShowToastMessage(
+                                "스킨 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
 
                 }
@@ -441,10 +455,16 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                     _capsuleLocationName.emit(if (it.roadName.isNullOrEmpty()) it.fullRoadAddressName else it.roadName)
                     _address.emit(it)
                 }.onFail {
-                    if (it == 500){
+                    if (it == 500) {
                         _createEvents.emit(CreateCapsuleViewModel.CreateEvent.ShowToastMessage("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 캡슐을 생성할 수 있습니다."))
-                    }else{
-                        _createEvents.emit(CreateCapsuleViewModel.CreateEvent.ShowToastMessage("위치를 찾을 수 없습니다. 잠시 후 다시 시도해주세요."))
+                    } else {
+                        _createEvents.emit(
+                            CreateCapsuleViewModel.CreateEvent.ShowToastMessage(
+                                "위치를 찾을 수 없습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                     _createEvents.emit(CreateCapsuleViewModel.CreateEvent.FinishActivity)
                     _capsuleLocationName.emit("위치를 찾을 수 없음")
@@ -563,7 +583,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                         it.preSignedVideoUrls
                     )
                 }.onFail {
-                    _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐 생성을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    _create3Events.emit(
+                        CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                            "캡슐 생성을 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                     _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
                 }
             }
@@ -626,7 +652,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                 Log.d("uploadFilesToS3", "All files uploaded successfully")
                 createCapsule()
             } else {
-                _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐 생성을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                _create3Events.emit(
+                    CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                        "캡슐 생성을 실패했습니다. " + ARchiveApplication.getString(
+                            R.string.reTryMessage
+                        )
+                    )
+                )
                 _create3Events.emit(CreateCapsuleViewModel.Create3Event.DismissLoading)
                 Log.e("uploadFilesToS3", "One or more file uploads failed")
 
@@ -659,7 +691,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                                 )
                             )
                         }.onFail {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐 생성을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐 생성을 실패했습니다. " + ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                             _createEvents.emit(CreateCapsuleViewModel.CreateEvent.FinishActivity)
                         }
                     }
@@ -687,7 +725,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                                 )
                             )
                         }.onFail {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐 생성을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐 생성을 실패했습니다. "+ ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                             _createEvents.emit(CreateCapsuleViewModel.CreateEvent.FinishActivity)
                         }
                     }
@@ -716,7 +760,13 @@ class CreateCapsuleViewModelImpl @Inject constructor(
                                 )
                             )
                         }.onFail {
-                            _create3Events.emit(CreateCapsuleViewModel.Create3Event.ShowToastMessage("캡슐 생성을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            _create3Events.emit(
+                                CreateCapsuleViewModel.Create3Event.ShowToastMessage(
+                                    "캡슐 생성을 실패했습니다. "+ ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                             _createEvents.emit(CreateCapsuleViewModel.CreateEvent.FinishActivity)
                         }
                     }

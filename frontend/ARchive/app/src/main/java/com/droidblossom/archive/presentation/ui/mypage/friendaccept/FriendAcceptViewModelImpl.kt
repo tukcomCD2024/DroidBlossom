@@ -1,6 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage.friendaccept
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.friend.FriendAcceptRequest
@@ -137,7 +139,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -165,7 +169,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 }.onFail {
                     _friendAcceptEvent.emit(
                         FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                            "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
 
@@ -191,7 +197,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -220,7 +228,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -249,7 +259,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -277,7 +289,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                 }.onFail {
                     _friendAcceptEvent.emit(
                         FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                            "요청 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                            "요청 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                 }
@@ -306,7 +320,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -331,7 +347,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -361,7 +379,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -391,7 +411,9 @@ class FriendAcceptViewModelImpl @Inject constructor(
                     }else{
                         _friendAcceptEvent.emit(
                             FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
-                                "요청을 실패했습니다. 잠시 후 다시 시도해 주세요."
+                                "요청을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }

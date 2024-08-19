@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.mypage
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.MemberDetail
 import com.droidblossom.archive.domain.usecase.group_capsule.MyGroupCapsulePageUseCase
@@ -112,7 +114,9 @@ class MyPageViewModelImpl @Inject constructor(
                     myPageEvent(
                         MyPageViewModel.MyPageEvent.ShowToastMessage
                             (
-                            "정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해 주세요."
+                            "정보를 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                 }
@@ -171,7 +175,9 @@ class MyPageViewModelImpl @Inject constructor(
                     }.onFail {
                         myPageEvent(
                             MyPageViewModel.MyPageEvent.ShowToastMessage(
-                                "캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "캡슐 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -197,7 +203,13 @@ class MyPageViewModelImpl @Inject constructor(
                             _lastCreatedTime.value = myCapsules.value.last().createdDate
                         }
                     }.onFail {
-                        myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        myPageEvent(
+                            MyPageViewModel.MyPageEvent.ShowToastMessage(
+                                "캡슐 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -222,7 +234,13 @@ class MyPageViewModelImpl @Inject constructor(
                                 _lastCreatedTime.value = myCapsules.value.last().createdDate
                             }
                         }.onFail {
-                            myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            myPageEvent(
+                                MyPageViewModel.MyPageEvent.ShowToastMessage(
+                                    "캡슐 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -246,7 +264,13 @@ class MyPageViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    myPageEvent(
+                        MyPageViewModel.MyPageEvent.ShowToastMessage(
+                            "캡슐 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
@@ -269,7 +293,13 @@ class MyPageViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    myPageEvent(
+                        MyPageViewModel.MyPageEvent.ShowToastMessage(
+                            "캡슐 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)
@@ -292,7 +322,13 @@ class MyPageViewModelImpl @Inject constructor(
                         _lastCreatedTime.value = myCapsules.value.last().createdDate
                     }
                 }.onFail {
-                    myPageEvent(MyPageViewModel.MyPageEvent.ShowToastMessage("캡슐 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    myPageEvent(
+                        MyPageViewModel.MyPageEvent.ShowToastMessage(
+                            "캡슐 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
             myPageEvent(MyPageViewModel.MyPageEvent.SwipeRefreshLayoutDismissLoading)

@@ -1,6 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.friend.request.PhoneBooks
 import com.droidblossom.archive.domain.model.friend.FriendReqRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
@@ -68,10 +70,16 @@ class AddFriendViewModelImpl @Inject constructor(
                     result.onSuccess {
                         _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
                     }.onFail {
-                        if (it == 500){
+                        if (it == 500) {
                             _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
-                        }else {
-                            _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        } else {
+                            _addEvent.emit(
+                                AddFriendViewModel.AddEvent.ShowToastMessage(
+                                    "친구 요청을 실패했습니다. " + ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -103,10 +111,16 @@ class AddFriendViewModelImpl @Inject constructor(
                 result.onSuccess { response ->
                     _addFriendListUI.emit(listOf(response))
                 }.onFail {
-                    if (it == 404){
+                    if (it == 404) {
 
-                    }else{
-                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("사용자 검색에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    } else {
+                        _addEvent.emit(
+                            AddFriendViewModel.AddEvent.ShowToastMessage(
+                                "사용자 검색에 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -153,7 +167,13 @@ class AddFriendViewModelImpl @Inject constructor(
                     _addFriendListUI.emit(response.friends)
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }.onFail {
-                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("사용자 검색에 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    _addEvent.emit(
+                        AddFriendViewModel.AddEvent.ShowToastMessage(
+                            "사용자 검색에 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }
             }
@@ -165,7 +185,11 @@ class AddFriendViewModelImpl @Inject constructor(
             if (searchFriendText.value.isBlank()) {
                 _addFriendListUI.emit(_addFriendList.value)
             } else {
-                _addFriendListUI.emit(_addFriendList.value.filter { it.nickname.contains(searchFriendText.value) })
+                _addFriendListUI.emit(_addFriendList.value.filter {
+                    it.nickname.contains(
+                        searchFriendText.value
+                    )
+                })
             }
         }
     }

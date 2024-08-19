@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.home.notification
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.member.NotificationModel
 import com.droidblossom.archive.domain.usecase.member.GetNotificationsUseCase
@@ -85,7 +87,9 @@ class NotificationViewModelImpl @Inject constructor(
                     }.onFail {
                         _notificationEvent.emit(
                             NotificationViewModel.NotificationEvent.ShowToastMessage(
-                                "알림 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "알림 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -113,7 +117,9 @@ class NotificationViewModelImpl @Inject constructor(
                 }.onFail {
                     _notificationEvent.emit(
                         NotificationViewModel.NotificationEvent.ShowToastMessage(
-                            "알림 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            "알림 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                 }

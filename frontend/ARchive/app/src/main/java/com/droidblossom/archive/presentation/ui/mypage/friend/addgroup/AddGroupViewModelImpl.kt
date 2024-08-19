@@ -4,6 +4,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.CreateGroupRequestDto
 import com.droidblossom.archive.data.dto.s3.request.S3OneUrlRequestDto
@@ -129,7 +131,9 @@ class AddGroupViewModelImpl @Inject constructor(
                     }.onFail {
                         _addGroupEvent.emit(
                             AddGroupViewModel.AddGroupEvent.ShowToastMessage(
-                                "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -200,7 +204,9 @@ class AddGroupViewModelImpl @Inject constructor(
                 }.onFail {
                     _addGroupEvent.emit(
                         AddGroupViewModel.AddGroupEvent.ShowToastMessage(
-                            "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                            "그룹 생성에 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                     _addGroupEvent.emit(
@@ -231,7 +237,9 @@ class AddGroupViewModelImpl @Inject constructor(
             } else {
                 _addGroupEvent.emit(
                     AddGroupViewModel.AddGroupEvent.ShowToastMessage(
-                        "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                        "그룹 생성에 실패했습니다. "+ ARchiveApplication.getString(
+                            R.string.reTryMessage
+                        )
                     )
                 )
                 _addGroupEvent.emit(
@@ -266,7 +274,9 @@ class AddGroupViewModelImpl @Inject constructor(
                     if (it == 500){
                         _addGroupEvent.emit(
                             AddGroupViewModel.AddGroupEvent.ShowToastMessage(
-                                "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "그룹 생성에 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                         _addGroupEvent.emit(
@@ -275,7 +285,9 @@ class AddGroupViewModelImpl @Inject constructor(
                     }else{
                         _addGroupEvent.emit(
                             AddGroupViewModel.AddGroupEvent.ShowToastMessage(
-                                "그룹 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "그룹 생성에 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                         _addGroupEvent.emit(

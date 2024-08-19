@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.capsulepreview
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.domain.model.common.CapsuleSummaryResponse
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleMember
 import com.droidblossom.archive.domain.model.group_capsule.GroupCapsuleOpenState
@@ -151,7 +153,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 }.onFail {
                     capsulePreviewDialogEvent(
                         CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                            "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            "캡슐 정보를 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                 }
@@ -187,7 +191,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         else -> {
                             capsulePreviewDialogEvent(
                                 CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                    "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                    "캡슐 정보를 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
                                 )
                             )
                         }
@@ -228,7 +234,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         else -> {
                             capsulePreviewDialogEvent(
                                 CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                    "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                    "캡슐 정보를 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
                                 )
                             )
                         }
@@ -257,7 +265,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }else{
                         capsulePreviewDialogEvent(
                             CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                "캡슐 오픈 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "캡슐 오픈 정보를 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -294,7 +304,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                         _removeCapsule.value = true
                         capsulePreviewDialogEvent(
                             CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                "캡슐 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "캡슐 정보를 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -480,7 +492,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                     }else{
                         capsulePreviewDialogEvent(
                             CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                                "캡슐 개봉을 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "캡슐 개봉을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -558,7 +572,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
             else -> {
                 capsulePreviewDialogEvent(
                     CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                        "캡슐 개봉을 실패했습니다. 잠시 후 다시 시도해주세요."
+                        "캡슐 개봉을 실패했습니다. "+ ARchiveApplication.getString(
+                            R.string.reTryMessage
+                        )
                     )
                 )
             }
@@ -602,7 +618,9 @@ class CapsulePreviewDialogViewModelImpl @Inject constructor(
                 }else{
                     capsulePreviewDialogEvent(
                         CapsulePreviewDialogViewModel.CapsulePreviewDialogEvent.ShowToastMessage(
-                            "캡슐 개봉을 실패했습니다. 잠시 후 다시 시도해주세요."
+                            "캡슐 개봉을 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                 }

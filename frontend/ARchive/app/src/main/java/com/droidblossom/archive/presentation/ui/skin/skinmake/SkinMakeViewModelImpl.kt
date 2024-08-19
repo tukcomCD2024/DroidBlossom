@@ -3,6 +3,8 @@ package com.droidblossom.archive.presentation.ui.skin.skinmake
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.domain.model.capsule_skin.CapsuleSkinsMakeRequest
 import com.droidblossom.archive.domain.model.capsule_skin.SkinMotion
 import com.droidblossom.archive.domain.model.s3.S3UrlRequest
@@ -122,6 +124,7 @@ class SkinMakeViewModelImpl @Inject constructor(
             _skinMotions.emit(newList)
         }
     }
+
     override fun skinMakeEvent(event: SkinMakeViewModel.SkinMakeEvent) {
         viewModelScope.launch {
             _skinMakeEvents.emit(event)
@@ -131,7 +134,7 @@ class SkinMakeViewModelImpl @Inject constructor(
     override val skinName = MutableStateFlow("")
 
     override fun selectAddMotion() {
-        if (firstAddMotionClick.value){
+        if (firstAddMotionClick.value) {
             skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowExampleImage)
         }
         viewModelScope.launch {
@@ -161,7 +164,7 @@ class SkinMakeViewModelImpl @Inject constructor(
         }
     }
 
-    override fun showExampleImg(){
+    override fun showExampleImg() {
         skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowExampleImage)
     }
 
@@ -210,7 +213,8 @@ class SkinMakeViewModelImpl @Inject constructor(
     private fun submitSkin() {
         if (addMotion.value) {
             val skinMotion = skinMotions.value.find { it.isClicked }
-            _skinMotionIndex.value = if (skinMotion != null) skinMotions.value.indexOf(skinMotion) else -1
+            _skinMotionIndex.value =
+                if (skinMotion != null) skinMotions.value.indexOf(skinMotion) else -1
         }
         viewModelScope.launch {
             capsuleSkinsMakeUseCase(
@@ -225,7 +229,13 @@ class SkinMakeViewModelImpl @Inject constructor(
                 result.onSuccess {
                     skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.SuccessSkinMake)
                 }.onFail {
-                    skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.ShowToastMessage("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요."))
+                    skinMakeEvent(
+                        SkinMakeViewModel.SkinMakeEvent.ShowToastMessage(
+                            "서버에서 오류가 발생했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
                 skinMakeEvent(SkinMakeViewModel.SkinMakeEvent.DismissLoading)
             }

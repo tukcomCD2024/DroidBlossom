@@ -85,4 +85,6 @@
         <item>Public</item>
         <item>Group</item>
     </string-array>
+
+    <string name="reTryMessage">잠시 후 다시 시도해 주세요.</string>
 </resources>

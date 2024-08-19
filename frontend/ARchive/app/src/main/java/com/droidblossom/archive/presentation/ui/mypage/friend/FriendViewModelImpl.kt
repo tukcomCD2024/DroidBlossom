@@ -1,6 +1,8 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend
 
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.domain.model.friend.Friend
 import com.droidblossom.archive.domain.model.group.GroupSummary
@@ -160,7 +162,9 @@ class FriendViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
-                                "친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -190,7 +194,9 @@ class FriendViewModelImpl @Inject constructor(
                     }.onFail {
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
-                                "그룹 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                                "그룹 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }
@@ -216,7 +222,9 @@ class FriendViewModelImpl @Inject constructor(
                 }.onFail {
                     _friendEvent.emit(
                         FriendViewModel.FriendEvent.ShowToastMessage(
-                            "그룹 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+                            "그룹 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
                         )
                     )
                 }
@@ -250,7 +258,9 @@ class FriendViewModelImpl @Inject constructor(
                     }else{
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
-                                "친구 삭제 실패. 잠시후 시도해 주세요"
+                                "친구 삭제를 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
                             )
                         )
                     }

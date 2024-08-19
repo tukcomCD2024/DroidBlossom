@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group.mana
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
 import com.droidblossom.archive.data.dto.common.PagingRequestDto
 import com.droidblossom.archive.data.dto.group.request.InviteGroupRequestDto
@@ -39,13 +41,14 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
     private val getGroupInvitedUsersUseCase: GetGroupInvitedUsersUseCase,
     private val cancelGroupInviteUseCase: CancelGroupInviteUseCase,
     private val deleteGroupMemberUseCase: DeleteGroupMemberUseCase
-) : BaseViewModel(), ManagementGroupMemberViewModel{
+) : BaseViewModel(), ManagementGroupMemberViewModel {
 
     private val _groupId = MutableStateFlow(-1L)
     override val groupId: StateFlow<Long>
         get() = _groupId
 
-    private val _managementGroupMemberEvents = MutableSharedFlow<ManagementGroupMemberViewModel.ManagementGroupMemberEvent>()
+    private val _managementGroupMemberEvents =
+        MutableSharedFlow<ManagementGroupMemberViewModel.ManagementGroupMemberEvent>()
     override val managementGroupMemberEvents: SharedFlow<ManagementGroupMemberViewModel.ManagementGroupMemberEvent>
         get() = _managementGroupMemberEvents
 
@@ -90,7 +93,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
 
     private val invitableFriendsRVScrollEventChannel = Channel<Unit>(Channel.CONFLATED)
     private val invitableFriendsRVScrollEventFlow =
-        invitableFriendsRVScrollEventChannel.receiveAsFlow().throttleFirst(1000, TimeUnit.MILLISECONDS)
+        invitableFriendsRVScrollEventChannel.receiveAsFlow()
+            .throttleFirst(1000, TimeUnit.MILLISECONDS)
 
     private var getInvitableFriendListJob: Job? = null
 
@@ -122,7 +126,7 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
         }
     }
 
-    fun load(){
+    fun load() {
         getLatestInvitableFriendList()
         getLatestInvitedUserList()
         getGroupMemberList()
@@ -142,19 +146,25 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
         load()
     }
 
-    override fun getGroupMemberList(){
+    override fun getGroupMemberList() {
         viewModelScope.launch {
-            getGroupMembersInfoUseCase(groupId.value).collect{ result ->
+            getGroupMembersInfoUseCase(groupId.value).collect { result ->
                 result.onSuccess {
                     _groupMembers.value = it.groupMemberResponses
                 }.onFail {
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "그룹원 목록을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
         }
     }
 
-    override fun inviteFriendsToGroup(){
+    override fun inviteFriendsToGroup() {
         viewModelScope.launch {
             val targetIds = groupInviteeList.value.map { it.id }
             groupInviteUseCase(
@@ -162,20 +172,30 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     groupId.value,
                     targetIds
                 )
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     load()
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 성공했습니다."))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "그룹 초대를 성공했습니다."
+                        )
+                    )
                 }.onFail {
                     load()
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "그룹 초대를 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
         }
     }
 
-    override fun getInvitableFriendList(){
-        if (invitableFriendsHasNextPage.value){
+    override fun getInvitableFriendList() {
+        if (invitableFriendsHasNextPage.value) {
             getInvitableFriendListJob?.cancel()
             getInvitableFriendListJob = viewModelScope.launch {
                 friendForGroupInvitePageUseCase(
@@ -184,22 +204,29 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                         15,
                         invitableFriendsLastCreatedTime.value
                     )
-                ).collect{ result ->
+                ).collect { result ->
                     result.onSuccess {
                         _invitableFriendsHasNextPage.value = it.hasNext
-                        _invitableFriends.value =  invitableFriends.value + it.friends
-                        if (invitableFriends.value.isNotEmpty()){
+                        _invitableFriends.value = invitableFriends.value + it.friends
+                        if (invitableFriends.value.isNotEmpty()) {
                             _invitableFriendsCreatedTime.value = it.friends.last().createdAt
                         }
                     }.onFail {
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        managementGroupMemberEvent(
+                            ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                                "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                 }
             }
         }
 
     }
-    override fun getLatestInvitableFriendList(){
+
+    override fun getLatestInvitableFriendList() {
         _groupInviteeList.value = emptyList()
         getInvitableFriendListJob?.cancel()
         getInvitableFriendListJob = viewModelScope.launch {
@@ -209,37 +236,47 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     15,
                     DateUtils.dataServerString
                 )
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     _invitableFriendsHasNextPage.value = it.hasNext
                     _invitableFriends.value = it.friends
-                    if (invitableFriends.value.isNotEmpty()){
+                    if (invitableFriends.value.isNotEmpty()) {
                         _invitableFriendsCreatedTime.value = it.friends.last().createdAt
                     }
                 }.onFail {
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("친구 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
             managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
 
-    override fun onClickInvitableFriend(position: Int){
-        if (invitableFriends.value[position].isChecked){
+    override fun onClickInvitableFriend(position: Int) {
+        if (invitableFriends.value[position].isChecked) {
             _invitableFriends.value[position].isChecked = false
             _groupInviteeList.value -= invitableFriends.value[position]
-        }else{
-            if (remainingInvites >= invitableFriends.value.size){
+        } else {
+            if (remainingInvites >= invitableFriends.value.size) {
                 _invitableFriends.value[position].isChecked = true
                 _groupInviteeList.value += invitableFriends.value[position]
-            }else{
-                managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("현재 ${remainingInvites}명까지 초대 가능합니다."))
+            } else {
+                managementGroupMemberEvent(
+                    ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                        "현재 ${remainingInvites}명까지 초대 가능합니다."
+                    )
+                )
             }
         }
     }
 
-    override fun getInvitedUserList(){
-        if (invitedUsersHasNextPage.value){
+    override fun getInvitedUserList() {
+        if (invitedUsersHasNextPage.value) {
             getInvitedUserListJob?.cancel()
             getInvitedUserListJob = viewModelScope.launch {
                 getGroupInvitedUsersUseCase(
@@ -248,12 +285,18 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                         size = 15,
                         pagingId = invitedUsers.value.lastOrNull()?.groupInviteId
                     )
-                ).collect{ result ->
+                ).collect { result ->
                     result.onSuccess {
                         _invitedUsers.value += it.groupSendingInviteMembers
                         _invitedUsersHasNextPage.value = it.hasNext
                     }.onFail {
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 보낸 유저 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        managementGroupMemberEvent(
+                            ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                                "초대 보낸 유저 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                         managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
                     }
                 }
@@ -262,7 +305,8 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
         }
 
     }
-    override fun getLatestInvitedUserList(){
+
+    override fun getLatestInvitedUserList() {
         getInvitedUserListJob?.cancel()
         getInvitedUserListJob = viewModelScope.launch {
             getGroupInvitedUsersUseCase(
@@ -271,32 +315,51 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
                     size = 15,
                     pagingId = null
                 )
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     _invitedUsers.value = it.groupSendingInviteMembers
                     _invitedUsersHasNextPage.value = it.hasNext
                 }.onFail {
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대 보낸 유저 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("초대한 유저 불러오기 실패"))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "초대 보낸 유저 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
             managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.SwipeRefreshLayoutDismissLoading)
         }
     }
 
-    override fun onClickInvitedUser(position: Int){
+    override fun onClickInvitedUser(position: Int) {
         viewModelScope.launch {
             val user = invitedUsers.value[position]
-            cancelGroupInviteUseCase(groupInviteId = user.groupInviteId).collect{ result ->
+            cancelGroupInviteUseCase(groupInviteId = user.groupInviteId).collect { result ->
                 result.onSuccess {
                     _invitedUsers.value -= user
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대를 취소했습니다."))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "그룹 초대를 취소했습니다."
+                        )
+                    )
                 }.onFail {
-                    if (it == 404){
+                    if (it == 404) {
                         _invitedUsers.value -= user
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("이미 처리된 요청입니다."))
-                    }else{
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹 초대 취소를 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        managementGroupMemberEvent(
+                            ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                                "이미 처리된 요청입니다."
+                            )
+                        )
+                    } else {
+                        managementGroupMemberEvent(
+                            ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                                "그룹 초대 취소를 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                 }
 
@@ -309,17 +372,31 @@ class ManagementGroupMemberViewModelImpl @Inject constructor(
             deleteGroupMemberUseCase(
                 groupId = groupId.value,
                 groupMemberId = groupMember.memberId
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     _groupMembers.value -= groupMember
-                    managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 성공했습니다."))
+                    managementGroupMemberEvent(
+                        ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                            "그룹원 추방을 성공했습니다."
+                        )
+                    )
 
                 }.onFail {
-                    if (it == 404){
+                    if (it == 404) {
                         _groupMembers.value -= groupMember
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("이 그룹원은 이미 그룹에 속해 있지 않습니다."))
-                    }else{
-                        managementGroupMemberEvent(ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage("그룹원 추방을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        managementGroupMemberEvent(
+                            ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                                "이 그룹원은 이미 그룹에 속해 있지 않습니다."
+                            )
+                        )
+                    } else {
+                        managementGroupMemberEvent(
+                            ManagementGroupMemberViewModel.ManagementGroupMemberEvent.ShowToastMessage(
+                                "그룹원 추방을 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                 }
             }

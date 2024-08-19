@@ -2,6 +2,8 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.detail.group
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.droidblossom.archive.ARchiveApplication
+import com.droidblossom.archive.R
 import com.droidblossom.archive.data.dto.common.IdBasedPagingRequestDto
 import com.droidblossom.archive.domain.model.friend.FriendReqRequest
 import com.droidblossom.archive.domain.model.group.GroupMember
@@ -125,17 +127,33 @@ class GroupDetailViewModelImpl @Inject constructor(
                     _groupMembers.emit(it.members)
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.SwipeRefreshLayoutDismissLoading)
                 }.onFail {
-                    when(it){
+                    when (it) {
                         403 -> {
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("해당 그룹에 접근 권한이 없습니다."))
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "해당 그룹에 접근 권한이 없습니다."
+                                )
+                            )
                             groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                         }
+
                         404 -> {
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("삭제된 그룹입니다."))
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "삭제된 그룹입니다."
+                                )
+                            )
                             groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                         }
+
                         else -> {
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "그룹 정보를 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -160,16 +178,26 @@ class GroupDetailViewModelImpl @Inject constructor(
                         size = 15,
                         pagingId = capsules.value.lastOrNull()?.capsuleId
                     )
-                ).collect{ result ->
+                ).collect { result ->
                     result.onSuccess {
                         _capsules.value += it.capsules
                         _capsulesHasNextPage.value = it.hasNext
                     }.onFail {
-                        if (it == 403){
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("해당 그룹에 접근 권한이 없습니다."))
+                        if (it == 403) {
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "해당 그룹에 접근 권한이 없습니다."
+                                )
+                            )
                             groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
-                        }else{
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 캡슐을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                        } else {
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "그룹 캡슐을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                        R.string.reTryMessage
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -186,16 +214,22 @@ class GroupDetailViewModelImpl @Inject constructor(
                     size = 15,
                     pagingId = null
                 )
-            ).collect{ result ->
+            ).collect { result ->
                 result.onSuccess {
                     _capsules.value = it.capsules
                     _capsulesHasNextPage.value = it.hasNext
                 }.onFail {
-                    if (it == 403){
+                    if (it == 403) {
                         groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("해당 그룹에 접근 권한이 없습니다."))
                         groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
-                    }else{
-                        groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 캡슐을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    } else {
+                        groupDetailEvent(
+                            GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                "그룹 캡슐을 불러오는데 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -218,9 +252,9 @@ class GroupDetailViewModelImpl @Inject constructor(
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹에서 나왔습니다. 함께해 주셔서 고마워요!"))
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                 }.onFail {
-                    if (it == 404){
+                    if (it == 404) {
                         groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
-                    }else{
+                    } else {
                         groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 탈퇴를 실패했습니다."))
                     }
                 }
@@ -229,23 +263,33 @@ class GroupDetailViewModelImpl @Inject constructor(
         }
     }
 
-    override fun closureGroup(){
+    override fun closureGroup() {
         groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowLoading)
         viewModelScope.launch {
-            deleteGroupUseCase(groupId.value).collect{ result ->
+            deleteGroupUseCase(groupId.value).collect { result ->
                 result.onSuccess {
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹이 폐쇄되었습니다."))
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                 }.onFail {
                     when (it) {
                         400 -> {
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹원, 그룹 캡슐이 존재하면 그룹을 폐쇄할 수 없습니다."))
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "그룹원, 그룹 캡슐이 존재하면 그룹을 폐쇄할 수 없습니다."
+                                )
+                            )
                         }
+
                         404 -> {
                             groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.FinishGroupDetail)
                         }
+
                         else -> {
-                            groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("그룹 폐쇄를 실패했습니다."))
+                            groupDetailEvent(
+                                GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                                    "그룹 폐쇄를 실패했습니다."
+                                )
+                            )
                         }
                     }
                 }
@@ -282,7 +326,13 @@ class GroupDetailViewModelImpl @Inject constructor(
                     }
                     groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("친구 요청을 보냈습니다."))
                 }.onFail {
-                    groupDetailEvent(GroupDetailViewModel.GroupDetailEvent.ShowToastMessage("친구 요청을 실패했습니다. 잠시 후 다시 시도해주세요."))
+                    groupDetailEvent(
+                        GroupDetailViewModel.GroupDetailEvent.ShowToastMessage(
+                            "친구 요청을 실패했습니다. " + ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
                 }
             }
         }
