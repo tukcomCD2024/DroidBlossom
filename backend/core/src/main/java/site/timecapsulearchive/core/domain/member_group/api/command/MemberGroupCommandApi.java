@@ -146,10 +146,8 @@ public interface MemberGroupCommandApi {
     ResponseEntity<ApiSpec<String>> rejectGroupInvitation(
         Long memberId,
 
-        Long groupId,
-
-        @Parameter(in = ParameterIn.PATH, description = "그룹 초대 대상 아이디", required = true)
-        Long groupOwnerId
+        @Parameter(in = ParameterIn.PATH, description = "그룹 아이디", required = true)
+        Long groupId
     );
 
     @Operation(
