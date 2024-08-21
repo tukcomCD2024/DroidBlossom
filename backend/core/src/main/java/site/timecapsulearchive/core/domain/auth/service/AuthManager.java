@@ -56,12 +56,12 @@ public class AuthManager {
         final String certificationNumber,
         final String receiver
     ) {
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        final byte[] phoneBytes = receiver.getBytes(StandardCharsets.UTF_8);
 
         messageVerificationService.validVerificationMessage(memberId,
-            certificationNumber, plain);
+            certificationNumber, phoneBytes);
 
-        Long verifiedMemberId = memberService.updateVerifiedMember(memberId, plain);
+        Long verifiedMemberId = memberService.updateVerifiedMember(memberId, phoneBytes);
 
         return tokenManager.createNewToken(verifiedMemberId);
     }

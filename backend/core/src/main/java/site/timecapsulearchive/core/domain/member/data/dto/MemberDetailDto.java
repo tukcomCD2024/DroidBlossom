@@ -10,7 +10,7 @@ public record MemberDetailDto(
     String profileUrl,
     String tag,
     SocialType socialType,
-    String email,
+    ByteArrayWrapper email,
     ByteArrayWrapper phone,
     Long friendCount,
     Long groupCount,

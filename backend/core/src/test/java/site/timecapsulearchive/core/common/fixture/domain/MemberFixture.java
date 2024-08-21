@@ -49,11 +49,13 @@ public class MemberFixture {
      */
     public static Member member(int dataPrefix) {
         byte[] number = getPhoneBytes(dataPrefix);
+        byte[] email = (dataPrefix + "test@google.com").getBytes(StandardCharsets.UTF_8);
 
         return Member.builder()
             .socialType(SocialType.GOOGLE)
             .nickname(dataPrefix + "testNickname")
-            .email(dataPrefix + "test@google.com")
+            .email(aesEncryptionManager.encryptWithPrefixIV(email))
+            .emailHash(hashEncryptionManager.encrypt(email))
             .authId(dataPrefix + "test")
             .profileUrl(dataPrefix + "test.com")
             .tag(dataPrefix + "testTag")

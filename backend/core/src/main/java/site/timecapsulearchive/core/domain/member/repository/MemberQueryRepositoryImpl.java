@@ -77,7 +77,10 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         member.profileUrl,
                         member.tag,
                         member.socialType,
-                        member.email,
+                        Projections.constructor(
+                            ByteArrayWrapper.class,
+                            member.email
+                        ),
                         Projections.constructor(
                             ByteArrayWrapper.class,
                             member.phone
