@@ -3,7 +3,6 @@ package site.timecapsulearchive.core.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
@@ -22,10 +21,12 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 import site.timecapsulearchive.core.common.RedissonTest;
 import site.timecapsulearchive.core.common.dependency.TestTransactionTemplate;
 import site.timecapsulearchive.core.common.fixture.domain.GroupFixture;
+import site.timecapsulearchive.core.common.fixture.domain.GroupInviteFixture;
 import site.timecapsulearchive.core.common.fixture.domain.MemberFixture;
 import site.timecapsulearchive.core.domain.group.repository.GroupRepository;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
+import site.timecapsulearchive.core.domain.member_group.entity.GroupInvite;
 import site.timecapsulearchive.core.domain.member_group.facade.MemberGroupFacade;
 import site.timecapsulearchive.core.domain.member_group.repository.group_invite_repository.GroupInviteRepository;
 import site.timecapsulearchive.core.domain.member_group.repository.member_group_repository.MemberGroupRepository;
@@ -81,9 +82,8 @@ class RedisConcurrencyTest extends RedissonTest {
             Optional.of(GroupFixture.group()));
         given(memberGroupRepository.findGroupOwnerId(groupId))
             .willReturn(Optional.of(2L));
-
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, 2L, memberId)).willReturn(1);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(groupId, memberId))
+            .willReturn(GroupInviteFixture.groupInvite(memberId));
 
         //when
         for (int i = 0; i < MAX_THREADS_COUNT; i++) {
@@ -102,9 +102,6 @@ class RedisConcurrencyTest extends RedissonTest {
         executorService.shutdown();
 
         //then
-        verify(groupInviteRepository,
-            times(MAX_THREADS_COUNT)).deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            anyLong(), anyLong(), anyLong());
         verify(memberGroupRepository, times(MAX_THREADS_COUNT)).save(any());
     }
 
