@@ -40,8 +40,8 @@ class SearchFriendNumberFragment :
     lateinit var navController: NavController
 
     private val addFriendRVA by lazy {
-        AddPhoneSearchFriendRVA { position ->
-            viewModel.checkAddFriendList(position)
+        AddPhoneSearchFriendRVA { friend ->
+            viewModel.checkAddFriendList(friend)
         }
     }
 
@@ -175,30 +175,11 @@ class SearchFriendNumberFragment :
             navController.popBackStack()
         }
 
-        binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                if (!binding.searchOpenEditT.text.isNullOrEmpty()) {
-                    viewModel.searchTag()
-                }
-                true
-            }
-            false
-        }
-        binding.searchOpenEditT.addTextChangedListener {
-            viewModel.resetList()
-        }
-
         binding.searchOpenBtnT.setOnClickListener {
             val imm = requireActivity().getSystemService(InputMethodManager::class.java)
             imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
-            viewModel.searchTag()
         }
 
-        binding.searchOpenEditT.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                viewModel.closeSearchNum()
-            }
-        }
         binding.root.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val focusedView = binding.searchOpenBtn

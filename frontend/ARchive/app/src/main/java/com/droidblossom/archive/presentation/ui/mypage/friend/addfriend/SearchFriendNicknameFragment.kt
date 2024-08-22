@@ -166,9 +166,6 @@ class SearchFriendNicknameFragment :
             }
             false
         }
-        binding.searchOpenEditT.addTextChangedListener {
-            viewModel.resetList()
-        }
 
         binding.addCV.setOnClickListener {
             requestContactsCallPermissionLauncher.launch(permissionsToRequest)

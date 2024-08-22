@@ -5,12 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.droidblossom.archive.databinding.ItemAddFriendBinding
 import com.droidblossom.archive.databinding.ItemAddPhoneSearchFriendBinding
-import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.presentation.model.mypage.friend.AddTagSearchFriendUIModel
 
-class AddPhoneSearchFriendRVA(private val check: (Int) -> Unit) :
+class AddPhoneSearchFriendRVA(private val itemClick: (AddTagSearchFriendUIModel) -> Unit) :
     ListAdapter<AddTagSearchFriendUIModel, AddPhoneSearchFriendRVA.ItemViewHolder>(differ) {
 
     inner class ItemViewHolder(
@@ -20,7 +18,7 @@ class AddPhoneSearchFriendRVA(private val check: (Int) -> Unit) :
         fun bind(data: AddTagSearchFriendUIModel) {
             binding.item = data
             binding.root.setOnClickListener {
-                check(bindingAdapterPosition)
+                itemClick(data)
                 notifyItemChanged(bindingAdapterPosition)
             }
         }

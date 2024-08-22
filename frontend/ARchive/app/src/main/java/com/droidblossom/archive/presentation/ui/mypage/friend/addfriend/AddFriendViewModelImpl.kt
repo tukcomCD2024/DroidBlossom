@@ -123,17 +123,19 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-    fun checkAddFriendList(position: Int) {
+    fun checkAddFriendList(friend: AddTagSearchFriendUIModel) {
         viewModelScope.launch {
-            val newAddList = addFriendListUI.value
-            if (newAddList[position].isChecked) {
-                newAddList[position].isChecked = false
-                _checkedList.emit(newAddList.filter { it.isChecked })
-            } else {
-                newAddList[position].isChecked = true
-                _checkedList.emit(newAddList.filter { it.isChecked })
+            _addFriendListUI.value = addFriendListUI.value.map { item ->
+                if (item.id == friend.id) {
+                    item.isChecked = !item.isChecked
+                    if (item.isChecked) {
+                        _checkedList.value += item
+                    } else {
+                        _checkedList.value -= item
+                    }
+                }
+                item
             }
-            _addFriendListUI.emit(newAddList)
         }
     }
 
@@ -156,35 +158,6 @@ class AddFriendViewModelImpl @Inject constructor(
                     }
                 }
             }
-        }
-    }
-
-    fun resetList() {
-        viewModelScope.launch {
-            if (checkedList.value.isNotEmpty()) {
-                _checkedList.emit(listOf())
-            }
-            if (addFriendListUI.value.isNotEmpty()) {
-                _addFriendListUI.emit(listOf())
-            }
-        }
-    }
-
-
-    //Num
-    override fun searchNum() {
-        //respone에 이름 추가시 구현
-    }
-
-    override fun openSearchNum() {
-        viewModelScope.launch {
-            _isSearchNumOpen.emit(true)
-        }
-    }
-
-    fun closeSearchNum() {
-        viewModelScope.launch {
-            _isSearchNumOpen.emit(false)
         }
     }
 

@@ -26,10 +26,6 @@ interface AddFriendViewModel {
     //searchName
     fun searchTag()
 
-    //searchNum
-    fun searchNum()
-    fun openSearchNum()
-
     sealed class AddEvent {
         data class ShowToastMessage(val message : String) : AddEvent()
         object  OpenLoading : AddEvent()
