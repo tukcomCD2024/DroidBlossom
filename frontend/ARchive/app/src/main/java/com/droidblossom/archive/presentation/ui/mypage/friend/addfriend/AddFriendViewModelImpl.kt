@@ -219,9 +219,8 @@ class AddFriendViewModelImpl @Inject constructor(
                 _addFriendListUI.emit(_addFriendList.value)
             } else {
                 _addFriendListUI.emit(_addFriendList.value.filter {
-                    it.nickname.contains(
-                        searchFriendText.value
-                    )
+                    it.nickname.contains(searchFriendText.value, ignoreCase = true) ||
+                            it.name.contains(searchFriendText.value, ignoreCase = true)
                 })
             }
         }
