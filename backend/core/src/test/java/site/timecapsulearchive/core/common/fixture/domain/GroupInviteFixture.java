@@ -11,4 +11,14 @@ public class GroupInviteFixture {
         Member groupMember) {
         return Optional.of(GroupInvite.createOf(group, groupOwner, groupMember));
     }
+
+    public static Optional<GroupInvite> groupInvite(Long memberId) {
+        return Optional.of(
+            GroupInvite.createOf(
+                GroupFixture.group(),
+                MemberFixture.memberWithMemberId(memberId),
+                MemberFixture.memberWithMemberId(memberId + 1)
+            )
+        );
+    }
 }

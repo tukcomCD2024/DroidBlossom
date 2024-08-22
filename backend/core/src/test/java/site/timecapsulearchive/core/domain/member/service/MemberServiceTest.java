@@ -103,20 +103,4 @@ class MemberServiceTest {
         //then
         verify(memberRepository, times(1)).save(any(Member.class));
     }
-
-    @Test
-    void 태그가_중복되면_태그를_교체한다() {
-        //given
-        MemberTemporary memberTemporary = MemberTemporaryFixture.memberTemporary(MEMBER_ID);
-        String originTag = memberTemporary.getTag();
-        given(memberTemporaryRepository.findById(anyLong()))
-            .willReturn(Optional.of(memberTemporary));
-        given(memberRepository.checkTagDuplication(any())).willReturn(true);
-
-        //when
-        memberService.updateVerifiedMember(MEMBER_ID, RECEIVER.getBytes(StandardCharsets.UTF_8));
-
-        //then
-        assertThat(memberTemporary.getTag()).isNotEqualTo(originTag);
-    }
 }

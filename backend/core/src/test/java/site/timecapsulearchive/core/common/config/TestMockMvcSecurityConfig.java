@@ -13,7 +13,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
@@ -23,8 +27,6 @@ import site.timecapsulearchive.core.domain.member.entity.Role;
 import site.timecapsulearchive.core.global.api.limit.ApiLimitCheckInterceptor;
 import site.timecapsulearchive.core.global.api.limit.ApiLimitProperties;
 import site.timecapsulearchive.core.global.api.limit.ApiUsageCacheRepository;
-import site.timecapsulearchive.core.global.config.security.CommonSecurityDsl;
-import site.timecapsulearchive.core.global.config.security.JwtDsl;
 import site.timecapsulearchive.core.global.security.jwt.JwtAuthenticationFilter;
 import site.timecapsulearchive.core.global.security.jwt.JwtAuthenticationProvider;
 
@@ -34,11 +36,14 @@ public class TestMockMvcSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChainWithJwt(final HttpSecurity http) throws Exception {
-        http.apply(
-            CommonSecurityDsl.commonSecurityDsl()
-        );
-
         http
+            .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .headers(header -> header.frameOptions(FrameOptionsConfig::disable))
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
             .securityMatchers(
                 c -> c.requestMatchers(new NegatedRequestMatcher(antMatcher("/auth/login/**")))
             )
@@ -49,15 +54,12 @@ public class TestMockMvcSecurityConfig {
                     "/temporary-token/re-issue"
                 ).hasRole(Role.TEMPORARY.name())
                 .anyRequest().hasRole(Role.USER.name())
-            );
-
-        http.apply(
-            JwtDsl.jwtDsl(
-                jwtAuthenticationProvider(),
-                new ObjectMapper(),
-                notRequireAuthenticationMatcher()
             )
-        );
+            .authenticationProvider(jwtAuthenticationProvider())
+            .addFilterBefore(
+                jwtAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }

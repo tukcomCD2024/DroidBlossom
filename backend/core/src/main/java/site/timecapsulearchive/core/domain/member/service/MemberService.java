@@ -1,5 +1,7 @@
 package site.timecapsulearchive.core.domain.member.service;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,7 +24,6 @@ import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
 import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
-import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Slf4j
 @Service
@@ -37,8 +38,13 @@ public class MemberService {
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
-        final String tag = TagGenerator.generate(dto.email(), dto.socialType());
-        final MemberTemporary member = dto.toMemberTemporary(tag);
+        final String tag = NanoIdUtils.randomNanoId();
+        final byte[] emailBytes = dto.email().getBytes(StandardCharsets.UTF_8);
+        final MemberTemporary member = dto.toMemberTemporary(
+            tag,
+            aesEncryptionManager.encryptWithPrefixIV(emailBytes),
+            hashEncryptionManager.encrypt(emailBytes)
+        );
 
         final MemberTemporary savedMember = memberTemporaryRepository.save(member);
 
@@ -56,8 +62,7 @@ public class MemberService {
         final String authId,
         final SocialType socialType
     ) {
-        return memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType
-        );
+        return memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType);
     }
 
     /**
@@ -159,7 +164,6 @@ public class MemberService {
         } catch (DataIntegrityViolationException e) {
             throw new MemberTagDuplicatedException();
         }
-
     }
 
     @Transactional
@@ -199,26 +203,19 @@ public class MemberService {
             .orElseThrow(MemberNotFoundException::new);
 
         member.upDeclarationCount();
-
     }
 
     @Transactional
-    public Long updateVerifiedMember(final Long memberId, final byte[] plain) {
+    public Long updateVerifiedMember(final Long memberId, final byte[] phoneBytes) {
         final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
         memberTemporaryRepository.delete(memberTemporary);
 
-        boolean isDuplicateTag = memberRepository.checkTagDuplication(memberTemporary.getTag());
-        if (isDuplicateTag) {
-            log.warn("member tag duplicate - email:{}, tag:{}", memberTemporary.getEmail(),
-                memberTemporary.getTag());
-            memberTemporary.updateTagLowerCaseSocialType();
-            log.warn("member tag update - tag: {}", memberTemporary.getTag());
-        }
-
-        final Member verifiedMember = memberTemporary.toMember(hashEncryptionManager.encrypt(plain),
-            aesEncryptionManager.encryptWithPrefixIV(plain));
+        final Member verifiedMember = memberTemporary.toMember(
+            hashEncryptionManager.encrypt(phoneBytes),
+            aesEncryptionManager.encryptWithPrefixIV(phoneBytes)
+        );
 
         memberRepository.save(verifiedMember);
 
