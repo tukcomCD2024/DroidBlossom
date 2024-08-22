@@ -6,6 +6,7 @@ import site.timecapsulearchive.core.domain.friend.data.response.SearchTagFriendS
 @Builder
 public record SearchFriendSummaryDtoByTag(
     Long id,
+    String tag,
     String profileUrl,
     String nickname,
     Boolean isFriend,
@@ -16,6 +17,7 @@ public record SearchFriendSummaryDtoByTag(
     public SearchTagFriendSummaryResponse toResponse() {
         return SearchTagFriendSummaryResponse.builder()
             .id(id)
+            .tag(tag)
             .profileUrl(profileUrl)
             .nickname(nickname)
             .isFriend(isFriend)
