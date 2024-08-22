@@ -3,6 +3,7 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 import androidx.lifecycle.viewModelScope
 import com.droidblossom.archive.ARchiveApplication
 import com.droidblossom.archive.R
+import com.droidblossom.archive.data.dto.friend.request.FriendsReqRequestDto
 import com.droidblossom.archive.data.dto.friend.request.PhoneBooks
 import com.droidblossom.archive.domain.model.friend.FriendReqRequest
 import com.droidblossom.archive.domain.model.friend.FriendsSearchPhoneRequest
@@ -13,6 +14,7 @@ import com.droidblossom.archive.domain.usecase.friend.FriendsRequestUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsSearchPhoneUseCase
 import com.droidblossom.archive.domain.usecase.friend.FriendsSearchUseCase
 import com.droidblossom.archive.presentation.base.BaseViewModel
+import com.droidblossom.archive.presentation.model.mypage.friend.AddTagSearchFriendUIModel
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,9 +45,15 @@ class AddFriendViewModelImpl @Inject constructor(
     override val addFriendListUI: StateFlow<List<FriendsSearchResponse>>
         get() = _addFriendListUI
 
+    private val _addTagSearchFriendListUI = MutableStateFlow<List<AddTagSearchFriendUIModel>>(listOf())
+    override val addTagSearchFriendListUI: StateFlow<List<AddTagSearchFriendUIModel>>
+        get() = _addTagSearchFriendListUI
+
+
     private val _addFriendList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
     override val addFriendList: StateFlow<List<FriendsSearchResponse>>
         get() = _addFriendList
+
 
     override val searchFriendText: MutableStateFlow<String> = MutableStateFlow("")
     private val _checkedList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
@@ -63,31 +71,55 @@ class AddFriendViewModelImpl @Inject constructor(
 
 
     //Name
-    override fun requestFriends() {
+    override fun requestFriend(friendId: Long) {
         viewModelScope.launch {
-            checkedList.value.forEach { friend ->
-                friendsRequestUseCase(FriendReqRequest(friendId = friend.id)).collect { result ->
-                    result.onSuccess {
+            friendsRequestUseCase(FriendReqRequest(friendId = friendId)).collect { result ->
+                result.onSuccess {
+                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
+                    changeRequestUI(friendId)
+                }.onFail {
+                    if (it == 500) {
                         _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
-                    }.onFail {
-                        if (it == 500) {
-                            _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
-                        } else {
-                            _addEvent.emit(
-                                AddFriendViewModel.AddEvent.ShowToastMessage(
-                                    "친구 요청을 실패했습니다. " + ARchiveApplication.getString(
-                                        R.string.reTryMessage
-                                    )
+                        changeRequestUI(friendId)
+                    } else {
+                        _addEvent.emit(
+                            AddFriendViewModel.AddEvent.ShowToastMessage(
+                                "친구 요청을 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
                                 )
                             )
-                        }
+                        )
                     }
                 }
-                changeRequestUI(friend.id)
+            }
+        }
+
+
+    }
+
+    override fun requestFriendList(){
+        viewModelScope.launch {
+            val ids = checkedList.value.map { it.id }
+            friendListRequestUseCase(FriendsReqRequestDto(ids)).collect{ result ->
+                result.onSuccess {
+                    _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
+                    changeRequestsUI(ids)
+                }.onFail {
+                    if (it == 500) {
+                        _addEvent.emit(AddFriendViewModel.AddEvent.ShowToastMessage("친구 요청을 보냈습니다."))
+                        changeRequestsUI(ids)
+                    } else {
+                        _addEvent.emit(
+                            AddFriendViewModel.AddEvent.ShowToastMessage(
+                                "친구 요청을 실패했습니다. " + ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
+                    }
+                }
             }
             _checkedList.emit(listOf())
-            _addEvent.emit(AddFriendViewModel.AddEvent.NotificationChange)
-
         }
     }
 
@@ -109,7 +141,7 @@ class AddFriendViewModelImpl @Inject constructor(
         viewModelScope.launch {
             friendsSearchUseCase(FriendsSearchRequest(tagT.value)).collect { result ->
                 result.onSuccess { response ->
-                    _addFriendListUI.emit(listOf(response))
+                    _addTagSearchFriendListUI.emit(listOf(response.toAddTagSearchFriendUIModel()))
                 }.onFail {
                     if (it == 404) {
 
@@ -200,17 +232,30 @@ class AddFriendViewModelImpl @Inject constructor(
         }
     }
 
-    private fun changeRequestUI(id: Long) {
-        val newList = addFriendListUI.value
-        val index = newList.indexOfFirst {
-            it.id == id
+    private fun changeRequestsUI(friendIds:List<Long>){
+        _addFriendListUI.value = addFriendListUI.value.map { item ->
+            if (item.id in friendIds) {
+                item.copy(
+                    isFriendInviteToFriend = true,
+                    isChecked = false
+                )
+            } else {
+                item
+            }
         }
-        if (index != -1) {
-            newList[index].isFriendInviteToFriend = true
-            newList[index].isChecked = false
-            viewModelScope.launch {
-                _addFriendListUI.emit(newList)
+
+    }
+
+    private fun changeRequestUI(id: Long) {
+        _addTagSearchFriendListUI.value = addTagSearchFriendListUI.value.map { item ->
+            if (item.id == id) {
+                item.copy(
+                    isFriendInviteToFriend = true,
+                )
+            } else {
+                item
             }
         }
     }
+
 }

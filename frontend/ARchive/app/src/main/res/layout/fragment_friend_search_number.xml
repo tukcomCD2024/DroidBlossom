@@ -181,7 +181,7 @@
             android:alpha="@{vm.checkedList.size() == 0 ? 0.5f : 1f}"
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
-            android:onClick="@{()->vm.requestFriends()}"
+            android:onClick="@{()->vm.requestFriendList()}"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             app:circularflow_radiusInDP="20dp"
             app:layout_constraintBottom_toBottomOf="parent"

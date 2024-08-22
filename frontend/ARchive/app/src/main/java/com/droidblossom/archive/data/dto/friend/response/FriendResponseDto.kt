@@ -27,7 +27,8 @@ data class FriendResponseDto(
         isFriendInviteToFriend = false,
         isFriendInviteToMe = false,
         name = "",
-        isChecked = false
+        isChecked = false,
+        tag = ""
     )
 
     fun toFriendsForGroupInvite() = FriendForGroupInvite(

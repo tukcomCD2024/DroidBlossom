@@ -20,6 +20,7 @@ import com.droidblossom.archive.databinding.FragmentFriendSearchNicknameBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddTagSearchFriendRVA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -31,9 +32,9 @@ class SearchFriendNicknameFragment :
 
     lateinit var navController: NavController
 
-    private val addFriendRVA by lazy {
-        AddFriendRVA { position ->
-            viewModel.checkAddFriendList(position)
+    private val addTagSearchFriendRVA by lazy {
+        AddTagSearchFriendRVA { friendId ->
+            viewModel.requestFriend(friendId)
         }
     }
 
@@ -149,7 +150,7 @@ class SearchFriendNicknameFragment :
         layoutParams.topMargin += getStatusBarHeight()
         binding.closeBtn.layoutParams = layoutParams
 
-        binding.recycleView.adapter = addFriendRVA
+        binding.recycleView.adapter = addTagSearchFriendRVA
         binding.recycleView.setHasFixedSize(true)
 
         binding.closeBtn.setOnClickListener {
@@ -188,11 +189,6 @@ class SearchFriendNicknameFragment :
                         is AddFriendViewModel.AddEvent.ShowToastMessage -> {
                             showToastMessage(event.message)
                         }
-
-                        is AddFriendViewModel.AddEvent.NotificationChange -> {
-                            addFriendRVA.notifyDataSetChanged()
-                        }
-
                         else -> {}
                     }
                 }
@@ -201,8 +197,8 @@ class SearchFriendNicknameFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addFriendListUI.collect { friends ->
-                    addFriendRVA.submitList(friends)
+                viewModel.addTagSearchFriendListUI.collect { friends ->
+                    addTagSearchFriendRVA.submitList(friends)
                 }
             }
         }

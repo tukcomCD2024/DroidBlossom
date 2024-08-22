@@ -1,7 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 
 import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
-import com.droidblossom.archive.presentation.ui.mypage.MyPageViewModel
+import com.droidblossom.archive.presentation.model.mypage.friend.AddTagSearchFriendUIModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +12,7 @@ interface AddFriendViewModel {
 
     //searchName
     val addFriendListUI : StateFlow<List<FriendsSearchResponse>>
+    val addTagSearchFriendListUI : StateFlow<List<AddTagSearchFriendUIModel>>
     val checkedList : StateFlow<List<FriendsSearchResponse>>
     val tagT : MutableStateFlow<String>
     val searchFriendText: MutableStateFlow<String>
@@ -20,7 +21,8 @@ interface AddFriendViewModel {
     val addFriendList: StateFlow<List<FriendsSearchResponse>>
 
 
-    fun requestFriends()
+    fun requestFriend(friendId: Long)
+    fun requestFriendList()
     //searchName
     fun searchTag()
 
@@ -32,6 +34,5 @@ interface AddFriendViewModel {
         data class ShowToastMessage(val message : String) : AddEvent()
         object  OpenLoading : AddEvent()
         object  CloseLoading : AddEvent()
-        object NotificationChange : AddEvent()
     }
 }

@@ -7,6 +7,7 @@ data class FriendsSearchResponseDto(
     val id: Long,
     val profileUrl: String,
     val originName : String?,
+    val tag: String?,
     val nickname: String,
     val isFriend: Boolean,
     val isFriendInviteToFriend : Boolean,
@@ -23,6 +24,7 @@ data class FriendsSearchResponseDto(
         isFriendInviteToFriend = this.isFriendInviteToFriend,
         isFriendInviteToMe = this.isFriendInviteToMe,
         name = this.originName ?: "",
+        tag = this.tag ?: "",
         isChecked = false
     )
 }

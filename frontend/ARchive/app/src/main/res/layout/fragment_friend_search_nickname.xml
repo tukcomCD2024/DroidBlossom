@@ -114,7 +114,7 @@
             android:id="@+id/addCV"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
-            android:layout_marginBottom="22dp"
+            android:layout_marginBottom="48dp"
             android:background="@drawable/rectangle_solid_corner_30dp"
             android:backgroundTint="#B21B3AC4"
             android:elevation="2dp"
@@ -190,7 +190,6 @@
             android:background="@drawable/corner_radius_8"
             android:backgroundTint="@color/main_1"
             android:gravity="center"
-            android:onClick="@{()->vm.requestFriends()}"
             android:text="추가하기"
             android:textAppearance="@style/TextAppearance.App.subtitle1"
             android:textColor="@color/white"
@@ -198,6 +197,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             tools:alpha="0.5" />
 
 

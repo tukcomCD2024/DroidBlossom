@@ -255,10 +255,6 @@ class SearchFriendNumberFragment :
                             showLoading(requireContext())
                         }
 
-                        is AddFriendViewModel.AddEvent.NotificationChange -> {
-                            addFriendRVA.notifyDataSetChanged()
-                        }
-
                         else -> {}
                     }
                 }
