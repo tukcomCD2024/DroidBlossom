@@ -18,6 +18,8 @@ import com.droidblossom.archive.presentation.model.mypage.friend.AddTagSearchFri
 import com.droidblossom.archive.util.onFail
 import com.droidblossom.archive.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -38,6 +40,8 @@ class AddFriendViewModelImpl @Inject constructor(
 
     override val addEvent: SharedFlow<AddFriendViewModel.AddEvent>
         get() = _addEvent.asSharedFlow()
+
+    private var searchJob: Job? = null
 
     //name
 
@@ -140,13 +144,15 @@ class AddFriendViewModelImpl @Inject constructor(
     }
 
     override fun searchTag() {
-        viewModelScope.launch {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(300)
             friendsSearchUseCase(FriendsSearchRequest(tagT.value)).collect { result ->
                 result.onSuccess { response ->
                     _addTagSearchFriendListUI.emit(listOf(response.toAddTagSearchFriendUIModel()))
                 }.onFail {
                     if (it == 404) {
-
+                        _addTagSearchFriendListUI.emit(listOf())
                     } else {
                         _addEvent.emit(
                             AddFriendViewModel.AddEvent.ShowToastMessage(

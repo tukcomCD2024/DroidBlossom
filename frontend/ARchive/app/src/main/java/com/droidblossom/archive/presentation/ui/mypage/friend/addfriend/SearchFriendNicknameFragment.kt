@@ -3,6 +3,8 @@ package com.droidblossom.archive.presentation.ui.mypage.friend.addfriend
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -156,6 +158,18 @@ class SearchFriendNicknameFragment :
         binding.closeBtn.setOnClickListener {
             (activity as AddFriendActivity).finish()
         }
+
+        binding.searchOpenEditT.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun afterTextChanged(p0: Editable?) {
+                p0?.let {
+                    viewModel.searchTag()
+                }
+            }
+        })
 
         binding.searchOpenEditT.setOnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {

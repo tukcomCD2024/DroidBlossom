@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin"
             android:layout_marginTop="12dp"
-            android:text="친구를 검색하여 추가해주세요"
+            android:text="태그를 검색하여 친구를 추가하세요"
             android:textAppearance="@style/TextAppearance.App.h2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/closeBtn" />
@@ -109,6 +109,19 @@
             app:spanCount="3"
             tools:itemCount="1"
             tools:listitem="@layout/item_add_friend" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/listIsEmptyT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="240dp"
+            android:text="친구가 없습니다."
+            android:visibility="@{vm.addTagSearchFriendListUI.size() == 0 ? View.VISIBLE : View.GONE}"
+            android:textAppearance="@style/TextAppearance.App.body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/addCV"
