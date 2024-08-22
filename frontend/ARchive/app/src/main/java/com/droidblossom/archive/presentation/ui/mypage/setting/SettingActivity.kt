@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.droidblossom.archive.R
 import com.droidblossom.archive.databinding.ActivitySettingBinding
 import com.droidblossom.archive.presentation.base.BaseActivity
@@ -27,6 +28,9 @@ class SettingActivity :
             binding.settingFragmentContainer.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.topMargin += getStatusBarHeight()
         binding.settingFragmentContainer.layoutParams = layoutParams
+
+        window.statusBarColor = ContextCompat.getColor(this, R.color.main_bg_1)
+
     }
 
     companion object {

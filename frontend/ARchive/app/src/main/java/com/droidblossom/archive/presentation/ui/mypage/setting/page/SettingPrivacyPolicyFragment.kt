@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebSettings
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -25,6 +26,7 @@ class SettingPrivacyPolicyFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
         initView()
     }
 
@@ -47,6 +49,11 @@ class SettingPrivacyPolicyFragment :
 
     override fun observeData() {
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.main_bg_1)
     }
 
 }
