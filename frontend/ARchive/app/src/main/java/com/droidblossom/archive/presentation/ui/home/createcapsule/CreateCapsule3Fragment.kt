@@ -116,6 +116,11 @@ class CreateCapsule3Fragment :
 
             nextBtn.setOnClickListener {
 
+                if (viewModel.capsuleLocationName.value == "현재 위치를 확인하는 중입니다."){
+                    showToastMessage("현재 위치를 확인하는 중입니다. 잠시만 기다려 주세요.")
+                    return@setOnClickListener
+                }
+
                 if (viewModel.isSelectTimeCapsule.value && (viewModel.capsuleLatitude.value == 0.0 || viewModel.capsuleTitle.value.isEmpty() || viewModel.capsuleContent.value.isEmpty() || viewModel.dueTime.value.isEmpty())) {
                     showToastMessage("타임캡슐은 시간, 제목, 내용이 필수 입니다.")
                     return@setOnClickListener

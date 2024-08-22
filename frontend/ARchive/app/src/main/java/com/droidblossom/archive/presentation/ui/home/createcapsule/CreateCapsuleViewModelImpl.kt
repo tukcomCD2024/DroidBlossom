@@ -125,7 +125,7 @@ class CreateCapsuleViewModelImpl @Inject constructor(
 
     override val capsuleContent: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val _capsuleLocationName = MutableStateFlow("")
+    private val _capsuleLocationName = MutableStateFlow("현재 위치를 확인하는 중입니다.")
     override val capsuleLocationName: StateFlow<String>
         get() = _capsuleLocationName
 
