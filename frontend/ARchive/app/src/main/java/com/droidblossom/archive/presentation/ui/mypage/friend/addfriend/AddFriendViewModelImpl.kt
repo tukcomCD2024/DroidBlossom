@@ -41,8 +41,8 @@ class AddFriendViewModelImpl @Inject constructor(
 
     //name
 
-    private val _addFriendListUI = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
-    override val addFriendListUI: StateFlow<List<FriendsSearchResponse>>
+    private val _addFriendListUI = MutableStateFlow<List<AddTagSearchFriendUIModel>>(listOf())
+    override val addFriendListUI: StateFlow<List<AddTagSearchFriendUIModel>>
         get() = _addFriendListUI
 
     private val _addTagSearchFriendListUI = MutableStateFlow<List<AddTagSearchFriendUIModel>>(listOf())
@@ -50,14 +50,14 @@ class AddFriendViewModelImpl @Inject constructor(
         get() = _addTagSearchFriendListUI
 
 
-    private val _addFriendList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
-    override val addFriendList: StateFlow<List<FriendsSearchResponse>>
+    private val _addFriendList = MutableStateFlow<List<AddTagSearchFriendUIModel>>(listOf())
+    override val addFriendList: StateFlow<List<AddTagSearchFriendUIModel>>
         get() = _addFriendList
 
 
     override val searchFriendText: MutableStateFlow<String> = MutableStateFlow("")
-    private val _checkedList = MutableStateFlow<List<FriendsSearchResponse>>(listOf())
-    override val checkedList: StateFlow<List<FriendsSearchResponse>>
+    private val _checkedList = MutableStateFlow<List<AddTagSearchFriendUIModel>>(listOf())
+    override val checkedList: StateFlow<List<AddTagSearchFriendUIModel>>
         get() = _checkedList
 
     override val tagT: MutableStateFlow<String> = MutableStateFlow("")
@@ -195,8 +195,9 @@ class AddFriendViewModelImpl @Inject constructor(
                 it.originPhone.length == 11 && it.originPhone.substring(0, 3) == "010"
             })).collect { result ->
                 result.onSuccess { response ->
-                    _addFriendList.emit(response.friends)
-                    _addFriendListUI.emit(response.friends)
+                    val uiModelList = response.friends.map { it.toAddTagSearchFriendUIModel() }
+                    _addFriendList.emit(uiModelList)
+                    _addFriendListUI.emit(uiModelList)
                     _addEvent.emit(AddFriendViewModel.AddEvent.CloseLoading)
                 }.onFail {
                     _addEvent.emit(

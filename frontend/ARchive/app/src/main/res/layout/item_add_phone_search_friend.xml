@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.droidblossom.archive.presentation.model.mypage.friend.AddTagSearchFriendUIModel" />
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="@{item.friend || item.isFriendInviteToMe || item.isFriendInviteToFriend ? false : true}">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="4dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@{item.checked ? @color/main_2 : @color/white}"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImg"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@color/main_1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    bind:baseImg="@{@drawable/base_user}"
+                    bind:url="@{item.profileUrl}" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/nameT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="@{item.nickname}"
+                    android:textAppearance="@style/TextAppearance.App.body2"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@id/checkBtn"
+                    app:layout_constraintStart_toEndOf="@id/profileImg"
+                    app:layout_constraintTop_toTopOf="@id/profileImg" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/contactNameT"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.App.caption2"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintEnd_toEndOf="@id/nameT"
+                    app:layout_constraintStart_toStartOf="@id/nameT"
+                    app:layout_constraintTop_toBottomOf="@id/nameT"
+                    android:text="@{item.name}" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/requestStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.App.caption4"
+                    android:textColor="@color/gray_600"
+                    app:layout_constraintEnd_toEndOf="@id/nameT"
+                    app:layout_constraintStart_toStartOf="@id/nameT"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    bind:friendName="@{item.tag}"
+                    bind:isFriend="@{item.friend}"
+                    bind:isInviteToMe="@{item.friendInviteToMe}"
+                    bind:isInviteToFriend="@{item.friendInviteToFriend}"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/checkBtn"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="@{item.checked ? @color/main_2 : @color/main_4}"
+                    android:visibility="@{item.friend || item.friendInviteToMe || item.friendInviteToFriend? View.GONE : View.VISIBLE}"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/profileImg"
+                    app:strokeWidth="0dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@{item.checked ? @drawable/ic_check_24 : @drawable/ic_plus_small_24}" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

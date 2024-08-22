@@ -25,6 +25,7 @@ import com.droidblossom.archive.databinding.FragmentFriendSearchNumberBinding
 import com.droidblossom.archive.presentation.base.BaseFragment
 import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddFriendRVA
+import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.adapter.AddPhoneSearchFriendRVA
 import com.droidblossom.archive.util.ContactsUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class SearchFriendNumberFragment :
     lateinit var navController: NavController
 
     private val addFriendRVA by lazy {
-        AddFriendRVA { position ->
+        AddPhoneSearchFriendRVA { position ->
             viewModel.checkAddFriendList(position)
         }
     }

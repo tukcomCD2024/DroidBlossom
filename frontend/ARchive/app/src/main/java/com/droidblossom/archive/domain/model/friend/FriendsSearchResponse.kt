@@ -22,6 +22,7 @@ data class FriendsSearchResponse (
         isFriendInviteToFriend = this.isFriendInviteToFriend,
         isFriendInviteToMe = this.isFriendInviteToMe,
         name = this.name,
-        tag = this.tag
+        tag = this.tag,
+        isChecked = isChecked
     )
 }

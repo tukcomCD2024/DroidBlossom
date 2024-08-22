@@ -11,14 +11,14 @@ interface AddFriendViewModel {
     val addEvent : SharedFlow<AddEvent>
 
     //searchName
-    val addFriendListUI : StateFlow<List<FriendsSearchResponse>>
+    val addFriendListUI : StateFlow<List<AddTagSearchFriendUIModel>>
     val addTagSearchFriendListUI : StateFlow<List<AddTagSearchFriendUIModel>>
-    val checkedList : StateFlow<List<FriendsSearchResponse>>
+    val checkedList : StateFlow<List<AddTagSearchFriendUIModel>>
     val tagT : MutableStateFlow<String>
     val searchFriendText: MutableStateFlow<String>
     //searchNum
     val isSearchNumOpen : StateFlow<Boolean>
-    val addFriendList: StateFlow<List<FriendsSearchResponse>>
+    val addFriendList: StateFlow<List<AddTagSearchFriendUIModel>>
 
 
     fun requestFriend(friendId: Long)

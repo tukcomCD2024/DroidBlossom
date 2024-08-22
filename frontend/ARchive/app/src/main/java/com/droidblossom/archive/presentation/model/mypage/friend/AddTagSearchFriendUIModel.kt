@@ -8,5 +8,6 @@ data class AddTagSearchFriendUIModel(
     var isFriendInviteToFriend : Boolean,
     var isFriendInviteToMe : Boolean,
     val name : String,
-    val tag: String
+    val tag: String,
+    var isChecked: Boolean
 )
