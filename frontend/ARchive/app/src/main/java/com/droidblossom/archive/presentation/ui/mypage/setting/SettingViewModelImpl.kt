@@ -265,6 +265,7 @@ class SettingViewModelImpl @Inject constructor(
                 )
             ).collect { result ->
                 result.onSuccess {
+                    isTagDuplication.emit(false)
                     _myInfo.emit(
                         myInfo.value.copy(
                             nickname = modifyNameText.value,
@@ -273,14 +274,23 @@ class SettingViewModelImpl @Inject constructor(
                     )
                     _settingUserEvent.emit(SettingViewModel.SettingUserEvent.Back)
                 }.onFail {
-                    isTagDuplication.emit(true)
-                    _settingUserEvent.emit(
-                        SettingViewModel.SettingUserEvent.ShowToastMessage(
-                            "정보 수정에 실패했습니다. "+ ARchiveApplication.getString(
-                                R.string.reTryMessage
+                    if (it == 400){
+                        isTagDuplication.emit(true)
+                        _settingUserEvent.emit(
+                            SettingViewModel.SettingUserEvent.ShowToastMessage(
+                                "이미 사용 중인 태그입니다. 다른 태그를 입력해 주세요."
                             )
                         )
-                    )
+                    }else{
+                        _settingUserEvent.emit(
+                            SettingViewModel.SettingUserEvent.ShowToastMessage(
+                                "정보 수정에 실패했습니다. "+ ARchiveApplication.getString(
+                                    R.string.reTryMessage
+                                )
+                            )
+                        )
+                    }
+
                 }
             }
         }
