@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +16,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 import site.timecapsulearchive.core.global.util.NullCheck;
-import site.timecapsulearchive.core.global.util.TagGenerator;
 
 @Entity
 @Table(name = "member")
@@ -51,9 +49,11 @@ public class Member extends BaseEntity {
     @Column(name = "notification_enabled", nullable = false)
     private Boolean notificationEnabled;
 
-    @Email
     @Column(name = "email", nullable = false)
-    private String email;
+    private byte[] email;
+
+    @Column(name = "email_hash", nullable = false)
+    private byte[] emailHash;
 
     @Column(name = "fcm_token")
     private String fcmToken;
@@ -80,12 +80,13 @@ public class Member extends BaseEntity {
     private Boolean phoneSearchAvailable = Boolean.FALSE;
 
     @Builder
-    private Member(String profileUrl, String nickname, SocialType socialType, String email,
-        String authId, String password, String tag, byte[] phone, byte[] phoneHash) {
+    private Member(String profileUrl, String nickname, SocialType socialType,
+        String authId, String password, String tag, byte[] phone, byte[] phoneHash,
+        byte[] email, byte[] emailHash
+    ) {
         this.profileUrl = NullCheck.validate(profileUrl, "Entity: profile");
         this.nickname = NullCheck.validate(nickname, "Entity: nickname");
         this.socialType = NullCheck.validate(socialType, "Entity: socialType");
-        this.email = NullCheck.validate(email, "Entity: email");
         this.tag = NullCheck.validate(tag, "Entity: tag");
         this.authId = NullCheck.validate(authId, "Entity: authId");
         this.isVerified = true;
@@ -93,10 +94,8 @@ public class Member extends BaseEntity {
         this.password = password;
         this.phone = phone;
         this.phoneHash = phoneHash;
-    }
-
-    public void updateTagLowerCaseSocialType() {
-        this.tag = TagGenerator.lowercase(email, socialType);
+        this.email = email;
+        this.emailHash = emailHash;
     }
 
     public void updateData(String nickname, String tag) {

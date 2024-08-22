@@ -1,11 +1,9 @@
 package site.timecapsulearchive.core.domain.auth.api;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +17,6 @@ import site.timecapsulearchive.core.domain.auth.data.request.TemporaryTokenReIss
 import site.timecapsulearchive.core.domain.auth.data.request.TokenReIssueRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.VerificationMessageSendRequest;
 import site.timecapsulearchive.core.domain.auth.data.request.VerificationNumberValidRequest;
-import site.timecapsulearchive.core.domain.auth.data.response.OAuth2UriResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TemporaryTokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.TokenResponse;
 import site.timecapsulearchive.core.domain.auth.data.response.VerificationMessageSendResponse;
@@ -34,34 +31,6 @@ import site.timecapsulearchive.core.global.common.response.SuccessCode;
 public class AuthApiController implements AuthApi {
 
     private final AuthManager authManager;
-
-    @GetMapping(value = "/login/url/kakao", produces = {"application/json"})
-    @Override
-    public ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(final HttpServletRequest request) {
-        final String kakaoLoginUrl = authManager.getOAuth2KakaoUrl(request);
-
-        return ResponseEntity.ok(OAuth2UriResponse.from(kakaoLoginUrl));
-    }
-
-    @GetMapping(value = "/login/url/google", produces = {"application/json"})
-    @Override
-    public ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(final HttpServletRequest request) {
-        final String googleLoginUrl = authManager.getOauth2GoogleUrl(request);
-
-        return ResponseEntity.ok(OAuth2UriResponse.from(googleLoginUrl));
-    }
-
-    @GetMapping(value = "/login/oauth2/code/kakao", produces = {"application/json"})
-    @Override
-    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByKakao() {
-        throw new UnsupportedOperationException();
-    }
-
-    @GetMapping(value = "/login/oauth2/code/google", produces = {"application/json"})
-    @Override
-    public ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByGoogle() {
-        throw new UnsupportedOperationException();
-    }
 
     @PostMapping(
         value = "/temporary-token/re-issue",

@@ -41,15 +41,15 @@ public record MemberDetailResponse(
 
     public static MemberDetailResponse createOf(
         final MemberDetailDto detailDto,
-        final Function<byte[], String> phoneDecryption
+        final Function<byte[], String> aesEncryptionManager
     ) {
         return new MemberDetailResponse(
             detailDto.nickname(),
             detailDto.profileUrl(),
             detailDto.tag(),
             detailDto.socialType(),
-            detailDto.email(),
-            phoneDecryption.apply(detailDto.phone().data()),
+            aesEncryptionManager.apply(detailDto.email().data()),
+            aesEncryptionManager.apply(detailDto.phone().data()),
             detailDto.friendCount(),
             detailDto.groupCount(),
             detailDto.tagSearchAvailable(),
