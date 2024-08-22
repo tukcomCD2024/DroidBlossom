@@ -10,6 +10,9 @@ public record SearchTagFriendSummaryResponse(
     @Schema(description = "검색된 사용자 아이디")
     Long id,
 
+    @Schema(description = "사용자 태그")
+    String tag,
+
     @Schema(description = "검색된 사용자 프로필")
     String profileUrl,
 
