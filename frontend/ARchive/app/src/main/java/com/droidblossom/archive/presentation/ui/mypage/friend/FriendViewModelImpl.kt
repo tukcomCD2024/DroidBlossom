@@ -97,13 +97,21 @@ class FriendViewModelImpl @Inject constructor(
     init {
         viewModelScope.launch {
             scrollFriendEventFlow.collect {
-                getFriendList()
+                if (friendListUI.value.isEmpty()){
+                    getLatestFriendList()
+                }else{
+                    getFriendList()
+                }
             }
 
         }
         viewModelScope.launch {
             scrollGroupEventFlow.collect {
-                getGroupList()
+                if (groupListUI.value.isEmpty()){
+                    getLatestFriendList()
+                }else{
+                    getFriendList()
+                }
             }
         }
     }
@@ -151,14 +159,11 @@ class FriendViewModelImpl @Inject constructor(
                 ).collect { result ->
                     result.onSuccess {
                         friendHasNextPage.value = it.hasNext
-                        if (friendListUI.value.isEmpty()) {
-                            _friendListUI.emit(it.friends)
-                            _friendList.emit(it.friends)
-                        } else {
-                            _friendListUI.emit(_friendListUI.value + it.friends)
-                            _friendList.emit(friendList.value + it.friends)
+                        _friendListUI.value = friendList.value + it.friends
+                        _friendList.value = friendListUI.value + it.friends
+                        if (friendListUI.value.isNotEmpty()) {
+                            friendLastCreatedTime.value = it.friends.last().createdAt
                         }
-                        friendLastCreatedTime.value = it.friends.last().createdAt
                     }.onFail {
                         _friendEvent.emit(
                             FriendViewModel.FriendEvent.ShowToastMessage(
@@ -173,22 +178,51 @@ class FriendViewModelImpl @Inject constructor(
         }
     }
 
+    override fun getLatestFriendList() {
+        getFriendListJob?.cancel()
+        getFriendListJob = viewModelScope.launch {
+            friendsPageUseCase(
+                PagingRequestDto(
+                    15,
+                    DateUtils.dataServerString
+                )
+            ).collect { result ->
+                result.onSuccess {
+                    friendHasNextPage.value = it.hasNext
+                    _friendListUI.value = it.friends
+                    _friendList.value = it.friends
+                    if (friendListUI.value.isNotEmpty()) {
+                        friendLastCreatedTime.value = friendListUI.value.last().createdAt
+                    }
+                }.onFail {
+                    _friendEvent.emit(
+                        FriendViewModel.FriendEvent.ShowToastMessage(
+                            "친구 목록을 불러오는데 실패했습니다. "+ ARchiveApplication.getString(
+                                R.string.reTryMessage
+                            )
+                        )
+                    )
+                }
+            }
+            _friendEvent.emit(FriendViewModel.FriendEvent.OnRefreshEnd)
+        }
+    }
+
     override fun getGroupList() {
         if (groupHasNextPage.value) {
             getGroupListJob?.cancel()
             getGroupListJob = viewModelScope.launch {
                 getGroupPageUseCase(
                     PagingRequestDto(
-                        100,
+                        15,
                         groupLastCreatedTime.value
                     )
                 ).collect { result ->
                     result.onSuccess {
                         groupHasNextPage.value = it.hasNext
-                        if (_groupListUi.value.isEmpty()) {
-                            _groupListUi.emit(it.groups)
-                        } else {
-                            _groupListUi.emit(_groupListUi.value + it.groups)
+                        _groupListUi.value = groupListUI.value + it.groups
+                        if (groupListUI.value.isNotEmpty()) {
+                            groupLastCreatedTime.value = groupListUI.value.last().createdAt
                         }
                         groupLastCreatedTime.value = it.groups.last().createdAt
                     }.onFail {
@@ -205,20 +239,21 @@ class FriendViewModelImpl @Inject constructor(
         }
     }
 
-    override fun getGroupLastList() {
+    override fun getLatestGroupList() {
         getGroupListJob?.cancel()
         getGroupListJob = viewModelScope.launch {
             getGroupPageUseCase(
                 PagingRequestDto(
-                    100,
+                    15,
                     DateUtils.dataServerString
                 )
             ).collect { result ->
                 result.onSuccess {
                     groupHasNextPage.value = it.hasNext
-                    _groupListUi.emit(it.groups)
-                    groupLastCreatedTime.value = it.groups.last().createdAt
-                    _friendEvent.emit(FriendViewModel.FriendEvent.OnRefreshEnd)
+                    _groupListUi.value = it.groups
+                    if (groupListUI.value.isNotEmpty()){
+                        groupLastCreatedTime.value = it.groups.last().createdAt
+                    }
                 }.onFail {
                     _friendEvent.emit(
                         FriendViewModel.FriendEvent.ShowToastMessage(
@@ -229,6 +264,7 @@ class FriendViewModelImpl @Inject constructor(
                     )
                 }
             }
+            _friendEvent.emit(FriendViewModel.FriendEvent.OnRefreshEnd)
         }
     }
 

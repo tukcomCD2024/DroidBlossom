@@ -67,7 +67,7 @@ class GroupListFragment :
         })
 
         binding.swipeRefreshL.setOnRefreshListener {
-            viewModel.getGroupLastList()
+            viewModel.getLatestGroupList()
         }
     }
 
@@ -75,6 +75,10 @@ class GroupListFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.groupListUI.collect { groups ->
+                    if (binding.swipeRefreshL.isRefreshing){
+                        binding.swipeRefreshL.isRefreshing = false
+                        binding.groupRV.scrollToPosition(0)
+                    }
                     groupAdapter.submitList(groups)
                 }
             }
@@ -85,4 +89,5 @@ class GroupListFragment :
         binding.swipeRefreshL.isRefreshing = false
         binding.groupRV.scrollToPosition(0)
     }
+
 }

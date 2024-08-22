@@ -36,27 +36,17 @@ class FriendListFragment :
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
 
-        initView()
         initRV()
-    }
-
-    private fun initView(){
-        binding.searchOpenEditT.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) =Unit
-
-            override fun afterTextChanged(p0: Editable?) {
-                p0?.let {
-                    viewModel.searchFriend()
-                }
-            }
-        })
     }
 
     private fun initRV() {
         binding.friendRV.adapter = friendRVA
         binding.friendRV.setHasFixedSize(true)
+
+        binding.swipeRefreshL.setOnRefreshListener {
+            viewModel.getLatestFriendList()
+        }
+
         binding.friendRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -78,10 +68,19 @@ class FriendListFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendListUI.collect { friends ->
+                    if (binding.swipeRefreshL.isRefreshing){
+                        binding.swipeRefreshL.isRefreshing = false
+                        binding.friendRV.scrollToPosition(0)
+                    }
                     friendRVA.submitList(friends)
                 }
             }
         }
+    }
+
+    fun onEndSwipeRefresh() {
+        binding.swipeRefreshL.isRefreshing = false
+        binding.friendRV.scrollToPosition(0)
     }
 
 }

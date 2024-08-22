@@ -1,9 +1,7 @@
 package com.droidblossom.archive.presentation.ui.mypage.friend
 
 import com.droidblossom.archive.domain.model.friend.Friend
-import com.droidblossom.archive.domain.model.friend.FriendsSearchResponse
 import com.droidblossom.archive.domain.model.group.GroupSummary
-import com.droidblossom.archive.presentation.ui.mypage.friend.addfriend.AddFriendViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +29,7 @@ interface FriendViewModel {
     fun closeSearchFriend()
     fun searchFriend()
     fun getFriendList()
+    fun getLatestFriendList()
     fun changeDeleteOpen(previousPosition: Int?, currentPosition: Int)
     fun deleteFriend(friend: Friend)
 
@@ -39,7 +38,7 @@ interface FriendViewModel {
     fun closeSearchGroup()
     fun searchGroup()
     fun getGroupList()
-    fun getGroupLastList()
+    fun getLatestGroupList()
     fun removeGroup(groupId: Long)
 
     sealed class FriendEvent {
