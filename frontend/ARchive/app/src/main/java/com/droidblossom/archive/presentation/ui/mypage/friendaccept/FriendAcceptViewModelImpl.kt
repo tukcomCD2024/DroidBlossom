@@ -186,6 +186,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
             friendDenyRequestUseCase(friend.id).collect { result ->
                 result.onSuccess {
                     removeFriendItem(friend)
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "친구 요청을 거절했습니다."
+                        )
+                    )
                 }.onFail {
                     if (it == 404){
                         removeFriendItem(friend)
@@ -214,6 +219,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
             friendAcceptRequestUseCase(FriendAcceptRequest(friend.id)).collect { result ->
                 result.onSuccess {
                     removeFriendItem(friend)
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "친구 요청을 수락했습니다."
+                        )
+                    )
                 }.onFail {
                     if (it == 404){
                         removeFriendItem(friend)
@@ -309,6 +319,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
             groupDenyRequestUseCase(group.groupId).collect { result ->
                 result.onSuccess {
                     removeGroupItem(group)
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "그룹 요청을 거절했습니다."
+                        )
+                    )
                 }.onFail {
                     if (it == 404){
                         removeGroupItem(group)
@@ -336,6 +351,11 @@ class FriendAcceptViewModelImpl @Inject constructor(
             groupAcceptRequestUseCase(group.groupId).collect { result ->
                 result.onSuccess {
                     removeGroupItem(group)
+                    _friendAcceptEvent.emit(
+                        FriendAcceptViewModel.FriendAcceptEvent.ShowToastMessage(
+                            "그룹 요청을 수락했습니다."
+                        )
+                    )
                 }.onFail {
                     if (it == 404){
                         removeGroupItem(group)
