@@ -40,10 +40,9 @@ interface GroupService {
         @Path("group_id") groupId : Long
     ) : Response<ResponseBody<String>>
 
-    @DELETE("groups/{group_id}/member/{target_id}/reject")
+    @DELETE("groups/{group_id}/reject")
     suspend fun deleteRejectGroupInviteApi(
         @Path("group_id") groupId : Long,
-        @Path("target_id") targetId : Long,
     ) : Response<ResponseBody<String>>
 
     @GET("groups/{group_id}/detail")

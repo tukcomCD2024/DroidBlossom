@@ -12,11 +12,11 @@ import javax.inject.Inject
 class DenyInviteGroupUseCase @Inject constructor(
     private val repository: GroupRepository
 ) {
-    suspend operator fun invoke(groupId: Long, userId: Long) =
+    suspend operator fun invoke(groupId: Long) =
         flow {
             try {
                 emit(
-                    repository.deleteRejectGroupInviteRequest(groupId = groupId, targetId = userId)
+                    repository.deleteRejectGroupInviteRequest(groupId = groupId)
                         .onSuccess {
 
                         }.onFail {
