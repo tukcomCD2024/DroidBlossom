@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 import site.timecapsulearchive.notification.data.dto.GroupAcceptNotificationDto;
 import site.timecapsulearchive.notification.data.dto.GroupInviteNotificationDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.exception.MessageNotSendAbleException;
-import site.timecapsulearchive.notification.infra.fcm.FCMManager;
-import site.timecapsulearchive.notification.infra.fcm.FcmMessageData;
+import site.timecapsulearchive.notification.infra.fcm.FCMMessageData;
 import site.timecapsulearchive.notification.infra.s3.S3PreSignedUrlManager;
 
 @Component
 @RequiredArgsConstructor
 public class GroupFcmManagerImpl implements GroupFcmManager {
 
-    private final FCMManager fcmManager;
     private final S3PreSignedUrlManager s3PreSignedUrlManager;
 
+    @Trace
     public void sendGroupInviteNotifications(
         final GroupInviteNotificationDto dto,
         final CategoryName categoryName,
@@ -32,12 +32,12 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
                 .sendEachForMulticast(
                     MulticastMessage.builder()
                         .addAllTokens(fcmTokens)
-                        .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
-                        .putData(FcmMessageData.STATUS.getData(),
+                        .putData(FCMMessageData.TOPIC.getData(), String.valueOf(categoryName))
+                        .putData(FCMMessageData.STATUS.getData(),
                             String.valueOf(dto.notificationStatus()))
-                        .putData(FcmMessageData.TITLE.getData(), dto.title())
-                        .putData(FcmMessageData.TEXT.getData(), dto.text())
-                        .putData(FcmMessageData.IMAGE.getData(),
+                        .putData(FCMMessageData.TITLE.getData(), dto.title())
+                        .putData(FCMMessageData.TEXT.getData(), dto.text())
+                        .putData(FCMMessageData.IMAGE.getData(),
                             s3PreSignedUrlManager.createS3PreSignedUrlForGet(dto.groupProfileUrl()))
                         .build()
                 );
@@ -46,6 +46,7 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
         }
     }
 
+    @Trace
     public void sendGroupAcceptNotification(
         final GroupAcceptNotificationDto dto,
         final CategoryName categoryName,
@@ -55,11 +56,11 @@ public class GroupFcmManagerImpl implements GroupFcmManager {
             FirebaseMessaging.getInstance()
                 .send(
                     Message.builder()
-                        .putData(FcmMessageData.TOPIC.getData(), String.valueOf(categoryName))
-                        .putData(FcmMessageData.STATUS.getData(),
+                        .putData(FCMMessageData.TOPIC.getData(), String.valueOf(categoryName))
+                        .putData(FCMMessageData.STATUS.getData(),
                             String.valueOf(dto.notificationStatus()))
-                        .putData(FcmMessageData.TITLE.getData(), dto.title())
-                        .putData(FcmMessageData.TEXT.getData(), dto.text())
+                        .putData(FCMMessageData.TITLE.getData(), dto.title())
+                        .putData(FCMMessageData.TEXT.getData(), dto.text())
                         .setToken(fcmToken)
                         .build()
                 );

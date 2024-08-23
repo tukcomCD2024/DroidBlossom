@@ -9,23 +9,26 @@ import site.timecapsulearchive.notification.data.dto.CapsuleSkinNotificationSend
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.fcm.capsuleskin.CapsuleSkinFcmManager;
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationRepository;
+import site.timecapsulearchive.notification.service.dto.MemberNotificationInfoDto;
+import site.timecapsulearchive.notification.service.validator.NotificationSendValidator;
 
 @Service
 @RequiredArgsConstructor
 public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
 
-
     private final CapsuleSkinFcmManager capsuleSkinFcmManager;
-
+    private final NotificationSendValidator notificationSendValidator;
     private final NotificationRepository notificationRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
     private final TransactionTemplate transactionTemplate;
 
+    @Trace
     public void sendCapsuleSkinAlarm(final CapsuleSkinNotificationSendDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -39,8 +42,11 @@ public class CapsuleSkinAlarmService implements CapsuleSkinAlarmListener {
             }
         });
 
-        final String fcmToken = memberRepository.findFCMToken(dto.memberId());
-        capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN, fcmToken);
+        final MemberNotificationInfoDto notificationInfoDto = memberRepository.findFCMToken(
+            dto.memberId());
+        if (notificationSendValidator.canSend(notificationInfoDto)) {
+            capsuleSkinFcmManager.sendCapsuleSkinNotification(dto, CategoryName.CAPSULE_SKIN,
+                notificationInfoDto.fcmToken());
+        }
     }
-
 }

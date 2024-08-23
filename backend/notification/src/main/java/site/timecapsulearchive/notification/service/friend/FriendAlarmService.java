@@ -11,22 +11,27 @@ import site.timecapsulearchive.notification.data.dto.FriendNotificationsDto;
 import site.timecapsulearchive.notification.entity.CategoryName;
 import site.timecapsulearchive.notification.entity.Notification;
 import site.timecapsulearchive.notification.entity.NotificationCategory;
+import site.timecapsulearchive.notification.global.log.Trace;
 import site.timecapsulearchive.notification.infra.fcm.friend.FriendFcmManager;
 import site.timecapsulearchive.notification.repository.member.MemberRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationCategoryRepository;
 import site.timecapsulearchive.notification.repository.notification.NotificationRepository;
+import site.timecapsulearchive.notification.service.dto.MemberNotificationInfoDto;
+import site.timecapsulearchive.notification.service.validator.NotificationSendValidator;
 
 @Service
 @RequiredArgsConstructor
 public class FriendAlarmService implements FriendAlarmListener {
 
     private final FriendFcmManager friendFcmManager;
+    private final NotificationSendValidator notificationSendValidator;
     private final NotificationRepository notificationRepository;
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final MemberRepository memberRepository;
     private final TransactionTemplate transactionTemplate;
 
-
+    @Trace
+    @Override
     public void sendFriendRequestNotification(final FriendNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -40,12 +45,16 @@ public class FriendAlarmService implements FriendAlarmListener {
             }
         });
 
-        final String fcmToken = memberRepository.findFCMToken(dto.targetId());
-        if (fcmToken != null && !fcmToken.isBlank()) {
-            friendFcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST, fcmToken);
+        final MemberNotificationInfoDto notificationInfoDto = memberRepository.findFCMToken(
+            dto.targetId());
+        if (notificationSendValidator.canSend(notificationInfoDto)) {
+            friendFcmManager.sendFriendNotification(dto, CategoryName.FRIEND_REQUEST,
+                notificationInfoDto.fcmToken());
         }
     }
 
+    @Trace
+    @Override
     public void sendFriendAcceptNotification(final FriendNotificationDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -59,13 +68,16 @@ public class FriendAlarmService implements FriendAlarmListener {
             }
         });
 
-        final String fcmToken = memberRepository.findFCMToken(dto.targetId());
-        if (fcmToken != null && !fcmToken.isBlank()) {
-            friendFcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT, fcmToken);
+        final MemberNotificationInfoDto notificationInfoDto = memberRepository.findFCMToken(
+            dto.targetId());
+        if (notificationSendValidator.canSend(notificationInfoDto)) {
+            friendFcmManager.sendFriendNotification(dto, CategoryName.FRIEND_ACCEPT,
+                notificationInfoDto.fcmToken());
         }
     }
 
-
+    @Trace
+    @Override
     public void sendFriendRequestNotifications(final FriendNotificationsDto dto) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
@@ -78,16 +90,15 @@ public class FriendAlarmService implements FriendAlarmListener {
             }
         });
 
-        final List<String> fcmTokens = getTargetFcmTokens(dto.targetIds());
-        if (fcmTokens != null && !fcmTokens.isEmpty()) {
-            friendFcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT, fcmTokens);
+        final List<String> filteredFCMTokens = memberRepository.findFCMTokens(dto.targetIds())
+            .stream()
+            .filter(notificationSendValidator::canSend)
+            .map(MemberNotificationInfoDto::fcmToken)
+            .toList();
+
+        if (!filteredFCMTokens.isEmpty()) {
+            friendFcmManager.sendFriendNotifications(dto, CategoryName.FRIEND_ACCEPT,
+                filteredFCMTokens);
         }
     }
-
-    private List<String> getTargetFcmTokens(List<Long> targetIds) {
-        return memberRepository.findFCMTokens(targetIds)
-            .stream()
-            .toList();
-    }
-
 }
