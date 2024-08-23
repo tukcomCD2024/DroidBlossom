@@ -16,18 +16,6 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
 
     void delete(GroupInvite groupInvite);
 
-    @Query("delete from GroupInvite gi "
-        + "where gi.group.id =:groupId "
-        + "and gi.groupOwner.id =:groupOwnerId "
-        + "and gi.groupMember.id =:groupMemberId"
-    )
-    @Modifying
-    int deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-        @Param("groupId") Long groupId,
-        @Param("groupOwnerId") Long groupOwnerId,
-        @Param("groupMemberId") Long groupMemberId
-    );
-
     @Query("delete from GroupInvite gi where gi.id in :groupInviteIds")
     @Modifying
     void bulkDelete(@Param("groupInviteIds") List<Long> groupInviteIds);
@@ -47,5 +35,7 @@ public interface GroupInviteRepository extends Repository<GroupInvite, Long>,
         @Param("groupIds") List<Long> groupIds,
         @Param("deletedAt") ZonedDateTime deletedAt
     );
+
+    Optional<GroupInvite> findGroupInviteByGroupIdAndGroupMemberId(Long groupId, Long groupMemberId);
 }
 

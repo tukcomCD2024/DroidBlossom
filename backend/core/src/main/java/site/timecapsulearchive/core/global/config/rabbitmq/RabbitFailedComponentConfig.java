@@ -2,7 +2,7 @@ package site.timecapsulearchive.core.global.config.rabbitmq;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +12,13 @@ public class RabbitFailedComponentConfig {
 
     @Bean
     public Queue capsuleSkinFailQueue() {
-        return new Queue(RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getFailComponent(), true);
+        return new Queue(
+            RabbitmqComponentConstants.CAPSULE_SKIN_QUEUE.getFailComponent(), true);
     }
 
     @Bean
-    public DirectExchange capsuleSkinFailExchange() {
-        return new DirectExchange(
+    public FanoutExchange capsuleSkinFailExchange() {
+        return new FanoutExchange(
             RabbitmqComponentConstants.CAPSULE_SKIN_EXCHANGE.getFailComponent());
     }
 
@@ -25,8 +26,7 @@ public class RabbitFailedComponentConfig {
     public Binding capsuleSkinFailBinding() {
         return BindingBuilder
             .bind(capsuleSkinFailQueue())
-            .to(capsuleSkinFailExchange())
-            .withQueueName();
+            .to(capsuleSkinFailExchange());
     }
 
     @Bean
@@ -36,8 +36,8 @@ public class RabbitFailedComponentConfig {
     }
 
     @Bean
-    public DirectExchange groupInviteFailExchange() {
-        return new DirectExchange(
+    public FanoutExchange groupInviteFailExchange() {
+        return new FanoutExchange(
             RabbitmqComponentConstants.GROUP_INVITE_NOTIFICATION_EXCHANGE.getFailComponent());
     }
 
@@ -45,9 +45,9 @@ public class RabbitFailedComponentConfig {
     public Binding groupInviteFailBinding() {
         return BindingBuilder
             .bind(groupInviteFailQueue())
-            .to(groupInviteFailExchange())
-            .withQueueName();
+            .to(groupInviteFailExchange());
     }
+
 
     @Bean
     public Queue groupAcceptFailQueue() {
@@ -56,8 +56,8 @@ public class RabbitFailedComponentConfig {
     }
 
     @Bean
-    public DirectExchange groupAcceptFailExchange() {
-        return new DirectExchange(
+    public FanoutExchange groupAcceptFailExchange() {
+        return new FanoutExchange(
             RabbitmqComponentConstants.GROUP_ACCEPT_NOTIFICATION_EXCHANGE.getFailComponent());
     }
 
@@ -65,9 +65,9 @@ public class RabbitFailedComponentConfig {
     public Binding groupAcceptFailBinding() {
         return BindingBuilder
             .bind(groupAcceptFailQueue())
-            .to(groupAcceptFailExchange())
-            .withQueueName();
+            .to(groupAcceptFailExchange());
     }
+
 
     @Bean
     public Queue friendRequestFailQueue() {
@@ -77,8 +77,8 @@ public class RabbitFailedComponentConfig {
     }
 
     @Bean
-    public DirectExchange friendRequestFailExchange() {
-        return new DirectExchange(
+    public FanoutExchange friendRequestFailExchange() {
+        return new FanoutExchange(
             RabbitmqComponentConstants.FRIEND_REQUEST_NOTIFICATION_EXCHANGE.getFailComponent());
     }
 
@@ -86,8 +86,7 @@ public class RabbitFailedComponentConfig {
     public Binding friendRequestFailBinding() {
         return BindingBuilder
             .bind(friendRequestFailQueue())
-            .to(friendRequestFailExchange())
-            .withQueueName();
+            .to(friendRequestFailExchange());
     }
 
     @Bean
@@ -98,8 +97,8 @@ public class RabbitFailedComponentConfig {
     }
 
     @Bean
-    public DirectExchange friendAcceptFailExchange() {
-        return new DirectExchange(
+    public FanoutExchange friendAcceptFailExchange() {
+        return new FanoutExchange(
             RabbitmqComponentConstants.FRIEND_ACCEPT_NOTIFICATION_EXCHANGE.getFailComponent());
     }
 
@@ -107,7 +106,26 @@ public class RabbitFailedComponentConfig {
     public Binding friendAcceptFailBinding() {
         return BindingBuilder
             .bind(friendAcceptFailQueue())
-            .to(friendAcceptFailExchange())
-            .withQueueName();
+            .to(friendAcceptFailExchange());
+    }
+
+    @Bean
+    public Queue batchFriendRequestsFailQueue() {
+        return new Queue(
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_QUEUE.getFailComponent(),
+            true);
+    }
+
+    @Bean
+    public FanoutExchange batchFriendRequestsFailExchange() {
+        return new FanoutExchange(
+            RabbitmqComponentConstants.BATCH_FRIEND_REQUESTS_NOTIFICATION_EXCHANGE.getFailComponent());
+    }
+
+    @Bean
+    public Binding batchFriendRequestsFailBinding() {
+        return BindingBuilder
+            .bind(batchFriendRequestsFailQueue())
+            .to(batchFriendRequestsFailExchange());
     }
 }

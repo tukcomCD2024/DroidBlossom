@@ -1,6 +1,5 @@
 package site.timecapsulearchive.core.domain.auth.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,30 +14,9 @@ import site.timecapsulearchive.core.domain.member.service.MemberService;
 @RequiredArgsConstructor
 public class AuthManager {
 
-    private static final String KAKAO_AUTHORIZATION_ENDPOINT = "/auth/login/kakao";
-    private static final String GOOGLE_AUTHORIZATION_ENDPOINT = "/auth/login/google";
-
     private final TokenManager tokenManager;
     private final MemberService memberService;
     private final MessageVerificationService messageVerificationService;
-
-    public String getOAuth2KakaoUrl(final HttpServletRequest request) {
-        final String baseUrl = request.getRequestURL().toString();
-
-        return baseUrl.replace(
-            request.getRequestURI(),
-            request.getContextPath() + KAKAO_AUTHORIZATION_ENDPOINT
-        );
-    }
-
-    public String getOauth2GoogleUrl(final HttpServletRequest request) {
-        final String baseUrl = request.getRequestURL().toString();
-
-        return baseUrl.replace(
-            request.getRequestURI(),
-            request.getContextPath() + GOOGLE_AUTHORIZATION_ENDPOINT
-        );
-    }
 
     public TemporaryTokenDto reIssueTemporaryToken(final String authId,
         final SocialType socialType) {
@@ -78,12 +56,12 @@ public class AuthManager {
         final String certificationNumber,
         final String receiver
     ) {
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        final byte[] phoneBytes = receiver.getBytes(StandardCharsets.UTF_8);
 
         messageVerificationService.validVerificationMessage(memberId,
-            certificationNumber, plain);
+            certificationNumber, phoneBytes);
 
-        Long verifiedMemberId = memberService.updateVerifiedMember(memberId, plain);
+        Long verifiedMemberId = memberService.updateVerifiedMember(memberId, phoneBytes);
 
         return tokenManager.createNewToken(verifiedMemberId);
     }

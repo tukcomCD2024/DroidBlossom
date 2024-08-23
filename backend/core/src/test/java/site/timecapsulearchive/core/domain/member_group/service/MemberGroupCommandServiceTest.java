@@ -148,15 +148,13 @@ class MemberGroupCommandServiceTest {
         //given
         Long memberId = 1L;
         Long groupId = 1L;
-        Long targetId = 2L;
 
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(1);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(
+            groupId, memberId)).willReturn(GroupInviteFixture.groupInvite(memberId));
 
         //when
         // then
-        assertThatCode(
-            () -> groupMemberCommandService.rejectRequestGroup(memberId, groupId, targetId))
+        assertThatCode(() -> groupMemberCommandService.rejectRequestGroup(memberId, groupId))
             .doesNotThrowAnyException();
     }
 
@@ -165,15 +163,14 @@ class MemberGroupCommandServiceTest {
         //given
         Long memberId = 1L;
         Long groupId = 1L;
-        Long targetId = 2L;
 
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, targetId, memberId)).willReturn(0);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(
+            groupId, memberId)).willReturn(Optional.empty());
 
         //when
         // then
         assertThatThrownBy(
-            () -> groupMemberCommandService.rejectRequestGroup(memberId, groupId, targetId))
+            () -> groupMemberCommandService.rejectRequestGroup(memberId, groupId))
             .isInstanceOf(GroupInviteNotFoundException.class)
             .hasMessageContaining(ErrorCode.GROUP_INVITATION_NOT_FOUND_ERROR.getMessage());
     }
@@ -191,8 +188,8 @@ class MemberGroupCommandServiceTest {
             Optional.of(GroupFixture.group()));
         given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(2L));
 
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, 2L, memberId)).willReturn(1);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(groupId, memberId))
+            .willReturn(GroupInviteFixture.groupInvite(memberId));
 
         //when
         groupMemberFacade.acceptGroupInvite(memberId, groupId);
@@ -216,8 +213,8 @@ class MemberGroupCommandServiceTest {
         given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(
             Optional.of(groupOwnerId));
 
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, groupOwnerId, memberId)).willReturn(1);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(groupId, memberId))
+            .willReturn(GroupInviteFixture.groupInvite(memberId));
 
         //when
         GroupAcceptNotificationDto groupAcceptNotificationDto = groupMemberCommandService.acceptGroupInvite(
@@ -246,8 +243,8 @@ class MemberGroupCommandServiceTest {
             Optional.of(GroupFixture.group()));
         given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(2L));
 
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, 2L, memberId)).willReturn(0);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(
+            groupId, memberId)).willReturn(Optional.empty());
 
         //when
         //then
@@ -265,8 +262,8 @@ class MemberGroupCommandServiceTest {
 
         given(groupRepository.getTotalGroupMemberCount(groupId)).willReturn(Optional.of(30L));
         given(memberGroupRepository.findGroupOwnerId(groupId)).willReturn(Optional.of(2L));
-        given(groupInviteRepository.deleteGroupInviteByGroupIdAndGroupOwnerIdAndGroupMemberId(
-            groupId, 2L, memberId)).willReturn(1);
+        given(groupInviteRepository.findGroupInviteByGroupIdAndGroupMemberId(groupId, memberId))
+            .willReturn(GroupInviteFixture.groupInvite(memberId));
 
         assertThatThrownBy(
             () -> groupMemberCommandService.acceptGroupInvite(memberId, groupId))

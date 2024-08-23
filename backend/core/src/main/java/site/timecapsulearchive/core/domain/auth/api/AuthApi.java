@@ -23,65 +23,6 @@ import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 
 public interface AuthApi {
-
-    @Operation(
-        summary = "카카오 로그인 페이지",
-        description = """
-            oauth2 kakao 인증 페이지 url을 반환한다.
-            """,
-        tags = {"oauth2"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<OAuth2UriResponse> getOAuth2KakaoUrl(HttpServletRequest request);
-
-
-    @Operation(
-        summary = "구글 로그인 페이지",
-        description = """
-            oauth2 google 인증 페이지 url을 반환한다.
-            """,
-        tags = {"oauth2"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<OAuth2UriResponse> getOAuth2GoogleUrl(HttpServletRequest request);
-
-    @Operation(
-        summary = "카카오 인증 성공시 임시 인증 토큰 발급",
-        description = "oauth2 kakao 인증 성공시 임시 인증 토큰을 발급한다. (oauth2 로그인 성공시 리다이렉트 엔드포인트로 문서화 목적) ",
-        tags = {"oauth2"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByKakao();
-
-
-    @Operation(
-        summary = "구글 인증 성공시 임시 인증 토큰 발급",
-        description = "oauth2 google 인증 성공시 임시 인증 토큰을 발급한다. (oauth2 로그인 성공시 리다이렉트 엔드포인트로 문서화 목적) ",
-        tags = {"oauth2"}
-    )
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "ok"
-        )
-    })
-    ResponseEntity<TemporaryTokenResponse> getTemporaryTokenByGoogle();
-
     @Operation(
         summary = "다른 소셜 프로바이더의 앱으로 인증한 클라이언트 아이디로 회원가입",
         description = """
@@ -139,6 +80,7 @@ public interface AuthApi {
                         
             로그인된 사용자만 가능하다.
             """,
+        security = {@SecurityRequirement(name = "user_token")},
         tags = {"auth"}
     )
     @ApiResponses(value = {
