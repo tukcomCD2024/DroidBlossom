@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="240dp"
-            android:text="스킨이 없습니다."
+            android:text="보유중인 스킨이 없습니다."
             android:textAppearance="@style/TextAppearance.App.body1"
             android:visibility="@{vm.skins.size() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
