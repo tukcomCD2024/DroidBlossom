@@ -313,24 +313,28 @@ class HomeFragment : BaseFragment<HomeViewModelImpl, FragmentHomeBinding>(R.layo
 
     private fun fetchCapsulesNearUser() {
         locationUtil.getCurrentLocation { latitude, longitude ->
-            val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else DEFATULTRADIUS
-            if (viewModel.isFriendsCapsuleDisplay.value &&
-                (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL ||
-                        viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
-            ) {
-                viewModel.getNearbyMyAndFriendsCapsules(
-                    latitude,
-                    longitude,
-                    radius,
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
+            if (latitude >= 33.0 && latitude <= 43.0 && longitude >= 124.0 && longitude <= 132.0) {
+                val radius = if (clusterer.map != null) getRadiusForCurrentZoom() else DEFATULTRADIUS
+                if (viewModel.isFriendsCapsuleDisplay.value &&
+                    (viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.ALL ||
+                            viewModel.filterCapsuleSelect.value == HomeViewModel.CapsuleFilter.PUBLIC)
+                ) {
+                    viewModel.getNearbyMyAndFriendsCapsules(
+                        latitude,
+                        longitude,
+                        radius,
+                        viewModel.filterCapsuleSelect.value.toString()
+                    )
+                } else {
+                    viewModel.getNearbyMyCapsules(
+                        latitude,
+                        longitude,
+                        radius,
+                        viewModel.filterCapsuleSelect.value.toString()
+                    )
+                }
             } else {
-                viewModel.getNearbyMyCapsules(
-                    latitude,
-                    longitude,
-                    radius,
-                    viewModel.filterCapsuleSelect.value.toString()
-                )
+                showToastMessage("현재 위치가 대한민국 내에 있는지 확인해주세요. 대한민국 내에서만 주변 캡슐을 조회할 수 있습니다.")
             }
         }
     }
