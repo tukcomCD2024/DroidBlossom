@@ -31,14 +31,19 @@ object ContactsUtils {
                 val name = cursor.getString(nameIndex)
                 var number = cursor.getString(numberIndex)
                 number = number.replace("-", "")
-                numberList.add(PhoneBooks(number,name))
+                numberList.add(PhoneBooks(number, name))
                 Log.d("GetContact", "이름 : $name 번호 : $number")
             }
+            cursor.close()
         }
-        numberList.removeIf {
-            it.originPhone == tm.line1Number.replace("+82","0")
+
+        val line1Number = tm.line1Number
+        if (line1Number != null) {
+            numberList.removeIf {
+                it.originPhone == line1Number.replace("+82", "0")
+            }
         }
-        cursor!!.close()
+
         return numberList.toList()
     }
 }
