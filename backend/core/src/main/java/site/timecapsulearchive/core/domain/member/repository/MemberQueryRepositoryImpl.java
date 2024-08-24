@@ -151,4 +151,14 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
         return Optional.empty();
     }
+
+    @Override
+    public boolean checkPhoneHashDuplication(final byte[] encrypt) {
+        final Integer count = jpaQueryFactory.selectOne()
+            .from(member)
+            .where(member.phoneHash.eq(encrypt))
+            .fetchFirst();
+
+        return count != null;
+    }
 }

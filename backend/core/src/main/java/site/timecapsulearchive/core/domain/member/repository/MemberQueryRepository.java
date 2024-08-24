@@ -31,4 +31,5 @@ public interface MemberQueryRepository {
 
     Optional<ByteArrayWrapper> findMemberPhoneHash(final Long memberId);
 
+    boolean checkPhoneHashDuplication(byte[] encrypt);
 }
