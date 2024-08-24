@@ -14,7 +14,9 @@ import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
+import site.timecapsulearchive.core.domain.auth.exception.PhoneDuplicationException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
 
 class MessageVerificationServiceTest {
@@ -26,16 +28,33 @@ class MessageVerificationServiceTest {
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository = mock(
         MessageAuthenticationCacheRepository.class);
     private final SmsApiManager smsApiManager = UnitTestDependency.smsApiManager();
+    private final MemberRepository memberRepository = mock(MemberRepository.class);
 
     private final MessageVerificationService messageVerificationService = new MessageVerificationService(
         messageAuthenticationCacheRepository,
         smsApiManager,
-        UnitTestDependency.hashEncryptionManager()
+        UnitTestDependency.hashEncryptionManager(),
+        memberRepository
     );
+
+    @Test
+    void 중복된_번호가_있으면_예외가_발생한다() {
+        // given
+        given(memberRepository.checkPhoneHashDuplication(any())).willReturn(true);
+
+        // when
+        // then
+        assertThatThrownBy(
+            () -> messageVerificationService.sendVerificationMessage(MEMBER_ID, RECEIVER,
+                APP_HASH_KEY))
+            .isInstanceOf(PhoneDuplicationException.class);
+    }
 
     @Test
     void 인증번호를_전송하면_성공한다() {
         //given
+        given(memberRepository.checkPhoneHashDuplication(any())).willReturn(false);
+
         //when
         VerificationMessageSendDto verificationMessageSendDto = messageVerificationService.sendVerificationMessage(
             MEMBER_ID, RECEIVER, APP_HASH_KEY);
