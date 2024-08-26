@@ -1,5 +1,6 @@
 package site.timecapsulearchive.core.domain.friend.repository.member_friend;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
 import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.memberFriend;
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelationDto;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelations;
 import site.timecapsulearchive.core.domain.friend.data.dto.FriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDto;
 import site.timecapsulearchive.core.domain.friend.data.dto.SearchFriendSummaryDtoByTag;
@@ -51,8 +54,8 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                 )
             )
             .from(memberFriend)
-            .innerJoin(member).on(memberFriend.owner.id.eq(member.id))
-            .innerJoin(member).on(memberFriend.friend.id.eq(member.id))
+            .join(member).on(memberFriend.owner.eq(member), member.deletedAt.isNull())
+            .join(member).on(memberFriend.friend.eq(member), member.deletedAt.isNull())
             .where(memberFriend.owner.id.eq(memberId).and(memberFriend.createdAt.lt(createdAt)))
             .limit(size + 1)
             .fetch();
@@ -109,7 +112,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                     member.nickname,
                     Projections.constructor(
                         ByteArrayWrapper.class,
-                        member.phone_hash
+                        member.phoneHash
                     ),
                     memberFriend.id.isNotNull(),
                     friendInviteToFriend.id.isNotNull(),
@@ -118,14 +121,17 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             )
             .from(member)
             .leftJoin(memberFriend)
-            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)),
+                memberFriend.deletedAt.isNull())
             .leftJoin(friendInviteToFriend)
             .on(friendInviteToFriend.friend.id.eq(member.id)
-                .and(friendInviteToFriend.owner.id.eq(memberId)))
+                    .and(friendInviteToFriend.owner.id.eq(memberId)),
+                friendInviteToFriend.deletedAt.isNull())
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.friend.id.eq(memberId)
-                .and(friendInviteToMe.owner.id.eq(member.id)))
-            .where(member.phone_hash.in(hashes))
+                    .and(friendInviteToMe.owner.id.eq(member.id)),
+                friendInviteToMe.deletedAt.isNull())
+            .where(member.phoneHash.in(hashes).and(member.phoneSearchAvailable.eq(Boolean.TRUE)))
             .fetch();
     }
 
@@ -154,6 +160,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                 Projections.constructor(
                     SearchFriendSummaryDtoByTag.class,
                     member.id,
+                    member.tag,
                     member.profileUrl,
                     member.nickname,
                     memberFriend.id.isNotNull(),
@@ -163,14 +170,18 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             )
             .from(member)
             .leftJoin(memberFriend)
-            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)))
+            .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(memberId)),
+                memberFriend.deletedAt.isNull())
             .leftJoin(friendInviteToFriend)
             .on(friendInviteToFriend.friend.id.eq(member.id)
-                .and(friendInviteToFriend.owner.id.eq(memberId)))
+                    .and(friendInviteToFriend.owner.id.eq(memberId)),
+                friendInviteToFriend.deletedAt.isNull())
             .leftJoin(friendInviteToMe)
             .on(friendInviteToMe.owner.id.eq(member.id)
-                .and(friendInviteToMe.friend.id.eq(memberId)))
-            .where(tagFullTextSearchTemplate.gt(MATCH_THRESHOLD))
+                    .and(friendInviteToMe.friend.id.eq(memberId)),
+                friendInviteToMe.deletedAt.isNull())
+            .where(tagFullTextSearchTemplate.gt(MATCH_THRESHOLD)
+                .and(member.tagSearchAvailable.eq(Boolean.TRUE)))
             .orderBy(tagFullyMatchFirstOrder, tagFullTextSearchTemplate.desc())
             .limit(1L)
             .fetchOne()
@@ -191,5 +202,45 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
             .where(
                 memberFriend.friend.id.in(groupMemberIds).and(memberFriend.owner.id.eq(memberId)))
             .fetch();
+    }
+
+    @Override
+    public FriendRelations findFriendRelations(final List<Long> memberIds,
+        final Long ownerId) {
+        final QFriendInvite friendInviteToFriend = new QFriendInvite(FRIEND_INVITE_TO_FRIEND_PATH);
+        final QFriendInvite friendInviteToMe = new QFriendInvite(FRIEND_INVITE_TO_ME_PATH);
+
+        return new FriendRelations(
+            jpaQueryFactory
+                .select(
+                    member.id,
+                    memberFriend.id.isNotNull(),
+                    friendInviteToFriend.isNotNull(),
+                    friendInviteToMe.isNotNull()
+                )
+                .from(member)
+                .leftJoin(memberFriend)
+                .on(memberFriend.friend.id.eq(member.id).and(memberFriend.owner.id.eq(ownerId)),
+                    memberFriend.deletedAt.isNull())
+                .leftJoin(friendInviteToFriend)
+                .on(friendInviteToFriend.friend.id.eq(member.id)
+                        .and(friendInviteToFriend.owner.id.eq(ownerId)),
+                    friendInviteToFriend.deletedAt.isNull())
+                .leftJoin(friendInviteToMe)
+                .on(friendInviteToMe.owner.id.eq(member.id)
+                        .and(friendInviteToMe.friend.id.eq(ownerId)),
+                    friendInviteToMe.deletedAt.isNull())
+                .where(member.id.in(memberIds))
+                .transform(
+                    groupBy(member.id).as(
+                        Projections.constructor(
+                            FriendRelationDto.class,
+                            memberFriend.id.isNotNull(),
+                            friendInviteToFriend.isNotNull(),
+                            friendInviteToMe.isNotNull()
+                        )
+                    )
+                )
+        );
     }
 }

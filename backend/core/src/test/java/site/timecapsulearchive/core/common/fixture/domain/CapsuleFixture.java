@@ -123,8 +123,7 @@ public class CapsuleFixture {
         CapsuleSkin capsuleSkin = CapsuleSkinFixture.capsuleSkin(member);
         Group group = GroupFixture.group();
 
-        CapsuleBuilder capsuleBuilder = defaultGroupCapsuleBuilder(member, capsuleSkin, group);
-        return capsuleBuilder;
+        return defaultGroupCapsuleBuilder(member, capsuleSkin, group);
     }
 
     public static Optional<Capsule> groupCapsuleNotAllMemberOpen(

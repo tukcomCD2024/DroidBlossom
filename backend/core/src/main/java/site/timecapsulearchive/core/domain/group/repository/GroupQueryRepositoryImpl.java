@@ -12,7 +12,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +46,7 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
                 )
             )
             .from(memberGroup)
-            .join(memberGroup.group, group)
+            .join(group).on(memberGroup.group.eq(group), group.deletedAt.isNull())
             .where(memberGroup.member.id.eq(memberId).and(memberGroup.createdAt.lt(createdAt)))
             .orderBy(group.id.desc())
             .limit(size + 1)
@@ -66,8 +65,8 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
         return jpaQueryFactory
             .select(member.profileUrl)
             .from(memberGroup)
-            .join(memberGroup.group, group)
-            .join(memberGroup.member, member)
+            .join(group).on(memberGroup.group.eq(group), group.deletedAt.isNull())
+            .join(member).on(memberGroup.member.eq(member), member.deletedAt.isNull())
             .where(memberGroup.group.id.in(groupIds)
                 .and(memberGroup.isOwner.eq(true)))
             .orderBy(group.id.desc())
@@ -85,52 +84,48 @@ public class GroupQueryRepositoryImpl implements GroupQueryRepository {
             .fetch();
     }
 
-    /**
-     * 사용자를 제외한 그룹원 정보와 그룹의 상세정보를 반환한다.
-     *
-     * @param groupId  상세정보를 찾을 그룹 아이디
-     * @param memberId 사용자 아이디
-     * @return 그룹의 상세정보({@code memberId} 제외 그룹원)
-     */
     @Override
-    public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberId(final Long groupId,
+    public Optional<GroupDetailDto> findGroupDetailByGroupIdAndMemberIdExcludeMemberId(
+        final Long groupId,
         final Long memberId) {
-        GroupDetailDto groupDetailDtoIncludeMe =
-            jpaQueryFactory
-                .selectFrom(group)
-                .join(memberGroup).on(memberGroup.group.id.eq(group.id))
-                .join(member).on(member.id.eq(memberGroup.member.id))
-                .where(group.id.eq(groupId))
-                .transform(
-                    groupBy(group.id).as(
-                        Projections.constructor(
-                            GroupDetailDto.class,
-                            group.groupName,
-                            group.groupDescription,
-                            group.groupProfileUrl,
-                            group.createdAt,
-                            Expressions.asBoolean(Boolean.FALSE),
-                            list(
-                                Projections.constructor(
-                                    GroupMemberDto.class,
-                                    member.id,
-                                    member.profileUrl,
-                                    member.nickname,
-                                    member.tag,
-                                    memberGroup.isOwner
-                                )
+        GroupDetailDto groupDetailDtoIncludeMe = jpaQueryFactory
+            .selectFrom(group)
+            .join(memberGroup).on(memberGroup.group.eq(group),
+                memberGroup.deletedAt.isNull())
+            .join(member).on(member.eq(memberGroup.member),
+                member.deletedAt.isNull())
+            .where(group.id.eq(groupId))
+            .transform(
+                groupBy(group.id).as(
+                    Projections.constructor(
+                        GroupDetailDto.class,
+                        group.groupName,
+                        group.groupDescription,
+                        group.groupProfileUrl,
+                        group.createdAt,
+                        Expressions.asBoolean(Boolean.FALSE),
+                        list(
+                            Projections.constructor(
+                                GroupMemberDto.class,
+                                member.id,
+                                member.profileUrl,
+                                member.nickname,
+                                member.tag,
+                                memberGroup.isOwner
                             )
                         )
                     )
                 )
-                .get(groupId);
+            )
+            .get(groupId);
 
-        if (Objects.isNull(groupDetailDtoIncludeMe)) {
+        if (groupDetailDtoIncludeMe == null) {
             return Optional.empty();
         }
 
         boolean isOwner = false;
-        List<GroupMemberDto> groupMemberDtosExcludeMe = new ArrayList<>();
+        List<GroupMemberDto> groupMemberDtosExcludeMe = new ArrayList<>(
+            groupDetailDtoIncludeMe.members().size());
         for (GroupMemberDto dto : groupDetailDtoIncludeMe.members()) {
             if (!dto.memberId().equals(memberId)) {
                 groupMemberDtosExcludeMe.add(dto);

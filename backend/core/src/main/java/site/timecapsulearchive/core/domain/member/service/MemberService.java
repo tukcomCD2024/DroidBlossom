@@ -1,32 +1,29 @@
 package site.timecapsulearchive.core.domain.member.service;
 
-import java.time.ZonedDateTime;
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Slice;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.timecapsulearchive.core.domain.member.data.dto.EmailVerifiedCheckDto;
 import site.timecapsulearchive.core.domain.member.data.dto.MemberDetailDto;
-import site.timecapsulearchive.core.domain.member.data.dto.MemberNotificationDto;
+import site.timecapsulearchive.core.domain.member.data.dto.MemberStatusDto;
 import site.timecapsulearchive.core.domain.member.data.dto.SignUpRequestDto;
+import site.timecapsulearchive.core.domain.member.data.dto.UpdateMemberDataDto;
 import site.timecapsulearchive.core.domain.member.data.dto.VerifiedCheckDto;
-import site.timecapsulearchive.core.domain.member.data.mapper.MemberMapper;
-import site.timecapsulearchive.core.domain.member.data.response.CheckEmailDuplicationResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationSliceResponse;
 import site.timecapsulearchive.core.domain.member.data.response.MemberNotificationStatusResponse;
-import site.timecapsulearchive.core.domain.member.data.response.MemberStatusResponse;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.MemberTemporary;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.domain.member.exception.AlreadyVerifiedException;
-import site.timecapsulearchive.core.domain.member.exception.CredentialsNotMatchedException;
 import site.timecapsulearchive.core.domain.member.exception.MemberNotFoundException;
+import site.timecapsulearchive.core.domain.member.exception.MemberTagDuplicatedException;
 import site.timecapsulearchive.core.domain.member.exception.NotVerifiedMemberException;
 import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.domain.member.repository.MemberTemporaryRepository;
-import site.timecapsulearchive.core.global.util.TagGenerator;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
+import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 
 @Slf4j
 @Service
@@ -36,14 +33,18 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberTemporaryRepository memberTemporaryRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    private final MemberMapper memberMapper;
+    private final HashEncryptionManager hashEncryptionManager;
+    private final AESEncryptionManager aesEncryptionManager;
 
     @Transactional
     public Long createMember(final SignUpRequestDto dto) {
-        final String tag = TagGenerator.generate(dto.email(), dto.socialType());
-        final MemberTemporary member = dto.toMemberTemporary(tag);
+        final String tag = NanoIdUtils.randomNanoId();
+        final byte[] emailBytes = dto.email().getBytes(StandardCharsets.UTF_8);
+        final MemberTemporary member = dto.toMemberTemporary(
+            tag,
+            aesEncryptionManager.encryptWithPrefixIV(emailBytes),
+            hashEncryptionManager.encrypt(emailBytes)
+        );
 
         final MemberTemporary savedMember = memberTemporaryRepository.save(member);
 
@@ -57,21 +58,11 @@ public class MemberService {
      * @param socialType 사용자의 소셜 프로바이더 타입
      * @return 사용자의 인증 상태 {@code isExist, isVerified}
      */
-    public MemberStatusResponse checkStatus(
+    public MemberStatusDto checkStatus(
         final String authId,
         final SocialType socialType
     ) {
-
-        final Boolean isVerified = memberRepository.findIsVerifiedByAuthIdAndSocialType(
-            authId,
-            socialType
-        );
-
-        if (isVerified == null) {
-            return MemberStatusResponse.empty();
-        }
-
-        return MemberStatusResponse.from(isVerified);
+        return memberRepository.findIsVerifiedByAuthIdAndSocialType(authId, socialType);
     }
 
     /**
@@ -82,7 +73,7 @@ public class MemberService {
      * @return 인증된 사용자의 아이디
      * @throws NotVerifiedMemberException 인증되지 않은 사용자인 경우에 발생하는 예외
      */
-    public Long findVerifiedMemberIdByAuthIdAndSocialType(
+    public Long findVerifiedSocialMemberIdBy(
         final String authId,
         final SocialType socialType
     ) throws NotVerifiedMemberException {
@@ -105,7 +96,7 @@ public class MemberService {
      * @return 인증되지 않은 사용자의 아이디
      * @throws AlreadyVerifiedException 이미 인증된 사용자인 경우 발생하는 예외
      */
-    public Long findNotVerifiedMemberIdByAuthIdAndSocialType(
+    public Long findNotVerifiedMemberIdBy(
         final String authId,
         final SocialType socialType
     ) {
@@ -147,71 +138,6 @@ public class MemberService {
         }
     }
 
-    public MemberNotificationSliceResponse findNotificationSliceByMemberId(
-        final Long memberId,
-        final int size,
-        final ZonedDateTime createdAt
-    ) {
-        final Slice<MemberNotificationDto> notifications = memberRepository.findNotificationSliceByMemberId(
-            memberId, size, createdAt);
-
-        return memberMapper.notificationSliceToResponse(
-            notifications.getContent(),
-            notifications.hasNext()
-        );
-    }
-
-    @Transactional
-    public Long createMemberWithEmailAndPassword(final String email, final String password) {
-        final String encodedPassword = passwordEncoder.encode(password);
-        final Member member = memberMapper.createMemberWithEmail(email, encodedPassword);
-
-        boolean isDuplicateTag = memberRepository.checkTagDuplication(member.getTag());
-        if (isDuplicateTag) {
-            log.warn("member tag duplicate - email:{}, tag:{}", member.getEmail(),
-                member.getTag());
-            member.updateTagLowerCaseSocialType();
-            log.warn("member tag update - tag: {}", member.getTag());
-        }
-
-        final Member savedMember = memberRepository.save(member);
-
-        return savedMember.getId();
-    }
-
-    public Long findVerifiedMemberIdByEmailAndPassword(final String email, final String password) {
-        final EmailVerifiedCheckDto dto = memberRepository.findEmailVerifiedCheckDtoByEmail(
-                email)
-            .orElseThrow(MemberNotFoundException::new);
-
-        if (!dto.isVerified()) {
-            throw new NotVerifiedMemberException();
-        }
-
-        if (isNotMatched(email, password, dto.email(), dto.password())) {
-            throw new CredentialsNotMatchedException();
-        }
-
-        return dto.memberId();
-    }
-
-    private boolean isNotMatched(
-        final String inputEmail,
-        final String inputPassword,
-        final String email,
-        final String password
-    ) {
-        return !inputEmail.equals(email) ||
-            password == null ||
-            !passwordEncoder.matches(inputPassword, password);
-    }
-
-    public CheckEmailDuplicationResponse checkEmailDuplication(final String email) {
-        Boolean isDuplicated = memberRepository.checkEmailDuplication(email);
-
-        return new CheckEmailDuplicationResponse(isDuplicated);
-    }
-
     public MemberNotificationStatusResponse checkNotificationStatus(final Long memberId) {
         final Boolean isAlarm = memberRepository.findIsAlarmByMemberId(memberId)
             .orElseThrow(MemberNotFoundException::new);
@@ -222,5 +148,92 @@ public class MemberService {
     public Member findMemberById(final Long memberId) {
         return memberRepository.findMemberById(memberId)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateMemberData(
+        final Long memberId,
+        final UpdateMemberDataDto updateMemberDataDto
+    ) {
+        final Member member = memberRepository.findMemberById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.updateData(updateMemberDataDto.nickname(), updateMemberDataDto.tag());
+        try {
+            memberRepository.saveAndFlush(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new MemberTagDuplicatedException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberTagSearchAvailable(
+        final Long memberId,
+        final Boolean tagSearchAvailable
+    ) {
+        final int updatedCount = memberRepository.updateMemberTagSearchAvailable(memberId,
+            tagSearchAvailable);
+
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberPhoneSearchAvailable(
+        final Long memberId,
+        final Boolean phoneSearchAvailable
+    ) {
+        final int updatedCount = memberRepository.updateMemberPhoneSearchAvailable(memberId,
+            phoneSearchAvailable);
+
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void delete(final Member member) {
+        memberRepository.delete(member);
+    }
+
+    @Transactional
+    public void declarationMember(final Long targetId) {
+        Member member = memberRepository.findMemberById(targetId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.upDeclarationCount();
+    }
+
+    @Transactional
+    public Long updateVerifiedMember(final Long memberId, final byte[] phoneBytes) {
+        final MemberTemporary memberTemporary = memberTemporaryRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+
+        memberTemporaryRepository.delete(memberTemporary);
+
+        final Member verifiedMember = memberTemporary.toMember(
+            hashEncryptionManager.encrypt(phoneBytes),
+            aesEncryptionManager.encryptWithPrefixIV(phoneBytes)
+        );
+
+        memberRepository.save(verifiedMember);
+
+        return verifiedMember.getId();
+    }
+
+    @Transactional
+    public void updateMemberPhone(
+        final Long memberId,
+        final byte[] phonePlain
+    ) {
+        byte[] phoneHash = hashEncryptionManager.encrypt(phonePlain);
+        byte[] encryptedPhone = aesEncryptionManager.encryptWithPrefixIV(phonePlain);
+
+        int updatedCount = memberRepository.updateMemberPhoneHashAndPhone(memberId, phoneHash,
+            encryptedPhone);
+        if (updatedCount != 1) {
+            throw new MemberNotFoundException();
+        }
     }
 }

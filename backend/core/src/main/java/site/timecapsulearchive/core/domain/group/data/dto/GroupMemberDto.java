@@ -1,7 +1,7 @@
 package site.timecapsulearchive.core.domain.group.data.dto;
 
-import java.util.List;
 import java.util.function.Function;
+import site.timecapsulearchive.core.domain.friend.data.dto.FriendRelationDto;
 import site.timecapsulearchive.core.domain.group.data.response.GroupMemberInfoResponse;
 
 public record GroupMemberDto(
@@ -12,14 +12,16 @@ public record GroupMemberDto(
     Boolean isOwner
 ) {
 
-    public GroupMemberWithRelationDto toRelationDto(final List<Long> friendIds) {
+    public GroupMemberWithRelationDto toRelationDto(final FriendRelationDto friendRelationDto) {
         return GroupMemberWithRelationDto.builder()
             .memberId(memberId)
             .profileUrl(profileUrl)
             .nickname(nickname)
             .tag(tag)
             .isOwner(isOwner)
-            .isFriend(friendIds.contains(memberId))
+            .isFriend(friendRelationDto.isFriend())
+            .isFriendInviteToFriend(friendRelationDto.isFriendInviteToFriend())
+            .isFriendInviteToMe(friendRelationDto.isFriendInviteToMe())
             .build();
     }
 

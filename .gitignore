@@ -1,3 +1,7 @@
 .idea
 
 backend/data
+
+backend/docker-volumes
+
+.env

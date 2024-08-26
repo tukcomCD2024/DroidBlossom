@@ -18,17 +18,4 @@ public record TokenResponse(
     long refreshTokenExpiresIn
 ) {
 
-    public static TokenResponse create(
-        String accessToken,
-        String refreshToken,
-        long expiresIn,
-        long refreshTokenExpiresIn
-    ) {
-        return new TokenResponse(
-            accessToken,
-            refreshToken,
-            expiresIn,
-            refreshTokenExpiresIn
-        );
-    }
 }

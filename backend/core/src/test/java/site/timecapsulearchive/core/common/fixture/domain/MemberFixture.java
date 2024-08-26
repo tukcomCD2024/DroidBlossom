@@ -9,11 +9,13 @@ import site.timecapsulearchive.core.common.dependency.UnitTestDependency;
 import site.timecapsulearchive.core.domain.member.entity.Member;
 import site.timecapsulearchive.core.domain.member.entity.SocialType;
 import site.timecapsulearchive.core.global.common.wrapper.ByteArrayWrapper;
+import site.timecapsulearchive.core.global.security.encryption.AESEncryptionManager;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 
 public class MemberFixture {
 
     private static final HashEncryptionManager hashEncryptionManager = UnitTestDependency.hashEncryptionManager();
+    private static final AESEncryptionManager aesEncryptionManager = UnitTestDependency.aesEncryptionManager();
 
     /**
      * 테스트 픽스처 - {@code Member}의 {@code id}가 주어진 {@code memberId}로 설정된 멤버 엔티티를 생성한다.
@@ -47,18 +49,23 @@ public class MemberFixture {
      */
     public static Member member(int dataPrefix) {
         byte[] number = getPhoneBytes(dataPrefix);
+        byte[] email = (dataPrefix + "test@google.com").getBytes(StandardCharsets.UTF_8);
 
-        Member member = Member.builder()
+        return Member.builder()
             .socialType(SocialType.GOOGLE)
             .nickname(dataPrefix + "testNickname")
-            .email(dataPrefix + "test@google.com")
+            .email(aesEncryptionManager.encryptWithPrefixIV(email))
+            .emailHash(hashEncryptionManager.encrypt(email))
             .authId(dataPrefix + "test")
             .profileUrl(dataPrefix + "test.com")
             .tag(dataPrefix + "testTag")
-            .phone_hash(hashEncryptionManager.encrypt(number))
+            .phoneHash(hashEncryptionManager.encrypt(number))
+            .phone(aesEncryptionManager.encryptWithPrefixIV(number))
             .build();
+    }
 
-        return member;
+    public static ByteArrayWrapper getPhoneByteWrapper(int dataPrefix) {
+        return new ByteArrayWrapper(getPhoneBytes(dataPrefix));
     }
 
     /**
@@ -118,5 +125,29 @@ public class MemberFixture {
         }
 
         return result;
+    }
+
+    public static Member notAvailableTagSearch(int dataPrefix) {
+        Member member = member(dataPrefix);
+
+        try {
+            setFieldValue(member, "tagSearchAvailable", Boolean.FALSE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return member;
+    }
+
+    public static Member notAvailablePhoneSearch(int dataPrefix) {
+        Member member = member(dataPrefix);
+
+        try {
+            setFieldValue(member, "phoneSearchAvailable", Boolean.FALSE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return member;
     }
 }

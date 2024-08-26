@@ -8,6 +8,8 @@ import static site.timecapsulearchive.core.domain.friend.entity.QMemberFriend.me
 import static site.timecapsulearchive.core.domain.member.entity.QMember.member;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,15 +17,12 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.global.util.SliceUtil;
 
 @Repository
@@ -32,14 +31,26 @@ public class PublicCapsuleQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Optional<CapsuleDetailDto> findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
+    private static BooleanExpression eqMemberIdOrFriendId(Long memberId) {
+        return eqMemberId(memberId).or(eqFriendId(memberId));
+    }
+
+    private static BooleanExpression eqMemberId(Long memberId) {
+        return capsule.member.id.eq(memberId);
+    }
+
+    private static BooleanExpression eqFriendId(Long memberId) {
+        return memberFriend.friend.id.eq(memberId);
+    }
+
+    public Optional<PublicCapsuleDetailDto> findPublicCapsuleDetailDtosByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
-        final CapsuleDetailDto detailDto = jpaQueryFactory
+        PublicCapsuleDetailDto publicCapsuleDetailDto = jpaQueryFactory
             .select(
                 Projections.constructor(
-                    CapsuleDetailDto.class,
+                    PublicCapsuleDetailDto.class,
                     capsule.id,
                     capsuleSkin.imageUrl,
                     capsule.dueDate,
@@ -54,32 +65,36 @@ public class PublicCapsuleQueryRepository {
                     groupConcatDistinct(image.imageUrl),
                     groupConcatDistinct(video.videoUrl),
                     capsule.isOpened,
-                    capsule.type
+                    capsule.type,
+                    new CaseBuilder()
+                        .when(eqMemberId(memberId)).then(true)
+                        .otherwise(false)
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.eq(member.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .leftJoin(memberFriend).on(capsule.member.id.eq(memberFriend.owner.id)
-                .or(capsule.member.id.eq(memberFriend.friend.id)))
-            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
-            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
+            .leftJoin(memberFriend).on(capsule.member.eq(memberFriend.owner)
+                .or(capsule.member.eq(memberFriend.friend)), memberFriend.deletedAt.isNull())
+            .leftJoin(image).on(capsule.eq(image.capsule), image.deletedAt.isNull())
+            .leftJoin(video).on(capsule.eq(video.capsule), video.deletedAt.isNull())
             .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
-                .and(capsule.member.id.eq(memberId).or(memberFriend.friend.id.eq(memberId))))
+                .and(eqMemberIdOrFriendId(memberId)))
             .fetchFirst();
 
-        if (detailDto.capsuleId() == null) {
+        if (publicCapsuleDetailDto.capsuleId() == null) {
             return Optional.empty();
         }
 
-        return Optional.of(detailDto);
+        return Optional.of(publicCapsuleDetailDto);
     }
 
     private StringExpression groupConcatDistinct(final StringExpression expression) {
         return Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", expression);
     }
 
-    public Optional<CapsuleSummaryDto> findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
+    public Optional<PublicCapsuleSummaryDto> findPublicCapsuleSummaryDtosByMemberIdAndCapsuleId(
         final Long memberId,
         final Long capsuleId
     ) {
@@ -87,7 +102,7 @@ public class PublicCapsuleQueryRepository {
             jpaQueryFactory
                 .select(
                     Projections.constructor(
-                        CapsuleSummaryDto.class,
+                        PublicCapsuleSummaryDto.class,
                         member.nickname,
                         member.profileUrl,
                         capsuleSkin.imageUrl,
@@ -97,16 +112,20 @@ public class PublicCapsuleQueryRepository {
                         capsule.address.fullRoadAddressName,
                         capsule.address.roadName,
                         capsule.isOpened,
-                        capsule.createdAt
+                        capsule.createdAt,
+                        new CaseBuilder()
+                            .when(eqMemberId(memberId)).then(true)
+                            .otherwise(false)
                     )
                 )
                 .from(capsule)
-                .join(member).on(capsule.member.id.eq(member.id))
-                .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-                .leftJoin(memberFriend).on(capsule.member.id.eq(memberFriend.owner.id)
-                    .or(capsule.member.id.eq(memberFriend.friend.id)))
+                .join(capsuleSkin)
+                .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+                .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
+                .leftJoin(memberFriend).on(capsule.member.eq(memberFriend.owner)
+                    .or(capsule.member.eq(memberFriend.friend)), memberFriend.deletedAt.isNull())
                 .where(capsule.id.eq(capsuleId).and(capsule.type.eq(CapsuleType.PUBLIC))
-                    .and(capsule.member.id.eq(memberId).or(memberFriend.friend.id.eq(memberId))))
+                    .and(eqMemberIdOrFriendId(memberId)))
                 .groupBy(capsule.id)
                 .fetchOne()
         );
@@ -143,14 +162,18 @@ public class PublicCapsuleQueryRepository {
                     groupConcatDistinct(image.imageUrl),
                     groupConcatDistinct(video.videoUrl),
                     capsule.isOpened,
-                    capsule.type
+                    capsule.type,
+                    new CaseBuilder()
+                        .when(eqMemberId(memberId)).then(true)
+                        .otherwise(false)
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.eq(member.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
-            .leftJoin(image).on(capsule.id.eq(image.capsule.id))
-            .leftJoin(video).on(capsule.id.eq(video.capsule.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
+            .leftJoin(image).on(capsule.eq(image.capsule), image.deletedAt.isNull())
+            .leftJoin(video).on(capsule.eq(video.capsule), video.deletedAt.isNull())
             .where(capsule.member.id.in(memberIds)
                 .and(capsule.createdAt.lt(createdAt))
                 .and(capsule.type.eq(CapsuleType.PUBLIC)))
@@ -162,9 +185,6 @@ public class PublicCapsuleQueryRepository {
         return SliceUtil.makeSlice(size, publicCapsuleDetailDtos);
     }
 
-    private boolean canMoreRead(final int size, final int capsuleSize) {
-        return capsuleSize > size;
-    }
 
     public Slice<CapsuleBasicInfoDto> findMyPublicCapsuleSlice(
         final Long memberId,
@@ -185,8 +205,9 @@ public class PublicCapsuleQueryRepository {
                 )
             )
             .from(capsule)
-            .join(member).on(capsule.member.id.eq(member.id))
-            .join(capsuleSkin).on(capsule.capsuleSkin.id.eq(capsuleSkin.id))
+            .join(capsuleSkin)
+            .on(capsule.capsuleSkin.eq(capsuleSkin), capsuleSkin.deletedAt.isNull())
+            .join(member).on(capsule.member.eq(member), member.deletedAt.isNull())
             .where(capsule.member.id.eq(memberId)
                 .and(capsule.createdAt.lt(createdAt))
                 .and(capsule.type.eq(CapsuleType.PUBLIC)))

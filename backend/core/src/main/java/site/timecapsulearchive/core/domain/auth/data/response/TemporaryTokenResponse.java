@@ -12,13 +12,4 @@ public record TemporaryTokenResponse(
     long expiresIn
 ) {
 
-    public static TemporaryTokenResponse create(
-        String temporaryAccessToken,
-        long expiresIn
-    ) {
-        return new TemporaryTokenResponse(
-            temporaryAccessToken,
-            expiresIn
-        );
-    }
 }

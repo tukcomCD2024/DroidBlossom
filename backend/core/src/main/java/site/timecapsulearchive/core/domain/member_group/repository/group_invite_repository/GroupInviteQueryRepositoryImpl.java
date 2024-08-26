@@ -96,9 +96,10 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
                 )
             )
             .from(groupInvite)
-            .join(groupInvite.group, group)
-            .join(groupInvite.groupOwner, member)
+            .join(group).on(groupInvite.group.eq(group), group.deletedAt.isNull())
+            .join(member).on(groupInvite.groupOwner.eq(member), member.deletedAt.isNull())
             .where(groupInvite.groupMember.id.eq(memberId).and(groupInvite.createdAt.lt(createdAt)))
+            .orderBy(groupInvite.id.desc())
             .limit(size + 1)
             .fetch();
 
@@ -133,7 +134,7 @@ public class GroupInviteQueryRepositoryImpl implements GroupInviteQueryRepositor
                 )
             )
             .from(groupInvite)
-            .join(groupInvite.groupMember, member)
+            .join(member).on(groupInvite.groupMember.eq(member), member.deletedAt.isNull())
             .where(
                 groupInviteIdPagingCursorCondition(dto),
                 groupInvite.group.id.eq(dto.groupId())

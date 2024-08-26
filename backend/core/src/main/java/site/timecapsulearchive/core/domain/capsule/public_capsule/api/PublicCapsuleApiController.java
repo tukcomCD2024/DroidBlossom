@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.timecapsulearchive.core.domain.capsule.data.dto.CapsuleBasicInfoDto;
 import site.timecapsulearchive.core.domain.capsule.entity.CapsuleType;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleDetailDto;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.dto.CapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.request.CapsuleCreateRequest;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleDetailResponse;
-import site.timecapsulearchive.core.domain.capsule.generic_capsule.data.response.CapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.generic_capsule.facade.CapsuleFacade;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.MyPublicCapsuleSliceResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleDetailDto;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.dto.PublicCapsuleSummaryDto;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.reqeust.PublicCapsuleUpdateRequest;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleDetailResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSliceResponse;
+import site.timecapsulearchive.core.domain.capsule.public_capsule.data.response.PublicCapsuleSummaryResponse;
 import site.timecapsulearchive.core.domain.capsule.public_capsule.service.PublicCapsuleService;
 import site.timecapsulearchive.core.global.common.response.ApiSpec;
 import site.timecapsulearchive.core.global.common.response.SuccessCode;
@@ -62,17 +61,17 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<CapsuleSummaryResponse>> getPublicCapsuleSummaryById(
+    public ResponseEntity<ApiSpec<PublicCapsuleSummaryResponse>> getPublicCapsuleSummaryById(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
-        final CapsuleSummaryDto summaryDto = publicCapsuleService.findPublicCapsuleSummaryByMemberIdAndCapsuleId(
+        final PublicCapsuleSummaryDto summaryDto = publicCapsuleService.findPublicCapsuleSummaryByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                CapsuleSummaryResponse.createOf(
+                PublicCapsuleSummaryResponse.createOf(
                     summaryDto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     geoTransformManager::changePoint3857To4326
@@ -86,17 +85,17 @@ public class PublicCapsuleApiController implements PublicCapsuleApi {
         produces = {"application/json"}
     )
     @Override
-    public ResponseEntity<ApiSpec<CapsuleDetailResponse>> getPublicCapsuleDetailById(
+    public ResponseEntity<ApiSpec<PublicCapsuleDetailResponse>> getPublicCapsuleDetailById(
         @AuthenticationPrincipal final Long memberId,
         @PathVariable("capsule_id") final Long capsuleId
     ) {
-        final CapsuleDetailDto detailDto = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
+        final PublicCapsuleDetailDto detailDto = publicCapsuleService.findPublicCapsuleDetailByMemberIdAndCapsuleId(
             memberId, capsuleId);
 
         return ResponseEntity.ok(
             ApiSpec.success(
                 SuccessCode.SUCCESS,
-                CapsuleDetailResponse.createOf(
+                PublicCapsuleDetailResponse.createOf(
                     detailDto,
                     s3PreSignedUrlManager::getS3PreSignedUrlForGet,
                     s3PreSignedUrlManager::getS3PreSignedUrlsForGet,

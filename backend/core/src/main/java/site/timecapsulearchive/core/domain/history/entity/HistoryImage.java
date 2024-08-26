@@ -12,13 +12,17 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import site.timecapsulearchive.core.domain.capsule.entity.Image;
 import site.timecapsulearchive.core.global.entity.BaseEntity;
 
 @Entity
+@Table(name = "history_image")
 @Getter
+@SQLDelete(sql = "UPDATE `history_image` SET deleted_at = now() WHERE history_image_id = ?")
+@Where(clause = "deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "HISTORY_IMAGE")
 public class HistoryImage extends BaseEntity {
 
     @Id
