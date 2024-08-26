@@ -8,6 +8,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -27,8 +28,10 @@ import site.timecapsulearchive.core.domain.member.entity.Role;
 import site.timecapsulearchive.core.global.api.limit.ApiLimitCheckInterceptor;
 import site.timecapsulearchive.core.global.api.limit.ApiLimitProperties;
 import site.timecapsulearchive.core.global.api.limit.ApiUsageCacheRepository;
+import site.timecapsulearchive.core.global.security.filter.DefaultAuthenticationFilter;
 import site.timecapsulearchive.core.global.security.jwt.JwtAuthenticationFilter;
 import site.timecapsulearchive.core.global.security.jwt.JwtAuthenticationProvider;
+import site.timecapsulearchive.core.global.security.property.DefaultKeyProperties;
 
 @EnableWebSecurity
 @TestConfiguration
@@ -56,6 +59,7 @@ public class TestMockMvcSecurityConfig {
                 .anyRequest().hasRole(Role.USER.name())
             )
             .authenticationProvider(jwtAuthenticationProvider())
+            .addFilterBefore(testDefaultAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(
                 jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class
@@ -78,6 +82,19 @@ public class TestMockMvcSecurityConfig {
     }
 
     @Bean
+    public DefaultKeyProperties testDefaultKeyProperties() {
+        return new DefaultKeyProperties("testDefaultKey");
+    }
+
+    @Bean
+    @Order(1)
+    public DefaultAuthenticationFilter testDefaultAuthenticationFilter(
+    ) {
+        return new DefaultAuthenticationFilter(testDefaultKeyProperties());
+    }
+
+    @Bean
+    @Order(2)
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(authenticationManager(), new ObjectMapper(),
             notRequireAuthenticationMatcher());
