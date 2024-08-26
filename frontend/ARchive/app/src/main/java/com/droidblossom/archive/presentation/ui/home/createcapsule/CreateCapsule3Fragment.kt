@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,7 +48,13 @@ class CreateCapsule3Fragment :
                         }
 
                         mimeType?.startsWith("video/") == true -> {
-                            dummyList.add(Dummy(uri, ContentType.VIDEO, false))
+                            val videoDuration = FileUtils.getVideoDuration(requireContext(),uri)
+
+                            if (videoDuration <= 30 * 1000) {
+                                dummyList.add(Dummy(uri, ContentType.VIDEO, false))
+                            } else {
+                                showToastMessage("30초 이하의 짧은 동영상만 업로드할 수 있어요!")
+                            }
                         }
 
                         else -> {
