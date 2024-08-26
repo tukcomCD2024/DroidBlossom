@@ -186,4 +186,19 @@ object FileUtils {
         )
         return Uri.parse(path)
     }
+
+    fun getVideoDuration(context: Context,uri: Uri): Long {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(context, uri)
+        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        retriever.release()
+        return duration?.toLong() ?: 0
+    }
+
+    fun getFileSize(context: Context, uri: Uri): Long {
+        val fileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
+        val fileSize = fileDescriptor?.statSize ?: 0
+        fileDescriptor?.close()
+        return fileSize
+    }
 }
