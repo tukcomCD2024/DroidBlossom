@@ -8,7 +8,6 @@ public class NotificationSendValidator {
 
     public boolean canSend(MemberNotificationInfoDto memberNotificationInfoDto) {
         return memberNotificationInfoDto != null
-            && memberNotificationInfoDto.notificationEnabled()
             && memberNotificationInfoDto.fcmToken() != null
             && !memberNotificationInfoDto.fcmToken().isBlank();
     }
