@@ -58,40 +58,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun handleNotification(remoteMessage: RemoteMessage) {
-        var channelName = "공지사항"
-        when(remoteMessage.data["topic"]){
-
-            FcmTopic.CAPSULE_SKIN.name -> {
-                channelName = "캡슐 스킨 생성"
-                sendNotification(remoteMessage, FcmTopic.CAPSULE_SKIN.name, channelName)
-            }
-
-            FcmTopic.FRIEND_REQUEST.name -> {
-                channelName = "친구 요청"
-                sendNotification(remoteMessage, FcmTopic.FRIEND_REQUEST.name, channelName)
-            }
-
-            FcmTopic.FRIEND_ACCEPT.name -> {
-                channelName = "친구 요청 수락"
-                sendNotification(remoteMessage, FcmTopic.FRIEND_ACCEPT.name, channelName)
-            }
-
-            FcmTopic.GROUP_INVITE.name -> {
-                channelName = "그룹 요청"
-                sendNotification(remoteMessage, FcmTopic.GROUP_INVITE.name, channelName)
-            }
-
-            FcmTopic.GROUP_ACCEPT.name -> {
-                channelName = "그룹 요청 수락"
-                sendNotification(remoteMessage, FcmTopic.GROUP_ACCEPT.name, channelName)
-            }
-
-            else -> {
-                channelName = "공지사항"
-                sendNotification(remoteMessage, FcmTopic.DEFAULT.name, channelName)
-            }
+        val channelName = when (remoteMessage.data["topic"]) {
+            FcmTopic.CAPSULE_SKIN.name -> "캡슐 스킨 생성"
+            FcmTopic.FRIEND_REQUEST.name -> "친구 요청"
+            FcmTopic.FRIEND_ACCEPT.name -> "친구 요청 수락"
+            FcmTopic.GROUP_INVITE.name -> "그룹 요청"
+            FcmTopic.GROUP_ACCEPT.name -> "그룹 요청 수락"
+            else -> "공지사항"
         }
 
+        val topicName = remoteMessage.data["topic"] ?: FcmTopic.DEFAULT.name
+        sendNotification(remoteMessage, topicName, channelName)
     }
 
 
