@@ -7,3 +7,4 @@ class FlowerConfig:
 
 
 basic_auth = f'{FlowerConfig.USERNAME}:{FlowerConfig.PASSWORD}'
+url_prefix = 'flower'
