@@ -160,6 +160,7 @@ public class MemberFriendQueryRepositoryImpl implements MemberFriendQueryReposit
                 Projections.constructor(
                     SearchFriendSummaryDtoByTag.class,
                     member.id,
+                    member.tag,
                     member.profileUrl,
                     member.nickname,
                     memberFriend.id.isNotNull(),
