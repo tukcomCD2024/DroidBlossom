@@ -36,6 +36,7 @@ android {
         buildConfigField "String", "KAKAO_URL", properties["kakao_url"]
         buildConfigField "String", "PRIVACY_POLICY_URL", properties["privacy_policy_url"]
         buildConfigField "String", "TERMS_OF_USE_URL", properties["terms_of_use_url"]
+        buildConfigField "String", "DEFAULT_APP_KEY", properties["default_app_key"]
 
         manifestPlaceholders = [
                 NAVER_CLIENT_ID: properties['naver_client_id'],

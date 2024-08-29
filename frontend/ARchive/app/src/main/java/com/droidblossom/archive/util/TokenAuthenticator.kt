@@ -27,6 +27,13 @@ class TokenAuthenticator @Inject constructor(
         val refreshToken = runBlocking { ds.fetchRefreshToken() }
         if (refreshToken.isEmpty()) return null
 
+        if (response.code == 400) {
+            runBlocking { ds.resetTokenData() }
+            redirectToLogin()
+            return null
+        }
+
+
         if (response.code == 401 && !isPathRefresh) {
 
             return if (fetchUpdateToken()) {
@@ -36,7 +43,6 @@ class TokenAuthenticator @Inject constructor(
                     addHeader("Authorization", "Bearer $newToken")
                 }.build()
             } else {
-                // 로그인으로 보내기
                 runBlocking { ds.resetTokenData() }
                 redirectToLogin()
                 null

@@ -3,6 +3,7 @@ package com.droidblossom.archive.di
 import com.droidblossom.archive.BuildConfig
 import com.droidblossom.archive.data.source.remote.api.AuthService
 import com.droidblossom.archive.util.AccessTokenInterceptor
+import com.droidblossom.archive.util.AppKeyAuthenticator
 import com.droidblossom.archive.util.DataStoreUtils
 import com.droidblossom.archive.util.ErrorHandlingInterceptor
 import com.droidblossom.archive.util.TokenAuthenticator
@@ -66,6 +67,7 @@ object RetrofitModule {
             connectTimeout(30, TimeUnit.SECONDS)
             readTimeout(30, TimeUnit.SECONDS)
             writeTimeout(30, TimeUnit.SECONDS)
+            addNetworkInterceptor(AppKeyAuthenticator())
         }.build()
     }
 
@@ -87,6 +89,7 @@ object RetrofitModule {
             writeTimeout(30, TimeUnit.SECONDS)
             authenticator(TokenAuthenticator(ds, authServiceLazy))
             addNetworkInterceptor(AccessTokenInterceptor(ds))
+            addNetworkInterceptor(AppKeyAuthenticator())
         }.build()
     }
 
