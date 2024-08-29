@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:maxLines="1"
-            android:text="@{'@' + data.tag}"
+            android:text="@{data.tag}"
             android:textAppearance="@style/TextAppearance.App.body2"
             android:textColor="@color/gray_600"
             app:layout_constraintStart_toStartOf="@id/profileImg"
