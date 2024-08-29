@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,10 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 import site.timecapsulearchive.core.domain.member.entity.Role;
+import site.timecapsulearchive.core.global.security.filter.DefaultAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final AuthenticationProvider jwtAuthenticationProvider;
     private final ObjectMapper objectMapper;
     private final AccessDeniedHandler accessDeniedHandler;
+    private final DefaultAuthenticationFilter defaultAuthenticationFilter;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -53,6 +55,11 @@ public class SecurityConfig {
                 .anyRequest().hasRole(Role.USER.name())
             )
             .exceptionHandling(error -> error.accessDeniedHandler(accessDeniedHandler));
+
+        http.addFilterBefore(
+            defaultAuthenticationFilter,
+            UsernamePasswordAuthenticationFilter.class
+        );
 
         http.apply(
             JwtDsl.jwtDsl(

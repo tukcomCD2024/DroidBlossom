@@ -21,19 +21,10 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 <br>**당신만의 매력적인 이미지**로 **움직이는 귀여운 캐릭터 타임캡슐 스킨**을 직접 제작해보세요.
 <br>_우리 앱으로 **과거**와 **현재**, **미래**를 연결하는 특별한 경험을 즐기실 수 있습니다._
 
-## 🎨 Figma
-### 작업 중...
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/0666eae8-fca0-4f01-8bbd-57a82b988a5d" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/755eee1f-5d0d-4219-addd-e82865183c65" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/89d71e74-1790-42e7-878b-2c5ef354229b" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/1553ac60-466c-4bf8-b2ef-4cb43001ee2e" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/8d1ec9e0-9993-4379-9324-a69ab6c19ed6" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/82c76117-14f0-4621-9638-47e5142256f6" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/4d1f7a0a-14ea-4762-81ab-3063c953a120" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/fe886e4d-7d59-417e-8bd8-156e493a97a9" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f32c9b95-3b4b-4109-93e8-0f4969fe283c" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/2d595cb4-8654-4a33-b024-da59b1451e9a" width="190px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/66acc665-0f44-4de7-ac0e-421f5ecefc47" width="190px" height="400px">
+## 🎨 디자인
+<img src="https://github.com/user-attachments/assets/f93e805b-749d-4128-b2ce-b32df4a8fb29" width="230px" height="440px">
+<img src="https://github.com/user-attachments/assets/d39044b2-2a6e-4974-b769-26a7cbd3ab21" width="230px" height="440px">
+<img src="https://github.com/user-attachments/assets/5042e84e-6642-41a1-82c2-ced5303069bf" width="230px" height="440px">
 
 ## 🛠 개발 시스템 구성도
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/1932a1c6-d8f2-4c11-82f4-1a602852bcd3">
@@ -47,8 +38,8 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/f7e3625c-389b-4a7b-95b7-b56117309e79" width="260px" height="350px">
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/68e6f0f5-5281-469e-b637-d343ac7fcfc7" width="260px" height="350px">
 
-## ⚙️ 운용 환경
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/243bd68b-80f4-47ae-872c-a0e921c211f4">
+## ⚙️ 운영 환경
+<img src="https://github.com/user-attachments/assets/fcba2bff-1807-41d6-b4e2-2db8e240c4e5">
 
 ## 🛢 ERD
 <img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/59e02146-a89c-4a71-b31a-debef38cb30d">
@@ -57,5 +48,4 @@ An<u>Droid</u> + <u>Blossom</u> </h2>
 <a href="https://github.com/tukcomCD2024/DroidBlossom/wiki" style="font-size: 25px">ARchive 위키</a>
 
 ## 🦾 기술 스택
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/10a4a325-7e95-43eb-877c-c8e6f81e9d91" width="400px" height="400px">
-<img src="https://github.com/tukcomCD2024/DroidBlossom/assets/68144059/ce1b280f-622f-48bb-8f1d-7ad05732f533" width="400px" height="400px">
+<img src="https://github.com/user-attachments/assets/2a68bbc1-bdb9-456d-b3f7-abcbd5d8c619">
