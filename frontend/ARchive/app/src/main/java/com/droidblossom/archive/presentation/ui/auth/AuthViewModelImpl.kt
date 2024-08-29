@@ -299,11 +299,17 @@ class AuthViewModelImpl @Inject constructor(
                     result.onSuccess {
                         signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                     }.onFail {
-                        if (it == 429) {
-                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
-                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
-                        }else{
-                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
+                        when (it) {
+                            429 -> {
+                                signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
+                                certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                            }
+                            400 -> {
+                                signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("이미 사용중인 휴대폰 번호입니다."))
+                            }
+                            else -> {
+                                signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
+                            }
                         }
                     }
                 }
@@ -314,11 +320,17 @@ class AuthViewModelImpl @Inject constructor(
                     result.onSuccess {
                         signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
                     }.onFail {
-                        if (it == 429) {
-                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
-                            certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
-                        }else{
-                            signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
+                        when (it) {
+                            429 -> {
+                                signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("인증 문자 발송 횟수를 초과하였습니다. 24시간 이후에 시도해 주세요."))
+                                certificationEvent(AuthViewModel.CertificationEvent.ShowToastMessage("하루 인증 문자 발송 횟수를 초과하였습니다. 내일 다시 시도해 주세요."))
+                            }
+                            400 -> {
+                                signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("이미 사용중인 휴대폰 번호입니다."))
+                            }
+                            else -> {
+                                signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("죄송합니다. 문제가 발생했습니다. 다시 시도해주세요"))
+                            }
                         }
                     }
                 }
