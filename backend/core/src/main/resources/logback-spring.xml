@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+  <!-- 콘솔 출력 설정 -->
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{36} - %msg%n</Pattern>
     </layout>
   </appender>
-  <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>./logs/info.log</file>
-    <filter class="ch.qos.logback.classic.filter.LevelFilter">
-      <level>INFO</level>
-    </filter>
-    <encoder>
-      <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n
-      </pattern>
-    </encoder>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>./logs/info.%d{yyyy-MM-dd}.%i.log.gz
-      </fileNamePattern>
-      <timeBasedFileNamingAndTriggeringPolicy
-        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <maxFileSize>100MB</maxFileSize>
-      </timeBasedFileNamingAndTriggeringPolicy>
-      <maxHistory>180</maxHistory>
-    </rollingPolicy>
-  </appender>
-  <root level="INFO">
-    <logger name="org.hibernate" level="error" additivity="false">
-      <appender-ref ref="INFO_LOG"/>
-    </logger>
-    <appender-ref ref="INFO_LOG"/>
-  </root>
+
+  <!-- local 프로파일일 때 콘솔에만 로그 출력 -->
+  <springProfile name="local">
+    <root level="INFO">
+      <appender-ref ref="STDOUT" />
+    </root>
+  </springProfile>
+
+  <!-- local 프로파일이 아닐 때 로그를 파일로 출력 -->
+  <springProfile name="!local">
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>./logs/info.log</file>
+      <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <level>INFO</level>
+      </filter>
+      <encoder>
+        <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{35} - %msg%n</pattern>
+      </encoder>
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>./logs/info.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+        <timeBasedFileNamingAndTriggeringPolicy
+          class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+          <maxFileSize>100MB</maxFileSize>
+        </timeBasedFileNamingAndTriggeringPolicy>
+        <maxHistory>180</maxHistory>
+      </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+      <appender-ref ref="INFO_LOG" />
+    </root>
+  </springProfile>
 </configuration>
