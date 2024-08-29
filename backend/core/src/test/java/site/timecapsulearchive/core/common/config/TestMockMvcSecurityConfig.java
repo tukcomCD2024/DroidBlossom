@@ -90,7 +90,7 @@ public class TestMockMvcSecurityConfig {
     @Order(1)
     public DefaultAuthenticationFilter testDefaultAuthenticationFilter(
     ) {
-        return new DefaultAuthenticationFilter(testDefaultKeyProperties());
+        return new DefaultAuthenticationFilter(testDefaultKeyProperties(), notRequireAuthenticationMatcher());
     }
 
     @Bean
