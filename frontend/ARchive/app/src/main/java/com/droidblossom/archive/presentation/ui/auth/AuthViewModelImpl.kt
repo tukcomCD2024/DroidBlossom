@@ -297,7 +297,8 @@ class AuthViewModelImpl @Inject constructor(
                     VerificationMessageSend(rawPhoneNumber.value, appHash).toDto()
                 ).collect { result ->
                     result.onSuccess {
-                        signUpEvent(AuthViewModel.SignUpEvent.NavigateToCertification)
+                        signUpEvent(AuthViewModel.SignUpEvent.ActivityFinish)
+                        signUpEvent(AuthViewModel.SignUpEvent.ShowToastMessage("휴대폰 번호가 변경되었습니다."))
                     }.onFail {
                         when (it) {
                             429 -> {

@@ -1,5 +1,6 @@
 package com.droidblossom.archive.presentation.ui.auth
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -81,6 +82,11 @@ class SignUpFragment : BaseFragment<AuthViewModelImpl, FragmentSignUpBinding>(R.
                                 navController.navigate(R.id.action_signUpFragment_to_certificationFragment)
                             }
 
+                        }
+
+                        is AuthViewModel.SignUpEvent.ActivityFinish -> {
+                            requireActivity().setResult(Activity.RESULT_OK)
+                            requireActivity().finish()
                         }
 
                         is AuthViewModel.SignUpEvent.ShowToastMessage -> {

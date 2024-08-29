@@ -1,8 +1,12 @@
 package com.droidblossom.archive.presentation.ui.mypage.setting.page
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,10 +30,21 @@ class SettingUserFragment :
     override val viewModel: SettingViewModelImpl by activityViewModels()
     lateinit var navController: NavController
 
+    private lateinit var authActivityResultLauncher: ActivityResultLauncher<Intent>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
         navController = Navigation.findNavController(view)
+
+        authActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.getMe()
+            }
+        }
+
         initView()
     }
 
@@ -44,7 +59,7 @@ class SettingUserFragment :
 
         binding.phoneCV.setOnClickListener {
             val sheet = CommonDialogFragment.newIntent("휴대폰 변경", "번호를 바꾸겠습니까?", "네") {
-                startActivity(AuthActivity.newIntent(requireContext(), true))
+                authActivityResultLauncher.launch(AuthActivity.newIntent(requireContext(), true))
             }
             sheet.show(parentFragmentManager, "logoutDialog")
         }
