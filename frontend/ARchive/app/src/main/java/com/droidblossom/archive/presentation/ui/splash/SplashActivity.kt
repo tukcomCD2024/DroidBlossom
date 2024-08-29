@@ -91,8 +91,6 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
     override fun onResume() {
         super.onResume()
         inAppUpdate.onResume()
-        // 디버그용
-        viewModel.getServerCheck()
     }
 
     override fun onDestroy() {
@@ -141,6 +139,14 @@ class SplashActivity : BaseActivity<SplashViewModelImpl, ActivitySplashBinding>(
                 showToastMessage("업데이트가 필요합니다.")
                 finish()
             }
+        }
+    }
+
+    companion object {
+        fun goSplash(context: Context) {
+            val intent = Intent(context, SplashActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
         }
     }
 }

@@ -23,6 +23,7 @@ import com.droidblossom.archive.presentation.customview.PermissionDialogFragment
 import com.droidblossom.archive.presentation.customview.SystemMaintenanceDialog
 import com.droidblossom.archive.presentation.model.AppEvent
 import com.droidblossom.archive.presentation.ui.NetworkConnectionActivity
+import com.droidblossom.archive.presentation.ui.splash.SplashActivity.Companion.goSplash
 import com.droidblossom.archive.util.ClipboardUtil
 import kotlinx.coroutines.Job
 import org.greenrobot.eventbus.EventBus
@@ -76,6 +77,9 @@ abstract class BaseActivity<VM: BaseViewModel?, V: ViewDataBinding>(@LayoutRes v
                     val dialog = SystemMaintenanceDialog.newInstance()
                     dialog.show(supportFragmentManager, SystemMaintenanceDialog.TAG)
                 }
+            }
+            is AppEvent.AppKeyErrorEvent -> {
+                goSplash(this)
             }
             is AppEvent.NotificationReceivedEvent -> {
                 //showToastMessage("알림")

@@ -1,10 +1,13 @@
 package com.droidblossom.archive.util
 
 import android.util.Log
+import com.droidblossom.archive.data.dto.ResponseBody
 import com.droidblossom.archive.di.RetrofitModule
 import com.droidblossom.archive.presentation.model.AppEvent
+import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 
@@ -20,14 +23,21 @@ class ErrorHandlingInterceptor : Interceptor {
         }
 
         if (!response.isSuccessful) {
-            when (response.code) {
-                502 -> {
-                    EventBus.getDefault().post(AppEvent.BadGateEvent)
-                }
-                else -> {
+            val rawBody = response.body?.string() ?: ""
+            val gson = Gson()
+            val responseBody = gson.fromJson(rawBody, ResponseBody::class.java)
 
+            if (response.code == 400) {
+
+                if (responseBody.code == "GLOBAL-006") {
+                    EventBus.getDefault().post(AppEvent.AppKeyErrorEvent)
                 }
+            } else if (response.code == 502) {
+                EventBus.getDefault().post(AppEvent.BadGateEvent)
             }
+
+            val newResponseBody = rawBody.toResponseBody(response.body?.contentType())
+            return response.newBuilder().body(newResponseBody).build()
         }
 
         return response
