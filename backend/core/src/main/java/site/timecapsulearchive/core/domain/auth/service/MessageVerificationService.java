@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import site.timecapsulearchive.core.domain.auth.data.dto.VerificationMessageSendDto;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotFoundException;
 import site.timecapsulearchive.core.domain.auth.exception.CertificationNumberNotMatchException;
+import site.timecapsulearchive.core.domain.auth.exception.PhoneDuplicationException;
 import site.timecapsulearchive.core.domain.auth.repository.MessageAuthenticationCacheRepository;
+import site.timecapsulearchive.core.domain.member.repository.MemberRepository;
 import site.timecapsulearchive.core.global.security.encryption.HashEncryptionManager;
 import site.timecapsulearchive.core.infra.sms.data.response.SmsApiResponse;
 import site.timecapsulearchive.core.infra.sms.manager.SmsApiManager;
@@ -27,6 +29,7 @@ public class MessageVerificationService {
     private final MessageAuthenticationCacheRepository messageAuthenticationCacheRepository;
     private final SmsApiManager smsApiManager;
     private final HashEncryptionManager hashEncryptionManager;
+    private final MemberRepository memberRepository;
 
     /**
      * 사용자 아이디와 수신자 핸드폰을 받아서 인증번호를 발송한다.
@@ -40,12 +43,17 @@ public class MessageVerificationService {
         final String receiver,
         final String appHashKey
     ) {
+        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
+        byte[] encrypt = hashEncryptionManager.encrypt(plain);
+
+        boolean isDuplicated = memberRepository.checkPhoneHashDuplication(encrypt);
+        if (isDuplicated) {
+            throw new PhoneDuplicationException();
+        }
+
         final String code = generateRandomCode();
         final String message = generateMessage(code, appHashKey);
         final SmsApiResponse apiResponse = smsApiManager.sendMessage(receiver, message);
-
-        final byte[] plain = receiver.getBytes(StandardCharsets.UTF_8);
-        byte[] encrypt = hashEncryptionManager.encrypt(plain);
 
         messageAuthenticationCacheRepository.save(memberId, encrypt, code);
 
