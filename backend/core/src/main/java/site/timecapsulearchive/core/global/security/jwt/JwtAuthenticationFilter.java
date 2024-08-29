@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final RequestMatcher notRequireAuthenticationMatcher;
 
     @Override
-    @Order(2)
     protected void doFilterInternal(
         final HttpServletRequest request,
         final HttpServletResponse response,

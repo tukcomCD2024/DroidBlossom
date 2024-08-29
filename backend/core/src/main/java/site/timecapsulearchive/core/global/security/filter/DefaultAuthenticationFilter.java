@@ -8,28 +8,31 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import site.timecapsulearchive.core.global.error.ErrorCode;
 import site.timecapsulearchive.core.global.error.ErrorResponse;
 import site.timecapsulearchive.core.global.security.property.DefaultKeyProperties;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class DefaultAuthenticationFilter extends OncePerRequestFilter {
 
     private final DefaultKeyProperties defaultKeyProperties;
+    private final RequestMatcher notRequireDefaultAuthenticationMatcher;
 
     @Override
-    @Order(1)
     protected void doFilterInternal(
         HttpServletRequest request,
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
+        if (notRequiresAuthentication(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String requestKey = request.getHeader("Default-Key");
 
         if (requestKey == null || !requestKey.equals(defaultKeyProperties.defaultKey())) {
@@ -52,5 +55,9 @@ public class DefaultAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean notRequiresAuthentication(final HttpServletRequest request) {
+        return notRequireDefaultAuthenticationMatcher.matches(request);
     }
 }

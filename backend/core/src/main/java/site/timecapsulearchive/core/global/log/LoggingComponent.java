@@ -28,7 +28,10 @@ public class LoggingComponent {
         return logMethod(joinPoint, "Repository");
     }
 
-    @Around("execution(public * site.timecapsulearchive.core.infra.*.manager.*.*(..))")
+    @Around("""
+        execution(public * site.timecapsulearchive.core.infra.*.manager.*.*(..))
+        && !execution(public * site.timecapsulearchive.core.infra.s3.manager.*.*(..))
+        """)
     public Object logExternalApi(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "External API");
     }

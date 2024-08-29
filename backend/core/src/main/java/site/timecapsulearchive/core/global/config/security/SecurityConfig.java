@@ -20,6 +20,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 import site.timecapsulearchive.core.domain.member.entity.Role;
 import site.timecapsulearchive.core.global.security.filter.DefaultAuthenticationFilter;
+import site.timecapsulearchive.core.global.security.property.DefaultKeyProperties;
 
 @EnableWebSecurity
 @Configuration
@@ -28,8 +29,8 @@ public class SecurityConfig {
 
     private final AuthenticationProvider jwtAuthenticationProvider;
     private final ObjectMapper objectMapper;
+    private final DefaultKeyProperties defaultKeyProperties;
     private final AccessDeniedHandler accessDeniedHandler;
-    private final DefaultAuthenticationFilter defaultAuthenticationFilter;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -57,7 +58,8 @@ public class SecurityConfig {
             .exceptionHandling(error -> error.accessDeniedHandler(accessDeniedHandler));
 
         http.addFilterBefore(
-            defaultAuthenticationFilter,
+            new DefaultAuthenticationFilter(defaultKeyProperties,
+                notRequireDefaultAuthenticationMatcher()),
             UsernamePasswordAuthenticationFilter.class
         );
 
@@ -86,6 +88,15 @@ public class SecurityConfig {
             antMatcher(HttpMethod.POST, "/auth/sign-up/email"),
             antMatcher(HttpMethod.POST, "/auth/sign-in/email"),
             antMatcher(HttpMethod.POST, "/me/check-duplication/email"),
+            antMatcher(HttpMethod.GET, "/actuator/**")
+        );
+    }
+
+    private RequestMatcher notRequireDefaultAuthenticationMatcher() {
+        return RequestMatchers.anyOf(
+            antMatcher("/v3/api-docs/**"),
+            antMatcher("/swagger-ui/**"),
+            antMatcher(HttpMethod.GET, "/health"),
             antMatcher(HttpMethod.GET, "/actuator/**")
         );
     }
