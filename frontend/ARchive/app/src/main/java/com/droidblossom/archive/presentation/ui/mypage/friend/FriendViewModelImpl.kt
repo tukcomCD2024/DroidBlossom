@@ -285,7 +285,7 @@ class FriendViewModelImpl @Inject constructor(
                 result.onSuccess {
                     _friendListUI.value -= friend
                 }.onFail {
-                    if (it == 400){
+                    if (it == 404){
                         _friendListUI.value -= friend
                     }else{
                         _friendEvent.emit(
