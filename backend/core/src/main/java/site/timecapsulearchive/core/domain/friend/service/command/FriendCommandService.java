@@ -14,6 +14,7 @@ import site.timecapsulearchive.core.domain.friend.entity.FriendInvite;
 import site.timecapsulearchive.core.domain.friend.entity.MemberFriend;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteDuplicateException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendInviteNotFoundException;
+import site.timecapsulearchive.core.domain.friend.exception.FriendNotFoundException;
 import site.timecapsulearchive.core.domain.friend.exception.FriendTwoWayInviteException;
 import site.timecapsulearchive.core.domain.friend.exception.SelfFriendOperationException;
 import site.timecapsulearchive.core.domain.friend.repository.friend_invite.FriendInviteRepository;
@@ -155,6 +156,10 @@ public class FriendCommandService {
 
         final List<MemberFriend> memberFriends = memberFriendRepository
             .findMemberFriendByOwnerIdAndFriendId(memberId, friendId);
+
+        if (memberFriends.isEmpty()) {
+            throw new FriendNotFoundException();
+        }
 
         memberFriends.forEach(memberFriendRepository::delete);
     }

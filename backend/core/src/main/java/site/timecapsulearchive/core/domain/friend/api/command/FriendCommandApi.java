@@ -82,7 +82,14 @@ public interface FriendCommandApi {
         @ApiResponse(
             responseCode = "400",
             description = """
-                잘못된 요청 파라미터 또는 존재하지 않는 사용자로 요청하거나 존재하지 않는 친구에게 친구 요청을 보낼 경우 발생
+                잘못된 요청 파라미터로 요청
+                """,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = """
+                존재하지 않는 친구에게 친구 요청을 보낼 경우 발생
                 """,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
         )
