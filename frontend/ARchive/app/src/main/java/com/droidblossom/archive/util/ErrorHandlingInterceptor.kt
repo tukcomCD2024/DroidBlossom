@@ -34,6 +34,8 @@ class ErrorHandlingInterceptor : Interceptor {
                 }
             } else if (response.code == 502) {
                 EventBus.getDefault().post(AppEvent.BadGateEvent)
+            } else if (response.code == 503){
+                EventBus.getDefault().post(AppEvent.BadGateEvent)
             }
 
             val newResponseBody = rawBody.toResponseBody(response.body?.contentType())
