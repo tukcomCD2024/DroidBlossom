@@ -28,13 +28,10 @@ class ErrorHandlingInterceptor : Interceptor {
             val responseBody = gson.fromJson(rawBody, ResponseBody::class.java)
 
             if (response.code == 400) {
-
                 if (responseBody.code == "GLOBAL-006") {
                     EventBus.getDefault().post(AppEvent.AppKeyErrorEvent)
                 }
-            } else if (response.code == 502) {
-                EventBus.getDefault().post(AppEvent.BadGateEvent)
-            } else if (response.code == 503){
+            } else if (response.code == 502 || response.code == 503) {
                 EventBus.getDefault().post(AppEvent.BadGateEvent)
             }
 
