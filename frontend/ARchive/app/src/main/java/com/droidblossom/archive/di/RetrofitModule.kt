@@ -117,7 +117,7 @@ object RetrofitModule {
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("${BuildConfig.BASE_URL}api/")
+            .baseUrl("${BuildConfig.RELEASE_BASE_URL}api/")
             .addConverterFactory(gsonConverterFactory)
             .client(client)
             .build()
@@ -131,7 +131,7 @@ object RetrofitModule {
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("${BuildConfig.BASE_URL}api/")
+            .baseUrl("${BuildConfig.RELEASE_BASE_URL}api/")
             .addConverterFactory(gsonConverterFactory)
             .client(client)
             .build()
